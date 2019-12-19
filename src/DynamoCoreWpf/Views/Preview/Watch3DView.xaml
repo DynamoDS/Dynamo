@@ -108,10 +108,10 @@
                 <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
                 <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
             </hx:Viewport3DX.InputBindings>
-            <hx:GroupModel3D
+            <!--<hx:GroupModel3D
                 x:Name="Models"
                 ItemsSource="{Binding SceneItems}"
-            />
+            />-->
         </hx:Viewport3DX>
         
         <Thumb Name ="resizeThumb" 

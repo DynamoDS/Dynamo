@@ -1001,23 +1001,23 @@ namespace WpfVisualizationTests
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
             var originalNode = vm.Element3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0" + ":mesh"];
             var otherNode = vm.Element3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1" + ":mesh"];
-            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty)); 
-            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(otherNode));
 
             // deselect original node
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
-            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(otherNode));
 
             // select another node
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1");
-            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
 
             // Select node one level up
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0");
-            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
         }
 
     }

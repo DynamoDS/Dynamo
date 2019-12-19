@@ -259,6 +259,24 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        public event Func<Element3D, bool> RequestRemoveViewportItem;
+        private bool OnRequestRemoveViewportItem(Element3D item)
+        {
+            if(RequestRemoveViewportItem != null)
+            {
+                return RequestRemoveViewportItem(item);
+            }
+            return false;
+        }
+
+        public event Action<Element3D> RequestAddViewportItem;
+        private void OnRequestAddViewportItem(Element3D item)
+        {
+            if(RequestAddViewportItem != null)
+            {
+                RequestAddViewportItem(item);
+            }
+        }
         #endregion
 
         #region properties
@@ -296,6 +314,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
         }
+
+        //private GeometryModel3D activeGeometry;
+        //internal GeometryModel3D ActiveGeometry
+        //{
+        //    get { return activeGeometry; }
+        //    set
+        //    {
+        //        activeGeometry = value;
+        //        RaisePropertyChanged(nameof(ActiveGeometry));
+        //    }
+        //}
 
         public LineGeometry3D Grid
         {
@@ -615,9 +644,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var key in Element3DDictionary.Keys.Except(keysList).ToList())
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
-                    model.Dispose();
-                    
+                    OnRequestRemoveViewportItem(model);
                     Element3DDictionary.Remove(key);
+
+                    model.Dispose();
                 }
 
                 labelPlaces.Clear();
@@ -738,7 +768,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     foreach (var geometryModel in geometryModels)
                     {
-                        geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                        AttachedProperties.SetShowSelected(geometryModel.Value, false);
                     }
                     break;
 
@@ -856,13 +886,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var frozenModel = AttachedProperties.GetIsFrozen(model3D);
                     if (frozenModel) continue;
 
-                    if (model3D != null)
-                    {
-                        model3D.Dispose();
-                    }
-                    
-
+                    OnRequestRemoveViewportItem(model3D);
                     Element3DDictionary.Remove(kvp.Key);
+                    model3D.Dispose();
+
                     var nodePath = kvp.Key.Split(':')[0];
                     labelPlaces.Remove(nodePath);
                     nodesSelected.Remove(nodePath);
@@ -938,8 +965,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         protected override void OnIsolationModeRequestUpdate()
         {
-            Element3DDictionary.Values.OfType<GeometryModel3D>().ToList().
-                ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
+            var geometries = Element3DDictionary.Values.OfType<GeometryModel3D>().ToList();
+            geometries.ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
             OnSceneItemsChanged();
         }
 
@@ -1084,7 +1111,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                 foreach (GeometryModel3D g in modelValues)
                 {
-                    g.SetValue(AttachedProperties.IsFrozenProperty, node.IsFrozen);
+                    AttachedProperties.SetIsFrozen(g, node.IsFrozen);
                 }
             }
         }
@@ -1106,11 +1133,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     continue;
                 }
 
-                var modelValues = geometryModels.Select(x => x.Value);
-
-                foreach(GeometryModel3D g in modelValues)
+                foreach (var model in geometryModels)
                 {
-                    g.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                    AttachedProperties.SetShowSelected(model.Value, isSelected);
                 }
             }
         }
@@ -1463,6 +1488,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 // first, remove current labels of the node
                 // it does not crash if there is no such key in dictionary
+                OnRequestRemoveViewportItem(Element3DDictionary[labelName]);
                 var sceneItemsChanged = Element3DDictionary.Remove(labelName);
 
                 // it may be requested an array of items to put labels
@@ -1503,6 +1529,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                         
                         Element3DDictionary.Add(labelName, bbText);
+                        OnRequestAddViewportItem(bbText);
+
                         sceneItemsChanged = true;
                         nodesSelected[nodePath] = path;
 
@@ -1536,7 +1564,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var labelName = nodePath + TextKey;
             lock (Element3DDictionaryMutex)
             {
+                OnRequestRemoveViewportItem(Element3DDictionary[labelName]);
                 var sceneItemsChanged = Element3DDictionary.Remove(labelName);
+
                 if (sceneItemsChanged)
                 {
                     OnSceneItemsChanged();
@@ -1568,7 +1598,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var nodeGeometryModels = Element3DDictionary.Where(x => x.Key.Contains(nodePath) && x.Value is GeometryModel3D).ToArray();
             foreach (var nodeGeometryModel in nodeGeometryModels)
             {
-                nodeGeometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, false);
+                AttachedProperties.SetShowSelected(nodeGeometryModel.Value, false);
             }
 
             // Then, select the individual node only if isSelected is true since all geometryModels' Selected Property is set to false
@@ -1577,7 +1607,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 var geometryModels = Element3DDictionary.Where(x => x.Key.StartsWith(path + ":") && x.Value is GeometryModel3D).ToArray();
                 foreach (var geometryModel in geometryModels)
                 {
-                    geometryModel.Value.SetValue(AttachedProperties.ShowSelectedProperty, isSelected);
+                    AttachedProperties.SetShowSelected(geometryModel.Value, isSelected);
                 }
             }
         }
@@ -1643,6 +1673,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {
                             pointGeometry3D = CreatePointGeometryModel3D(rp);
                             Element3DDictionary.Add(id, pointGeometry3D);
+                            OnRequestAddViewportItem(pointGeometry3D);
                         }
 
                         var points = pointGeometry3D.Geometry as PointGeometry3D;
@@ -1665,6 +1696,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         AddLabelPlace(baseId, p.Positions[0], rp);
                         pointGeometry3D.Geometry = points;
                         pointGeometry3D.Name = baseId;
+
+                        points.UpdateVertices();
+                        points.UpdateColors();
                     }
 
                     var l = rp.Lines;
@@ -1685,6 +1719,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             // edges of meshes. Draw them with a different thickness.
                             lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
                             Element3DDictionary.Add(id, lineGeometry3D);
+                            OnRequestAddViewportItem(lineGeometry3D);
                         }
 
                         var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
@@ -1709,6 +1744,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         AddLabelPlace(baseId, lineSet.Positions[startIdx], rp);
                         lineGeometry3D.Geometry = lineSet;
                         lineGeometry3D.Name = baseId;
+
+                        lineSet.UpdateVertices();
+                        lineSet.UpdateColors();
                     }
 
                     var m = rp.Mesh;
@@ -1727,14 +1765,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         meshGeometry3D = CreateDynamoGeometryModel3D(rp);
                         Element3DDictionary.Add(id, meshGeometry3D);
+                        OnRequestAddViewportItem(meshGeometry3D);
                     }
 
-                    var mesh = meshGeometry3D.Geometry == null
-                        ? HelixRenderPackage.InitMeshGeometry()
+                    var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() 
                         : meshGeometry3D.Geometry as MeshGeometry3D;
                     var idxCount = mesh.Positions.Count;
 
                     mesh.Positions.AddRange(m.Positions);
+
+                    //meshGeometry3D.Material = new VertColorMaterial();
 
                     // If we are in a custom node, and the current
                     // package's id is NOT one of the output ids of custom nodes
@@ -1747,6 +1787,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     else
                     {
                         mesh.Colors.AddRange(m.Colors);
+                        
                     }
 
                     mesh.Normals.AddRange(m.Normals);
@@ -1755,12 +1796,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     if (mesh.Colors.Any(c => c.Alpha < 1.0))
                     {
-                        meshGeometry3D.SetValue(AttachedProperties.HasTransparencyProperty, true);
+                        AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
                     }
 
                     AddLabelPlace(baseId, mesh.Positions[idxCount], rp);
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
+
+                    mesh.UpdateVertices();
+                    mesh.UpdateColors();
+                    mesh.UpdateTextureCoordinates();
+                    mesh.UpdateTriangles();
                 }
 
             }
@@ -1831,6 +1877,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         manipulator.Material = PhongMaterials.Blue;
 
                     Element3DDictionary[id] = manipulator;
+                    OnRequestRemoveViewportItem(model);
+                    OnRequestAddViewportItem(manipulator);
                     return true;
                 case RenderDescriptions.AxisLine:
                     var centerline = model as DynamoLineGeometryModel3D;
@@ -1841,6 +1889,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     centerline.Geometry = rp.Lines;
                     Element3DDictionary[id] = centerline;
+                    OnRequestRemoveViewportItem(model);
+                    OnRequestAddViewportItem(centerline);
                     return true;
                 case RenderDescriptions.ManipulatorPlane:
                     var plane = model as DynamoLineGeometryModel3D;
@@ -1851,6 +1901,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     plane.Geometry = rp.Lines;
                     Element3DDictionary[id] = plane;
+                    OnRequestRemoveViewportItem(model);
+                    OnRequestAddViewportItem(plane);
                     return true;
                 default:
                     return false;
@@ -1945,6 +1997,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Geometry = HelixRenderPackage.InitText3D(),
                 };
                 Element3DDictionary.Add(textId, bbText);
+                OnRequestAddViewportItem(bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
            
@@ -1959,7 +2012,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Material = WhiteMaterial,
-                IsHitTestVisible = false,
+                IsHitTestVisible = true,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
             };
 
@@ -1988,8 +2041,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.Message);
                     Console.WriteLine(ex.StackTrace);
                 }
-                //meshGeometry3D.Material = new VertColorMaterial();
             }
+            //meshGeometry3D.Material = new VertColorMaterial();
 
             return meshGeometry3D;
         }

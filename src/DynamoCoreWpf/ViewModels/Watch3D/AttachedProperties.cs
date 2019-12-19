@@ -1,6 +1,7 @@
 ﻿using System.Windows;
-
+using System.Windows.Media;
 using HelixToolkit.Wpf.SharpDX;
+using SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -12,6 +13,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public static class AttachedProperties
     {
         private const float alphaPropertyFactor = 0.5f;
+
+        #region Show Selected property
+
+        // TODO: Make private in 3.0
         /// <summary>
         /// A flag indicating whether the geometry renders as selected.
         /// </summary>
@@ -44,27 +49,38 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if ((bool)args.NewValue)
                     {
                         meshGeom.Material = HelixWatch3DViewModel.SelectedMaterial;
+                        //meshGeom.Material = new VertColorMaterial();
+
+                        //var colors = geom.Geometry.Colors.ToArray();
+                        //var len = colors.Length;
+
+                        //for (int i = 0; i < len; i++)
+                        //{
+                        //    colors[i].Blue = 0.0f;
+                        //    colors[i].Green = 0.0f;
+                        //    colors[i].Red = 1f;
+                        //    colors[i].Alpha = 1f;
+                        //}
+
+                        //var colorCollection = new Color4Collection(colors);
+                        //geom.Geometry.Colors = colorCollection;
+                        //geom.Geometry.UpdateColors();
                     }
                     else
                     {
-                        meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
+                        meshGeom.Material = GetIsolationMode(meshGeom) ?
+                            HelixWatch3DViewModel.TransparentMaterial : HelixWatch3DViewModel.WhiteMaterial;
                     }
                 }
-                //var colors = geom.Geometry.Colors.ToArray();
-
-                //for (int i = 0; i < colors.Length; i++)
-                //{
-                //    colors[i].Blue = 255;
-                //    colors[i].Green = 0;
-                //    colors[i].Red = 0;
-                //}
-
-                //var colorCollection = new Color4Collection(colors);
-                //geom.Geometry.Colors = colorCollection;
-                //geom.Geometry.UpdateColors();
+                
             }
         }
 
+        #endregion
+
+        #region Transparency property
+
+        // TODO: Make private in 3.0
         /// <summary>
         /// A flag indicating whether the geometry has transparency.
         /// </summary>
@@ -84,6 +100,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return (bool) element.GetValue(HasTransparencyProperty);
         }
 
+        #endregion
+
+        #region Frozen property
+
+        // TODO: Make private in 3.0
         /// <summary>
         /// A flag indicating whether the geometry is frozen
         /// </summary>
@@ -93,7 +114,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             typeof(GeometryModel3D),
             new PropertyMetadata(false, IsFrozenPropertyChanged));
 
+        // TODO: Deprecate and remove in 3.0
         public static void SetIsFrozen(UIElement element, bool value)
+        {
+            element.SetValue(IsFrozenProperty, value);
+        }
+
+        public static void SetIsFrozen(DependencyObject element, bool value)
         {
             element.SetValue(IsFrozenProperty, value);
         }
@@ -130,7 +157,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     else
                     {
-                        dynamoGeom3D.Material = HelixWatch3DViewModel.WhiteMaterial;
+                        dynamoGeom3D.Material = GetIsolationMode(dynamoGeom3D) ? 
+                            HelixWatch3DViewModel.TransparentMaterial : HelixWatch3DViewModel.WhiteMaterial;
                     }
 
                     dynamoGeom3D.RequiresPerVertexColoration = true;
@@ -151,6 +179,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        #endregion
+
+        #region Isolation Mode property
+
+        // TODO: Make private in 3.0
         /// <summary>
         /// A flag indicating whether the geometry is currently under Isolate Selected Geometry mode.
         /// </summary>
@@ -175,11 +208,30 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
-                
+
                 // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
+                var dynamoGeom3D = geom as DynamoGeometryModel3D;
+                if (dynamoGeom3D != null)
+                {
+                    if ((bool)e.NewValue)
+                    {
+                        dynamoGeom3D.Material = HelixWatch3DViewModel.TransparentMaterial;
+                    }
+                    else
+                    {
+                        dynamoGeom3D.Material = HelixWatch3DViewModel.WhiteMaterial;
+                    }
+
+                    dynamoGeom3D.RequiresPerVertexColoration = true;
+                }
             }
         }
 
+        #endregion
+
+        #region Special RenderPackage property
+
+        // TODO: Make private in 3.0
         /// <summary>
         /// A flag indicating whether the geometry is special render package, such as used to draw manipulators.
         /// </summary>
@@ -198,6 +250,34 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return (bool)element.GetValue(IsSpecialRenderPackageProperty);
         }
+
+        #endregion
+
+        //#region Active Geometry property
+
+        //public static readonly DependencyProperty ActiveGeometryProperty = DependencyProperty.RegisterAttached(
+        //    "ActiveGeometry",
+        //    typeof(GeometryModel3D),
+        //    typeof(Viewport3DX),
+        //    new PropertyMetadata(null, ActiveGeometryPropertyChanged));
+
+        //public static void SetActiveGeometry(DependencyObject element, GeometryModel3D value)
+        //{
+        //    element.SetValue(ActiveGeometryProperty, value);
+        //}
+
+        //public static GeometryModel3D GetActiveGeometry(DependencyObject element)
+        //{
+        //    return (GeometryModel3D)element.GetValue(ActiveGeometryProperty);
+        //}
+
+        //private static void ActiveGeometryPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
+        //{
+
+        //}
+
+        //#endregion
+
 
     }
 }

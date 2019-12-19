@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -45,6 +46,7 @@ namespace Dynamo.Controls
             InitializeComponent();
             Loaded += ViewLoadedHandler;
             Unloaded += ViewUnloadedHandler;
+
         }
 
         #endregion
@@ -67,6 +69,30 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
+            ViewModel.RequestAddViewportItem -= AddViewportItem;
+            ViewModel.RequestRemoveViewportItem -= RemoveViewportItem;
+        }
+
+        private void RegisterEventHandlers()
+        {
+            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+
+            RegisterButtonHandlers();
+
+            RegisterViewEventHandlers();
+
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
+            ViewModel.RequestCameraPosition += GetCameraPosition;
+            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
+            ViewModel.RequestRemoveViewportItem += RemoveViewportItem;
+            ViewModel.RequestAddViewportItem += AddViewportItem;
+
+            ViewModel.UpdateUpstream();
+            ViewModel.OnWatchExecution();
+
         }
 
         private void RegisterButtonHandlers()
@@ -79,6 +105,13 @@ namespace Dynamo.Controls
 
         private void RegisterViewEventHandlers()
         {
+            //var binding = new Binding("ActiveGeometry")
+            //{
+            //    Source = ViewModel,
+            //    Mode = BindingMode.OneWay,
+            //};
+            //watch_view.SetBinding(AttachedProperties.ActiveGeometryProperty, binding);
+
             watch_view.MouseDown += (sender, args) =>
             {
                 ViewModel.OnViewMouseDown(sender, args);
@@ -109,6 +142,7 @@ namespace Dynamo.Controls
 
         private void UnRegisterViewEventHandlers()
         {
+
             watch_view.MouseDown -= ViewModel.OnViewMouseDown;
             watch_view.MouseUp -= ViewModel.OnViewMouseUp;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
@@ -138,21 +172,17 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
-            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+            var grid = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            var axes = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultAxesName];
+            var directionalLight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultLightName];
+            var headlight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.HeadLightName];
 
-            RegisterButtonHandlers();
+            watch_view.Items.Add(directionalLight);
+            watch_view.Items.Add(headlight);
+            watch_view.Items.Add(grid);
+            watch_view.Items.Add(axes);
 
-            RegisterViewEventHandlers();
-
-            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
-            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
-            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
-            ViewModel.RequestClickRay += GetClickRay;
-            ViewModel.RequestCameraPosition += GetCameraPosition;
-            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
-
-            ViewModel.UpdateUpstream();
-            ViewModel.OnWatchExecution();
+            RegisterEventHandlers();
         }
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
@@ -273,6 +303,16 @@ namespace Dynamo.Controls
         private Point3D GetCameraPosition()
         {
             return View.GetCameraPosition();
+        }
+
+        private bool RemoveViewportItem(Element3D item)
+        {
+            return watch_view.Items.Remove(item);
+        }
+
+        private void AddViewportItem(Element3D item)
+        {
+            watch_view.Items.Add(item);
         }
     }
 
