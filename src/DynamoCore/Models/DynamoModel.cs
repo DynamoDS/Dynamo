@@ -636,6 +636,10 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
+            // Make sure that the global package folder is added in the list
+            var userCommonPackageFolder = pathManager.CommonPackageDirectory;
+            AddPackagePath(userCommonPackageFolder);
+
             // Load Python Template
             // The loading pattern is conducted in the following order
             // 1) Set from DynamoSettings.XML
@@ -690,7 +694,8 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            extensionManager = new ExtensionManager();
+            //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
+            extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
