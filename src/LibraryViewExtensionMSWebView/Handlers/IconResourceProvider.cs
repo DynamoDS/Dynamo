@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dynamo.Engine;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
 {
@@ -23,6 +24,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         private string defaultIconString;
         private string defaultIconName;
         private DllResourceProvider embeddedDllResourceProvider;
+        private MethodInfo getForAssemblyMethodInfo;
+        private PropertyInfo LibraryCustomizationResourceAssemblyProperty;
+        private Type LibraryCustomizationType;
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -35,6 +39,10 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         {
             this.pathManager = pathManager;
             defaultIconName = defaultIcon;
+            var dynCore = typeof(DynamoModel).Assembly;
+            this.getForAssemblyMethodInfo = dynCore.GetType("Dynamo.Engine.LibraryCustomizationServices").GetMethod("GetForAssembly", BindingFlags.Static | BindingFlags.Public);
+            this.LibraryCustomizationType = dynCore.GetType("Dynamo.Engine.LibraryCustomization");
+            this.LibraryCustomizationResourceAssemblyProperty = LibraryCustomizationType.GetProperty("ResourceAssembly", BindingFlags.Instance|BindingFlags.Public);
         }
 
         public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider, string defaultIcon = "default-icon.svg") :
@@ -92,8 +100,18 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             }
             else
             {
-                var icon = new IconUrl(new Uri(url));
-                base64String = GetIconAsBase64(icon, out extension);
+                try
+                {
+
+
+                    //TODO deal with /icons from autocad. (these are .svgs.)
+                    var icon = new IconUrl(new Uri(url));
+                    base64String = GetIconAsBase64(icon, out extension);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine($"{e.Message} {url}");
+                }
             }
 
             if (base64String == null)
@@ -150,11 +168,11 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             extension = "png";
 
             var path = Path.GetFullPath(icon.Path); //Get full path if it's a relative path.
-            var libraryCustomization = LibraryCustomizationServices.GetForAssembly(path, pathManager, true);
+            var libraryCustomization = getForAssemblyMethodInfo.Invoke(null,new object[] { path, pathManager, true });
             if (libraryCustomization == null)
                 return null;
 
-            var assembly = libraryCustomization.ResourceAssembly;
+            var assembly = LibraryCustomizationResourceAssemblyProperty.GetValue(libraryCustomization) as Assembly;
             if (assembly == null)
                 return null;
 

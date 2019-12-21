@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Librarie.js sample page</title>
@@ -25,7 +26,7 @@
 
     <script>
         function refreshLibViewFromData(loadedTypes,layoutSpec){
-            let append = false; // Replace existing contents instead of appending.
+            var append = false; // Replace existing contents instead of appending.
             libController.setLoadedTypesJson(JSON.parse(loadedTypes) , append);
             libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
             libController.refreshLibraryView(); // Refresh library view.
@@ -35,19 +36,19 @@
         //Create library controller
         var libController = LibraryEntryPoint.CreateLibraryController();
         //Create library view
-        let libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+        var libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
 
         var searchCallback = null;
         function completeSearch(searchLoadedTypes){
             searchCallback(JSON.parse(searchLoadedTypes));
         }
         libController.searchLibraryItemsHandler = function (text, callback) {
-			let encodedText = encodeURIComponent(text);
-
+			var encodedText = encodeURIComponent(text);
+			searchCallback = callback;
                 window.external.notify(JSON.stringify({"func":"performSearch","data":encodedText}));
                 window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Search",encodedText]}));
             //save the callback so we can access from our completion function
-                searchCallback = callback;
+                
                 //csharpController.logEventsToInstrumentation("Search", encodedText);
         }
 
@@ -70,11 +71,11 @@
         });
         libController.on(libController.FilterCategoryEventName, function (item) {
             var categories = [];
-            item.forEach((elem) => {
-                var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
-                categories.push(catString);
-            });
-            window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
+         //  item.forEach((elem) => {
+         //       var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
+         //       categories.push(catString);
+         //   });
+            //window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
         });
 
         //Update the view with contents

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
@@ -22,6 +25,82 @@ using Newtonsoft.Json.Linq;
 
 namespace Dynamo.LibraryViewExtensionMSWebView
 {
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
+    [ComVisibleAttribute(true)]
+    public class scriptingObject
+    {
+        private LibraryViewController controller;
+
+        public scriptingObject(LibraryViewController controller)
+        {
+            this.controller = controller;
+        }
+
+        public void notify(string data)
+        {
+            scriptNotifyHandler(data);
+        }
+
+        private void scriptNotifyHandler(string dataFromjs)
+        {
+
+            if (dataFromjs == "requestUpdateLibrary")
+            {
+                //TODO why do we need to pass this ref.
+                controller.refreshLibraryView(controller.browser);
+                
+            }
+            //a more complex action needs to be taken on the c# side.
+            else if (!string.IsNullOrEmpty(dataFromjs))
+            {
+                /*will be an object like:
+                {func:funcName,
+                data:"string" | data:object[] | bool}
+                 */
+                var simpleRPCPayload = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromjs);
+                var funcName = simpleRPCPayload["func"] as string;
+                if (funcName == "createNode")
+                {
+                    var data = simpleRPCPayload["data"] as string;
+                    controller.CreateNode(data);
+                }
+                else if (funcName == "showNodeTooltip")
+                {
+                    var data = (simpleRPCPayload["data"] as JArray).Children();
+                    controller.ShowNodeTooltip(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<double>());
+                }
+                else if (funcName == "closeNodeTooltip")
+                {
+                    var data = (bool)simpleRPCPayload["data"];
+                    controller.CloseNodeTooltip(data);
+                }
+                else if (funcName == "importLibrary")
+                {
+                    controller.ImportLibrary();
+                }
+                else if (funcName == "logEventsToInstrumentation")
+                {
+                    var data = (simpleRPCPayload["data"] as JArray).Children();
+                    controller.LogEventsToInstrumentation(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<string>());
+                }
+                else if (funcName == "performSearch")
+                {
+                    var data = simpleRPCPayload["data"] as string;
+                    var extension = string.Empty;
+                    var searchStream = controller.searchResultDataProvider.GetResource(data, out extension);
+                    var searchReader = new StreamReader(searchStream);
+                    var results = searchReader.ReadToEnd();
+                    //send back results to libjs
+                    controller.browser.
+                     InvokeScript("completeSearch", results);
+                    searchReader.Dispose();
+                }
+            }
+
+
+        }
+    }
+
     public interface IEventController
     {
         void On(string eventName, object callback);
@@ -40,16 +119,17 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private FloatingLibraryTooltipPopup libraryViewTooltip;
         // private ResourceHandlerFactory resourceFactory;
         private IDisposable observer;
-        private WebView browser;
+        internal WebBrowser browser;
         private const string CreateNodeInstrumentationString = "Search-NodeAdded";
         // TODO remove this when we can control the library state from Dynamo more precisely.
         private bool disableObserver = false;
 
         private LayoutSpecProvider layoutProvider;
         private NodeItemDataProvider nodeProvider;
-        private SearchResultDataProvider searchResultDataProvider;
+        internal SearchResultDataProvider searchResultDataProvider;
         private IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
+        private scriptingObject interop;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -67,6 +147,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             InitializeResourceProviders(dynamoViewModel.Model, customization);
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
+            interop = new scriptingObject(this);
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -216,29 +297,30 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 libraryHTMLPage = reader.ReadToEnd().Replace(lib_min_template, libminstring);
             }
 
-            view.Browser.IsJavaScriptEnabled = true;
-            view.Browser.IsScriptNotifyAllowed = true;
+            //view.Browser.IsJavaScriptEnabled = true;
+            //view.Browser.IsScriptNotifyAllowed = true;
             //view.Loaded += OnLibraryViewLoaded;
 
             // TODO: This needs to be more generic, e.g. Window.leftExtensionGrid.Add()
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
+            view.Browser.ObjectForScripting = interop;
             view.Browser.NavigateToString(libraryHTMLPage);
-
+           
 
             browser = view.Browser;
             //    browser.RegisterAsyncJsObject("controller", this);
 
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
-            browser.ScriptNotify += scriptNotifyHandler;
+            //browser.ScriptNotify += scriptNotifyHandler;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
 
         }
 
-        private void refreshLibraryView(WebView browser)
+        internal void refreshLibraryView(WebBrowser browser)
         {
-            Application.Current.Dispatcher.BeginInvoke(new Action(() => {
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
                 var ext1 = string.Empty;
                 var ext2 = string.Empty;
 
@@ -249,8 +331,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
 
                 var layoutSpec = reader2.ReadToEnd();
-                browser.
-                     InvokeScriptAsync("refreshLibViewFromData", loadedTypes, layoutSpec);
+                browser.InvokeScript
+                     ("refreshLibViewFromData", loadedTypes, layoutSpec);
                 reader.Dispose();
                 reader2.Dispose();
             }));
@@ -258,65 +340,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         }
 
 
-        private async void scriptNotifyHandler(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlScriptNotifyEventArgs e)
-        {
-
-            if (e.Value == "requestUpdateLibrary")
-            {
-                if (sender is WebView)
-                {
-                    refreshLibraryView(sender as WebView);
-                }
-            }
-            //a more complex action needs to be taken on the c# side.
-            else if (!string.IsNullOrEmpty(e.Value))
-            {
-                /*will be an object like:
-                {func:funcName,
-                data:"string" | data:object[] | bool}
-                 */
-                var simpleRPCPayload = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.Value);
-                var funcName = simpleRPCPayload["func"] as string;
-                if (funcName == "createNode")
-                {
-                    var data = simpleRPCPayload["data"] as string;
-                    CreateNode(data);
-                }
-                else if (funcName == "showNodeTooltip")
-                {
-                    var data = (simpleRPCPayload["data"] as JArray).Children();
-                    ShowNodeTooltip(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<double>());
-                }
-                else if (funcName == "closeNodeTooltip")
-                {
-                    var data = (bool)simpleRPCPayload["data"];
-                    CloseNodeTooltip(data);
-                }
-                else if (funcName == "importLibrary")
-                {
-                    ImportLibrary();
-                }
-                else if (funcName == "logEventsToInstrumentation")
-                {
-                    var data = (simpleRPCPayload["data"] as JArray).Children();
-                    LogEventsToInstrumentation(data.ElementAt(0).Value<string>(), data.ElementAt(1).Value<string>());
-                }
-                else if (funcName == "performSearch")
-                {
-                    var data = simpleRPCPayload["data"] as string;
-                    var extension = string.Empty;
-                    var searchStream = searchResultDataProvider.GetResource(data, out extension);
-                    var searchReader = new StreamReader(searchStream);
-                    var results = searchReader.ReadToEnd();
-                    //send back results to libjs
-                    (sender as WebView).
-                     InvokeScriptAsync("completeSearch", results);
-                    searchReader.Dispose();
-                }
-            }
-
-
-        }
+      
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
@@ -443,7 +467,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         }
 
 
-        internal static IDisposable SetupSearchModelEventsObserver(WebView webview, NodeSearchModel model, LibraryViewController controller, ILibraryViewCustomization customization, int throttleTime = 200)
+        internal static IDisposable SetupSearchModelEventsObserver(WebBrowser webview, NodeSearchModel model, LibraryViewController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
             //TODO handle this event on the c# side and remove from jsside.
             customization.SpecificationUpdated += (o, e) =>
@@ -554,7 +578,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             if (this.browser != null)
             {
                 browser.SizeChanged -= Browser_SizeChanged;
-                browser.ScriptNotify -= scriptNotifyHandler;
+                //browser.ScriptNotify -= scriptNotifyHandler;
                 browser.Dispose();
                 browser = null;
             }
