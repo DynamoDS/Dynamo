@@ -27,6 +27,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         private MethodInfo getForAssemblyMethodInfo;
         private PropertyInfo LibraryCustomizationResourceAssemblyProperty;
         private Type LibraryCustomizationType;
+        private Dictionary<Uri, Stream> resourceStreams;
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -45,10 +46,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             this.LibraryCustomizationResourceAssemblyProperty = LibraryCustomizationType.GetProperty("ResourceAssembly", BindingFlags.Instance|BindingFlags.Public);
         }
 
-        public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider, string defaultIcon = "default-icon.svg") :
+        public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider,
+                Dictionary<Uri,Stream> registeredCustomizations, string defaultIcon = "default-icon.svg") :
             this(pathManager, defaultIcon)
         {
             this.embeddedDllResourceProvider = dllResourceProvider;
+            this.resourceStreams = registeredCustomizations;
         }
 
 
@@ -102,18 +105,28 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             {
                 try
                 {
-
-
-                    //TODO deal with /icons from autocad. (these are .svgs.)
                     var icon = new IconUrl(new Uri(url));
                     base64String = GetIconAsBase64(icon, out extension);
+
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine($"{e.Message} {url}");
+                    //if this is not an absolute path and we have not dealt with it yet
+                    //look in resources for registered path and just use the stream directly
+                    var uri = new Uri(url, UriKind.RelativeOrAbsolute);
+                    if (!uri.IsAbsoluteUri)
+                    {
+                        uri = new Uri(new Uri("http://localhost"), url);
+                    }
+                    if (this.resourceStreams.ContainsKey(uri))
+                    {
+                        var fileExtension = new FileInfo(uri.AbsolutePath).Extension;
+                        extension = fileExtension;
+                        base64String = GetIconAsBase64(this.resourceStreams[uri], fileExtension);
+                    }
                 }
             }
-
             if (base64String == null)
             {
                 //TODO this might need to use the dllresprovider as well.

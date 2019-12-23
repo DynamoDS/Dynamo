@@ -19,7 +19,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Toolkit.Wpf.UI.Controls;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -130,6 +129,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
         private scriptingObject interop;
+        private Dictionary<Uri, Stream> registeredCustomizationStreams = new Dictionary<Uri, Stream>();
 
         /// <summary>
         /// Creates LibraryViewController
@@ -297,11 +297,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 libraryHTMLPage = reader.ReadToEnd().Replace(lib_min_template, libminstring);
             }
 
-            //view.Browser.IsJavaScriptEnabled = true;
-            //view.Browser.IsScriptNotifyAllowed = true;
-            //view.Loaded += OnLibraryViewLoaded;
-
-            // TODO: This needs to be more generic, e.g. Window.leftExtensionGrid.Add()
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
             view.Browser.ObjectForScripting = interop;
@@ -331,8 +326,16 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
 
                 var layoutSpec = reader2.ReadToEnd();
-                browser.InvokeScript
-                     ("refreshLibViewFromData", loadedTypes, layoutSpec);
+             
+                try
+                {
+                    browser.InvokeScript
+                         ("refreshLibViewFromData", loadedTypes, layoutSpec);
+                }
+                catch(Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine(e?.Message);
+                }
                 reader.Dispose();
                 reader2.Dispose();
             }));
@@ -548,14 +551,35 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
+         
             var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebView.web.library");
-            iconProvider = new IconResourceProvider(model.PathManager, dllProvider);
+            iconProvider = new IconResourceProvider(model.PathManager, dllProvider, this.registeredCustomizationStreams);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebView.web.library.layoutSpecs.json");
 
+            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
+            //we also need to watch any registered customization streams access these if we fail to find the resources
+
+            foreach (var item in customization.Resources)
+            {
+                OnResourceStreamRegistered(item.Key, item.Value);
+            }
+
+            //Setup the event handler for resource registration if it happens after extension load.
+            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
+
         }
 
+        private void OnResourceStreamRegistered(string key, Stream value)
+        {
+            Uri url = new Uri(key, UriKind.RelativeOrAbsolute);
+            if (!url.IsAbsoluteUri)
+                url = new Uri(new Uri("http://localhost"), url);
+
+            var extension = Path.GetExtension(key);
+            this.registeredCustomizationStreams.Add(url, value);
+        }
 
         public void Dispose()
         {
@@ -582,6 +606,11 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 browser.Dispose();
                 browser = null;
             }
+            if (this.customization != null)
+            {
+              this.customization.ResourceStreamRegistered -= OnResourceStreamRegistered;
+            }
+
         }
     }
 }

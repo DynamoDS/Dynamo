@@ -242,7 +242,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             {
                 return "";
             }
-            if (ext == "svg")
+            if (ext.Contains("svg"))
             {
                 ext = "svg+xml";
             }
@@ -256,7 +256,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             {
                 return "";
             }
-            if (ext == "svg")
+            if (ext.Contains("svg"))
             {
                 ext = "svg+xml";
             }

@@ -55,7 +55,14 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         public override Stream GetResource(string url, out string extension)
         {
             extension = "json";
-            if (resourceStream == null || resourceStream.CanRead == false)
+            try
+            {
+                if (resourceStream == null || resourceStream.CanRead == false || resourceStream.Position == resourceStream.Length)
+                {
+                    resourceStream = (customization as LibraryViewCustomization).ToJSONStream(true, iconProvider);
+                }
+            }
+            catch
             {
                 resourceStream = (customization as LibraryViewCustomization).ToJSONStream(true, iconProvider);
             }
