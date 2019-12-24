@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -163,8 +164,10 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
         private scriptingObject interop;
-        private Dictionary<Uri, Stream> registeredCustomizationStreams = new Dictionary<Uri, Stream>();
         private DebounceDispatcher uiDebouncer = new DebounceDispatcher();
+        public static Stopwatch stopwatch = new Stopwatch();
+
+        public static  DynamoLogger logger;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -183,6 +186,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
             interop = new scriptingObject(this);
+            LibraryViewController.logger = (dynamoWindow.DataContext as DynamoViewModel).Model.Logger;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -306,6 +310,10 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
             LibraryView view = new LibraryView(model);
 
+           
+            stopwatch.Reset();
+            stopwatch.Start();
+
             var lib_min_template = "LIBPLACEHOLDER";
             var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
@@ -330,6 +338,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 libraryHTMLPage = reader.ReadToEnd().Replace(lib_min_template, libminstring);
             }
 
+            stopwatch.Stop();
+            logger.LogError($"{stopwatch.ElapsedMilliseconds} to load html and js initially.");
+
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
             view.Browser.ObjectForScripting = interop;
@@ -352,16 +363,20 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             dynamoWindow.Dispatcher.BeginInvoke(
             new Action(() =>
            {
+           
                var ext1 = string.Empty;
                var ext2 = string.Empty;
 
                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
                //this is a json string now.
                var loadedTypes = reader.ReadToEnd();
+               stopwatch.Restart();
+
                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-
-
                var layoutSpec = reader2.ReadToEnd();
+               logger.LogError($"{stopwatch.ElapsedMilliseconds} to refresh library layoutSpec.");
+
+               stopwatch.Reset();
 
                try
                {
@@ -370,10 +385,13 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                }
                catch (Exception e)
                {
-                   System.Diagnostics.Debug.WriteLine(e?.Message);
+                   MessageBox.Show(e.Message);
                }
                reader.Dispose();
                reader2.Dispose();
+
+              
+
            }));
 
         }
@@ -554,10 +572,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                .Distinct()
                .SkipWhile(s => s.Contains("://"))
                .Select(p => new LayoutIncludeInfo() { path = p });
-                if (includes.Count() == 0)
-                {
-                    return;
-                }
+            
                 customization.AddIncludeInfo(includes, "Add-ons");
 
             }
@@ -571,30 +586,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebView.web.library.layoutSpecs.json");
-
-            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
-            //we also need to watch any registered customization streams access these if we fail to find the resources
-
-            foreach (var item in customization.Resources)
-            {
-                OnResourceStreamRegistered(item.Key, item.Value);
-            }
-
-            //Setup the event handler for resource registration if it happens after extension load.
-            customization.ResourceStreamRegistered += OnResourceStreamRegistered;
-
-        }
-
-        private void OnResourceStreamRegistered(string key, Stream value)
-        {
-            Uri url = new Uri(key, UriKind.RelativeOrAbsolute);
-            if (!url.IsAbsoluteUri)
-                url = new Uri(new Uri("http://localhost"), url);
-
-            var extension = Path.GetExtension(key);
-            //TODO seems resources in customization gets filled with this same
-            //data should be able to use that instead...
-            this.registeredCustomizationStreams.Add(url, value);
         }
 
         public void Dispose()
@@ -621,12 +612,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 //browser.ScriptNotify -= scriptNotifyHandler;
                 browser.Dispose();
                 browser = null;
-            }
-            if (this.customization != null)
-            {
-              this.customization.ResourceStreamRegistered -= OnResourceStreamRegistered;
-            }
-
+            }          
         }
     }
 }
