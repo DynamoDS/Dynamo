@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Dynamo.Models;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
 
@@ -40,19 +42,26 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         public void Loaded(ViewLoadedParams p)
         {
-            //TODO this is unfortunate but we need to delay this a bit
-            //or sharpdx seems to run into problems. We really want to wait
-            //until DynamoView is completely loaded.
-            //Task.Delay(5000).ContinueWith((t) =>
-           // {
-                if (!DynamoModel.IsTestMode)
-                {
-                    viewLoadedParams = p;
-                    controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
-                    controller.AddLibraryView();
-                }
-           // }, TaskScheduler.FromCurrentSynchronizationContext());
+            if (!DynamoModel.IsTestMode)
+            {
+                viewLoadedParams = p;
+                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
+                controller.AddLibraryView();
+            }
+            (p.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
+        }
 
+        private void handleDynamoViewPropertyChanges(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+           if(e.PropertyName == "ShowStartPage")
+            {
+                var sp = (sender as DynamoViewModel).ShowStartPage;
+                var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
+                if(controller.browser != null)
+                {
+                    controller.browser.Visibility = vis;
+                }
+            }
         }
 
         public void Shutdown()

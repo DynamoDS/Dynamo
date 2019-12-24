@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid >
-        <WebBrowser Name="Browser" />
+        <WebBrowser Visibility="Hidden" Name="Browser" />
     </Grid>
 </UserControl>

@@ -8,6 +8,7 @@ using System.Security.Permissions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionMSWebView.Handlers;
 using Dynamo.LibraryViewExtensionMSWebView.ViewModels;
@@ -100,6 +101,39 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         }
     }
 
+    //TODO move.
+    internal class DebounceDispatcher
+    {
+        private DispatcherTimer timer;
+        public void Debounce(int interval, Action<object> action,
+            object param = null,
+            DispatcherPriority priority = DispatcherPriority.ApplicationIdle,
+            Dispatcher disp = null)
+        {
+            // kill pending timer and pending ticks
+            timer?.Stop();
+            timer = null;
+
+            if (disp == null)
+                disp = Dispatcher.CurrentDispatcher;
+
+            // timer is recreated for each event and effectively
+            // resets the timeout. Action only fires after timeout has fully
+            // elapsed without other events firing in between
+            timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), priority, (s, e) =>
+            {
+                if (timer == null)
+                    return;
+
+                timer?.Stop();
+                timer = null;
+                action.Invoke(param);
+            }, disp);
+
+            timer.Start();
+        }
+    }
+
     public interface IEventController
     {
         void On(string eventName, object callback);
@@ -110,7 +144,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
     /// <summary>
     /// This class holds methods and data to be called from javascript
     /// </summary>
-    public class LibraryViewController : /*EventController,*/ IDisposable
+    public class LibraryViewController : IDisposable
     {
         private Window dynamoWindow;
         private ICommandExecutive commandExecutive;
@@ -130,6 +164,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private LibraryViewCustomization customization;
         private scriptingObject interop;
         private Dictionary<Uri, Stream> registeredCustomizationStreams = new Dictionary<Uri, Stream>();
+        private DebounceDispatcher uiDebouncer = new DebounceDispatcher();
 
         /// <summary>
         /// Creates LibraryViewController
@@ -213,7 +248,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 Analytics.LogPiiInfo(eventName, data);
             }
         }
-        //TODO handle other formats like fonts.
         private string replaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
             //TODO use string builder for better perf and memory.
@@ -272,14 +306,13 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
             LibraryView view = new LibraryView(model);
 
-            //TODO move somewhere reusable.
             var lib_min_template = "LIBPLACEHOLDER";
             var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
 
             var libMinURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
-            var libminstring = "NOTHING LOADED";
+            var libminstring = "LIBJS";
             var libraryHTMLPage = "HELLO WORLD";
 
             using (var reader = new StreamReader(libminstream))
@@ -315,30 +348,33 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         internal void refreshLibraryView(WebBrowser browser)
         {
-            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => {
-                var ext1 = string.Empty;
-                var ext2 = string.Empty;
+            // uiDebouncer.Debounce(200,
+            dynamoWindow.Dispatcher.BeginInvoke(
+            new Action(() =>
+           {
+               var ext1 = string.Empty;
+               var ext2 = string.Empty;
 
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-                //this is a json string now.
-                var loadedTypes = reader.ReadToEnd();
-                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+               var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+               //this is a json string now.
+               var loadedTypes = reader.ReadToEnd();
+               var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
 
 
-                var layoutSpec = reader2.ReadToEnd();
-             
-                try
-                {
-                    browser.InvokeScript
-                         ("refreshLibViewFromData", loadedTypes, layoutSpec);
-                }
-                catch(Exception e)
-                {
-                    System.Diagnostics.Debug.WriteLine(e?.Message);
-                }
-                reader.Dispose();
-                reader2.Dispose();
-            }));
+               var layoutSpec = reader2.ReadToEnd();
+
+               try
+               {
+                   browser.InvokeScript
+                        ("refreshLibViewFromData", loadedTypes, layoutSpec);
+               }
+               catch (Exception e)
+               {
+                   System.Diagnostics.Debug.WriteLine(e?.Message);
+               }
+               reader.Dispose();
+               reader2.Dispose();
+           }));
 
         }
 
@@ -362,31 +398,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 this.dynamoViewModel.Model.Logger.LogError(error);
             }
         }
-        /*
-        // Browser LoadError events occur when the resource load for a navigation fails or is canceled
-        private void Browser_LoadError(object sender, LoadErrorEventArgs e)
-        {
-            System.Diagnostics.Trace.WriteLine("*****Chromium Browser Messages******");
-            System.Diagnostics.Trace.Write(e.ErrorText);
-#if DEBUG
-            // TODO - The browser should not be loaded before the loadedTypesJson or layoutSpecsJson are fully loaded.
-            // Since these assets get loaded via a Javascript function in the html there is no way to guarantee this without moving the logic.
-            // A better strategy is required for preloading these assests before the browser attempts to initialize in order to prevent a reload.
-            // Having long running javascript in the Library.html file is problematic as it doesn't complete before the C# layer continues to execute.
-            // This error is expected to occur if the loadedTypesJson or layoutSpecsJson was not fully loaded
-            // on the first loading attempt.  When the resources are ready the browser is refreshed/reloaded.
-            // See this thread for more details: https://magpcss.org/ceforum/viewtopic.php?f=10&t=11507 
-            if (e.ErrorText == "ERR_ABORTED")
-            {
-                this.dynamoViewModel.Model.Logger.LogError("The library browser has been reloaded.");
-            }
-            else
-            {
-                this.dynamoViewModel.Model.Logger.LogError(e.ErrorText);
-            }
-#endif
-        }
-        */
+      
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -472,7 +484,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         internal static IDisposable SetupSearchModelEventsObserver(WebBrowser webview, NodeSearchModel model, LibraryViewController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
-            //TODO handle this event on the c# side and remove from jsside.
             customization.SpecificationUpdated += (o, e) =>
             {
                 controller.refreshLibraryView(webview);
@@ -543,7 +554,10 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                .Distinct()
                .SkipWhile(s => s.Contains("://"))
                .Select(p => new LayoutIncludeInfo() { path = p });
-
+                if (includes.Count() == 0)
+                {
+                    return;
+                }
                 customization.AddIncludeInfo(includes, "Add-ons");
 
             }
@@ -553,7 +567,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         {
          
             var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebView.web.library");
-            iconProvider = new IconResourceProvider(model.PathManager, dllProvider, this.registeredCustomizationStreams);
+            iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebView.web.library.layoutSpecs.json");
@@ -578,6 +592,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 url = new Uri(new Uri("http://localhost"), url);
 
             var extension = Path.GetExtension(key);
+            //TODO seems resources in customization gets filled with this same
+            //data should be able to use that instead...
             this.registeredCustomizationStreams.Add(url, value);
         }
 

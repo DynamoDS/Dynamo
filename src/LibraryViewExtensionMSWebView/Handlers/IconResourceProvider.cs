@@ -27,7 +27,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         private MethodInfo getForAssemblyMethodInfo;
         private PropertyInfo LibraryCustomizationResourceAssemblyProperty;
         private Type LibraryCustomizationType;
-        private Dictionary<Uri, Stream> resourceStreams;
+        private LibraryViewCustomization customization;
+
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -46,12 +47,11 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             this.LibraryCustomizationResourceAssemblyProperty = LibraryCustomizationType.GetProperty("ResourceAssembly", BindingFlags.Instance|BindingFlags.Public);
         }
 
-        public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider,
-                Dictionary<Uri,Stream> registeredCustomizations, string defaultIcon = "default-icon.svg") :
+        public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider,LibraryViewCustomization customization, string defaultIcon = "default-icon.svg") :
             this(pathManager, defaultIcon)
         {
+            this.customization = customization;
             this.embeddedDllResourceProvider = dllResourceProvider;
-            this.resourceStreams = registeredCustomizations;
         }
 
 
@@ -112,18 +112,13 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 catch (Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine($"{e.Message} {url}");
-                    //if this is not an absolute path and we have not dealt with it yet
                     //look in resources for registered path and just use the stream directly
-                    var uri = new Uri(url, UriKind.RelativeOrAbsolute);
-                    if (!uri.IsAbsoluteUri)
+                    var resourceDict = this.customization.Resources.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                    if (resourceDict.ContainsKey(url))
                     {
-                        uri = new Uri(new Uri("http://localhost"), url);
-                    }
-                    if (this.resourceStreams.ContainsKey(uri))
-                    {
-                        var fileExtension = new FileInfo(uri.AbsolutePath).Extension;
+                        var fileExtension = System.IO.Path.GetExtension(url);
                         extension = fileExtension;
-                        base64String = GetIconAsBase64(this.resourceStreams[uri], fileExtension);
+                        base64String = GetIconAsBase64(resourceDict[url], fileExtension);
                     }
                 }
             }
