@@ -21,14 +21,14 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
     {
         private const string imagesSuffix = "Images";
         private IPathManager pathManager;
-        private string defaultIconString;
+        private string defaultIconDataString;
         private string defaultIconName;
         private DllResourceProvider embeddedDllResourceProvider;
         private MethodInfo getForAssemblyMethodInfo;
         private PropertyInfo LibraryCustomizationResourceAssemblyProperty;
         private Type LibraryCustomizationType;
         private LibraryViewCustomization customization;
-
+        private Dictionary<string, (string,string)> cache = new Dictionary<string, (string, string)>();
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -63,10 +63,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
         public string GetResourceAsString(string url, out string extension)
         {
-
-#if DEBUG
-            Console.WriteLine(url);
-#endif
+            if (!String.IsNullOrEmpty(url) && cache.ContainsKey(url))
+            {
+                var cachedData = cache[url];
+                extension = cachedData.Item2;
+                return cachedData.Item1;
+            }
             //because we modify the spec the icon urls may have been replaed by base64 enoded images
             //if thats the case, no need to look them up again from disk, just return the string.
             if (!String.IsNullOrEmpty(url) && url.Contains("data:image/"))
@@ -76,6 +78,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 var contentType = match.Groups["type"].Value;
                 //image/png -> png
                 extension = contentType.Split('/').Skip(1).FirstOrDefault();
+                cache.Add(url, (base64Data, extension));
                 return base64Data;
             }
             var base64String = string.Empty;
@@ -92,9 +95,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             if (url.StartsWith(@"./dist"))
             {
                 //make relative url a full uri
-                url = url.Replace(@"./dist", @"http://localhost/dist");
+                var urlAbs = url.Replace(@"./dist", @"http://localhost/dist");
                 var ext = string.Empty;
-                var stream = embeddedDllResourceProvider.GetResource(url, out ext);
+                var stream = embeddedDllResourceProvider.GetResource(urlAbs, out ext);
                 if (stream != null)
                 {
                     extension = ext;
@@ -103,6 +106,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             }
             else
             {
+                //TODO check if absolute instead of using try/catch
                 try
                 {
                     var icon = new IconUrl(new Uri(url));
@@ -111,7 +115,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.WriteLine($"{e.Message} {url}");
                     //look in resources for registered path and just use the stream directly
                     var resourceDict = this.customization.Resources.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                     if (resourceDict.ContainsKey(url))
@@ -126,8 +129,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             {
                 //TODO this might need to use the dllresprovider as well.
                 base64String = GetDefaultIconBase64(out extension);
+                
             }
-
+            cache.Add(url, (base64String, extension));
             return base64String;
         }
 
@@ -149,7 +153,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         private string GetDefaultIconBase64(out string extension)
         {
             extension = Path.GetExtension(defaultIconName).Replace(".", "");
-            if (defaultIconString == null)
+            if (defaultIconDataString == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 var resource = assembly.GetManifestResourceNames().FirstOrDefault(s => s.Contains(defaultIconName));
@@ -158,11 +162,11 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
 
                 defaultIconName = resource;
                 var reader = new StreamReader(assembly.GetManifestResourceStream(defaultIconName));
-                defaultIconString = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(reader.ReadToEnd()));
+                defaultIconDataString = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(reader.ReadToEnd()));
                 reader.Dispose();
             }
 
-            return defaultIconString;
+            return defaultIconDataString;
         }
 
         /// <summary>
@@ -170,7 +174,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         /// </summary>
         /// <param name="icon">Icon Url</param>
         /// <param name="extension">Returns the extension to describe the type of resource.</param>
-        /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
+        /// <returns>a base64 encoded string version of an image if found else null.</returns>
         private string GetIconAsBase64(IconUrl icon, out string extension)
         {
             extension = "png";

@@ -57,14 +57,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         /// otherwise.</returns>
         public override Stream GetResource(string url, out string extension)
         {
-            Console.WriteLine(url);
             extension = "txt";
             var uri = new Uri(url);
             string resourceName;
             var assembly = GetResourceAssembly(uri, out resourceName);
             if (null == assembly)
             {
-
                 return null;
             }
 

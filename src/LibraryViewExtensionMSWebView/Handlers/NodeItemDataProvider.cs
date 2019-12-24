@@ -43,7 +43,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
     {
         protected NodeSearchModel model;
         private IconResourceProvider iconProvider;
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -65,15 +64,18 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             return GetNodeItemDataStream(model.SearchEntries, true);
         }
 
-
-        //TODO add overload.
         protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries, bool replaceIconURLWithData)
         {
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
+            var stringBuilder = new StringBuilder();
 
+
+            LibraryViewController.stopwatch.Restart();
             var data = CreateObjectForSerialization(searchEntries);
+            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to create serialized loaded types");
+            LibraryViewController.stopwatch.Restart();
             if (replaceIconURLWithData)
             {
                 var ext = string.Empty;
@@ -95,10 +97,19 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                     {
                         ext = "svg+xml";
                     }
-                    item.iconUrl = $"data:image/{ext};base64, {iconAsBase64}";
+                    stringBuilder.Append("data:image/");
+                    stringBuilder.Append(ext);
+                    stringBuilder.Append(";base64, ");
+                    stringBuilder.Append(iconAsBase64);
+                    item.iconUrl = stringBuilder.ToString();
+                    stringBuilder.Clear();
+                    //item.iconUrl = $"data:image/{ext};base64, {iconAsBase64}";
                 }
             }
+            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to replace images");
+            LibraryViewController.stopwatch.Restart();
             serializer.Serialize(sw, data);
+            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to serialize data to json");
 
             sw.Flush();
             ms.Position = 0;
