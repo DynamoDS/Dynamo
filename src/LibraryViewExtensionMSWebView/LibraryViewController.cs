@@ -26,6 +26,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Dynamo.LibraryViewExtensionMSWebView
 {
+    /// <summary>
+    /// This object is exposed to the browser to pass data back and forth between contexts.
+    /// </summary>
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     [ComVisibleAttribute(true)]
     public class scriptingObject
@@ -37,14 +40,22 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             this.controller = controller;
         }
 
+        /// <summary>
+        /// Main callback which libraryJS uses to notify the extension to perform some action.
+        /// </summary>
+        /// <param name="data"></param>
         public void notify(string data)
         {
             scriptNotifyHandler(data);
         }
 
+        /// <summary>
+        /// Used to get access the iconResourceProvider and return a base64encoded string version of an icon.
+        /// </summary>
+        /// <param name="iconurl"></param>
         public void getBase64StringFromPath (string iconurl)
         {
-            System.Diagnostics.Debug.WriteLine(iconurl);
+            
             string ext;
             var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
             if (string.IsNullOrEmpty(iconAsBase64))
@@ -55,6 +66,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             {
                 ext = "svg+xml";
             }
+            //send back result.
             controller.browser.InvokeScript("completeReplaceImages", $"data:image/{ext};base64, {iconAsBase64}");
         }
 
@@ -63,7 +75,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
             if (dataFromjs == "requestUpdateLibrary")
             {
-                //TODO why do we need to pass this ref.
                 controller.refreshLibraryView(controller.browser);
                 
             }
@@ -117,40 +128,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         }
     }
-
-    //TODO remove.
-    internal class DebounceDispatcher
-    {
-        private DispatcherTimer timer;
-        public void Debounce(int interval, Action<object> action,
-            object param = null,
-            DispatcherPriority priority = DispatcherPriority.ApplicationIdle,
-            Dispatcher disp = null)
-        {
-            // kill pending timer and pending ticks
-            timer?.Stop();
-            timer = null;
-
-            if (disp == null)
-                disp = Dispatcher.CurrentDispatcher;
-
-            // timer is recreated for each event and effectively
-            // resets the timeout. Action only fires after timeout has fully
-            // elapsed without other events firing in between
-            timer = new DispatcherTimer(TimeSpan.FromMilliseconds(interval), priority, (s, e) =>
-            {
-                if (timer == null)
-                    return;
-
-                timer?.Stop();
-                timer = null;
-                action.Invoke(param);
-            }, disp);
-
-            timer.Start();
-        }
-    }
-
     public interface IEventController
     {
         void On(string eventName, object callback);
@@ -180,10 +157,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         internal IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
         private scriptingObject interop;
-        private DebounceDispatcher uiDebouncer = new DebounceDispatcher();
-        public static Stopwatch stopwatch = new Stopwatch();
-
-        public static  DynamoLogger logger;
 
         /// <summary>
         /// Creates LibraryViewController
@@ -202,7 +175,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             dynamoWindow.StateChanged += DynamoWindowStateChanged;
             dynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
             interop = new scriptingObject(this);
-            LibraryViewController.logger = (dynamoWindow.DataContext as DynamoViewModel).Model.Logger;
         }
 
         //if the window is resized toggle visibility of browser to force redraw
@@ -326,10 +298,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
             LibraryView view = new LibraryView(model);
 
-           
-            stopwatch.Reset();
-            stopwatch.Start();
-
             var lib_min_template = "LIBPLACEHOLDER";
             var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
@@ -355,9 +323,6 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 libraryHTMLPage = reader.ReadToEnd().Replace(lib_min_template, libminstring);
             }
 
-            stopwatch.Stop();
-            logger.LogError($"{stopwatch.ElapsedMilliseconds} to load html and js initially.");
-
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
             view.Browser.ObjectForScripting = interop;
@@ -381,13 +346,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
                //this is a json string now.
                var loadedTypes = reader.ReadToEnd();
-               stopwatch.Restart();
-
+             
                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
                var layoutSpec = reader2.ReadToEnd();
-               logger.LogError($"{stopwatch.ElapsedMilliseconds} to refresh library layoutSpec.");
-
-               stopwatch.Reset();
 
                try
                {

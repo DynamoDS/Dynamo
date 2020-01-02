@@ -59,6 +59,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             {
                 if (resourceStream == null || resourceStream.CanRead == false || resourceStream.Position == resourceStream.Length)
                 {
+                    //passing false here - does not replace urls with base64 strings
                     resourceStream = (customization as LibraryViewCustomization).ToJSONStream(false, iconProvider);
                 }
             }

@@ -61,6 +61,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         public override Stream GetResource(string url, out string extension)
         {
             extension = "json";
+            //pass false to keep original icon urls
             return GetNodeItemDataStream(model.SearchEntries, false);
         }
 
@@ -70,12 +71,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             var sw = new StreamWriter(ms);
             var serializer = new JsonSerializer();
             var stringBuilder = new StringBuilder();
-
-
-            LibraryViewController.stopwatch.Restart();
             var data = CreateObjectForSerialization(searchEntries);
-            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to create serialized loaded types");
-            LibraryViewController.stopwatch.Restart();
+
             if (replaceIconURLWithData)
             {
                 var ext = string.Empty;
@@ -106,10 +103,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                     //item.iconUrl = $"data:image/{ext};base64, {iconAsBase64}";
                 }
             }
-            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to replace images");
-            LibraryViewController.stopwatch.Restart();
             serializer.Serialize(sw, data);
-            LibraryViewController.logger.LogError($"{LibraryViewController.stopwatch.ElapsedMilliseconds} to serialize data to json");
 
             sw.Flush();
             ms.Position = 0;

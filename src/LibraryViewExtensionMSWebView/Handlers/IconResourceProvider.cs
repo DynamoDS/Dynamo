@@ -64,6 +64,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         public string GetResourceAsString(string url, out string extension)
         {
             //sometimes the urls have "about:" added to them - remove this
+            //and do it before checking cache.
             url = url?.Replace("about:", string.Empty);
 
             if (!String.IsNullOrEmpty(url) && cache.ContainsKey(url))
