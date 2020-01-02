@@ -38,6 +38,9 @@
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -103,11 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="web\library\layoutSpecs.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>8.0.3</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\LibraryViewExtension\web\library\resources\ArtifaktElement-Bold.woff">
@@ -309,6 +307,9 @@
     <Content Include="Library_ViewExtensionDefinition.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

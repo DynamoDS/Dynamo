@@ -227,7 +227,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extensions", "Extensions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkspaceDependencyViewExtension", "WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj", "{5E76AAB3-6302-473E-9655-081B53FB1419}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebView\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

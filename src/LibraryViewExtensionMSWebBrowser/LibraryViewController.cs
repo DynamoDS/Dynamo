@@ -208,7 +208,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 }
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
-                commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionMSWebView.ExtensionName);
+                commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionMSWebBrowser.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
 
                 this.disableObserver = false;
