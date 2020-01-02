@@ -7,8 +7,8 @@
     <ProjectGuid>{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dynamo.LibraryViewExtensionMSWebView</RootNamespace>
-    <AssemblyName>LibraryViewExtensionMSWebView</AssemblyName>
+    <RootNamespace>Dynamo.LibraryViewExtensionMSWebBrowser</RootNamespace>
+    <AssemblyName>LibraryViewExtensionMSWebBrowser</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -312,7 +312,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files\Autodesk\AutoCAD Rogue\C3D\Dynamo\Core\viewExtensions\librarymsWebView\$(ProjectName).dll"
-copy /Y "$(TargetDir)$(ProjectName).pdb" "C:\Program Files\Autodesk\AutoCAD Rogue\C3D\Dynamo\Core\viewExtensions\librarymsWebView\$(ProjectName).pdb"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     /// <summary>
     /// The abstract base class for Resource provider

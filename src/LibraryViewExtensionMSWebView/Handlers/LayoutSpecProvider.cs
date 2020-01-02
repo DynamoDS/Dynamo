@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Wpf.Interfaces;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     /// <summary>
     /// Implements LayoutSepc resource provider, by default it reads the spec

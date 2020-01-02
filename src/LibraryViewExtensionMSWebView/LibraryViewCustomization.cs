@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dynamo.Wpf.Interfaces;
-using Dynamo.LibraryViewExtensionMSWebView.Handlers;
+using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
 using Newtonsoft.Json;
 
-namespace Dynamo.LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {
     class LibraryViewCustomization : ILibraryViewCustomization, IDisposable
     {
@@ -228,7 +226,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
             var serializer = new JsonSerializer() { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore };
             serializer.Serialize(sw, spec);
-
+            
             sw.Flush();
             ms.Position = 0;
             return ms;

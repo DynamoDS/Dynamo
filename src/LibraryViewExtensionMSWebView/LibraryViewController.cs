@@ -11,9 +11,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Dynamo.Extensions;
-using Dynamo.LibraryViewExtensionMSWebView.Handlers;
-using Dynamo.LibraryViewExtensionMSWebView.ViewModels;
-using Dynamo.LibraryViewExtensionMSWebView.Views;
+using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
+using Dynamo.LibraryViewExtensionMSWebBrowser.ViewModels;
+using Dynamo.LibraryViewExtensionMSWebBrowser.Views;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
@@ -24,7 +24,7 @@ using Dynamo.Wpf.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Dynamo.LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {
     /// <summary>
     /// This object is exposed to the browser to pass data back and forth between contexts.
@@ -128,15 +128,10 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
         }
     }
-    public interface IEventController
-    {
-        void On(string eventName, object callback);
-        void RaiseEvent(string eventName, params object[] parameters);
-    }
-
 
     /// <summary>
-    /// This class holds methods and data to be called from javascript
+    /// This class acts as the entry point to create the browser view as well 
+    /// as implementing the methods which are called from the javascript context.
     /// </summary>
     public class LibraryViewController : IDisposable
     {
@@ -159,7 +154,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private scriptingObject interop;
 
         /// <summary>
-        /// Creates LibraryViewController
+        /// Creates a LibraryViewController.
         /// </summary>
         /// <param name="dynamoView">DynamoView hosting library component</param>
         /// <param name="commandExecutive">Command executive to run dynamo commands</param>
@@ -195,6 +190,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             }
         }
 
+        #region methods exposed to JS
         /// <summary>
         /// Call this method to create a new node in Dynamo canvas.
         /// </summary>
@@ -240,10 +236,44 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 Analytics.LogPiiInfo(eventName, data);
             }
         }
+        internal void refreshLibraryView(WebBrowser browser)
+        {
+            dynamoWindow.Dispatcher.BeginInvoke(
+            new Action(() =>
+            {
+
+                var ext1 = string.Empty;
+                var ext2 = string.Empty;
+                //read the full loadedTypes and LayoutSpec json strings.
+                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                var loadedTypes = reader.ReadToEnd();
+
+                var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
+                var layoutSpec = reader2.ReadToEnd();
+
+                try
+                {
+                    browser.InvokeScript
+                         ("refreshLibViewFromData", loadedTypes, layoutSpec);
+                }
+                catch (Exception e)
+                {
+                    this.dynamoViewModel.Model.Logger.Log(e);
+                }
+                reader.Dispose();
+                reader2.Dispose();
+
+            }));
+
+        }
+
+        #endregion
+
         private string replaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
-            //TODO use string builder for better perf and memory.
             var ext = string.Empty;
+            // this depends on librariejs minification producing the same results - 
+            // longterm this is fragile. We should intercept these requests and handle them instead.
             if (magicreplace)
             {
                 minifiedURL = $"n.p+\"{minifiedURL}\"";
@@ -268,12 +298,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             return html;
         }
 
-        private readonly (string, bool)[] dynamicIconPaths = new (string, bool)[15]
+        //list of resources which have paths embedded directly into the source.
+        private readonly (string, bool)[] dynamicResourcePaths = new (string, bool)[15]
         {
            ("/resources/library-create.svg",true),
            ("/resources/default-icon.svg",true),
            ("/resources/fontawesome-webfont.eot",true),
-           //"/resources/fontawesome-webfont.svg",
            ("/resources/fontawesome-webfont.ttf",true),
            ("/resources/fontawesome-webfont.woff2",true),
            ("/resources/fontawesome-webfont.woff",true),
@@ -294,8 +324,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         /// <returns>LibraryView control</returns>
         internal void AddLibraryView()
         {
-            //TODO this address does nothing now.
-            LibraryViewModel model = new LibraryViewModel("http://localhost/library.html");
+            LibraryViewModel model = new LibraryViewModel();
             LibraryView view = new LibraryView(model);
 
             var lib_min_template = "LIBPLACEHOLDER";
@@ -305,13 +334,15 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             var libMinURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "LIBJS";
-            var libraryHTMLPage = "HELLO WORLD";
+            var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
 
  
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
-                dynamicIconPaths.ToList().ForEach(path =>
+                // replace some resources and their paths so that no requests are generated
+                // instead the base64 data is already embedded. This list includes common icons and fonts.
+                dynamicResourcePaths.ToList().ForEach(path =>
                 {
                     libminstring = replaceUrlWithBase64Image(libminstring, path.Item1, path.Item2);
                 });
@@ -325,7 +356,9 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
             var sidebarGrid = dynamoWindow.FindName("sidebarGrid") as Grid;
             sidebarGrid.Children.Add(view);
+            //register the interop object into the browser.
             view.Browser.ObjectForScripting = interop;
+            //open the library ui page.
             view.Browser.NavigateToString(libraryHTMLPage);
 
             browser = view.Browser;
@@ -334,59 +367,13 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
         }
 
-        internal void refreshLibraryView(WebBrowser browser)
-        {
-            dynamoWindow.Dispatcher.BeginInvoke(
-            new Action(() =>
-           {
-           
-               var ext1 = string.Empty;
-               var ext2 = string.Empty;
-
-               var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
-               //this is a json string now.
-               var loadedTypes = reader.ReadToEnd();
-             
-               var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
-               var layoutSpec = reader2.ReadToEnd();
-
-               try
-               {
-                   browser.InvokeScript
-                        ("refreshLibViewFromData", loadedTypes, layoutSpec);
-               }
-               catch (Exception e)
-               {
-                   MessageBox.Show(e.Message);
-               }
-               reader.Dispose();
-               reader2.Dispose();
-
-              
-
-           }));
-
-        }
-
-
       
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
-            // Attempt to load resources
-            try
-            {
-                //   RegisterResources(this.browser);
-                string msg = "Preparing to load the library resources.";
+
+                string msg = "Browser Loaded";
                 this.dynamoViewModel.Model.Logger.Log(msg);
-            }
-            catch (Exception ex)
-            {
-                string error = "Failed to load the library resources." +
-                    Environment.NewLine +
-                    "Exception: " + ex.Message;
-                this.dynamoViewModel.Model.Logger.LogError(error);
-            }
         }
       
         //if the browser window itself is resized, toggle visibility to force redraw.
@@ -550,6 +537,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             }
         }
 
+        /// <summary>
+        /// creates the resource providers that are used throughout the extensions lifetime
+        /// to retrieve images and other resource files from disk.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="customization"></param>
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
          
@@ -581,7 +574,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             if (this.browser != null)
             {
                 browser.SizeChanged -= Browser_SizeChanged;
-                //browser.ScriptNotify -= scriptNotifyHandler;
+                browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
                 browser = null;
             }          

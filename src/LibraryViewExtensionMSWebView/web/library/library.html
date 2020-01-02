@@ -26,6 +26,7 @@
     <script>
         var replaceImageDelayTime = 100;
         var currentImage;
+
         function replaceImages() {
             var allimages = document.getElementsByTagName("img");
 
@@ -35,9 +36,11 @@
                 if (element.orgSrc != null) {
                     src = element.orgSrc;
                 }
+                //the icon is already set - bail.
                 if (src.startsWith("data:image")) {
                     return;
                 }
+                //request the icon from the extension.
                 window.external.getBase64StringFromPath(src);
                
             });
@@ -50,9 +53,7 @@
 
                 // we have now loaded the correct image - so let's cache it.
                 // we'll break out later instead of trying to reload it.
-                // disable for now - during search we end of setting this to the default icon
-                // which we don't want to do.
-                // TODO investigate.
+                //TODO don't cache the string if it is the default icon.
                 // currentImage.orgSrc = base64String;
             }
         
@@ -65,6 +66,7 @@
             libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
             libController.refreshLibraryView(); // Refresh library view.
 
+            //update image src properties after dom is updated.
             setTimeout(function () {
                 replaceImages();
             }, replaceImageDelayTime);
@@ -80,6 +82,7 @@
         function completeSearch(searchLoadedTypes){
             searchCallback(JSON.parse(searchLoadedTypes));
         }
+        //set a custom search handler
         libController.searchLibraryItemsHandler = function (text, callback) {
             var encodedText = encodeURIComponent(text);
             //save the callback so we can access from our completion function
@@ -95,6 +98,7 @@
         });
 
         //if the user clicks anywhere - reload the images to ensure they are up to date after interactions
+        //which update the currently displayed libraryItems.
         document.body.addEventListener('click', function () {
             setTimeout(function () {
                 replaceImages();
@@ -122,7 +126,7 @@
             window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
         });
 
-        //Update the view with contents
+        //Update the view with contents the first time.
         window.external.notify("requestUpdateLibrary");
 
     </script>

@@ -9,11 +9,11 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Interfaces;
 
-namespace Dynamo.LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {
     /// <summary>
     /// This extension duplicates many of the types in the CEF based LibraryViewExtension
-    /// but is based
+    /// but is based on MSWebBrowser control from system.windows to conflicts with CEF and CEFSharp.
     /// </summary>
     public class LibraryViewExtensionMSWebView : IViewExtension
     {
@@ -47,15 +47,20 @@ namespace Dynamo.LibraryViewExtensionMSWebView
                 viewLoadedParams = p;
                 controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
                 controller.AddLibraryView();
+                (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
-            (p.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
+            
         }
 
+        //hide browser directly when startpage is shown to deal with air space problem.
+        //https://github.com/dotnet/wpf/issues/152
         private void handleDynamoViewPropertyChanges(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-           if(e.PropertyName == "ShowStartPage")
+           DynamoViewModel senderDVM = sender as DynamoViewModel;
+           
+           if (senderDVM!= null && e.PropertyName == nameof(senderDVM.ShowStartPage))
             {
-                var sp = (sender as DynamoViewModel).ShowStartPage;
+                var sp = senderDVM.ShowStartPage;
                 var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
                 if(controller.browser != null)
                 {
@@ -81,6 +86,11 @@ namespace Dynamo.LibraryViewExtensionMSWebView
 
             if (controller != null) controller.Dispose();
             if (customization != null) customization.Dispose();
+            if(viewLoadedParams != null && viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel != null)
+            {
+                (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
+            }
+          
 
             customization = null;
             controller = null;

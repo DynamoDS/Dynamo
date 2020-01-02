@@ -6,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
-using Dynamo.LibraryViewExtensionMSWebView.Handlers;
+using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
 using Newtonsoft.Json;
 
 // TODO there are many clases in this file which are duplicates in LibraryViewExtension - 
 // these can be refactored out into a shared core.
 
-namespace Dynamo.LibraryViewExtensionMSWebView
+namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {
     class NodeData
     {

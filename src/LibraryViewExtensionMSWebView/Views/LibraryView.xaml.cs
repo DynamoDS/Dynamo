@@ -1,9 +1,9 @@
 ﻿
 using System.Windows.Controls;
 
-using Dynamo.LibraryViewExtensionMSWebView.ViewModels;
+using Dynamo.LibraryViewExtensionMSWebBrowser.ViewModels;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Views
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Views
 {
     /// <summary>
     /// Interaction logic for LibraryView.xaml

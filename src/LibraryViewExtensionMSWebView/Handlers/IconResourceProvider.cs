@@ -12,7 +12,7 @@ using Dynamo.Engine;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     /// <summary>
     /// Implements resource provider for icons
@@ -24,11 +24,14 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         private string defaultIconDataString;
         private string defaultIconName;
         private DllResourceProvider embeddedDllResourceProvider;
+        //TODO remove these at some point in future after Dynamo 2.6 release.
         private MethodInfo getForAssemblyMethodInfo;
         private PropertyInfo LibraryCustomizationResourceAssemblyProperty;
         private Type LibraryCustomizationType;
+
         private LibraryViewCustomization customization;
-        private Dictionary<string, (string,string)> cache = new Dictionary<string, (string, string)>();
+        //internal cache of url to base64 encoded image data. (url,tuple<data,extension>)
+        private Dictionary<string, (string,string)> urlToBase64DataCache = new Dictionary<string, (string, string)>();
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -47,6 +50,13 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             this.LibraryCustomizationResourceAssemblyProperty = LibraryCustomizationType.GetProperty("ResourceAssembly", BindingFlags.Instance|BindingFlags.Public);
         }
 
+        /// <summary>
+        /// Additional constructor used to access customization resources and dll resource provider directly during icon lookup.
+        /// </summary>
+        /// <param name="pathManager"></param>
+        /// <param name="dllResourceProvider"></param>
+        /// <param name="customization"></param>
+        /// <param name="defaultIcon"></param>
         public IconResourceProvider(IPathManager pathManager, DllResourceProvider dllResourceProvider,LibraryViewCustomization customization, string defaultIcon = "default-icon.svg") :
             this(pathManager, defaultIcon)
         {
@@ -56,20 +66,24 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
 
 
         /// <summary>
-        /// Gets the stream for the given icon resource request.
+        /// Retrieves the resource for a given url as a base64 encoded string.
+        /// ie data:image/png;base64, stringxxxyyyzzz
         /// </summary>
-        /// <param name="request">Request object for the icon resource.</param>
+        /// <param name="url">url for the requested icon</param>
         /// <param name="extension">Returns the extension to describe the type of resource.</param>
-        /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
+        /// <returns></returns>
         public string GetResourceAsString(string url, out string extension)
         {
             //sometimes the urls have "about:" added to them - remove this
             //and do it before checking cache.
-            url = url?.Replace("about:", string.Empty);
-
-            if (!String.IsNullOrEmpty(url) && cache.ContainsKey(url))
+            if (url.StartsWith("about:"))
             {
-                var cachedData = cache[url];
+                url = url?.Replace("about:", string.Empty);
+            }
+
+            if (!String.IsNullOrEmpty(url) && urlToBase64DataCache.ContainsKey(url))
+            {
+                var cachedData = urlToBase64DataCache[url];
                 extension = cachedData.Item2;
                 return cachedData.Item1;
             }
@@ -83,7 +97,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 var contentType = match.Groups["type"].Value;
                 //image/png -> png
                 extension = contentType.Split('/').Skip(1).FirstOrDefault();
-                cache.Add(url, (base64Data, extension));
+                urlToBase64DataCache.Add(url, (base64Data, extension));
                 return base64Data;
             }
           
@@ -96,7 +110,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 return string.Empty;
             }
 
-            //before trying to create a uri - we have to handle resources that might 
+            //before trying to create a uri we have to handle resources that might 
             //be embedded into the resources.dlls
             //these paths will start with ./dist
             if (url.StartsWith(@"./dist"))
@@ -134,24 +148,32 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             }
             if (base64String == null)
             {
-                //TODO this might need to use the dllresprovider as well.
                 base64String = GetDefaultIconBase64(out extension);
                 
             }
-            cache.Add(url, (base64String, extension));
+            urlToBase64DataCache.Add(url, (base64String, extension));
             return base64String;
         }
 
+        /// <summary>
+        /// Do not use this, in most cases you want to call GetResourceAsString() directly.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="extension"></param>
+        /// <returns></returns>
         public override Stream GetResource(string url, out string extension)
         {
-            //TODO unify.
-            throw new NotImplementedException();
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            writer.Write(GetResourceAsString(url, out extension));
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
         }
 
-
         /// <summary>
-        /// Gets the stream for a default icon, to be used when no icon found 
-        /// for a given request. This keeps a cache of the stream to reuse next
+        /// Gets the string for a default icon, to be used when no icon found 
+        /// for a given request. This keeps a cache of the string to reuse next
         /// time.
         /// </summary>
         /// <param name="extension"></param>
@@ -177,7 +199,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         }
 
         /// <summary>
-        /// Gets the stream for the given icon resource
+        /// Gets the base64 encoded string for the given icon resource url. This method has the potential to be very slow
+        /// as it will create a new resourceManager for a given assembly and search that assembly, which may require disk access.
         /// </summary>
         /// <param name="icon">Icon Url</param>
         /// <param name="extension">Returns the extension to describe the type of resource.</param>
@@ -215,6 +238,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             }
         }
 
+        /// <summary>
+        /// Gets icon as base64 string from a given stream which points to some image (or font) data.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="extension"></param>
+        /// <returns></returns>
         private string GetIconAsBase64(Stream stream, string extension)
         {
             string base64String = string.Empty;

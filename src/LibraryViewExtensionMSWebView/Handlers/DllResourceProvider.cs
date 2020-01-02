@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     /// <summary>
     /// A simple DllResourceProvider, which provides embedded resources from the dll.

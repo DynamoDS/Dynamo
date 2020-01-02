@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     class IconUrl
     {

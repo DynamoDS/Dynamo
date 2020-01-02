@@ -1,4 +1,4 @@
 ﻿<ViewExtensionDefinition>
-  <AssemblyPath>librarymsWebView\LibraryViewExtensionMSWebView.dll</AssemblyPath>
-  <TypeName>Dynamo.LibraryViewExtensionMSWebView.LibraryViewExtensionMSWebView</TypeName>
+  <AssemblyPath>librarymsWebBrowser\LibraryViewExtensionMSWebBrowser.dll</AssemblyPath>
+  <TypeName>Dynamo.LibraryViewExtensionMSWebBrowser.LibraryViewExtensionMSWebBrowser</TypeName>
 </ViewExtensionDefinition>

@@ -35,4 +35,4 @@ using System.Runtime.CompilerServices;
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 
-[assembly: InternalsVisibleTo("LibraryViewExtensionMSWebView")]
+[assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]

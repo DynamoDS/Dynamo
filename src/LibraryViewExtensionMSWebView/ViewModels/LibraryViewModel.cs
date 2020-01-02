@@ -6,38 +6,13 @@ using System.Threading.Tasks;
 using System.Windows;
 using Dynamo.Core;
 
-namespace Dynamo.LibraryViewExtensionMSWebView.ViewModels
+namespace Dynamo.LibraryViewExtensionMSWebBrowser.ViewModels
 {
     /// <summary>
     /// Library View Loader
     /// </summary>
     public class LibraryViewModel : NotificationObject
     {
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="address"></param>
-        /// <param name="commandExecutive"></param>
-        public LibraryViewModel(string address)
-        {
-            this.address = address;
-        }
-
-        //TODO this is no longer used...
-        //unless we redirect navigateToString to address.
-        /// <summary>
-        /// Returns Web URL to bind
-        /// </summary>
-        public string Address
-        {
-            get { return address; }
-            set
-            {
-                address = value;
-                RaisePropertyChanged("Address");
-            }
-        }
-
         /// <summary>
         /// Checks and updates the visibility property
         /// </summary>
@@ -61,6 +36,5 @@ namespace Dynamo.LibraryViewExtensionMSWebView.ViewModels
         }
 
         private Visibility visibility = Visibility.Visible;
-        private string address;
     }
 }
