@@ -18,18 +18,49 @@
 <body>
     <!-- Placeholders must exist before all other scripts that try to access them -->
     <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
-
     <!-- The main library view component -->
     <script>
-        LIBPLACEHOLDER>
+        LIBPLACEHOLDER
     </script>
 
     <script>
+
+        var currentImage;
+        function replaceImages() {
+            var allimages = document.getElementsByTagName("img");
+
+            allimages.forEach(function (element) {
+                currentImage = element;
+                var src = element.src
+                if (element.orgSrc != null) {
+                    src = element.orgSrc;
+                }
+                if (src.startsWith("data:image")) {
+                    return;
+                }
+                window.external.getBase64StringFromPath(src);
+               
+            });
+
+        }
+
+        function completeReplaceImages(base64String) {
+            if (currentImage != null) {
+                currentImage.src = base64String;
+            }
+        
+        }
+
+
         function refreshLibViewFromData(loadedTypes,layoutSpec){
             var append = false; // Replace existing contents instead of appending.
             libController.setLoadedTypesJson(JSON.parse(loadedTypes) , append);
             libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
             libController.refreshLibraryView(); // Refresh library view.
+
+            setTimeout(function () {
+                replaceImages();
+            }, 500);
         }
 
 
@@ -48,7 +79,7 @@
                 window.external.notify(JSON.stringify({"func":"performSearch","data":encodedText}));
                 window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Search",encodedText]}));
             //save the callback so we can access from our completion function
-                
+
                 //csharpController.logEventsToInstrumentation("Search", encodedText);
         }
 
@@ -56,6 +87,13 @@
         libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
             console.log('Library Node Clicked: ' + nodeCreationName);
             window.external.notify(JSON.stringify({"func":"createNode","data":nodeCreationName}));
+        });
+        libController.on(libController.AnyItemClickedEventName, function (itemClicked) {
+            console.log('Library Item Clicked: ' + itemClicked);
+            setTimeout(function () {
+                replaceImages();
+            }, 500);
+           
         });
         libController.on(libController.ItemMouseEnterEventName, function (arg) {
             window.external.notify(JSON.stringify({"func":"showNodeTooltip","data":[arg.data,arg.rect.top]}));
@@ -79,7 +117,10 @@
         });
 
         //Update the view with contents
-         window.external.notify("requestUpdateLibrary");
+        window.external.notify("requestUpdateLibrary");
+
+       
+      
 
     </script>
 

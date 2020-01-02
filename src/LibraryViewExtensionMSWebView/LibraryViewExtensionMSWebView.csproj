@@ -305,6 +305,11 @@
       <Link>web\library\resources\Tessellation.Voronoi.png</Link>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Library_ViewExtensionDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y "$(TargetDir)$(ProjectName).dll" "C:\Program Files\Autodesk\AutoCAD Rogue\C3D\Dynamo\Core\viewExtensions\librarymsWebView\$(ProjectName).dll"

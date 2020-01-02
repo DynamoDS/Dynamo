@@ -42,6 +42,22 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             scriptNotifyHandler(data);
         }
 
+        public void getBase64StringFromPath (string iconurl)
+        {
+            System.Diagnostics.Debug.WriteLine(iconurl);
+            string ext;
+            var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
+            if (string.IsNullOrEmpty(iconAsBase64))
+            {
+                controller.browser.InvokeScript("completeReplaceImages", "");
+            }
+            if (ext.Contains("svg"))
+            {
+                ext = "svg+xml";
+            }
+            controller.browser.InvokeScript("completeReplaceImages", $"data:image/{ext};base64, {iconAsBase64}");
+        }
+
         private void scriptNotifyHandler(string dataFromjs)
         {
 
@@ -102,7 +118,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         }
     }
 
-    //TODO move.
+    //TODO remove.
     internal class DebounceDispatcher
     {
         private DispatcherTimer timer;
@@ -161,7 +177,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         private LayoutSpecProvider layoutProvider;
         private NodeItemDataProvider nodeProvider;
         internal SearchResultDataProvider searchResultDataProvider;
-        private IconResourceProvider iconProvider;
+        internal IconResourceProvider iconProvider;
         private LibraryViewCustomization customization;
         private scriptingObject interop;
         private DebounceDispatcher uiDebouncer = new DebounceDispatcher();
@@ -323,6 +339,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             var libminstring = "LIBJS";
             var libraryHTMLPage = "HELLO WORLD";
 
+ 
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
@@ -345,21 +362,15 @@ namespace Dynamo.LibraryViewExtensionMSWebView
             sidebarGrid.Children.Add(view);
             view.Browser.ObjectForScripting = interop;
             view.Browser.NavigateToString(libraryHTMLPage);
-           
 
             browser = view.Browser;
-            //    browser.RegisterAsyncJsObject("controller", this);
-
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
-            //browser.ScriptNotify += scriptNotifyHandler;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
-
         }
 
         internal void refreshLibraryView(WebBrowser browser)
         {
-            // uiDebouncer.Debounce(200,
             dynamoWindow.Dispatcher.BeginInvoke(
             new Action(() =>
            {

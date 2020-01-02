@@ -59,12 +59,12 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
             {
                 if (resourceStream == null || resourceStream.CanRead == false || resourceStream.Position == resourceStream.Length)
                 {
-                    resourceStream = (customization as LibraryViewCustomization).ToJSONStream(true, iconProvider);
+                    resourceStream = (customization as LibraryViewCustomization).ToJSONStream(false, iconProvider);
                 }
             }
             catch
             {
-                resourceStream = (customization as LibraryViewCustomization).ToJSONStream(true, iconProvider);
+                resourceStream = (customization as LibraryViewCustomization).ToJSONStream(false, iconProvider);
             }
 
             return resourceStream;

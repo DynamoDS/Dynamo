@@ -1,0 +1,4 @@
+﻿<ViewExtensionDefinition>
+  <AssemblyPath>librarymsWebView\LibraryViewExtensionMSWebView.dll</AssemblyPath>
+  <TypeName>Dynamo.LibraryViewExtensionMSWebView.LibraryViewExtensionMSWebView</TypeName>
+</ViewExtensionDefinition>

@@ -61,7 +61,7 @@ namespace Dynamo.LibraryViewExtensionMSWebView
         public override Stream GetResource(string url, out string extension)
         {
             extension = "json";
-            return GetNodeItemDataStream(model.SearchEntries, true);
+            return GetNodeItemDataStream(model.SearchEntries, false);
         }
 
         protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries, bool replaceIconURLWithData)

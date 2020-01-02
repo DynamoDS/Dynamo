@@ -63,12 +63,16 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
         /// <returns>A valid Stream if the icon resource found successfully else null.</returns>
         public string GetResourceAsString(string url, out string extension)
         {
+            //sometimes the urls have "about:" added to them - remove this
+            url = url?.Replace("about:", string.Empty);
+
             if (!String.IsNullOrEmpty(url) && cache.ContainsKey(url))
             {
                 var cachedData = cache[url];
                 extension = cachedData.Item2;
                 return cachedData.Item1;
             }
+           
             //because we modify the spec the icon urls may have been replaed by base64 enoded images
             //if thats the case, no need to look them up again from disk, just return the string.
             if (!String.IsNullOrEmpty(url) && url.Contains("data:image/"))
@@ -81,6 +85,8 @@ namespace Dynamo.LibraryViewExtensionMSWebView.Handlers
                 cache.Add(url, (base64Data, extension));
                 return base64Data;
             }
+          
+
             var base64String = string.Empty;
             extension = "png";
             //Create IconUrl to parse the request.Url to icon name and path.
