@@ -328,10 +328,10 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             LibraryView view = new LibraryView(model);
 
             var lib_min_template = "LIBPLACEHOLDER";
-            var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.library.html";
+            var libHTMLURI = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.library.html";
             var stream = LoadResource(libHTMLURI);
 
-            var libMinURI = "Dynamo.LibraryViewExtensionMSWebView.web.library.librarie.min.js";
+            var libMinURI = "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.librarie.min.js";
             var libminstream = LoadResource(libMinURI);
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
@@ -546,11 +546,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
          
-            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebView.web.library");
+            var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebBrowser.web.library");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
-            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebView.web.library.layoutSpecs.json");
+            layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json");
         }
 
         public void Dispose()
