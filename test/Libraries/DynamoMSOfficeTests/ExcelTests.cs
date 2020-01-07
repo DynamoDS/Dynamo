@@ -270,7 +270,7 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch.GUID.ToString(), data);
 
         }
-        [Test]
+        [Test, Category("ExcelTest")]
         public void ReadOnlyFile()
         {
             //Read from readonly Excel file and make sure Excel node in Dynamo displays value correctly.
