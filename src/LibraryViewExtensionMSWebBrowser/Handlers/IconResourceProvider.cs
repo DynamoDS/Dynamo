@@ -45,6 +45,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
             this.pathManager = pathManager;
             defaultIconName = defaultIcon;
             var dynCore = typeof(DynamoModel).Assembly;
+            //TODO replace with direct calls after Dynamo 2.6 is released.
             this.getForAssemblyMethodInfo = dynCore.GetType("Dynamo.Engine.LibraryCustomizationServices").GetMethod("GetForAssembly", BindingFlags.Static | BindingFlags.Public);
             this.LibraryCustomizationType = dynCore.GetType("Dynamo.Engine.LibraryCustomization");
             this.LibraryCustomizationResourceAssemblyProperty = LibraryCustomizationType.GetProperty("ResourceAssembly", BindingFlags.Instance|BindingFlags.Public);
@@ -76,6 +77,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
         {
             //sometimes the urls have "about:" added to them - remove this
             //and do it before checking cache.
+            //https://en.wikipedia.org/wiki/About_URI_scheme
             if (url.StartsWith("about:"))
             {
                 url = url?.Replace("about:", string.Empty);
@@ -250,7 +252,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
             if (extension.ToLower().Contains("svg"))
             {
                 var reader = new BinaryReader(stream);
-                //TODO will fail for very large svgs....
                 var imageBytes = reader.ReadBytes((int)stream.Length);
                 base64String = Convert.ToBase64String(imageBytes);
                 reader.Dispose();

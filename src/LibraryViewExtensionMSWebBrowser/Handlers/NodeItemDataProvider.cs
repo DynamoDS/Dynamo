@@ -65,6 +65,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             return GetNodeItemDataStream(model.SearchEntries, false);
         }
 
+        /// <summary>
+        /// main nodeItem data lookup method.
+        /// </summary>
+        /// <param name="searchEntries"></param>
+        /// <param name="replaceIconURLWithData">the option to replace the nodeItems iconUrl property with the base64Data 
+        /// imagedata before it gets sent to the library UI. If this parameter is false, the urls will remain unchanged
+        /// and the librayUI will need to resolve them.</param>
+        /// <returns></returns>
         protected Stream GetNodeItemDataStream(IEnumerable<NodeSearchElement> searchEntries, bool replaceIconURLWithData)
         {
             var ms = new MemoryStream();

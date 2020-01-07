@@ -53,7 +53,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         /// Used to get access the iconResourceProvider and return a base64encoded string version of an icon.
         /// </summary>
         /// <param name="iconurl"></param>
-        public void getBase64StringFromPath (string iconurl)
+        public void GetBase64StringFromPath (string iconurl)
         {
             
             string ext;
@@ -75,7 +75,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
             if (dataFromjs == "requestUpdateLibrary")
             {
-                controller.refreshLibraryView(controller.browser);
+                controller.RefreshLibraryView(controller.browser);
                 
             }
             //a more complex action needs to be taken on the c# side.
@@ -236,7 +236,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 Analytics.LogPiiInfo(eventName, data);
             }
         }
-        internal void refreshLibraryView(WebBrowser browser)
+        internal void RefreshLibraryView(WebBrowser browser)
         {
             dynamoWindow.Dispatcher.BeginInvoke(
             new Action(() =>
@@ -269,7 +269,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
         #endregion
 
-        private string replaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
+        private string ReplaceUrlWithBase64Image(string html, string minifiedURL, bool magicreplace = true)
         {
             var ext = string.Empty;
             // this depends on librariejs minification producing the same results - 
@@ -319,7 +319,8 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         };
 
         /// <summary>
-        /// Creates and add the library view to the WPF visual tree
+        /// Creates and adds the library view to the WPF visual tree.
+        /// Also loads the library.html and js files.
         /// </summary>
         /// <returns>LibraryView control</returns>
         internal void AddLibraryView()
@@ -344,7 +345,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 // instead the base64 data is already embedded. This list includes common icons and fonts.
                 dynamicResourcePaths.ToList().ForEach(path =>
                 {
-                    libminstring = replaceUrlWithBase64Image(libminstring, path.Item1, path.Item2);
+                    libminstring = ReplaceUrlWithBase64Image(libminstring, path.Item1, path.Item2);
                 });
 
             }
@@ -371,7 +372,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
-
                 string msg = "Browser Loaded";
                 this.dynamoViewModel.Model.Logger.Log(msg);
         }
@@ -458,12 +458,11 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             return textStream;
         }
 
-
         internal static IDisposable SetupSearchModelEventsObserver(WebBrowser webview, NodeSearchModel model, LibraryViewController controller, ILibraryViewCustomization customization, int throttleTime = 200)
         {
             customization.SpecificationUpdated += (o, e) =>
             {
-                controller.refreshLibraryView(webview);
+                controller.RefreshLibraryView(webview);
                 controller.CloseNodeTooltip(true);
             };
 
@@ -545,7 +544,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         /// <param name="customization"></param>
         private void InitializeResourceProviders(DynamoModel model, LibraryViewCustomization customization)
         {
-         
             var dllProvider = new DllResourceProvider("http://localhost/dist", "Dynamo.LibraryViewExtensionMSWebBrowser.web.library");
             iconProvider = new IconResourceProvider(model.PathManager, dllProvider, customization);
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
