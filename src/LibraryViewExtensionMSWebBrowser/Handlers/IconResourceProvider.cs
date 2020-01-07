@@ -31,7 +31,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 
         private LibraryViewCustomization customization;
         //internal cache of url to base64 encoded image data. (url,tuple<data,extension>)
-        private Dictionary<string, (string,string)> urlToBase64DataCache = new Dictionary<string, (string, string)>();
+        private Dictionary<string, Tuple<string,string>> urlToBase64DataCache = new Dictionary<string, Tuple<string, string>>();
 
         /// <summary>
         /// Default constructor for the IconResourceProvider
@@ -97,7 +97,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
                 var contentType = match.Groups["type"].Value;
                 //image/png -> png
                 extension = contentType.Split('/').Skip(1).FirstOrDefault();
-                urlToBase64DataCache.Add(url, (base64Data, extension));
+                urlToBase64DataCache.Add(url, Tuple.Create(base64Data, extension));
                 return base64Data;
             }
           
@@ -151,7 +151,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
                 base64String = GetDefaultIconBase64(out extension);
                 
             }
-            urlToBase64DataCache.Add(url, (base64String, extension));
+            urlToBase64DataCache.Add(url, Tuple.Create(base64String, extension));
             return base64String;
         }
 
