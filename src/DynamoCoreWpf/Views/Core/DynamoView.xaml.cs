@@ -197,11 +197,25 @@ namespace Dynamo.Controls
             // Add an event handler to check if the collection is modified.   
             TabItems.CollectionChanged += this.OnCollectionChanged;
 
+            HomeWorkspaceModel.CloseExtension += this.CloseExtensionTab;
+
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
+        }
+
+        /// <summary>
+        /// This method is called when the home workspace is closed. This will inturn close the workspace references extension.
+        /// </summary>
+        /// <param name="extensionTabName">Extension name</param>
+        /// <returns></returns>
+        internal void CloseExtensionTab(String extensionTabName)
+        {
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == extensionTabName);
+            CloseExtension?.Invoke(extensionTabName);
+            CloseTab(tabitem);
         }
 
         /// <summary>
@@ -2039,6 +2053,7 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             TabItems.CollectionChanged -= this.OnCollectionChanged;
+            HomeWorkspaceModel.CloseExtension -= this.CloseExtensionTab;
         }
     }
 }
