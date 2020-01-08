@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Threading;
 using Dynamo.Extensions;
 using Dynamo.LibraryViewExtensionMSWebBrowser.Handlers;
 using Dynamo.LibraryViewExtensionMSWebBrowser.ViewModels;
@@ -50,12 +47,12 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         }
 
         /// <summary>
-        /// Used to get access the iconResourceProvider and return a base64encoded string version of an icon.
+        /// Used to get access to the iconResourceProvider and return a base64encoded string version of an icon.
         /// </summary>
         /// <param name="iconurl"></param>
-        public void GetBase64StringFromPath (string iconurl)
+        public void GetBase64StringFromPath(string iconurl)
         {
-            
+
             string ext;
             var iconAsBase64 = controller.iconProvider.GetResourceAsString(iconurl, out ext);
             if (string.IsNullOrEmpty(iconAsBase64))
@@ -73,18 +70,26 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         private void scriptNotifyHandler(string dataFromjs)
         {
 
-            if (dataFromjs == "requestUpdateLibrary")
+            if (string.IsNullOrEmpty(dataFromjs))
             {
-                controller.RefreshLibraryView(controller.browser);
-                
+                return;
             }
-            //a more complex action needs to be taken on the c# side.
-            else if (!string.IsNullOrEmpty(dataFromjs))
+         
+            try
             {
-                /*will be an object like:
+                //a simple refresh of the libary is requested from js context.
+                if (dataFromjs == "requestUpdateLibrary")
+                {
+                    controller.RefreshLibraryView(controller.browser);
+                    return;
+                }
+                //a more complex action needs to be taken on the c# side.
+                /*dataFromjs will be an object like:
+
                 {func:funcName,
                 data:"string" | data:object[] | bool}
                  */
+
                 var simpleRPCPayload = JsonConvert.DeserializeObject<Dictionary<string, object>>(dataFromjs);
                 var funcName = simpleRPCPayload["func"] as string;
                 if (funcName == "createNode")
@@ -124,8 +129,10 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                     searchReader.Dispose();
                 }
             }
-
-
+            catch (Exception e)
+            {
+                this.controller.LogToDynamoConsole($"Error while parsing command data from javascript{Environment.NewLine}{e.Message}");
+            }
         }
     }
 
@@ -199,15 +206,15 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
         {
             dynamoWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
-                //if the node we're trying to create is a customNode, lets disable the eventObserver.
-                // this will stop the libraryController from refreshing the libraryView on custom node creation.
-                var resultGuid = Guid.Empty;
+            //if the node we're trying to create is a customNode, lets disable the eventObserver.
+            // this will stop the libraryController from refreshing the libraryView on custom node creation.
+            var resultGuid = Guid.Empty;
                 if (Guid.TryParse(nodeName, out resultGuid))
                 {
                     this.disableObserver = true;
                 }
-                //Create the node of given item name
-                var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
+            //Create the node of given item name
+            var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionMSWebBrowser.ExtensionName);
                 LogEventsToInstrumentation(CreateNodeInstrumentationString, nodeName);
 
@@ -244,8 +251,8 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
                 var ext1 = string.Empty;
                 var ext2 = string.Empty;
-                //read the full loadedTypes and LayoutSpec json strings.
-                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+            //read the full loadedTypes and LayoutSpec json strings.
+            var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
                 var loadedTypes = reader.ReadToEnd();
 
                 var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
@@ -337,7 +344,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
 
- 
+
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
@@ -368,14 +375,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
         }
 
-      
+
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
-                string msg = "Browser Loaded";
-                this.dynamoViewModel.Model.Logger.Log(msg);
+            string msg = "Browser Loaded";
+            LogToDynamoConsole(msg);
         }
-      
+
         //if the browser window itself is resized, toggle visibility to force redraw.
         private void Browser_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -530,7 +537,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                .Distinct()
                .SkipWhile(s => s.Contains("://"))
                .Select(p => new LayoutIncludeInfo() { path = p });
-            
+
                 customization.AddIncludeInfo(includes, "Add-ons");
 
             }
@@ -549,6 +556,15 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             nodeProvider = new NodeItemDataProvider(model.SearchModel, iconProvider);
             searchResultDataProvider = new SearchResultDataProvider(model.SearchModel, iconProvider);
             layoutProvider = new LayoutSpecProvider(customization, iconProvider, "Dynamo.LibraryViewExtensionMSWebBrowser.web.library.layoutSpecs.json");
+        }
+
+        /// <summary>
+        /// Convenience method for logging to Dynamo Console.
+        /// </summary>
+        /// <param name="meessage"></param>
+        internal void LogToDynamoConsole(string message)
+        {
+            this.dynamoViewModel.Model.Logger.Log(message);
         }
 
         public void Dispose()
@@ -575,7 +591,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();
                 browser = null;
-            }          
+            }
         }
     }
 }

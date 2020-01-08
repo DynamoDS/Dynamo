@@ -68,7 +68,7 @@
     <Compile Include="LibraryViewController.cs" />
     <Compile Include="LibraryViewCustomization.cs" />
     <Compile Include="LibraryViewToolTip.cs" />
-    <Compile Include="ViewExtensionEntryPoint.cs" />
+    <Compile Include="ViewExtension.cs" />
     <Compile Include="Handlers\DllResourceProvider.cs" />
     <Compile Include="Handlers\IconResourceProvider.cs" />
     <Compile Include="Handlers\LayoutSpecProvider.cs" />

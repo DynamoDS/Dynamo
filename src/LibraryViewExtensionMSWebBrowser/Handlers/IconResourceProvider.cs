@@ -90,7 +90,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
                 return cachedData.Item1;
             }
            
-            //because we modify the spec the icon urls may have been replaed by base64 enoded images
+            //because we modify the spec the icon urls may have been replaced by base64 encoded images
             //if thats the case, no need to look them up again from disk, just return the string.
             if (!String.IsNullOrEmpty(url) && url.Contains("data:image/"))
             {

@@ -13,7 +13,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 {
     /// <summary>
     /// This extension duplicates many of the types in the CEF based LibraryViewExtension
-    /// but is based on MSWebBrowser control from system.windows to conflicts with CEF and CEFSharp.
+    /// but is based on MSWebBrowser control from system.windows to avoid conflicts with CEF and CEFSharp.
     /// </summary>
     public class LibraryViewExtensionMSWebBrowser : IViewExtension
     {

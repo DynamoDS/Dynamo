@@ -10,7 +10,7 @@ using Dynamo.Wpf.Interfaces;
 namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
 {
     /// <summary>
-    /// Implements LayoutSepc resource provider, by default it reads the spec
+    /// Implements LayoutSpec resource provider, by default it reads the spec
     /// from a given json resource. It also allows to update certain specific
     /// sections from the layout spec for a given set of NodeSearchElements
     /// </summary>
@@ -38,6 +38,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser.Handlers
             this.customization.SpecificationUpdated += OnSpecificationUpdate;
         }
 
+        /// <summary>
+        /// Creates a layoutSpecProvider with access to the IconResourceProvider
+        /// so that icon urls can be replaced with base64 encoded image data.
+        /// </summary>
+        /// <param name="customization"></param>
+        /// <param name="iconProvider"></param>
+        /// <param name="resource"></param>
+        /// <param name="assembly"></param>
         public LayoutSpecProvider(ILibraryViewCustomization customization, IconResourceProvider iconProvider, string resource, Assembly assembly = null) :
             this(customization, resource, assembly)
         {
