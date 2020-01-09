@@ -33,7 +33,7 @@ namespace Dynamo.Graph.Workspaces
         private bool graphExecuted;
 
         // Event to handle closing of the extension when the workspace is closed. 
-        internal static event Action<String> CloseExtension;
+        internal static event Action WorkspaceCleared;
 
         private String workspaceReferencesExtensionName = "Workspace References";
 
@@ -425,7 +425,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public override void Clear()
         {
-            CloseExtension?.Invoke(workspaceReferencesExtensionName);
+            WorkspaceCleared?.Invoke();
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();

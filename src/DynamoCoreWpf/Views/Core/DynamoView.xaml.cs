@@ -197,37 +197,11 @@ namespace Dynamo.Controls
             // Add an event handler to check if the collection is modified.   
             TabItems.CollectionChanged += this.OnCollectionChanged;
 
-            HomeWorkspaceModel.CloseExtension += this.CloseExtensionTab;
-
             this.HideOrShowRightSideBar();
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
-        }
-
-        /// <summary>
-        /// This method is called when the home workspace is closed. This will inturn close the workspace references extension.
-        /// </summary>
-        /// <param name="extensionTabName">Extension name</param>
-        /// <returns></returns>
-        internal void CloseExtensionTab(String extensionTabName)
-        {
-            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == extensionTabName);
-            CloseExtension?.Invoke(extensionTabName);
-            CloseTab(tabitem);
-        }
-
-        /// <summary>
-        /// This method will close a tab item in the right side bar based on passed extension
-        /// </summary>
-        /// <param name="viewExtension">Extension to be closed</param>
-        /// <returns></returns>
-        internal void CloseTabItem(IViewExtension viewExtension)
-        {
-            string tabName = viewExtension.Name;
-            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
-            CloseTab(tabitem);
         }
 
         // This method adds a tab item to the right side bar and 
@@ -267,6 +241,19 @@ namespace Dynamo.Controls
                 return tab;
             }
             return null;
+        }
+
+        /// <summary>
+        /// This method will close a tab item in the right side bar based on passed extension
+        /// </summary>
+        /// <param name="viewExtension">Extension to be closed</param>
+        /// <returns></returns>
+        internal void CloseTabItem(IViewExtension viewExtension)
+        {
+            string tabName = viewExtension.Name;
+            TabItem tabitem = TabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+            CloseExtension?.Invoke(tabName);
+            CloseTab(tabitem);
         }
 
         // This method triggers the close operation on the selected tab. 
@@ -2053,7 +2040,6 @@ namespace Dynamo.Controls
 
             // Removing the tab items list handler
             TabItems.CollectionChanged -= this.OnCollectionChanged;
-            HomeWorkspaceModel.CloseExtension -= this.CloseExtensionTab;
         }
     }
 }
