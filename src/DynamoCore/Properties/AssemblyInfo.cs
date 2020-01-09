@@ -34,3 +34,5 @@ using System.Runtime.CompilerServices;
 // Internals are visible to the Package Manager extension
 // For workspace package dependency collection
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
+
+[assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
