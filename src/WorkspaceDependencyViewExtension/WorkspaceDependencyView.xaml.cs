@@ -153,7 +153,7 @@ namespace Dynamo.WorkspaceDependency
         internal void TriggerDependencyRegen()
         {
             DependencyRegen(currentWorkspace);
-        } 
+        }
 
         /// <summary>
         /// Constructor
@@ -173,6 +173,15 @@ namespace Dynamo.WorkspaceDependency
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
             DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceCleared += this.CloseExtensionTab;
+        }
+
+        /// <summary>
+        /// This method will call the close API on the workspace references extension. 
+        /// </summary>
+        internal void CloseExtensionTab()
+        {
+            loadedParams.CloseExtensioninInSideBar(dependencyViewExtension);
         }
 
         /// <summary>
@@ -268,6 +277,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceCleared -= this.CloseExtensionTab;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
