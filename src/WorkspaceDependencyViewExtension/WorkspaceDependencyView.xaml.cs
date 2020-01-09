@@ -176,6 +176,9 @@ namespace Dynamo.WorkspaceDependency
             HomeWorkspaceModel.WorkspaceCleared += this.CloseExtensionTab;
         }
 
+        /// <summary>
+        /// This method will call the close API on the workspace references extension. 
+        /// </summary>
         internal void CloseExtensionTab()
         {
             loadedParams.CloseExtensioninInSideBar(dependencyViewExtension);
