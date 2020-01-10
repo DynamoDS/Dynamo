@@ -3729,7 +3729,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -4031,6 +4031,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewDescription {
             get {
                 return ResourceManager.GetString("PackageSearchViewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string PackageSearchViewFilterByButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
             }
         }
         

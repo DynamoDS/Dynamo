@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
+using DynamoUtilities;
 
 namespace Dynamo.Wpf.Extensions
 {
@@ -13,15 +14,22 @@ namespace Dynamo.Wpf.Extensions
         {
             try
             {
+                if (viewExtension.RequiresSignedEntryPoint)
+                {
+                    CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
+                }
+
                 var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
                 var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
                 ExtensionLoading?.Invoke(result);
                 return result;
             }
-            catch
+            catch(Exception ex)
             {
                 var name = viewExtension.TypeName == null ? "null" : viewExtension.TypeName;
                 Log("Could not create an instance of " + name);
+                Log(ex.Message);
+                Log(ex.StackTrace);
                 return null;
             }
         }
@@ -51,6 +59,15 @@ namespace Dynamo.Wpf.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+            }
+
+            //Check if the view extension definition file was located in a directory which requires certificate validation.
+            foreach (var pathToVerifyCert in DirectoriesToVerifyCertificates)
+            {
+                if (extensionPath.Contains(pathToVerifyCert))
+                {
+                    definition.RequiresSignedEntryPoint = true;
                 }
             }
 
@@ -97,5 +114,12 @@ namespace Dynamo.Wpf.Extensions
         /// An event that is raised when an extension starts loading.
         /// </summary>
         public event Action<IViewExtension> ExtensionLoading;
+
+        /// <summary>
+        /// A list of root directories which require extensions to have a signed entry point
+        /// File path locations from package definition xml's are validated against this collection 
+        /// </summary>
+        internal List<string> DirectoriesToVerifyCertificates = new List<string>();
+
     }
 }

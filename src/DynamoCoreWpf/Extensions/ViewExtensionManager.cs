@@ -38,6 +38,14 @@ namespace Dynamo.Wpf.Extensions
             this.ExtensionRemoved += UnsubscribeViewExtension;
         }
 
+        /// <summary>
+        /// Creates ViewExtensionManager with directories which require package certificate verification.
+        /// </summary>
+        public ViewExtensionManager(IEnumerable<string> directoriesToVerify) : this()
+        {
+            this.viewExtensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
         private void RequestAddViewExtensionHandler(IViewExtension viewExtension)
         {
             if (viewExtension is IViewExtension)

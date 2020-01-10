@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using Dynamo.Logging;
+using DynamoUtilities;
 
 namespace Dynamo.Extensions
 {
@@ -22,9 +23,13 @@ namespace Dynamo.Extensions
     {
         private IExtension Load(ExtensionDefinition extension)
         {
-            
             try
             {
+                if (extension.RequiresSignedEntryPoint)
+                {
+                    CertificateVerification.CheckAssemblyForValidCertificate(extension.AssemblyPath);
+                }
+
                 var assembly = Assembly.LoadFrom(extension.AssemblyPath);
                 var result = assembly.CreateInstance(extension.TypeName) as IExtension;
                 ExtensionLoading?.Invoke(result);
@@ -70,6 +75,15 @@ namespace Dynamo.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+            }
+
+            //Check if the extension definition file was located in a directory which requires certificate validation.
+            foreach (var pathToVerifyCert in DirectoriesToVerifyCertificates)
+            {
+                if (extensionPath.Contains(pathToVerifyCert))
+                {
+                    definition.RequiresSignedEntryPoint = true;
                 }
             }
 
@@ -124,5 +138,12 @@ namespace Dynamo.Extensions
         /// An event that is raised when an extension starts loading.
         /// </summary>
         public event Action<IExtension> ExtensionLoading;
+
+        /// <summary>
+        /// A list of root directories which require extensions to have a signed entry point
+        /// File path locations from package definition xml's are validated against this collection 
+        /// </summary>
+        internal List<string> DirectoriesToVerifyCertificates = new List<string>();
+
     }
 }

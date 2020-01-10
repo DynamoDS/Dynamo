@@ -636,6 +636,10 @@ namespace Dynamo.Models
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
             AddPackagePath(userDataFolder);
 
+            // Make sure that the global package folder is added in the list
+            var userCommonPackageFolder = pathManager.CommonPackageDirectory;
+            AddPackagePath(userCommonPackageFolder);
+
             // Load Python Template
             // The loading pattern is conducted in the following order
             // 1) Set from DynamoSettings.XML
@@ -690,7 +694,8 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            extensionManager = new ExtensionManager();
+            //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
+            extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
@@ -1252,11 +1257,27 @@ namespace Dynamo.Models
             CustomNodeManager.AddUninitializedCustomNodesInPath(pathManager.CommonDefinitions, IsTestMode);
         }
 
-        internal void LoadNodeLibrary(Assembly assem)
+        /// <summary>
+        /// Imports a node library (zero touch or nodeModel) into the VM.
+        /// Does not necessarily add those imported functions to search.
+        /// </summary>
+        /// <param name="assem">The assembly to load which contains the types to import.</param>
+        /// <param name="suppressZeroTouchLibraryLoad">If True, zero touch types will not be added to search.
+        /// This is used by packageManager extension to defer adding ZT libraries to search until all libraries are loaded.
+        /// </param>
+        internal void LoadNodeLibrary(Assembly assem, bool suppressZeroTouchLibraryLoad = true)
         {
             if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(assem))
             {
-                LibraryServices.LoadNodeLibrary(assem.Location, false);
+                if (suppressZeroTouchLibraryLoad)
+                {
+                    LibraryServices.LoadNodeLibrary(assem.Location,false);
+                }
+                else
+                {
+                    LibraryServices.ImportLibrary(assem.Location);
+                }
+               
                 return;
             }
 
