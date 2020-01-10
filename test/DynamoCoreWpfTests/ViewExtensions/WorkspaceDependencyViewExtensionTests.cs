@@ -129,6 +129,23 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// This test will make sure that the extension tab is closed upon closing the home workspace.
+        /// </summary>
+        [Test]
+        public void CloseViewExtensionTabOnClosingWorkspace()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a graph which should bring up the Workspace References view extension window with one tab
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            var homeSpace = Model.Workspaces.First(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
+            homeSpace.Clear();
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+        }
+
+        /// <summary>
         /// This test is created to guard a crash happened that while dep viewer is loaded,
         /// opening a dyf directly and closing it to switch to an empty homeworkspace causing a crash
         /// </summary>
