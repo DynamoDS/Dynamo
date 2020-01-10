@@ -173,7 +173,7 @@ namespace Dynamo.WorkspaceDependency
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
             DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
-            HomeWorkspaceModel.WorkspaceCleared += this.CloseExtensionTab;
+            HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
-            HomeWorkspaceModel.WorkspaceCleared -= this.CloseExtensionTab;
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

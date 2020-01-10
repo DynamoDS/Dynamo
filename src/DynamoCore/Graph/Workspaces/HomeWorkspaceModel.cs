@@ -33,7 +33,7 @@ namespace Dynamo.Graph.Workspaces
         private bool graphExecuted;
 
         // Event to handle closing of the workspace references extension when the workspace is closed. 
-        internal static event Action WorkspaceCleared;
+        internal static event Action WorkspaceClosed;
 
         // To check whether task is completed or not. 
         private bool executingTask;
@@ -422,7 +422,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public override void Clear()
         {
-            WorkspaceCleared?.Invoke();
+            WorkspaceClosed?.Invoke();
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();
