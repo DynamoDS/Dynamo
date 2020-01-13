@@ -1873,11 +1873,7 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {
-                model.ResetEngine();
-
-                ShowStartPage = false; // Hide start page if there's one.
-            }
+                this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)

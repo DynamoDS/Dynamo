@@ -9,7 +9,6 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
-using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Watch3D;
 
 namespace Dynamo.Wpf.Extensions
@@ -99,7 +98,7 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            TabItem tabItem  = dynamoView.AddTabItem(viewExtension, contentControl);
+            TabItem tabItem  = dynamoView.AddExtensionTabItem(viewExtension, contentControl);
 
             if (tabItem != null)
             {
@@ -118,7 +117,7 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void CloseExtensioninInSideBar(IViewExtension viewExtension)
         {
-            dynamoView.CloseTabItem(viewExtension);
+            dynamoView.CloseExtensionTabItem(viewExtension);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
