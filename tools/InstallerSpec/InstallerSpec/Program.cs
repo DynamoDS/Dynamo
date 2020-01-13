@@ -90,7 +90,10 @@ namespace InstallerSpec
         {
             foreach(var filePath in additionalFilePaths)
             {
-                if (!File.Exists(filePath)) continue;
+                if (!File.Exists(filePath))
+                {
+                    throw new System.IO.FileNotFoundException($"could not find file to sign at: {filePath} while generating binariestosign.txt");
+                }
                 yield return ModuleSpecFromFileInfo(new FileInfo(filePath), true);
             }
         }
@@ -213,21 +216,34 @@ InstallerSpec.exe binfolder [xmlfilepath] [corefile] [/f:files.txt]
                             {
                                 while (!streamReader.EndOfStream)
                                 {
+
                                     // WARNING: The following codes are written with the assumption that 
                                     // files with listed names are residing under "binpath", but this may 
                                     // not be true in the future. Rewrite this logic and make "textFilePath"
                                     // contains fully qualified paths instead of doing the prefix here.
                                     // 
                                     var fileNameWithoutPath = streamReader.ReadLine().Trim();
+                                    //this is a comment, ignore this line
+                                    if (fileNameWithoutPath.StartsWith("##") || string.IsNullOrWhiteSpace(fileNameWithoutPath))
+                                    {
+                                        continue;
+                                    }
                                     var fileNameWithPath = Path.Combine(binpath, fileNameWithoutPath);
                                     if (!string.IsNullOrEmpty(fileNameWithPath))
+                                    {
+                                        Console.WriteLine($"adding {fileNameWithPath} to filesToSign list while parsing {textFilePath}");
                                         fileList.Add(fileNameWithPath);
+                                    }
                                 }
                             }
                         }
                         catch
                         {
                         }
+                    }
+                    else
+                    {
+                        throw new FileNotFoundException($"could not find {textFilePath} but it was passed as an argument to installerSpec.exe");
                     }
                 }
                 else
