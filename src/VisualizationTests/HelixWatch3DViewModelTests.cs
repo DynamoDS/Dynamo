@@ -721,6 +721,21 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Display_FrozenNodeTransparentMesh()
+        {
+            OpenVisualizationTest("Display.ByGeometryColor.dyn");
+            RunCurrentModel();
+            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
+            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 1);
+            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 0.5);
+        }
+
+        [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
