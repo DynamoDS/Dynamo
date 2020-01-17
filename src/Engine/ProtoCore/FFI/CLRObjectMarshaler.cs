@@ -612,8 +612,8 @@ namespace ProtoFFI
     class CLRObjectMarshaler : FFIObjectMarshaler
     {
         private static readonly Dictionary<Type, FFIObjectMarshaler> mPrimitiveMarshalers;
-        private static Type mCachedObjType;
-        private static int mCachedType;
+        private Type mCachedObjType;
+        private int mCachedType;
 
         static CLRObjectMarshaler()
         {
