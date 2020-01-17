@@ -721,7 +721,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Display_FrozenNodeTransparentMesh()
+        public void Display_FrozenNode_HasTransparentMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
