@@ -142,7 +142,7 @@
     <value>Keep Installed Version</value>
   </data>
   <data name="MenuItemString" xml:space="preserve">
-    <value>Show Graph Package Dependency</value>
+    <value>Show Workspace References</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="NodeLibraryDependency_Loaded" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -359,13 +359,22 @@
         jDoyqebiAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="PackageHeaderText" xml:space="preserve">
+    <value>Package</value>
+  </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
     <value>Provide Feedback</value>
   </data>
   <data name="ProvideFeedbackError" xml:space="preserve">
     <value>Could not redirect to the Dynamo forum page for feedback:</value>
   </data>
+  <data name="RefreshButtonTooltipText" xml:space="preserve">
+    <value>Click to recalculate workspace references.</value>
+  </data>
   <data name="RestartBannerMessage" xml:space="preserve">
     <value>An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
+  </data>
+  <data name="VersionHeaderText" xml:space="preserve">
+    <value>Version</value>
   </data>
 </root>

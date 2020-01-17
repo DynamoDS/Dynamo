@@ -78,8 +78,9 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.2.7177.24952\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7240.28357, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.2.7240.28357\lib\net47\Greg.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -383,10 +384,10 @@ limitations under the License.
       <ExternProtoGeometryXml Include="$(SolutionDir)..\extern\ProtoGeometry\ProtoGeometry.XML" />
       <ExternProtoGeometryUICulture Include="$(SolutionDir)..\extern\ProtoGeometry\$(UICulture)\*" />
       <ExternProtoGeometryLibGLocale Include="$(SolutionDir)..\extern\ProtoGeometry\libg_locale\**\*.*" />
-      <ExternLibG223 Include="$(SolutionDir)..\extern\LibG_223_0_1\*" />
       <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
       <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
       <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
+	  <ExternLibG226 Include="$(SolutionDir)..\extern\LibG_226_0_0\*" />
       <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
@@ -403,10 +404,10 @@ limitations under the License.
     <Copy SourceFiles="@(ExternProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(ExternProtoGeometryLibGLocale)" DestinationFolder="$(OutputPath)\libg_locale\%(RecursiveDir)" />
-    <Copy SourceFiles="@(ExternLibG223)" DestinationFolder="$(OutputPath)libg_223_0_1\" />
     <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
     <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
+	<Copy SourceFiles="@(ExternLibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
     <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />

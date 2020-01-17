@@ -50,8 +50,9 @@
     <Reference Include="FontAwesome.WPF">
       <HintPath>..\..\extern\FontAwesome\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.2.7177.24952, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.2.7177.24952\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.2.7240.28357, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.1.2.7240.28357\lib\net47\Greg.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
@@ -1282,6 +1283,10 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\tools\install\Extra\DirectX\D3DCompiler_43.dll">
+      <Link>D3DCompiler_43.dll</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -2214,7 +2214,7 @@ Uninstall the following packages: {0}?</value>
     <value>This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed.</value>
   </data>
   <data name="PackageHostDependencyFilter" xml:space="preserve">
-    <value>Filter packages that depend on applications outside Dynamo.</value>
+    <value>Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish.</value>
   </data>
   <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
     <value>Packages contain node(s)  that depend on specified application outside Dynamo.</value>
@@ -2233,5 +2233,8 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
+  </data>
+  <data name="PackageSearchViewFilterByButton" xml:space="preserve">
+    <value>Filter by</value>
   </data>
 </root>

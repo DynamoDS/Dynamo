@@ -24,14 +24,28 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// Loads the node library.
+        /// Loads a ZeroTouch or NodeModel based node into the VM and search.
+        /// To guarantee the node is correctly added to the LibraryUI this method should not
+        /// be called while LibraryExtension is loading.
         /// </summary>
         /// <param name="library">The library.</param>
         public void LoadNodeLibrary(Assembly library)
         {
-            model.LoadNodeLibrary(library);
+            model.LoadNodeLibrary(library,false);
         }
 
+        //TODO add to ILibraryLoader in 3.0 OR refactor package/zeroTouch import code path.
+        /// <summary>
+        /// Loads a zeroTouch or explicit NodeModel based node into the VM.
+        /// Does not add zeroTouch libraries to Search. Currently only used by package manager extension.
+        /// </summary>
+        /// <param name="library">The library.</param>
+        internal void LoadLibraryAndSuppressZTSearchImport(Assembly library)
+        {
+            model.LoadNodeLibrary(library, true);
+        }
+
+        //TODO add to ILibraryLoader in 3.0
         /// <summary>
         /// Loads packages for import into VM and for node search.
         /// </summary>

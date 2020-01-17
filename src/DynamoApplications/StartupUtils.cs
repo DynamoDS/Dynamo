@@ -20,6 +20,12 @@ namespace Dynamo.Applications
 {
     public class StartupUtils
     {
+        //TODO internal?
+        /// <summary>
+        /// Raised when loading of the ASM binaries fails. A failure message is passed as a parameter.
+        /// </summary>
+        public static event Action<string> ASMPreloadFailure;
+        
         internal class SandboxLookUp : DynamoLookUp
         {
             public override IEnumerable<string> GetDynamoInstallLocations()
@@ -154,10 +160,10 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                    new Version(226,0,0), 
                     new Version(225,0,0),
                     new Version(224,4,0),
-                    new Version(224,0,1),
-                    new Version(223,0,1)
+                    new Version(224,0,1)
             };
 
             var preloader = new Preloader(rootFolder, versions);
@@ -224,7 +230,14 @@ namespace Dynamo.Applications
         {
             var geometryFactoryPath = string.Empty;
             var preloaderLocation = string.Empty;
-            PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+            try
+            {
+                PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+            }
+            catch(Exception e)
+            {
+                ASMPreloadFailure?.Invoke(e.Message);
+            }
 
             return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
         }

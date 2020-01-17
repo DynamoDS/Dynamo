@@ -590,4 +590,22 @@
   <data name="ColorPaletteSearchTags" xml:space="preserve">
     <value>color</value>
   </data>
+  <data name="EqualsWithToleranceDescription" xml:space="preserve">
+    <value>Equals with tolerance input.</value>
+    <comment>Description for Equals with tolerance node</comment>
+  </data>
+  <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
+    <value>Integer or double value</value>
+    <comment>Equals with tolerance node input port tooltip</comment>
+  </data>
+  <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
+    <value>Result of equality check</value>
+  </data>
+  <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
+    <value>equals;tolerance</value>
+  </data>
+  <data name="EqualsWithToleranceTooltip" xml:space="preserve">
+    <value>Tolerance
+Default value: {0}</value>
+  </data>
 </root>

@@ -634,6 +634,7 @@
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                   Focusable="False"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
                                   Name="ToggleIsUsageReportingApprovedCommand"
@@ -641,6 +642,7 @@
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
                                   ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                   Focusable="False" />
                         <Separator />
                         <MenuItem Focusable="False" 
@@ -1713,10 +1715,10 @@
                     
                     <!--Template for tab header in the extensions side bar-->
                     <DataTemplate x:Key="TabHeader" DataType="TabItem">
-                        <DockPanel HorizontalAlignment="Stretch" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
+                        <DockPanel HorizontalAlignment="Stretch" Name ="TabPanel" MinWidth="{Binding Source={x:Static configuration:Configurations.ExtensionsSideBarTabMinWidth}}">
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Header}" HorizontalAlignment="Stretch"/>
                             <!--Button to close a particular tab-->
-                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseTab"
+                            <Button Name="CloseButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="CloseExtensionTab"
                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>

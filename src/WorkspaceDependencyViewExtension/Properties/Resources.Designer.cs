@@ -133,7 +133,7 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Graph Package Dependency.
+        ///   Looks up a localized string similar to Show Workspace References.
         /// </summary>
         public static string MenuItemString {
             get {
@@ -172,6 +172,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package.
+        /// </summary>
+        public static string PackageHeaderText {
+            get {
+                return ResourceManager.GetString("PackageHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Provide Feedback.
         /// </summary>
         public static string ProvideFeedbackButton {
@@ -190,11 +199,29 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to recalculate workspace references..
+        /// </summary>
+        public static string RefreshButtonTooltipText {
+            get {
+                return ResourceManager.GetString("RefreshButtonTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo..
         /// </summary>
         public static string RestartBannerMessage {
             get {
                 return ResourceManager.GetString("RestartBannerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string VersionHeaderText {
+            get {
+                return ResourceManager.GetString("VersionHeaderText", resourceCulture);
             }
         }
     }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
@@ -17,7 +18,7 @@ namespace Dynamo.WorkspaceDependency
     /// <summary>
     /// Interaction logic for WorkspaceDependencyView.xaml
     /// </summary>
-    public partial class WorkspaceDependencyView : UserControl
+    public partial class WorkspaceDependencyView : UserControl, IDisposable
     {
 
         private WorkspaceModel currentWorkspace;
@@ -53,6 +54,10 @@ namespace Dynamo.WorkspaceDependency
                 if (hasDependencyIssue)
                 {
                     loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
+                    if (dependencyViewExtension.workspaceReferencesMenuItem != null && !dependencyViewExtension.workspaceReferencesMenuItem.IsChecked)
+                    {
+                        dependencyViewExtension.workspaceReferencesMenuItem.IsChecked = true;
+                    }
                 }
             }
         }
@@ -126,15 +131,28 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
-            // If package is set to uninstall state, update the package info
-            foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
+            if (packageDependencies.Any())
             {
-                (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
-                this.RestartBanner.Visibility = Visibility.Visible;
+                Boolean hasPackageMarkedForUninstall = false;
+                // If package is set to uninstall state, update the package info
+                foreach (var package in dependencyViewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.MarkedForUninstall))
+                {
+                    (packageDependencies.Where(x => x.Name == package.Name).FirstOrDefault() as PackageDependencyInfo).State = PackageDependencyState.RequiresRestart;
+                    hasPackageMarkedForUninstall = true;
+                }
+                this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
             PackageDependencyTable.ItemsSource = dataRows;
+        }
+
+        /// <summary>
+        /// Calls the DependencyRegen function when the DummyNodesReloaded event is triggered from the dynamo model.
+        /// </summary>
+        internal void TriggerDependencyRegen()
+        {
+            DependencyRegen(currentWorkspace);
         }
 
         /// <summary>
@@ -146,6 +164,7 @@ namespace Dynamo.WorkspaceDependency
             InitializeComponent();
             this.DataContext = this;
             currentWorkspace = p.CurrentWorkspaceModel as WorkspaceModel;
+            WorkspaceModel.DummyNodesReloaded += TriggerDependencyRegen;
             p.CurrentWorkspaceChanged += OnWorkspaceChanged;
             p.CurrentWorkspaceCleared += OnWorkspaceCleared;
             currentWorkspace.PropertyChanged += OnWorkspacePropertyChanged;
@@ -153,6 +172,30 @@ namespace Dynamo.WorkspaceDependency
             packageInstaller = p.PackageInstaller;
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
+            DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
+        }
+
+        /// <summary>
+        /// This method will call the close API on the workspace references extension. 
+        /// </summary>
+        internal void CloseExtensionTab()
+        {
+            loadedParams.CloseExtensioninInSideBar(dependencyViewExtension);
+        }
+
+        /// <summary>
+        /// This event is raised when an extension tab is closed and this event 
+        /// is subscribed by the Workspace dependency view extension.
+        /// <param name="extensionTabName"></param>
+        /// </summary>
+        internal event Action<String> OnExtensionTabClosed;
+        private void OnExtensionTabClosedHandler(String extensionTabName)
+        {
+            if (OnExtensionTabClosed != null)
+            {
+                OnExtensionTabClosed(extensionTabName);
+            }
         }
 
         /// <summary>
@@ -223,6 +266,23 @@ namespace Dynamo.WorkspaceDependency
                     DependencyRegen(currentWorkspace);
                 }
             }
+        }
+
+        /// <summary>
+        /// Dispose function for WorkspaceDependencyView
+        /// </summary>
+        public void Dispose()
+        {
+            loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
+            loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
+            WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
+        }
+
+        private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyRegen(currentWorkspace);
         }
     }
 

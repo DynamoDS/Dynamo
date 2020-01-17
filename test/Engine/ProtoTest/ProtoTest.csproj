@@ -153,6 +153,7 @@
     <Compile Include="MultiLangTests\GCTest.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MultiLangTests\NonExistingFunctionTest.cs" />
     <Compile Include="MultiLangTests\UnicodeTest.cs" />
     <Compile Include="NameSpaceTests.cs" />
     <Compile Include="ParserTest\ParserTest.cs" />

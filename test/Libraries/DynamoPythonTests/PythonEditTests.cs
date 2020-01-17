@@ -5,6 +5,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
 using PythonNodeModels;
+using Dynamo.Graph.Nodes.CustomNodes;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -15,6 +16,7 @@ namespace Dynamo.Tests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DesignScriptBuiltin.dll");
+            libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
@@ -39,6 +41,53 @@ namespace Dynamo.Tests
             // workspace has changes
             Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
         }
+
+        [Test]
+        public void PythonScriptEdit_CustomNode()
+        {
+            // open file
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var homeWorkspace = model.CurrentWorkspace;
+
+            // open custom node
+            var customNodeModel = homeWorkspace.NodeFromWorkspace("83c2b47d81e14226a93941f1e47dc47d") as Function;
+            ViewModel.GoToWorkspaceCommand.Execute(customNodeModel.Definition.FunctionId);
+            var customNodeWorkspace = model.CurrentWorkspace;
+
+            // get the python node
+            var nodeModel = customNodeWorkspace.NodeFromWorkspace("439c4e7bd4ed45f49d5786209c2ec403");
+            var pynode = nodeModel as PythonNode;
+            Assert.NotNull(pynode);
+
+            // make changes to python script
+            UpdatePythonNodeContent(pynode, @"OUT = IN[0] * 2");
+
+            // custom node workspace should have changes, home workspace should not
+            Assert.IsTrue(customNodeWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(homeWorkspace.HasUnsavedChanges);
+
+            /* TODO: uncomment this section after undo issues are resolved
+            // undo change
+            ViewModel.UndoCommand.Execute(null);
+
+            // custom node workspace should not have changes, and neither should home
+            Assert.IsFalse(customNodeWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(homeWorkspace.HasUnsavedChanges);
+
+            // make home workspace current
+            ViewModel.HomeCommand.Execute(null);
+
+            // make changes to python script
+            UpdatePythonNodeContent(pynode, @"OUT = IN[0] * 2");
+
+            // custom node workspace should have changes, home workspace should not
+            Assert.IsTrue(customNodeWorkspace.HasUnsavedChanges);
+            Assert.IsFalse(homeWorkspace.HasUnsavedChanges);
+            */
+        }
+
 
         [Test]
         public void PythonScriptEdit_UndoRedo()
@@ -211,6 +260,19 @@ namespace Dynamo.Tests
                 System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
 
             ViewModel.ExecuteCommand(command);
+        }
+
+        [Test]
+        public void BigInteger_CanBeMarshaledAsInt64()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "BigIntegerToLong.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "23088248d7b1441abbc5ada07fcdf154";
+
+            AssertPreviewValue(guid,
+                new[] {"System.Int64", "System.Double", "System.Int64", "System.Int64", "System.Numerics.BigInteger"});
         }
     }
 }
