@@ -827,40 +827,4 @@ namespace ProtoFFI
             return retVal;
         }
     }
-        
-    class GetterFunctionPointer : CLRFFIFunctionPointer
-    {
-        private string PropertyName
-        {
-            get;
-            set;
-        }
-
-        public GetterFunctionPointer(CLRDLLModule module, String functionName, MemberInfo method, ProtoCore.Type retType)
-            : base(module, functionName, method, default(List<ProtoCore.Type>), retType)
-        {
-            string property;
-            if (CoreUtils.TryGetPropertyName(functionName, out property))
-            {
-                PropertyName = property;
-            }
-        }
-
-        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
-        {
-            return Execute(c, dsi, null);
-        }
-
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
-        {
-            Object retVal = base.Execute(c, dsi, s);
-            if (retVal == null)
-            {
-                return null;
-            }
-
-            return retVal;
-        }
-    }
 }

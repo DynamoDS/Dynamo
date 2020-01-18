@@ -780,8 +780,9 @@ namespace ProtoFFI
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
             {
-                f = new GetterFunctionPointer(Module, functionName, method, retype);
-                (f as GetterFunctionPointer).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
+
+                f = new CLRFFIFunctionPointer(Module, functionName, method, null, retype);
+                ((CLRFFIFunctionPointer) f).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
             }
             else
                 f = new CLRFFIFunctionPointer(Module, functionName, method, argTypes, retype);
