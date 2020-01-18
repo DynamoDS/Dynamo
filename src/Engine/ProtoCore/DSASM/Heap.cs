@@ -14,7 +14,7 @@ namespace ProtoCore.DSASM
         protected Heap heap;
         private int allocated;
 
-        private StackValue[] values;
+        private StackValue[] values = new StackValue[0];
         public virtual IEnumerable<StackValue> Values
         {
             get 
@@ -36,7 +36,11 @@ namespace ProtoCore.DSASM
         {
             allocated = Count = size;
             this.heap = heap;
-            values = Enumerable.Repeat(StackValue.BuildInvalid(), allocated).ToArray();
+            if (size != 0)
+            {
+                values = Enumerable.Repeat(StackValue.BuildInvalid(), allocated).ToArray();
+            }
+
         }
 
         /// <summary>
