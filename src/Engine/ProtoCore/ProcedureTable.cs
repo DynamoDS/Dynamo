@@ -299,6 +299,12 @@ namespace ProtoCore.DSASM
             return Procedures.Where(p => p.Name.Equals(name));
         }
 
+        /// <summary>
+        /// Returns getter function for given property name.
+        /// Ex: for X property of Point, this method returns get_X(Point p).
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public ProcedureNode GetPropertyGetterByName(string name)
         {
             var getterMethodName = Constants.kGetterPrefix + name;
