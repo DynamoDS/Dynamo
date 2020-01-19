@@ -536,7 +536,7 @@ namespace Dynamo.Graph.Nodes
             if (statement == null)
                 return type;
 
-            BinaryExpressionNode expr = statement.AstNode as BinaryExpressionNode;
+            var expr = statement.AstNode as BinaryExpressionNode;
             if (expr == null || expr.Optr != Operator.assign)
                 return type;
 
@@ -554,15 +554,21 @@ namespace Dynamo.Graph.Nodes
                     return type;
 
                 var classIndex = core.ClassTable.IndexOf(fullyQualifiedName);
-                if (classIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
+                if (classIndex == Constants.kInvalidIndex)
                     return type;
 
                 var targetClass = core.ClassTable.ClassNodes[classIndex];
-                var func = targetClass.GetFirstMemberFunctionBy(funcNode.Function.Name);
+                var funcName = funcNode.Function.Name;
+                var func = targetClass.GetFirstMemberFunctionBy(funcName);
+                if (func == null)
+                {
+                    func = targetClass.ProcTable.GetPropertyGetterByName(funcName);
+                }
                 type = func.ReturnType;
                 return type;
             }
-            else if (expr.RightNode is FunctionCallNode)
+
+            if (expr.RightNode is FunctionCallNode)
             {
                 var functionCallNode = expr.RightNode as FunctionCallNode;
                 ProtoCore.FunctionGroup funcGroup;

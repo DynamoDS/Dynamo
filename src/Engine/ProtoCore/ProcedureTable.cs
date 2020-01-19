@@ -299,6 +299,13 @@ namespace ProtoCore.DSASM
             return Procedures.Where(p => p.Name.Equals(name));
         }
 
+        public ProcedureNode GetPropertyGetterByName(string name)
+        {
+            var getterMethodName = Constants.kGetterPrefix + name;
+            return Procedures.FirstOrDefault(p => p.Name == getterMethodName &&
+                                                  p.IsStatic && p.ArgumentTypes.Count == 1);
+        }
+
         /// <summary>
         /// Returns all functions with specified name and the number of argument.
         ///
