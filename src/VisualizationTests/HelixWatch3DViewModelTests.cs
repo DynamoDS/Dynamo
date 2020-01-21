@@ -731,6 +731,41 @@ namespace WpfVisualizationTests
 
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
         }
+       
+        [Test]
+        public void Display_Geometry_Labels()
+        {
+            OpenVisualizationTest("Labels.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            
+            RunCurrentModel();
+
+            // This is the node, for which we would display the Labels in the preview geometry. 
+            var codeBlockGUID = "fdec3b9b-56ae-4d01-85c2-47b8425e3130";
+            NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
+
+            // The Key to identify the Label's geometry object from Model3DDictionary.
+            var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
+
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var Model3DDictionary = helix.Model3DDictionary;
+
+            // By default the DisplayLabels for the code block node is set to false, 
+            // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
+            var geometryHasLabels = helix.Model3DDictionary.ContainsKey(labelKey); 
+            Assert.IsFalse(geometryHasLabels);
+
+            // We set the DisplayLabels to true to view the Labels in the preview geometry.
+            codeBlockNodeModel.DisplayLabels = true;
+
+            helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            Model3DDictionary = helix.Model3DDictionary;
+
+            // Now the Labels are shown in the preview geometry. 
+            // The code block node has 64 values, so there should be 64 labels. 
+            var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
+        }
 
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
