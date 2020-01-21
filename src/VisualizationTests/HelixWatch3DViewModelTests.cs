@@ -721,27 +721,59 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Display_FrozenNode_HasTransparentMesh()
+        {
+            OpenVisualizationTest("Display.ByGeometryColor.dyn");
+            RunCurrentModel();
+            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
+            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 1);
+            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 0.5);
+        }
+
+        [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             RunCurrentModel();
 
+            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
+
+            // These checks are more specific to this test
+            // Expecting 36 color definitions for vertices in the Dynamo Geometry
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
+            var numberOfColors = dynGeometry.Geometry.Colors.Count;
+            Assert.AreEqual(numberOfColors, 36);
+
+            // Expecting they are all the same solid color assigning as a result 
+            //  of DesignScript "Color.ByARGB(255,255,0,255);"
+            dynGeometry.Geometry.Colors.All(color => color.Alpha == 1);
+            dynGeometry.Geometry.Colors.All(color => color.Red == 1);
+            dynGeometry.Geometry.Colors.All(color => color.Green == 0);
+            dynGeometry.Geometry.Colors.All(color => color.Blue == 1);
         }
 
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             RunCurrentModel();
 
+            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
+
+            // These checks are more specific to this test
+            // Expecting 6 color definitions for vertices in the DynamoGeometry
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
+            var numberOfColors = dynGeometry.Geometry.Colors.Count;
+            Assert.AreEqual(numberOfColors, 6);
+            Assert.AreEqual(((PhongMaterial)dynGeometry.Material).DiffuseMap.Width, 52);
         }
 
         [Test]
