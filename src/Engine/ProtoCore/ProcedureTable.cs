@@ -300,6 +300,19 @@ namespace ProtoCore.DSASM
         }
 
         /// <summary>
+        /// Returns getter function for given property name.
+        /// Ex: for X property of Point, this method returns get_X(Point p).
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public ProcedureNode GetPropertyGetterByName(string name)
+        {
+            var getterMethodName = Constants.kGetterPrefix + name;
+            return Procedures.FirstOrDefault(p => p.Name == getterMethodName &&
+                                                  p.IsStatic && p.ArgumentTypes.Count == 1);
+        }
+
+        /// <summary>
         /// Returns all functions with specified name and the number of argument.
         ///
         /// It also returns function that has default arguments but the total 
