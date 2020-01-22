@@ -725,14 +725,14 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
-            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 1);
+            Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
             // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.AreEqual(dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha, 0.5);
+            Assert.AreEqual(0.5, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
         }
 
         [Test]
@@ -741,7 +741,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
 
@@ -749,14 +749,14 @@ namespace WpfVisualizationTests
             // Expecting 36 color definitions for vertices in the Dynamo Geometry
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
-            Assert.AreEqual(numberOfColors, 36);
+            Assert.AreEqual(36, numberOfColors);
 
             // Expecting they are all the same solid color assigning as a result 
             //  of DesignScript "Color.ByARGB(255,255,0,255);"
-            dynGeometry.Geometry.Colors.All(color => color.Alpha == 1);
-            dynGeometry.Geometry.Colors.All(color => color.Red == 1);
-            dynGeometry.Geometry.Colors.All(color => color.Green == 0);
-            dynGeometry.Geometry.Colors.All(color => color.Blue == 1);
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Alpha == 1));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Red == 1));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Green == 0));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Blue == 1));
         }
 
         [Test]
@@ -765,15 +765,15 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(BackgroundPreviewGeometry.Count(), 4);
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test
             // Expecting 6 color definitions for vertices in the DynamoGeometry
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
-            Assert.AreEqual(numberOfColors, 6);
-            Assert.AreEqual(((PhongMaterial)dynGeometry.Material).DiffuseMap.Width, 52);
+            Assert.AreEqual(6, numberOfColors);
+            Assert.AreEqual(52, ((PhongMaterial)dynGeometry.Material).DiffuseMap.Width);
         }
 
         [Test]
@@ -804,7 +804,7 @@ namespace WpfVisualizationTests
             {
                 true, false, true, true
             }));
-            // Ensure that visulations match our expectations
+            // Ensure that visualizations match our expectations
             Assert.AreEqual(2, BackgroundPreviewGeometry.TotalPoints());
 
             // Now turn off the preview of all the nodes
