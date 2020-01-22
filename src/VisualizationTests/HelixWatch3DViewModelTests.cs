@@ -758,9 +758,6 @@ namespace WpfVisualizationTests
             // We set the DisplayLabels to true to view the Labels in the preview geometry.
             codeBlockNodeModel.DisplayLabels = true;
 
-            helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
-            Model3DDictionary = helix.Model3DDictionary;
-
             // Now the Labels are shown in the preview geometry. 
             // The code block node has 64 points, so there should be 64 labels. 
             var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
