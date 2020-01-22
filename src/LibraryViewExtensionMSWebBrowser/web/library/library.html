@@ -27,6 +27,11 @@
         var replaceImageDelayTime = 100;
         var currentImage;
 
+        // Disable the context menu
+        document.oncontextmenu = function () {
+            return false;
+        }
+
         function replaceImages() {
             var allimages = document.getElementsByTagName("img");
 
