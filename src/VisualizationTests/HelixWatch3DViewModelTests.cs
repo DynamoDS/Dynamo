@@ -258,7 +258,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Labels.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -762,6 +762,33 @@ namespace WpfVisualizationTests
             // The code block node has 64 points, so there should be 64 labels. 
             var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
+
+            // Clicking on a single value from the output of the watch node
+            // should show only one label corresponding to that value.  
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
+            var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
+
+            var indexes = new[] { 0, 0, 1 };
+            foreach (var index in indexes)
+            {
+                treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
+            }
+
+            View.Dispatcher.Invoke(() =>
+            {
+                treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseUpEvent
+                });
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // The value selected is x:0, y:0 and z:1, 
+            // so the label that is shown should be [0,0,1].
+            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(1, geometry.TextInfo.Count);
+            Assert.AreEqual("[0,0,1]", geometry.TextInfo[0].Text);
         }
 
         [Test]
