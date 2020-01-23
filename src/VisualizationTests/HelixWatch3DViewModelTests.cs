@@ -748,7 +748,6 @@ namespace WpfVisualizationTests
             var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
 
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
-            var Model3DDictionary = helix.Model3DDictionary;
 
             // By default the DisplayLabels for the code block node is set to false, 
             // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
