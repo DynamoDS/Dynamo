@@ -160,12 +160,14 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-            Service.StartUp(product,
-                new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
-
-            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-            TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
+            if (ReportingAnalytics || ReportingUsage)
+            {
+                //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
+                Service.StartUp(product,
+                    new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+                TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
+            }
         }
 
         public void ShutDown()

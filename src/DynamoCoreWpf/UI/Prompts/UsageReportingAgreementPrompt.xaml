@@ -17,9 +17,9 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="160"></RowDefinition>
+            <RowDefinition Height="160"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
@@ -52,26 +52,8 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <CheckBox x:Name="AcceptAnalyticsReportingCheck"
-                  Grid.Row="2"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsAnalyticsReportingChecked"
-                  Margin="15,16,15,14"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White"
-                  IsChecked="True">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptAnalyticsReportingTextBlock"
-                       Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
-        </CheckBox>
-
         <ScrollViewer Background="#363636" 
-                      Grid.Row="3"
+                      Grid.Row="2"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
@@ -87,12 +69,32 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
+        <CheckBox x:Name="AcceptAnalyticsReportingCheck"
+                  Grid.Row="3"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Click="ToggleIsAnalyticsReportingChecked"
+                  Margin="15,16,15,0"
+                  VerticalAlignment="Center"
+                  Foreground="#4790cd"
+                  FontSize="13.333"
+                  Background="White"
+                  IsChecked="True">
+            <TextBlock FontWeight="SemiBold"
+                       Foreground="#4790cd"
+                       TextWrapping="Wrap"
+                       Name="AcceptAnalyticsReportingTextBlock"
+                       Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
+        </CheckBox>
+        
+        <!--The instrumentation checkbox will be hidden and unchecked by default-->
         <CheckBox x:Name="AcceptUsageReportingCheck"
                   Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Click="ToggleIsUsageReportingChecked"
-                  Margin="15,16,15,14"
+                  Visibility="Hidden"
+                  Margin="35,16,15,14"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
                   FontSize="13.333"
@@ -103,6 +105,7 @@
                        Name="AcceptUsageReportingTextBlock"/>
         </CheckBox>
 
+        <!--Learn More Button-->
         <TextBlock Grid.Row="5"
                    Grid.Column="0"
                    Margin="15,0,15,0"
@@ -115,6 +118,7 @@
             </Hyperlink>
         </TextBlock>
         
+        <!--Continue Button-->
         <Button Grid.Row="5"
                 Grid.Column="1"
                 x:Name="okButton"

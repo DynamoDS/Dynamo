@@ -112,10 +112,6 @@ namespace Dynamo.Controls
 
             InitializeComponent();
 
-            ToggleIsUsageReportingApprovedCommand.ToolTip = string.Format(
-                Wpf.Properties.Resources.DynamoViewSettingMenuEnableDataReportingTooltip,
-                dynamoViewModel.BrandingResourceProvider.ProductName);
-
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
 
