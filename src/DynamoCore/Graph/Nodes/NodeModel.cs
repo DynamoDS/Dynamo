@@ -1610,31 +1610,10 @@ namespace Dynamo.Graph.Nodes
 
         internal int GetPortModelIndex(PortModel portModel)
         {
-            int index;
             if (portModel.PortType == PortType.Input)
-            {
-                index = InPorts.IndexOf(portModel);
-                if (index == -1)
-                {
-                    var pm = InPorts.FirstOrDefault(x => x.GUID == portModel.GUID);
-                    if (pm != null)
-                    {
-                        index = InPorts.IndexOf(pm);
-                    }
-                }
-                return index;
-            }
-
-            index = OutPorts.IndexOf(portModel);
-            if (index == -1)
-            {
-                var pm = OutPorts.FirstOrDefault(x => x.GUID == portModel.GUID);
-                if (pm != null)
-                {
-                    index = InPorts.IndexOf(pm);
-                }
-            }
-            return index;
+                return InPorts.IndexOf(portModel);
+            else
+                return OutPorts.IndexOf(portModel);
         }
 
         /// <summary>
