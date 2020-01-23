@@ -177,8 +177,17 @@
 
         function adaptDPI() {
             document.body.style.overflowX = 'hidden';
+
+            var dpiScale = getDPIScale();
+
+            var libraryHeader = document.getElementsByClassName("LibraryHeader")[0];
+            libraryHeader.style.zoom = dpiScale;
+            
+            var widthPercentage = (100.0 / dpiScale).toString() + '%';
+            libraryHeader.style.width = widthPercentage;
+
             var libraryItemsContainer = document.getElementsByClassName("LibraryItemContainer")[0];
-            libraryItemsContainer.style.zoom = getDPIScale();
+            libraryItemsContainer.style.zoom = dpiScale;
         }
 
     </script>
