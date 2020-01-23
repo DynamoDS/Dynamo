@@ -1563,6 +1563,36 @@ namespace DynamoCoreWpfTests
             });
         }
 
+        [Test, RequiresSTA]
+        public void TestUnresolvedCodeBlockNodeUndo()
+        {
+            bool undo_1 = false;
+            bool undo_2 = false;
+            bool undo_3 = false;
+            RunCommandsFromFile("TestUnresolvedCodeBlockNodeUndo.xml", (commandTag) =>
+            {
+                var workspace = ViewModel.Model.CurrentWorkspace;
+                Assert.IsNotNull(workspace);
+
+                if (commandTag == "Undo_1")
+                {
+                    undo_1 = true;
+                }
+                else if (commandTag == "Undo_2")
+                {
+                    undo_2 = true;
+                }
+                else if (commandTag == "Undo_3")
+                {
+                    undo_3 = true;
+                }
+            });
+
+            Assert.IsTrue(undo_1);
+            Assert.IsTrue(undo_2);
+            Assert.IsTrue(undo_3);
+        }
+
         /// <summary>
         /// Creates a Code Block Node with a single line comment and multi line comment 
         /// checks if the ports are created properly and at the correct height
