@@ -160,7 +160,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (ReportingAnalytics || ReportingUsage)
+            if (ReportingAnalytics)
             {
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product,
