@@ -258,25 +258,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RequestZoomToFit(bounds);
             }
         }
-
-        public event Func<Element3D, bool> RequestRemoveViewportItem;
-        private bool OnRequestRemoveViewportItem(Element3D item)
-        {
-            if(RequestRemoveViewportItem != null)
-            {
-                return RequestRemoveViewportItem(item);
-            }
-            return false;
-        }
-
-        public event Action<Element3D> RequestAddViewportItem;
-        private void OnRequestAddViewportItem(Element3D item)
-        {
-            if(RequestAddViewportItem != null)
-            {
-                RequestAddViewportItem(item);
-            }
-        }
         #endregion
 
         #region properties
@@ -461,6 +442,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (sceneItems == null)
                 sceneItems = new ObservableElement3DCollection();
 
+            //perform these updates here instead of everytime we add a single render package.
+            foreach(var geoModel3d in values)
+            {
+                if(geoModel3d is HelixToolkit.Wpf.SharpDX.GeometryModel3D)
+                {
+                    var geo = (geoModel3d as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry;
+
+                    geo.UpdateVertices();
+                    geo.UpdateColors();
+                    geo.UpdateBounds();
+                    geo.UpdateTriangles();
+                }
+            }
+
             sceneItems.Clear();
             sceneItems.AddRange(values);
         }
@@ -644,7 +639,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 foreach (var key in Element3DDictionary.Keys.Except(keysList).ToList())
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
-                    OnRequestRemoveViewportItem(model);
                     Element3DDictionary.Remove(key);
 
                     model.Dispose();
@@ -886,7 +880,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var frozenModel = AttachedProperties.GetIsFrozen(model3D);
                     if (frozenModel) continue;
 
-                    OnRequestRemoveViewportItem(model3D);
                     Element3DDictionary.Remove(kvp.Key);
                     model3D.Dispose();
 
@@ -1065,8 +1058,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnSceneItemsChanged()
         {
             UpdateSceneItems();
-            RaisePropertyChanged("SceneItems");
-            OnRequestViewRefresh();
+            //RaisePropertyChanged("SceneItems");
+            //OnRequestViewRefresh();
         }
    
         private KeyValuePair<string, Element3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
@@ -1488,7 +1481,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 // first, remove current labels of the node
                 // it does not crash if there is no such key in dictionary
-                OnRequestRemoveViewportItem(Element3DDictionary[labelName]);
                 var sceneItemsChanged = Element3DDictionary.Remove(labelName);
 
                 // it may be requested an array of items to put labels
@@ -1529,7 +1521,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
                         
                         Element3DDictionary.Add(labelName, bbText);
-                        OnRequestAddViewportItem(bbText);
 
                         sceneItemsChanged = true;
                         nodesSelected[nodePath] = path;
@@ -1564,7 +1555,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var labelName = nodePath + TextKey;
             lock (Element3DDictionaryMutex)
             {
-                OnRequestRemoveViewportItem(Element3DDictionary[labelName]);
                 var sceneItemsChanged = Element3DDictionary.Remove(labelName);
 
                 if (sceneItemsChanged)
@@ -1673,10 +1663,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {
                             pointGeometry3D = CreatePointGeometryModel3D(rp);
                             Element3DDictionary.Add(id, pointGeometry3D);
-                            OnRequestAddViewportItem(pointGeometry3D);
                         }
 
-                        var points = pointGeometry3D.Geometry as PointGeometry3D;
+                        var points = pointGeometry3D.Geometry == null ? HelixRenderPackage.InitPointGeometry()
+                        : pointGeometry3D.Geometry as PointGeometry3D;
                         var startIdx = points.Positions.Count;
 
                         points.Positions.AddRange(p.Positions);
@@ -1694,11 +1684,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         }
 
                         AddLabelPlace(baseId, p.Positions[0], rp);
-                        pointGeometry3D.Geometry = points;
+                        if (pointGeometry3D.Geometry == null)
+                        {
+                            pointGeometry3D.Geometry = points;
+                        }
                         pointGeometry3D.Name = baseId;
 
-                        points.UpdateVertices();
-                        points.UpdateColors();
                     }
 
                     var l = rp.Lines;
@@ -1719,10 +1710,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             // edges of meshes. Draw them with a different thickness.
                             lineGeometry3D = CreateLineGeometryModel3D(rp, rp.MeshVertices.Any()?0.5:1.0);
                             Element3DDictionary.Add(id, lineGeometry3D);
-                            OnRequestAddViewportItem(lineGeometry3D);
                         }
 
-                        var lineSet = lineGeometry3D.Geometry as LineGeometry3D;
+                        var lineSet = lineGeometry3D.Geometry == null ? HelixRenderPackage.InitLineGeometry()
+                        : lineGeometry3D.Geometry as LineGeometry3D;
                         var startIdx = lineSet.Positions.Count;
 
                         lineSet.Positions.AddRange(l.Positions);
@@ -1742,11 +1733,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
                         AddLabelPlace(baseId, lineSet.Positions[startIdx], rp);
-                        lineGeometry3D.Geometry = lineSet;
+                        if(lineGeometry3D.Geometry == null)
+                        {
+                            lineGeometry3D.Geometry = lineSet;
+                        }
+                       
                         lineGeometry3D.Name = baseId;
 
-                        lineSet.UpdateVertices();
-                        lineSet.UpdateColors();
                     }
 
                     var m = rp.Mesh;
@@ -1765,7 +1758,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         meshGeometry3D = CreateDynamoGeometryModel3D(rp);
                         Element3DDictionary.Add(id, meshGeometry3D);
-                        OnRequestAddViewportItem(meshGeometry3D);
                     }
 
                     var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() 
@@ -1803,10 +1795,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
 
-                    mesh.UpdateVertices();
-                    mesh.UpdateColors();
-                    mesh.UpdateTextureCoordinates();
-                    mesh.UpdateTriangles();
+                    //mesh.UpdateVertices();
+                    //mesh.UpdateColors();
+                    //mesh.UpdateTextureCoordinates();
+                    //mesh.UpdateTriangles();
                 }
 
             }
@@ -1877,8 +1869,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         manipulator.Material = PhongMaterials.Blue;
 
                     Element3DDictionary[id] = manipulator;
-                    OnRequestRemoveViewportItem(model);
-                    OnRequestAddViewportItem(manipulator);
                     return true;
                 case RenderDescriptions.AxisLine:
                     var centerline = model as DynamoLineGeometryModel3D;
@@ -1889,8 +1879,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     centerline.Geometry = rp.Lines;
                     Element3DDictionary[id] = centerline;
-                    OnRequestRemoveViewportItem(model);
-                    OnRequestAddViewportItem(centerline);
                     return true;
                 case RenderDescriptions.ManipulatorPlane:
                     var plane = model as DynamoLineGeometryModel3D;
@@ -1901,8 +1889,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     plane.Geometry = rp.Lines;
                     Element3DDictionary[id] = plane;
-                    OnRequestRemoveViewportItem(model);
-                    OnRequestAddViewportItem(plane);
                     return true;
                 default:
                     return false;
@@ -1997,7 +1983,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Geometry = HelixRenderPackage.InitText3D(),
                 };
                 Element3DDictionary.Add(textId, bbText);
-                OnRequestAddViewportItem(bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
            
@@ -2051,7 +2036,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
-                Geometry = HelixRenderPackage.InitLineGeometry(),
+                //Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Thickness = thickness,
@@ -2065,7 +2050,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
-                Geometry = HelixRenderPackage.InitPointGeometry(),
+                //Geometry = HelixRenderPackage.InitPointGeometry(),
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Figure = PointFigure.Ellipse,
