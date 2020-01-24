@@ -258,7 +258,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Labels.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -757,6 +757,64 @@ namespace WpfVisualizationTests
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Red == 1));
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Green == 0));
             Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Blue == 1));
+        }
+       
+        [Test]
+        public void Display_Geometry_Labels()
+        {
+            OpenVisualizationTest("Labels.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            
+            RunCurrentModel();
+
+            // This is the node, for which we would display the Labels in the preview geometry. 
+            var codeBlockGUID = "fdec3b9b-56ae-4d01-85c2-47b8425e3130";
+            NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
+
+            // The Key to identify the Label's geometry object from Model3DDictionary.
+            var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
+
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            // By default the DisplayLabels for the code block node is set to false, 
+            // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
+            var geometryHasLabels = helix.Model3DDictionary.ContainsKey(labelKey); 
+            Assert.IsFalse(geometryHasLabels);
+
+            // We set the DisplayLabels to true to view the Labels in the preview geometry.
+            codeBlockNodeModel.DisplayLabels = true;
+
+            // Now the Labels are shown in the preview geometry. 
+            // The code block node has 64 points, so there should be 64 labels. 
+            var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
+
+            // Clicking on a single value from the output of the watch node
+            // should show only one label corresponding to that value.  
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
+            var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
+
+            var indexes = new[] { 0, 0, 1 };
+            foreach (var index in indexes)
+            {
+                treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
+            }
+
+            View.Dispatcher.Invoke(() =>
+            {
+                treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseUpEvent
+                });
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // The value selected is x:0, y:0 and z:1, 
+            // so the label that is shown should be [0,0,1].
+            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(1, geometry.TextInfo.Count);
+            Assert.AreEqual("[0,0,1]", geometry.TextInfo[0].Text);
         }
 
         [Test]
