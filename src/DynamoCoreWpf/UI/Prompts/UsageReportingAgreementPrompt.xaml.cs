@@ -12,14 +12,21 @@ namespace Dynamo.UI.Prompts
     public partial class UsageReportingAgreementPrompt : Window
     {
         private DynamoViewModel viewModel = null;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="resourceProvider"></param>
+        /// <param name="dynamoViewModel"></param>
         public UsageReportingAgreementPrompt(IBrandingResourceProvider resourceProvider, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
-            Title = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
-
-            ConsentFormImageRectangle.Fill = new ImageBrush(
-                resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
-
+            if (resourceProvider != null)
+            {
+                Title = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
+                ConsentFormImageRectangle.Fill = new ImageBrush(
+                    resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
+            }
             viewModel = dynamoViewModel;
 
             var instrumentationFile = "InstrumentationConsent.rtf";
