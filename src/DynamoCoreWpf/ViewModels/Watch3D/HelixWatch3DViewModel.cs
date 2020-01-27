@@ -1798,10 +1798,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
 
-                    //mesh.UpdateVertices();
-                    //mesh.UpdateColors();
-                    //mesh.UpdateTextureCoordinates();
-                    //mesh.UpdateTriangles();
                 }
 
             }
