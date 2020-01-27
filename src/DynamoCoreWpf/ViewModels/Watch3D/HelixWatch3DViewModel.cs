@@ -1058,8 +1058,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnSceneItemsChanged()
         {
             UpdateSceneItems();
-            //RaisePropertyChanged("SceneItems");
-            //OnRequestViewRefresh();
+            //TODO unclear if these are still required.
+            //since sceneItems are observable and we force them to update
+            //by clearing and readdding all items.
+            RaisePropertyChanged("SceneItems");
+            OnRequestViewRefresh();
         }
    
         private KeyValuePair<string, Element3D>[] FindAllGeometryModel3DsForNode(NodeModel node)
