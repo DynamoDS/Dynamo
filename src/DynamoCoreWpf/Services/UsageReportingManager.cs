@@ -140,8 +140,6 @@ namespace Dynamo.Services
 
         public UsageReportingManager()
         {
-            ToggleIsUsageReportingApprovedCommand = new DelegateCommand(
-                ToggleIsUsageReportingApproved, p => true);
             ToggleIsAnalyticsReportingApprovedCommand = new DelegateCommand(
                 ToggleIsAnalyticsReportingApproved, p => true);
         }
@@ -163,6 +161,7 @@ namespace Dynamo.Services
             }
         }
 
+        [Obsolete("Function will be deprecated in Dynamo 3.0, please set IsUsageReportingApproved.")]
         public void ToggleIsUsageReportingApproved(object parameter)
         {
             var ownerWindow = parameter as Window;
@@ -195,27 +194,24 @@ namespace Dynamo.Services
                 throw new InvalidOperationException(
                     "DynamoView must be supplied for this command");
             }
-
-            // If reporting is not currently enabled, then the user should be 
-            // shown the agreement dialog (on which he/she can choose to accept 
-            // or reject the reporting). If the reporting is currently enabled,
-            // then set it to false (user chooses not to accept the reporting).
-            // 
-            if (IsAnalyticsReportingApproved)
-            {
-                IsAnalyticsReportingApproved = false;
-            }
-            else
-            {
-                ShowUsageReportingPrompt(ownerWindow);
-            }
+            ShowUsageReportingPrompt(ownerWindow);
         }
 
+        /// <summary>
+        /// Setting UsageReportingAgreement. Please notice 
+        /// that IsUsageReportingApproved is dominated by 
+        /// IsAnalyticsReportingApproved.
+        /// </summary>
+        /// <param name="approved"></param>
         public void SetUsageReportingAgreement(bool approved)
         {
-            IsUsageReportingApproved = approved;
+            IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;
         }
 
+        /// <summary>
+        /// Setting AnalyticsReportingAgreement.
+        /// </summary>
+        /// <param name="approved"></param>
         public void SetAnalyticsReportingAgreement(bool approved)
         {
             IsAnalyticsReportingApproved = approved;
