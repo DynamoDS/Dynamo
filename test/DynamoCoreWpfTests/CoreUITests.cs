@@ -570,6 +570,8 @@ namespace DynamoCoreWpfTests
                 // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(true);
                 RestartTestSetup(startInTestMode: false);
+                // Because IsUsageReportingApproved is now dominated by IsAnalyticsReportingApproved.
+                // In this case. the value is still false because of IsAnalyticsReportingApproved
                 Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
 
                 // CollectionInfoOption To FALSE

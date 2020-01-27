@@ -192,11 +192,21 @@ namespace Dynamo.Services
             ShowUsageReportingPrompt(ownerWindow);
         }
 
+        /// <summary>
+        /// Setting UsageReportingAgreement. Please notice 
+        /// that IsUsageReportingApproved is dominated by 
+        /// IsAnalyticsReportingApproved.
+        /// </summary>
+        /// <param name="approved"></param>
         public void SetUsageReportingAgreement(bool approved)
         {
             IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;
         }
 
+        /// <summary>
+        /// Setting AnalyticsReportingAgreement.
+        /// </summary>
+        /// <param name="approved"></param>
         public void SetAnalyticsReportingAgreement(bool approved)
         {
             IsAnalyticsReportingApproved = approved;
