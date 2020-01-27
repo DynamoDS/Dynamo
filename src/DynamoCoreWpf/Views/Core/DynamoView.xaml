@@ -628,22 +628,13 @@
                               Focusable="False"
                               IsEnabled="True"
                               SubmenuOpened="OnSettingsSubMenuOpened">
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReporting}"
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialog}"
                                   Name="ToggleIsAnalyticsReportingApprovedCommand"
                                   Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
                                   CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  IsChecked="{Binding Path=IsAnalyticsReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableSummaryReportingTooltip}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
                                   Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                                   Focusable="False"/>
-                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReporting}"
-                                  Name="ToggleIsUsageReportingApprovedCommand"
-                                  Command="{Binding Path=ToggleIsUsageReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  IsChecked="{Binding Path=IsUsageReportingApproved, Mode=OneWay, Source={x:Static service:UsageReportingManager.Instance} }"
-                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuEnableDataReportingTooltip}"
-                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
-                                  Focusable="False" />
                         <Separator />
                         <MenuItem Focusable="False" 
                                   Name="ShowNodeExecution" 
