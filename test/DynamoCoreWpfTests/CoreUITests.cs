@@ -15,6 +15,7 @@ using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
@@ -499,6 +500,24 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(WithoutRenderPrecision.RenderPrecision, 128);
         }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_Analytics()
+        {
+            // Test deserialization of analytics setting 
+            // Test loading old settings file without agreement 
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-firstrun.xml");
+            var resultSetting = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(false, resultSetting.IsAnalyticsReportingApproved);
+            Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
+
+            // Test loading old settings file without render precision attribute
+            filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
+            resultSetting = PreferenceSettings.Load(filePath);
+            Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
+            Assert.AreEqual(true, resultSetting.IsUsageReportingApproved);
+        }
+
         #region PreferenceSettings
         [Test, RequiresSTA]
         [Category("DynamoUI")]
@@ -548,10 +567,12 @@ namespace DynamoCoreWpfTests
                 // First time run, check if dynamo did set it back to false after running
                 Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
-                // CollectionInfoOption To TRUE
+                // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(true);
                 RestartTestSetup(startInTestMode: false);
-                Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+                // Because IsUsageReportingApproved is now dominated by IsAnalyticsReportingApproved.
+                // In this case. the value is still false because of IsAnalyticsReportingApproved
+                Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
 
                 // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(false);
