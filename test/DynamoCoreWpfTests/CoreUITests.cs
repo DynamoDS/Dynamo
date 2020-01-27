@@ -567,10 +567,10 @@ namespace DynamoCoreWpfTests
                 // First time run, check if dynamo did set it back to false after running
                 Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
-                // CollectionInfoOption To TRUE
+                // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(true);
                 RestartTestSetup(startInTestMode: false);
-                Assert.AreEqual(true, UsageReportingManager.Instance.IsUsageReportingApproved);
+                Assert.AreEqual(false, UsageReportingManager.Instance.IsUsageReportingApproved);
 
                 // CollectionInfoOption To FALSE
                 UsageReportingManager.Instance.SetUsageReportingAgreement(false);
