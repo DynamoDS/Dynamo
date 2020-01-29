@@ -200,6 +200,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public Object Element3DDictionaryMutex = new object();
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
+        //used to cache point and curve color collections so colors can be efficently swtiched between selected and non selected. (freeze, isolate etc)
+        private Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
         // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces 
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
@@ -1268,6 +1270,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Name = HeadLightName
             };
 
+            //TODO verify this binding is working.
             headLight.SetBinding(
                 DirectionalLight3D.DirectionProperty, 
                 new Binding("LookDirection") {
@@ -1465,6 +1468,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     DeleteGeometryForIdentifier(id, false);
                 }
+            }
+        }
+
+        protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string obj)
+        {
+            if (this.colorCache.ContainsKey(obj)){
+                //TODO check if item still exists in element3dDictionary
+                (element3DDictionary[obj] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[obj];
             }
         }
 
@@ -1687,12 +1698,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
                         }
 
+                        //always update the color cache if we're aggregating render packages.
+                        //(ie updating colors from this method).
+                        colorCache[id] = points.Colors;
+                      
                         AddLabelPlace(baseId, p.Positions[0], rp);
                         if (pointGeometry3D.Geometry == null)
                         {
                             pointGeometry3D.Geometry = points;
                         }
+
+                        //while the Name of the geometry is the node which created it
+                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
                         pointGeometry3D.Name = baseId;
+                        pointGeometry3D.Tag = id;
 
                     }
 
@@ -1731,7 +1750,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                              ? l.Colors
                              : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
                         }
-                        
+
+                        //always update the color cache if we're aggregating render packages.
+                        //(ie updating colors from this method).
+                        colorCache[id] = lineSet.Colors;
+
                         lineSet.Indices.AddRange(l.Indices.Any()
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
@@ -1741,9 +1764,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {
                             lineGeometry3D.Geometry = lineSet;
                         }
-                       
+                        //while the Name of the geometry is the node which created it
+                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
                         lineGeometry3D.Name = baseId;
-
+                        lineGeometry3D.Tag = id;
                     }
 
                     var m = rp.Mesh;

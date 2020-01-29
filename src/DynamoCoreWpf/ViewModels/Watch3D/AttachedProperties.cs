@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Media;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
@@ -12,6 +14,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public static class AttachedProperties
     {
+        //TODO should this pass the dep object or an id.
+        internal static event Action<string> RequestResetColorsForDynamoGeometryModel;
         private const float alphaPropertyFactor = 0.5f;
 
         #region Show Selected property
@@ -38,7 +42,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private static void ShowSelectedPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            if(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
             {
                 var geom = (GeometryModel3D)obj;
                 // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
@@ -72,7 +76,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             HelixWatch3DViewModel.TransparentMaterial : HelixWatch3DViewModel.WhiteMaterial;
                     }
                 }
-                
+                else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+                {
+                    if ((bool)args.NewValue)
+                    {
+                        //because color4's are structs we must update the collection this way
+                        //as they are not reference types
+                        var selectedColorCollection = new Color4Collection(Enumerable.Repeat(HelixWatch3DViewModel.SelectedMaterial.DiffuseColor, geom.Geometry.Colors.Count));
+                        geom.Geometry.Colors = selectedColorCollection;
+                    }
+                    else
+                    {   //reset colors
+                        RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+                    }
+                }
+
             }
         }
 
