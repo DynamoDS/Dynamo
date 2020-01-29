@@ -69,7 +69,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
         private void scriptNotifyHandler(string dataFromjs)
         {
-
             if (string.IsNullOrEmpty(dataFromjs))
             {
                 return;
@@ -231,6 +230,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 dynamoViewModel.ImportLibraryCommand.Execute(null)
             ));
         }
+
         /// <summary>
         /// This function logs events to instrumentation if it matches a set of known events
         /// </summary>
@@ -243,16 +243,16 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 Analytics.LogPiiInfo(eventName, data);
             }
         }
+
         internal void RefreshLibraryView(WebBrowser browser)
         {
             dynamoWindow.Dispatcher.BeginInvoke(
             new Action(() =>
             {
-
                 var ext1 = string.Empty;
                 var ext2 = string.Empty;
-            //read the full loadedTypes and LayoutSpec json strings.
-            var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
+                //read the full loadedTypes and LayoutSpec json strings.
+                var reader = new StreamReader(nodeProvider.GetResource(null, out ext1));
                 var loadedTypes = reader.ReadToEnd();
 
                 var reader2 = new StreamReader(layoutProvider.GetResource(null, out ext2));
@@ -260,8 +260,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
                 try
                 {
-                    browser.InvokeScript
-                         ("refreshLibViewFromData", loadedTypes, layoutSpec);
+                    browser.InvokeScript("refreshLibViewFromData", loadedTypes, layoutSpec);
                 }
                 catch (Exception e)
                 {
@@ -269,9 +268,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 }
                 reader.Dispose();
                 reader2.Dispose();
-
             }));
-
         }
 
         #endregion
@@ -344,7 +341,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             var libminstring = "LIBJS";
             var libraryHTMLPage = "LIBRARY HTML WAS NOT FOUND";
 
-
             using (var reader = new StreamReader(libminstream))
             {
                 libminstring = reader.ReadToEnd();
@@ -354,7 +350,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 {
                     libminstring = ReplaceUrlWithBase64Image(libminstring, path.Item1, path.Item2);
                 });
-
             }
 
             using (var reader = new StreamReader(stream))
@@ -373,9 +368,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             browser.Loaded += Browser_Loaded;
             browser.SizeChanged += Browser_SizeChanged;
             LibraryViewController.SetupSearchModelEventsObserver(browser, dynamoViewModel.Model.SearchModel, this, this.customization);
+
+            browser.DpiChanged += Browser_DpiChanged;
         }
 
-
+        private void Browser_DpiChanged(object sender, DpiChangedEventArgs e)
+        {
+            browser.InvokeScript("adaptDPI");
+        }
 
         private void Browser_Loaded(object sender, RoutedEventArgs e)
         {
@@ -473,7 +473,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                 controller.CloseNodeTooltip(true);
             };
 
-
             var observer = new EventObserver<NodeSearchElement, IEnumerable<NodeSearchElement>>(
                                 elements => NotifySearchModelUpdate(customization, elements), CollectToList
                             ).Throttle(TimeSpan.FromMilliseconds(throttleTime));
@@ -539,7 +538,6 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
                .Select(p => new LayoutIncludeInfo() { path = p });
 
                 customization.AddIncludeInfo(includes, "Add-ons");
-
             }
         }
 
