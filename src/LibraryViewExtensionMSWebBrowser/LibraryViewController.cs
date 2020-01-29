@@ -587,6 +587,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             {
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
+                browser.DpiChanged -= Browser_DpiChanged;
                 browser.Dispose();
                 browser = null;
             }
