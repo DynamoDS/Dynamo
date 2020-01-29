@@ -1,11 +1,40 @@
-DynamoInstallDetective.dll
+## this is a comment.
+## this file contains relative file paths to the dynamo bin directory,
+## which will be signed during the build.
+## Files which are not found should cause a build failure.
+
 Greg.dll
-GregAdWebServicesAuth.dll
-Reach.dll
 Analytics.NET.Core.dll
 Analytics.NET.Google.dll
-DynamoServices.dll
-DynamoUnits.dll
-DynamoUtilities.dll
-GraphLayout.dll
 LibG.Interface.dll
+ProtoGeometry.customization.dll
+ProtoGeometry.dll
+.\en-US\ProtoGeometry.resources.dll
+
+.\libg_224_0_1\LibG.AsmPreloader.Managed.dll
+.\libg_224_0_1\LibG.AsmPreloader.Unmanaged.dll
+.\libg_224_0_1\LibG.dll
+.\libg_224_0_1\LibG.Managed.dll
+.\libg_224_0_1\LibG.ProtoInterface.dll
+.\libg_224_0_1\LibGCore.dll
+
+.\libg_224_4_0\LibG.AsmPreloader.Managed.dll
+.\libg_224_4_0\LibG.AsmPreloader.Unmanaged.dll
+.\libg_224_4_0\LibG.dll
+.\libg_224_4_0\LibG.Managed.dll
+.\libg_224_4_0\LibG.ProtoInterface.dll
+.\libg_224_4_0\LibGCore.dll
+
+.\libg_225_0_0\LibG.AsmPreloader.Managed.dll
+.\libg_225_0_0\LibG.AsmPreloader.Unmanaged.dll
+.\libg_225_0_0\LibG.dll
+.\libg_225_0_0\LibG.Managed.dll
+.\libg_225_0_0\LibG.ProtoInterface.dll
+.\libg_225_0_0\LibGCore.dll
+
+.\libg_226_0_0\LibG.AsmPreloader.Managed.dll
+.\libg_226_0_0\LibG.AsmPreloader.Unmanaged.dll
+.\libg_226_0_0\LibG.dll
+.\libg_226_0_0\LibG.Managed.dll
+.\libg_226_0_0\LibG.ProtoInterface.dll
+.\libg_226_0_0\LibGCore.dll

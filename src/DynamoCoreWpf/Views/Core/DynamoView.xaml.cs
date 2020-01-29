@@ -49,11 +49,12 @@ using String = System.String;
 namespace Dynamo.Controls
 {
     /// <summary>
-    ///     Interaction logic for DynamoForm.xaml
+    ///     Interaction logic for DynamoView.xaml
     /// </summary>
     public partial class DynamoView : Window, IDisposable
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
+
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
@@ -65,20 +66,25 @@ namespace Dynamo.Controls
         private int tabSlidingWindowStart, tabSlidingWindowEnd;
         private GalleryView galleryView;
         private readonly LoginService loginService;
-        internal ViewExtensionManager viewExtensionManager;
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
-
-        internal ObservableCollection<TabItem> TabItems { set; get; } = new ObservableCollection<TabItem>();
-
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
-
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
+        /// <summary>
+        /// This event is raised on the dynamo view when an extension tab is closed.
+        /// </summary>
+        internal static event Action<String> CloseExtension;
+        internal ObservableCollection<TabItem> ExtensionTabItems { set; get; } = new ObservableCollection<TabItem>();
+        internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dynamoViewModel">Dynamo view model</param>
         public DynamoView(DynamoViewModel dynamoViewModel)
         {
             // The user's choice to enable hardware acceleration is now saved in
@@ -193,7 +199,7 @@ namespace Dynamo.Controls
              };
 
             // Add an event handler to check if the collection is modified.   
-            TabItems.CollectionChanged += this.OnCollectionChanged;
+            ExtensionTabItems.CollectionChanged += this.OnCollectionChanged;
 
             this.HideOrShowRightSideBar();
 
@@ -202,22 +208,11 @@ namespace Dynamo.Controls
             FocusableGrid.InputBindings.Clear();
         }
 
-        /// <summary>
-        /// This method close a tab item in the right side bar based on passed extension
-        /// </summary>
-        /// <param name="viewExtension">Extension to be closed</param>
-        /// <returns></returns>
-        internal void CloseTabItem(IViewExtension viewExtension)
-        {
-            string tabName = viewExtension.Name;
-            CloseTab(tabName);
-        }
-
         // This method adds a tab item to the right side bar and 
         // sets the extension window as the tab content.
-        internal TabItem AddTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
         {
-            int count = TabItems.Count;
+            int count = ExtensionTabItems.Count;
 
             if (!IsExtensionAddedToRightSideBar(viewExtension))
             {
@@ -227,6 +222,7 @@ namespace Dynamo.Controls
                 TabItem tab = new TabItem();
                 tab.Header = viewExtension.Name;
                 tab.Tag = viewExtension.GetType();
+                tab.Uid = viewExtension.UniqueId;
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 // setting the extension UI to the current tab content 
@@ -241,10 +237,9 @@ namespace Dynamo.Controls
                 }
 
                 //Insert the tab at the end
-                TabItems.Insert(count, tab);
-                TabItems = TabItems;
+                ExtensionTabItems.Insert(count, tab);
 
-                tabDynamic.DataContext = TabItems;
+                tabDynamic.DataContext = ExtensionTabItems;
                 tabDynamic.SelectedItem = tab;
 
                 return tab;
@@ -252,38 +247,60 @@ namespace Dynamo.Controls
             return null;
         }
 
-        // This method triggers the close operation on the selected tab. 
-        private void CloseTab(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// This method will close a tab item in the right side bar based on passed extension
+        /// </summary>
+        /// <param name="viewExtension">Extension to be closed</param>
+        /// <returns></returns>
+        internal void CloseExtensionTabItem(IViewExtension viewExtension)
         {
-            string tabName = (sender as Button).CommandParameter.ToString();
-            CloseTab(tabName);
+            string tabName = viewExtension.Name;
+            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+            CloseExtension?.Invoke(tabName);
+            CloseExtensionTab(tabitem);
+        }
+ 
+        /// <summary>
+        /// Event handler for the CloseButton.
+        /// This method triggers the close operation on the selected tab.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void CloseExtensionTab(object sender, RoutedEventArgs e)
+        {
+            string tabName = (sender as Button).DataContext.ToString();
+
+            CloseExtension?.Invoke(tabName);
+
+            TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+            CloseExtensionTab(tabitem);
         }
 
         /// <summary>
-        /// Close tab by its name
+        /// Close extension tab by extension tab item
         /// </summary>
-        /// <param name="tabName">tab name</param>
-        private void CloseTab(string tabName)
+        /// <param name="tabitem">target tab item</param>
+        private void CloseExtensionTab(TabItem tabitem)
         {
-            TabItem tab = tabDynamic.SelectedItem as TabItem;
+            TabItem tabToBeRemoved = tabitem;
 
-            if (tab != null)
+            // get the selected tab
+            TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
+
+            if (tabToBeRemoved != null)
             {
-                // get the selected tab
-                TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
-
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
-                TabItems.Remove(tab);
-                TabItems = TabItems;
-                tabDynamic.DataContext = TabItems;
+                ExtensionTabItems.Remove(tabToBeRemoved);
+                ExtensionTabItems = ExtensionTabItems;
+                tabDynamic.DataContext = ExtensionTabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
-                if (selectedTab == null || selectedTab.Equals(tab))
+                if (selectedTab.Equals(tabToBeRemoved))
                 {
-                    if (TabItems.Count > 0)
+                    if (ExtensionTabItems.Count > 0)
                     {
-                        selectedTab = TabItems[0];
+                        selectedTab = ExtensionTabItems[0];
                     }
                 }
                 tabDynamic.SelectedItem = selectedTab;
@@ -298,7 +315,7 @@ namespace Dynamo.Controls
 
         private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
         {
-            foreach (TabItem tabItem in TabItems)
+            foreach (TabItem tabItem in ExtensionTabItems)
             {
                 if (tabItem.Tag.Equals(viewExtension.GetType()))
                 {
@@ -1818,7 +1835,7 @@ namespace Dynamo.Controls
         // Show the extensions right side bar when there is atleast one extension
         private void HideOrShowRightSideBar()
         {
-            if (TabItems.Count < 1)
+            if (ExtensionTabItems.Count < 1)
             {
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
                 collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
@@ -2029,7 +2046,7 @@ namespace Dynamo.Controls
             }
 
             // Removing the tab items list handler
-            TabItems.CollectionChanged -= this.OnCollectionChanged;
+            ExtensionTabItems.CollectionChanged -= this.OnCollectionChanged;
         }
     }
 }

@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Librarie.js sample page</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: #353535;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Placeholders must exist before all other scripts that try to access them -->
+    <div class="OuterMostContainer" id="libraryContainerPlaceholder"></div>
+    <!-- The main library view component -->
+    <script>
+        LIBPLACEHOLDER
+    </script>
+
+    <script>
+        var replaceImageDelayTime = 100;
+        var currentImage;
+
+        function replaceImages() {
+            var allimages = document.getElementsByTagName("img");
+
+            allimages.forEach(function (element) {
+                currentImage = element;
+                var src = element.src
+                if (element.orgSrc != null) {
+                    src = element.orgSrc;
+                }
+                //the icon is already set - bail.
+                if (src.startsWith("data:image")) {
+                    return;
+                }
+                //request the icon from the extension.
+                window.external.GetBase64StringFromPath(src);
+               
+            });
+
+        }
+
+        function completeReplaceImages(base64String) {
+            if (currentImage != null) {
+                currentImage.src = base64String;
+
+                // we have now loaded the correct image - so let's cache it.
+                // we'll break out later instead of trying to reload it.
+                //TODO don't cache the string if it is the default icon.
+                // currentImage.orgSrc = base64String;
+            }
+        
+        }
+
+
+        function refreshLibViewFromData(loadedTypes,layoutSpec){
+            var append = false; // Replace existing contents instead of appending.
+            libController.setLoadedTypesJson(JSON.parse(loadedTypes) , append);
+            libController.setLayoutSpecsJson(JSON.parse(layoutSpec) , append);
+            libController.refreshLibraryView(); // Refresh library view.
+
+            //update image src properties after dom is updated.
+            setTimeout(function () {
+                replaceImages();
+            }, replaceImageDelayTime);
+        }
+
+
+        //Create library controller
+        var libController = LibraryEntryPoint.CreateLibraryController();
+        //Create library view
+        var libContainer = libController.createLibraryByElementId("libraryContainerPlaceholder");
+
+        var searchCallback = null;
+        function completeSearch(searchLoadedTypes){
+            searchCallback(JSON.parse(searchLoadedTypes));
+        }
+        //set a custom search handler
+        libController.searchLibraryItemsHandler = function (text, callback) {
+            var encodedText = encodeURIComponent(text);
+            //save the callback so we can access from our completion function
+			searchCallback = callback;
+                window.external.notify(JSON.stringify({"func":"performSearch","data":encodedText}));
+                window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Search",encodedText]}));
+        }
+
+        // Register event handlers for various events on library controller and package controller.
+        libController.on(libController.ItemClickedEventName, function (nodeCreationName) {
+            console.log('Library Node Clicked: ' + nodeCreationName);
+            window.external.notify(JSON.stringify({"func":"createNode","data":nodeCreationName}));
+        });
+
+        //if the user clicks anywhere - reload the images to ensure they are up to date after interactions
+        //which update the currently displayed libraryItems.
+        document.body.addEventListener('click', function () {
+            setTimeout(function () {
+                replaceImages();
+            }, replaceImageDelayTime);
+        }, true);
+
+        libController.on(libController.ItemMouseEnterEventName, function (arg) {
+            window.external.notify(JSON.stringify({"func":"showNodeTooltip","data":[arg.data,arg.rect.top]}));
+        });
+        libController.on(libController.ItemMouseLeaveEventName, function (arg) {
+            window.external.notify(JSON.stringify({"func":"closeNodeTooltip","data":true}));
+        });
+        libController.on(libController.SectionIconClickedEventName, function (section) {
+            console.log("Section clicked: " + section);
+            if (section == "Add-ons") {
+                window.external.notify(JSON.stringify({"func":"importLibrary","data":""}));
+            }
+        });
+        libController.on(libController.FilterCategoryEventName, function (item) {
+            var categories = [];
+           item.forEach(function(elem) {
+                var catString = elem.name + ":" + (elem.checked ? "Selected" : "Unselected");
+                categories.push(catString);
+            });
+            window.external.notify(JSON.stringify({"func":"logEventsToInstrumentation","data":["Filter-Categories",categories.join(",")]}));
+        });
+
+        //Update the view with contents the first time.
+        window.external.notify("requestUpdateLibrary");
+
+    </script>
+
+</body>
+
+</html>
