@@ -69,8 +69,6 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
-            ViewModel.RequestAddViewportItem -= AddViewportItem;
-            ViewModel.RequestRemoveViewportItem -= RemoveViewportItem;
         }
 
         private void RegisterEventHandlers()
@@ -87,8 +85,6 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay += GetClickRay;
             ViewModel.RequestCameraPosition += GetCameraPosition;
             ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
-            ViewModel.RequestRemoveViewportItem += RemoveViewportItem;
-            ViewModel.RequestAddViewportItem += AddViewportItem;
 
             ViewModel.UpdateUpstream();
             ViewModel.OnWatchExecution();
@@ -176,11 +172,6 @@ namespace Dynamo.Controls
             var axes = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultAxesName];
             var directionalLight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultLightName];
             var headlight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.HeadLightName];
-
-            watch_view.Items.Add(directionalLight);
-            watch_view.Items.Add(headlight);
-            watch_view.Items.Add(grid);
-            watch_view.Items.Add(axes);
 
             RegisterEventHandlers();
         }
@@ -303,16 +294,6 @@ namespace Dynamo.Controls
         private Point3D GetCameraPosition()
         {
             return View.GetCameraPosition();
-        }
-
-        private bool RemoveViewportItem(Element3D item)
-        {
-            return watch_view.Items.Remove(item);
-        }
-
-        private void AddViewportItem(Element3D item)
-        {
-            watch_view.Items.Add(item);
         }
     }
 
