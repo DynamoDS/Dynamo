@@ -475,6 +475,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public IEffectsManager EffectsManager { get; private set; }
 
+        [Obsolete("Not Implemented - Do Not Use.")]
         public bool SupportDeferredRender { get; private set; }
 
         #endregion
@@ -2036,7 +2037,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
                 //Do not set Geometry here
-                //Geometry = HelixRenderPackage.InitLineGeometry(),
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Thickness = thickness,
@@ -2051,7 +2051,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var pointGeometry3D = new DynamoPointGeometryModel3D
             {
                 //Do not set Geometry here
-                //Geometry = HelixRenderPackage.InitPointGeometry(),
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Figure = PointFigure.Ellipse,

@@ -20,13 +20,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             AddDynamoTechniques();
         }
 
-        /// <summary>
-        /// Load effects used by Dynamo for rendering. Custom input layouts are
-        /// created which specify extra COLOR components used to hold data 
-        /// about the selection state and vertex coloration of objects.
-        /// See <see cref="T:DynamoMeshVertex"/>, <see cref="T:DynamoPointVertex"/>, and <see cref="T:DynamoLineVertex"/>
-        /// for examples of how these layouts are used.
-        /// </summary>
+        
         protected void AddDynamoTechniques()
         {
             var custom = new TechniqueDescription("RenderCustom")
