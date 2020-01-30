@@ -510,12 +510,19 @@ namespace DynamoCoreWpfTests
             var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(false, resultSetting.IsAnalyticsReportingApproved);
             Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
+        }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_Analytics2()
+        {
             // Test loading old settings file without render precision attribute
-            filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
-            resultSetting = PreferenceSettings.Load(filePath);
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
+            var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
             Assert.AreEqual(true, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
         }
 
         #region PreferenceSettings
