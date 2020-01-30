@@ -502,7 +502,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
-        public void PreferenceSetting_Analytics()
+        public void PreferenceSetting_AgreeAnalyticSharing()
         {
             // Test deserialization of analytics setting 
             // Test loading old settings file without agreement 
@@ -515,7 +515,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
-        public void PreferenceSetting_Analytics2()
+        public void PreferenceSetting_NotAgreeAnalyticsSharing()
         {
             // Test loading old settings file without render precision attribute
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
