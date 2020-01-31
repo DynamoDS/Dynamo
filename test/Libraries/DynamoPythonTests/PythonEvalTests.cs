@@ -11,7 +11,7 @@ namespace DSIronPythonTests
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
             DSCPython.CPythonEvaluator.EvaluatePythonScript,
-            //DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
+            DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
 
       

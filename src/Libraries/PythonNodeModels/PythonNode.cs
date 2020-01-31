@@ -27,7 +27,7 @@ namespace PythonNodeModels
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public static readonly string DefaultPythonEngine = "CPython3";
+        public static readonly string DefaultPythonEngine = "IronPython2";
 
         private string engine = DefaultPythonEngine;
 
@@ -83,10 +83,10 @@ namespace PythonNodeModels
             {
                 pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
             }
-            /*else if (Engine == "IronPython2")
+            else if (Engine == "IronPython2")
             {
                 pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
-            }*/
+            }
             else
             {
                 throw new InvalidOperationException("Unknown Python engine " + Engine);
