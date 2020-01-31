@@ -128,14 +128,27 @@ namespace Dynamo.Logging
 
         public virtual IAnalyticsSession Session { get; private set; }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send analytics info
+        /// </summary>
         public bool ReportingAnalytics
         {
-            get { return preferences != null && preferences.IsAnalyticsReportingApproved; }
+            get
+            {
+                return preferences != null 
+                    && Service.IsInitialized
+                    && preferences.IsAnalyticsReportingApproved;
+            }
         }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send instrumentation info
+        /// </summary>
         public bool ReportingUsage
         {
-            get { return preferences != null && preferences.IsUsageReportingApproved; }
+            get { return preferences != null
+                    && Service.IsInitialized
+                    && preferences.IsUsageReportingApproved; }
         }
 
         /// <summary>
@@ -165,7 +178,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (ReportingAnalytics)
+            if (preferences!= null && preferences.IsAnalyticsReportingApproved)
             {
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product,
