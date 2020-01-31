@@ -140,7 +140,9 @@ namespace Dynamo.Logging
 
         public bool ReportingUsage
         {
-            get { return preferences != null && preferences.IsUsageReportingApproved; }
+            get { return preferences != null
+                    && Service.IsInitialized
+                    && preferences.IsUsageReportingApproved; }
         }
 
         /// <summary>
