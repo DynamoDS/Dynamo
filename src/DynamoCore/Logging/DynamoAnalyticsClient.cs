@@ -51,10 +51,15 @@ namespace Dynamo.Logging
             else
                 StabilityCookie.WriteCleanShutdown();
 
-            Service.ShutDown();
-            //Unregister the GATrackerFactory only after shutdown is recorded.
-            //Unregister is required, so that the host app can re-start Analytics service.
-            Service.Instance.Unregister(GATrackerFactory.Name);
+            // If the Analytics Client was initialized, shut it down.
+            // Otherwise skip this step because it would cause an exception.
+            if (Service.IsInitialized)
+            {
+                Service.ShutDown();
+                // Unregister the GATrackerFactory only after shutdown is recorded.
+                // Unregister is required, so that the host app can re-start Analytics service.
+                Service.Instance.Unregister(GATrackerFactory.Name);
+            }
             
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
