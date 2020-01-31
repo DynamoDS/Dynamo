@@ -2220,6 +2220,7 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
     <value>Read more in the documentation.</value>
+  </data>  
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
   </data>
