@@ -22,7 +22,7 @@ namespace Dynamo.Graph.Nodes
     /// <summary>
     /// PortModel represents Dynamo ports.
     /// </summary>
-    public class PortModel : ModelBase
+    public class PortModel : ModelBase, IEquatable<PortModel>
     {
         #region private fields
         ObservableCollection<ConnectorModel> connectors = new ObservableCollection<ConnectorModel>();
@@ -369,6 +369,23 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
+
+        public bool Equals(PortModel other)
+        {
+            if (other == null) return false;
+
+            if (this == other) return true;
+
+            if (GUID == other.GUID) return true;
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return GUID.GetHashCode();
+        }
+
     }
 
     /// <summary>

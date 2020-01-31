@@ -214,7 +214,7 @@
             <StatusBar
                 Name="RestartBanner"
                 Background="LightCoral"
-                DockPanel.Dock="Top"
+                DockPanel.Dock="Bottom"
                 Height="55"
                 Margin="1"
                 Visibility="Hidden">
@@ -222,49 +222,6 @@
                 <StatusBarItem>
                     <Border Height="50">
                         <TextBlock TextWrapping="Wrap" Width="500" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
-                    </Border>
-                </StatusBarItem>
-            </StatusBar>
-            <!-- Feedback Banner -->
-            <StatusBar Background="{StaticResource FeedbackSectionBackground}" DockPanel.Dock="Bottom" Height="55" Margin="1">
-                <!-- Preview text -->
-                <StatusBarItem>
-                    <Border Height="50">
-                        <TextBlock TextWrapping="Wrap" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static p:Resources.PreviewText}" VerticalAlignment="Center"/>
-                    </Border>
-                </StatusBarItem>
-                <StatusBarItem Width="153" Margin="10,0,0,0" Height="40">
-                    <Border Name="FeedbackBorder" BorderThickness="1">
-                        <Border.Style>
-                            <Style>
-                                <Style.Triggers>
-                                    <Trigger Property="Border.IsMouseOver" Value="True">
-                                        <Setter Property="Border.BorderBrush" Value="White" />
-                                    </Trigger>
-                                    <Trigger Property="Border.IsMouseOver" Value="False">
-                                        <Setter Property="Border.BorderBrush" Value="#373737" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Border.Style>
-                        <!-- Feedback button -->
-                        <Button HorizontalAlignment="Right"
-                            Width="150" Click="ProvideFeedback" Background="#373737" Height="30">
-                            <TextBlock TextWrapping="Wrap" FontSize="15" Foreground="White" Height="20" Text="{x:Static w:Resources.ProvideFeedbackButton}" VerticalAlignment="Center"/>
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="{x:Type Button}">
-                                                <Border Background="{TemplateBinding Background}">
-                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Button.Style>
-                        </Button>
                     </Border>
                 </StatusBarItem>
             </StatusBar>

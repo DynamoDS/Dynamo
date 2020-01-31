@@ -3,12 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using Dynamo.WorkspaceDependency;
 using Dynamo.Wpf.Extensions;
 using Newtonsoft.Json;
@@ -89,6 +91,61 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// This test is created to guard the clicking behavior on tab closing button
+        /// and make sure it actually close the corresponding tab
+        /// </summary>
+        [Test]
+        public void ClickingToCloseViewExtensionTabTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a graph which should bring up the Workspace References view extension window with one tab
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+
+            Utility.DispatcherUtil.DoEvents();
+            View.CloseExtensionTab(WpfUtilities.ChildrenOfType<Button>(View.ExtensionTabItems.FirstOrDefault()).FirstOrDefault(), null);
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+        }
+
+        /// <summary>
+        /// This test is created to guard the tab closing API - CloseExtensioninInSideBar()
+        /// and make sure it actually close the corresponding tab
+        /// </summary>
+        [Test]
+        public void APItoCloseViewExtensionTabTest()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a graph which should bring up the Workspace References view extension window with one tab
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            loadedParams.CloseExtensioninInSideBar(this.viewExtension);
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+        }
+
+        /// <summary>
+        /// This test will make sure that the extension tab is closed upon closing the home workspace.
+        /// </summary>
+        [Test]
+        public void CloseViewExtensionTabOnClosingWorkspace()
+        {
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(viewExtension);
+            // Open a graph which should bring up the Workspace References view extension window with one tab
+            Open(@"pkgs\Dynamo Samples\extra\CustomRenderExample.dyn");
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            var homeSpace = Model.Workspaces.First(ws => ws is HomeWorkspaceModel) as HomeWorkspaceModel;
+            homeSpace.Clear();
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+        }
+
+        /// <summary>
         /// This test is created to guard a crash happened that while dep viewer is loaded,
         /// opening a dyf directly and closing it to switch to an empty homeworkspace causing a crash
         /// </summary>
@@ -165,12 +222,12 @@ namespace DynamoCoreWpfTests
 
             var extensionManager = View.viewExtensionManager;
 
-            var initialNum = View.TabItems.Count;
+            var initialNum = View.ExtensionTabItems.Count;
 
-            // Adding the workspace dependency view extension will 
+            // Adding the workspace references extension will 
             // not add a dup tab in the extensions side bar
             extensionManager.Add(viewExtension);
-            Assert.AreEqual(initialNum, View.TabItems.Count);
+            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)

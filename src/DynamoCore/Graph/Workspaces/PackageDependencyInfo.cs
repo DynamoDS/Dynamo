@@ -12,7 +12,7 @@ namespace Dynamo.Graph.Workspaces
         IncorrectVersion,  // Correct package but incorrect version. 
         Missing,           // package is completely missing.
         Warning,           // Actual package is missing but the nodes are resolved by some other package. 
-        RequiresRestart    // Restart needed in order to complete the uninstall of some package. Notice this would be only set when workspace dependency viewer is loaded.
+        RequiresRestart    // Restart needed in order to complete the uninstall of some package. Notice this would be only set when workspace references extension is loaded.
     }
 
     /// <summary>

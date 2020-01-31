@@ -38,6 +38,27 @@
       ],
       "Replication": "Disabled",
       "Description": "Bad Description. This value should not be read."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 0.0,
+      "Id": "867142a3c67e4d66a6c9bbf90e0b5145",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6e61229f418b48358a8c3d44902779b1",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
     }
   ],
   "Connectors": [],
@@ -71,15 +92,25 @@
         "Name": "List Create",
         "Id": "5b193e6856cf440a9d31bd85d16545aa",
         "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
+        "IsSetAsOutput": true,
+        "Excluded": true,
         "X": 281.0,
         "Y": 258.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "867142a3c67e4d66a6c9bbf90e0b5145",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 282.16414686825055,
+        "Y": 360.88768898488127
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -53.707499999999982,
+    "Y": -29.609999999999985,
+    "Zoom": 1.1575
   }
 }

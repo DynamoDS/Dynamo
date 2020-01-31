@@ -130,11 +130,12 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories);
+            //Initialize the PackageLoader with the CommonDataDirectory so that packages found here are checked first for dll's with signed certificates
+            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories, new [] {startupParams.PathManager.CommonDataDirectory});
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
-            RequestLoadNodeLibraryHandler = startupParams.LibraryLoader.LoadNodeLibrary;
+            RequestLoadNodeLibraryHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadLibraryAndSuppressZTSearchImport;
             //TODO: Add LoadPackages to ILibraryLoader interface in 3.0
             LoadPackagesHandler = (startupParams.LibraryLoader as ExtensionLibraryLoader).LoadPackages;
             customNodeManager = (startupParams.CustomNodeManager as Core.CustomNodeManager);

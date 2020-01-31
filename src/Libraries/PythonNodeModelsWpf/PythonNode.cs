@@ -9,14 +9,16 @@ using Dynamo.Wpf.Windows;
 using PythonNodeModels;
 using System;
 using System.Windows;
+using Dynamo.Graph.Workspaces;
 
 namespace PythonNodeModelsWpf
 {
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {
         private DynamoViewModel dynamoViewModel;
-        private PythonNode model;
-        private NodeView view;
+        private PythonNode pythonNodeModel;
+        private NodeView pythonNodeView;
+        private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
 
@@ -24,9 +26,10 @@ namespace PythonNodeModelsWpf
         {
             base.CustomizeView(nodeModel, nodeView);
 
-            model = nodeModel;
-            view = nodeView;
+            pythonNodeModel = nodeModel;
+            pythonNodeView = nodeView;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
             var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
@@ -53,7 +56,7 @@ namespace PythonNodeModelsWpf
                 var res = MessageBox.Show(
                     String.Format(
                         PythonNodeModels.Properties.Resources.DeletingPythonNodeWithOpenEditorMessage, 
-                        this.model.Name),
+                        this.pythonNodeModel.Name),
                     PythonNodeModels.Properties.Resources.DeletingPythonNodeWithOpenEditorTitle,
                     MessageBoxButton.OKCancel, 
                     MessageBoxImage.Question);
@@ -89,8 +92,8 @@ namespace PythonNodeModelsWpf
                 }
                 else
                 {
-                    editWindow = new ScriptEditorWindow(dynamoViewModel, model, view, ref editorWindowRect);
-                    editWindow.Initialize(model.GUID, "ScriptContent", model.Script);
+                    editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
+                    editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
                     editWindow.Closed += editWindow_Closed;
                     editWindow.Show();
                 }

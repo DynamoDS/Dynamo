@@ -46,6 +46,14 @@ namespace Dynamo.Extensions
             this.ExtensionRemoved += UnsubscribeExtension;
         }
 
+        /// <summary>
+        /// Creates ExtensionManager with directories which require package certificate verification.
+        /// </summary>
+        public ExtensionManager(IEnumerable<string> directoriesToVerify) :this()
+        {
+            this.extensionLoader.DirectoriesToVerifyCertificates.AddRange(directoriesToVerify);
+        }
+
         private void RequestAddExtensionHandler(dynamic extension)
         {
             if(extension is IExtension)

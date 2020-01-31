@@ -22,6 +22,7 @@ namespace PythonNodeModelsWpf
     {
         private string propertyName = string.Empty;
         private Guid boundNodeId = Guid.Empty;
+        private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
         private readonly IronPythonCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
@@ -47,8 +48,9 @@ namespace PythonNodeModelsWpf
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
 
-        internal void Initialize(Guid nodeGuid, string propName, string propValue)
+        internal void Initialize(Guid workspaceGuid, Guid nodeGuid, string propName, string propValue)
         {
+            boundWorkspaceId = workspaceGuid;
             boundNodeId = nodeGuid;
             propertyName = propName;
 
@@ -143,7 +145,7 @@ namespace PythonNodeModelsWpf
         private void UpdateScript(string scriptText)
         {
             var command = new DynamoModel.UpdateModelValueCommand(
-                System.Guid.Empty, boundNodeId, propertyName, scriptText);
+                boundWorkspaceId, boundNodeId, propertyName, scriptText);
 
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();

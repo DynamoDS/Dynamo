@@ -177,7 +177,7 @@ namespace Dynamo.Scheduler
                 try
                 {
                     graphicItem.Tessellate(package, factory.TessellationParameters);
-                    if (package.MeshVertexColors.Count() > 0)
+                    if (package.MeshVertexColors.Any())
                     {
                         package.RequiresPerVertexColoration = true;
                     }
@@ -289,12 +289,12 @@ namespace Dynamo.Scheduler
                     // color of 0,0,0,255 (Black), we adjust the color components here.
                     if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
                     {
-                        if (package.LineVertexCount > 0 && package.LineStripVertexColors.Count() <= 0)
+                        if (package.LineVertexCount > 0 && !package.LineStripVertexColors.Any())
                         {
                             package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, DefR, DefG, DefB, DefA));
                         }
 
-                        if (package.PointVertexCount > 0 && package.PointVertexColors.Count() <= 0)
+                        if (package.PointVertexCount > 0 && !package.PointVertexColors.Any())
                         {
                             package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, DefR, DefG, DefB, DefA));
                         }

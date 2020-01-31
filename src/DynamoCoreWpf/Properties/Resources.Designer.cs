@@ -1639,46 +1639,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable detailed usability data reporting (Instrumentation).
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableDataReporting {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReporting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Detailed reporting sends behaviour data that we use for improving {0}.
-        ///
-        ///It includes the graph being created as well as errors and warnings.
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableDataReportingTooltip {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReportingTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable anonymous summary reporting (Google Analytics).
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableSummaryReporting {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReporting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
-        ///
-        ///It does not contain your graph or any personal data.
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableSummaryReportingTooltip {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReportingTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fractional Foot.
         /// </summary>
         public static string DynamoViewSettingMenuFractionalFoot {
@@ -1810,6 +1770,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingMenuRenderPrecision {
             get {
                 return ResourceManager.GetString("DynamoViewSettingMenuRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
+        /// </summary>
+        public static string DynamoViewSettingMenuShowDataReportingDialog {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display the dialog for user to pick agreement on data collecting..
+        /// </summary>
+        public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialogTooltip", resourceCulture);
             }
         }
         
@@ -3738,7 +3716,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo..
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish..
         /// </summary>
         public static string PackageHostDependencyFilter {
             get {
@@ -4040,6 +4018,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageSearchViewDescription {
             get {
                 return ResourceManager.GetString("PackageSearchViewDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string PackageSearchViewFilterByButton {
+            get {
+                return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
             }
         }
         

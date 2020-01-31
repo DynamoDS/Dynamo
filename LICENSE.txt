@@ -18,6 +18,10 @@ http://opensource.org/licenses/lgpl-3.0.html
 ### CEFSharp
 https://github.com/cefsharp/CefSharp/blob/master/LICENSE
 
+### DirectX
+https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
+https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
+
 ### CSharpAnalytics
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
