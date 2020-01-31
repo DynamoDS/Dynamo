@@ -3,14 +3,14 @@ using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
+using System.Globalization;
 using System.Windows.Controls;
 
 namespace Dynamo.DocumentationBrowser
 {
     /// <summary>
-    /// This sample view extension demonstrates a sample IViewExtension 
-    /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
-    /// It reacts to workspace modified/ cleared events to refresh.
+    /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
+    /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
     public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
     {
@@ -22,7 +22,7 @@ namespace Dynamo.DocumentationBrowser
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name => "Documentation Browser ViewExtension";
+        public string Name => "Documentation Browser";
 
         /// <summary>
         /// GUID of the extension
@@ -66,9 +66,6 @@ namespace Dynamo.DocumentationBrowser
 
         public void Shutdown()
         {
-
-            BrowserView.Dispose();
-            ViewModel.Dispose();
             this.Dispose();
         }
 
@@ -77,12 +74,19 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            // un-subscribe from the documentation open request event from Dynamo
             viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+
+            BrowserView?.Dispose();
+            ViewModel?.Dispose();
         }
 
         #endregion
 
+        /// <summary>
+        /// This method handles the documentation open requests coming from Dynamo.
+        /// The incoming request is routed to the ViewModel for processing.
+        /// </summary>
+        /// <param name="args">The incoming event data.</param>
         public void HandleRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs args)
         {
             if (args is null) return;
@@ -91,13 +95,23 @@ namespace Dynamo.DocumentationBrowser
             // this also forces the Sidebar to open
             AddToSidebar();
 
-            // forward the event to the browser ViewModel to handle
+            // forward the event to the ViewModel to handle
             this.ViewModel.HandleOpenDocumentationLinkEvent(args);
         }
 
         private void AddToSidebar()
         {
-            if (this.BrowserView is null) this.OnMessageLogged(LogMessage.Error("Browser view was not initialised and cannot be added to the sidebar."));
+            // verify the browser window has been initialised
+            if (this.BrowserView is null)
+            {
+                this.OnMessageLogged(LogMessage.Error(Resources.BrowserViewCannotBeAddedToSidebar));
+                return;
+            }
+
+            // make sure the documentation window is not empty before displaying it
+            // we have to do this here because we cannot detect when the sidebar is displayed
+            this.ViewModel.EnsurePageHasContent();
+
             this.viewLoadedParams?.AddToExtensionsSideBar(this, BrowserView);
         }
     }

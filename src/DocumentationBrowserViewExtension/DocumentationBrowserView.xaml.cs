@@ -1,27 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Navigation;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
     /// <summary>
     /// Interaction logic for DocumentationBrowserView.xaml
     /// </summary>
-    public partial class DocumentationBrowserView : Window, IDisposable
+    public partial class DocumentationBrowserView : UserControl, IDisposable
     {
-        readonly DocumentationBrowserViewModel viewModel;
+        private const string LOCAL_FILES_URI_IN_BROWSER = "about:blank";
+        private readonly DocumentationBrowserViewModel viewModel;
 
         /// <summary>
         /// Constructor
@@ -32,9 +22,20 @@ namespace Dynamo.DocumentationBrowser
             InitializeComponent();
             this.DataContext = viewModel;
             this.viewModel = viewModel;
-            viewModel.LinkChanged += this.NavigateToPage;
-            documentationBrowser.AllowDrop = false;
-            documentationBrowser.NavigationStarting += DocumentationBrowser_NavigationStarting;
+
+            // subscribe to the link changed event on the view model
+            // so we know when to navigate to a new documentation page/document
+            viewModel.LinkChanged += NavigateToPage;
+
+            // handle brower component events & disable certain features that are not needed
+            this.documentationBrowser.AllowDrop = false;
+            this.documentationBrowser.NavigationStarting += NavigationStarting;
+            this.documentationBrowser.NavigationCompleted += NavigationCompleted;
+        }
+
+        private void NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
+        {
+            // do something here ?
         }
 
         /// <summary>
@@ -42,14 +43,14 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DocumentationBrowser_NavigationStarting(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationStartingEventArgs e)
+        private void NavigationStarting(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationStartingEventArgs e)
         {
             // we need to do a null check as sometimes this event will fire twice and return null
             if (e.Uri == null) return;
             // check if the argument Uri is the same as the warning link
-            if (e.Uri.AbsoluteUri.Equals(viewModel.Link.AbsoluteUri)) return;
+            if (e.Uri.Equals(this.viewModel.Link)) return;
             // for local files the argument Uri will return 'about:blank'
-            if (e.Uri.AbsoluteUri == "about:blank") return;
+            if (e.Uri.OriginalString.Equals(LOCAL_FILES_URI_IN_BROWSER)) return;
 
             // if non of the above is true cancel the navigation 
             // and redirect it to a new process that starts the browser
@@ -61,13 +62,13 @@ namespace Dynamo.DocumentationBrowser
         {
             if (this.viewModel.IsRemoteResource)
             {
-                RemoteLinkBanner.Visibility = Visibility.Visible;
-                documentationBrowser.Navigate(link);
+                this.RemoteLinkBanner.Visibility = Visibility.Visible;
+                this.documentationBrowser.Navigate(link);
                 return;
             }
 
-            RemoteLinkBanner.Visibility = Visibility.Collapsed;
-            documentationBrowser.NavigateToString(this.viewModel.Content);
+            this.RemoteLinkBanner.Visibility = Visibility.Collapsed;
+            this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
         }
 
         /// <summary>
@@ -75,8 +76,9 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            this.viewModel.LinkChanged -= this.NavigateToPage;
-            documentationBrowser.Dispose();
+            this.viewModel.LinkChanged -= NavigateToPage;
+            this.documentationBrowser.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

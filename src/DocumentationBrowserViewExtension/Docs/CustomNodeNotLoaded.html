@@ -1,0 +1,45 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Custom Node Not Loaded</h2>
+<p>This error message indicates that your custom node has not been loaded. Custom nodes usually come from a specific 3rd party package. If the package is not installed on your computer, Dynamo is not able to find and load nodes originating from that package. Find out more about custom nodes <a href="https://primer.dynamobim.org/10_Custom-Nodes/10_Custom-Nodes.html">here</a>.</p>
+
+<h4>How to fix</h4>
+<p>To fix this issue make sure that the package containing the custom node you are trying to use is installed on your machine. You can install 3rd party packages from the <a href="https://primer.dynamobim.org/11_Packages/11-1_Introduction.html">Package Manager</a>.</p>
+
+<p>The node might also come from a local package or dll and will therefore not be available in the Package Manager. If this is the case you need to manually load the dll by pressing the “+” sign under the “Add-ons” tab in the library pane, as shown below: </p>
+
+<img src="images/CustomNodeNotLoaded_image1.png" alt="Image showing plus button at the bottom of the package manager window" height="300"/>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=custom%20node%20not%20loaded"><span> posts on the Dynamobim forum discussing "<strong>custom node not loaded</strong>"</span></a>.</p>
+
+</body>

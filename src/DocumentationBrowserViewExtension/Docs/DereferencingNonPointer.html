@@ -1,0 +1,45 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Dereferencing a non-pointer</h2>
+<p>This error message indicates that the node showing this error message received an empty value from an upstream node and cannot work correctly because it expected a non-empty value. This can be related to a bug inside the implementation of a node.</p>
+
+<h4>How to fix</h4>
+<p>Check upstream nodes to see whether they execute correctly – it is common that upstream nodes do not execute correctly and pass empty (i.e., null) values downstream to a node which then displays this error message. Start from the node that is causing this error and work backwards, checking the output of each node until you find the node that is outputting empty values.</p>
+
+<p>Another approach is to use a combination of <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/IsNull">Object.IsNull</a> and <a href="https://dictionary.dynamobim.com/2/#/List/Modify/Action/FilterByBoolMask">List.FilterByBoolMask</a> to filter null values from your data, as shown below:</p>
+
+<img src="images/ArgumentNullException_image1.png" alt="Example of using object is null with list filter by bool mask to filter null values from input data" width="500"/>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=dereferencing%20a%20non-pointer"><span> posts on the Dynamobim forum discussing "<strong>dereferencing a non-pointer</strong>"</span></a>.</p>
+
+</body>

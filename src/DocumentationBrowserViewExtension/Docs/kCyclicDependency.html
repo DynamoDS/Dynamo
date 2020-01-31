@@ -1,0 +1,41 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>A cyclic dependency exists between two variables</h2>
+<p>This warning messages indicates that you are trying to pass the output of a node to the input of that same node. This will create cyclic dependency which is not allowed in Dynamo.</p>
+
+<h4>How to fix</h4>
+<p>Make sure that you are not passing the output of a node back into the input of that same node. If you need to create a Loop you can use the <a href="https://dictionary.dynamobim.com/2/#/Script/Control%20Flow/Action/LoopWhile">LoopWhile node</a>, <a href="https://forum.dynamobim.com/search?q=Loop%20using%20designscript">create a Loop using DesignScript</a> or create a loop using Python as shown in <a href="https://github.com/Amoursol/dynamoPython/tree/master/concepts">these examples</a>.</p>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=cyclic%20dependency%20exists%20between%20two%20variables"><span> posts on the Dynamobim forum discussing "<strong>cyclic dependency exists between two variables</strong>"</span></a>.</p>
+
+</body>

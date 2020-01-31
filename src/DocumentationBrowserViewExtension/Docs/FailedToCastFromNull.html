@@ -1,0 +1,43 @@
+<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+<style>
+body {
+    color: white;
+    font-size: 13px;
+    font-family: "Artifakt Element";
+    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+}
+
+a {
+    color: lightgray;
+    cursor: pointer;
+    background-color: transparent;
+}
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Null value cannot be cast to type</h2>
+<p>This warning means that the node you are trying to use is expecting an input of a certain data type and that type cannot be null. Null simply means “No Object”, therefore the node throws a warning saying you are trying to input no object into the node, which is not allowed.</p>
+
+<h4>How to fix</h4>
+<p>The error might be caused by other nodes in your graph. Check upstream nodes to see whether they execute correctly – it is common that upstream nodes do not execute correctly and pass null values downstream to a node which then displays this error message. Start from the node that is causing this warning and work backwards, checking the output of each node until you find the node that is causing this issue.</p>
+
+<p>If the error message indicates which parameter is null, check nodes on that parameter’s upstream path to see whether they execute correctly and pass non-null values downstream.</p>
+
+<h4>More information</h4>
+<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span>"<strong>null value cannot be cast to type</strong>"</span></a>.</p>
+
+</body>
