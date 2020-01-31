@@ -223,7 +223,7 @@ namespace Dynamo.ViewModels
             if (parameter is Uri)
             {
                 var content = new OpenDocumentationLinkEventArgs((Uri)parameter);
-                this.DynamoViewModel.OnRequestOpenDocumentationLink(this, content);
+                this.DynamoViewModel.OpenDocumentationLink(content);
             }
         }
 
@@ -336,7 +336,7 @@ namespace Dynamo.ViewModels
             string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
             if (split.Length <= 1) return null;
 
-            // update the text so the link is removed
+            // update the text so the link & identifier are removed
             text = split[0];
 
             // try to parse the link into a URI now
