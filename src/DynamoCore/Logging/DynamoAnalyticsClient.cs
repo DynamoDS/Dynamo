@@ -128,6 +128,9 @@ namespace Dynamo.Logging
 
         public virtual IAnalyticsSession Session { get; private set; }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send analytics info
+        /// </summary>
         public bool ReportingAnalytics
         {
             get
@@ -138,6 +141,9 @@ namespace Dynamo.Logging
             }
         }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send instrumentation info
+        /// </summary>
         public bool ReportingUsage
         {
             get { return preferences != null
