@@ -61,6 +61,15 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browser view has not been initialised and cannot be added to the sidebar..
+        /// </summary>
+        public static string BrowserViewCannotBeAddedToSidebar {
+            get {
+                return ResourceManager.GetString("BrowserViewCannotBeAddedToSidebar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
         ///&lt;style&gt;
@@ -143,6 +152,24 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No further details available for this error..
+        /// </summary>
+        public static string InternalErrorNoDetailsAvailable {
+            get {
+                return ResourceManager.GetString("InternalErrorNoDetailsAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Documentation link is not a valid URI..
+        /// </summary>
+        public static string InvalidDocumentationLink {
+            get {
+                return ResourceManager.GetString("InvalidDocumentationLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Documentation Browser.
         /// </summary>
         public static string MenuItemText {
@@ -152,32 +179,43 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///
+        ///&lt;style&gt;
+        ///  *{
+        ///      transition: all 0.6s;
+        ///  }
+        ///
+        ///  html {
+        ///      height: 100%;
+        ///  }
+        ///
+        ///  body{
+        ///      font-family: &quot;Artifakt Element&quot;;
+        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
+        ///      color: white;
+        ///      margin: 0;
+        ///      background-color: #414141;
+        ///  }
+        ///
+        ///  #main{
+        ///      display: table;
+        ///      width: 100%;
+        ///      height: 100vh;
+        ///      text-align: center;
+        ///  }
+        ///
+        ///  .fof{
+        ///      display: table-cell;
+        ///      vertical-align: middle;
+        ///  }
+        ///
+        ///  .fof h1{
+        ///      fon [rest of string was truncated]&quot;;.
         /// </summary>
-        public static System.Drawing.Bitmap NodeLibraryDependency_Loaded {
+        public static string NoContent {
             get {
-                object obj = ResourceManager.GetObject("NodeLibraryDependency_Loaded", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap NodeLibraryDependency_Missing {
-            get {
-                object obj = ResourceManager.GetObject("NodeLibraryDependency_Missing", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap NodeLibraryDependency_Warning {
-            get {
-                object obj = ResourceManager.GetObject("NodeLibraryDependency_Warning", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetString("NoContent", resourceCulture);
             }
         }
     }
