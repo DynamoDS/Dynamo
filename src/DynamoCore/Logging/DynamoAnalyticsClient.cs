@@ -130,7 +130,12 @@ namespace Dynamo.Logging
 
         public bool ReportingAnalytics
         {
-            get { return preferences != null && preferences.IsAnalyticsReportingApproved; }
+            get
+            {
+                return preferences != null 
+                    && Service.IsInitialized
+                    && preferences.IsAnalyticsReportingApproved;
+            }
         }
 
         public bool ReportingUsage
@@ -165,7 +170,7 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (ReportingAnalytics)
+            if (preferences!= null && preferences.IsAnalyticsReportingApproved)
             {
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product,
