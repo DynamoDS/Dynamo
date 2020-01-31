@@ -40,7 +40,7 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
 
         private string content;
-        public bool HasContent => string.IsNullOrWhiteSpace(this.content);
+        public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
         /// <summary>
         /// Indicates if the document to be displayed is hosted by a remote source (the internet or network location).
@@ -189,13 +189,16 @@ namespace Dynamo.DocumentationBrowser
 
             var assembly = GetType().Assembly;
 
-            string resourceName = assembly
-                .GetManifestResourceNames()
+            var availableResources = assembly
+                .GetManifestResourceNames();
+
+            var matchingResource = availableResources
                 .Where(str => str.EndsWith(name))
                 .FirstOrDefault();
-            if (string.IsNullOrEmpty(resourceName)) return null;
 
-            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            if (string.IsNullOrEmpty(matchingResource)) return null;
+
+            using (Stream stream = assembly.GetManifestResourceStream(matchingResource))
             using (StreamReader reader = new StreamReader(stream))
             {
                 result = reader.ReadToEnd();
@@ -207,6 +210,10 @@ namespace Dynamo.DocumentationBrowser
         {
             return this.content.Replace(HTML_TEMPLATE_IDENTIFIER, content);
         }
+
+        #endregion
+
+        #region Path handling
 
         /// <summary>
         /// Resolves the path to local documentation file.

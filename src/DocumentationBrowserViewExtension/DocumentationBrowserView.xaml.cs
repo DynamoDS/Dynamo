@@ -11,7 +11,7 @@ namespace Dynamo.DocumentationBrowser
     public partial class DocumentationBrowserView : UserControl, IDisposable
     {
         private const string LOCAL_FILES_URI_IN_BROWSER = "about:blank";
-        readonly DocumentationBrowserViewModel viewModel;
+        private readonly DocumentationBrowserViewModel viewModel;
 
         /// <summary>
         /// Constructor
@@ -68,15 +68,6 @@ namespace Dynamo.DocumentationBrowser
             }
 
             this.RemoteLinkBanner.Visibility = Visibility.Collapsed;
-
-            // do not attempt to open a document that has no content
-            // as the browser component will throw
-            if (!this.viewModel.HasContent)
-            {
-                this.viewModel.NavigateToNoContentPage();
-                return;
-            }
-
             this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
         }
 
