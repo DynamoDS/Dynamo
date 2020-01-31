@@ -115,8 +115,8 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public event Action<OpenDocumentationLinkEventArgs> RequestOpenDocumentationLink;
-        public virtual void OnRequestOpenDocumentationLink(Object sender, OpenDocumentationLinkEventArgs e)
+        public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink;
+        public virtual void OnRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs e)
         {
             // let any registered documentation link handlers process the request
             if (RequestOpenDocumentationLink != null) RequestOpenDocumentationLink(e);
