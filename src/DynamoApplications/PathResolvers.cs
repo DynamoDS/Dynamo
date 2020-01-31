@@ -30,6 +30,7 @@ namespace Dynamo.Applications
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
                 "DSIronPython.dll",
+                "DynamoPython.dll",
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",

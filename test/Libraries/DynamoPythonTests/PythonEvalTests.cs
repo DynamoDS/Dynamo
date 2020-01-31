@@ -1,18 +1,30 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace DSIronPythonTests
 {
     public class IronPythonTests
     {
+        public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
+
+        public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
+            DSCPython.CPythonEvaluator.EvaluatePythonScript,
+            //DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
+        };
+
+      
         [Test]
         [Category("UnitTests")]
         public void EvaluatorWorks()
         {
-            var empty = new ArrayList();
-            var output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript("OUT = 0", empty, empty);
-            Assert.AreEqual(0, output);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var empty = new ArrayList();
+                var output = pythonEvaluator("OUT = 0", empty, empty);
+                Assert.AreEqual(0, output);
+            }
         }
 
         [Test]
@@ -24,12 +36,16 @@ namespace DSIronPythonTests
             var names = new ArrayList { "test" };
             var vals = new ArrayList { expected };
 
-            var output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
-                "OUT = test",
-                names,
-                vals);
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(
+                    "OUT = test",
+                    names,
+                    vals
+                );
 
-            Assert.AreEqual(expected, output);
+                Assert.AreEqual(expected, output);
+            }
         }
 
         [Test]
@@ -41,15 +57,18 @@ namespace DSIronPythonTests
             var names = new ArrayList { "f" };
             var vals = new ArrayList { func };
 
-            dynamic output =
-                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                dynamic output = pythonEvaluator(
                     "g = lambda x: f(x); OUT = g",
                     names,
-                    vals);
+                    vals
+                );
 
-            Assert.AreEqual("functions rule!", output("functions"));
+                Assert.AreEqual("functions rule!", output("functions"));
+            }
         }
-
+        /*
         [Test]
         [Category("UnitTests")]
         public void DataMarshaling_Output()
@@ -87,6 +106,7 @@ namespace DSIronPythonTests
 
             marshaler.UnregisterMarshalerOfType<string>();
         }
+        */
 
         [Test]
         public void SliceOperator_Output()
@@ -94,14 +114,17 @@ namespace DSIronPythonTests
             var names = new ArrayList { "indx" };
             var vals = new ArrayList { 3 };
 
-            var output = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(
                 "OUT = [1,2,3,4,5,6,7][indx:indx+2]",
                 names,
                 vals);
 
-            var expected = new ArrayList { 4, 5 };
+                var expected = new ArrayList { 4, 5 };
 
-            Assert.AreEqual(expected, output);
+                Assert.AreEqual(expected, output);
+            }
         }
     }
 }

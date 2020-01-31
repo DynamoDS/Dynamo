@@ -8,7 +8,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Python.Runtime;
 
-namespace DSIronPython
+namespace DSCPython
 {
     [SupressImportIntoVM]
     public enum EvaluationState { Begin, Success, Failed }
@@ -23,37 +23,10 @@ namespace DSIronPython
     ///     Evaluates a Python script in the Dynamo context.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public static class IronPythonEvaluator
+    public static class CPythonEvaluator
     {
         /// <summary> stores a copy of the previously executed code</summary>
         private static string prev_code { get; set; }
-        /// <summary> stores a copy of the previously compiled engine</summary>
-        //private static ScriptSource prev_script { get; set; }
-        /// <summary> stores a reference to the executing Dynamo Core directory</summary>
-        private static string dynamoCorePath { get; set; }
-
-        /// <summary>
-        /// Attempts to build a path referencing the Python Standard Library in Dynamo Core,
-        /// returns null if unable to retrieve a valid path.
-        /// </summary>
-        /// <returns>path to the Python Standard Library in Dynamo Core</returns>
-        private static string pythonStandardLibPath()
-        {
-            // Attempt to get and cache the Dynamo Core directory path
-            if(string.IsNullOrEmpty(dynamoCorePath))
-            {
-                // Gather executing assembly info
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                Version version = assembly.GetName().Version;
-                dynamoCorePath = Path.GetDirectoryName(assembly.Location);
-            }
-
-            // Return the standard library path
-            if (!string.IsNullOrEmpty(dynamoCorePath))
-            { return dynamoCorePath + @"\IronPython.StdLib.2.7.9"; }
-
-            return null;
-        }
 
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
@@ -64,7 +37,7 @@ namespace DSIronPython
         /// <param name="code">Python script as a string.</param>
         /// <param name="bindingNames">Names of values referenced in Python script.</param>
         /// <param name="bindingValues">Values referenced in Python script.</param>
-        public static object EvaluateIronPythonScript(
+        public static object EvaluatePythonScript(
             string code,
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
