@@ -502,7 +502,7 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("DynamoUI")]
-        public void PreferenceSetting_Analytics()
+        public void PreferenceSetting_AgreeAnalyticSharing()
         {
             // Test deserialization of analytics setting 
             // Test loading old settings file without agreement 
@@ -510,12 +510,19 @@ namespace DynamoCoreWpfTests
             var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(false, resultSetting.IsAnalyticsReportingApproved);
             Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
+        }
 
+        [Test]
+        [Category("DynamoUI")]
+        public void PreferenceSetting_NotAgreeAnalyticsSharing()
+        {
             // Test loading old settings file without render precision attribute
-            filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
-            resultSetting = PreferenceSettings.Load(filePath);
+            var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
+            var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
             Assert.AreEqual(true, resultSetting.IsUsageReportingApproved);
+            Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
         }
 
         #region PreferenceSettings
