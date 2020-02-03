@@ -127,12 +127,28 @@ namespace Dynamo.ViewModels
         }
     }
 
+    /// <summary>
+    /// Provides information about the Dynamo RequestOpenDocumentationLink event,
+    /// such as the link that was requested to be opened and whether it is a remote resource. 
+    /// </summary>
     public class OpenDocumentationLinkEventArgs : EventArgs
     {
-        public Uri Link { get; set; }
+        /// <summary>
+        /// The documentation link that was requested to be opened.
+        /// </summary>
+        public Uri Link { get; }
+
+        /// <summary>
+        /// Indicates whether the requested link points to a remote resource.
+        /// A resource is considered remote if it is not a file on the local filesystem.
+        /// Examples of remote resources include a web address or a file on a network share.
+        /// </summary>
+        public bool IsRemoteResource { get; }
+
         public OpenDocumentationLinkEventArgs(Uri link)
         {
             Link = link ?? throw new ArgumentNullException(nameof(link));
+            IsRemoteResource = link.IsAbsoluteUri && !link.IsFile;
         }
     }
 }

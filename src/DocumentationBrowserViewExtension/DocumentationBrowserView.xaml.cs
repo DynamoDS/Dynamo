@@ -27,7 +27,7 @@ namespace Dynamo.DocumentationBrowser
             // so we know when to navigate to a new documentation page/document
             viewModel.LinkChanged += NavigateToPage;
 
-            // handle brower component events & disable certain features that are not needed
+            // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.NavigationStarting += NavigationStarting;
             this.documentationBrowser.NavigationCompleted += NavigationCompleted;
@@ -78,7 +78,6 @@ namespace Dynamo.DocumentationBrowser
         {
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Dynamo.DocumentationBrowser
 
             // if the link is not pointing to a local file, but to a network or internet address
             // we treat it as a remote resource that can be loaded in the browser directly
-            this.IsRemoteResource = e.Link.IsAbsoluteUri && !e.Link.IsFile;
+            this.IsRemoteResource = e.IsRemoteResource;
 
             if (this.IsRemoteResource)
             {
