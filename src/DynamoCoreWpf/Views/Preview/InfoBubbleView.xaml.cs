@@ -95,7 +95,9 @@ namespace Dynamo.Controls
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
-        private bool IsDisconnected { get { return (this.ViewModel == null); } }    
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }
+
+        private Hyperlink hyperlink;
 
         #endregion
 
@@ -452,7 +454,7 @@ namespace Dynamo.Controls
 
                 if (viewModel.DocumentationLink != null)
                 {
-                    TextBlock linkBlock = GetNewHyperlinkTextBlock(viewModel.DocumentationLink);
+                    TextBlock linkBlock = GetHyperlinkTextBlock();
                     ContentContainer.Children.Add(linkBlock);
                 }
             }
@@ -492,8 +494,26 @@ namespace Dynamo.Controls
             return textBox;
         }
 
-        private TextBlock GetNewHyperlinkTextBlock(Uri uri)
+        private void UpdateHyperlink()
         {
+            // if we have already generated a hyperlink then don't create a new one, but simply update the link uri
+            // this is to avoid losing track of objects that have event handler subscriptions
+            if (this.hyperlink != null)
+            {
+                this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+                return;
+            }
+
+            this.hyperlink = new Hyperlink();
+            this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+            this.hyperlink.RequestNavigate += RequestNavigateToDocumentationLinkHandler;
+            this.hyperlink.Inlines.Add(Wpf.Properties.Resources.InfoBubbleDocumentationLinkText);
+        }
+
+        private TextBlock GetHyperlinkTextBlock()
+        {
+            this.UpdateHyperlink();
+
             var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
             TextBlock linkBlock = new TextBlock
             {
@@ -514,11 +534,7 @@ namespace Dynamo.Controls
                 FontFamily = font as FontFamily
             };
 
-            Hyperlink link = new Hyperlink();
-            link.NavigateUri = uri;
-            link.RequestNavigate += RequestNavigateToDocumentationLinkHandler;
-            link.Inlines.Add(Wpf.Properties.Resources.InfoBubbleDocumentationLinkText);
-            linkBlock.Inlines.Add(link);
+            linkBlock.Inlines.Add(this.hyperlink);
 
             return linkBlock;
         }
@@ -918,6 +934,10 @@ namespace Dynamo.Controls
         {
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             viewModel.RequestAction -= InfoBubbleRequestAction;
+            
+            // make sure we unsubscribe from handling the hyperlink click event
+            if (this.hyperlink != null)
+                this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
         }
 
         #endregion
