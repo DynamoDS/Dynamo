@@ -169,7 +169,6 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = data.Style;
             ConnectingDirection = data.ConnectingDirection;
             UpdateContent(data.Text);
-            this.DocumentationLink = data.Link;
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
             DocumentationLink = data.Link;
@@ -321,37 +320,42 @@ namespace Dynamo.ViewModels
             Style = style;
             TopLeft = topLeft;
             BotRight = botRight;
-            Link = CheckIfMessageHasHrefLinkAndExtract(ref text);
-            Text = text;
+            Link = ParseLinkFromText(text);
+            Text = RemoveLinkFromText(text);
             ConnectingDirection = connectingDirection;
         }
 
 
         //Check if has link
-        private static Uri CheckIfMessageHasHrefLinkAndExtract(ref string text)
+        private static string RemoveLinkFromText(string text)
+        {
+            // if there is no link, we do nothing
+            if (!text.Contains(externalLinkIdentifier)) return text;
+
+            // return the text without the link or identifier
+            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            return split[0];
+        }
+
+        private static Uri ParseLinkFromText(string text)
         {
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return null;
 
             string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            
+            // if we only have 1 substring, it means there wasn't anything after the identifier
             if (split.Length <= 1) return null;
 
-            // update the text so the link & identifier are removed
-            text = split[0];
-
-            // try to parse the link into a URI now
-            Uri link;
+            // try to parse the link into a URI and clear the link property on failure
             try
             {
-                link = string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1], UriKind.RelativeOrAbsolute);
+                return string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1], UriKind.RelativeOrAbsolute);
             }
             catch (Exception)
             {
-                // could not make Uri from string so clear the link property
-                link = null;
+                return null;
             }
-
-            return link;
         }
     }
 }
