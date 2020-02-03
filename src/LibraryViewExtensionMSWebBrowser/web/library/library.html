@@ -6,12 +6,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Librarie.js sample page</title>
+    <!-- overflow-x setting is to disable unnecessary horizontal scroll bar -->
+    <!-- input::-ms-clear setting is to disable unnecessary close button of search bar -->
     <style>
         body {
             padding: 0;
             margin: 0;
             background-color: #353535;
+            overflow-x: hidden;
         }
+
         input::-ms-clear {
             display: none;
         }
@@ -179,8 +183,6 @@
         }
 
         function adaptDPI() {
-            document.body.style.overflowX = 'hidden';
-
             var dpiScale = getDPIScale();
 
             var libraryHeader = document.getElementsByClassName("LibraryHeader")[0];
