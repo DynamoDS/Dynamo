@@ -23,6 +23,7 @@ namespace Dynamo.DocumentationBrowser
         #region Properties
 
         private bool shouldLoadDefaultContent;
+        internal bool AllowRemoteResources;
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -60,11 +61,12 @@ namespace Dynamo.DocumentationBrowser
         #endregion
 
         #region Constructor & Dispose
+
         public DocumentationBrowserViewModel()
         {
             this.isRemoteResource = false;
 
-            // default to no content page
+            // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
         }
 
@@ -72,28 +74,48 @@ namespace Dynamo.DocumentationBrowser
         {
             this.content = null;
         }
+
         #endregion
 
-        internal void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
+        public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
             if (e is null)
                 NavigateToNoContentPage();
 
-            // if the link is not pointing to a local file, but to a network or internet address
-            // we treat it as a remote resource that can be loaded in the browser directly
             this.IsRemoteResource = e.IsRemoteResource;
 
             if (this.IsRemoteResource)
-            {
-                this.Link = e.Link;
-                return;
-            }
+                HandleRemoteResource(e);
+            else 
+                HandleLocalResource(e);
+        }
 
-            // if target is local file, we load & cache the content of the file
-            // avoiding doing IO in the View layer
+        /// <summary>
+        /// If the link is not pointing to a local file, but to a network or internet address
+        /// we treat it as a remote resource that can be loaded in the browser directly
+        /// </summary>
+        /// <param name="e">The event to handle.</param>
+        private void HandleRemoteResource(OpenDocumentationLinkEventArgs e)
+        {
+            // respect the remote resource loading setting and bail if not allowed
+            // technically this is never called at the minute as the extension filters out these events,
+            // but code is here for when remote resources will be enabled
+            if (!AllowRemoteResources) return;
+
+            this.Link = e.Link;
+            return;
+        }
+
+        /// <summary>
+        /// If target is local file, we load & cache the content of the file
+        /// avoiding doing IO in the View layer
+        /// </summary>
+        /// <param name="e">The event to handle.</param>
+        private void HandleLocalResource(OpenDocumentationLinkEventArgs e) 
+        {
             try
             {
-                if (!this.IsRemoteResource) LoadContentFromFile(e.Link);
+                LoadContentFromFile(e.Link);
                 this.Link = e.Link;
             }
             catch (FileNotFoundException)

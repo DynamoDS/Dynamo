@@ -29,6 +29,20 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
+        /// <summary>
+        /// Setting to allow or disallow the documentation browser to load remote resources
+        /// such as web addresses or files from network shares. Defaults to false.
+        /// </summary>
+        public bool AllowRemoteResources { get; set; }
+
+        public DocumentationBrowserViewExtension()
+        {
+            // defaults to false for security considerations
+            // mechanisms to expose a setting in Dynamo or in the menu could be added 
+            // and the extension could respect those settings by setting this property
+            this.AllowRemoteResources = false;
+        }
+
         #region ILogSource
 
         public event Action<ILogMessage> MessageLogged;
@@ -49,7 +63,10 @@ namespace Dynamo.DocumentationBrowser
             this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
 
             // initialise the ViewModel and View for the window
-            ViewModel = new DocumentationBrowserViewModel();
+            ViewModel = new DocumentationBrowserViewModel()
+            {
+                AllowRemoteResources = this.AllowRemoteResources
+            };
             BrowserView = new DocumentationBrowserView(ViewModel);
 
             // Add a button to Dynamo View menu to manually show the window
@@ -90,6 +107,10 @@ namespace Dynamo.DocumentationBrowser
         public void HandleRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs args)
         {
             if (args is null) return;
+
+            // if disallowed, ignore events targeting remote resources so the sidebar is not displayed
+            if (args.IsRemoteResource && !this.AllowRemoteResources) 
+                return;
 
             // make sure the view is added to the Sidebar
             // this also forces the Sidebar to open
