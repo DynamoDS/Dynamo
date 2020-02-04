@@ -124,9 +124,6 @@
     <None Include="Docs\ArgumentNullException.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Docs\CommonErrorMessages.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="Docs\CustomNodeNotLoaded.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
