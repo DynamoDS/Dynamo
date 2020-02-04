@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,7 +38,17 @@ namespace DynamoUtilities
             }
 
             //Verify the node library has a verified signed certificate
-            var cert = asm.Modules.FirstOrDefault()?.GetSignerCertificate();
+            X509Certificate cert;
+            try
+            {
+                cert = X509Certificate.CreateFromSignedFile(assemblyPath);
+            }
+            catch
+            {
+                throw new Exception(String.Format(
+                    "A dll file found at {0} did not have a certificate attached.", assemblyPath));
+            }
+
             if (cert != null)
             {
                 var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
