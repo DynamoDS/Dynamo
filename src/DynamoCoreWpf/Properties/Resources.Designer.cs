@@ -2569,7 +2569,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read more in the documentation..
+        ///   Looks up a localized string similar to Read more....
         /// </summary>
         public static string InfoBubbleDocumentationLinkText {
             get {
