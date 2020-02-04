@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Navigation;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -29,11 +30,11 @@ namespace Dynamo.DocumentationBrowser
 
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
-            this.documentationBrowser.NavigationStarting += NavigationStarting;
-            this.documentationBrowser.NavigationCompleted += NavigationCompleted;
+            this.documentationBrowser.Navigating += NavigationStarting;
+            this.documentationBrowser.Navigated += NavigationCompleted;
         }
 
-        private void NavigationCompleted(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationCompletedEventArgs e)
+        private void NavigationCompleted(object sender, NavigationEventArgs e)
         {
             // do something here ?
         }
@@ -43,7 +44,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NavigationStarting(object sender, Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT.WebViewControlNavigationStartingEventArgs e)
+        private void NavigationStarting(object sender, NavigatingCancelEventArgs e)
         {
             // we need to do a null check as sometimes this event will fire twice and return null
             if (e.Uri == null) return;
@@ -77,8 +78,8 @@ namespace Dynamo.DocumentationBrowser
         public void Dispose()
         {
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.NavigationStarting -= NavigationStarting;
-            this.documentationBrowser.NavigationCompleted -= NavigationCompleted;
+            this.documentationBrowser.Navigating -= NavigationStarting;
+            this.documentationBrowser.Navigated -= NavigationCompleted;
             this.documentationBrowser.Dispose();
         }
     }
