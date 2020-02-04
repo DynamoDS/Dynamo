@@ -8,7 +8,6 @@
              xmlns:w="clr-namespace:Dynamo.DocumentationBrowser.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         
-            xmlns:WPF="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
              mc:Ignorable="d" 
             HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
@@ -23,11 +22,10 @@
         </Grid.RowDefinitions>
 
         <!-- The web browser control -->
-        <WPF:WebViewCompatible 
+        <WebBrowser 
             Name="documentationBrowser"
-            Grid.Row="0" 
-            HorizontalAlignment="Stretch" 
-            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Grid}, Path=Visibility}"/>
+            Grid.Row="0"
+            HorizontalAlignment="Stretch" />
 
         <!-- Remote Link Warning Banner -->
         <DockPanel Name="RemoteLinkBanner" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Stretch" Visibility="Collapsed">
