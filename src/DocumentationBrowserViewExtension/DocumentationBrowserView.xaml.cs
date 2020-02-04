@@ -11,7 +11,7 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public partial class DocumentationBrowserView : UserControl, IDisposable
     {
-        private const string LOCAL_FILES_URI_IN_BROWSER = "about:blank";
+        private const string ABOUT_BLANK_URI = "about:blank";
         private readonly DocumentationBrowserViewModel viewModel;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Dynamo.DocumentationBrowser
 
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
-            this.documentationBrowser.Navigating += NavigationStarting;
+            this.documentationBrowser.Navigating += ShouldAllowNavigation;
             this.documentationBrowser.Navigated += NavigationCompleted;
         }
 
@@ -44,19 +44,28 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NavigationStarting(object sender, NavigatingCancelEventArgs e)
+        private void ShouldAllowNavigation(object sender, NavigatingCancelEventArgs e)
         {
-            // we need to do a null check as sometimes this event will fire twice and return null
-            if (e.Uri == null) return;
-            // check if the argument Uri is the same as the warning link
-            if (e.Uri.Equals(this.viewModel.Link)) return;
-            // for local files the argument Uri will return 'about:blank'
-            if (e.Uri.OriginalString.Equals(LOCAL_FILES_URI_IN_BROWSER)) return;
+            // do not allow refreshes, back or forward navigation
+            if (e.NavigationMode != NavigationMode.New)
+                return;
 
-            // if none of the above is true, cancel the navigation 
-            // and redirect it to a new process that starts the browser
-            e.Cancel = true;
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            // we never set the uri if navigating to a local document, so safe to navigate
+            if (e.Uri == null)
+                return;
+
+            // we want to cancel navigation when a clicked link would navigate 
+            // away from the page the ViewModel wants to display
+            var isAboutBlankLink = e.Uri.OriginalString.Equals(ABOUT_BLANK_URI);
+            var isRemoteLinkFromLocalDocument = !e.Uri.Equals(this.viewModel.Link);
+
+            if (isAboutBlankLink || isRemoteLinkFromLocalDocument)
+            {
+                // in either of these two cases, cancel the navigation 
+                // and redirect it to a new process that starts the default OS browser
+                e.Cancel = true;
+                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            }
         }
 
         public void NavigateToPage(Uri link)
@@ -78,7 +87,7 @@ namespace Dynamo.DocumentationBrowser
         public void Dispose()
         {
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.Navigating -= NavigationStarting;
+            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
             this.documentationBrowser.Navigated -= NavigationCompleted;
             this.documentationBrowser.Dispose();
         }

@@ -77,6 +77,8 @@ namespace Dynamo.DocumentationBrowser
 
         #endregion
 
+        #region Handle navigation event
+
         public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
             if (e is null)
@@ -86,7 +88,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (this.IsRemoteResource)
                 HandleRemoteResource(e);
-            else 
+            else
                 HandleLocalResource(e);
         }
 
@@ -100,7 +102,7 @@ namespace Dynamo.DocumentationBrowser
             // respect the remote resource loading setting and bail if not allowed
             // technically this is never called at the minute as the extension filters out these events,
             // but code is here for when remote resources will be enabled
-            if (!AllowRemoteResources) return;
+            if (!this.AllowRemoteResources) return;
 
             this.Link = e.Link;
             return;
@@ -111,7 +113,7 @@ namespace Dynamo.DocumentationBrowser
         /// avoiding doing IO in the View layer
         /// </summary>
         /// <param name="e">The event to handle.</param>
-        private void HandleLocalResource(OpenDocumentationLinkEventArgs e) 
+        private void HandleLocalResource(OpenDocumentationLinkEventArgs e)
         {
             try
             {
@@ -136,6 +138,8 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = false;
         }
 
+        #endregion
+
         #region Navigation to built-in pages
 
         public void NavigateToInternalErrorPage(string errorDetails)
@@ -149,25 +153,37 @@ namespace Dynamo.DocumentationBrowser
             else
                 this.content = ReplaceTemplateInContentWithString(Resources.InternalErrorNoDetailsAvailable);
 
-            this.Link = new Uri(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME);
+            UpdateLinkSafely(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME);
         }
 
         public void NavigateToContentMissingPage()
         {
             this.content = LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
-            this.Link = new Uri(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, UriKind.Relative);
+            UpdateLinkSafely(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
         }
 
         public void NavigateToNoContentPage()
         {
             this.content = LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
-            this.Link = new Uri(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, UriKind.Relative);
+            UpdateLinkSafely(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
         }
 
         internal void EnsurePageHasContent()
         {
             if (this.shouldLoadDefaultContent || !this.HasContent)
                 NavigateToNoContentPage();
+        }
+
+        private void UpdateLinkSafely(string link)
+        {
+            try
+            {
+                this.Link = new Uri(link, UriKind.Relative);
+            }
+            catch (Exception ex)
+            {
+                // silently ignore any exceptions as otherwise it brings down all of Dynamo
+            }
         }
 
         #endregion
