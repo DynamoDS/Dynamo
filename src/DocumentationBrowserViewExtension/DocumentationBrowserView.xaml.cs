@@ -14,9 +14,9 @@ namespace Dynamo.DocumentationBrowser
         private readonly DocumentationBrowserViewModel viewModel;
 
         /// <summary>
-        /// Constructor
+        /// Construct a new DocumentationBrowserView given an appropriate viewmodel.
         /// </summary>
-        /// <param name="p">ViewLoadedParams</param>
+        /// <param name="viewModel">The ViewModel to use as source of events and content.</param>
         public DocumentationBrowserView(DocumentationBrowserViewModel viewModel)
         {
             InitializeComponent();
@@ -52,7 +52,7 @@ namespace Dynamo.DocumentationBrowser
             // for local files the argument Uri will return 'about:blank'
             if (e.Uri.OriginalString.Equals(LOCAL_FILES_URI_IN_BROWSER)) return;
 
-            // if non of the above is true cancel the navigation 
+            // if none of the above is true, cancel the navigation 
             // and redirect it to a new process that starts the browser
             e.Cancel = true;
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
@@ -77,6 +77,8 @@ namespace Dynamo.DocumentationBrowser
         public void Dispose()
         {
             this.viewModel.LinkChanged -= NavigateToPage;
+            this.documentationBrowser.NavigationStarting -= NavigationStarting;
+            this.documentationBrowser.NavigationCompleted -= NavigationCompleted;
             this.documentationBrowser.Dispose();
         }
     }
