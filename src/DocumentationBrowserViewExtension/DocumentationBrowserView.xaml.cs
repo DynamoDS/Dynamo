@@ -68,6 +68,12 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
+        /// <summary>
+        /// Instruct the embedded web browser to navigate to a given link.
+        /// If link is remote resource it is loaded from there.
+        /// If link is local resource, it is loaded from ViewModel content.
+        /// </summary>
+        /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
             if (this.viewModel.IsRemoteResource)
@@ -79,6 +85,19 @@ namespace Dynamo.DocumentationBrowser
 
             this.RemoteLinkBanner.Visibility = Visibility.Collapsed;
             this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
+        }
+
+        /// <summary>
+        /// Toggle the display of the embedded browser.
+        /// </summary>
+        /// <param name="show">True to show browser, false to hide it.</param>
+        internal void DisplayBrowser(bool show)
+        {
+            var visibility = show == true ? Visibility.Hidden : Visibility.Visible;
+            var shouldUpdateVisibility = this.documentationBrowser != null && this.documentationBrowser.Visibility != visibility;
+
+            if (shouldUpdateVisibility)
+                this.documentationBrowser.Visibility = visibility;
         }
 
         /// <summary>

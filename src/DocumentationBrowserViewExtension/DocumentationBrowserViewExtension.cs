@@ -3,7 +3,7 @@ using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
-using System.Globalization;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace Dynamo.DocumentationBrowser
@@ -48,7 +48,7 @@ namespace Dynamo.DocumentationBrowser
         public event Action<ILogMessage> MessageLogged;
         internal void OnMessageLogged(ILogMessage msg)
         {
-            this.MessageLogged?.Invoke(msg);
+            MessageLogged?.Invoke(msg);
         }
         #endregion
 
@@ -63,27 +63,30 @@ namespace Dynamo.DocumentationBrowser
             this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
 
             // initialise the ViewModel and View for the window
-            ViewModel = new DocumentationBrowserViewModel()
+            this.ViewModel = new DocumentationBrowserViewModel()
             {
                 AllowRemoteResources = this.AllowRemoteResources
             };
-            BrowserView = new DocumentationBrowserView(ViewModel);
+            this.BrowserView = new DocumentationBrowserView(this.ViewModel);
 
             // Add a button to Dynamo View menu to manually show the window
-            documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
-            documentationBrowserMenuItem.Click += (sender, args) =>
+            this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
+            this.documentationBrowserMenuItem.Click += (sender, args) =>
             {
                 AddToSidebar();
             };
-            this.viewLoadedParams.AddMenuItem(MenuBarType.View, documentationBrowserMenuItem);
+            this.viewLoadedParams.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
 
             // subscribe to the documentation open request event from Dynamo
             this.viewLoadedParams.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
+
+            // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
+            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
         }
 
         public void Shutdown()
         {
-            this.Dispose();
+            Dispose();
         }
 
         /// <summary>
@@ -91,10 +94,10 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
 
-            BrowserView?.Dispose();
-            ViewModel?.Dispose();
+            this.BrowserView?.Dispose();
+            this.ViewModel?.Dispose();
         }
 
         #endregion
@@ -109,7 +112,7 @@ namespace Dynamo.DocumentationBrowser
             if (args is null) return;
 
             // if disallowed, ignore events targeting remote resources so the sidebar is not displayed
-            if (args.IsRemoteResource && !this.AllowRemoteResources) 
+            if (args.IsRemoteResource && !this.AllowRemoteResources)
                 return;
 
             // make sure the view is added to the Sidebar
@@ -125,15 +128,28 @@ namespace Dynamo.DocumentationBrowser
             // verify the browser window has been initialised
             if (this.BrowserView is null)
             {
-                this.OnMessageLogged(LogMessage.Error(Resources.BrowserViewCannotBeAddedToSidebar));
+                OnMessageLogged(LogMessage.Error(Resources.BrowserViewCannotBeAddedToSidebar));
                 return;
             }
+
 
             // make sure the documentation window is not empty before displaying it
             // we have to do this here because we cannot detect when the sidebar is displayed
             this.ViewModel.EnsurePageHasContent();
 
-            this.viewLoadedParams?.AddToExtensionsSideBar(this, BrowserView);
+            this.viewLoadedParams?.AddToExtensionsSideBar(this, this.BrowserView);
+        }
+
+        // hide browser directly when startpage is shown to deal with air space problem.
+        // https://github.com/dotnet/wpf/issues/152
+        private void HandleStartPageVisibilityChange(object sender, PropertyChangedEventArgs e)
+        {
+            DynamoViewModel dynamoViewModel = sender as DynamoViewModel;
+
+            if (dynamoViewModel != null && e.PropertyName == nameof(DynamoViewModel.ShowStartPage))
+            {
+                this.BrowserView?.DisplayBrowser(dynamoViewModel.ShowStartPage);
+            }
         }
     }
 }
