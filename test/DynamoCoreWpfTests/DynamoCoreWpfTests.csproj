@@ -133,6 +133,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
+    <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
