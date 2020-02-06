@@ -29,18 +29,34 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
+        private bool allowRemoteResources;
         /// <summary>
         /// Setting to allow or disallow the documentation browser to load remote resources
         /// such as web addresses or files from network shares. Defaults to false.
         /// </summary>
-        public bool AllowRemoteResources { get; set; }
+        public bool AllowRemoteResources
+        {
+            get => this.allowRemoteResources;
+            set
+            {
+                this.allowRemoteResources = value;
+                this.ViewModel.AllowRemoteResources = value;
+            }
+        }
 
         public DocumentationBrowserViewExtension()
         {
             // defaults to false for security considerations
             // mechanisms to expose a setting in Dynamo or in the menu could be added 
             // and the extension could respect those settings by setting this property
-            this.AllowRemoteResources = false;
+            this.allowRemoteResources = false;
+
+            // initialise the ViewModel and View for the window
+            this.ViewModel = new DocumentationBrowserViewModel()
+            {
+                AllowRemoteResources = this.AllowRemoteResources
+            };
+            this.BrowserView = new DocumentationBrowserView(this.ViewModel);
         }
 
         #region ILogSource
@@ -61,13 +77,6 @@ namespace Dynamo.DocumentationBrowser
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
-
-            // initialise the ViewModel and View for the window
-            this.ViewModel = new DocumentationBrowserViewModel()
-            {
-                AllowRemoteResources = this.AllowRemoteResources
-            };
-            this.BrowserView = new DocumentationBrowserView(this.ViewModel);
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
@@ -120,7 +129,7 @@ namespace Dynamo.DocumentationBrowser
             AddToSidebar();
 
             // forward the event to the ViewModel to handle
-            this.ViewModel.HandleOpenDocumentationLinkEvent(args);
+            this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
         }
 
         private void AddToSidebar()
@@ -135,7 +144,7 @@ namespace Dynamo.DocumentationBrowser
 
             // make sure the documentation window is not empty before displaying it
             // we have to do this here because we cannot detect when the sidebar is displayed
-            this.ViewModel.EnsurePageHasContent();
+            this.ViewModel?.EnsurePageHasContent();
 
             this.viewLoadedParams?.AddToExtensionsSideBar(this, this.BrowserView);
         }
