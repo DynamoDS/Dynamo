@@ -36,6 +36,7 @@ namespace Dynamo.ViewModels
         private bool _isOneRowContent;
         private readonly Action<string> tagGeometry;
         private bool isCollection;
+        private string _outputType;
 
         // Instance variable for the number of items in the list 
         private int numberOfItems;
@@ -197,11 +198,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsTopLevel { get; set; }
 
+        public string ValueType
+        {
+            get { return _outputType; }
+            set { _outputType = value; RaisePropertyChanged(nameof(ValueType)); }
+        }
+
         #endregion
 
-        public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, true) { }
+        public WatchViewModel(Action<string> tagGeometry) : this(null, null, tagGeometry, TypeCode.Empty, true) { }
 
-        public WatchViewModel(string label, string path, Action<string> tagGeometry, bool expanded = false)
+        public WatchViewModel(string label, string path, Action<string> tagGeometry, TypeCode? outputType = TypeCode.Empty, bool expanded = false)
         {
             FindNodeForPathCommand = new DelegateCommand(FindNodeForPath, CanFindNodeForPath);
             _path = path;
@@ -211,6 +218,37 @@ namespace Dynamo.ViewModels
             numberOfItems = 0;
             maxListLevel = 0;
             isCollection = label == WatchViewModel.LIST || label == WatchViewModel.DICTIONARY;
+            ValueType = GetDisplayType(outputType);
+        }
+
+        private string GetDisplayType(TypeCode? typecode)
+        {
+            switch (typecode)
+            {
+                case TypeCode.Boolean:
+                    return "bool";
+
+                case TypeCode.Double:
+                    return "double";
+
+                case TypeCode.Int64:
+                    return "int";
+
+                case TypeCode.Int32:
+                    return "int";
+
+                case TypeCode.Object:
+                    return "object";
+
+                case TypeCode.String:
+                    return "string";
+
+                case TypeCode.Empty:
+                    return "";
+
+                default:
+                    return "";
+            }
         }
 
         private bool CanFindNodeForPath(object obj)
