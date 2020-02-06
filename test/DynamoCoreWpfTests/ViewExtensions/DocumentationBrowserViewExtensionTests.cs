@@ -52,12 +52,9 @@ namespace DynamoCoreWpfTests
         [Test]
         public void ClickingMenuItemLaunchesSidebarWithIndexContent()
         {
-            // Arrange
-            var menuItem = GetDocsMenuItems().First();
-
             // Act
             // simulate clicking the Show docs browser menu item
-            menuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            ShowDocsBrowser();
 
             // confirm the extension loads a view into the sidebar
             // and get the html content inside
@@ -74,7 +71,7 @@ namespace DynamoCoreWpfTests
         public void ShowingStartPageHidesBrowser()
         {
             // Arrange
-            GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            ShowDocsBrowser();
             var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
             var visibilityBeforeShowStartPageEvent = docsView.documentationBrowser.Visibility;
 
@@ -105,6 +102,36 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(0, tabsAfterExternalEventTrigger);
         }
+
+        [Test]
+        public void RemoteResourceEventDisplaysWarningBanner()
+        {
+            // Arrange
+            var externalEvent = new OpenDocumentationLinkEventArgs(new Uri(externalLink, UriKind.RelativeOrAbsolute));
+            var localEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.RelativeOrAbsolute));
+
+            // create a view extension that allows external events
+            var viewExtension = SetupNewViewExtension(true);
+            viewExtension.AllowRemoteResources = true;
+            
+            // trigger local event first so the sidebar is opened
+            viewExtension.HandleRequestOpenDocumentationLink(localEvent);
+            Assert.IsFalse(viewExtension.ViewModel.IsRemoteResource);
+            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+
+            // Act
+            var visibilityBeforeEvent = docsView.RemoteLinkBanner.Visibility;
+            viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
+            var visibilityAfterEvent = docsView.RemoteLinkBanner.Visibility;
+
+            // Assert
+            Assert.IsTrue(externalEvent.IsRemoteResource);
+            Assert.IsTrue(viewExtension.AllowRemoteResources);
+            Assert.IsTrue(viewExtension.ViewModel.IsRemoteResource);
+            Assert.AreEqual(Visibility.Collapsed, visibilityBeforeEvent);
+            Assert.AreEqual(Visibility.Visible, visibilityAfterEvent);
+        }
+
 
         [Test]
         public void CanHandleDocsEventWithValidLink()
@@ -235,6 +262,11 @@ namespace DynamoCoreWpfTests
             return this.View.ExtensionTabItems
                 .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                 .FirstOrDefault();
+        }
+
+        private void ShowDocsBrowser()
+        {
+            GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
         }
 
         #endregion
