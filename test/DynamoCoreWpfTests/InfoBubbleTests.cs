@@ -40,6 +40,7 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.IsNotNull(infoBubble.DocumentationLink);
             Assert.AreEqual(documentationFile, infoBubble.DocumentationLink.ToString());
+            this.ViewModel.RequestOpenDocumentationLink -= handler;
         }
 
         [Test]
