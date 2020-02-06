@@ -313,6 +313,42 @@
                                    Width="Auto"
                                    FontFamily="Consolas"
                                    Margin="{Binding Path =IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}" />
+
+                        <Grid Margin="4 0 0 0">
+                            <Border CornerRadius="3,3,3,3">
+                                <Border.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ValueType}" Value="string">
+                                                <Setter Property="Border.Background"
+                                                        Value="{DynamicResource stringLabelBackground}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ValueType}" Value="int">
+                                                <Setter Property="Border.Background"
+                                                        Value="{DynamicResource numberLabelBackground}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ValueType}" Value="double">
+                                                <Setter Property="Border.Background"
+                                                        Value="{DynamicResource numberLabelBackground}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ValueType}" Value="object">
+                                                <Setter Property="Border.Background"
+                                                        Value="{DynamicResource objectLabelBackground}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+                            <TextBlock Text="{Binding ValueType}"
+                                       FontStyle="Italic"
+                                       FontSize="8"
+                                       VerticalAlignment="Center"
+                                       Width="Auto"
+                                       FontFamily="Consolas"
+                                       Margin="2 0 2 0">
+                            </TextBlock>
+                        </Grid>
+                  
                         <Button Content="{Binding Path=Link}"
                                 RenderTransformOrigin="0.5,0.5"
                                 Margin="10,2,2,2"
