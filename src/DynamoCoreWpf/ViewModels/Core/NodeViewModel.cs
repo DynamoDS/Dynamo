@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
+        private bool isRenamed = false;
         #endregion
 
         #region public members
@@ -197,8 +198,43 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Name
         {
-            get { return nodeLogic.Name; }
+            get 
+            {
+                if (OriginalName != nodeLogic.Name)
+                    IsRenamed = true;
+
+                return nodeLogic.Name; 
+            }
             set { nodeLogic.Name = value; }
+        }
+
+        /// <summary>
+        /// The original name of the node.
+        /// This is the name of the node as it is when first added to the canvas.
+        /// </summary>
+        public string OriginalName
+        {
+            get { return OriginalNameFromCreationName(); }
+        }
+
+        /// <summary>
+        /// Construct the original name from the creation name
+        /// by removing the unwanted part of the creation name.
+        /// ex Autodesk.Designscript.Geometry.Point.ByCoordinate@double,double,double
+        /// would remove everyting after the "@" and the take the last two words from Autodesk.Designscript.Geometry.Point.ByCoordinate
+        /// </summary>
+        /// <returns></returns>
+        private string OriginalNameFromCreationName()
+        {
+            string[] longName = nodeLogic.CreationName.Split('@')[0].Split('.');
+            string[] typeAndMethodName = longName.Skip(Math.Max(0, longName.Count() - 2)).ToArray();
+            return String.Join(".", typeAndMethodName);
+        }
+
+        public bool IsRenamed
+        {
+            get { return isRenamed; }
+            set { isRenamed = value; RaisePropertyChanged(nameof(IsRenamed)); }
         }
 
         [JsonIgnore]
@@ -211,6 +247,24 @@ namespace Dynamo.ViewModels
         public string Description
         {
             get { return nodeLogic.Description; }
+        }
+
+        [JsonIgnore]
+        public string NodeDescription
+        {
+            get
+            {
+                return Description.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[0];
+            }
+        }
+
+        [JsonIgnore]
+        public string DesignScriptSyntaxDescription
+        {
+            get
+            {
+                return Description.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[2];
+            }
         }
 
         [JsonIgnore]
