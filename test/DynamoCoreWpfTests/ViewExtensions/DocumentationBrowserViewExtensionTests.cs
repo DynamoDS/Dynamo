@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -76,7 +75,7 @@ namespace DynamoCoreWpfTests
             var visibilityBeforeShowStartPageEvent = docsView.documentationBrowser.Visibility;
 
             // Act
-            ViewModel.DisplayStartPageCommand.Execute(null);
+            this.ViewModel.DisplayStartPageCommand.Execute(null);
             var visibilityAfterShowStartPageEvent = docsView.documentationBrowser.Visibility;
 
             // Assert
@@ -113,7 +112,7 @@ namespace DynamoCoreWpfTests
             // create a view extension that allows external events
             var viewExtension = SetupNewViewExtension(true);
             viewExtension.AllowRemoteResources = true;
-            
+
             // trigger local event first so the sidebar is opened
             viewExtension.HandleRequestOpenDocumentationLink(localEvent);
             Assert.IsFalse(viewExtension.ViewModel.IsRemoteResource);
@@ -131,7 +130,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(Visibility.Collapsed, visibilityBeforeEvent);
             Assert.AreEqual(Visibility.Visible, visibilityAfterEvent);
         }
-
 
         [Test]
         public void CanHandleDocsEventWithValidLink()
@@ -206,7 +204,7 @@ namespace DynamoCoreWpfTests
             File.WriteAllText(emptyFilePath, string.Empty);
 
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(emptyFileName, UriKind.Relative));
-            
+
             // Act
             var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
             viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
