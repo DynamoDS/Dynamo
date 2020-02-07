@@ -921,7 +921,7 @@ namespace Dynamo.Tests
         /// DynamoScheduler, which in turn shuts down ISchedulerThread.
         /// </summary>
         /// 
-        [Test]
+        [Test, Category("Failure")]
         public void TestShutdownWithDynamoModel00()
         {
             Assert.IsTrue(schedulerThread.Initialized);
