@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using CoreNodeModels.Input;
@@ -719,7 +720,7 @@ namespace WpfVisualizationTests
             Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
         }
 
-        [Test]
+        [roundTest]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
@@ -729,6 +730,24 @@ namespace WpfVisualizationTests
             RunCurrentModel();
 
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
+        }
+
+        [Test]
+        public void Display_ByGeometryColor_HasColoredPoints()
+        {
+            OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            //get all points
+            var points = BackgroundPreviewGeometry.OfType<DynamoPointGeometryModel3D>();
+            var pointColors = points.SelectMany(x => x.Geometry.Colors);
+            var bluePtsCount = pointColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
+            var orangePtsCount = pointColors.Where(x => x == new Color3(255,140,0).ToColor4()).Count();
+            Assert.AreEqual(14896, bluePtsCount);
+            Assert.AreEqual(14896, orangePtsCount);
         }
 
         [Test]
