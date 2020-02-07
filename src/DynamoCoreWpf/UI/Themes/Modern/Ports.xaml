@@ -152,12 +152,12 @@
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding UsingDefaultValue}" Value="True">
-                                        <Setter Property="FontStyle" Value="Italic"/>
-                                        <Setter Property="FontWeight" Value="Normal"/>
+                                        <Setter Property="FontStyle"
+                                                Value="Italic" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding UsingDefaultValue}" Value="False">
-                                        <Setter Property="FontStyle" Value="Normal"/>
-                                        <Setter Property="FontWeight" Value="Normal"/>
+                                        <Setter Property="FontStyle"
+                                                Value="Normal" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
