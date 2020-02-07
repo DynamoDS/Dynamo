@@ -276,6 +276,7 @@ namespace Dynamo.ViewModels
         private string GetDisplayType(object obj)
         {
             TypeCode typeCode = Type.GetTypeCode(obj.GetType());
+            // returning a customized user friendly string instead of just returning the name of the type 
             switch (typeCode)
             {
                 case TypeCode.Boolean:
