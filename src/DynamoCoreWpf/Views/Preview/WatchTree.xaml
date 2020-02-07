@@ -335,6 +335,11 @@
                                                 <Setter Property="Border.Background"
                                                         Value="{DynamicResource objectLabelBackground}"/>
                                             </DataTrigger>
+                                            <DataTrigger Binding="{Binding ValueType}"
+                                                         Value="bool">
+                                                <Setter Property="Border.Background"
+                                                        Value="{DynamicResource objectLabelBackground}" />
+                                            </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>

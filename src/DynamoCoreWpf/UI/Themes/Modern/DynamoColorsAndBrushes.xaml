@@ -68,6 +68,8 @@
                      Color="#91c2f2" />
     <SolidColorBrush x:Key="objectLabelBackground"
                      Color="#a1a1a1" />
+    <SolidColorBrush x:Key="boolLabelBackground"
+                     Color="#c6afd5" />
 
     <!--Update Manager-->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
