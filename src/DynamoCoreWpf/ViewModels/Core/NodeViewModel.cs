@@ -200,9 +200,7 @@ namespace Dynamo.ViewModels
         {
             get 
             {
-                if (OriginalName != nodeLogic.Name)
-                    IsRenamed = true;
-
+                IsRenamed = OriginalName != nodeLogic.Name;
                 return nodeLogic.Name; 
             }
             set { nodeLogic.Name = value; }
@@ -212,25 +210,22 @@ namespace Dynamo.ViewModels
         /// The original name of the node.
         /// This is the name of the node as it is when first added to the canvas.
         /// </summary>
+        [JsonIgnore]
         public string OriginalName
         {
-            get { return OriginalNameFromCreationName(); }
+            get 
+            {
+                if (nodeLogic.IsCustomFunction)
+                    return nodeLogic.GetCustomNodeOriginalName();
+
+                return nodeLogic.GetOriginalName(); 
+            }
         }
 
         /// <summary>
-        /// Construct the original name from the creation name
-        /// by removing the unwanted part of the creation name.
-        /// ex Autodesk.Designscript.Geometry.Point.ByCoordinate@double,double,double
-        /// would remove everyting after the "@" and the take the last two words from Autodesk.Designscript.Geometry.Point.ByCoordinate
+        /// If a node has been renamed.
         /// </summary>
-        /// <returns></returns>
-        private string OriginalNameFromCreationName()
-        {
-            string[] longName = nodeLogic.CreationName.Split('@')[0].Split('.');
-            string[] typeAndMethodName = longName.Skip(Math.Max(0, longName.Count() - 2)).ToArray();
-            return String.Join(".", typeAndMethodName);
-        }
-
+        [JsonIgnore]
         public bool IsRenamed
         {
             get { return isRenamed; }
@@ -249,6 +244,9 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.Description; }
         }
 
+        /// <summary>
+        /// The node description part of the nodes description
+        /// </summary>
         [JsonIgnore]
         public string NodeDescription
         {
@@ -258,6 +256,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// The DesignScript syntax part of the nodes description
+        /// </summary>
         [JsonIgnore]
         public string DesignScriptSyntaxDescription
         {
