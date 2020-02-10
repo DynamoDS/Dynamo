@@ -264,13 +264,16 @@ namespace Dynamo.ViewModels
 
         private static string ToString(object obj)
         {
-            return ReferenceEquals(obj, null) ?
-                Resources.NullString
-                : (obj is bool ?
-                    obj.ToString().ToLower()
-                    : obj is double ?
-                        ((double)obj).ToString(CultureInfo.InvariantCulture)
-                        : obj.ToString());
+            if (obj == null)
+                return Resources.NullString;
+
+            else if (obj is bool)
+                return obj.ToString().ToLower();
+
+            else if (obj is double)
+                return ((double)obj).ToString(CultureInfo.InvariantCulture);
+ 
+            return  obj.ToString();
         }
 
         private string GetDisplayType(object obj)
