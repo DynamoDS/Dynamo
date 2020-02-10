@@ -206,7 +206,7 @@
       "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
       "InputValue": {
         "R": 255,
-        "G": 140,
+        "G": 255,
         "B": 0,
         "A": 255
       },

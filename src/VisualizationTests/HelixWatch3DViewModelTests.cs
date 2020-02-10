@@ -720,7 +720,7 @@ namespace WpfVisualizationTests
             Assert.AreEqual(1000 * 36, BackgroundPreviewGeometry.TotalMeshVerticesToRender());
         }
 
-        [roundTest]
+        [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
@@ -740,14 +740,14 @@ namespace WpfVisualizationTests
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
             RunCurrentModel();
-
+            DispatcherUtil.DoEvents();
             //get all points
             var points = BackgroundPreviewGeometry.OfType<DynamoPointGeometryModel3D>();
             var pointColors = points.SelectMany(x => x.Geometry.Colors);
             var bluePtsCount = pointColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
-            var orangePtsCount = pointColors.Where(x => x == new Color3(255,140,0).ToColor4()).Count();
+            var yellowPtsCount = pointColors.Where(x => x == new Color3(1,1,0).ToColor4()).Count();
             Assert.AreEqual(14896, bluePtsCount);
-            Assert.AreEqual(14896, orangePtsCount);
+            Assert.AreEqual(14895, yellowPtsCount);
         }
 
         [Test]
