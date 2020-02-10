@@ -243,7 +243,7 @@ namespace Dynamo.ViewModels
             switch (type)
             {
                 case TypeCode.Boolean:
-                    return ToString(obj);
+                    return ObjectToLabelString(obj);
 
                 case TypeCode.Double:
                     return ((double)obj).ToString(numberFormat, CultureInfo.InvariantCulture);
@@ -255,14 +255,14 @@ namespace Dynamo.ViewModels
                     return ((DateTime)obj).ToString(PreferenceSettings.DefaultDateFormat, CultureInfo.InvariantCulture);
 
                 case TypeCode.Object:
-                    return ToString(obj);
+                    return ObjectToLabelString(obj);
 
                 default:
                     return (string)obj;
             };
         }
 
-        private static string ToString(object obj)
+        private static string ObjectToLabelString(object obj)
         {
             if (obj == null)
                 return Resources.NullString;
