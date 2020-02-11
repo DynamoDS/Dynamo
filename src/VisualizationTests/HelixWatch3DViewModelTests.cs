@@ -17,6 +17,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -350,6 +351,30 @@ namespace WpfVisualizationTests
             // Ensure that the new visualization matches the updated values.
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(4, 3, 0));
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
+        }
+
+        [Test]
+        public void ColorCache_Updated_OnNode_Removed()
+        {
+            var model = ViewModel.Model;
+            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
+            var ws = model.CurrentWorkspace;
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
+            //should have 2 entires, one for each point node.
+            Assert.AreEqual(2,(ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+            //remove one of the points and assert cache has one less key
+            var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
+            var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
+            ws.RemoveAndDisposeNode(redPtsNode);
+
+            //assert less points are drawn.
+            DispatcherUtil.DoEvents();
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1331, 0, 0));
+            Assert.AreEqual(1, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+
         }
 
         #endregion
@@ -733,24 +758,6 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredPoints()
-        {
-            OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-            //get all points
-            var points = BackgroundPreviewGeometry.OfType<DynamoPointGeometryModel3D>();
-            var pointColors = points.SelectMany(x => x.Geometry.Colors);
-            var bluePtsCount = pointColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
-            var yellowPtsCount = pointColors.Where(x => x == new Color3(1,1,0).ToColor4()).Count();
-            Assert.AreEqual(14896, bluePtsCount);
-            Assert.AreEqual(14895, yellowPtsCount);
-        }
-
-        [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
@@ -1047,7 +1054,8 @@ namespace WpfVisualizationTests
             {
                 HelixWatch3DViewModel.DefaultAxesName,
                 HelixWatch3DViewModel.DefaultGridName,
-                HelixWatch3DViewModel.DefaultLightName
+                HelixWatch3DViewModel.DefaultLightName,
+                HelixWatch3DViewModel.HeadLightName,
             };
 
         public static int TotalPoints(this IEnumerable<Element3D> dictionary)
@@ -1222,6 +1230,13 @@ namespace WpfVisualizationTests
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any(g => ((PhongMaterial)g.Material).DiffuseMap != null);
+        }
+
+        public static bool HasSpecificColorCount(this GeometryModel3D geomModel, Color4 color, int count)
+        {
+            var colorsFromObj = geomModel.Geometry.Colors;
+            var matchingColorsFromObjCount = colorsFromObj.Where(x => x == color).Count();
+            return count == matchingColorsFromObjCount;
         }
     }
 }

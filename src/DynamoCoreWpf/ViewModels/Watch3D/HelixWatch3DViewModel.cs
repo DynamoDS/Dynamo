@@ -156,7 +156,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
-        private readonly Color4 defaultIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.2f);
+        private readonly Color4 defaultIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.3f);
 
         private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Size highlightSize = new Size(8, 8);
@@ -202,8 +202,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public Object Element3DDictionaryMutex = new object();
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
+
+        //internal only for testing.
         //used to cache point and curve color collections so colors can be efficently swtiched between selected and non selected. (freeze, isolate etc)
-        private Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
+        internal Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
         // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces 
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
@@ -646,6 +648,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
                     Element3DDictionary.Remove(key);
+                    colorCache.Remove(key);
 
                     model.Dispose();
                 }
@@ -887,6 +890,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (frozenModel) continue;
 
                     Element3DDictionary.Remove(kvp.Key);
+                    colorCache.Remove(kvp.Key);
                     model3D.Dispose();
 
                     var nodePath = kvp.Key.Split(':')[0];
@@ -1278,8 +1282,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             headLight = new DirectionalLight3D
             {
-                Color = System.Windows.Media.Color.FromArgb(255,255, 0, 0),
-                Direction = new Vector3D(0.0, 0.0, 1.0),
+                Color = System.Windows.Media.Color.FromRgb(128, 128, 128),
+                Direction = new Vector3D(0, 0, 1),
                 Name = HeadLightName
             };
 
@@ -1484,11 +1488,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string obj)
+        protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
         {
-            if (obj!= null && this.colorCache.ContainsKey(obj)){
+            if (objId!= null && this.colorCache.ContainsKey(objId)){
                 //TODO check if item still exists in element3dDictionary
-                (element3DDictionary[obj] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[obj];
+                (element3DDictionary[objId] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[objId];
             }
         }
 
