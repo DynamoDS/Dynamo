@@ -1,27 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
+using Dynamo.Logging;
 using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
-
 using FontAwesome.WPF;
-
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.ViewModel;
-using Dynamo.Models;
-using Dynamo.Search;
-using System.Windows;
-
-using Dynamo.Logging;
-using Dynamo.Configuration;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
 
 namespace Dynamo.Wpf.ViewModels
 {
-    public class NodeSearchElementViewModel : NotificationObject, ISearchEntryViewModel
+    public class NodeSearchElementViewModel : ViewModelBase, ISearchEntryViewModel
     {
         private Dictionary<SearchElementGroup, FontAwesomeIcon> FontAwesomeDict;
 
@@ -60,10 +53,15 @@ namespace Dynamo.Wpf.ViewModels
             RaisePropertyChanged("Visibility");
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            Model.VisibilityChanged -= ModelOnVisibilityChanged;
             if (searchViewModel != null)
+            {
                 Clicked -= searchViewModel.OnSearchElementClicked;
+                searchViewModel = null;
+            }
+            base.Dispose();
         }
 
         public NodeSearchElement Model { get; set; }
