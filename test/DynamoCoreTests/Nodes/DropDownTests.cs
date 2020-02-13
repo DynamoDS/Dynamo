@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CoreNodeModels;
+using Dynamo.PackageManager;
 using NUnit.Framework;
 using SystemTestServices;
 
@@ -24,7 +25,7 @@ namespace Dynamo.Tests.Nodes
             // Define package loading reference path
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
-            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
+            var pkgMan = this.CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             var loader = pkgMan.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 
@@ -50,7 +51,7 @@ namespace Dynamo.Tests.Nodes
             // Define package loading reference path
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
             var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
-            var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
+            var pkgMan = this.CurrentDynamoModel.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             var loader = pkgMan.PackageLoader;
             var pkg = loader.ScanPackageDirectory(pkgDir);
 

@@ -157,6 +157,10 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
+      <Name>DynamoPackages</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
       <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
       <Name>ProtoAssociative</Name>
