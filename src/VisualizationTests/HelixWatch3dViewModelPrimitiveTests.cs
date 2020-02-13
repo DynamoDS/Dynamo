@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
@@ -19,9 +13,9 @@ using Watch3DNodeModelsWpf;
 
 namespace WpfVisualizationTests
 {
-    class HelixWatch3dViewModelPrimitiveTests:WpfVisualizationTests.VisualizationTest
+    class HelixWatch3dViewModelPrimitiveTests : WpfVisualizationTests.VisualizationTest
     {
-        #region
+        #region meshes
         [Test]
         public void Display_ByGeometryColor_HasColoredSpheres()
         {
@@ -39,44 +33,6 @@ namespace WpfVisualizationTests
             //multiple verts per sphere.
             Assert.AreEqual(447336, blueSphereCount);
             Assert.AreEqual(439128, yellowSphereCount);
-        }
-        [Test]
-        [Category("Failure")]
-        public void MeshesDrawWithVertexColors_IMAGECOMPARISON()
-        {
-            OpenVisualizationTest("Display.ByGeometryColorPointsLinesSpheres.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
-            RunCurrentModel();
-            DispatcherUtil.DoEvents();
-            //get all spheres
-            var spheres = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            var sphereColors = spheres.SelectMany(x => x.Geometry.Colors);
-            var blueSphereCount = sphereColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
-            var yellowSphereCount = sphereColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
-            //multiple verts per sphere.
-            Assert.AreEqual(447336, blueSphereCount);
-            Assert.AreEqual(439128, yellowSphereCount);
-
-            //load our saved image
-            var image = OpenImageComparisonFile("Display.ByGeometryColorPointsLinesSpherestest.png");
-
-            var bitmapSource = View.BackgroundPreview.View.RenderBitmap(1093,677);
-            //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
-            var rtBitmap = new RenderTargetBitmap((int)bitmapSource.PixelWidth, (int)bitmapSource.PixelHeight, 96, 96,
-     PixelFormats.Pbgra32);
-            rtBitmap.Render(View.BackgroundPreview.View);
-
-            MemoryStream stream = new MemoryStream();
-            BitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
-            encoder.Save(stream);
-
-            var currentViewBitmap = new Bitmap(stream);
-
-            var same = CompareBitmapsFast(image, currentViewBitmap);
-            Assert.IsTrue(same);
         }
 
         #endregion
@@ -130,10 +86,10 @@ namespace WpfVisualizationTests
 
             //disable preview of the pts node
             pointDisplayNode.UpdateValue(new UpdateValueParams("IsVisible", false.ToString()));
-             DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEvents();
 
-            Assert.True( BackgroundPreviewGeometry.OfType<DynamoPointGeometryModel3D>()
-                .All(pt=>pt.Visibility == System.Windows.Visibility.Hidden));
+            Assert.True(BackgroundPreviewGeometry.OfType<DynamoPointGeometryModel3D>()
+                .All(pt => pt.Visibility == System.Windows.Visibility.Hidden));
 
             pointDisplayNode.UpdateValue(new UpdateValueParams("IsVisible", true.ToString()));
             DispatcherUtil.DoEvents();
@@ -350,7 +306,7 @@ namespace WpfVisualizationTests
             DispatcherUtil.DoEvents();
             //colors should be as they were before freeze
             lineColors = lines.SelectMany(x => x.Geometry.Colors);
-             blueLineColorsCount = lineColors.Where(x => x == Colors.Blue.ToColor4()).Count();
+            blueLineColorsCount = lineColors.Where(x => x == Colors.Blue.ToColor4()).Count();
             //multiply * 2 since each line has two vert colors.
             yellowLineColorsCount = lineColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
             Assert.AreEqual(14897 * 2, blueLineColorsCount);
@@ -361,7 +317,8 @@ namespace WpfVisualizationTests
 
         #region isolate geometry
 
-        [Test] public void IsolatedColoredPts_Becomes_Transparent()
+        [Test]
+        public void IsolatedColoredPts_Becomes_Transparent()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -431,8 +388,8 @@ namespace WpfVisualizationTests
             var lineColors = lines.SelectMany(x => x.Geometry.Colors);
             var blueLinesCount = lineColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
             var yellowLinesCount = lineColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
-            Assert.AreEqual(14897*2, blueLinesCount);
-            Assert.AreEqual(14895*2, yellowLinesCount);
+            Assert.AreEqual(14897 * 2, blueLinesCount);
+            Assert.AreEqual(14895 * 2, yellowLinesCount);
 
             ViewModel.BackgroundPreviewViewModel.IsolationMode = true;
             DispatcherUtil.DoEvents();
@@ -441,7 +398,7 @@ namespace WpfVisualizationTests
             lineColors = lines.SelectMany(x => x.Geometry.Colors);
             //isolate sets Alpha to .3 currently
             var isolatedColors = lineColors.Where(x => x.Alpha < .4f).Count();
-            Assert.AreEqual(29791*2, isolatedColors);
+            Assert.AreEqual(29791 * 2, isolatedColors);
 
             //select points
             var lineDisplayNode = Model.CurrentWorkspace.Nodes.Where(x => x.GUID == Guid.Parse("09ddd3ecea454984a37349f1266a247d")).First();
@@ -452,8 +409,8 @@ namespace WpfVisualizationTests
             lineColors = lines.SelectMany(x => x.Geometry.Colors);
             blueLinesCount = lineColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
             yellowLinesCount = lineColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
-            Assert.AreEqual(14897*2, blueLinesCount);
-            Assert.AreEqual(14895*2, yellowLinesCount);
+            Assert.AreEqual(14897 * 2, blueLinesCount);
+            Assert.AreEqual(14895 * 2, yellowLinesCount);
 
             DynamoSelection.Instance.ClearSelection();
             DispatcherUtil.DoEvents();
@@ -461,7 +418,7 @@ namespace WpfVisualizationTests
             lineColors = lines.SelectMany(x => x.Geometry.Colors);
             //isolate sets Alpha to .3 currently
             isolatedColors = lineColors.Where(x => x.Alpha < .4f).Count();
-            Assert.AreEqual(29791*2, isolatedColors);
+            Assert.AreEqual(29791 * 2, isolatedColors);
 
             //unisolate
             ViewModel.BackgroundPreviewViewModel.IsolationMode = false;
@@ -469,8 +426,8 @@ namespace WpfVisualizationTests
             lineColors = lines.SelectMany(x => x.Geometry.Colors);
             blueLinesCount = lineColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
             yellowLinesCount = lineColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
-            Assert.AreEqual(14897*2, blueLinesCount);
-            Assert.AreEqual(14895*2, yellowLinesCount);
+            Assert.AreEqual(14897 * 2, blueLinesCount);
+            Assert.AreEqual(14895 * 2, yellowLinesCount);
 
         }
 
@@ -551,10 +508,6 @@ namespace WpfVisualizationTests
 
         #endregion
 
-        #region imageComparisonTests
-        //[Test]
 
-        
-        #endregion
     }
 }
