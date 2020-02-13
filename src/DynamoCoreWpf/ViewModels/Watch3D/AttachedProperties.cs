@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
+using SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -43,7 +44,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //TODO handle vertex coloring in all these cases
                             meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
                         }
-
                     }
 
                 }
@@ -53,31 +53,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //if selection is not enabled determine if we should reset colors or set transparent colors
                     if (!GetShowSelected(geom))
                     {
-                        Color4Collection newColors;
                         if (GetIsolationMode(geom))
                         {
-                            //reset the colors
-                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                            //then modify alpha
-                            newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
-                            {
-                                col.Alpha = HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha;
-                                return col;
-                            }));
-                            geom.Geometry.Colors = newColors;
+                            SetAlpha(geom, HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha, true);
                         }
                         else if (GetIsFrozen(geom))
                         {
-                            //reset the colors
-                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                            //then modify alpha
-                            newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
-                            {
-                                col.Alpha = HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha;
-                                return col;
-                            }));
-                            geom.Geometry.Colors = newColors;
-
+                            SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
                         }
                         //all attached props are false, lets reset colors
                         else
@@ -89,9 +71,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        //TODO should this pass the dep object or an id, current wants an id of the node.
+        /// <summary>
+        /// Event to raise when the GeometryModel's colors should be reset to the data cached by the HelixViewModel.
+        /// parameter is the "nodeASTid:HelixGeomType"
+        /// </summary>
         internal static event Action<string> RequestResetColorsForDynamoGeometryModel;
-        private const float alphaPropertyFactor = 0.5f;
 
         #region Show Selected property
 
@@ -163,16 +147,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             //selected, isolated, and frozen.
                             if (GetIsFrozen(geom))
                             {
-                                //TODO refactor this out into a utility method
-                                //reset the colors
-                                RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                                //then modify alpha
-                                var newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
-                                {
-                                    col.Alpha = HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha;
-                                    return col;
-                                }));
-                                geom.Geometry.Colors = newColors;
+                                SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha,true);
                             }
                             //selected and isolated, so we just reset the colors.
                             else
@@ -185,8 +160,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         else
                         {
                             //TODO cache this and update after helix 2.11 is released
-                            var selectedColorCollection = new Color4Collection(Enumerable.Repeat(HelixWatch3DViewModel.SelectedMaterial.DiffuseColor, geom.Geometry.Colors.Count));
-                            geom.Geometry.Colors = selectedColorCollection;
+                            SetAllColors(geom, HelixWatch3DViewModel.SelectedMaterial.DiffuseColor);
                         }
                     }
                     else
@@ -268,8 +242,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     return;
                 }
-                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
-
                 var meshGeom3d = geom as DynamoGeometryModel3D;
                 if (meshGeom3d != null)
                 {
@@ -281,42 +253,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         OnPropertySetFalse(meshGeom3d);
                     }
-
-                    meshGeom3d.CullMode = SharpDX.Direct3D11.CullMode.Back;
-
                 }
                 else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
                 {
                     if ((bool)e.NewValue)
                     {
-                        //because color4's are structs we must update the collection this way
-                        //as they are not reference types
-                        //TODO cache this and update after helix 2.11 is released
-                        var frozenColorCollection = new Color4Collection(geom.Geometry.Colors.Select(col =>
-                        {
-                            col.Alpha = HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha;
-                            return col;
-                        })
-                            );
-                        geom.Geometry.Colors = frozenColorCollection;
+                        SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, false);
                     }
                     else
                     {
                         OnPropertySetFalse(geom);
                     }
                 }
-
-                //var colors = geom.Geometry.Colors.ToArray();
-
-                //for (int i = 0; i < colors.Length; i++)
-                //{
-                //    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
-                //}
-
-                //var colorCollection = new Color4Collection(colors);
-                //geom.Geometry.Colors = colorCollection;
-                //geom.Geometry.UpdateColors();
-
             }
         }
 
@@ -368,13 +316,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     if ((bool)e.NewValue)
                     {
-                        var isolatedColorCollection = new Color4Collection(geom.Geometry.Colors.Select(col =>
-                        {
-                            col.Alpha = HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha;
-                            return col;
-                        })
-                            );
-                        geom.Geometry.Colors = isolatedColorCollection;
+                        SetAlpha(geom, HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha, false);
                     }
                     else
                     {
@@ -435,6 +377,42 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         //#endregion
 
+        #region utils
+        
+        /// <summary>
+        /// Sets all colors on Geometry to a single color.
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="color"></param>
+        private static void SetAllColors(GeometryModel3D geom, Color4 color)
+        {
+            var newColorCollection = new Color4Collection(Enumerable.Repeat(color, geom.Geometry.Colors.Count));
+            geom.Geometry.Colors = newColorCollection;
+        }
+
+        /// <summary>
+        /// Sets alpha channel of existing colors to given value, optionally attempts to reset all colors
+        /// first to original colors from renderpackages.
+        /// </summary>
+        /// <param name="geom"></param>
+        /// <param name="alpha"></param>
+        /// <param name="resetColorsFirst"></param>
+        private static void SetAlpha(GeometryModel3D geom, float alpha, bool resetColorsFirst)
+        {
+            if (resetColorsFirst)
+            {
+                //reset colors if handled
+                RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+            }
+            //then modify alpha
+            var newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
+            {
+                col.Alpha = alpha;
+                return col;
+            }));
+            geom.Geometry.Colors = newColors;
+        }
+        #endregion
 
     }
 }
