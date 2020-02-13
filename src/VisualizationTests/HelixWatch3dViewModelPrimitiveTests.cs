@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
@@ -18,6 +21,66 @@ namespace WpfVisualizationTests
 {
     class HelixWatch3dViewModelPrimitiveTests:WpfVisualizationTests.VisualizationTest
     {
+        #region
+        [Test]
+        public void Display_ByGeometryColor_HasColoredSpheres()
+        {
+            OpenVisualizationTest("Display.ByGeometryColorPointsLinesSpheres.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //get all spheres
+            var spheres = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
+            var sphereColors = spheres.SelectMany(x => x.Geometry.Colors);
+            var blueSphereCount = sphereColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
+            var yellowSphereCount = sphereColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
+            //multiple verts per sphere.
+            Assert.AreEqual(447336, blueSphereCount);
+            Assert.AreEqual(439128, yellowSphereCount);
+        }
+        [Test]
+        [Category("Failure")]
+        public void MeshesDrawWithVertexColors_IMAGECOMPARISON()
+        {
+            OpenVisualizationTest("Display.ByGeometryColorPointsLinesSpheres.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            //get all spheres
+            var spheres = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
+            var sphereColors = spheres.SelectMany(x => x.Geometry.Colors);
+            var blueSphereCount = sphereColors.Where(x => x == Colors.Blue.ToColor4()).Count(); ;
+            var yellowSphereCount = sphereColors.Where(x => x == new Color3(1, 1, 0).ToColor4()).Count();
+            //multiple verts per sphere.
+            Assert.AreEqual(447336, blueSphereCount);
+            Assert.AreEqual(439128, yellowSphereCount);
+
+            //load our saved image
+            var image = OpenImageComparisonFile("Display.ByGeometryColorPointsLinesSpherestest.png");
+
+            var bitmapSource = View.BackgroundPreview.View.RenderBitmap(1093,677);
+            //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
+            var rtBitmap = new RenderTargetBitmap((int)bitmapSource.PixelWidth, (int)bitmapSource.PixelHeight, 96, 96,
+     PixelFormats.Pbgra32);
+            rtBitmap.Render(View.BackgroundPreview.View);
+
+            MemoryStream stream = new MemoryStream();
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
+            encoder.Save(stream);
+
+            var currentViewBitmap = new Bitmap(stream);
+
+            var same = CompareBitmapsFast(image, currentViewBitmap);
+            Assert.IsTrue(same);
+        }
+
+        #endregion
+
         #region points and lines display colors
 
         [Test]
@@ -486,6 +549,12 @@ namespace WpfVisualizationTests
             Assert.AreEqual(14895, yellowPtsCount);
         }
 
+        #endregion
+
+        #region imageComparisonTests
+        //[Test]
+
+        
         #endregion
     }
 }
