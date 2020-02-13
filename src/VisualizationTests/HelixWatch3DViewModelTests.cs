@@ -585,7 +585,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
 
-            Assert.AreEqual(vm.SceneItems.Count(), 3);
+            Assert.AreEqual(vm.SceneItems.Count(), 5);
         }
 
         [Test]
@@ -724,7 +724,7 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
             Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
@@ -740,7 +740,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
 
@@ -777,7 +777,7 @@ namespace WpfVisualizationTests
 
             // By default the DisplayLabels for the code block node is set to false, 
             // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
-            var geometryHasLabels = helix.Model3DDictionary.ContainsKey(labelKey); 
+            var geometryHasLabels = helix.Element3DDictionary.ContainsKey(labelKey); 
             Assert.IsFalse(geometryHasLabels);
 
             // We set the DisplayLabels to true to view the Labels in the preview geometry.
@@ -785,7 +785,7 @@ namespace WpfVisualizationTests
 
             // Now the Labels are shown in the preview geometry. 
             // The code block node has 64 points, so there should be 64 labels. 
-            var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            var geometryWithLabels = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
 
             // Clicking on a single value from the output of the watch node
@@ -811,7 +811,7 @@ namespace WpfVisualizationTests
 
             // The value selected is x:0, y:0 and z:1, 
             // so the label that is shown should be [0,0,1].
-            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(1, geometry.TextInfo.Count);
             Assert.AreEqual("[0,0,1]", geometry.TextInfo[0].Text);
         }
@@ -822,7 +822,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test
@@ -1118,7 +1118,8 @@ namespace WpfVisualizationTests
             {
                 HelixWatch3DViewModel.DefaultAxesName,
                 HelixWatch3DViewModel.DefaultGridName,
-                HelixWatch3DViewModel.DefaultLightName
+                HelixWatch3DViewModel.DefaultLightName,
+                HelixWatch3DViewModel.HeadLightName
             };
 
         public static int TotalPoints(this IEnumerable<Element3D> dictionary)
