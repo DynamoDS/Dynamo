@@ -1245,7 +1245,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             // camera setup
             Camera = new PerspectiveCamera();
-
+            Camera.FieldOfView = 58.5;
             SetCameraData(new CameraData());
 
             DrawGrid();
