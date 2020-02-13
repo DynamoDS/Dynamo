@@ -33,20 +33,23 @@ namespace ProtoCore
  		 
  #endregion
 
+        /// <summary>		
+        /// Map from a graph UI node to callsite identifiers. 		
+        /// </summary>
+        internal Dictionary<Guid, List<CallSite>> NodeToCallsiteObjectMap { get; }
+
         public RuntimeData()
         {
             CallsiteCache = new Dictionary<string, CallSite>();
             CallSiteToNodeMap = new Dictionary<Guid, Guid>();
+            NodeToCallsiteObjectMap = new Dictionary<Guid, List<CallSite>>();
         }
 
-      
 
         /// <summary>
         /// Retrieves an existing instance of a callsite associated with a UID
         /// It creates a new callsite if non was found
         /// </summary>
-        /// <param name="core"></param>
-        /// <param name="uid"></param>
         /// <returns></returns>
         public CallSite GetCallSite(int classScope, string methodName, Executable executable, RuntimeCore runtimeCore)
         {
@@ -104,6 +107,15 @@ namespace ProtoCore
 
                 CallsiteCache[callsiteID] = csInstance;
                 CallSiteToNodeMap[csInstance.CallSiteID] = topGraphNode.guid;
+                List<CallSite> callsites;
+                if (NodeToCallsiteObjectMap.TryGetValue(topGraphNode.guid, out callsites))
+                {
+                    callsites.Add(csInstance);
+                }
+                else
+                {
+                    NodeToCallsiteObjectMap[topGraphNode.guid] = new List<CallSite>() { csInstance };
+                }
             }
 
             if (graphNode != null && !CoreUtils.IsDisposeMethod(methodName))
@@ -118,8 +130,15 @@ namespace ProtoCore
             return csInstance;
         }
 
-        public Dictionary<Guid, List<CallSite>>
-        GetCallsitesForNodes(IEnumerable<Guid> nodeGuids, Executable executable)
+        /// <summary>
+        /// This API is used by host integrations such as for Revit and C3D.
+        /// It is used to gets the trace data list for all nodes binding to elements in the host.
+        /// </summary>
+        /// <param name="nodeGuids"></param>
+        /// <param name="executable"></param>
+        /// <returns></returns>
+        public Dictionary<Guid, List<CallSite>> GetCallsitesForNodes(
+            IEnumerable<Guid> nodeGuids, Executable executable)
         {
             if (nodeGuids == null)
                 throw new ArgumentNullException("nodeGuids");
@@ -129,41 +148,17 @@ namespace ProtoCore
             if (!nodeGuids.Any()) // Nothing to persist now.
                 return nodeMap;
 
-            // Attempt to get the list of graph node if one exists.
-            IEnumerable<GraphNode> graphNodes = null;
-            {
-                if (executable != null)
-                {
-                    var stream = executable.instrStreamList;
-                    if (stream != null && (stream.Length > 0))
-                    {
-                        var graph = stream[0].dependencyGraph;
-                        if (graph != null)
-                            graphNodes = graph.GraphList;
-                    }
-                }
-
-
-                if (graphNodes == null) // No execution has taken place.
-                    return nodeMap;
-            }
-
+            List<CallSite> callsites;
             foreach (Guid nodeGuid in nodeGuids)
             {
-                // Get a list of GraphNode objects that correspond to this node.
-                var matchingGraphNodes = graphNodes.Where(gn => gn.guid == nodeGuid);
-
-                if (!matchingGraphNodes.Any())
-                    continue;
-
-                // Get all callsites that match the graph node ids.
-                var matchingCallSites = (from cs in CallsiteCache
-                                         from gn in matchingGraphNodes
-                                         where string.Equals(cs.Key, gn.CallsiteIdentifier)
-                                         select cs.Value);
-
-                // Append each callsite element under node element.
-                nodeMap[nodeGuid] = matchingCallSites.ToList();
+                if (NodeToCallsiteObjectMap.TryGetValue(nodeGuid, out callsites))
+                {
+                    nodeMap[nodeGuid] = callsites;
+                }
+                else
+                {
+                    nodeMap[nodeGuid] = new List<CallSite>();
+                }
             }
 
             return nodeMap;
