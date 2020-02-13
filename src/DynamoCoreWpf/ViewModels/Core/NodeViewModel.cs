@@ -208,19 +208,9 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// The original name of the node.
-        /// This is the name of the node as it is when first added to the canvas.
         /// </summary>
         [JsonIgnore]
-        public string OriginalName
-        {
-            get 
-            {
-                if (nodeLogic.IsCustomFunction)
-                    return nodeLogic.GetCustomNodeOriginalName();
-
-                return nodeLogic.GetOriginalName(); 
-            }
-        }
+        public string OriginalName => nodeLogic.GetOriginalName();
 
         /// <summary>
         /// If a node has been renamed.

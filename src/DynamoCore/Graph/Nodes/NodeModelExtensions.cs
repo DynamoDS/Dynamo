@@ -94,6 +94,8 @@ namespace Dynamo.Graph.Nodes
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
+            if (node.IsCustomFunction)
+                return GetCustomNodeOriginalName(node);
 
             var function = node as DSFunctionBase;
             if (function != null)
@@ -107,11 +109,8 @@ namespace Dynamo.Graph.Nodes
             return nodeType.FullName;
         }
 
-        internal static string GetCustomNodeOriginalName(this NodeModel node)
+        private static string GetCustomNodeOriginalName(NodeModel node)
         {
-            if (node == null) 
-                return string.Empty;
-
             var customNodeFunction = node as Function;
             return customNodeFunction.Definition.DisplayName;
         }
