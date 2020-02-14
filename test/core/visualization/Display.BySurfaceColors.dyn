@@ -3,7 +3,7 @@
     <ClassMap partialName="Color" resolvedName="DSCore.Color" assemblyName="DSCoreNodes.dll" />
   </NamespaceResolutionMap>
   <Elements>
-    <Dynamo.Nodes.DSFunction guid="d14d71c0-98dd-4449-aa7a-74ae5bce18b8" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthLength" x="1421.96947396582" y="852.271229544414" isVisible="true" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double">
+    <Dynamo.Nodes.DSFunction guid="d14d71c0-98dd-4449-aa7a-74ae5bce18b8" type="Dynamo.Nodes.DSFunction" nickname="Rectangle.ByWidthLength" x="1421.96947396582" y="852.271229544414" isVisible="false" isUpstreamVisible="true" lacing="Shortest" isSelectedInput="False" assembly="ProtoGeometry.dll" function="Autodesk.DesignScript.Geometry.Rectangle.ByWidthLength@double,double">
       <PortInfo index="0" default="True" />
       <PortInfo index="1" default="True" />
     </Dynamo.Nodes.DSFunction>
