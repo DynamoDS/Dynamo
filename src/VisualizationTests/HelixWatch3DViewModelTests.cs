@@ -603,9 +603,9 @@ namespace WpfVisualizationTests
             var connector = watch3DNode.InPorts[0].Connectors.First();
             watch3DNode.InPorts[0].Connectors.Remove(connector);
 
-            // Three items, the grid, the axes, and the light will remain.
+            // Four items, the grid, the axes, direction light and the headlight will remain.
             var view = FindFirstWatch3DNodeView();
-            Assert.AreEqual(view.View.Items.Count, 3);
+            Assert.AreEqual(4, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
 
             var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
@@ -617,8 +617,8 @@ namespace WpfVisualizationTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            // View contains 3 default items and a collection of lines from the node connected to the Watch3D node
-            Assert.AreEqual(4, view.View.Items.Count);
+            // View contains 4 default items and a collection of lines from the node connected to the Watch3D node
+            Assert.AreEqual(5, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
         }
 
         [Test]
