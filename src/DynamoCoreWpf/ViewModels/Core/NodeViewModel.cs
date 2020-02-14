@@ -210,7 +210,11 @@ namespace Dynamo.ViewModels
         /// The original name of the node.
         /// </summary>
         [JsonIgnore]
-        public string OriginalName => nodeLogic.GetOriginalName();
+        public string OriginalName
+        {
+            get { return nodeLogic.GetOriginalName(); }
+        }
+               
 
         /// <summary>
         /// If a node has been renamed.
