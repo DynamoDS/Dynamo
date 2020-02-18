@@ -514,9 +514,9 @@ namespace ProtoFFI
 
             string name = m.Name;
             int nParams = 0;
-            if (name.StartsWith("get_"))
+            if (name.StartsWith(Constants.kGetterPrefix))
                 name.Remove(0, 4);
-            else if (name.StartsWith("set_"))
+            else if (name.StartsWith(Constants.kSetterPrefix))
             {
                 name.Remove(0, 4);
                 nParams = 1;
@@ -780,8 +780,9 @@ namespace ProtoFFI
                 f = new DisposeFunctionPointer(Module, method, retype);
             else if (CoreUtils.IsGetter(functionName))
             {
-                f = new GetterFunctionPointer(Module, functionName, method, retype);
-                (f as GetterFunctionPointer).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
+
+                f = new CLRFFIFunctionPointer(Module, functionName, method, null, retype);
+                ((CLRFFIFunctionPointer) f).ReflectionInfo.CheckForRankReductionAttribute(mGetterAttributes);
             }
             else
                 f = new CLRFFIFunctionPointer(Module, functionName, method, argTypes, retype);

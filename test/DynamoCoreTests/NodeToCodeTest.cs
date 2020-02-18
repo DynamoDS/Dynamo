@@ -1342,6 +1342,22 @@ namespace Dynamo.Tests
             Assert.IsNotNull(cbn);
             Assert.IsTrue(cbn.GetAstIdentifierForOutputIndex(0).Value.StartsWith("num"));
         }
+
+        [Test]
+        public void TestNodeToCodeWithPropertyInCodeBlock()
+        {
+            OpenModel(@"core\node2code\NodeToCode_CodeBlock.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            AssertPreviewValue(cbn.GUID.ToString(), false);
+        }
     }
 
     [Category("NodeToCode")]

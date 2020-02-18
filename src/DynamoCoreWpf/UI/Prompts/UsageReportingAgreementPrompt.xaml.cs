@@ -12,14 +12,21 @@ namespace Dynamo.UI.Prompts
     public partial class UsageReportingAgreementPrompt : Window
     {
         private DynamoViewModel viewModel = null;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="resourceProvider"></param>
+        /// <param name="dynamoViewModel"></param>
         public UsageReportingAgreementPrompt(IBrandingResourceProvider resourceProvider, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
-            Title = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
-
-            ConsentFormImageRectangle.Fill = new ImageBrush(
-                resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
-
+            if (resourceProvider != null)
+            {
+                Title = resourceProvider.GetString(Wpf.Interfaces.ResourceNames.ConsentForm.Title);
+                ConsentFormImageRectangle.Fill = new ImageBrush(
+                    resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
+            }
             viewModel = dynamoViewModel;
 
             var instrumentationFile = "InstrumentationConsent.rtf";
@@ -36,6 +43,10 @@ namespace Dynamo.UI.Prompts
                 string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
                     dynamoViewModel.BrandingResourceProvider.ProductName);
             AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
+            AcceptUsageReportingCheck.Visibility =
+                UsageReportingManager.Instance.IsAnalyticsReportingApproved ?
+                System.Windows.Visibility.Visible :
+                System.Windows.Visibility.Hidden;
             AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
         }
@@ -45,6 +56,7 @@ namespace Dynamo.UI.Prompts
             UsageReportingManager.Instance.SetUsageReportingAgreement(
                 AcceptUsageReportingCheck.IsChecked.HasValue && 
                 AcceptUsageReportingCheck.IsChecked.Value);
+            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
         }
 
         private void ToggleIsAnalyticsReportingChecked(object sender, RoutedEventArgs e)
@@ -52,6 +64,16 @@ namespace Dynamo.UI.Prompts
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(
                 AcceptAnalyticsReportingCheck.IsChecked.HasValue && 
                 AcceptAnalyticsReportingCheck.IsChecked.Value);
+            if (AcceptAnalyticsReportingCheck.IsChecked == true)
+            {
+                AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Hidden;
+                AcceptUsageReportingCheck.IsChecked = false;
+                UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+            }
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)

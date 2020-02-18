@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Xml;
 
 namespace Dynamo.Graph.Nodes
@@ -250,11 +251,10 @@ namespace Dynamo.Graph.Nodes
             OutputCount = Int32.Parse(outputCount.Value);
             LegacyNodeName = legacyName.Value;
 
-            if (nodeElement.ChildNodes != null)
+            foreach (XmlNode childNode in nodeElement.ChildNodes)
             {
-                foreach (XmlNode childNode in nodeElement.ChildNodes)
-                    if (childNode.Name.Equals("OriginalNodeContent"))
-                        OriginalNodeContent = (XmlElement)nodeElement.FirstChild.FirstChild;
+                if (childNode.Name.Equals("OriginalNodeContent"))
+                    OriginalNodeContent = (XmlElement) nodeElement.FirstChild.FirstChild;
             }
 
             if (originalElement != null)
@@ -292,18 +292,30 @@ namespace Dynamo.Graph.Nodes
 
         private void UpdatePorts()
         {
+            var guids = InPorts.Select(x => x.GUID).ToArray();
             InPorts.Clear();
             for (int input = 0; input < InputCount; input++)
             {
-                var name = string.Format("Port {0}", input + 1);
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData(name, "")));
+                var name = $"Port {input + 1}";
+                var pm = new PortModel(PortType.Input, this, new PortData(name, ""));
+                InPorts.Add(pm);
+                if (guids.Length == InputCount)
+                {
+                    pm.GUID = guids[input];
+                }
             }
 
+            guids = OutPorts.Select(x => x.GUID).ToArray();
             OutPorts.Clear();
             for (int output = 0; output < OutputCount; output++)
             {
-                var name = string.Format("Port {0}", output + 1);
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(name, "")));
+                var name = $"Port {output + 1}";
+                var pm = new PortModel(PortType.Output, this, new PortData(name, ""));
+                OutPorts.Add(pm);
+                if (guids.Length == OutputCount)
+                {
+                    pm.GUID = guids[output];
+                }
             }
 
             RegisterAllPorts();
