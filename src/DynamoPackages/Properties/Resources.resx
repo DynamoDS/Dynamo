@@ -121,4 +121,16 @@
     <value>The folder '{0}' does not exist</value>
     <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
   </data>
+  <data name="InvalidPackageMalformedNodeLibraryDefinition" xml:space="preserve">
+    <value>"A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it."</value>
+    <comment>This warning message is shown when packages do have a node librarie defined incorrectly so that it's name can not be determined</comment>
+  </data>
+  <data name="InvalidPackageNodeLibraryIsNotSigned" xml:space="preserve">
+    <value>"A package called {0} found at {1} could not be verified to have signed dll files.  {2}  Ignoring it."</value>
+    <comment>This warning message is shown when the node libraries defined for the package in the pkg.json manifest are invalid or do not have a verified certificate file</comment>
+  </data>
+  <data name="InvalidPackageNoNodeLibrariesDefinedInPackageJson" xml:space="preserve">
+    <value>A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it.</value>
+    <comment>This warning message is shown when packages are loaded and require verification of their certificate.  Having Dll's and no defined node libararies in the pkg json manifest stops the validation process</comment>
+  </data>
 </root>

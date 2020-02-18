@@ -469,7 +469,9 @@ namespace Dynamo.ViewModels
         {
             get { return BackgroundPreviewViewModel.Active; }
         }
-        
+
+        public bool HideReportOptions { get; }
+
         #endregion
 
         public struct StartConfiguration
@@ -485,6 +487,11 @@ namespace Dynamo.ViewModels
             /// at startup in order to be used to pass in host specific resources to DynamoViewModel
             /// </summary>
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
+
+            /// <summary>
+            /// If true, Analytics and Usage options are hidden from UI 
+            /// </summary>
+            public bool HideReportOptions { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
@@ -532,6 +539,7 @@ namespace Dynamo.ViewModels
             this.model.CommandStarting += OnModelCommandStarting;
             this.model.CommandCompleted += OnModelCommandCompleted;
 
+            this.HideReportOptions = startConfiguration.HideReportOptions;
             UsageReportingManager.Instance.InitializeCore(this);
             this.WatchHandler = startConfiguration.WatchHandler;
             var pmExtension = model.GetPackageManagerExtension();
@@ -1865,11 +1873,7 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {
-                model.ResetEngine();
-
-                ShowStartPage = false; // Hide start page if there's one.
-            }
+                this.ShowStartPage = false; // Hide start page if there's one.
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)

@@ -112,9 +112,14 @@ namespace Dynamo.Tests
             const string descr = "TheCat";
             const string path = @"C:\turtle\graphics.dyn";
             var guid1 = Guid.NewGuid();
+            var guid2 = Guid.NewGuid();
+
+            //all properties are the same except guid.
             var dummyInfo1 = new CustomNodeInfo(guid1, nodeName, catName, descr, path);
+            var dummyInfo2 = new CustomNodeInfo(guid2, nodeName, catName, descr, path);
+
             var dummySearch1 = new CustomNodeSearchElement(null, dummyInfo1);
-            var dummySearch2 = new CustomNodeSearchElement(null, dummyInfo1);
+            var dummySearch2 = new CustomNodeSearchElement(null, dummyInfo2);
 
             search.Add(dummySearch1);
             search.Add(dummySearch2);

@@ -62,6 +62,7 @@
     </Compile>
     <Compile Include="AssemblyConfiguration.cs" />
     <Compile Include="AssemblyHelper.cs" />
+    <Compile Include="CertificateVerification.cs" />
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Guid.cs" />

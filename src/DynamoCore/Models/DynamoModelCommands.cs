@@ -565,8 +565,11 @@ namespace Dynamo.Models
             if (!command.WorkspaceGuid.Equals(Guid.Empty))
                 targetWorkspace = Workspaces.FirstOrDefault(w => w.Guid.Equals(command.WorkspaceGuid));
 
-            targetWorkspace.UpdateModelValue(command.ModelGuids,
-                command.Name, command.Value);
+            if (targetWorkspace != null)
+            {
+                targetWorkspace.UpdateModelValue(command.ModelGuids,
+                    command.Name, command.Value);
+            }
         }
 
         private void ConvertNodesToCodeImpl(ConvertNodesToCodeCommand command)

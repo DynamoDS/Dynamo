@@ -4,7 +4,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
@@ -140,7 +139,7 @@
                            Grid.Column="0" FontSize ="13" Padding="20,10,5,10" Margin ="0" Background="Transparent" Foreground="#666" IsHitTestVisible="False">
                 </TextBlock>
 
-                <Button Width="auto" MinWidth="100" Grid.Column="1" Click="OnSortButtonClicked"
+                <Button Width="auto" MinWidth="50" Grid.Column="1" Click="OnSortButtonClicked"
                         Style="{DynamicResource ResourceKey=STextButton}" Content="{x:Static p:Resources.PackageSearchViewSortByButton}">
 
                     <Button.ContextMenu>
@@ -176,11 +175,12 @@
                 </Button>
 
                 <Button Width="Auto" 
+                        MinWidth="50"
                         Grid.Column="2" 
-                        Click="OnFilterButtonClicked" 
-                        fa:Awesome.Content="Filter"
-                        TextElement.FontFamily="pack://application:,,,/FontAwesome.WPF;component/#FontAwesome"
+                        Click="OnFilterButtonClicked"
+                        Margin="2 0 0 0"
                         Style="{DynamicResource ResourceKey=STextButton}"
+                        Content="{x:Static p:Resources.PackageSearchViewFilterByButton}"
                         ToolTip="{x:Static p:Resources.PackageHostDependencyFilter}">
                     <Button.ContextMenu>
                         <ContextMenu Name="HostFilter"

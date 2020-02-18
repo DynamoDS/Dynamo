@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
@@ -53,6 +54,10 @@ namespace Dynamo.WorkspaceDependency
                 if (hasDependencyIssue)
                 {
                     loadedParams.AddToExtensionsSideBar(dependencyViewExtension, this);
+                    if (dependencyViewExtension.workspaceReferencesMenuItem != null && !dependencyViewExtension.workspaceReferencesMenuItem.IsChecked)
+                    {
+                        dependencyViewExtension.workspaceReferencesMenuItem.IsChecked = true;
+                    }
                 }
             }
         }
@@ -148,7 +153,7 @@ namespace Dynamo.WorkspaceDependency
         internal void TriggerDependencyRegen()
         {
             DependencyRegen(currentWorkspace);
-        } 
+        }
 
         /// <summary>
         /// Constructor
@@ -167,6 +172,30 @@ namespace Dynamo.WorkspaceDependency
             packageInstaller = p.PackageInstaller;
             dependencyViewExtension = viewExtension;
             DependencyRegen(currentWorkspace);
+            DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
+        }
+
+        /// <summary>
+        /// This method will call the close API on the workspace references extension. 
+        /// </summary>
+        internal void CloseExtensionTab()
+        {
+            loadedParams.CloseExtensioninInSideBar(dependencyViewExtension);
+        }
+
+        /// <summary>
+        /// This event is raised when an extension tab is closed and this event 
+        /// is subscribed by the Workspace dependency view extension.
+        /// <param name="extensionTabName"></param>
+        /// </summary>
+        internal event Action<String> OnExtensionTabClosed;
+        private void OnExtensionTabClosedHandler(String extensionTabName)
+        {
+            if (OnExtensionTabClosed != null)
+            {
+                OnExtensionTabClosed(extensionTabName);
+            }
         }
 
         /// <summary>
@@ -247,6 +276,8 @@ namespace Dynamo.WorkspaceDependency
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
+            DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
+            HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

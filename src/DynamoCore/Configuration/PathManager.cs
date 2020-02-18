@@ -72,6 +72,7 @@ namespace Dynamo.Core
         private readonly string commonDataDir;
 
         private readonly string commonDefinitions;
+        private readonly string commonPackages;
         private readonly string logDirectory;
         private readonly string samplesDirectory;
         private readonly string backupDirectory;
@@ -93,6 +94,15 @@ namespace Dynamo.Core
         private IEnumerable<string> RootDirectories
         {
             get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+        }
+
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The local directory that contains package directory created by all users.
+        /// </summary>
+        internal string CommonPackageDirectory
+        {
+            get { return commonPackages; }
         }
 
         #region IPathManager Interface Implementation
@@ -344,6 +354,7 @@ namespace Dynamo.Core
             commonDataDir = GetCommonDataFolder(pathResolver);
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
+            commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
             samplesDirectory = GetSamplesFolder(commonDataDir);
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
@@ -390,6 +401,7 @@ namespace Dynamo.Core
             // Common data folders for all users.
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDataDir));
             exceptions.Add(PathHelper.CreateFolderIfNotExist(commonDefinitions));
+            exceptions.Add(PathHelper.CreateFolderIfNotExist(commonPackages));
 
             exceptions.RemoveAll(x => x == null); // Remove all null entries.
         }

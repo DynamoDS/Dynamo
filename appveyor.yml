@@ -4,14 +4,17 @@ platform: Any CPU
 
 configuration: Release
 
+image: Visual Studio 2017
+
 before_build:
   - nuget restore .\src\Dynamo.All.sln
 
 environment:
   dynamo_solution: src/Dynamo.All.sln
-  image: Visual Studio 2017
+
 
 build_script:
+  - where msbuild
   - msbuild %dynamo_solution%
 
   
