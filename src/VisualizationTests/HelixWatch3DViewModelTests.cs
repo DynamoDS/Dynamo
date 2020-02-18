@@ -1235,6 +1235,13 @@ namespace WpfVisualizationTests
             return geoms.Any(g => ((PhongMaterial)g.Material).DiffuseMap != null);
         }
 
+        /// <summary>
+        /// Checks if a specific Geometry3d object has an exact number of matching colors within its Vertex Color collection.
+        /// </summary>
+        /// <param name="geomModel"></param>
+        /// <param name="color"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public static bool HasSpecificColorCount(this GeometryModel3D geomModel, Color4 color, int count)
         {
             var colorsFromObj = geomModel.Geometry.Colors;
