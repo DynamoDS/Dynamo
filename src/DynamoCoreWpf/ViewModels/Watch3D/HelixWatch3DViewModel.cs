@@ -1490,8 +1490,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
         {
-            if (objId!= null && this.colorCache.ContainsKey(objId)){
-                //TODO check if item still exists in element3dDictionary
+            if (!(String.IsNullOrEmpty(objId)) && this.colorCache.ContainsKey(objId) && this.element3DDictionary.ContainsKey(objId)){
                 (element3DDictionary[objId] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[objId];
             }
         }
