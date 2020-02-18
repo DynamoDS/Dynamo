@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,13 +22,14 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.Rendering;
 using DynamoUtilities;
 using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Core;
+using HelixToolkit.Wpf.SharpDX.Shaders;
 using Newtonsoft.Json;
 using SharpDX;
 using Color = SharpDX.Color;
@@ -37,10 +39,6 @@ using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
 using TextInfo = HelixToolkit.Wpf.SharpDX.TextInfo;
-using Newtonsoft.Json;
-using HelixToolkit.Wpf.SharpDX.Shaders;
-using System.Windows.Data;
-using Dynamo.Utilities;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -2428,7 +2426,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns>A <see cref="BoundingBox"/> object encapsulating the geometry.</returns>
         internal static BoundingBox Bounds(this GeometryModel3D geom, float defaultBoundsSize = 5.0f)
         {
-            if (geom.Geometry.Positions.Count == 0)
+            if (geom.Geometry.Positions == null || geom.Geometry.Positions.Count == 0)
             {
                 return new BoundingBox();
             }
