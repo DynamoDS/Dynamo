@@ -79,6 +79,8 @@ namespace Dynamo.Wpf.Rendering
         /// Set the transform that is applied to all geometry in the renderPackage.
         /// </summary>
         /// <param name="transform"></param>
+        // TODO: Unused method. Adds unnecessary dependency on ProtoGeometry. Remove in 3.0
+        [Obsolete]
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
         {
             var xaxis = transform.XAxis;
@@ -95,12 +97,15 @@ namespace Dynamo.Wpf.Rendering
             this.Transform = csAsMat.ToArray();
         }
 
+        
         /// <summary>
         /// Set the transform that is applied to all geometry in the renderPackage
         /// by computing the matrix that transforms between from and to.
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
+        // TODO: Unused method. Adds unnecessary dependency on ProtoGeometry. Remove in 3.0
+        [Obsolete]
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
         {
             var inverse = from.Inverse();

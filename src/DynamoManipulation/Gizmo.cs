@@ -163,7 +163,7 @@ namespace Dynamo.Manipulation
 
         private void Redraw()
         {
-            if (manipulator.IsEnabled())
+            if (manipulator.Enabled)
             {
                 BackgroundPreviewViewModel.AddGeometryForRenderPackages(GetDrawables());
             }

@@ -88,6 +88,28 @@ namespace Dynamo.Manipulation
         }
 
         internal Point3D? CameraPosition { get; private set; }
+        
+        // This is null for each new manipulator that is initialized 
+        private bool? enabled;
+
+        /// <summary>
+        /// A manipulator is enabled when its corresponding node is
+        /// not frozen, its geometry preview is visible and its cached value is valid.
+        /// </summary>
+        public bool Enabled
+        {
+            get 
+            {
+                if (enabled == null)
+                {
+                    enabled = IsEnabled();
+                    return (bool) enabled;
+                }
+
+                return (bool) enabled;
+            }
+           
+        }
 
         #endregion
 
@@ -160,7 +182,7 @@ namespace Dynamo.Manipulation
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!IsEnabled() || null == gizmos || !gizmos.Any()) return;
+            if (!Enabled || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
@@ -210,7 +232,7 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
-            if (!IsEnabled()) return;
+            if (!Enabled) return;
 
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
@@ -436,7 +458,7 @@ namespace Dynamo.Manipulation
             
             active = UpdatePosition();
 
-            if (!IsEnabled())
+            if (!Enabled)
             {
                 return packages;
             }
@@ -551,11 +573,14 @@ namespace Dynamo.Manipulation
             return packages;
         }
 
+        #endregion
+
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
         /// only if node is not frozen or not setup as partially applied function 
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
+        // TODO: Make private in 3.0.
         public bool IsEnabled()
         {
             if (Node.IsFrozen || !Node.IsVisible) return false;
@@ -568,12 +593,13 @@ namespace Dynamo.Manipulation
             return active;
         }
 
+        // TODO: Make private in 3.0
         public bool IsNodeValueNull()
         {
-            return isNodeNull(Node.CachedValue);
+            return IsNodeNull(Node.CachedValue);
         }
 
-        private static bool isNodeNull(MirrorData data)
+        private static bool IsNodeNull(MirrorData data)
         {
             if (data == null || data.IsNull) return true;
             
@@ -582,14 +608,12 @@ namespace Dynamo.Manipulation
                 var elements = data.GetElements();
                 foreach (var element in elements)
                 {
-                    if (isNodeNull(element)) return true;
-                    return false;
+                    if (IsNodeNull(element)) return true;
                 }
             }
 
             return false;
         }
-        #endregion
     }
 
 
