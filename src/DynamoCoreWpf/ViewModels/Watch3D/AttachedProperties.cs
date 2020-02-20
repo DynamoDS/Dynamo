@@ -1,5 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Media;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
 
@@ -12,7 +13,70 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public static class AttachedProperties
     {
-        private const float alphaPropertyFactor = 0.5f;
+
+        // handles determining color of elementGeometry3Ds when any property is set false
+        // as the state of other properties must be checked to determine the correct color / material.
+        private static void OnPropertySetFalse(DependencyObject obj)
+        {
+            if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
+            {
+                return;
+            }
+            //mesh case
+            var geom = (GeometryModel3D)obj;
+            var meshGeom = geom as DynamoGeometryModel3D;
+            if (meshGeom != null)
+            {
+
+                // if selection is not enabled after this property was set false
+                // then determine transparencey. IE selection state should always override
+                // the other properties.
+                if (!GetShowSelected(meshGeom))
+                {
+                    if (GetIsolationMode(meshGeom))
+                    {
+                        meshGeom.Material = HelixWatch3DViewModel.IsolatedMaterial;
+                    }
+                    else if (GetIsFrozen(meshGeom))
+                    {
+                        meshGeom.Material = HelixWatch3DViewModel.FrozenMaterial;
+                    }
+                    else
+                    {
+                        //TODO handle vertex coloring in all these cases
+                        meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
+                    }
+                }
+
+            }
+            //point or line case
+            else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+            {
+                //if selection is not enabled determine if we should reset colors or set transparent colors
+                if (!GetShowSelected(geom))
+                {
+                    if (GetIsolationMode(geom))
+                    {
+                        SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, true);
+                    }
+                    else if (GetIsFrozen(geom))
+                    {
+                        SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
+                    }
+                    //all attached props are false, lets reset colors
+                    else
+                    {
+                        RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event to raise when the GeometryModel's colors should be reset to the data cached by the HelixViewModel.
+        /// parameter is the "nodeASTid:HelixGeomType"
+        /// </summary>
+        internal static event Action<string> RequestResetColorsForDynamoGeometryModel;
 
         #region Show Selected property
 
@@ -38,41 +102,74 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private static void ShowSelectedPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
         {
-            if(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
             {
-                var geom = (GeometryModel3D)obj;
-                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
+                return;
+            }
+            var geom = (GeometryModel3D)obj;
 
-                var meshGeom = geom as DynamoGeometryModel3D;
-                if (meshGeom != null)
+            var meshGeom = geom as DynamoGeometryModel3D;
+            if (meshGeom != null)
+            {
+                if ((bool)args.NewValue)
                 {
-                    if ((bool)args.NewValue)
+                    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
+                    if (GetIsolationMode(meshGeom))
                     {
-                        meshGeom.Material = HelixWatch3DViewModel.SelectedMaterial;
-                        //meshGeom.Material = new VertColorMaterial();
-
-                        //var colors = geom.Geometry.Colors.ToArray();
-                        //var len = colors.Length;
-
-                        //for (int i = 0; i < len; i++)
-                        //{
-                        //    colors[i].Blue = 0.0f;
-                        //    colors[i].Green = 0.0f;
-                        //    colors[i].Red = 1f;
-                        //    colors[i].Alpha = 1f;
-                        //}
-
-                        //var colorCollection = new Color4Collection(colors);
-                        //geom.Geometry.Colors = colorCollection;
-                        //geom.Geometry.UpdateColors();
+                        //selected, isolated, and frozen.
+                        if (GetIsFrozen(meshGeom))
+                        {
+                            meshGeom.Material = HelixWatch3DViewModel.FrozenMaterial;
+                        }
+                        //selected and isolated so color normal material
+                        //TODO handle vertex colors later.
+                        else
+                        {
+                            meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
+                        }
                     }
+                    //only selected.
                     else
                     {
-                        meshGeom.Material = GetIsolationMode(meshGeom) ?
-                            HelixWatch3DViewModel.TransparentMaterial : HelixWatch3DViewModel.WhiteMaterial;
+                        meshGeom.Material = HelixWatch3DViewModel.SelectedMaterial;
                     }
                 }
-                
+                else
+                {
+                    OnPropertySetFalse(meshGeom);
+                }
+            }
+            else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+            {
+
+                if ((bool)args.NewValue)
+                {
+                    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
+                    if (GetIsolationMode(geom))
+                    {
+                        //selected, isolated, and frozen.
+                        if (GetIsFrozen(geom))
+                        {
+                            SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
+                        }
+                        //selected and isolated, so we just reset the colors.
+                        else
+                        {
+                            //reset the colors
+                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+                        }
+                    }
+                    //only selected.
+                    else
+                    {
+                        //TODO cache this and update after helix 2.11 is released
+                        SetAllColors(geom, HelixWatch3DViewModel.SelectedMaterial.DiffuseColor);
+                    }
+                }
+                else
+                {
+                    OnPropertySetFalse(geom);
+                }
             }
         }
 
@@ -86,8 +183,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         public static readonly DependencyProperty HasTransparencyProperty = DependencyProperty.RegisterAttached(
             "HasTransparency",
-            typeof (bool),
-            typeof (GeometryModel3D),
+            typeof(bool),
+            typeof(GeometryModel3D),
             new PropertyMetadata(false));
 
         public static void SetHasTransparencyProperty(DependencyObject element, bool value)
@@ -97,7 +194,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public static bool GetHasTransparencyProperty(DependencyObject element)
         {
-            return (bool) element.GetValue(HasTransparencyProperty);
+            return (bool)element.GetValue(HasTransparencyProperty);
         }
 
         #endregion
@@ -139,43 +236,37 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="e">The <see cref="DependencyPropertyChangedEventArgs"/> instance containing the event data.</param>
         private static void IsFrozenPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
             {
-                var geom = (GeometryModel3D)obj;
-                if (geom.Geometry == null)
+                return;
+            }
+            var geom = (GeometryModel3D)obj;
+            if (geom.Geometry == null)
+            {
+                return;
+            }
+            var meshGeom3d = geom as DynamoGeometryModel3D;
+            if (meshGeom3d != null)
+            {
+                if ((bool)e.NewValue)
                 {
-                    return;
+                    meshGeom3d.Material = HelixWatch3DViewModel.FrozenMaterial;
                 }
-                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
-
-                var dynamoGeom3D = geom as DynamoGeometryModel3D;
-                if (dynamoGeom3D != null)
+                else
                 {
-                    if ((bool)e.NewValue)
-                    {
-                        dynamoGeom3D.Material = HelixWatch3DViewModel.TransparentMaterial;
-                    }
-                    else
-                    {
-                        dynamoGeom3D.Material = GetIsolationMode(dynamoGeom3D) ? 
-                            HelixWatch3DViewModel.TransparentMaterial : HelixWatch3DViewModel.WhiteMaterial;
-                    }
-
-                    dynamoGeom3D.RequiresPerVertexColoration = true;
-                    geom = dynamoGeom3D;
+                    OnPropertySetFalse(meshGeom3d);
                 }
-
-                //var colors = geom.Geometry.Colors.ToArray();
-
-                //for (int i = 0; i < colors.Length; i++)
-                //{
-                //    colors[i].Alpha = colors[i].Alpha * alphaPropertyFactor;
-                //}
-
-                //var colorCollection = new Color4Collection(colors);
-                //geom.Geometry.Colors = colorCollection;
-                //geom.Geometry.UpdateColors();
-
+            }
+            else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+            {
+                if ((bool)e.NewValue)
+                {
+                    SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, false);
+                }
+                else
+                {
+                    OnPropertySetFalse(geom);
+                }
             }
         }
 
@@ -202,27 +293,38 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return (bool)element.GetValue(IsolationModeProperty);
         }
-        
+
         private static void IsolationModePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            if (obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D))
+            //don't isolate the grid, axes, etc
+            if (!(obj is GeometryModel3D && !(obj is BillboardTextModel3D) && !IsSpecialRenderPackage(obj)))
             {
-                var geom = (GeometryModel3D)obj;
-
-                // TODO DYN-973: Need new mechanism to trigger render update after selected/frozen/isolated properties change
-                var dynamoGeom3D = geom as DynamoGeometryModel3D;
-                if (dynamoGeom3D != null)
+                return;
+            }
+            var geom = (GeometryModel3D)obj;
+            var meshGeom3d = geom as DynamoGeometryModel3D;
+            if (meshGeom3d != null)
+            {
+                if ((bool)e.NewValue)
                 {
-                    if ((bool)e.NewValue)
-                    {
-                        dynamoGeom3D.Material = HelixWatch3DViewModel.TransparentMaterial;
-                    }
-                    else
-                    {
-                        dynamoGeom3D.Material = HelixWatch3DViewModel.WhiteMaterial;
-                    }
+                    meshGeom3d.Material = HelixWatch3DViewModel.IsolatedMaterial;
+                }
+                else
+                {
+                    OnPropertySetFalse(meshGeom3d);
+                }
 
-                    dynamoGeom3D.RequiresPerVertexColoration = true;
+                meshGeom3d.RequiresPerVertexColoration = true;
+            }
+            else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+            {
+                if ((bool)e.NewValue)
+                {
+                    SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, false);
+                }
+                else
+                {
+                    OnPropertySetFalse(geom);
                 }
             }
         }
@@ -278,6 +380,43 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         //#endregion
 
+        #region utils
+
+        /// <summary>
+        /// Sets all colors on Geometry to a single color.
+        /// </summary>
+        /// <param name="geom">Geometry to modify.</param>
+        /// <param name="color">Color to set geometry to.</param>
+        private static void SetAllColors(GeometryModel3D geom, Color4 color)
+        {
+            var newColorCollection = new Color4Collection(Enumerable.Repeat(color, geom.Geometry.Colors.Count));
+            geom.Geometry.Colors = newColorCollection;
+        }
+
+        /// <summary>
+        /// Sets alpha channel of existing colors to given value, optionally attempts to reset all colors
+        /// first to original colors from renderpackages.
+        /// </summary>
+        /// <param name="geom">Geometry to modify.</param>
+        /// <param name="alpha">Alpha value to set on geometry. Float between 0 and 1.0.</param>
+        /// <param name="resetColorsFirst">If true, colors are reset to those stored in the original render packages, before having alpha modified
+        /// one may want to use this to reset colors from a selected state (blue) back to the original colors before freezing the geo for example. </param>
+        private static void SetAlpha(GeometryModel3D geom, float alpha, bool resetColorsFirst)
+        {
+            if (resetColorsFirst)
+            {
+                //reset colors if handled
+                RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+            }
+            //then modify alpha
+            var newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
+            {
+                col.Alpha = alpha;
+                return col;
+            }));
+            geom.Geometry.Colors = newColors;
+        }
+        #endregion
 
     }
 }

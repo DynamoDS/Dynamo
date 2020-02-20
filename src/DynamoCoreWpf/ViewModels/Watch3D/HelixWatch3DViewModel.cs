@@ -154,6 +154,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
+        private readonly Color4 meshIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.2f);
+        internal static readonly Color4 ptAndLineIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.25f);
+
         private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Size highlightSize = new Size(8, 8);
         private readonly Color4 highlightColor = new Color4(new Color3(1.0f, 0.0f, 0.0f));
@@ -198,6 +201,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public Object Element3DDictionaryMutex = new object();
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
+
+        //internal only for testing.
+        //used to cache point and curve color collections so colors can be efficently swtiched between selected and non selected. (freeze, isolate etc)
+        internal Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
         // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
         private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces 
             = new Dictionary<string, List<Tuple<string, Vector3>>>();
@@ -329,7 +336,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public static PhongMaterial SelectedMaterial { get; set; }
 
-        public static PhongMaterial TransparentMaterial { get; set; }
+        public static PhongMaterial FrozenMaterial { get; set; }
+        public static PhongMaterial IsolatedMaterial { get; set; }
 
         /// <summary>
         /// This is the initial transform applied to 
@@ -639,6 +647,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     var model = Element3DDictionary[key] as GeometryModel3D;
                     Element3DDictionary.Remove(key);
+                    colorCache.Remove(key);
 
                     model.Dispose();
                 }
@@ -880,6 +889,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (frozenModel) continue;
 
                     Element3DDictionary.Remove(kvp.Key);
+                    colorCache.Remove(kvp.Key);
                     model3D.Dispose();
 
                     var nodePath = kvp.Key.Split(':')[0];
@@ -959,7 +969,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var geometries = Element3DDictionary.Values.OfType<GeometryModel3D>().ToList();
             geometries.ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
-            OnSceneItemsChanged();
         }
 
         protected override void ZoomToFit(object parameter)
@@ -1212,9 +1221,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
-            TransparentMaterial = new PhongMaterial
+            FrozenMaterial = new PhongMaterial
             {
-                Name = "Transparent",
+                Name = "Frozen",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
                 DiffuseColor = defaultTransparencyColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
@@ -1222,9 +1231,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
+            IsolatedMaterial = new PhongMaterial
+            {
+                Name = "IsolatedTransparent",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = meshIsolatedTransparencyColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+            };
+
             // camera setup
             Camera = new PerspectiveCamera();
-
+            Camera.FieldOfView = 58.5;
             SetCameraData(new CameraData());
 
             DrawGrid();
@@ -1266,6 +1285,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Name = HeadLightName
             };
 
+            //TODO verify this binding is working.
             headLight.SetBinding(
                 DirectionalLight3D.DirectionProperty, 
                 new Binding("LookDirection") {
@@ -1463,6 +1483,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     DeleteGeometryForIdentifier(id, false);
                 }
+            }
+        }
+
+        protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
+        {
+            if (!(String.IsNullOrEmpty(objId)) && this.colorCache.ContainsKey(objId) && this.element3DDictionary.ContainsKey(objId)){
+                (element3DDictionary[objId] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[objId];
             }
         }
 
@@ -1685,12 +1712,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             points.Indices.AddRange(p.Indices.Select(i => i + startIdx));
                         }
 
+                        //always update the color cache if we're aggregating render packages.
+                        //(ie updating colors from this method).
+                        colorCache[id] = points.Colors;
+                      
                         AddLabelPlace(baseId, p.Positions[0], rp);
                         if (pointGeometry3D.Geometry == null)
                         {
                             pointGeometry3D.Geometry = points;
                         }
+
+                        //while the Name of the geometry is the node which created it
+                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
                         pointGeometry3D.Name = baseId;
+                        pointGeometry3D.Tag = id; // this is more specific than the base id.
 
                     }
 
@@ -1729,7 +1764,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                              ? l.Colors
                              : Enumerable.Repeat(defaultLineColor, l.Positions.Count));
                         }
-                        
+
+                        //always update the color cache if we're aggregating render packages.
+                        //(ie updating colors from this method).
+                        colorCache[id] = lineSet.Colors;
+
                         lineSet.Indices.AddRange(l.Indices.Any()
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
@@ -1739,9 +1778,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {
                             lineGeometry3D.Geometry = lineSet;
                         }
-                       
+                        //while the Name of the geometry is the node which created it
+                        //we tag it with the id of the graphicModel we store in the scene/viewport for fast lookup.
                         lineGeometry3D.Name = baseId;
-
+                        lineGeometry3D.Tag = id;
                     }
 
                     var m = rp.Mesh;
@@ -2015,7 +2055,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                         EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                         SpecularShininess = 12.8f,
-                        DiffuseMap = diffMap.ToMemoryStream()
+                        DiffuseMap = diffMap.ToMemoryStream(),
                     };
                     meshGeometry3D.Material = diffMat;
                 }

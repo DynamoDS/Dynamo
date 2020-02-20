@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using CoreNodeModels.Input;
@@ -16,6 +20,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
+using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -351,6 +356,30 @@ namespace WpfVisualizationTests
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
         }
 
+        [Test]
+        public void ColorCache_Updated_OnNode_Removed()
+        {
+            var model = ViewModel.Model;
+            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
+            var ws = model.CurrentWorkspace;
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
+            //should have 2 entires, one for each point node.
+            Assert.AreEqual(2,(ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+            //remove one of the points and assert cache has one less key
+            var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
+            var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
+            ws.RemoveAndDisposeNode(redPtsNode);
+
+            //assert less points are drawn.
+            DispatcherUtil.DoEvents();
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1331, 0, 0));
+            Assert.AreEqual(1, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+
+        }
+
         #endregion
 
         #region workspace tests
@@ -568,13 +597,13 @@ namespace WpfVisualizationTests
 
             var homeColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
 
-            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor);
 
             OpenVisualizationTest("Points.dyf");
 
             var customColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
 
-            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor.ToColor4());
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor);
         }
 
         [Test]
@@ -727,11 +756,13 @@ namespace WpfVisualizationTests
             Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
-            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            //assert the material is the default material
+            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.WhiteMaterial);
+            // Freeze the ByGeometryColor node making the corresponding object have a frozen material.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.AreEqual(0.5, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
+            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.FrozenMaterial);
+
         }
 
         [Test]
@@ -872,16 +903,19 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
-
+            DispatcherUtil.DoEvents();
             Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test
             // Expecting 6 color definitions for vertices in the DynamoGeometry
+
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(6, numberOfColors);
-            Assert.AreEqual(52, ((PhongMaterial)dynGeometry.Material).DiffuseMap.Width);
+            //decompress the texture to get the width
+            var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
+            Assert.AreEqual(52,width) ;
         }
 
         [Test]
@@ -1170,7 +1204,7 @@ namespace WpfVisualizationTests
                 HelixWatch3DViewModel.DefaultAxesName,
                 HelixWatch3DViewModel.DefaultGridName,
                 HelixWatch3DViewModel.DefaultLightName,
-                HelixWatch3DViewModel.HeadLightName
+                HelixWatch3DViewModel.HeadLightName,
             };
 
         public static int TotalPoints(this IEnumerable<Element3D> dictionary)
@@ -1345,6 +1379,20 @@ namespace WpfVisualizationTests
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any(g => ((PhongMaterial)g.Material).DiffuseMap != null);
+        }
+
+        /// <summary>
+        /// Checks if a specific Geometry3d object has an exact number of matching colors within its Vertex Color collection.
+        /// </summary>
+        /// <param name="geomModel"></param>
+        /// <param name="color"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static bool HasSpecificColorCount(this GeometryModel3D geomModel, Color4 color, int count)
+        {
+            var colorsFromObj = geomModel.Geometry.Colors;
+            var matchingColorsFromObjCount = colorsFromObj.Where(x => x == color).Count();
+            return count == matchingColorsFromObjCount;
         }
     }
 }
