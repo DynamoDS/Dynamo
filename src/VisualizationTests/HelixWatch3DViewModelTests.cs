@@ -817,7 +817,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        // This test will select a sphere object 70 times from a list of sphere's, to display 
+        // This test will select a sphere object 30 times from a list of sphere's, to display 
         // the corresponding label for that sphere object. After the Helix update, this workflow was causing
         // delays and would cause dynamo to hang. The fix was added in this PR: https://github.com/DynamoDS/Dynamo/pull/10399
         // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs. 
