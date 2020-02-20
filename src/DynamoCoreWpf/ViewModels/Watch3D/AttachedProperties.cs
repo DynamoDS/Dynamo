@@ -57,7 +57,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     if (GetIsolationMode(geom))
                     {
-                        SetAlpha(geom, HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha, true);
+                        SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, true);
                     }
                     else if (GetIsFrozen(geom))
                     {
@@ -320,7 +320,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if ((bool)e.NewValue)
                 {
-                    SetAlpha(geom, HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha, false);
+                    SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, false);
                 }
                 else
                 {

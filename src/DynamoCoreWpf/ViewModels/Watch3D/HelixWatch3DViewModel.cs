@@ -156,7 +156,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
-        private readonly Color4 defaultIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.3f);
+        private readonly Color4 meshIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.2f);
+        internal static readonly Color4 ptAndLineIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.25f);
 
         private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Size highlightSize = new Size(8, 8);
@@ -1236,7 +1237,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 Name = "IsolatedTransparent",
                 AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
-                DiffuseColor = defaultIsolatedTransparencyColor,
+                DiffuseColor = meshIsolatedTransparencyColor,
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
@@ -2056,7 +2057,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                         EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                         SpecularShininess = 12.8f,
-                        DiffuseMap = diffMap.ToMemoryStream()
+                        DiffuseMap = diffMap.ToMemoryStream(),
                     };
                     meshGeometry3D.Material = diffMat;
                 }

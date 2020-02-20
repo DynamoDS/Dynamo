@@ -756,11 +756,13 @@ namespace WpfVisualizationTests
             Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
-            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            //assert the material is the default material
+            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.WhiteMaterial);
+            // Freeze the ByGeometryColor node making the corresponding object have a frozen material.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.AreEqual(0.5, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
+            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.FrozenMaterial);
+
         }
 
         [Test]
@@ -850,16 +852,19 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
-
+            DispatcherUtil.DoEvents();
             Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test
             // Expecting 6 color definitions for vertices in the DynamoGeometry
+
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(6, numberOfColors);
-            Assert.AreEqual(52, ((PhongMaterial)dynGeometry.Material).DiffuseMap.Width);
+            //decompress the texture to get the width
+            var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
+            Assert.AreEqual(52,width) ;
         }
 
         [Test]
