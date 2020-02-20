@@ -843,7 +843,7 @@ namespace WpfVisualizationTests
             var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
             // Selcting a sphere object 70 different times to render new labels again. 
-            for (int i = 0; i < 70; i++) {
+            for (int i = 0; i < 30; i++) {
 
                 var itemIndex = i % 10; 
                 var treeViewItem = parentTreeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(itemIndex);
