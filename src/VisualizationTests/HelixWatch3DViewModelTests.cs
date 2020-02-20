@@ -823,6 +823,7 @@ namespace WpfVisualizationTests
         // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs. 
         public void PerformanceTestOnLabelsAfterHelixUpgrade()
         {
+            System.DateTime startTime = System.DateTime.Now;
             OpenVisualizationTest("PerformanceTestOnLabelsAfterHelixUpgrade.dyn");
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
@@ -861,6 +862,9 @@ namespace WpfVisualizationTests
                 Assert.AreEqual(1, geometry.TextInfo.Count);
                 Assert.AreEqual("["+ itemIndex  +"]", geometry.TextInfo[0].Text);
             }
+            System.DateTime endTime = System.DateTime.Now;
+            var totalExecutionTime = (endTime - startTime).TotalSeconds;
+            Assert.LessOrEqual(totalExecutionTime, 20);
         }
 
         [Test]
