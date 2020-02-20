@@ -970,7 +970,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var geometries = Element3DDictionary.Values.OfType<GeometryModel3D>().ToList();
             geometries.ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
-            OnSceneItemsChanged();
         }
 
         protected override void ZoomToFit(object parameter)
