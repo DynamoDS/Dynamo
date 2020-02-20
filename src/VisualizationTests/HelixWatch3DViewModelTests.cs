@@ -817,6 +817,57 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        // This test will select a sphere object 30 times from a list of sphere's, to display 
+        // the corresponding label for that sphere object. After the Helix update, this workflow was causing
+        // delays and would cause dynamo to hang. The fix was added in this PR: https://github.com/DynamoDS/Dynamo/pull/10399
+        // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs. 
+        public void PerformanceTestOnLabelsAfterHelixUpgrade()
+        {
+            System.DateTime startTime = System.DateTime.Now;
+            OpenVisualizationTest("PerformanceTestOnLabelsAfterHelixUpgrade.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            var codeBlockGUID = "07b8781c-8f73-4721-b0e5-d86b8484ca97";
+            NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
+
+            // The Key to identify the Label's geometry object from Model3DDictionary.
+            var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
+
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            // Clicking on a single value from the output of the watch node
+            // should show only one label corresponding to that value.  
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
+            var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
+
+            // Selcting a sphere object 70 different times to render new labels again. 
+            for (int i = 0; i < 30; i++) {
+
+                var itemIndex = i % 10; 
+                var treeViewItem = parentTreeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(itemIndex);
+
+                View.Dispatcher.Invoke(() =>
+                {
+                    treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = Mouse.MouseUpEvent
+                    });
+                });
+
+                DispatcherUtil.DoEvents();
+
+                var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+                Assert.AreEqual(1, geometry.TextInfo.Count);
+                Assert.AreEqual("["+ itemIndex  +"]", geometry.TextInfo[0].Text);
+            }
+            System.DateTime endTime = System.DateTime.Now;
+            var totalExecutionTime = (endTime - startTime).TotalSeconds;
+            Assert.LessOrEqual(totalExecutionTime, 20);
+        }
+
+        [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
