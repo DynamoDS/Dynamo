@@ -156,7 +156,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
-        private readonly Color4 meshIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.2f);
+        private readonly Color4 meshIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.1f);
         internal static readonly Color4 ptAndLineIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.25f);
 
         private readonly Size defaultPointSize = new Size(6, 6);
