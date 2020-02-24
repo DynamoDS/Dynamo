@@ -596,7 +596,9 @@ namespace Dynamo.Models
             }
             // If user does not agree to GA terms, do not try to launch the client at all
             if (PreferenceSettings.IsAnalyticsReportingApproved)
+            {
                 InitializeInstrumentationLogger();
+            }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
             {
