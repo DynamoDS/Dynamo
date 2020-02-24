@@ -89,24 +89,27 @@ namespace Dynamo.Manipulation
 
         internal Point3D? CameraPosition { get; private set; }
         
-        // This is null for each new manipulator that is initialized 
-        private bool? enabled;
+        // This is null for each new manipulator that is initialized.
+        private bool? isValidNode;
 
         /// <summary>
-        /// A manipulator is enabled when its corresponding node is
-        /// not frozen, its geometry preview is visible and its cached value is valid.
+        /// This property is true if the cached value of the manipulator node is non-null.
+        /// It caches its value so that it doesn't have to repeatedly query the node value.
+        /// NOTE: There could be edge cases where the node value could become null while the
+        /// manipulator is being moved, etc. These cases will not be caught and the boolean
+        /// value returned would be true even though it should change to false. This case could
+        /// lead to a potential crash and is yet to be addressed.
         /// </summary>
-        public bool Enabled
+        private bool IsValidNode
         {
             get 
             {
-                if (enabled == null)
+                if (isValidNode == null)
                 {
-                    enabled = IsEnabled();
-                    return (bool) enabled;
+                    isValidNode = !IsNodeNull(Node.CachedValue);
                 }
 
-                return (bool) enabled;
+                return (bool) isValidNode;
             }
            
         }
@@ -176,13 +179,14 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            
+            if (!IsValidNode) return;
+
             active = UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
 
             var gizmos = GetGizmos(false);
-            if (!Enabled || null == gizmos || !gizmos.Any()) return;
+            if (!IsEnabled() || null == gizmos || !gizmos.Any()) return;
 
             var ray = BackgroundPreviewViewModel.GetClickRay(mouseButtonEventArgs);
             if (ray == null) return;
@@ -232,7 +236,7 @@ namespace Dynamo.Manipulation
         /// <param name="mouseEventArgs"></param>
         protected virtual void MouseMove(object sender, MouseEventArgs mouseEventArgs)
         {
-            if (!Enabled) return;
+            if (!IsEnabled()) return;
 
             var clickRay = BackgroundPreviewViewModel.GetClickRay(mouseEventArgs);
             if (clickRay == null) return;
@@ -452,13 +456,13 @@ namespace Dynamo.Manipulation
 
             // This check is required as for some reason LibG fails to load, geometry nodes are null
             // and we must return immediately before proceeding with further calls to ProtoGeometry
-            if (IsNodeValueNull()) return packages;
+            if (IsNodeNull(Node.CachedValue)) return packages;
 
             AssignInputNodes();
             
             active = UpdatePosition();
 
-            if (!Enabled)
+            if (!IsEnabled())
             {
                 return packages;
             }
@@ -577,15 +581,14 @@ namespace Dynamo.Manipulation
 
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
-        /// only if node is not frozen or not setup as partially applied function 
+        /// only if node is not frozen, its preview visible and value non-null. 
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
-        // TODO: Make private in 3.0.
         public bool IsEnabled()
         {
             if (Node.IsFrozen || !Node.IsVisible) return false;
 
-            if (IsNodeValueNull())
+            if (!IsValidNode)
             {
                 return false;
             }
@@ -593,7 +596,8 @@ namespace Dynamo.Manipulation
             return active;
         }
 
-        // TODO: Make private in 3.0
+        // TODO: Remove in 3.0
+        [Obsolete("This method will be removed in 3.0 and will no longer be available as a public API.")]
         public bool IsNodeValueNull()
         {
             return IsNodeNull(Node.CachedValue);
