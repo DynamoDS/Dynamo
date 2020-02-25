@@ -154,8 +154,14 @@ namespace Dynamo.Wpf.Rendering
 
         /// <summary>
         /// Set the transform as a double array, this transform is applied to all geometry in the renderPackage.
-        /// NOTE: this matrix is assumed to be in row vector form, and will be transformed into the neccesary form
-        /// for helix
+        /// This matrix should be laid out as follows in row vector order:
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
+        ///  offsetX, offsetY, offsetZ, W]
+        /// NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// When converting from ProtoGeometry CoordinateSystem form to input matrix, set the first row to the X axis of the CS,
+        /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
         public void SetTransform(double[] matrix)
