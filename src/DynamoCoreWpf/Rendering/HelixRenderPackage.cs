@@ -80,7 +80,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         /// <param name="transform"></param>
         // TODO: Unused method. Adds unnecessary dependency on ProtoGeometry. Remove in 3.0
-        [Obsolete]
+        [Obsolete("This method will be removed in 3.0. Use SetTransform(double[] matrix) instead.")]
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem transform)
         {
             var xaxis = transform.XAxis;
@@ -105,7 +105,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="from"></param>
         /// <param name="to"></param>
         // TODO: Unused method. Adds unnecessary dependency on ProtoGeometry. Remove in 3.0
-        [Obsolete]
+        [Obsolete("This method will be removed in 3.0.")]
         public void SetTransform(Autodesk.DesignScript.Geometry.CoordinateSystem from, Autodesk.DesignScript.Geometry.CoordinateSystem to)
         {
             var inverse = from.Inverse();
