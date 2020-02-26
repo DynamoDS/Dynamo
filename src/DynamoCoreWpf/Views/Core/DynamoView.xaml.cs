@@ -199,20 +199,37 @@ namespace Dynamo.Controls
             FocusableGrid.InputBindings.Clear();
         }
 
-        // This method adds a tab item to the right side bar and 
-        // sets the extension window as the tab content.
+        /// <summary>
+        /// This method adds a tab item to the right side bar and 
+        /// sets the extension window as the tab content.
+        /// </summary>
+        /// <param name="viewExtension">target view extension</param>
+        /// <param name="contentControl">target control</param>
+        /// <returns></returns>
         internal TabItem AddTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        {
+            return AddTabItem(viewExtension.Name, contentControl);
+        }
+
+        /// <summary>
+        /// This method adds a tab item to the right side bar and 
+        /// sets the input content control as the tab content.
+        /// </summary>
+        /// <param name="name">target control name</param>
+        /// <param name="contentControl">target control</param>
+        /// <returns></returns>
+        internal TabItem AddTabItem(string name, ContentControl contentControl)
         {
             int count = TabItems.Count;
 
-            if (!IsExtensionAddedToRightSideBar(viewExtension))
+            if (!IsAddedToRightSideBar(contentControl))
             {
                 tabDynamic.DataContext = null;
 
                 // creates a new tab item
                 TabItem tab = new TabItem();
-                tab.Header = viewExtension.GetType().Name;
-                tab.Tag = viewExtension.GetType();
+                tab.Header = name;
+                tab.Tag = contentControl.GetType();
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 // setting the extension UI to the current tab content 
@@ -273,11 +290,11 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
         }
 
-        private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
+        private Boolean IsAddedToRightSideBar(ContentControl contentControl)
         {
             foreach (TabItem tabItem in TabItems)
             {
-                if (tabItem.Tag.Equals(viewExtension.GetType()))
+                if (tabItem.Tag.Equals(contentControl.GetType()))
                 {
                     return true;
                 }
