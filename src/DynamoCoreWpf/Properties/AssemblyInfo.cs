@@ -37,7 +37,6 @@ using System.Windows;
 [assembly: InternalsVisibleTo("CommandLineTests")]
 [assembly: InternalsVisibleTo("Watch3DNodeModelsWpf")]
 [assembly: InternalsVisibleTo("DynamoPerformanceTests")]
-[assembly: InternalsVisibleTo("PackageDependencyViewExtension")]
 [assembly:InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]

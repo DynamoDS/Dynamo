@@ -211,14 +211,14 @@ namespace Dynamo.Controls
         /// <param name="viewExtension">target view extension</param>
         /// <param name="targetControl">target control</param>
         /// <returns></returns>
-        internal TabItem AddTabItem(IViewExtension viewExtension, Control targetControl)
+        internal TabItem AddTabItem(IViewExtension viewExtension, object targetControl)
         {
             return AddTabItem(viewExtension.Name, targetControl);
         }
 
         /// <summary>
         /// This method adds a tab item to the right side bar and 
-        /// sets the input content control as the tab content.
+        /// sets the input control as the tab content.
         /// </summary>
         /// <param name="name">target control name</param>
         /// <param name="targetControl">target control</param>

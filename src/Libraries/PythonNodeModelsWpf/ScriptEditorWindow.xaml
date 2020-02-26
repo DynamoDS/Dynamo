@@ -17,7 +17,7 @@
 
     <Grid 
         Background="Black"
-        Name="PythonEditor">
+        Name="PythonEditorGrid">
 
         <Border Margin="0,0,0,44" BorderThickness="0" Background="Black" >
             <avalonedit:TextEditor Name="editText" FontFamily="Consolas" FontSize="10pt" ShowLineNumbers="True" Background="#272822" Foreground="#F8F8F2" HorizontalScrollBarVisibility="Disabled"/>
