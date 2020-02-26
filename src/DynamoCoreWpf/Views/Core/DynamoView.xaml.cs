@@ -204,32 +204,52 @@ namespace Dynamo.Controls
             FocusableGrid.InputBindings.Clear();
         }
 
-        // This method adds a tab item to the right side bar and 
-        // sets the extension window as the tab content.
-        internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        /// <summary>
+        /// This method adds a tab item to the right side bar and 
+        /// sets the extension window as the tab content.
+        /// </summary>
+        /// <param name="viewExtension">target view extension</param>
+        /// <param name="targetControl">target control</param>
+        /// <returns></returns>
+        internal TabItem AddTabItem(IViewExtension viewExtension, object targetControl)
+        {
+            return AddTabItem(viewExtension.Name, targetControl);
+        }
+
+        /// <summary>
+        /// This method adds a tab item to the right side bar and 
+        /// sets the input control as the tab content.
+        /// </summary>
+        /// <param name="name">target control name</param>
+        /// <param name="targetControl">target control</param>
+        /// <returns></returns>
+        internal TabItem AddTabItem(string name, object targetControl)
         {
             int count = ExtensionTabItems.Count;
 
-            if (!IsExtensionAddedToRightSideBar(viewExtension))
+            if (!IsAddedToRightSideBar(targetControl))
             {
                 tabDynamic.DataContext = null;
 
                 // creates a new tab item
                 TabItem tab = new TabItem();
-                tab.Header = viewExtension.Name;
-                tab.Tag = viewExtension.GetType();
-                tab.Uid = viewExtension.UniqueId;
+                tab.Header = name;
+                tab.Tag = targetControl.GetType();
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
                 // setting the extension UI to the current tab content 
                 // based on whether it is a UserControl element or window element. 
-                if (contentControl is UserControl)
+                if (targetControl is UserControl)
                 {
-                    tab.Content = contentControl;
+                    tab.Content = targetControl;
+                }
+                else if (targetControl is ContentControl)
+                {
+                    tab.Content = (targetControl as ContentControl)?.Content;
                 }
                 else
                 {
-                    tab.Content = contentControl.Content;
+                    tab.Content = targetControl;
                 }
 
                 //Insert the tab at the end
@@ -309,11 +329,11 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
         }
 
-        private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
+        private Boolean IsAddedToRightSideBar(object targetControl)
         {
             foreach (TabItem tabItem in ExtensionTabItems)
             {
-                if (tabItem.Tag.Equals(viewExtension.GetType()))
+                if (tabItem.Tag.Equals(targetControl.GetType()))
                 {
                     return true;
                 }

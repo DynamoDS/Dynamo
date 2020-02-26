@@ -47,20 +47,6 @@ namespace Dynamo.ViewModels
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
-        public int ScaleFactorLog
-        {
-            get
-            {
-                return (CurrentSpace == null) ? 0 :
-                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
-            }
-            set
-            {
-                CurrentSpace.ScaleFactor = Math.Pow(10, value);
-                CurrentSpace.ScaleFactorChanged = true;
-            }
-        }
-
         #region properties
 
         private readonly DynamoModel model;
@@ -86,6 +72,20 @@ namespace Dynamo.ViewModels
         public DynamoModel Model
         {
             get { return model; }
+        }
+
+        public int ScaleFactorLog
+        {
+            get
+            {
+                return (CurrentSpace == null) ? 0 :
+                    Convert.ToInt32(Math.Log10(CurrentSpace.ScaleFactor));
+            }
+            set
+            {
+                CurrentSpace.ScaleFactor = Math.Pow(10, value);
+                CurrentSpace.ScaleFactorChanged = true;
+            }
         }
 
         public PreferenceSettings PreferenceSettings

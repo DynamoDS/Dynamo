@@ -3,15 +3,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
-using Dynamo.Logging;
+using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using Dynamo.Wpf.Windows;
 
 namespace PythonNodeModelsWpf
 {
@@ -162,8 +162,17 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
-
+        private void OnDockClicked(object sender, RoutedEventArgs e)
+        {
+            // Given this is a pop up window, get the content which
+            // should be a user control to inject
+            var PythonEditorControl = this.Content;
+            // Inject the window into right side panel
+            (this.Owner as DynamoView).AddTabItem(nodeModel.Name, PythonEditorControl);
+            this.Close();
+        }
     }
 }

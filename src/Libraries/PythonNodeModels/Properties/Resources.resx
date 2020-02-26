@@ -138,7 +138,7 @@
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
-  </data>  
+  </data>
   <data name="PythonScriptEditorRevertButton" xml:space="preserve">
     <value>Revert</value>
   </data>
@@ -166,5 +166,8 @@
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
     <value>Python script to run.</value>
+  </data>
+  <data name="PythonScriptEditorDockButton" xml:space="preserve">
+    <value>Dock</value>
   </data>
 </root>
