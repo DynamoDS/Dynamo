@@ -51,10 +51,15 @@ namespace Dynamo.Logging
             else
                 StabilityCookie.WriteCleanShutdown();
 
-            Service.ShutDown();
-            //Unregister the GATrackerFactory only after shutdown is recorded.
-            //Unregister is required, so that the host app can re-start Analytics service.
-            Service.Instance.Unregister(GATrackerFactory.Name);
+            // If the Analytics Client was initialized, shut it down.
+            // Otherwise skip this step because it would cause an exception.
+            if (Service.IsInitialized)
+            {
+                Service.ShutDown();
+                // Unregister the GATrackerFactory only after shutdown is recorded.
+                // Unregister is required, so that the host app can re-start Analytics service.
+                Service.Instance.Unregister(GATrackerFactory.Name);
+            }
             
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
@@ -123,14 +128,27 @@ namespace Dynamo.Logging
 
         public virtual IAnalyticsSession Session { get; private set; }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send analytics info
+        /// </summary>
         public bool ReportingAnalytics
         {
-            get { return preferences != null && preferences.IsAnalyticsReportingApproved; }
+            get
+            {
+                return preferences != null 
+                    && Service.IsInitialized
+                    && preferences.IsAnalyticsReportingApproved;
+            }
         }
 
+        /// <summary>
+        /// Return if Analytics Client is allowed to send instrumentation info
+        /// </summary>
         public bool ReportingUsage
         {
-            get { return preferences != null && preferences.IsUsageReportingApproved; }
+            get { return preferences != null
+                    && Service.IsInitialized
+                    && preferences.IsUsageReportingApproved; }
         }
 
         /// <summary>
@@ -160,12 +178,14 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-            Service.StartUp(product,
-                new UserInfo(Session.UserId), ReportingAnalytics ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
-
-            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-            TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
+            if (preferences!= null && preferences.IsAnalyticsReportingApproved)
+            {
+                //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
+                Service.StartUp(product,
+                    new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+                TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
+            }
         }
 
         public void ShutDown()

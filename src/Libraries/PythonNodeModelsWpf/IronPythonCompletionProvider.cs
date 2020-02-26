@@ -1072,7 +1072,7 @@ namespace Dynamo.Python
                     var type = Type.GetType(typeName);
                     ImportedTypes.Add(name, type);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
                     // Log(e.ToString());

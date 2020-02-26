@@ -67,10 +67,6 @@ namespace Dynamo.Tests
 
             return testParameters;
         }
-
-        #region Private Helper Methods
-
-
-        #endregion
+        
     }
 }

@@ -1180,24 +1180,23 @@ namespace ProtoAssociative
                                 procCallNode = classNode.GetFirstStaticFunctionBy(procName);
                                 isStaticCall = procCallNode != null;
                             }
-                            else if (subPass == ProtoCore.CompilerDefinitions.SubCompilePass.None)
+                            if (procCallNode == null && subPass == SubCompilePass.None)
                             {
                                 string message = String.Format(ProtoCore.Properties.Resources.kStaticMethodNotFound,
-                                                               className,
-                                                               procName);
+                                    className,
+                                    procName);
 
                                 buildStatus.LogWarning(WarningID.FunctionNotFound,
-                                                       message,
-                                                       core.CurrentDSFileName,
-                                                       dotCall.line,
-                                                       dotCall.col, 
-                                                       graphNode);
+                                    message,
+                                    core.CurrentDSFileName,
+                                    dotCall.line,
+                                    dotCall.col,
+                                    graphNode);
 
                                 EmitNullNode(new NullNode(), ref inferedType);
 
                                 return null;
                             }
-                            
                         }
                     }
                 }

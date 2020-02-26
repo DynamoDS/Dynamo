@@ -170,8 +170,12 @@ namespace Dynamo.Tests
                         OutputsMap.Add(n.GUID, n.OutputData);
                     }
 
-                    var portvalues = n.OutPorts.Select(p =>
-                        ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    var portvalues = new List<object>();
+                    if (!n.IsFrozen)
+                    {
+                        portvalues = n.OutPorts.Select(p =>
+                            ProtoCore.Utils.CoreUtils.GetDataOfValue(n.GetValue(p.Index, controller))).ToList();
+                    }
 
                     n.InPorts.ToList().ForEach(p =>
                     {
@@ -617,6 +621,68 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
+        [Test]
+        public void NodeDescriptionDeserilizationTest()
+        {
+            // This test is in reference to this task: https://jira.autodesk.com/browse/DYN-2002
+            // The description of the node in the below graph has been updated to a different value. 
+            // We continue to serialize the description property to the json file but we do not want to
+            // read this value back while deserializing. This test will make sure that the description is
+            // not read from the json file and it gets the value from the node's config.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
+        }
+
+        [Test]
+        public void NodeFreezeStateDeserilizationTest()
+        {
+            // The freeze state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the isFrozenExplicitly is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.isFrozenExplicitly, true);
+        }
+
+        [Test]
+        public void NodeIsSetAsInputStateDeserilizationTest()
+        {
+            // The IsSetAsInput state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the IsSetAsInput is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.ToList()[1];
+            Assert.AreEqual(node.IsSetAsInput, true);
+        }
+
+        [Test]
+        public void NodeIsSetAsOutputStateDeserilizationTest()
+        {
+            // The IsSetAsOutput state of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the IsSetAsOutput is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.IsSetAsOutput, true);
+        }
+
+        [Test]
+        public void NodeNameDeserilizationTest()
+        {
+            // The name of the node is saved in node view block. However the property on node model
+            // will impact headless Dynamo clients graph run, e.g. DynamoPlayer, Refinery.
+            // This test will make sure that the name is read from the node view block in Json file.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeDescriptionDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
+            Assert.AreEqual(node.Name, "List Create");
+        }
+
         [Test, Category("JsonTestExclude")]
         public void FunctionNodeLoadsWhenSignatureChanges()
         {
@@ -725,6 +791,7 @@ namespace Dynamo.Tests
                 "visualization",
                 "migration",
                 "missing_custom_node",
+                "PackageLoadExceptionTest",
                 "Dummy.dyn",
                 // Tests which require late initialization
                 // of custom nodes...
@@ -734,7 +801,8 @@ namespace Dynamo.Tests
                 "packageTest",
                 "reduce-example",
                 "TestFrozen",
-                "TestImperativeInCBN"
+                "TestImperativeInCBN",
+                "CustomNodeContainedInMultiplePackages"
             };
 
         private void DoWorkspaceOpenAndCompare(string filePath, string dirName,

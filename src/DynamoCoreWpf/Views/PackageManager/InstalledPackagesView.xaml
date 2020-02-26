@@ -112,6 +112,7 @@
                                                 <MenuItem Name="ContentsButton"
                                                           Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
                                                           Margin="3"
+                                                          IsCheckable="True"
                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowContentTooltip}"
                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowContent}" />
                                                 <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="" Header="{x:Static p:Resources.InstalledPackageViewContextMenuGetLatest}" />-->

@@ -135,6 +135,28 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public event Action<PortModel> PortDisconnected;
 
+        /// <summary>
+        /// Event triggered before a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
+        /// </summary>
+        public event Action<NodeModel> NodeExecutionBegin;
+
+        internal void OnNodeExecutionBegin()
+        {
+            NodeExecutionBegin?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Event triggered after a node is executed.
+        /// Note: This event will only be triggered when profiling is active.
+        /// </summary>
+        public event Action<NodeModel> NodeExecutionEnd;
+
+        internal void OnNodeExecutionEnd()
+        {
+            NodeExecutionEnd?.Invoke(this);
+        }
+
         #endregion
 
         #region public properties
@@ -670,6 +692,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        [JsonConverter(typeof(DescriptionConverter))]
         /// <summary>
         ///     Description of this Node.
         /// </summary>

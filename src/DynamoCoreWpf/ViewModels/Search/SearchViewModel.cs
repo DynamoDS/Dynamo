@@ -22,7 +22,7 @@ using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
-    public partial class SearchViewModel : NotificationObject
+    public partial class SearchViewModel : ViewModelBase
     {
         #region events
 
@@ -86,7 +86,7 @@ namespace Dynamo.ViewModels
         ///     SearchIconAlignment property
         /// </summary>
         /// <value>
-        ///     This is used for aligment search icon and text.
+        ///     This is used for alignment search icon and text.
         /// </value>
         private HorizontalAlignment searchIconAlignment;
         public HorizontalAlignment SearchIconAlignment
@@ -210,7 +210,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Unselects all items and selectes the first one.
+        /// Unselects all items and selects the first one.
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> ToggleSelect(IEnumerable<NodeSearchElementViewModel> items)
         {
@@ -324,11 +324,29 @@ namespace Dynamo.ViewModels
             InitializeCore();
         }
 
-        // Just for tests.
+        // Just for tests. Please refer to LibraryTests.cs
         internal SearchViewModel(NodeSearchModel model)
         {
             Model = model;
             InitializeCore();
+        }
+
+        /// <summary>
+        /// Dispose function
+        /// </summary>
+        public override void Dispose()
+        {
+            foreach (var cate in LibraryRootCategories)
+            {
+                cate.DisposeTree();
+            }
+            foreach (var cate in BrowserRootCategories)
+            {
+                cate.DisposeTree();
+            }
+            Model.EntryUpdated -= UpdateEntry;
+            Model.EntryRemoved -= RemoveEntry;
+            base.Dispose();
         }
 
         private void InitializeCore()
@@ -360,9 +378,6 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
-
-            //TASK : MAGN 8159 - Do not Expand Geometry by Default.
-            //ChangeRootCategoryExpandState(BuiltinNodeCategories.GEOMETRY_CATEGORY, true);
         }
 
         private IEnumerable<RootNodeCategoryViewModel> CategorizeEntries(IEnumerable<NodeSearchElement> entries, bool expanded)
@@ -387,6 +402,10 @@ namespace Dynamo.ViewModels
                 };
 
                 rootCat.RequestReturnFocusToSearch += OnRequestFocusSearch;
+                // Since all the root categories will be new RootNodeCategoryViewModel objects,
+                // we should dispose the old ones. Since they are still watching for subcategories'
+                // property changes, they will never be garbage collected.
+                cat.Dispose();
                 return rootCat;
             });
 
@@ -744,7 +763,7 @@ namespace Dynamo.ViewModels
             // package the category names in dyf is different from what we show it 
             // on the tree view. so when you click on the category to populate it 
             // triggers an update to category name. on the same instance when you uninstall
-            // and insall the clockwork package, the categories are named correctly but 
+            // and install the clockwork package, the categories are named correctly but 
             // every install triggers an update that gives a duplicate entry. so check if the
             // entry is already added (specific to browse).
             if (category.Entries.All(x => x.FullName != entry.FullName))
@@ -769,13 +788,6 @@ namespace Dynamo.ViewModels
         {
             return string.IsNullOrEmpty(path) ? addition :
                 path + Configurations.CategoryDelimiterString + addition;
-        }
-
-        internal void ChangeRootCategoryExpandState(string categoryName, bool isExpanded)
-        {
-            var category = LibraryRootCategories.FirstOrDefault(cat => cat.Name == categoryName);
-            if (category != null && category.IsExpanded != isExpanded)
-                category.IsExpanded = isExpanded;
         }
 
         #endregion

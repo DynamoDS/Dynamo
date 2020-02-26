@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamoPackages.Properties
-{
-
-
+namespace DynamoPackages.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace DynamoPackages.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -66,6 +66,33 @@ namespace DynamoPackages.Properties
         public static string InvalidPackageFolderWarning {
             get {
                 return ResourceManager.GetString("InvalidPackageFolderWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it.&quot;.
+        /// </summary>
+        public static string InvalidPackageMalformedNodeLibraryDefinition {
+            get {
+                return ResourceManager.GetString("InvalidPackageMalformedNodeLibraryDefinition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;A package called {0} found at {1} could not be verified to have signed dll files.  {2}  Ignoring it.&quot;.
+        /// </summary>
+        public static string InvalidPackageNodeLibraryIsNotSigned {
+            get {
+                return ResourceManager.GetString("InvalidPackageNodeLibraryIsNotSigned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A package called {0} found at {1} includes dll files but none are defined in node libraries in the package manifest.  Ignoring it..
+        /// </summary>
+        public static string InvalidPackageNoNodeLibrariesDefinedInPackageJson {
+            get {
+                return ResourceManager.GetString("InvalidPackageNoNodeLibrariesDefinedInPackageJson", resourceCulture);
             }
         }
     }

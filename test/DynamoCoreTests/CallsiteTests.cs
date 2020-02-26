@@ -133,7 +133,7 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_RunWithTraceDataFromUnresolvedNodes_DoesNotCrash()
         {
-            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Geometry", "Geometry_Surfaces.dyn");
+            var ws = Open<HomeWorkspaceModel>(SampleDirectory, @"en-US\Revit", "Revit_GeometryCreation_Surfaces.dyn");
 
             // check all the nodes and connectors are loaded
             Assert.AreEqual(42, ws.Nodes.Count());

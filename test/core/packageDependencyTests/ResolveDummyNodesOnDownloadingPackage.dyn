@@ -1,0 +1,199 @@
+{
+  "Uuid": "8ac993b7-6516-45c6-8bac-9ff985fbb0ad",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ResolveDummyNodesOnDownloadingPackage",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Awesome",
+      "Id": "a1aba50a873443f2bfb88480a89e3f36",
+      "Inputs": [
+        {
+          "Id": "76813b8b37204695a1d9606bb9422758",
+          "Name": "nEWBasicExample",
+          "Description": "Examples.NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a44deb05001848449f7f83ace580aa7a",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Awesome: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "Id": "e7fb4b2363ac4a7c8d4baac9c8b8c5df",
+      "Inputs": [
+        {
+          "Id": "92223f2d327e4beba91706c310a90de2",
+          "Name": "x",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3cfed3efe1ce4015aa7e0cf5c6ed60b2",
+          "Name": "y",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2c86a6dc483947ce902ca80bce8e59ad",
+          "Name": "z",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ddd56fbfbc3a4bef9f4f284678abb5f1",
+          "Name": "NEWBasicExample",
+          "Description": "NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "5;",
+      "Id": "a6784cd817d94d7f94c640f61c799c89",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "0e3294d9ef6c4fd4b32c5622fea7f17a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ddd56fbfbc3a4bef9f4f284678abb5f1",
+      "End": "76813b8b37204695a1d9606bb9422758",
+      "Id": "95adaaf014f346c989a1c8c719efa7ea"
+    },
+    {
+      "Start": "0e3294d9ef6c4fd4b32c5622fea7f17a",
+      "End": "92223f2d327e4beba91706c310a90de2",
+      "Id": "5f1837205236463d8ad8199a1bdd5624"
+    },
+    {
+      "Start": "0e3294d9ef6c4fd4b32c5622fea7f17a",
+      "End": "3cfed3efe1ce4015aa7e0cf5c6ed60b2",
+      "Id": "a44849ad27e64a318d7ce9f90a078cb9"
+    },
+    {
+      "Start": "0e3294d9ef6c4fd4b32c5622fea7f17a",
+      "End": "2c86a6dc483947ce902ca80bce8e59ad",
+      "Id": "1f81e82b817b42b0983cbc63bed406c7"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6396",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Awesome",
+        "Id": "a1aba50a873443f2bfb88480a89e3f36",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 506.40692961834912,
+        "Y": 264.97219543081343
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Create",
+        "Id": "e7fb4b2363ac4a7c8d4baac9c8b8c5df",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 201.59739003607842,
+        "Y": 198.18126046258666
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a6784cd817d94d7f94c640f61c799c89",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -29.494019945485775,
+        "Y": 273.92809682107031
+      }
+    ],
+    "Annotations": [],
+    "X": 82.818344906128914,
+    "Y": 51.13140818532122,
+    "Zoom": 0.82346504096947037
+  }
+}

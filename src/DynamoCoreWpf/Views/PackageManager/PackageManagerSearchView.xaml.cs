@@ -25,8 +25,10 @@ namespace Dynamo.PackageManager.UI
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
-            (this.DataContext as PackageManagerSearchViewModel).RequestShowFileDialog -= OnRequestShowFileDialog;
-            this.Owner.Focus();
+            var viewModel = DataContext as PackageManagerSearchViewModel;
+            viewModel.UnregisterHandlers();
+
+            Owner.Focus();
             base.OnClosing(e);
         }
 
@@ -35,6 +37,11 @@ namespace Dynamo.PackageManager.UI
             (this.DataContext as PackageManagerSearchViewModel).SearchAndUpdateResults(this.SearchTextBox.Text);
         }
 
+        /// <summary>
+        /// TODO: mark private in Dynamo 3.0
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void ItemStackPanel_MouseDown(object sender, RoutedEventArgs e)
         {
             var lbi = sender as StackPanel;
@@ -58,6 +65,20 @@ namespace Dynamo.PackageManager.UI
         private void OnSortButtonClicked(object sender, RoutedEventArgs e)
         {
             OnShowContextMenuFromLeftClicked(sender, e);
+        }
+
+        private void OnShowFilterContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
+        {
+            var button = (System.Windows.Controls.Button)sender;
+            button.ContextMenu.DataContext = button.DataContext;
+            button.ContextMenu.PlacementTarget = button;
+            button.ContextMenu.Placement = PlacementMode.Bottom;
+            button.ContextMenu.IsOpen = true;
+        }
+
+        private void OnFilterButtonClicked(object sender, RoutedEventArgs e)
+        {
+            OnShowFilterContextMenuFromLeftClicked(sender, e);
         }
 
         private void OnInstallLatestButtonDropDownClicked(object sender, RoutedEventArgs e)

@@ -54,7 +54,7 @@ namespace DSIronPython
 
             // Return the standard library path
             if (!string.IsNullOrEmpty(dynamoCorePath))
-            { return dynamoCorePath + @"\IronPython.StdLib.2.7.8"; }
+            { return dynamoCorePath + @"\IronPython.StdLib.2.7.9"; }
 
             return null;
         }

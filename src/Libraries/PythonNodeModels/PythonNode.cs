@@ -176,6 +176,7 @@ namespace PythonNodeModels
 
         #region SerializeCore/DeserializeCore
 
+        [Obsolete]
         protected override void SerializeCore(XmlElement element, SaveContext context)
         {
             base.SerializeCore(element, context);
@@ -185,6 +186,7 @@ namespace PythonNodeModels
             element.AppendChild(script);
         }
 
+        [Obsolete]
         protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
         {
             base.DeserializeCore(nodeElement, context);

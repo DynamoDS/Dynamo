@@ -25,4 +25,16 @@ namespace DesignScript.Builtin
         {
         }
     }
+
+    /// <summary>
+    /// Null reference exception thrown with null DS builtin types:
+    /// lists, dictionaries and strings.
+    /// </summary>
+    public class BuiltinNullReferenceException : NullReferenceException
+    {
+        public BuiltinNullReferenceException(string message)
+            : base(message)
+        {
+        }
+    }
 }

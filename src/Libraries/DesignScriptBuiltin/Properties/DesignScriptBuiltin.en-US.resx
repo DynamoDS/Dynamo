@@ -123,4 +123,7 @@
   <data name="StringOverIndexingExceptionMessage" xml:space="preserve">
     <value>Index was out of range. If non-negative must be less than the size of the string.</value>
   </data>
+  <data name="NullReferenceExceptionMessage" xml:space="preserve">
+    <value>Cannot index into a null list, dictionary or string.</value>
+  </data>
 </root>

@@ -1,0 +1,286 @@
+{
+  "Uuid": "ce4dea94-aab4-40ff-906c-d04dab768dd8",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "testToleranceEquals_lacing",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "1..2;\n1..4;",
+      "Id": "0e2592bec36548f89b0cd14919c71b6c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bdbb106e4ac6441db7065c2657330f9a",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "399a6b0a699f44948160d6e4301b7921",
+      "Inputs": [
+        {
+          "Id": "c972dd56187f4dbfb68155b78ca3bc5b",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f58e257e7ae94e0595ef4df2bea36b8d",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "58eaa706dd0149e3bd428c7a94ae2fbd",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf74c6b54f40402ab56f315614825e2b",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Shortest",
+      "Description": "Equals with tolerance input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "9db0f6f306804c0fbd6082fd38ac536b",
+      "Inputs": [
+        {
+          "Id": "bd8dff34a3a240a98644f1375b9e085b",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "fb8e7da709f040929f25ef708cd3b72a",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "410ac52b76d24d22bd574681381261d7",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "da6c373f91d444ccaad04cc0d7a59ce0",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "CrossProduct",
+      "Description": "Equals with tolerance input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Equals, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "89af328df688489fa0b8e01566ee74d5",
+      "Inputs": [
+        {
+          "Id": "a6db08c6246e4a45921eb40174b0cff2",
+          "Name": "x",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d73bf85b7fe84d92b45b98be9aeede96",
+          "Name": "y",
+          "Description": "integer or double value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d15cc3450e604b529bd703cfd544623f",
+          "Name": "tolerance",
+          "Description": "tolerance",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9268493a64204246bba50ea2581a043f",
+          "Name": "bool",
+          "Description": "result of equality check",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Longest",
+      "Description": "Equals with tolerance input."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+      "End": "c972dd56187f4dbfb68155b78ca3bc5b",
+      "Id": "b934ac2db7e843aeaebeab8250385724"
+    },
+    {
+      "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+      "End": "bd8dff34a3a240a98644f1375b9e085b",
+      "Id": "cf43c4850f1242caab560f499b154056"
+    },
+    {
+      "Start": "9eb4d3d2dfdf469aa94a318e6cad5e2e",
+      "End": "a6db08c6246e4a45921eb40174b0cff2",
+      "Id": "4d3ffe8c41af4b9eb7e74d0e5c83637f"
+    },
+    {
+      "Start": "bdbb106e4ac6441db7065c2657330f9a",
+      "End": "f58e257e7ae94e0595ef4df2bea36b8d",
+      "Id": "d65d68cf8d7847018e74246b0be1501d"
+    },
+    {
+      "Start": "bdbb106e4ac6441db7065c2657330f9a",
+      "End": "fb8e7da709f040929f25ef708cd3b72a",
+      "Id": "6143b89fb7434cbd8516ac990dd5aab9"
+    },
+    {
+      "Start": "bdbb106e4ac6441db7065c2657330f9a",
+      "End": "d73bf85b7fe84d92b45b98be9aeede96",
+      "Id": "05e507ef853648948d444fe80afa15b3"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6324",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0e2592bec36548f89b0cd14919c71b6c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 167.0,
+        "Y": 178.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "==",
+        "Id": "399a6b0a699f44948160d6e4301b7921",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 184.0,
+        "Y": 455.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "==",
+        "Id": "9db0f6f306804c0fbd6082fd38ac536b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 518.0,
+        "Y": 362.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "==",
+        "Id": "89af328df688489fa0b8e01566ee74d5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 822.0,
+        "Y": 127.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

@@ -60,7 +60,7 @@
                                 <Style TargetType="Label">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Enabled}" Value="True">
-                                            <Setter Property="Foreground" Value="#bbbbbb"></Setter>
+                                            <Setter Property="Foreground" Value="{StaticResource DynamoStandardLableTextBrush}"></Setter>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Enabled}" Value="False">
                                             <Setter Property="Foreground" Value="#444444"></Setter>
@@ -92,7 +92,7 @@
                      Visibility="{Binding RunPeriodInputVisibility}"
                      Width="80" FontSize="14px"
                      Style="{DynamicResource ResourceKey=SDarkTextBox}" 
-                     Foreground="#bbbbbb" 
+                     Foreground="{StaticResource DynamoStandardLableTextBrush}" 
                      KeyDown="UIElement_OnKeyDown" Margin="2.5,0,0,0"/>
 
             <CheckBox Margin="10" x:FieldModifier="public" 

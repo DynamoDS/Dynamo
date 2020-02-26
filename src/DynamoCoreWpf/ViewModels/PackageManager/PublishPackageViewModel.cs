@@ -32,10 +32,41 @@ namespace Dynamo.PackageManager
         #region Properties/Fields
 
         private readonly DynamoViewModel dynamoViewModel;
+
+        /// <summary>
+        /// reference of DynamoViewModel
+        /// </summary>
         public DynamoViewModel DynamoViewModel
         {
             get { return dynamoViewModel; }
         }
+
+        /// <summary>
+        /// Package Publish entry, binded to the host multi-selection option
+        /// </summary>
+        public class HostComboboxEntry
+        {
+            /// <summary>
+            /// Name of the host
+            /// </summary>
+            public string HostName { get; set; }
+
+            /// <summary>
+            /// Boolean indicates if the host entry is selected
+            /// </summary>
+            public bool IsSelected { get; set; }
+
+            /// <summary>
+            /// Constructor
+            /// </summary>
+            /// <param name="hostName">Name of the host</param>
+            public HostComboboxEntry(string hostName)
+            {
+                HostName = hostName;
+                IsSelected = false;
+            }
+        }
+
         /// <summary>
         /// A event called when publishing was a success
         /// </summary>
@@ -387,11 +418,86 @@ namespace Dynamo.PackageManager
             }
         }
 
+        private List<HostComboboxEntry> knownHosts;
+
+        /// <summary>
+        /// Know hosts received from package manager.
+        /// Data binded to the multi-selection host dependency option.
+        /// </summary>
+        public List<HostComboboxEntry> KnownHosts
+        {
+            get { return knownHosts; }
+            set
+            {
+                if (knownHosts != value)
+                {
+                    knownHosts = value;
+                    RaisePropertyChanged(nameof(KnownHosts));
+                }
+            }
+        }
+
+        private List<string> selectedHosts = new List<String>();
+        /// <summary>
+        /// Current selected hosts as dependencies.
+        /// Will be passed for serialization when publishing package.
+        /// </summary>
+        public List<string> SelectedHosts
+        {
+            get { return selectedHosts; }
+            set
+            {
+                if (selectedHosts != value && value != null)
+                {
+                    selectedHosts = value;
+                    // The following logic is mainly for publishing from an existing package with
+                    // pre-serialized host dependencies. We set the selection state so user do not have 
+                    // to replicate the selection again
+                    foreach (var host in KnownHosts)
+                    {
+                        if (selectedHosts.Contains(host.HostName))
+                        {
+                            host.IsSelected = true;
+                            SelectedHostsString += host.HostName + ", ";
+                        }
+                    }
+                    // Format string since it will be displayed
+                    SelectedHostsString = SelectedHostsString.Trim().TrimEnd(',');
+                    RaisePropertyChanged( nameof(SelectedHosts));
+                    RaisePropertyChanged( nameof(SelectedHostsString));
+                }
+            }
+        }
+
+        private string selectedHostsString = string.Empty;
+        /// <summary>
+        /// Current selected hosts as dependencies string for display
+        /// </summary>
+        public string SelectedHostsString
+        {
+            get { return selectedHostsString; }
+            set
+            {
+                if (selectedHostsString != value)
+                {
+                    selectedHostsString = value;
+                    RaisePropertyChanged(nameof(SelectedHostsString));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Boolean indicating if the current publishing package is depending on other package
+        /// </summary>
         public bool HasDependencies
         {
             get { return Dependencies.Count > 0; }
         }
 
+        /// <summary>
+        /// This property seems dup with HasDependencies
+        /// TODO: Remove in Dynamo 3.0
+        /// </summary>
         public bool HasNoDependencies
         {
             get { return !HasDependencies; }
@@ -508,6 +614,7 @@ namespace Dynamo.PackageManager
                 BuildVersion = versionSplit[2];
                 Name = value.name;
                 Keywords = String.Join(" ", value.keywords);
+                SelectedHosts = value.host_dependencies as List<string>;
                 _dynamoBaseHeader = value;
             }
         }
@@ -526,6 +633,21 @@ namespace Dynamo.PackageManager
             PropertyChanged += ThisPropertyChanged;
         }
 
+        /// <summary>
+        /// Return a list of HostComboboxEntry describing known hosts from PM.
+        /// Return an empty list if PM is down.
+        /// </summary>
+        /// <returns>A list of HostComboboxEntry describing known hosts from PM.</returns>
+        private List<HostComboboxEntry> initializeHostSelections()
+        {
+            var hostSelections = new List<HostComboboxEntry>();
+            foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
+            {
+                hostSelections.Add(new HostComboboxEntry(host));
+            }
+            return hostSelections;
+        }
+
         private void BeginInvoke(Action action)
         {
             // dynamoViewModel.UIDispatcher can be null in unit tests.
@@ -538,6 +660,7 @@ namespace Dynamo.PackageManager
         public PublishPackageViewModel( DynamoViewModel dynamoViewModel ) : this()
         {
             this.dynamoViewModel = dynamoViewModel;
+            KnownHosts = initializeHostSelections();
         }
 
         private void ClearAllEntries()
@@ -563,6 +686,8 @@ namespace Dynamo.PackageManager
             this.AdditionalFiles = new ObservableCollection<string>();
             this.Dependencies = new ObservableCollection<PackageDependency>();
             this.Assemblies = new List<PackageAssembly>();
+            this.SelectedHosts = new List<String>();
+            this.SelectedHostsString = string.Empty;
         }
 
         private void ClearPackageContents()
@@ -610,7 +735,8 @@ namespace Dynamo.PackageManager
                 RepositoryUrl = l.RepositoryUrl ?? "",
                 SiteUrl = l.SiteUrl ?? "",
                 Package = l,
-                License = l.License
+                License = l.License,
+                SelectedHosts = l.HostDependencies as List<string>
             };
 
             // add additional files
@@ -1197,6 +1323,7 @@ namespace Dynamo.PackageManager
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
                 Package.RepositoryUrl = RepositoryUrl;
+                Package.HostDependencies = SelectedHosts;
 
                 AppendPackageContents();
 

@@ -16,13 +16,13 @@ to the tracking task that it is part or all of the solution for.
 
 Check these if you believe they are true
 
-- [ ] The code base is in a better state after this PR
+- [ ] The codebase is in a better state after this PR
 - [ ] Is documented according to the [standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - [ ] The level of testing this PR includes is appropriate
 - [ ] User facing strings, if any, are extracted into `*.resx` files
 - [ ] All tests pass using the self-service CI.
 - [ ] Snapshot of UI changes, if any.
-- [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions), and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
+- [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 
 ### Reviewers
 

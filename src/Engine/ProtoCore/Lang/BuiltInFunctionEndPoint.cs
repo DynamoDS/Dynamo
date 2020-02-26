@@ -2575,30 +2575,15 @@ namespace ProtoCore.Lang
 
     class StackValueComparerForDouble : IComparer<StackValue>
     {
-        private bool mbAscending = true;
+        private readonly bool mbAscending = true;
         public StackValueComparerForDouble(bool ascending)
         {
             mbAscending = ascending;
         }
 
-        bool Equals(StackValue sv1, StackValue sv2)
-        {
-            bool sv1null = !sv1.IsNumeric;
-            bool sv2null = !sv2.IsNumeric; 
-            if ( sv1null && sv2null)
-                return true;
-            if (sv1null || sv2null)
-                return false;
-
-            var v1 = sv1.IsDouble ? sv1.DoubleValue: sv1.IntegerValue;
-            var v2 = sv2.IsDouble ? sv2.DoubleValue: sv2.IntegerValue;
-
-            return MathUtils.Equals(v1, v2);
-        }
-
         public int Compare(StackValue sv1, StackValue sv2)
         {
-            if (Equals(sv1, sv2))
+            if (!sv1.IsNumeric && !sv2.IsNumeric)
                 return 0;
 
             if (!sv1.IsNumeric)
@@ -2613,10 +2598,7 @@ namespace ProtoCore.Lang
             double x = mbAscending ? value1 : value2;
             double y = mbAscending ? value2 : value1; 
 
-            if (x > y)
-                return 1;
-            else
-                return -1;
+            return x.CompareTo(y);
         }
     }
 }

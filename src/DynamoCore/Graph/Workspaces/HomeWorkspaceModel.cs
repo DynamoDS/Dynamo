@@ -32,6 +32,9 @@ namespace Dynamo.Graph.Workspaces
         private readonly bool verboseLogging;
         private bool graphExecuted;
 
+        // Event to handle closing of the workspace references extension when the workspace is closed. 
+        internal static event Action WorkspaceClosed;
+
         // To check whether task is completed or not. 
         private bool executingTask;
 
@@ -343,7 +346,15 @@ namespace Dynamo.Graph.Workspaces
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
                 if (RunSettings.RunEnabled || executingTask)
                 {
-                    Run();
+                    // skip the execution if runs have been disabled - currently this flag is only set by the Package Loader
+                    if (!EngineController.DisableRun)
+                    {
+                        Run();
+                    }
+                    else
+                    {
+                        this.Log("Run has been disabled in the Engine Controller");
+                    }
                 }   
             }
         }
@@ -411,6 +422,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public override void Clear()
         {
+            WorkspaceClosed?.Invoke();
             base.Clear();
             PreloadedTraceData = null;
             RunSettings.Reset();

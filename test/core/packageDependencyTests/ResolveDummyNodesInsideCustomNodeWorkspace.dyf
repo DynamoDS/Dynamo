@@ -1,0 +1,150 @@
+{
+  "Uuid": "82c0dd65-01a3-4293-9474-211f1992004a",
+  "IsCustomNode": true,
+  "Category": "SampleLibraryZeroTouch",
+  "Description": "",
+  "Name": "Sample",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "Id": "41dde0976c9c4d1b8b2a775a86aa6da4",
+      "Inputs": [
+        {
+          "Id": "b51a858bfb6e400cbe185b284ac0c26d",
+          "Name": "x",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "71ee92fe470c4cc98f1efbcbbc5416a0",
+          "Name": "y",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9032a9f2fda24ee4bbd9bf10c1aea2e1",
+          "Name": "z",
+          "Description": "double\nDefault value : 42",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3dfd879bbf4f43389ff4669832f6ddbf",
+          "Name": "NEWBasicExample",
+          "Description": "NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Examples.NEWBasicExample.Awesome",
+      "Id": "c436c3be2ac243a0a55083ff16b3b5a1",
+      "Inputs": [
+        {
+          "Id": "465daae928de4f99b140c66277ca5663",
+          "Name": "nEWBasicExample",
+          "Description": "Examples.NEWBasicExample",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "883303d82237447cab078d3e2b44dc1b",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "NEWBasicExample.Awesome: double"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3dfd879bbf4f43389ff4669832f6ddbf",
+      "End": "465daae928de4f99b140c66277ca5663",
+      "Id": "813173d6f805417f8628650e75a57c5e"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6406",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Create",
+        "Id": "41dde0976c9c4d1b8b2a775a86aa6da4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 315.5,
+        "Y": 243.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "NEWBasicExample.Awesome",
+        "Id": "c436c3be2ac243a0a55083ff16b3b5a1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 620.3095395822711,
+        "Y": 310.290934968226
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

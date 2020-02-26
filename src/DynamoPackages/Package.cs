@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Core;
+using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -91,11 +92,17 @@ namespace Dynamo.PackageManager
         private IEnumerable<string> _keywords = new List<string>();
         public IEnumerable<string> Keywords { get { return _keywords; } set { _keywords = value; RaisePropertyChanged("Keywords"); } }
 
+        private IEnumerable<string> hostDependencies = new List<string>();
+        /// <summary>
+        /// Package Host Dependencies, e.g. specifying "Revit" in the list means this package can be guaranteed to work in this host environment only
+        /// </summary>
+        public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
+
         private bool markedForUninstall;
         public bool MarkedForUninstall
         {
             get { return markedForUninstall; }
-            private set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+            internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
         private string _group = "";
@@ -132,6 +139,11 @@ namespace Dynamo.PackageManager
         ///     changes to the package, but instead reflects how the package was formed.
         /// </summary>
         public PackageUploadRequestBody Header { get; internal set; }
+
+        /// <summary>
+        /// Is set to true if the Package is located in a directory that requires certificate verification of its node library dlls.
+        /// </summary>
+        internal bool RequiresSignedEntryPoints { get; set; }
 
         #endregion
 
@@ -178,6 +190,7 @@ namespace Dynamo.PackageManager
                     Contents = body.contents,
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
+                    HostDependencies = body.host_dependencies,
                     Header = body
                 };
                 
@@ -262,20 +275,29 @@ namespace Dynamo.PackageManager
             {
                 Assembly assem;
 
-                // dll files may be un-managed, skip those
-                var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
-                if (result)
+                bool shouldLoadFile = true;
+                if (this.RequiresSignedEntryPoints)
                 {
-                    // IsNodeLibrary may fail, we store the warnings here and then show
-                    IList<ILogMessage> warnings = new List<ILogMessage>();
+                    shouldLoadFile = IsFileSpecifiedInPackageJsonManifest(nodeLibraries, assemFile.Name, BinaryDirectory);
+                }
 
-                    assemblies.Add(new PackageAssembly()
+                if (shouldLoadFile)
+                {
+                    // dll files may be un-managed, skip those
+                    var result = PackageLoader.TryLoadFrom(assemFile.FullName, out assem);
+                    if (result)
                     {
-                        Assembly = assem,
-                        IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
-                    });
+                        // IsNodeLibrary may fail, we store the warnings here and then show
+                        IList<ILogMessage> warnings = new List<ILogMessage>();
 
-                    warnings.ToList().ForEach(this.Log);
+                        assemblies.Add(new PackageAssembly()
+                        {
+                            Assembly = assem,
+                            IsNodeLibrary = IsNodeLibrary(nodeLibraries, assem.GetName(), ref warnings)
+                        });
+
+                        warnings.ToList().ForEach(this.Log);
+                    }
                 }
             }
 
@@ -285,6 +307,34 @@ namespace Dynamo.PackageManager
             }
 
             return assemblies;
+        }
+
+        /// <summary>
+        /// Checks if a specific file is specified in the Node Libraries section of the package manifest json.
+        /// </summary>
+        /// <param name="nodeLibraries">node libraries defined in package manifest json.</param>
+        /// <param name="filename">filename of dll file to check</param>
+        /// <param name="path">path of the packages</param>
+        /// <returns></returns>
+        private static bool IsFileSpecifiedInPackageJsonManifest(IEnumerable<string> nodeLibraries, string filename, string path)
+        {
+            foreach (var nodeLibraryAssembly in nodeLibraries)
+            {
+                try
+                {
+                    var name = new AssemblyName(nodeLibraryAssembly).Name + ".dll";
+                    if (name == filename)
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    throw new LibraryLoadFailedException(path, Resources.IncorrectlyFormattedNodeLibraryWarning);
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -406,8 +456,15 @@ namespace Dynamo.PackageManager
         {
             LoadedCustomNodes.Clear();
 
-            foreach (var x in customNodeManager.AddUninitializedCustomNodesInPath(CustomNodeDirectory, isTestMode))
+            var reloadedCustomNodes = customNodeManager.AddUninitializedCustomNodesInPath(
+                CustomNodeDirectory,
+                isTestMode,
+                new PackageInfo(Name, new Version(versionName)));
+
+            foreach (var x in reloadedCustomNodes)
+            {
                 LoadedCustomNodes.Add(x);
+            }
         }
 
         public event Action<ILogMessage> MessageLogged;

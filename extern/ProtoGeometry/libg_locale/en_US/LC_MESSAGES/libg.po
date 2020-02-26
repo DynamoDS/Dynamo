@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-07 07:22-0800\n"
+"POT-Creation-Date: 2019-09-02 07:23-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -434,7 +434,7 @@ msgid "Unable to create NurbsCurve from control points."
 msgstr ""
 
 #: LibGCore/src/ds/ds_bsplinesurface.cpp:643
-#: LibGCore/src/ds/ds_surface.cpp:1167
+#: LibGCore/src/ds/ds_surface.cpp:1277
 msgid "Unable to create face from spline"
 msgstr ""
 
@@ -1461,6 +1461,7 @@ msgid "Unable union two Solids"
 msgstr ""
 
 #: LibGCore/src/ds/ds_solid.cpp:147 LibGCore/src/ds/ds_solid.cpp:181
+#: LibGCore/src/ds/ds_surface.cpp:928
 msgid "Cannot union an empty list"
 msgstr ""
 
@@ -1612,7 +1613,7 @@ msgstr ""
 msgid "Profile Curve must be closed"
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:996 LibGCore/src/ds/ds_surface.cpp:1202
+#: LibGCore/src/ds/ds_solid.cpp:996 LibGCore/src/ds/ds_surface.cpp:1312
 msgid "Unable set up two rail sweep operation."
 msgstr ""
 
@@ -1620,11 +1621,11 @@ msgstr ""
 msgid "Cannot instruct ASM to make a Solid."
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:1003 LibGCore/src/ds/ds_surface.cpp:1209
+#: LibGCore/src/ds/ds_solid.cpp:1003 LibGCore/src/ds/ds_surface.cpp:1319
 msgid "Cannot set linear map for two-rail sweeping."
 msgstr ""
 
-#: LibGCore/src/ds/ds_solid.cpp:1007 LibGCore/src/ds/ds_surface.cpp:1213
+#: LibGCore/src/ds/ds_solid.cpp:1007 LibGCore/src/ds/ds_surface.cpp:1323
 msgid "Unable to sweep profile Curve."
 msgstr ""
 
@@ -1815,23 +1816,39 @@ msgstr ""
 msgid "Unable to evaluate normal of Surface."
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:977
+#: LibGCore/src/ds/ds_surface.cpp:895
+msgid "Unable union two surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:906
+msgid "Cannot union an empty list of surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:953
+msgid "Unable difference two surfaces"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:962
+msgid "Cannot difference an empty list"
+msgstr ""
+
+#: LibGCore/src/ds/ds_surface.cpp:1087
 msgid ""
 "Unable to get FACE's range while determining if it is closed in U direction"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:995
+#: LibGCore/src/ds/ds_surface.cpp:1105
 msgid ""
 "Unable to get the FACE's range while determining if it is closed in the V "
 "direction"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:1053 LibGCore/src/ds/ds_surface.cpp:1072
-#: LibGCore/src/ds/ds_surface.cpp:1097 LibGCore/src/ds/ds_surface.cpp:1122
+#: LibGCore/src/ds/ds_surface.cpp:1163 LibGCore/src/ds/ds_surface.cpp:1182
+#: LibGCore/src/ds/ds_surface.cpp:1207 LibGCore/src/ds/ds_surface.cpp:1232
 msgid "can not evaluate curvature"
 msgstr ""
 
-#: LibGCore/src/ds/ds_surface.cpp:1205
+#: LibGCore/src/ds/ds_surface.cpp:1315
 msgid "Cannot instruct ASM to make a Surface."
 msgstr ""
 
@@ -2266,22 +2283,22 @@ msgid ""
 "curve count"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1566
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1571
 msgid "Failed to initialize a T-Spline Pipe."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1642
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1647
 msgid "Failed to build a T-Spline Pipe."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1667
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1672
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:514
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:639
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:725
 msgid "Radius spans should be greater or equal to 3"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1671
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1676
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:524
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:647
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:733
@@ -2289,7 +2306,7 @@ msgstr ""
 msgid "Either radial or axial symmetry is allowed, but not both"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1675
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1680
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:528
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:651
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:737
@@ -2298,14 +2315,14 @@ msgid ""
 "selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1679
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1684
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:532
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:655
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:741
 msgid "Radius spans should be multiple of 4 when X and Y symmetry is selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1683
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1688
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:557
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:676
 #: LibGCore/src/ds/tspline/ds_tsplinesurface_primitives.cpp:766
@@ -2315,124 +2332,124 @@ msgid ""
 "selected"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1698
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1703
 msgid "T-Spline revolving curve failed"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1723
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1728
 msgid "Faces valence must be greater than 0."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1725
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1730
 msgid "Snapping tolerance must be greater than 0."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1740
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1745
 msgid "Failed to construct a TSpline surface from the given lines"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1761
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1766
 msgid "Edge can't be creased: "
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1764
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1769
 msgid "Edge can't be uncreased: "
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1791
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1796
 msgid "Vertex can't be creased: "
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1794
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1799
 msgid "Vertex can't be uncreased: "
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1821
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1826
 msgid "Crease unsuccessfull"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1835
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1840
 msgid "Weld unsuccessfull"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1837
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1842
 msgid "Unweld unsuccessfull"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1852
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1857
 msgid "Failed to thicken TSpline surface"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1869
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1874
 msgid "The given edges are empty"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1877
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1882
 msgid "Failed to initialize the match"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1883
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1888
 msgid "Failed to get the aligned edges"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1892
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1897
 msgid "Failed to convert ASM curves to T-Spline NURBS curve interfaces"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1899
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1904
 msgid ""
 "Failed to construct poly-curve interfaces from the T-Spline NURBS curve "
 "interfaces"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1909
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1914
 msgid "Failed to set a propagation width"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1926
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1931
 msgid "Unknown contituity"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1933
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1938
 msgid "Failed to add a constraint for the match"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1940
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1945
 msgid "Failed to scale the derivatives for continuity for the given constraint"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1946
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1951
 msgid "Failed to flip the constraint orientation"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1951
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1956
 msgid "Failed to perform the match"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1963
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1987
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1968
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1992
 msgid "T-Spline Surface requires spans to be greater or equal to 1"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1975
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1980
 msgid "Failed to extrude TSpline edges"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:1999
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2004
 msgid "Failed to extrude TSpline faces"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2063
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2068
 msgid "Subdivision failed."
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2114
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2119
 #: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:341
 #: LibGCore/src/ds/tspline/ds_tsplineutils.cpp:345
 msgid "Unable to build body from T-Spline"
 msgstr ""
 
-#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2180
+#: LibGCore/src/ds/tspline/ds_tsplinesurface.cpp:2185
 msgid "Ouptut t-spline is invalid."
 msgstr ""
 

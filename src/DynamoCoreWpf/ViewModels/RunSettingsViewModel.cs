@@ -81,12 +81,12 @@ namespace Dynamo.Wpf.ViewModels
     /// notifications as those notifications are raised when the value is set on the
     /// model.
     /// </summary>
-    public class RunSettingsViewModel : NotificationObject
+    public class RunSettingsViewModel : ViewModelBase
     {
         #region private members
 
         private bool debug = false;
-        private readonly HomeWorkspaceViewModel workspaceViewModel;
+        private HomeWorkspaceViewModel workspaceViewModel;
         private readonly DynamoViewModel dynamoViewModel;
         private RunTypeItem selectedRunTypeItem;
         private SynchronizationContext context;
@@ -215,7 +215,7 @@ namespace Dynamo.Wpf.ViewModels
 
         #endregion
 
-        #region constructors
+        #region constructors and dispose function
 
         public RunSettingsViewModel(RunSettings settings, HomeWorkspaceViewModel workspaceViewModel, DynamoViewModel dynamoViewModel)
         {
@@ -234,6 +234,15 @@ namespace Dynamo.Wpf.ViewModels
                 RunTypeItems.Add(new RunTypeItem(val));
             }
             ToggleRunTypeEnabled(RunType.Periodic, false);
+        }
+
+        /// <summary>
+        /// When switching workspace, this need to be called in HomeworkspaceViewModel dispose function
+        /// </summary>
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.workspaceViewModel = null;
         }
 
         #endregion

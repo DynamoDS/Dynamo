@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Scheduler;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.Utilities;
@@ -178,6 +180,27 @@ namespace Dynamo
                 return extensions.First().PackageLoader;
             }
 
+            return null;
+        }
+
+        protected void LoadPackage(string packageDirectory)
+        {
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+        }
+
+        protected NodeModel GetNodeInstance(string creationName)
+        {
+            var searchElementList = CurrentDynamoModel.SearchModel.SearchEntries.OfType<NodeSearchElement>();
+            foreach (var element in searchElementList)
+            {
+                if (element.CreationName == creationName)
+                {
+                    return ((NodeSearchElement) element).CreateNode();
+                }
+            }
             return null;
         }
     }

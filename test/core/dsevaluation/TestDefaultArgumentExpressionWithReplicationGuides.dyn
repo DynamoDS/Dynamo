@@ -1,0 +1,85 @@
+{
+  "Uuid": "7de9d6eb-6b1b-4862-8fbf-cfd97683cf7e",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "TestDefaultArgumentExpressionWithReplicationGuides",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.TestDefaultArgumentAttributes.ComputeFlattenedPoints@FFITarget.DesignScript.Point[][]",
+      "Id": "cc365216df0241ce9ea4e477c06b7d55",
+      "Inputs": [
+        {
+          "Id": "9c50a73576a54cb18536ca1f1c794c7c",
+          "Name": "points",
+          "Description": "Point[][]\nDefault value : FFITarget.DesignScript.Point.ByCoordinates((1..10)<1>, (2..20)<2>, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fdc64164bc2f4581b882f3d90317f530",
+          "Name": "Point[]",
+          "Description": "Point[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "TestDefaultArgumentAttributes.ComputeFlattenedPoints (points: Point[][] = FFITarget.DesignScript.Point.ByCoordinates((1..10)<1>, (2..20)<2>, 0)): Point[]"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.5.0.6324",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -32.633264315044464,
+      "EyeY": 35.352703007964834,
+      "EyeZ": 157.72744418938157,
+      "LookX": 32.633264315044464,
+      "LookY": -35.352703007964834,
+      "LookZ": -157.72744418938157,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "TestDefaultArgumentAttributes.ComputeFlattenedPoints",
+        "Id": "cc365216df0241ce9ea4e477c06b7d55",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 429.0,
+        "Y": 334.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

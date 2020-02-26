@@ -52,7 +52,7 @@
   ],
   "Connectors": [],
   "Dependencies": [],
-  "PackageDependencies": [],
+  "NodeLibraryDependencies": [],
   "Bindings": [],
   "View": {
     "Dynamo": {

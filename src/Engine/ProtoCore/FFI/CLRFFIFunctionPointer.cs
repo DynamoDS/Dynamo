@@ -355,6 +355,7 @@ namespace ProtoFFI
                 {
                     dsi.LogSemanticError(ex.InnerException.Message);
                 }
+
                 dsi.LogSemanticError(ex.Message);
             }
             catch (System.Reflection.TargetException ex)
@@ -363,6 +364,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -374,9 +376,9 @@ namespace ProtoFFI
                     if (exception != null)
                     {
                         var innerMessage = string.Format(Resources.ArgumentNullException, exception.ParamName);
-                        var msg = string.Format(Resources.OperationFailType2, 
-                            ReflectionInfo.DeclaringType.Name, 
-                            ReflectionInfo.Name, 
+                        var msg = string.Format(Resources.OperationFailType2,
+                            ReflectionInfo.DeclaringType.Name,
+                            ReflectionInfo.Name,
                             innerMessage);
 
                         dsi.LogWarning(ProtoCore.Runtime.WarningID.InvalidArguments, msg);
@@ -391,7 +393,11 @@ namespace ProtoFFI
                     }
                     else if (exc is System.NullReferenceException)
                     {
-                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(null));
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
+                    }
+                    else if (exc is BuiltinNullReferenceException)
+                    {
+                        dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ErrorString(exc));
                     }
                     else if (exc is StringOverIndexingException)
                     {
@@ -417,6 +423,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.MethodAccessException ex)
@@ -425,6 +432,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.InvalidOperationException ex)
@@ -433,6 +441,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (System.NotSupportedException ex)
@@ -441,6 +450,7 @@ namespace ProtoFFI
                 {
                     dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.InnerException.Message);
                 }
+
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.AccessViolation, ex.Message);
             }
             catch (ArgumentNullException ex)
@@ -478,7 +488,7 @@ namespace ProtoFFI
 
         private string ErrorString(System.Exception ex)
         {
-            if (ex is System.InvalidOperationException)
+            if (ex is System.InvalidOperationException || ex is BuiltinNullReferenceException)
                 return ex.Message;
 
             string msg = (ex == null) ? "" : ex.Message;
@@ -812,63 +822,6 @@ namespace ProtoFFI
             else
             {
                 retVal = InvokeFunctionPointerNoThrow(c, dsi, thisObject, null);
-            }
-
-            return retVal;
-        }
-    }
-        
-    class GetterFunctionPointer : CLRFFIFunctionPointer
-    {
-        private string PropertyName
-        {
-            get;
-            set;
-        }
-
-        public GetterFunctionPointer(CLRDLLModule module, String functionName, MemberInfo method, ProtoCore.Type retType)
-            : base(module, functionName, method, default(List<ProtoCore.Type>), retType)
-        {
-            string property;
-            if (CoreUtils.TryGetPropertyName(functionName, out property))
-            {
-                PropertyName = property;
-            }
-        }
-
-        [IsObsolete("Remove in 3.0. Use Execute(ProtoCore.Runtime.Context c, ProtoCore.DSASM.Interpreter dsi, List<StackValue> s) instead")]
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi)
-        {
-            return Execute(c, dsi, null);
-        }
-
-        public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
-        {
-            Object retVal = base.Execute(c, dsi, s);
-            if (retVal == null)
-            {
-                return null;
-            }
-
-            StackValue propValue = (StackValue)retVal;
-            var thisObject = s?.Last() ?? dsi.runtime.rmem.Stack.Last();
-
-            bool isValidPointer = thisObject.IsPointer && thisObject.Pointer != Constants.kInvalidIndex;
-            if (isValidPointer && propValue.IsReferenceType)
-            {
-                int classIndex = thisObject.metaData.type;
-                if (classIndex != ProtoCore.DSASM.Constants.kInvalidIndex)
-                {
-                    var runtimeCore = dsi.runtime.RuntimeCore;
-                    int idx = runtimeCore.DSExecutable.classTable.ClassNodes[classIndex].Symbols.IndexOf(PropertyName);
-
-                    var obj = runtimeCore.Heap.ToHeapObject<DSObject>(thisObject);
-                    StackValue oldValue = obj.GetValueFromIndex(idx, runtimeCore);
-                    if (!StackUtils.Equals(oldValue, propValue))
-                    {
-                        obj.SetValueAtIndex(idx, propValue, runtimeCore);
-                    }
-                }
             }
 
             return retVal;

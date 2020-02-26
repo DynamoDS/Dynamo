@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -1639,46 +1639,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable detailed usability data reporting (Instrumentation).
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableDataReporting {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReporting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Detailed reporting sends behaviour data that we use for improving {0}.
-        ///
-        ///It includes the graph being created as well as errors and warnings.
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableDataReportingTooltip {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableDataReportingTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable anonymous summary reporting (Google Analytics).
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableSummaryReporting {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReporting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Anonymous summary reporting sends a minimal set of data for computing user counts, stability and performance metrics.
-        ///
-        ///It does not contain your graph or any personal data.
-        /// </summary>
-        public static string DynamoViewSettingMenuEnableSummaryReportingTooltip {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuEnableSummaryReportingTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Fractional Foot.
         /// </summary>
         public static string DynamoViewSettingMenuFractionalFoot {
@@ -1810,6 +1770,24 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingMenuRenderPrecision {
             get {
                 return ResourceManager.GetString("DynamoViewSettingMenuRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Agreement to Collect Usability Data.
+        /// </summary>
+        public static string DynamoViewSettingMenuShowDataReportingDialog {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display the dialog for user to pick agreement on data collecting..
+        /// </summary>
+        public static string DynamoViewSettingMenuShowDataReportingDialogTooltip {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingMenuShowDataReportingDialogTooltip", resourceCulture);
             }
         }
         
@@ -3254,6 +3232,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} was not found and could not be downloaded..
+        /// </summary>
+        public static string MessagePackageNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0} of {1} could not be found..
+        /// </summary>
+        public static string MessagePackageVersionNotFound {
+            get {
+                return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must select at least one custom node..
         /// </summary>
         public static string MessageSelectAtLeastOneNode {
@@ -3301,6 +3297,29 @@ namespace Dynamo.Wpf.Properties {
         public static string MessageToUndeprecatePackage {
             get {
                 return ResourceManager.GetString("MessageToUndeprecatePackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {1} cannot be loaded.
+        ///Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+        ///To install {1}, Dynamo needs to first uninstall {0}. 
+        ///Restart Dynamo to complete the uninstall.
+        ///
+        ///Uninstall the following packages: {0}?.
+        /// </summary>
+        public static string MessageUninstallCustomNodeToContinue {
+            get {
+                return ResourceManager.GetString("MessageUninstallCustomNodeToContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;The package {0} is already installed. To reinstall it, you must first uninstall it and restart to complete the uninstall. Would you like to mark {0} for uninstall?&quot;.
+        /// </summary>
+        public static string MessageUninstallSamePackage {
+            get {
+                return ResourceManager.GetString("MessageUninstallSamePackage", resourceCulture);
             }
         }
         
@@ -3688,6 +3707,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter packages that depend on applications outside Dynamo. This feature currently can only filter packages which have been marked manually by package authors during publish..
+        /// </summary>
+        public static string PackageHostDependencyFilter {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packages contain node(s)  that depend on specified application outside Dynamo..
+        /// </summary>
+        public static string PackageHostDependencyFilterContextItem {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyFilterContextItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This package contains node(s) that depend on applications outside Dynamo. To fully utilize node(s) in this package, you will need to have these external applications installed..
+        /// </summary>
+        public static string PackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager Website.
         /// </summary>
         public static string PackageManagerWebSiteButton {
@@ -3967,11 +4013,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Downvote to voice lack of support for this package.
+        ///   Looks up a localized string similar to Filter by.
         /// </summary>
-        public static string PackageSearchViewDownvoteButtonTooltip {
+        public static string PackageSearchViewFilterByButton {
             get {
-                return ResourceManager.GetString("PackageSearchViewDownvoteButtonTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageSearchViewFilterByButton", resourceCulture);
             }
         }
         
@@ -4309,6 +4355,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  This Feature is in Preview! .
+        /// </summary>
+        public static string PreviewText {
+            get {
+                return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -4432,6 +4487,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewPackageGroupTooltip {
             get {
                 return ResourceManager.GetString("PublishPackageViewPackageGroupTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to External Dependency (optional).
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependency {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package..
+        /// </summary>
+        public static string PublishPackageViewPackageHostDependencyTooltip {
+            get {
+                return ResourceManager.GetString("PublishPackageViewPackageHostDependencyTooltip", resourceCulture);
             }
         }
         

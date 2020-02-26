@@ -5,6 +5,7 @@ using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
 using NCalc;
+using ProtoCore.Utils;
 using CSMath = System.Math;
 
 namespace DSCore
@@ -198,6 +199,19 @@ namespace DSCore
         public static double Abs(double number)
         {
             return CSMath.Abs(number);
+        }
+
+        /// <summary>
+        /// This method is ONLY used by the Equals (with tolerance) NodeModel node
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <param name="tol"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static bool Equals(double lhs, double rhs, double tol)
+        {
+            return MathUtils.Equals(lhs, rhs, tol);
         }
 
         /// <summary>

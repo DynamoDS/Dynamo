@@ -32,7 +32,7 @@
   ],
   "Connectors": [],
   "Dependencies": [],
-  "PackageDependencies": [
+  "NodeLibraryDependencies": [
     {
       "Name": "ZTTestPackage",
       "Version": "0.0.1",

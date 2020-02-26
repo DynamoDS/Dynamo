@@ -18,7 +18,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     new Version(225,0,0)
             };
 
@@ -66,7 +65,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     new Version(225,0,0)
             };
 
@@ -116,7 +114,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1),
                     // Notice the lookup version here is different than the actual found version below
                     // because there is no local mocked product with that specific ASM version installed
                     new Version(225,4,0)
@@ -295,7 +292,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1)
             };
 
             versions.Sort();
@@ -312,9 +308,13 @@ namespace Dynamo.Tests
 
             //create some
             var libG22440path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_4_0"));
-            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22440path.FullName, "tbbmalloc.dll"), "someText");
             var libG22401path = System.IO.Directory.CreateDirectory(Path.Combine(rootFolder, "LibG_224_0_1"));
-            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "ASMAHL224A.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbb.dll"), "someText");
+            File.WriteAllText(Path.Combine(libG22401path.FullName, "tbbmalloc.dll"), "someText");
 
 
             var foundVersion = DynamoShapeManager.Utilities.GetInstalledAsmVersion2(
@@ -336,7 +336,6 @@ namespace Dynamo.Tests
             {
                     new Version(224,4,0),
                     new Version(224,0,1),
-                    new Version(223,0,1)
             };
 
             versions.Sort();

@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Equals.cs" />
     <Compile Include="Input\ColorPalette.cs" />
     <Compile Include="Input\DateTime.cs" />
     <Compile Include="DynamoConvert.cs" />
