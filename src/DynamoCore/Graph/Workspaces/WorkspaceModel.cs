@@ -712,6 +712,9 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// Current Selected Nodes
+        /// </summary>
         public IEnumerable<NodeModel> CurrentSelection
         {
             get

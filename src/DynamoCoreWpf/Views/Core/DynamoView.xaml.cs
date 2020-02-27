@@ -69,7 +69,7 @@ namespace Dynamo.Controls
         private ShortcutToolbar shortcutBar;
         private bool loaded = false;
         // This is to identify whether the PerformShutdownSequenceOnViewModel() method has been
-        // called on the view model and the process is not cancelled
+        // called on the view model and the process is not canceled
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
 
