@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -12,7 +13,14 @@
     </UserControl.Resources>
     
     <Grid>
-            <TextBlock
+
+        <fa:ImageAwesome Name="Refresh" 
+                         Icon="Refresh"
+                         HorizontalAlignment="Left"
+                         Height="25"
+                         Spin="False"
+                         Foreground="{DynamicResource MemberButtonText}" ></fa:ImageAwesome>
+        <TextBlock
                 Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                 FontStyle="Italic"
                 FontSize="12"
@@ -20,7 +28,7 @@
                 HorizontalAlignment="Stretch"
                 TextAlignment="Right"
                 TextTrimming="WordEllipsis"
-                Margin="10"
+                Margin="35,10,10,10"
                 Foreground="{Binding Path=HomeSpaceViewModel.CurrentNotificationLevel, 
                             Converter={StaticResource NotificationLevelToColorConverter}}">
             <TextBlock.Triggers>
