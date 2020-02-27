@@ -14,7 +14,7 @@ namespace DynamoUtilitiesTests
     {
         [Test]
         [Category("UnitTests")]
-        public void CheckAssemblyForValidCertificateTest()
+        public void CheckAssemblyForValidCertificateTest_ValidCertificate()
         {
             var executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var directory = new DirectoryInfo(executingDirectory);
@@ -23,6 +23,27 @@ namespace DynamoUtilitiesTests
             Assert.IsTrue(File.Exists(testFilePath));
 
             Assert.IsTrue(DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(testFilePath));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CheckAssemblyForValidCertificateTest_NoCertificate()
+        {
+            var executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var directory = new DirectoryInfo(executingDirectory);
+            var testFilePath = Path.Combine(directory.Parent.Parent.Parent.FullName, "test", "pkgs_signed", "Unsigned Package", "bin", "Package.dll");
+
+            Assert.IsTrue(File.Exists(testFilePath));
+
+            Assert.Throws(
+                typeof(Exception), 
+                () =>
+                {
+                    DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(testFilePath);
+                }, 
+                String.Format(
+                "A dll file found at {0} did not have a signed certificate.", testFilePath)
+            ); 
         }
     }
 }
