@@ -303,37 +303,19 @@ namespace DynamoUtilities
                     "A dll file was not found at {0}. No certificate was able to be verified.", assemblyPath));
             }
 
-            //Verify that you can load the assembly into a Reflection only context
-            Assembly asm;
+            //Verify the node library file has a verified signed certificate
             try
             {
-                asm = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
-            }
-            catch
-            {
-                throw new Exception(String.Format(
-                    "A dll file found at {0} could not be loaded.", assemblyPath));
-            }
-
-            //Verify the node library has a verified signed certificate
-            X509Certificate cert;
-            try
-            {
-                cert = X509Certificate.CreateFromSignedFile(assemblyPath);
-            }
-            catch
-            {
-                throw new Exception(String.Format(
-                    "A dll file found at {0} did not have a certificate attached.", assemblyPath));
-            }
-
-            if (cert != null)
-            {
-                var cert2 = new System.Security.Cryptography.X509Certificates.X509Certificate2(cert);
-                if (cert2.Verify())
+                var validCert = WinTrustWrapper.IsTrusted(assemblyPath);
+                if (validCert)
                 {
                     return true;
                 }
+            }
+            catch
+            {
+                throw new Exception(String.Format(
+                    "A dll file found at {0} did not have a signed certificate.", assemblyPath));
             }
 
             throw new Exception(String.Format(
