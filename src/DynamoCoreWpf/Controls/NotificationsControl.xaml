@@ -14,11 +14,11 @@
     
     <Grid>
 
-        <fa:ImageAwesome Name="Refresh" 
-                         Icon="Refresh"
+        <fa:ImageAwesome Name="Spinner" 
+                         Icon="Compass"
                          HorizontalAlignment="Left"
                          Height="25"
-                         Spin="False"
+                         Spin="{Binding Path=HomeSpaceViewModel.GraphExecuting, Mode=TwoWay}"
                          Foreground="{DynamicResource MemberButtonText}" ></fa:ImageAwesome>
         <TextBlock
                 Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"

@@ -19,6 +19,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private NotificationLevel curentNotificationLevel;
         private string currentNotificationMessage;
+        private bool graphExecuting = false;
 
         #endregion
 
@@ -32,6 +33,9 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         #endregion
 
+        /// <summary>
+        /// Current graph run notification level
+        /// </summary>
         [JsonIgnore]
         public NotificationLevel CurrentNotificationLevel
         {
@@ -39,10 +43,13 @@ namespace Dynamo.Wpf.ViewModels.Core
             set
             {
                 curentNotificationLevel = value;
-                RaisePropertyChanged("CurrentNotificationLevel");
+                RaisePropertyChanged(nameof(CurrentNotificationLevel));
             }
         }
 
+        /// <summary>
+        /// Current graph run message to display
+        /// </summary>
         [JsonIgnore]
         public string CurrentNotificationMessage
         {
@@ -50,10 +57,35 @@ namespace Dynamo.Wpf.ViewModels.Core
             set
             {
                 currentNotificationMessage = value;
-                RaisePropertyChanged("CurrentNotificationMessage");
+                RaisePropertyChanged(nameof(CurrentNotificationMessage));
             }
         }
 
+        /// <summary>
+        /// A boolean indicating if the home workspace is running. 
+        /// Notice this property is event based and may not be
+        /// accurate in all cases.
+        /// </summary>
+        [JsonIgnore]
+        public bool GraphExecuting
+        {
+            set
+            {
+                graphExecuting = value;
+                RaisePropertyChanged(nameof(GraphExecuting));
+            }
+
+            get
+            {
+                return graphExecuting;
+            }
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="model">HomeWorkspaceModel</param>
+        /// <param name="dynamoViewModel">DynamoViewModel</param>
         public HomeWorkspaceViewModel(HomeWorkspaceModel model, DynamoViewModel dynamoViewModel)
             : base(model, dynamoViewModel)
         {
@@ -137,6 +169,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
         {
+            GraphExecuting = false;
             bool hasWarnings = Model.Nodes.Any(n => n.State == ElementState.Warning || n.State == ElementState.PersistentWarning);
 
             if (!hasWarnings)
@@ -161,10 +194,12 @@ namespace Dynamo.Wpf.ViewModels.Core
                     SetCurrentWarning(NotificationLevel.Moderate, Properties.Resources.RunCompletedWithWarningsMessage);
                 }
             }
+
         }
 
         void hwm_EvaluationStarted(object sender, EventArgs e)
         {
+            GraphExecuting = true;
             if (Model.ScaleFactorChanged)
             {
                 SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedWithScaleChangeMessage);
@@ -173,6 +208,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 SetCurrentWarning(NotificationLevel.Mild, Properties.Resources.RunStartedMessage);
             }
+
         }
 
         private void SetCurrentWarning(NotificationLevel level, string message)
