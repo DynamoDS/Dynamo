@@ -227,15 +227,17 @@ namespace Dynamo.Controls
         {
             int count = ExtensionTabItems.Count;
 
-            if (!IsAddedToRightSideBar(targetControl))
+            if (!IsAddedToRightSideBar(name, targetControl))
             {
                 tabDynamic.DataContext = null;
 
                 // creates a new tab item
-                TabItem tab = new TabItem();
-                tab.Header = name;
-                tab.Tag = targetControl.GetType();
-                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+                TabItem tab = new TabItem
+                {
+                    Header = name,
+                    Tag = targetControl.GetType(),
+                    HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate
+                };
 
                 // setting the extension UI to the current tab content 
                 // based on whether it is a UserControl element or window element. 
@@ -329,11 +331,17 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
         }
 
-        private Boolean IsAddedToRightSideBar(object targetControl)
+        /// <summary>
+        /// Check if a control has already been added to side bar
+        /// </summary>
+        /// <param name="controlName"></param>
+        /// <param name="targetControl"></param>
+        /// <returns></returns>
+        private Boolean IsAddedToRightSideBar(string controlName, object targetControl)
         {
             foreach (TabItem tabItem in ExtensionTabItems)
             {
-                if (tabItem.Tag.Equals(targetControl.GetType()))
+                if (tabItem.Name.Equals(controlName) & tabItem.Tag.Equals(targetControl.GetType()))
                 {
                     return true;
                 }
