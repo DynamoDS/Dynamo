@@ -45,5 +45,26 @@ namespace DynamoUtilitiesTests
                 "A dll file found at {0} did not have a signed certificate.", testFilePath)
             ); 
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CheckAssemblyForValidCertificateTest_TransferredCertificate()
+        {
+            var executingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var directory = new DirectoryInfo(executingDirectory);
+            var testFilePath = Path.Combine(directory.Parent.Parent.Parent.FullName, "test", "pkgs_signed", "Modfied Signed Package", "bin", "LegitAssemblyTransplanted.dll");
+
+            Assert.IsTrue(File.Exists(testFilePath));
+
+            Assert.Throws(
+                typeof(Exception),
+                () =>
+                {
+                    DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(testFilePath);
+                },
+                String.Format(
+                    "A dll file found at {0} did not have a signed certificate.", testFilePath)
+            );
+        }
     }
 }
