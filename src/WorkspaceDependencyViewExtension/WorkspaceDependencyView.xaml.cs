@@ -34,6 +34,12 @@ namespace Dynamo.WorkspaceDependency
         private IPackageInstaller packageInstaller;
 
         /// <summary>
+        /// Since there is no API for height offset comparing to
+        /// DynamoWindow height. Define it as static for now.
+        /// </summary>
+        private static double sidebarHeightOffset = 200;
+
+        /// <summary>
         /// Internal cache of the data displayed in data grid, useful in unit testing.
         /// You are not expected to modify this but rather inspection.
         /// </summary>
@@ -76,6 +82,12 @@ namespace Dynamo.WorkspaceDependency
                 String message = Dynamo.WorkspaceDependency.Properties.Resources.ProvideFeedbackError + "\n\n" + ex.Message;
                 MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void DynamoWindow_SizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            // Update the new height of datagrid
+            this.PackageDependencyTable.Height = e.NewSize.Height - sidebarHeightOffset;
         }
 
         /// <summary>
@@ -174,6 +186,10 @@ namespace Dynamo.WorkspaceDependency
             DependencyRegen(currentWorkspace);
             DynamoView.CloseExtension += this.OnExtensionTabClosedHandler;
             HomeWorkspaceModel.WorkspaceClosed += this.CloseExtensionTab;
+            // Initialize the height of the datagrid in order to make sure
+            // vertical scrollbar can be displayed correctly.
+            this.PackageDependencyTable.Height = p.DynamoWindow.Height - sidebarHeightOffset;
+            p.DynamoWindow.SizeChanged += DynamoWindow_SizeChanged;
         }
 
         /// <summary>
@@ -275,6 +291,7 @@ namespace Dynamo.WorkspaceDependency
         {
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
+            loadedParams.DynamoWindow.SizeChanged -= DynamoWindow_SizeChanged;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
