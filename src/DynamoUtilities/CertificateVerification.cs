@@ -212,7 +212,7 @@ namespace DynamoUtilities
             //Verify the node library file has a verified signed certificate
             try
             {
-                var validCert = WinTrustInterop.WinTrust.IsTrusted(assemblyPath);
+                var validCert = WinTrustInterop.WinTrust.VerifyEmbeddedSignature(assemblyPath);
                 if (validCert)
                 {
                     return true;
