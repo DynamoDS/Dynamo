@@ -12,278 +12,184 @@ namespace DynamoUtilities
 {
     internal sealed class WinTrustInterop
     {
-        internal static class WinTrust
-        {
-            [DllImport("Wintrust.dll", PreserveSig = true, SetLastError = false)]
-            private static extern uint WinVerifyTrust(IntPtr hWnd, IntPtr pgActionID, IntPtr pWinTrustData);
-
-            private static uint WinVerifyTrust(string fileName)
-            {
-                Guid wintrust_action_generic_verify_v2 = new Guid("{00AAC56B-CD44-11d0-8CC2-00C04FC295EE}");
-                uint result = 0;
-                using (WINTRUST_FILE_INFO fileInfo = new WINTRUST_FILE_INFO(fileName, Guid.Empty))
-                using (UnmanagedPointer guidPtr = new UnmanagedPointer(Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Guid))), AllocMethod.HGlobal))
-                using (UnmanagedPointer wvtDataPtr = new UnmanagedPointer(Marshal.AllocHGlobal(Marshal.SizeOf(typeof(WINTRUST_DATA))), AllocMethod.HGlobal))
-                {
-                    WINTRUST_DATA data = new WINTRUST_DATA(fileInfo);
-                    IntPtr pGuid = guidPtr;
-                    IntPtr pData = wvtDataPtr;
-                    Marshal.StructureToPtr(wintrust_action_generic_verify_v2, pGuid, true);
-                    Marshal.StructureToPtr(data, pData, true);
-                    result = WinVerifyTrust(IntPtr.Zero, pGuid, pData);
-                }
-
-                return result;
-            }
-
-            public static bool IsTrusted(string fileName)
-            {
-                return WinVerifyTrust(fileName) == 0;
-            }
-        }
-
-        private struct WINTRUST_FILE_INFO : IDisposable
-        {
-            public WINTRUST_FILE_INFO(string fileName, Guid subject)
-            {
-                cbStruct = (uint) Marshal.SizeOf(typeof(WINTRUST_FILE_INFO));
-
-                pcwszFilePath = fileName;
-
-                if (subject != Guid.Empty)
-                {
-                    pgKnownSubject = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(Guid)));
-
-                    Marshal.StructureToPtr(subject, pgKnownSubject, true);
-                }
-                else
-                {
-                    pgKnownSubject = IntPtr.Zero;
-                }
-
-                hFile = IntPtr.Zero;
-            }
-
-            private uint cbStruct;
-
-            [MarshalAs(UnmanagedType.LPTStr)] public string pcwszFilePath;
-            private IntPtr hFile;
-
-            private IntPtr pgKnownSubject;
-
-            #region IDisposable Members
-
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                if (pgKnownSubject != IntPtr.Zero)
-                {
-                    Marshal.DestroyStructure(this.pgKnownSubject, typeof(Guid));
-
-                    Marshal.FreeHGlobal(this.pgKnownSubject);
-                }
-            }
-
-            #endregion
-        }
-
-        private enum AllocMethod
-        {
-            HGlobal,
-            CoTaskMem
-        };
-
-        private enum UnionChoice
-        {
-            File = 1,
-            Catalog,
-            Blob,
-            Signer,
-            Cert
-        }
-
-        private enum UiChoice
+        #region WinTrustData struct field enums
+        enum WinTrustDataUIChoice : uint
         {
             All = 1,
-            NoUI,
-            NoBad,
-            NoGood
+            None = 2,
+            NoBad = 3,
+            NoGood = 4
         }
 
-        private enum RevocationCheckFlags
+        enum WinTrustDataRevocationChecks : uint
         {
-            None = 0,
-            WholeChain
+            None = 0x00000000,
+            WholeChain = 0x00000001
         }
 
-        private enum StateAction
+        enum WinTrustDataChoice : uint
         {
-            Ignore = 0,
-            Verify,
-            Close,
-            AutoCache,
-            AutoCacheFlush
+            File = 1,
+            Catalog = 2,
+            Blob = 3,
+            Signer = 4,
+            Certificate = 5
         }
 
-        private enum TrustProviderFlags
+        enum WinTrustDataStateAction : uint
         {
-            UseIE4Trust = 1,
-            NoIE4Chain = 2,
-            NoPolicyUsage = 4,
-            RevocationCheckNone = 16,
-            RevocationCheckEndCert = 32,
-            RevocationCheckChain = 64,
-            RecovationCheckChainExcludeRoot = 128,
-            Safer = 256,
-            HashOnly = 512,
-            UseDefaultOSVerCheck = 1024,
-            LifetimeSigning = 2048
+            Ignore = 0x00000000,
+            Verify = 0x00000001,
+            Close = 0x00000002,
+            AutoCache = 0x00000003,
+            AutoCacheFlush = 0x00000004
         }
 
-        private enum UIContext
+        [FlagsAttribute]
+        enum WinTrustDataProvFlags : uint
+        {
+            UseIe4TrustFlag = 0x00000001,
+            NoIe4ChainFlag = 0x00000002,
+            NoPolicyUsageFlag = 0x00000004,
+            RevocationCheckNone = 0x00000010,
+            RevocationCheckEndCert = 0x00000020,
+            RevocationCheckChain = 0x00000040,
+            RevocationCheckChainExcludeRoot = 0x00000080,
+            SaferFlag = 0x00000100,        // Used by software restriction policies. Should not be used.
+            HashOnlyFlag = 0x00000200,
+            UseDefaultOsverCheck = 0x00000400,
+            LifetimeSigningFlag = 0x00000800,
+            CacheOnlyUrlRetrieval = 0x00001000,      // affects CRL retrieval and AIA retrieval
+            DisableMD2andMD4 = 0x00002000      // Win7 SP1+: Disallows use of MD2 or MD4 in the chain except for the root 
+        }
+
+        enum WinTrustDataUIContext : uint
         {
             Execute = 0,
-            Install
+            Install = 1
         }
+        #endregion
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct WINTRUST_DATA : IDisposable
+        #region WinTrust structures
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        class WinTrustFileInfo
         {
-            public WINTRUST_DATA(WINTRUST_FILE_INFO fileInfo)
+            UInt32 StructSize = (UInt32)Marshal.SizeOf(typeof(WinTrustFileInfo));
+            IntPtr pszFilePath;                     // required, file name to be verified
+            IntPtr hFile = IntPtr.Zero;             // optional, open handle to FilePath
+            IntPtr pgKnownSubject = IntPtr.Zero;    // optional, subject type if it is known
+
+            public WinTrustFileInfo(String _filePath)
             {
-                this.cbStruct = (uint) Marshal.SizeOf(typeof(WINTRUST_DATA));
-
-                pInfoStruct = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(WINTRUST_FILE_INFO)));
-
-                Marshal.StructureToPtr(fileInfo, pInfoStruct, false);
-
-                this.dwUnionChoice = UnionChoice.File;
-
-                pPolicyCallbackData = IntPtr.Zero;
-
-                pSIPCallbackData = IntPtr.Zero;
-
-                dwUIChoice = UiChoice.NoUI;
-
-                fdwRevocationChecks = RevocationCheckFlags.None;
-
-                dwStateAction = StateAction.Ignore;
-
-                hWVTStateData = IntPtr.Zero;
-
-                pwszURLReference = IntPtr.Zero;
-
-                dwProvFlags = TrustProviderFlags.Safer;
-
-                dwUIContext = UIContext.Execute;
-            }
-
-            private uint cbStruct;
-
-            private IntPtr pPolicyCallbackData;
-
-            private IntPtr pSIPCallbackData;
-
-            private UiChoice dwUIChoice;
-
-            private RevocationCheckFlags fdwRevocationChecks;
-
-            private UnionChoice dwUnionChoice;
-
-            private IntPtr pInfoStruct;
-
-            private StateAction dwStateAction;
-
-            private IntPtr hWVTStateData;
-
-            private IntPtr pwszURLReference;
-
-            private TrustProviderFlags dwProvFlags;
-
-            private UIContext dwUIContext;
-
-            #region IDisposable Members
-
-            public void Dispose()
-            {
-                Dispose(true);
-            }
-
-            private void Dispose(bool disposing)
-            {
-                if (dwUnionChoice == UnionChoice.File)
-                {
-                    WINTRUST_FILE_INFO info = new WINTRUST_FILE_INFO();
-
-                    Marshal.PtrToStructure(pInfoStruct, info);
-
-                    info.Dispose();
-
-                    Marshal.DestroyStructure(pInfoStruct, typeof(WINTRUST_FILE_INFO));
-                }
-
-                Marshal.FreeHGlobal(pInfoStruct);
-            }
-
-            #endregion
-        }
-
-        private sealed class UnmanagedPointer : IDisposable
-        {
-            private IntPtr m_ptr;
-
-            private AllocMethod m_meth;
-
-            public UnmanagedPointer(IntPtr ptr, AllocMethod method)
-            {
-                m_meth = method;
-                m_ptr = ptr;
-            }
-
-            ~UnmanagedPointer()
-            {
-                Dispose(false);
-            }
-
-            #region IDisposable Members
-
-            private void Dispose(bool disposing)
-            {
-                if (m_ptr != IntPtr.Zero)
-                {
-                    if (m_meth == AllocMethod.HGlobal)
-                    {
-                        Marshal.FreeHGlobal(m_ptr);
-                    }
-                    else if (m_meth == AllocMethod.CoTaskMem)
-                    {
-                        Marshal.FreeCoTaskMem(m_ptr);
-                    }
-
-                    m_ptr = IntPtr.Zero;
-                }
-
-                if (disposing)
-                {
-                    GC.SuppressFinalize(this);
-                }
+                pszFilePath = Marshal.StringToCoTaskMemAuto(_filePath);
             }
 
             public void Dispose()
             {
-                Dispose(true);
+                if (pszFilePath != IntPtr.Zero)
+                {
+                    Marshal.FreeCoTaskMem(pszFilePath);
+                    pszFilePath = IntPtr.Zero;
+                }
             }
+        }
 
-            #endregion
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        class WinTrustData
+        {
+            UInt32 StructSize = (UInt32)Marshal.SizeOf(typeof(WinTrustData));
+            IntPtr PolicyCallbackData = IntPtr.Zero;
+            IntPtr SIPClientData = IntPtr.Zero;
+            // required: UI choice
+            WinTrustDataUIChoice UIChoice = WinTrustDataUIChoice.None;
+            // required: certificate revocation check options
+            WinTrustDataRevocationChecks RevocationChecks = WinTrustDataRevocationChecks.None;
+            // required: which structure is being passed in?
+            WinTrustDataChoice UnionChoice = WinTrustDataChoice.File;
+            // individual file
+            IntPtr FileInfoPtr;
+            WinTrustDataStateAction StateAction = WinTrustDataStateAction.Ignore;
+            IntPtr StateData = IntPtr.Zero;
+            String URLReference = null;
+            WinTrustDataProvFlags ProvFlags = WinTrustDataProvFlags.RevocationCheckChainExcludeRoot;
+            WinTrustDataUIContext UIContext = WinTrustDataUIContext.Execute;
 
-            public static implicit operator IntPtr(UnmanagedPointer ptr)
+            // constructor for silent WinTrustDataChoice.File check
+            public WinTrustData(WinTrustFileInfo _fileInfo)
             {
-                return ptr.m_ptr;
+                // On Win7SP1+, don't allow MD2 or MD4 signatures
+                if ((Environment.OSVersion.Version.Major > 6) ||
+                    ((Environment.OSVersion.Version.Major == 6) && (Environment.OSVersion.Version.Minor > 1)) ||
+                    ((Environment.OSVersion.Version.Major == 6) && (Environment.OSVersion.Version.Minor == 1) && !String.IsNullOrEmpty(Environment.OSVersion.ServicePack)))
+                {
+                   ProvFlags |= WinTrustDataProvFlags.DisableMD2andMD4;
+                }
+
+                WinTrustFileInfo wtfiData = _fileInfo;
+                FileInfoPtr = Marshal.AllocCoTaskMem(Marshal.SizeOf(typeof(WinTrustFileInfo)));
+                Marshal.StructureToPtr(wtfiData, FileInfoPtr, false);
             }
+            public void Dispose()
+            {
+                if(FileInfoPtr != IntPtr.Zero) {
+                    Marshal.FreeCoTaskMem(FileInfoPtr);
+                    FileInfoPtr = IntPtr.Zero;
+                }
+            }
+        }
+        #endregion
+
+        enum WinVerifyTrustResult : uint
+        {
+            Success = 0,
+            ProviderUnknown = 0x800b0001,           // Trust provider is not recognized on this system
+            ActionUnknown = 0x800b0002,         // Trust provider does not support the specified action
+            SubjectFormUnknown = 0x800b0003,        // Trust provider does not support the form specified for the subject
+            SubjectNotTrusted = 0x800b0004,         // Subject failed the specified verification action
+            FileNotSigned = 0x800B0100,         // TRUST_E_NOSIGNATURE - File was not signed
+            SubjectExplicitlyDistrusted = 0x800B0111,   // Signer's certificate is in the Untrusted Publishers store
+            SignatureOrFileCorrupt = 0x80096010,    // TRUST_E_BAD_DIGEST - file was probably corrupt
+            SubjectCertExpired = 0x800B0101,        // CERT_E_EXPIRED - Signer's certificate was expired
+            SubjectCertificateRevoked = 0x800B010C,     // CERT_E_REVOKED Subject's certificate was revoked
+            UntrustedRoot = 0x800B0109          // CERT_E_UNTRUSTEDROOT - A certification chain processed correctly but terminated in a root certificate that is not trusted by the trust provider.
+        }
+
+        public class WinTrust
+        {
+            private static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
+            // GUID of the action to perform
+            private const string WINTRUST_ACTION_GENERIC_VERIFY_V2 = "{00AAC56B-CD44-11d0-8CC2-00C04FC295EE}";
+
+            [DllImport("wintrust.dll", ExactSpelling = true, SetLastError = false, CharSet = CharSet.Unicode)]
+            static extern WinVerifyTrustResult WinVerifyTrust(
+                [In] IntPtr hwnd,
+                [In] [MarshalAs(UnmanagedType.LPStruct)] Guid pgActionID,
+                [In] WinTrustData pWVTData
+            );
+
+            // call WinTrust.WinVerifyTrust() to check embedded file signature
+            public static bool VerifyEmbeddedSignature(string fileName)
+            {
+                WinTrustFileInfo winTrustFileInfo = null;
+                WinTrustData winTrustData = null;
+
+                try
+                {
+                    winTrustFileInfo = new WinTrustFileInfo(fileName);
+                    winTrustData = new WinTrustData(winTrustFileInfo);
+                    Guid guidAction = new Guid(WINTRUST_ACTION_GENERIC_VERIFY_V2);
+                    WinVerifyTrustResult result = WinVerifyTrust(INVALID_HANDLE_VALUE, guidAction, winTrustData);
+                    bool ret = (result == WinVerifyTrustResult.Success);
+                    return ret;
+                }
+                finally
+                {
+                    // free the locally-held unmanaged memory in the data structures
+                    if (winTrustFileInfo != null) winTrustFileInfo.Dispose();
+                    if (winTrustData != null) winTrustData.Dispose();
+                }
+            }
+            private WinTrust() { }
         }
     }
 
