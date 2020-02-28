@@ -36,13 +36,11 @@ namespace DynamoUtilitiesTests
             Assert.IsTrue(File.Exists(testFilePath));
 
             Assert.Throws(
-                typeof(Exception), 
+                typeof(CertificateVerification.UnTrustedAssemblyException), 
                 () =>
                 {
                     DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(testFilePath);
-                }, 
-                String.Format(
-                "A dll file found at {0} did not have a signed certificate.", testFilePath)
+                }
             ); 
         }
 
@@ -57,13 +55,11 @@ namespace DynamoUtilitiesTests
             Assert.IsTrue(File.Exists(testFilePath));
 
             Assert.Throws(
-                typeof(Exception),
+                typeof(CertificateVerification.UnTrustedAssemblyException),
                 () =>
                 {
                     DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(testFilePath);
-                },
-                String.Format(
-                    "A dll file found at {0} did not have a signed certificate.", testFilePath)
+                }
             );
         }
     }

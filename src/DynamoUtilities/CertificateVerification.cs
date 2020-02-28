@@ -205,8 +205,8 @@ namespace DynamoUtilities
             //Verify the assembly exists
             if (!File.Exists(assemblyPath))
             {
-                throw new Exception(String.Format(
-                    "A dll file was not found at {0}. No certificate was able to be verified.", assemblyPath));
+                throw new FileNotFoundException(String.Format(
+                    "A dll file was not found at {0}. No certificate was able to be verified.", assemblyPath), assemblyPath);
             }
 
             //Verify the node library file has a verified signed certificate
@@ -220,12 +220,22 @@ namespace DynamoUtilities
             }
             catch
             {
-                throw new Exception(String.Format(
-                    "A dll file found at {0} did not have a signed certificate.", assemblyPath));
+                throw new AssemblyCertificateCheckException(assemblyPath);
             }
 
-            throw new Exception(String.Format(
-                "A dll file found at {0} did not have a signed certificate.", assemblyPath));
+            throw new UnTrustedAssemblyException(assemblyPath);
+        }
+
+        public class UnTrustedAssemblyException : Exception
+        {
+            public UnTrustedAssemblyException(string assemblyPath) : base(String.Format(
+                "A dll file found at {0} did not have a signed certificate.", assemblyPath)) { }
+        }
+
+        public class AssemblyCertificateCheckException : Exception
+        {
+            public AssemblyCertificateCheckException(string assemblyPath) : base(String.Format(
+                "Could not verify the dll file found at {0} has a signed certificate.", assemblyPath)) { }
         }
     }
 }
