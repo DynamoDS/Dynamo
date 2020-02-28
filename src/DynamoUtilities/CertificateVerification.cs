@@ -83,11 +83,9 @@ namespace DynamoUtilities
             {
                 pszFilePath = Marshal.StringToCoTaskMemAuto(_filePath);
             }
-
             public void Dispose()
             {
-                if (pszFilePath != IntPtr.Zero)
-                {
+                if(pszFilePath != IntPtr.Zero) {
                     Marshal.FreeCoTaskMem(pszFilePath);
                     pszFilePath = IntPtr.Zero;
                 }
