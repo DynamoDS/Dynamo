@@ -40,3 +40,4 @@ using System.Windows;
 [assembly:InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
+[assembly: InternalsVisibleTo("Notifications")]

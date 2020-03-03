@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
-using Microsoft.Practices.Prism;
 
 namespace Dynamo.Notifications
 {
@@ -22,9 +21,8 @@ namespace Dynamo.Notifications
               showItem.Header = Properties.Resources.Display;
               showItem.Click += (o, e) =>
               {
-                  //create a window to display the list of notificationsModels
-                  var window = new NotificationsView(notificationsExtension);
-                  window.Show();
+                  var view = new NotificationsView(notificationsExtension);
+                  notificationsExtension.viewLoadedParams.AddToExtensionsSideBar(notificationsExtension, view);
               };
 
               var dismissItem = new MenuItem();

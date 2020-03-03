@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,7 +13,7 @@ namespace Dynamo.Notifications
 {
     public class NotificationsViewExtension : IViewExtension, INotifyPropertyChanged
     {
-        private ViewLoadedParams viewLoadedParams;
+        internal ViewLoadedParams viewLoadedParams;
         private Action<Logging.NotificationMessage> notificationHandler;
 
         private ObservableCollection<Logging.NotificationMessage> notifications;
@@ -39,7 +38,7 @@ namespace Dynamo.Notifications
         {
             get
             {
-                return "NotificationsExtension";
+                return "Notifications";
             }
         }
 

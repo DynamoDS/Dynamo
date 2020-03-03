@@ -6,7 +6,7 @@ namespace Dynamo.Notifications
     /// <summary>
     /// Interaction logic for NotificationsView.xaml
     /// </summary>
-    public partial class NotificationsView : Window
+    public partial class NotificationsView : UserControl
     {
         private NotificationsViewExtension model;
         public NotificationsView(NotificationsViewExtension model)
@@ -14,7 +14,6 @@ namespace Dynamo.Notifications
             this.model = model;
             DataContext = model;
             InitializeComponent();
-            this.Owner = model.dynamoWindow;
         }
 
         private void ShowDetails_ButtonClick(object sender, RoutedEventArgs e)
