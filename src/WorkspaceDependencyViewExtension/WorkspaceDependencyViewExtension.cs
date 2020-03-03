@@ -20,11 +20,8 @@ namespace Dynamo.WorkspaceDependency
         internal MenuItem workspaceReferencesMenuItem;
         private const String extensionName = "Workspace References";
 
-        internal WorkspaceDependencyView DependencyView
-        {
-            get;
-            set;
-        }
+        internal WorkspaceDependencyView DependencyView;
+       
 
         internal PackageManagerExtension pmExtension;
 
