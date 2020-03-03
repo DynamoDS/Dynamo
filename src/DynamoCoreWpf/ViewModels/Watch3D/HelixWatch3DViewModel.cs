@@ -1250,6 +1250,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
+                VertexColorBlendingFactor = .1,
             };
 
             IsolatedMaterial = new PhongMaterial
@@ -1260,6 +1261,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
+                VertexColorBlendingFactor = .1,
             };
 
             // camera setup
