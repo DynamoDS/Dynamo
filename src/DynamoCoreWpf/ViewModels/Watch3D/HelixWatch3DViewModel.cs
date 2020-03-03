@@ -332,12 +332,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        //TODO remove static from existing materials for API.
         public static PhongMaterial WhiteMaterial { get; set; }
 
         public static PhongMaterial SelectedMaterial { get; set; }
 
-        public static PhongMaterial FrozenMaterial { get; set; }
-        public static PhongMaterial IsolatedMaterial { get; set; }
+        /// <summary>
+        /// Material for frozen mesh geometry - does not support vertex colors
+        /// </summary>
+        internal static PhongMaterial FrozenMaterial { get; set; }
+        /// <summary>
+        /// Material for frozen mesh geometry - supports vertex colors 
+        /// - which means that vertex alpha must be set correctly to standard frozen alpha.
+        /// </summary>
+        internal static PhongMaterial FrozenMaterialVertColor { get; set; }
+
+        /// <summary>
+        /// Material for isolated mesh geometry - does not support vertex colors
+        /// </summary>
+        internal static PhongMaterial IsolatedMaterial { get; set; }
+
+        /// <summary>
+        /// Material for isolated mesh geometry - supports vertex colors 
+        /// - which means that vertex alpha must be set correctly to standard frozen alpha.
+        /// </summary>
+        internal static PhongMaterial IsolatedMaterialVertColor { get; set; }
+
 
         /// <summary>
         /// This is the initial transform applied to 
@@ -1209,6 +1229,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
+                VertexColorBlendingFactor = 1.0,
             };
 
             SelectedMaterial = new PhongMaterial
