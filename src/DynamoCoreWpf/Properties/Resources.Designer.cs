@@ -1351,6 +1351,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New from Template....
+        /// </summary>
+        public static string DynamoViewFileMenuTemplates {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuTemplates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Dynamo Dictionary.
         /// </summary>
         public static string DynamoViewHelpDictionary {
@@ -5004,7 +5013,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New.
+        ///   Looks up a localized string similar to New Home Workspace.
         /// </summary>
         public static string StartPageNewFile {
             get {

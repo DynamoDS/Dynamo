@@ -701,6 +701,7 @@ namespace Dynamo.Controls
             InitializeShortcutBar();
             InitializeStartPage(isFirstRun);
 
+            LoadTemplatesMenu();
 #if !__NO_SAMPLES_MENU
             LoadSamplesMenu();
 #endif
@@ -1523,7 +1524,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
+                // handle top-level dirs, TODO - factor out to a separate function, make recursive
                 if (dirPaths.Any())
                 {
                     foreach (string dirPath in dirPaths)
@@ -1563,6 +1564,88 @@ namespace Dynamo.Controls
                     showInFolder.Click += OnShowInFolder;
                     SamplesMenu.Items.Add(new Separator());
                     SamplesMenu.Items.Add(showInFolder);
+                }
+
+                if (sampleFiles.Any() && startPage != null)
+                {
+                    var firstFilePath = Path.GetDirectoryName(sampleFiles.ToArray()[0]);
+                    var rootPath = Path.GetDirectoryName(firstFilePath);
+                    var root = new DirectoryInfo(rootPath);
+                    var rootProperty = new SampleFileEntry("Samples", "Path");
+                    startPage.WalkDirectoryTree(root, rootProperty);
+                    startPage.SampleFiles.Add(rootProperty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Setup the "New from Templates..." sub-menu with templates comes with Dynamo
+        /// </summary>
+        private void LoadTemplatesMenu()
+        {
+            var samplesDirectory = dynamoViewModel.Model.PathManager.TemplatesDirectory;
+            if (Directory.Exists(samplesDirectory))
+            {
+                var sampleFiles = new System.Collections.Generic.List<string>();
+                string[] dirPaths = Directory.GetDirectories(samplesDirectory);
+                string[] filePaths = Directory.GetFiles(samplesDirectory, "*.dyn");
+
+                // handle top-level files
+                if (filePaths.Any())
+                {
+                    foreach (string path in filePaths)
+                    {
+                        var item = new MenuItem
+                        {
+                            Header = Path.GetFileNameWithoutExtension(path),
+                            Tag = path
+                        };
+                        item.Click += OpenSample_Click;
+                        TemplatesMenu.Items.Add(item);
+                        sampleFiles.Add(path);
+                    }
+                }
+
+                // handle top-level dirs, TODO - factor out to a separate function, make recursive
+                if (dirPaths.Any())
+                {
+                    foreach (string dirPath in dirPaths)
+                    {
+                        var dirItem = new MenuItem
+                        {
+                            Header = Path.GetFileName(dirPath),
+                            Tag = Path.GetFileName(dirPath)
+                        };
+
+                        filePaths = Directory.GetFiles(dirPath, "*.dyn");
+                        if (filePaths.Any())
+                        {
+                            foreach (string path in filePaths)
+                            {
+                                var item = new MenuItem
+                                {
+                                    Header = Path.GetFileNameWithoutExtension(path),
+                                    Tag = path
+                                };
+                                item.Click += OpenSample_Click;
+                                dirItem.Items.Add(item);
+                                sampleFiles.Add(path);
+                            }
+                        }
+                        TemplatesMenu.Items.Add(dirItem);
+                    }
+                }
+
+                if (dirPaths.Any())
+                {
+                    var showInFolder = new MenuItem
+                    {
+                        Header = Wpf.Properties.Resources.DynamoViewHelpMenuShowInFolder,
+                        Tag = dirPaths[0]
+                    };
+                    showInFolder.Click += OnShowInFolder;
+                    TemplatesMenu.Items.Add(new Separator());
+                    TemplatesMenu.Items.Add(showInFolder);
                 }
 
                 if (sampleFiles.Any() && startPage != null)

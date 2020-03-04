@@ -2224,4 +2224,8 @@ Uninstall the following packages: {0}?</value>
   <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
     <value>Crash report from Dynamo {0}</value>
   </data>
+  <data name="DynamoViewFileMenuTemplates" xml:space="preserve">
+    <value>New from Template...</value>
+    <comment>FIle menu | New | New from Template</comment>
+  </data>
 </root>

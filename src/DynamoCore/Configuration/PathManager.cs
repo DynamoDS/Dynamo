@@ -59,6 +59,7 @@ namespace Dynamo.Core
         public const string DefinitionsDirectoryName = "definitions";
         public const string SamplesDirectoryName = "samples";
         public const string GalleryDirectoryName = "gallery";
+        public const string TemplatesDirectoryName = "templates";
         public const string BackupDirectoryName = "backup";
         public const string PreferenceSettingsFileName = "DynamoSettings.xml";
         public const string PythonTemplateFileName = "PythonTemplate.py";
@@ -75,6 +76,7 @@ namespace Dynamo.Core
         private readonly string commonPackages;
         private readonly string logDirectory;
         private readonly string samplesDirectory;
+        private readonly string templatesDirectory;
         private readonly string backupDirectory;
         private readonly string preferenceFilePath;
         private readonly string galleryFilePath;
@@ -170,6 +172,11 @@ namespace Dynamo.Core
         public string SamplesDirectory
         {
             get { return samplesDirectory; }
+        }
+
+        public string TemplatesDirectory
+        {
+            get { return templatesDirectory; }
         }
 
         public string BackupDirectory
@@ -355,9 +362,9 @@ namespace Dynamo.Core
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
-            samplesDirectory = GetSamplesFolder(commonDataDir);
-            var galleryDirectory = GetGalleryDirectory(commonDataDir);
-            galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
+            samplesDirectory = GetTargetFolder(commonDataDir, SamplesDirectoryName);
+            templatesDirectory = GetTargetFolder(commonDataDir, TemplatesDirectoryName);
+            galleryFilePath = Path.Combine(GetTargetFolder(commonDataDir, GalleryDirectoryName), GalleryContentsFileName);
 
             rootDirectories = new List<string> { userDataDir };
 
@@ -536,7 +543,7 @@ namespace Dynamo.Core
             return root;
         }
 
-        private static string GetSamplesFolder(string dataRootDirectory)
+        private static string GetTargetFolder(string dataRootDirectory, string targetDirName)
         {
             var versionedDirectory = dataRootDirectory;
             if (!Directory.Exists(versionedDirectory))
@@ -546,71 +553,33 @@ namespace Dynamo.Core
                 //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, SamplesDirectoryName)))
+            else if (!Directory.Exists(Path.Combine(versionedDirectory, targetDirName)))
             {
                 // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\samples" exists. If it
+                // if the folder "%ProgramData%\{...}\{major}.{minor}\targetFolderName" exists. If it
                 // doesn't exist, then root directory would be "%ProgramData%\{...}".
                 //
                 dataRootDirectory = Directory.GetParent(versionedDirectory).FullName;
             }
 
             var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var sampleDirectory = Path.Combine(dataRootDirectory, SamplesDirectoryName, uiCulture);
+            var targetDirectory = Path.Combine(dataRootDirectory, targetDirName, uiCulture);
 
             // If the localized samples directory does not exist then fall back 
             // to using the en-US samples folder. Do an additional check to see 
             // if the localized folder is available but is empty.
             // 
-            var di = new DirectoryInfo(sampleDirectory);
-            if (!Directory.Exists(sampleDirectory) ||
+            var di = new DirectoryInfo(targetDirectory);
+            if (!Directory.Exists(targetDirectory) ||
                 !di.GetDirectories().Any() ||
                 !di.GetFiles("*.dyn", SearchOption.AllDirectories).Any())
             {
-                var neturalCommonSamples = Path.Combine(dataRootDirectory, SamplesDirectoryName, "en-US");
-                if (Directory.Exists(neturalCommonSamples))
-                    sampleDirectory = neturalCommonSamples;
+                var neturalCommonDir = Path.Combine(dataRootDirectory, targetDirName, "en-US");
+                if (Directory.Exists(neturalCommonDir))
+                    targetDirectory = neturalCommonDir;
             }
 
-            return sampleDirectory;
-        }
-
-        private static string GetGalleryDirectory(string commonDataDir)
-        {
-            var versionedDirectory = commonDataDir;
-            if (!Directory.Exists(versionedDirectory))
-            {
-                // Try to see if folder "%ProgramData%\{...}\{major}.{minor}" exists, if it
-                // does not, then root directory would be "%ProgramData%\{...}".
-                //
-                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
-            }
-            else if (!Directory.Exists(Path.Combine(versionedDirectory, GalleryDirectoryName)))
-            {
-                // If the folder "%ProgramData%\{...}\{major}.{minor}" exists, then try to see
-                // if the folder "%ProgramData%\{...}\{major}.{minor}\gallery" exists. If it
-                // doesn't exist, then root directory would be "%ProgramData%\{...}".
-                //
-                commonDataDir = Directory.GetParent(versionedDirectory).FullName;
-            }
-
-            var uiCulture = CultureInfo.CurrentUICulture.Name;
-            var galleryDirectory = Path.Combine(commonDataDir, GalleryDirectoryName, uiCulture);
-
-            // If the localized gallery directory does not exist then fall back 
-            // to using the en-US gallery folder. Do an additional check to see 
-            // if the localized folder is available but is empty.
-            // 
-            var di = new DirectoryInfo(galleryDirectory);
-            if (!Directory.Exists(galleryDirectory) ||
-                !di.GetFiles("*.xml",SearchOption.TopDirectoryOnly).Any())
-            {
-                var neutralCommonGallery = Path.Combine(commonDataDir, GalleryDirectoryName, "en-US");
-                if (Directory.Exists(neutralCommonGallery))
-                    galleryDirectory = neutralCommonGallery;
-            }
-
-            return galleryDirectory;
+            return targetDirectory;
         }
 
         private IEnumerable<string> LibrarySearchPaths(string library)
