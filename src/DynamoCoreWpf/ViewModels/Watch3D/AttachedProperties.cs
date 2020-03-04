@@ -35,16 +35,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     if (GetIsolationMode(meshGeom))
                     {
-                        meshGeom.Material = HelixWatch3DViewModel.IsolatedMaterial;
+                        SetMaterialAndColorAlphas(meshGeom, HelixWatch3DViewModel.IsolatedMaterial,
+                          HelixWatch3DViewModel.IsolatedMaterialVertColor,
+                          HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha,
+                          true);
                     }
                     else if (GetIsFrozen(meshGeom))
                     {
-                        meshGeom.Material = HelixWatch3DViewModel.FrozenMaterial;
+                        SetMaterialAndColorAlphas(meshGeom, HelixWatch3DViewModel.FrozenMaterial,
+                          HelixWatch3DViewModel.FrozenMaterialVertColor,
+                          HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha,
+                          true);
                     }
                     else
                     {
-                        //TODO handle vertex coloring in all these cases
                         meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
+                        //reset the colors if the mesh has perVertexColors required - we may have set them to some other values
+                        //for frozen or isolated
+                        if (meshGeom.RequiresPerVertexColoration)
+                        {
+                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+
+                        }
                     }
                 }
 
@@ -250,7 +262,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if ((bool)e.NewValue)
                 {
-                    meshGeom3d.Material = HelixWatch3DViewModel.FrozenMaterial;
+                    SetMaterialAndColorAlphas(meshGeom3d,HelixWatch3DViewModel.FrozenMaterial,
+                        HelixWatch3DViewModel.FrozenMaterialVertColor,
+                        HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha,
+                        false);
                 }
                 else
                 {
@@ -268,6 +283,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     OnPropertySetFalse(geom);
                 }
             }
+        }
+
+        private static void SetMaterialAndColorAlphas(DynamoGeometryModel3D meshGeom3d,Material nonVertexColorMat, Material vertexColorMat, float alpha,  bool resetColors)
+        {
+            var material = nonVertexColorMat;
+            if (meshGeom3d.RequiresPerVertexColoration)
+            {
+                material = vertexColorMat;
+                SetAlpha(meshGeom3d,alpha, resetColors);
+            }
+            meshGeom3d.Material = material;
         }
 
         #endregion
@@ -307,14 +333,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if ((bool)e.NewValue)
                 {
-                    meshGeom3d.Material = HelixWatch3DViewModel.IsolatedMaterial;
+                    SetMaterialAndColorAlphas(meshGeom3d, HelixWatch3DViewModel.IsolatedMaterial,
+                         HelixWatch3DViewModel.IsolatedMaterialVertColor,
+                         HelixWatch3DViewModel.IsolatedMaterial.DiffuseColor.Alpha,
+                         false);
                 }
                 else
                 {
                     OnPropertySetFalse(meshGeom3d);
                 }
-
-                meshGeom3d.RequiresPerVertexColoration = true;
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {

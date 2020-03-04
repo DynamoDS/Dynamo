@@ -1252,6 +1252,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularShininess = 12.8f,
             };
 
+            FrozenMaterialVertColor = new PhongMaterial
+            {
+                Name = "FrozenVertColor",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = defaultTransparencyColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+                VertexColorBlendingFactor = 1f
+            };
+
             IsolatedMaterial = new PhongMaterial
             {
                 Name = "IsolatedTransparent",
@@ -1260,6 +1271,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
                 EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
                 SpecularShininess = 12.8f,
+            };
+            
+            IsolatedMaterialVertColor = new PhongMaterial
+            {
+                Name = "IsolatedTransparentVertColor",
+                AmbientColor = PhongMaterials.ToColor(0.1, 0.1, 0.1, 1.0),
+                DiffuseColor = meshIsolatedTransparencyColor,
+                SpecularColor = PhongMaterials.ToColor(0.0225, 0.0225, 0.0225, 1.0),
+                EmissiveColor = PhongMaterials.ToColor(0.0, 0.0, 0.0, 1.0),
+                SpecularShininess = 12.8f,
+                VertexColorBlendingFactor = 1f
             };
 
             // camera setup
@@ -1834,6 +1856,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // If we are in a custom node, and the current
                     // package's id is NOT one of the output ids of custom nodes
                     // in the graph, then draw the geometry with transparency.
+                    //TODO potentially ust use frozen material.
                     if (drawDead)
                     {
                         meshGeometry3D.RequiresPerVertexColoration = true;
@@ -1844,6 +1867,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         mesh.Colors.AddRange(m.Colors);
                         
                     }
+                    //update colorCache for this mesh.
+                    colorCache[id] = mesh.Colors;
 
                     mesh.Normals.AddRange(m.Normals);
                     mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
