@@ -76,6 +76,9 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AnalyticsTests.cs" />
+    <Compile Include="Configuration\ContextTests.cs" />
+    <Compile Include="Configuration\ExecutionSessionTests.cs" />
+    <Compile Include="Configuration\PreferenceSettingsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
@@ -237,6 +240,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
