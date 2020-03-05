@@ -761,7 +761,7 @@ namespace WpfVisualizationTests
             // Freeze the ByGeometryColor node making the corresponding object have a frozen material.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.FrozenMaterial);
+            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.FrozenMaterialVertColor);
 
         }
 
