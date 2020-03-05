@@ -793,8 +793,8 @@
     <comment>Start page | New custom node</comment>
   </data>
   <data name="StartPageNewFile" xml:space="preserve">
-    <value>New</value>
-    <comment>Start page | New </comment>
+    <value>New Home Workspace</value>
+    <comment>Start page | New Home Workspace</comment>
   </data>
   <data name="StartPageOpenFile" xml:space="preserve">
     <value>Open</value>
@@ -2223,5 +2223,9 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="DynamoViewSettingMenuShowDataReportingDialogTooltip" xml:space="preserve">
     <value>Display the dialog for user to pick agreement on data collecting.</value>
+  </data>
+  <data name="DynamoViewFileMenuTemplates" xml:space="preserve">
+    <value>New from Template...</value>
+    <comment>FIle menu | New | New from Template</comment>
   </data>
 </root>

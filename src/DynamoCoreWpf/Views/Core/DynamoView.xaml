@@ -297,6 +297,15 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuNew}"
                                   Name="newMenu"
                                   Focusable="False">
+                            <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewFileMenuTemplates}"
+                                  Name="TemplatesMenu"
+                                  IsEnabled="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel.RunEnabled}">
+                                <MenuItem.Icon>
+                                    <Image Source="/DynamoCoreWpf;component/UI/Images/OpenSelectedItemHS.png"
+                                       Width="14" Height="14" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="{x:Static p:Resources.DynamoViewFileMenuNewHomeWorkSpace}"
                                       Command="{Binding NewHomeWorkspaceCommand}"
                                       Name="newHomeWorkspace"
