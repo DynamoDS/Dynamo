@@ -602,7 +602,7 @@ namespace ProtoCore
 
             #endregion
 
-            return true; //It'll replicate if it suceeds
+            return true; //It'll replicate if it succeeds
         }
 
         /// <summary>
@@ -687,7 +687,7 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Minimal sanity check of arugments
+        /// Minimal sanity check of arguments
         /// </summary>
         /// <param name="arguments"></param>
         private static void ArgumentSanityCheck(List<StackValue> arguments)
@@ -1880,7 +1880,7 @@ namespace ProtoCore
             //Extract left most high-D pack
             ISerializable traceD = previousTraceData.GetLeftMostData();
 
-            if (traceD != null)
+            if (traceD != null && runtimeCore.ReserveTraceAfterExec)
             {
                 //There was data associated with the previous execution, push this into the TLS
                 DynamoServices.TraceUtils.SetTraceData(TRACE_KEY, traceD);

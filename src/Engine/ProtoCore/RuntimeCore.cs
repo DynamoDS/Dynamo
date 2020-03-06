@@ -175,6 +175,11 @@ namespace ProtoCore
         /// </summary>
         public int RuntimeExpressionUID = 0;
 
+        /// <summary>
+        /// ReserveTraceAfterExec is used to indicate if traceData will be preserved after graph execution
+        /// </summary>
+        public bool ReserveTraceAfterExec { get; set; } = true;
+
         // Cached replication guides for the current call. 
         // TODO Jun: Store this in the dynamic table node
         public List<List<ReplicationGuide>> ReplicationGuides;
