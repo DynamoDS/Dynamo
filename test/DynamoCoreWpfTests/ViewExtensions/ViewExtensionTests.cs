@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, viewExtension.Counter);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void ExtensionsSideBarExtensionsTest()
         {
             RaiseLoadedEvent(this.View);
