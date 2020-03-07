@@ -94,7 +94,7 @@ namespace DynamoCoreWpfTests
         /// This test is created to guard the clicking behavior on tab closing button
         /// and make sure it actually close the corresponding tab
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void ClickingToCloseViewExtensionTabTest()
         {
             RaiseLoadedEvent(this.View);
