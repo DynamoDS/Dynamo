@@ -53,7 +53,7 @@ namespace DynamoCoreWpfTests
             //assert the extension was keeping track of the node events in the workspace.
             Assert.AreEqual(1, (sampleExtension.nodes as List<NodeModel>).Count());
         }
-        [Test]
+        [Test, Category("Failure")]
         public void PackageManagerLoadsAndAddsViewExtension()
         {
             Assert.That(this.View.viewExtensionManager.ViewExtensions.Select(x => x.Name),
