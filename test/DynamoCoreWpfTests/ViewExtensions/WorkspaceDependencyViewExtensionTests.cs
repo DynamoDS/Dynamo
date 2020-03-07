@@ -131,7 +131,7 @@ namespace DynamoCoreWpfTests
         /// <summary>
         /// This test will make sure that the extension tab is closed upon closing the home workspace.
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void CloseViewExtensionTabOnClosingWorkspace()
         {
             RaiseLoadedEvent(this.View);
