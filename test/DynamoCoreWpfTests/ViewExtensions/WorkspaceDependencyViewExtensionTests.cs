@@ -113,7 +113,7 @@ namespace DynamoCoreWpfTests
         /// This test is created to guard the tab closing API - CloseExtensioninInSideBar()
         /// and make sure it actually close the corresponding tab
         /// </summary>
-        [Test]
+        [Test, Category("Failure")]
         public void APItoCloseViewExtensionTabTest()
         {
             RaiseLoadedEvent(this.View);
