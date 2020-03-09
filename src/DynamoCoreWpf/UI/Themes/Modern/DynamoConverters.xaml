@@ -90,6 +90,8 @@
     <controls:ConsoleHeightToBooleanConverter x:Key="ConsoleHeightToBoolConverter" />
     <controls:ShowHideFullscreenWatchMenuItemConverter x:Key="ShowHideFullscreenWatchMenuConverter" />
     <controls:PackageSearchStateToStringConverter x:Key="PackageSearchStateToStringConverter" />
+    <controls:PackageSearchStateToBoolConverter x:Key="PackageSearchStateToBoolConverter" />
+    <controls:PackageSearchStateToVisibilityConverter x:Key="PackageSearchStateToVisibilityConverter" />
     <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />

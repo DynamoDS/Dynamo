@@ -114,6 +114,54 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PackageSearchStateToBoolConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                              CultureInfo culture)
+        {
+            if (value is PackageManagerSearchViewModel.PackageSearchState st)
+            {
+                if (st == PackageManagerSearchViewModel.PackageSearchState.Searching)
+                {
+                    return true;
+                }
+                else if (st == PackageManagerSearchViewModel.PackageSearchState.Syncing)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new NotSupportedException();
+        }
+    }
+
+    public class PackageSearchStateToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+                              CultureInfo culture)
+        {
+            if (value is PackageManagerSearchViewModel.PackageSearchState st)
+            {
+                if (st == PackageManagerSearchViewModel.PackageSearchState.Results)
+                {
+                    return Visibility.Hidden;
+                }
+            }
+
+            return Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return new NotSupportedException();
+        }
+    }
+
     public class PackageUploadStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

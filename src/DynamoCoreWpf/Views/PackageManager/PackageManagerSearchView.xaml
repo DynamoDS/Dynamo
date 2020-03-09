@@ -7,6 +7,7 @@
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:viewModels="clr-namespace:Dynamo.PackageManager.ViewModels"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d" 
         Title="{x:Static p:Resources.PackageSearchViewTitle}" Name="PackageSearch"  Height="600" Width="510" MinWidth="510" MaxWidth="510">
 
@@ -120,7 +121,28 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row ="1" Grid.ZIndex ="1" FontSize="13" HorizontalAlignment="Center" Foreground="Gray" VerticalAlignment="Center" Name="NoResultsIndicator" TextAlignment="Center" Margin="20" Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
+            <StackPanel
+                Grid.Row ="1"
+                Grid.ZIndex ="1" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Name="NoResultsIndicatorGrid"
+                Visibility="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToVisibilityConverter}}">
+                <fa:ImageAwesome 
+                    Name="Spinner"
+                    Icon="Compass"
+                    Height="80"
+                    Spin="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToBoolConverter}}"
+                    Foreground="{DynamicResource MemberButtonText}" ></fa:ImageAwesome>
+                <TextBlock 
+                    FontSize="13" 
+                    Foreground="Gray" 
+                    Name="NoResultsIndicator" 
+                    TextAlignment="Center" 
+                    Margin="20" 
+                    Text="{Binding Path=SearchState, Converter={StaticResource PackageSearchStateToStringConverter}}"/>
+            </StackPanel>
+
 
             <Grid Name="RSearchBoxStackPanel" Grid.Row="0" Background="#222">
 
