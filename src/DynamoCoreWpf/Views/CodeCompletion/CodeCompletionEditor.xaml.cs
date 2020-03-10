@@ -184,7 +184,10 @@ namespace Dynamo.UI.Controls
         private void OnTextChanged(object sender, EventArgs e)
         {
             if (WatermarkLabel.Visibility == Visibility.Visible)
+            {
                 WatermarkLabel.Visibility = Visibility.Collapsed;
+                InnerTextEditor.ShowLineNumbers = true;
+            }
         }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
