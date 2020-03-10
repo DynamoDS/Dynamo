@@ -2,9 +2,17 @@
 using HelixToolkit.Wpf.SharpDX.Shaders;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using System;
+using System.IO;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+    internal static class DynamoCustomShaderNames {
+       internal static string DynamoCustomMeshShader ="DynamoCustomMeshShader";
+    }
+
+
+    //TODO update this comment
     /// <summary>
     /// The DynamoEffectsManager is loads Effects
     /// from shader byte code, and defines data layouts for rendering. 
@@ -20,20 +28,50 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             AddDynamoTechniques();
         }
 
-        
+        internal class DynamoCustomMeshRenderVertexShaderDescription
+        {
+            
+            public static byte[] VSMeshDataSamplerByteCode
+            {
+                get
+                {
+                    return Dynamo.Wpf.Properties.Resources.vsMeshDataSampling;
+                }
+            }
+
+            public static ShaderDescription  VertexShaderDynamoMeshDescription = new ShaderDescription(nameof(VertexShaderDynamoMeshDescription), ShaderStage.Vertex,
+          new ShaderReflector(), VSMeshDataSamplerByteCode);
+        }
+
+        internal class DynamoCustomMeshRenderPixelShaderDescription
+        {
+            public static byte[] PSMeshDataSamplerByteCode
+            {
+                get
+                {
+                    return Dynamo.Wpf.Properties.Resources.psMeshDataSampling;
+                }
+            }
+
+            public static ShaderDescription PixelShaderDynamoMeshDescription = new ShaderDescription(nameof(PixelShaderDynamoMeshDescription), ShaderStage.Pixel,
+          new ShaderReflector(), PSMeshDataSamplerByteCode);
+        }
+
+
         protected void AddDynamoTechniques()
         {
-            var custom = new TechniqueDescription("RenderCustom")
+            var dynamoCustomMeshTech = new TechniqueDescription(DynamoCustomShaderNames.DynamoCustomMeshShader)
             {
-                InputLayoutDescription = new InputLayoutDescription(DefaultVSShaderByteCodes.VSMeshDefault, DefaultInputLayout.VSInput),
+
+                InputLayoutDescription = new InputLayoutDescription(DynamoCustomMeshRenderVertexShaderDescription.VSMeshDataSamplerByteCode, DefaultInputLayout.VSInput),
                 PassDescriptions = new[]
                 {
                     new ShaderPassDescription(DefaultPassNames.Default)
                     {
-                        ShaderList = new[]
+                        ShaderList = new ShaderDescription[]
                         {
-                            DefaultVSShaderDescriptions.VSMeshDefault,
-                            DefaultPSShaderDescriptions.PSMeshBlinnPhong
+                            DynamoCustomMeshRenderVertexShaderDescription.VertexShaderDynamoMeshDescription,
+                            DynamoCustomMeshRenderPixelShaderDescription.PixelShaderDynamoMeshDescription,
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
@@ -42,7 +80,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     {
                         ShaderList = new[]
                         {
-                            DefaultVSShaderDescriptions.VSMeshWireframe,
+                           DynamoCustomMeshRenderVertexShaderDescription.VertexShaderDynamoMeshDescription,
                             DefaultPSShaderDescriptions.PSMeshWireframe
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
@@ -51,7 +89,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             };
 
-            AddTechnique(custom);
+            AddTechnique(dynamoCustomMeshTech);
         }
     }
 }

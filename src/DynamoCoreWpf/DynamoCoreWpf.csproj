@@ -505,6 +505,8 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="ViewModels\Watch3D\compiledShaders\psMeshDataSampling" />
+    <None Include="ViewModels\Watch3D\compiledShaders\vsMeshDataSampling" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>
@@ -1284,7 +1286,9 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewModels\Watch3D\shaderSource\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

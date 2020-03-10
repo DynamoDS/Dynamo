@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4354,6 +4354,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] psMeshDataSampling {
+            get {
+                object obj = ResourceManager.GetObject("psMeshDataSampling", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -5478,6 +5488,16 @@ namespace Dynamo.Wpf.Properties {
         public static string VersionValueGreaterThan0 {
             get {
                 return ResourceManager.GetString("VersionValueGreaterThan0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] vsMeshDataSampling {
+            get {
+                object obj = ResourceManager.GetObject("vsMeshDataSampling", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
