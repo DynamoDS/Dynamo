@@ -88,6 +88,31 @@ namespace Dynamo.Manipulation
         }
 
         internal Point3D? CameraPosition { get; private set; }
+        
+        // This is null for each new manipulator that is initialized.
+        private bool? isValidNode;
+
+        /// <summary>
+        /// This property is true if the cached value of the manipulator node is non-null.
+        /// It caches its value so that it doesn't have to repeatedly query the node value.
+        /// NOTE: There could be edge cases where the node value could become null while the
+        /// manipulator is being moved, etc. These cases will not be caught and the boolean
+        /// value returned would be true even though it should change to false. This case could
+        /// lead to a potential crash and is yet to be addressed.
+        /// </summary>
+        private bool IsValidNode
+        {
+            get 
+            {
+                if (isValidNode == null)
+                {
+                    isValidNode = !IsNodeNull(Node.CachedValue);
+                }
+
+                return (bool) isValidNode;
+            }
+           
+        }
 
         #endregion
 
@@ -154,7 +179,8 @@ namespace Dynamo.Manipulation
         /// <param name="mouseButtonEventArgs"></param>
         protected virtual void MouseDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
         {
-            
+            if (!IsValidNode) return;
+
             active = UpdatePosition();
 
             GizmoInAction = null; //Reset Drag.
@@ -430,7 +456,7 @@ namespace Dynamo.Manipulation
 
             // This check is required as for some reason LibG fails to load, geometry nodes are null
             // and we must return immediately before proceeding with further calls to ProtoGeometry
-            if (IsNodeValueNull()) return packages;
+            if (IsNodeNull(Node.CachedValue)) return packages;
 
             AssignInputNodes();
             
@@ -551,16 +577,18 @@ namespace Dynamo.Manipulation
             return packages;
         }
 
+        #endregion
+
         /// <summary>
         /// Checks if manipulator is enabled or not. Manipulator is enabled 
-        /// only if node is not frozen or not setup as partially applied function 
+        /// only if node is not frozen, its preview visible and value non-null. 
         /// </summary>
         /// <returns>True if enabled and can be manipulated.</returns>
         public bool IsEnabled()
         {
             if (Node.IsFrozen || !Node.IsVisible) return false;
 
-            if (IsNodeValueNull())
+            if (!IsValidNode)
             {
                 return false;
             }
@@ -568,11 +596,28 @@ namespace Dynamo.Manipulation
             return active;
         }
 
+        // TODO: Remove in 3.0
+        [Obsolete("This method will be removed in 3.0 and will no longer be available as a public API.")]
         public bool IsNodeValueNull()
         {
-            return Node.CachedValue == null || Node.CachedValue.IsNull;
+            return IsNodeNull(Node.CachedValue);
         }
-        #endregion
+
+        private static bool IsNodeNull(MirrorData data)
+        {
+            if (data == null || data.IsNull) return true;
+            
+            if (data.IsCollection)
+            {
+                var elements = data.GetElements();
+                foreach (var element in elements)
+                {
+                    if (IsNodeNull(element)) return true;
+                }
+            }
+
+            return false;
+        }
     }
 
 
