@@ -162,6 +162,11 @@
     <Compile Include="Extensions\ViewStartupParams.cs" />
     <Compile Include="Interfaces\ILibraryViewCustomization.cs" />
     <Compile Include="Interfaces\LayoutSpecification.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -175,11 +180,6 @@
     <Compile Include="UI\ClassObjectTemplateSelector.cs" />
     <Compile Include="UI\DraggedAdorner.cs" />
     <Compile Include="UI\HeaderTemplateSelector.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Resources.en-US.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -462,8 +462,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -505,8 +505,8 @@
     <None Include="UI\Fonts\OpenSans-SemiboldItalic.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="ViewModels\Watch3D\compiledShaders\psMeshDataSampling" />
-    <None Include="ViewModels\Watch3D\compiledShaders\vsMeshDataSampling" />
+    <None Include="ViewModels\Watch3D\compiledShaders\psDynamoMesh" />
+    <None Include="ViewModels\Watch3D\compiledShaders\vsDynamoMesh" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>

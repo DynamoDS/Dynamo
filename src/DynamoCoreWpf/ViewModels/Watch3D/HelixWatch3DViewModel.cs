@@ -336,8 +336,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public static PhongMaterial SelectedMaterial { get; set; }
 
-        public static PhongMaterial FrozenMaterial { get; set; }
-        public static PhongMaterial IsolatedMaterial { get; set; }
+        internal static PhongMaterial FrozenMaterial { get; set; }
+        internal static PhongMaterial IsolatedMaterial { get; set; }
 
         /// <summary>
         /// This is the initial transform applied to 
@@ -1808,8 +1808,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     mesh.Positions.AddRange(m.Positions);
 
-                    //meshGeometry3D.Material = new VertColorMaterial();
-
+  
                     // If we are in a custom node, and the current
                     // package's id is NOT one of the output ids of custom nodes
                     // in the graph, then draw the geometry with transparency.

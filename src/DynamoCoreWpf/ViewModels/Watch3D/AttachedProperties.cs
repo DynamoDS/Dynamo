@@ -16,41 +16,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         // handles determining color of elementGeometry3Ds when any property is set false
         // as the state of other properties must be checked to determine the correct color / material.
-        private static void OnPropertySetFalse(DependencyObject obj)
+        private static void OnPoint_Line_PropertySetFalse(DependencyObject obj)
         {
             if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
             {
                 return;
             }
-            //mesh case
-            var geom = (GeometryModel3D)obj;
-            var meshGeom = geom as DynamoGeometryModel3D;
-            if (meshGeom != null)
-            {
-
-                // if selection is not enabled after this property was set false
-                // then determine transparencey. IE selection state should always override
-                // the other properties.
-                if (!GetShowSelected(meshGeom))
-                {
-                    if (GetIsolationMode(meshGeom))
-                    {
-                        meshGeom.Material = HelixWatch3DViewModel.IsolatedMaterial;
-                    }
-                    else if (GetIsFrozen(meshGeom))
-                    {
-                        meshGeom.Material = HelixWatch3DViewModel.FrozenMaterial;
-                    }
-                    else
-                    {
-                        //TODO handle vertex coloring in all these cases
-                        meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
-                    }
-                }
-
-            }
+ 
             //point or line case
-            else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
+            GeometryModel3D geom = obj as GeometryModel3D;
+            if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
                 //if selection is not enabled determine if we should reset colors or set transparent colors
                 if (!GetShowSelected(geom))
@@ -111,34 +86,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var meshGeom = geom as DynamoGeometryModel3D;
             if (meshGeom != null)
             {
-                if ((bool)args.NewValue)
-                {
-                    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
-                    if (GetIsolationMode(meshGeom))
-                    {
-                        //selected, isolated, and frozen.
-                        if (GetIsFrozen(meshGeom))
-                        {
-                            meshGeom.Material = HelixWatch3DViewModel.FrozenMaterial;
-                        }
-                        //selected and isolated so color normal material
-                        //TODO handle vertex colors later.
-                        else
-                        {
-                            meshGeom.Material = HelixWatch3DViewModel.WhiteMaterial;
-                        }
-                    }
-                    //only selected.
-                    else
-                    {
-                        meshGeom.Material = HelixWatch3DViewModel.SelectedMaterial;
-                    }
-                }
-                else
-                {
-                    OnPropertySetFalse(meshGeom);
-                }
+                HandleMeshPropertyChange(meshGeom, args);
             }
+
+            //implementation for lines and points
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
 
@@ -168,7 +119,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPropertySetFalse(geom);
+                    OnPoint_Line_PropertySetFalse(geom);
                 }
             }
         }
@@ -245,17 +196,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 return;
             }
-            var meshGeom3d = geom as DynamoGeometryModel3D;
-            if (meshGeom3d != null)
+            var meshGeom = geom as DynamoGeometryModel3D;
+            if (meshGeom != null)
             {
-                if ((bool)e.NewValue)
-                {
-                    meshGeom3d.Material = HelixWatch3DViewModel.FrozenMaterial;
-                }
-                else
-                {
-                    OnPropertySetFalse(meshGeom3d);
-                }
+
+             HandleMeshPropertyChange(meshGeom, e);
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
@@ -265,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPropertySetFalse(geom);
+                    OnPoint_Line_PropertySetFalse(geom);
                 }
             }
         }
@@ -302,19 +247,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return;
             }
             var geom = (GeometryModel3D)obj;
-            var meshGeom3d = geom as DynamoGeometryModel3D;
-            if (meshGeom3d != null)
+            var meshGeom = geom as DynamoGeometryModel3D;
+            if (meshGeom != null)
             {
-                if ((bool)e.NewValue)
-                {
-                    meshGeom3d.Material = HelixWatch3DViewModel.IsolatedMaterial;
-                }
-                else
-                {
-                    OnPropertySetFalse(meshGeom3d);
-                }
 
-                meshGeom3d.RequiresPerVertexColoration = true;
+                HandleMeshPropertyChange(meshGeom, e);
+                meshGeom.RequiresPerVertexColoration = true;
+
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
@@ -324,7 +263,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPropertySetFalse(geom);
+                    OnPoint_Line_PropertySetFalse(geom);
                 }
             }
         }
@@ -381,6 +320,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         //#endregion
 
         #region utils
+        
+        /// <summary>
+        /// Sets the property value on the DynamoMeshCore - this makes its way down to our shader and invalidates the render.
+        /// </summary>
+        /// <param name="meshGeom"></param>
+        /// <param name="args"></param>
+        private static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
+        {
+            if ((meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore) != null)
+            {
+                (meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore).SetPropertyData(args);
+            }
+        }
 
         /// <summary>
         /// Sets all colors on Geometry to a single color.

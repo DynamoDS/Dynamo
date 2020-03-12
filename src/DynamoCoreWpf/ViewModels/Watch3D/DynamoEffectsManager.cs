@@ -35,7 +35,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 get
                 {
-                    return Dynamo.Wpf.Properties.Resources.vsMeshDataSampling;
+                    return Dynamo.Wpf.Properties.Resources.vsDynamoMesh;
                 }
             }
 
@@ -49,7 +49,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 get
                 {
-                    return Dynamo.Wpf.Properties.Resources.psMeshDataSampling;
+                    return Dynamo.Wpf.Properties.Resources.psDynamoMesh;
                 }
             }
 
