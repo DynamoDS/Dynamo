@@ -198,7 +198,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region events
-
+        //TODO rename this to avoid any as many api breaks as possible?
         public Object Element3DDictionaryMutex = new object();
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
 
