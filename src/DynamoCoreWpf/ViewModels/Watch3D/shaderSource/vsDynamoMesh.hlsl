@@ -60,12 +60,9 @@ PSInputCustom main(VSInput input)
     //set texture coords and color
     output.t = input.t;
     output.c = input.c;
-    //output.cDiffuse = vMaterialDiffuse;
-    //output.c2 = vMaterialEmissive + vMaterialAmbient * vLightAmbient;
 
     //set normal for interpolation	
     output.n = normalize(mul(input.n, (float3x3)mWorld));
-
 
     //send our flags through to the frag shader
     output.customParams.x = vParams.x;
