@@ -230,6 +230,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
         }
 
+        [Test]
+        public void TestPropertiesWithCodeInIt()
+        {
+            Assert.AreEqual("Workspace References", viewExtension.Name);
+
+            Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
+
+        }
+
         public static void RaiseLoadedEvent(FrameworkElement element)
         {
             MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
