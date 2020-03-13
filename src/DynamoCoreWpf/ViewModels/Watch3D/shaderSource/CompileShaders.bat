@@ -9,9 +9,9 @@ REM - /0d - disable optimziations
 REM -/Zi Enable debugging information.
 REM /T fx_5_0 - shader model 5
 REM -/I ./../ include
-REM -  /Fo ..\Resources\_custom.bfx output binary
+REM -  /Fo  output binary path
 REM file to compile Default.fx
-REM - RENAME THESE
+
 fxc /Vi /Od /Zi /T vs_5_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\vsDynamoMesh vsDynamoMesh.hlsl
 fxc /Vi /Od /Zi /T ps_5_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoMesh psDynamoMesh.hlsl
 popd
