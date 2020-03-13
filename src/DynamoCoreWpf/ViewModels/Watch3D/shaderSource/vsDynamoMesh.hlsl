@@ -41,11 +41,6 @@ PSInputCustom main(VSInput input)
         inputp = input.p;
     }
 
-    //TODO shader used to set instance matrix here....do we need to do this still?
-
-    //
-    
-
     float3 inputn = input.n;
     float3 inputt1 = input.t1;
     float3 inputt2 = input.t2;
