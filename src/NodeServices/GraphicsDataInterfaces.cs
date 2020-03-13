@@ -261,7 +261,9 @@ namespace Autodesk.DesignScript.Interfaces
         ///  Yx, Yy, Yz, 0,
         ///  Zx, Zy, Zz, 0,
         ///  offsetX, offsetY, offsetZ, W]
-        ///NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// When converting from ProtoGeometry CoordinateSystem form to input matrix, set the first row to the X axis of the CS,
+        /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
         /// </summary>
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
