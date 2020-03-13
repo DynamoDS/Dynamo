@@ -647,6 +647,23 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void HelixWatch3dViewModel_HeadLight_Camera_HaveSameLookVector()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var camdir = bPreviewVm.Camera.LookDirection;
+            var headlight = bPreviewVm.SceneItems.Where(x => x.Name.ToLower().Contains("headlight")).FirstOrDefault();
+            var headlightDir = (headlight as DirectionalLight3D).Direction;
+            Assert.AreEqual(camdir, headlightDir);
+
+            //move the camera
+            bPreviewVm.Camera.LookDirection = new Vector3D(5,5,5);
+            //assert they match
+            headlightDir = (headlight as DirectionalLight3D).Direction;
+            Assert.AreEqual(new Vector3D(5, 5, 5), headlightDir);
+
+        }
+
+        [Test]
         public void HelixWatch3DViewModel_DisableGrid_GridDoesNotDraw()
         {
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;

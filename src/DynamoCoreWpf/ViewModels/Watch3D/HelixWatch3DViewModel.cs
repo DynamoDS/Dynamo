@@ -1285,12 +1285,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Name = HeadLightName
             };
 
-            //TODO verify this binding is working.
             headLight.SetBinding(
                 DirectionalLight3D.DirectionProperty, 
-                new Binding("LookDirection") {
-                    Source = this,
-                    Path = new PropertyPath("Camera.LookDirection")
+                new Binding(nameof(PerspectiveCamera.LookDirection)) {
+                    Source = this.Camera
                 }
             );
 
