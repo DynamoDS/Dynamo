@@ -275,7 +275,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Indicates if preview bubbles should be displayed on nodes.
+        /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
         public bool ShowCodeBlockLineNumber
         {
@@ -286,7 +286,7 @@ namespace Dynamo.ViewModels
             set
             {
                 model.PreferenceSettings.ShowCodeBlockLineNumber = value;
-                RaisePropertyChanged("ShowCodeBlockLineNumber");
+                RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
             }
         }
 

@@ -20,11 +20,6 @@ namespace Dynamo.Interfaces
         bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
-        /// Indicates if code block node line numbers should  be displayed.
-        /// </summary>
-        bool ShowCodeBlockLineNumber { get; set; }
-
-        /// <summary>
         /// Returns height of console
         /// </summary>
         int ConsoleHeight { get; set; }
