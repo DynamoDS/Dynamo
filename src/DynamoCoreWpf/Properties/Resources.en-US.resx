@@ -2224,4 +2224,7 @@ Uninstall the following packages: {0}?</value>
   <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
     <value>Crash report from Dynamo {0}</value>
   </data>
+  <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
+    <value>Show Code Block Node Line Number</value>
+  </data>
 </root>

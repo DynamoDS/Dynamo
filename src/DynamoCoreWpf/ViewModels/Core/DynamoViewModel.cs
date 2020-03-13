@@ -275,6 +275,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if preview bubbles should be displayed on nodes.
+        /// </summary>
+        public bool ShowCodeBlockLineNumber
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowCodeBlockLineNumber;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowCodeBlockLineNumber = value;
+                RaisePropertyChanged("ShowCodeBlockLineNumber");
+            }
+        }
+
+        /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
         /// </summary>
