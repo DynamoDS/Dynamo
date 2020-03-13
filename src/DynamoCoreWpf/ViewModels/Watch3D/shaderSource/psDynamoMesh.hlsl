@@ -36,12 +36,23 @@ float4 main(PSInputCustom input) : SV_Target
 	//lets decode them
 	uint flags = int(input.customParams.x);
 
-	//TODO finish this
+	//our flags are packed in this order:
+  /*
+	  None = 0,
+	  IsFrozen = 1,
+	  IsSelected = 2,
+	  IsIsolated = 4,
+	  IsSpecialRenderPackage = 8, //not used
+	  HasTransparency = 16, //not used
+	  RequiresPerVertexColoration = 32
+	  FlatShade = 64 //not used
+	  */
+
 	bool isFrozen = flags & 1;
 	bool isSelected = flags & 2;
 	bool isIsolated = flags & 4;
 	bool isSpecialRenderPackage = flags & 8;
-	bool requiresPerVertexColoration = flags & 16;
+	bool requiresPerVertexColoration = flags & 32;
 
 
 	//renormalize - does not support normal maps

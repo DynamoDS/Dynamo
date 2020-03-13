@@ -11,16 +11,15 @@ PSInputCustom main(VSInput input)
     PSInputCustom output;
 
     //our flags are packed in this order:
-    /* TODO update.
-    None = 0,
+    /* 
+        None = 0,
         IsFrozen = 1,
         IsSelected = 2,
         IsIsolated = 4,
-        IsSpecialRenderPackage = 8,
-        //TODO do we need this flag?
-        HasTransparency = 16,
-        //TODO add vertex colors
-        //TODO add flat shade?
+        IsSpecialRenderPackage = 8, //not used
+        HasTransparency = 16, //not used
+        RequiresPerVertexColoration = 32
+        FlatShade =64 //not used
         */
 
     uint flags = int(vParams.x);
@@ -28,7 +27,7 @@ PSInputCustom main(VSInput input)
     bool isSelected = flags & 2;
     bool isIsolated = flags & 4;
     bool isSpecialRenderPackage = flags & 8;
-    bool requiresPerVertexColoration = flags & 16;
+    bool requiresPerVertexColoration = flags & 32;
         
     float4 inputp;
     if (isSelected || requiresPerVertexColoration)

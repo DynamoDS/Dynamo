@@ -12,15 +12,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     }
 
 
-    //TODO update this comment
     /// <summary>
-    /// The DynamoEffectsManager is loads Effects
+    /// The DynamoEffectsManager is loads shaders
     /// from shader byte code, and defines data layouts for rendering. 
     /// By extending the DefaultEffectsManager, the DynamoEffectsManager 
     /// makes available effects like Blinn rendering, and adds custom
-    /// Dynamo rendering effects for points, lines, and meshes.
-    /// For more information on DirectX Effects, see 
-    /// https://msdn.microsoft.com/en-us/library/windows/desktop/ff476136(v=vs.85).aspx
+    /// Dynamo rendering shaders for meshes.
+    /// For an intro to dx vertex and fragment shaders see 
+    /// https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-shaders-and-shader-resources
     /// </summary>
     public class DynamoEffectsManager : DefaultEffectsManager
     {

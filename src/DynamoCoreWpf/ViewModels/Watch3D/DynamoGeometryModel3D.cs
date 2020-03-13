@@ -175,7 +175,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// <summary>
     /// A Dynamo mesh class which supports sending data to our custom shader.
     /// </summary>
-    public class DynamoGeometryModel3D : MaterialGeometryModel3D //TODO old base class okay? MaterialGeo?
+    public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
         public DynamoGeometryModel3D()
         {
@@ -187,9 +187,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return node;
         }
 
-        //TODO this needs to set things on the core. add a selection change handler and add method call to core.
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
-            DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), typeof(GeometryModel3D), new UIPropertyMetadata(false, RequirePerVertexColorationChanged));
+            DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), 
+                typeof(GeometryModel3D), new UIPropertyMetadata(false, RequirePerVertexColorationChanged));
 
         private static void RequirePerVertexColorationChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
