@@ -2225,6 +2225,6 @@ Uninstall the following packages: {0}?</value>
     <value>Display the dialog for user to pick agreement on data collecting.</value>
   </data>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
-    <value>Show Code Block Node Line Number</value>
+    <value>Show CodeBlockNode Line Numbers</value>
   </data>
 </root>

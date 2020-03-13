@@ -49,7 +49,7 @@ namespace Dynamo.Tests.Configuration
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
-            // Force inital state
+            // Force initial state
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
             
@@ -64,12 +64,37 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
+        public void TestSetDisplayCBNLineNumber()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force initial state
+            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            Assert.AreEqual(initalSetting.ShowCodeBlockLineNumber, true);
+
+            initalSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, true);
+
+            resultSetting.ShowCodeBlockLineNumber = false;
+            resultSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, false);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMaxNumRecentFiles()
         {
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
-            // Force inital state
+            // Force initial state
             PreferenceSettings initalSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 

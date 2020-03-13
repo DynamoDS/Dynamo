@@ -1873,7 +1873,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Code Block Node Line Number.
+        ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
         /// </summary>
         public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
             get {
