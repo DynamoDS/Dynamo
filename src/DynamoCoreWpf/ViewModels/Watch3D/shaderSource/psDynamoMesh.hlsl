@@ -26,7 +26,7 @@ SamplerState LinearSampler
 	MaxAnisotropy = 16;
 };
 
-float4 main(PSInputCustom input) : SV_Target
+float4 main(PSInputCustom input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 {
 	//TODO move to common or pass in from material or the vParams.
 	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
@@ -60,6 +60,15 @@ float4 main(PSInputCustom input) : SV_Target
 
 	// get per pixel vector to eye-position
 	float3 eye = normalize(vEyePos - input.wp.xyz);
+
+	// To support two-sided surface lighting, we flip 
+	// the normal of the surface if it's facing
+	// away from us. There are many tessellated surfaces that have
+	// normals that are not as expected.
+	// SV_IsFrontFace is a system value (GPU sets this for us) you can read about here:
+    //https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
+	 input.n = isFrontFacing ? input.n : -input.n;
+
 
 	//we need to support diffuse masps for nodes like Display.BySurfaceColors which use diffuse maps
 	//instead of vertex colors.
