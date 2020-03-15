@@ -400,5 +400,10 @@ namespace Dynamo.UI.Controls
 
             completionWindow.Show();
         }
+
+        internal void Dispose()
+        {
+            this.dynamoViewModel.PropertyChanged -= OnDynamoViewModelPropertyChanged;
+        }
     }
 }
