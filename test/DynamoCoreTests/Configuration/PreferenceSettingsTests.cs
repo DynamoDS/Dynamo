@@ -50,16 +50,16 @@ namespace Dynamo.Tests.Configuration
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             // Force initial state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings initialSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
             
-            initalSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
+            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
 
-            initalSetting.Save(tempPath);
+            initialSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"),
-                initalSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"));
+                initialSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"));
         }
 
         [Test]
@@ -70,12 +70,12 @@ namespace Dynamo.Tests.Configuration
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             // Force initial state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings initialSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            Assert.AreEqual(initalSetting.ShowCodeBlockLineNumber, true);
+            Assert.AreEqual(initialSetting.ShowCodeBlockLineNumber, true);
 
-            initalSetting.Save(tempPath);
+            initialSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, true);
@@ -95,16 +95,16 @@ namespace Dynamo.Tests.Configuration
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
             // Force initial state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            PreferenceSettings initialSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
+            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
 
-            initalSetting.Save(tempPath);
+            initialSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.MaxNumRecentFiles,
-                initalSetting.MaxNumRecentFiles);
+                initialSetting.MaxNumRecentFiles);
         }
     }
 }
