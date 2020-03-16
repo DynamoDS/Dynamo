@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace String
 {
@@ -21,6 +22,12 @@ namespace String
         public static string ToLower(string str)
         {
             return str.ToLower();
+        }
+
+        public static string ToTitle(string str)
+        {
+            TextInfo tt = CultureInfo.CurrentCulture.TextInfo;
+            return tt.ToTitleCase(str);
         }
 
         public static double ToNumber(string str)
