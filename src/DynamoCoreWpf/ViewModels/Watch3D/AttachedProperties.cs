@@ -328,9 +328,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="args"></param>
         private static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
         {
-            if ((meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore) != null)
+            var meshCore = meshGeom?.SceneNode?.RenderCore as DynamoGeometryMeshCore;
+            if (meshCore != null)
             {
-                (meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore).SetPropertyData(args);
+                meshCore.SetPropertyData(args);
             }
         }
 
