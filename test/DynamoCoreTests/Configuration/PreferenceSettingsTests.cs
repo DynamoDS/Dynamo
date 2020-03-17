@@ -49,17 +49,42 @@ namespace Dynamo.Tests.Configuration
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
-            // Force inital state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            // Force initial state
+            PreferenceSettings initialSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
             
-            initalSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
+            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
 
-            initalSetting.Save(tempPath);
+            initialSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"),
-                initalSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"));
+                initialSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSetDisplayCBNLineNumber()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "userPreference.xml");
+
+            // Force initial state
+            PreferenceSettings initialSetting = new PreferenceSettings();
+            PreferenceSettings resultSetting;
+
+            Assert.AreEqual(initialSetting.ShowCodeBlockLineNumber, true);
+
+            initialSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, true);
+
+            resultSetting.ShowCodeBlockLineNumber = false;
+            resultSetting.Save(tempPath);
+            resultSetting = PreferenceSettings.Load(tempPath);
+
+            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, false);
         }
 
         [Test]
@@ -69,17 +94,17 @@ namespace Dynamo.Tests.Configuration
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
-            // Force inital state
-            PreferenceSettings initalSetting = new PreferenceSettings();
+            // Force initial state
+            PreferenceSettings initialSetting = new PreferenceSettings();
             PreferenceSettings resultSetting;
 
-            initalSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
+            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
 
-            initalSetting.Save(tempPath);
+            initialSetting.Save(tempPath);
             resultSetting = PreferenceSettings.Load(tempPath);
 
             Assert.AreEqual(resultSetting.MaxNumRecentFiles,
-                initalSetting.MaxNumRecentFiles);
+                initialSetting.MaxNumRecentFiles);
         }
     }
 }

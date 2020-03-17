@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,8 +51,9 @@ namespace Dynamo.UI.Controls
 
             nodeView.Unloaded += (obj, args) => IsDisposed = true;
             this.nodeViewModel = nodeView.ViewModel;
-            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
+            this.dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             this.InnerTextEditor.TextChanged += OnTextChanged;
             this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
@@ -186,7 +188,15 @@ namespace Dynamo.UI.Controls
             if (WatermarkLabel.Visibility == Visibility.Visible)
             {
                 WatermarkLabel.Visibility = Visibility.Collapsed;
-                InnerTextEditor.ShowLineNumbers = true;
+                this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.ShowCodeBlockLineNumber;
+            }
+        }
+
+        private void OnDynamoViewModelPropertyChanged(object sender, EventArgs e)
+        {
+            if((e as PropertyChangedEventArgs).PropertyName == nameof(dynamoViewModel.ShowCodeBlockLineNumber))
+            {
+                this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.ShowCodeBlockLineNumber;
             }
         }
 
@@ -389,6 +399,11 @@ namespace Dynamo.UI.Controls
             };
 
             completionWindow.Show();
+        }
+
+        internal void Dispose()
+        {
+            this.dynamoViewModel.PropertyChanged -= OnDynamoViewModelPropertyChanged;
         }
     }
 }

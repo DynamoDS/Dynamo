@@ -275,6 +275,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if line numbers should be displayed on code block nodes.
+        /// </summary>
+        public bool ShowCodeBlockLineNumber
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowCodeBlockLineNumber;
+            }
+            set
+            {
+                model.PreferenceSettings.ShowCodeBlockLineNumber = value;
+                RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
+
+        /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
         /// </summary>
