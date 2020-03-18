@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         // handles determining color of elementGeometry3Ds when any property is set false
         // as the state of other properties must be checked to determine the correct color / material.
-        private static void OnPoint_Line_PropertySetFalse(DependencyObject obj)
+        private static void OnPointOrLinePropertySetFalse(DependencyObject obj)
         {
             if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
             {
@@ -119,7 +119,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
