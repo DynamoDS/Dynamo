@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using CoreNodeModels.Input;
@@ -20,7 +17,6 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
-using Dynamo.Selection;
 using Dynamo.Tests;
 using Dynamo.UI;
 using Dynamo.Utilities;
@@ -367,7 +363,7 @@ namespace WpfVisualizationTests
 
             Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
             //should have 2 entires, one for each point node.
-            Assert.AreEqual(2,(ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+            Assert.AreEqual(2, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
             //remove one of the points and assert cache has one less key
             var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
             var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
@@ -756,13 +752,11 @@ namespace WpfVisualizationTests
             Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            //assert the material is the default material
-            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.WhiteMaterial);
-            // Freeze the ByGeometryColor node making the corresponding object have a frozen material.
+            Assert.IsFalse((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
+            // Freeze the ByGeometryColor node and check the frozen flag.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.IsTrue(dynGeometry.FirstOrDefault().Material == HelixWatch3DViewModel.FrozenMaterial);
-
+            Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
         }
 
         [Test]
@@ -874,9 +868,10 @@ namespace WpfVisualizationTests
             var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
 
             // Selcting a sphere object 70 different times to render new labels again. 
-            for (int i = 0; i < 30; i++) {
+            for (int i = 0; i < 30; i++)
+            {
 
-                var itemIndex = i % 10; 
+                var itemIndex = i % 10;
                 var treeViewItem = parentTreeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(itemIndex);
 
                 View.Dispatcher.Invoke(() =>
@@ -891,7 +886,7 @@ namespace WpfVisualizationTests
 
                 var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
                 Assert.AreEqual(1, geometry.TextInfo.Count);
-                Assert.AreEqual("["+ itemIndex  +"]", geometry.TextInfo[0].Text);
+                Assert.AreEqual("[" + itemIndex + "]", geometry.TextInfo[0].Text);
             }
             System.DateTime endTime = System.DateTime.Now;
             var totalExecutionTime = (endTime - startTime).TotalSeconds;
@@ -909,13 +904,12 @@ namespace WpfVisualizationTests
 
             // These checks are more specific to this test
             // Expecting 6 color definitions for vertices in the DynamoGeometry
-
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(6, numberOfColors);
             //decompress the texture to get the width
             var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
-            Assert.AreEqual(52,width) ;
+            Assert.AreEqual(52, width);
         }
 
         [Test]
@@ -1203,8 +1197,8 @@ namespace WpfVisualizationTests
             {
                 HelixWatch3DViewModel.DefaultAxesName,
                 HelixWatch3DViewModel.DefaultGridName,
-                HelixWatch3DViewModel.DefaultLightName,
                 HelixWatch3DViewModel.HeadLightName,
+                HelixWatch3DViewModel.DefaultLightName
             };
 
         public static int TotalPoints(this IEnumerable<Element3D> dictionary)

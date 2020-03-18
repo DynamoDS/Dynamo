@@ -2,56 +2,81 @@
 using HelixToolkit.Wpf.SharpDX.Shaders;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using System;
+using System.IO;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
+
     /// <summary>
-    /// The DynamoEffectsManager is loads Effects
+    /// The DynamoEffectsManager loads shaders
     /// from shader byte code, and defines data layouts for rendering. 
     /// By extending the DefaultEffectsManager, the DynamoEffectsManager 
     /// makes available effects like Blinn rendering, and adds custom
-    /// Dynamo rendering effects for points, lines, and meshes.
-    /// For more information on DirectX Effects, see 
-    /// https://msdn.microsoft.com/en-us/library/windows/desktop/ff476136(v=vs.85).aspx
+    /// Dynamo rendering shaders for meshes.
+    /// For an intro to dx vertex and fragment shaders see 
+    /// https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-shaders-and-shader-resources
     /// </summary>
     public class DynamoEffectsManager : DefaultEffectsManager
     {
+        internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";
+
         public DynamoEffectsManager() : base() {
             AddDynamoTechniques();
         }
 
-        
+        internal class DynamoMeshRenderVertexShaderDescription
+        {
+            
+            public static byte[] VSMeshDataSamplerByteCode
+            {
+                get
+                {
+                    return Dynamo.Wpf.Properties.Resources.vsDynamoMesh;
+                }
+            }
+
+            public static ShaderDescription  VertexShaderDynamoMeshDescription = new ShaderDescription(nameof(VertexShaderDynamoMeshDescription), ShaderStage.Vertex,
+          new ShaderReflector(), VSMeshDataSamplerByteCode);
+        }
+
+        internal class DynamoMeshRenderPixelShaderDescription
+        {
+            public static byte[] PSMeshDataSamplerByteCode
+            {
+                get
+                {
+                    return Dynamo.Wpf.Properties.Resources.psDynamoMesh;
+                }
+            }
+
+            public static ShaderDescription PixelShaderDynamoMeshDescription = new ShaderDescription(nameof(PixelShaderDynamoMeshDescription), ShaderStage.Pixel,
+          new ShaderReflector(), PSMeshDataSamplerByteCode);
+        }
+
+
         protected void AddDynamoTechniques()
         {
-            var custom = new TechniqueDescription("RenderCustom")
+            var dynamoCustomMeshTech = new TechniqueDescription(DynamoMeshShaderName)
             {
-                InputLayoutDescription = new InputLayoutDescription(DefaultVSShaderByteCodes.VSMeshDefault, DefaultInputLayout.VSInput),
+
+                InputLayoutDescription = new InputLayoutDescription(DynamoMeshRenderVertexShaderDescription.VSMeshDataSamplerByteCode, DefaultInputLayout.VSInput),
                 PassDescriptions = new[]
                 {
                     new ShaderPassDescription(DefaultPassNames.Default)
                     {
-                        ShaderList = new[]
+                        ShaderList = new ShaderDescription[]
                         {
-                            DefaultVSShaderDescriptions.VSMeshDefault,
-                            DefaultPSShaderDescriptions.PSMeshBlinnPhong
+                            DynamoMeshRenderVertexShaderDescription.VertexShaderDynamoMeshDescription,
+                            DynamoMeshRenderPixelShaderDescription.PixelShaderDynamoMeshDescription,
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
                     },
-                    new ShaderPassDescription(DefaultPassNames.Wireframe)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshWireframe,
-                            DefaultPSShaderDescriptions.PSMeshWireframe
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
-                    }
                 }
             };
 
-            AddTechnique(custom);
+            AddTechnique(dynamoCustomMeshTech);
         }
     }
 }
