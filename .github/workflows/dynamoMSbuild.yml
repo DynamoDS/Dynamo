@@ -22,16 +22,15 @@ jobs:
         cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
     # look for Dynamo
-    # - name: Find Dynamo
-    #   run: |
-    #     cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
-    #     ls
+    - name: Navigate to Dynamo Folder
+      run: |
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+    #    ls
     - name: Check Dynamo Sandbox existence
       id: check_files
       uses: andstor/file-existence-action@v1
       with:
-        files: "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug\DynamoSandbox.exe"
-
+        files: "DynamoSandbox.exe"
     - name: File exists
       if: steps.check_files.outputs.files_exists == 'true'
       # Only runs if DynamoSandbox exists
