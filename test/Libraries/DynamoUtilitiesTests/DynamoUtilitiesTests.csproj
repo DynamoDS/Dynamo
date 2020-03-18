@@ -55,6 +55,7 @@
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="CertificateVerificationTests.cs" />
     <Compile Include="DataMarshalerTests.cs" />
     <Compile Include="ProductLookUpTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -258,7 +258,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Labels.dyn");
 
             // check all the nodes and connectors are loaded
-            Assert.AreEqual(2, model.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(3, model.CurrentWorkspace.Nodes.Count());
 
             //before we run the expression, confirm that all nodes
             //have label display set to false - the default
@@ -721,27 +721,117 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Display_FrozenNode_HasTransparentMesh()
+        {
+            OpenVisualizationTest("Display.ByGeometryColor.dyn");
+            RunCurrentModel();
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
+            Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
+            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
+            DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
+            Assert.AreEqual(0.5, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
+        }
+
+        [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             RunCurrentModel();
 
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
+
+            // These checks are more specific to this test
+            // Expecting 36 color definitions for vertices in the Dynamo Geometry
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
+            var numberOfColors = dynGeometry.Geometry.Colors.Count;
+            Assert.AreEqual(36, numberOfColors);
+
+            // Expecting they are all the same solid color assigning as a result 
+            //  of DesignScript "Color.ByARGB(255,255,0,255);"
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Alpha == 1));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Red == 1));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Green == 0));
+            Assert.AreEqual(true, dynGeometry.Geometry.Colors.All(color => color.Blue == 1));
+        }
+       
+        [Test]
+        public void Display_Geometry_Labels()
+        {
+            OpenVisualizationTest("Labels.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            
+            RunCurrentModel();
+
+            // This is the node, for which we would display the Labels in the preview geometry. 
+            var codeBlockGUID = "fdec3b9b-56ae-4d01-85c2-47b8425e3130";
+            NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
+
+            // The Key to identify the Label's geometry object from Model3DDictionary.
+            var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
+
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            // By default the DisplayLabels for the code block node is set to false, 
+            // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
+            var geometryHasLabels = helix.Model3DDictionary.ContainsKey(labelKey); 
+            Assert.IsFalse(geometryHasLabels);
+
+            // We set the DisplayLabels to true to view the Labels in the preview geometry.
+            codeBlockNodeModel.DisplayLabels = true;
+
+            // Now the Labels are shown in the preview geometry. 
+            // The code block node has 64 points, so there should be 64 labels. 
+            var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
+
+            // Clicking on a single value from the output of the watch node
+            // should show only one label corresponding to that value.  
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
+            var treeViewItem = nodeView.ChildOfType<TreeViewItem>();
+
+            var indexes = new[] { 0, 0, 1 };
+            foreach (var index in indexes)
+            {
+                treeViewItem = treeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(index);
+            }
+
+            View.Dispatcher.Invoke(() =>
+            {
+                treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                {
+                    RoutedEvent = Mouse.MouseUpEvent
+                });
+            });
+
+            DispatcherUtil.DoEvents();
+
+            // The value selected is x:0, y:0 and z:1, 
+            // so the label that is shown should be [0,0,1].
+            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.AreEqual(1, geometry.TextInfo.Count);
+            Assert.AreEqual("[0,0,1]", geometry.TextInfo[0].Text);
         }
 
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
-
-            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
-
             RunCurrentModel();
 
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
+
+            // These checks are more specific to this test
+            // Expecting 6 color definitions for vertices in the DynamoGeometry
+            var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
+            var numberOfColors = dynGeometry.Geometry.Colors.Count;
+            Assert.AreEqual(6, numberOfColors);
+            Assert.AreEqual(52, ((PhongMaterial)dynGeometry.Material).DiffuseMap.Width);
         }
 
         [Test]
@@ -772,7 +862,7 @@ namespace WpfVisualizationTests
             {
                 true, false, true, true
             }));
-            // Ensure that visulations match our expectations
+            // Ensure that visualizations match our expectations
             Assert.AreEqual(2, BackgroundPreviewGeometry.TotalPoints());
 
             // Now turn off the preview of all the nodes
