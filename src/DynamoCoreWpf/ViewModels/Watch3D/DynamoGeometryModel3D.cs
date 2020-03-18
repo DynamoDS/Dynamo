@@ -49,6 +49,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         FlatShade = 64
     }
 
+    /// <summary>
+    /// A low level (non wpf) object which can be rendered. 
+    /// This class handles actually updating the scene and shaders. Updates to the properties on this class invalidate
+    /// the renderer and pass new data to the shader.
+    /// This class can override callbacks that occur during low level rendering updates. The only one we use currently is
+    /// OnUpdatePerModelStruct() to modify the per model data that is passed to our shader.
+    /// </summary>
     internal class DynamoGeometryMeshCore : MeshRenderCore
     {
 
@@ -80,7 +87,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private bool hasTransparencyData;
         /// <summary>
-        /// Does this model have alpha < 255.
+        /// Does this model have alpha less than 255.
         /// </summary>
         public bool HasTransparencyData { get => hasTransparencyData; internal set { SetAffectsRender(ref hasTransparencyData, value); } }
 
@@ -183,8 +190,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override SceneNode OnCreateSceneNode()
         {
-            var node = new DynamoMeshNode();
-            return node;
+            return new DynamoMeshNode();
         }
 
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
@@ -196,6 +202,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             ((obj as GeometryModel3D).SceneNode.RenderCore as DynamoGeometryMeshCore).SetPropertyData(e);
         }
 
+        /// <summary>
+        /// Does this model require displaying vertex colors.
+        /// </summary>
         public bool RequiresPerVertexColoration
         {
             get
@@ -223,7 +232,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
-            return host.EffectsManager[DynamoCustomShaderNames.DynamoCustomMeshShader];
+            return host.EffectsManager[DynamoEffectsManager.DynamoMeshShaderName];
         }
     }
 }

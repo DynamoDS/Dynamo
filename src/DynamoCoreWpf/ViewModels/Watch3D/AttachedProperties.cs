@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         // handles determining color of elementGeometry3Ds when any property is set false
         // as the state of other properties must be checked to determine the correct color / material.
-        private static void OnPoint_Line_PropertySetFalse(DependencyObject obj)
+        private static void OnPointOrLinePropertySetFalse(DependencyObject obj)
         {
             if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
             {
@@ -119,7 +119,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
@@ -263,7 +263,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
                 else
                 {
-                    OnPoint_Line_PropertySetFalse(geom);
+                    OnPointOrLinePropertySetFalse(geom);
                 }
             }
         }
@@ -328,9 +328,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="args"></param>
         private static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
         {
-            if ((meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore) != null)
+            var meshCore = meshGeom?.SceneNode?.RenderCore as DynamoGeometryMeshCore;
+            if (meshCore != null)
             {
-                (meshGeom.SceneNode.RenderCore as DynamoGeometryMeshCore).SetPropertyData(args);
+                meshCore.SetPropertyData(args);
             }
         }
 
