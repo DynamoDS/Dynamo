@@ -141,30 +141,33 @@ namespace DSCPython
                     outputMarshaler.RegisterMarshaler(
                         delegate (PyObject pyObj)
                         {
-                            return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
-                        });
-                    outputMarshaler.RegisterMarshaler(
-                        delegate (PyList pyList)
-                        {
-                            var list = new List<object>();
-                            foreach (PyObject item in pyList)
+                            if (PyList.IsListType(pyObj))
                             {
-                                list.Add(outputMarshaler.Marshal(item));
+                                var pyList = new PyList(pyObj);
+                                var list = new List<object>();
+                                foreach (PyObject item in pyList)
+                                {
+                                    list.Add(outputMarshaler.Marshal(item));
+                                }
+                                return list;
                             }
-                            return list;
-                        });
-                    outputMarshaler.RegisterMarshaler(
-                        delegate (PyDict pyDict)
-                        {
-                            var dict = new Dictionary<object, object>();
-                            foreach (PyObject item in pyDict.Items())
+                            else if (PyDict.IsDictType(pyObj))
                             {
-                                dict.Add(
-                                    outputMarshaler.Marshal(item.GetItem(0)),
-                                    outputMarshaler.Marshal(item.GetItem(1))
+                                var pyDict = new PyDict(pyObj);
+                                var dict = new Dictionary<object, object>();
+                                foreach (PyObject item in pyDict.Items())
+                                {
+                                    dict.Add(
+                                        outputMarshaler.Marshal(item.GetItem(0)),
+                                        outputMarshaler.Marshal(item.GetItem(1))
                                     );
+                                }
+                                return dict;
                             }
-                            return dict;
+                            else
+                            {
+                                return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
+                            }
                         });
                 }
                 return outputMarshaler;
