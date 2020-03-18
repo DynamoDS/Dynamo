@@ -1,5 +1,5 @@
 # Build Dynamo using latest VS and DotNET
-name: Dynamo-Build
+name: Dynamo-VS2019Build
 on: [push]
 jobs:
  build:
