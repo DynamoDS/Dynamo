@@ -25,7 +25,7 @@ jobs:
     - name: Navigate to Dynamo Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
-    #    ls
+        ls
     - name: Check Dynamo Sandbox existence
       id: check_files
       uses: andstor/file-existence-action@v1
