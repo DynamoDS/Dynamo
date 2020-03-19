@@ -22,6 +22,6 @@ jobs:
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
-        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debu"
         echo "***Locating DynamoSandbox!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
