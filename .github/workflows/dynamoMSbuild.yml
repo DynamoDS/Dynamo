@@ -16,8 +16,6 @@ jobs:
       run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
     - name: Build Dynamo with MSBuild
       run: |
-        echo "***Execute ls, and you should see two folders created***"
-        ls
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
            .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
@@ -25,14 +23,5 @@ jobs:
     - name: Navigate to Dynamo Folder
       run: |
         cd "$Env:GITHUB_WORKSPACE\Dynamo\bin\AnyCPU\Debug"
+        echo "***Locating DynamoSandbox!***"
         test ".\DynamoSandbox.exe" && echo "DynamoSandbox exists!"
-        ls
-    - name: Check Dynamo Sandbox existence
-      id: check_files
-      uses: andstor/file-existence-action@v1
-      with:
-        files: "DynamoSandbox.exe"
-    - name: File exists
-      if: steps.check_files.outputs.files_exists == 'true'
-      # Only runs if DynamoSandbox exists
-      run: echo "DynamoSandbox exists!"

@@ -74,7 +74,7 @@ namespace Dynamo.Models
             IsVisibleInDynamoLibrary = isVisibleInDynamoLibrary;
             Version = version;
             RunType = runType;
-            RunPeriod = runPeriod
+            RunPeriod = runPeriod;
         }
 
         public static DynamoPreferencesData Default()
