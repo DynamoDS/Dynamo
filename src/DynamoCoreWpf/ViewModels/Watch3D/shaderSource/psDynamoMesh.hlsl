@@ -69,7 +69,7 @@ float4 main(PSInputCustom input, bool isFrontFacing : SV_IsFrontFace) : SV_Targe
     //https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
 	 input.n = isFrontFacing ? input.n : -input.n;
 
-	 // if this is a special render package - it render with the material colors, ambient light
+	 // if this is a special render package - it should render with the material colors, ambient light
 	 // and not be directionally lit.
 	 if (isSpecialRenderPackage) {
 		 return vMaterialDiffuse + vMaterialEmissive + vMaterialAmbient * vLightAmbient;
