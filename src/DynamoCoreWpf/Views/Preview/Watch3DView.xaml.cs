@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
@@ -126,72 +125,16 @@ namespace Dynamo.Controls
                 ViewModel.OnViewMouseMove(sender, args);
             };
 
-            //watch_view.CameraCore.PropertyChanged += (sender, args) =>
-            //{
-            //    if (args.PropertyName == nameof(watch_view.CameraCore.Position))
-            //    {
-            //        args.Source = view.GetCameraPosition();
-            //        ViewModel.OnViewCameraChanged(watch_view, )
-            //    }
-            //}
-
-            // Throttling: Fluid, but you can actually see the arrows move.
-            //watch_view.CameraChanged += (sender, args) =>
-            //{
-            //    if (throttle == null || throttle.IsCompleted)
-            //    {
-            //        throttle = Task.Delay(TimeSpan.FromMilliseconds(1)).ContinueWith(_ =>
-            //        {
-            //            Dispatcher.Invoke(() =>
-            //            {
-            //                var view = sender as Viewport3DX;
-            //                if (view != null)
-            //                {
-            //                    args.Source = view.GetCameraPosition();
-            //                }
-            //                ViewModel.OnViewCameraChanged(watch_view, args);
-            //            });
-            //        });
-            //    }
-            //};
-
-            // Throttling 2: Same issues here.
-            //watch_view.CameraChanged += (sender, args) =>
-            //{
-            //    if (DateTime.Now - lastCameraUpdate > cameraChangedThrottleTime)
-            //    {
-            //        var view = sender as Viewport3DX;
-            //        if (view != null)
-            //        {
-            //            args.Source = view.GetCameraPosition();
-            //        }
-            //        ViewModel.OnViewCameraChanged(watch_view, args);
-            //        lastCameraUpdate = DateTime.Now;
-            //    }
-            //};
-
-            // Limit update to position change only: Still shows up choppy.
             watch_view.CameraChanged += (sender, args) =>
             {
                 var view = sender as Viewport3DX;
-                var sameCameraPosition = false;
                 if (view != null)
                 {
                     args.Source = view.GetCameraPosition();
-                    sameCameraPosition = view.GetCameraPosition() == lastCameraPosition;
-                    lastCameraPosition = view.GetCameraPosition();
                 }
-                if (!sameCameraPosition)
-                {
-                    ViewModel.OnViewCameraChanged(sender, args);
-                }
+                ViewModel.OnViewCameraChanged(sender, args);
             };
         }
-
-        private TimeSpan cameraChangedThrottleTime = new TimeSpan(100000);
-        private DateTime lastCameraUpdate = DateTime.Now;
-        private Point3D lastCameraPosition;
-        private Task throttle;
 
         private void UnRegisterViewEventHandlers()
         {
