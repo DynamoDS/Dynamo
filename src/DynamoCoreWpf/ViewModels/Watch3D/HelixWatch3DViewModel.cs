@@ -150,7 +150,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private DirectionalLight3D directionalLight;
         private DirectionalLight3D headLight;
 
-        private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
+        private readonly Color4 directionalLightColor = new Color4(0.7f, 0.7f, 0.7f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
