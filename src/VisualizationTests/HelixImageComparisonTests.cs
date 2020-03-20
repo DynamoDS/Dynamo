@@ -1,4 +1,5 @@
 ﻿
+//UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
 //#define UPDATEIMAGEDATA
 
 using Dynamo.Graph.Nodes.ZeroTouch;
