@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using Dynamo.Graph;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Selection;
@@ -508,6 +509,25 @@ namespace WpfVisualizationTests
 
         #endregion
 
+        #region special renderpackages
+        [Test]
+        public void RenderCoreHasFlagsSetCorrectlyForSpecialRenderPackage()
+        {
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            var mockManipulator = new DynamoGeometryModel3D()
+            {
+                Transform = MatrixTransform3D.Identity,
+                Material = PhongMaterials.Red,
+                IsHitTestVisible = true,
+                RequiresPerVertexColoration = false,
+            };
+            Assert.False((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).IsSpecialRenderPackageData);
+            AttachedProperties.SetIsSpecialRenderPackage(mockManipulator, true);
+            //assert that setting this attached property updated the meshcore data.
+            Assert.IsTrue((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).IsSpecialRenderPackageData);
+          
+        }
+        #endregion
 
     }
 }

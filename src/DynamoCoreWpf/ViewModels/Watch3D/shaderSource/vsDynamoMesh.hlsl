@@ -16,7 +16,7 @@ PSInputCustom main(VSInput input)
         IsFrozen = 1,
         IsSelected = 2,
         IsIsolated = 4,
-        IsSpecialRenderPackage = 8, //not used
+        IsSpecialRenderPackage = 8,
         HasTransparency = 16, //not used
         RequiresPerVertexColoration = 32
         FlatShade =64 //not used

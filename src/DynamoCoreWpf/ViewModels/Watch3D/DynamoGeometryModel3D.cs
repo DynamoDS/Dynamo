@@ -32,7 +32,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         IsIsolated = 4,
         /// <summary>
-        /// Currently this flag is not used in the shader.
+        /// Used to mark a mesh as coming from a special or meta(gizmo) render package.
         /// </summary>
         IsSpecialRenderPackage = 8,
         /// <summary>

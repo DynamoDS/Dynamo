@@ -280,7 +280,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             "IsSpecialRenderPackage",
             typeof(bool),
             typeof(GeometryModel3D),
-            new PropertyMetadata(false));
+            new PropertyMetadata(false,IsSpecialRenderPackagePropertyChanged));
+
+        private static void IsSpecialRenderPackagePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs args)
+        {
+            //only need to handle special arrow meshes at this time.
+            var meshGeom = d as DynamoGeometryModel3D;
+            if (meshGeom != null)
+            {
+                HandleMeshPropertyChange(meshGeom, args);
+            }
+        }
 
         public static void SetIsSpecialRenderPackage(DependencyObject element, bool value)
         {

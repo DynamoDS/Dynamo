@@ -2062,7 +2062,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     Console.WriteLine(ex.StackTrace);
                 }
             }
-            //meshGeometry3D.Material = new VertColorMaterial();
 
             return meshGeometry3D;
         }
