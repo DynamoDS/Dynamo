@@ -64,44 +64,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <summary>
         /// Is this model Frozen.
         /// </summary>
-        public bool IsFrozenData { get => isFrozenData; internal set { SetAffectsRender(ref isFrozenData, value); } }
+        public bool IsFrozenData { get { return isFrozenData; } internal set { SetAffectsRender(ref isFrozenData, value); } }
 
         private bool isSelectedData;
 
         /// <summary>
         /// Is this model currently selected.
         /// </summary>
-        public bool IsSelectedData { get => isSelectedData; internal set { SetAffectsRender(ref isSelectedData, value); } }
+        public bool IsSelectedData { get { return isSelectedData; } internal set { SetAffectsRender(ref isSelectedData, value); } }
 
         private bool isIsolatedData;
         /// <summary>
         /// Is IsolationMode active.
         /// </summary>
-        public bool IsIsolatedData { get => isIsolatedData; internal set { SetAffectsRender(ref isIsolatedData, value); } }
+        public bool IsIsolatedData { get { return isIsolatedData; } internal set { SetAffectsRender(ref isIsolatedData, value); } }
 
         private bool isSpecialData;
         /// <summary>
         /// Is this model marked as a special render package.
         /// </summary>
-        public bool IsSpecialRenderPackageData { get => isSpecialData; internal set { SetAffectsRender(ref isSpecialData, value); } }
+        public bool IsSpecialRenderPackageData { get { return isSpecialData; } internal set { SetAffectsRender(ref isSpecialData, value); } }
 
         private bool hasTransparencyData;
         /// <summary>
         /// Does this model have alpha less than 255.
         /// </summary>
-        public bool HasTransparencyData { get => hasTransparencyData; internal set { SetAffectsRender(ref hasTransparencyData, value); } }
+        public bool HasTransparencyData { get { return hasTransparencyData; } internal set { SetAffectsRender(ref hasTransparencyData, value); } }
 
         private bool requiresPerVertexColor;
         /// <summary>
         /// Should this model display vertex colors.
         /// </summary>
-        public bool RequiresPerVertexColor { get => requiresPerVertexColor; internal set { SetAffectsRender(ref requiresPerVertexColor, value); } }
+        public bool RequiresPerVertexColor { get { return requiresPerVertexColor; } internal set { SetAffectsRender(ref requiresPerVertexColor, value); } }
 
         private bool isFlatShaded;
         /// <summary>
         /// Should this model disregard lighting calculations and display unlit texture or vertex colors.
         /// </summary>
-        public bool IsFlatShaded { get => isFlatShaded; internal set { SetAffectsRender(ref isFlatShaded, value); } }
+        public bool IsFlatShaded { get { return isFlatShaded; } internal set { SetAffectsRender(ref isFlatShaded, value); } }
 
         /// <summary>
         /// Generates an int that packs all enum flags into a single int.
