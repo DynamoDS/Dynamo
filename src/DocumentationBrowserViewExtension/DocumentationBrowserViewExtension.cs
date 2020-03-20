@@ -1,4 +1,5 @@
-﻿using Dynamo.DocumentationBrowser.Properties;
+﻿using Dynamo.Controls;
+using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -58,12 +59,18 @@ namespace Dynamo.DocumentationBrowser
             this.viewLoadedParams = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
-            this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
-            this.documentationBrowserMenuItem.Click += (sender, args) =>
+            this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
+            this.documentationBrowserMenuItem.Checked += (sender, args) =>
             {
                 AddToSidebar(true);
             };
+            this.documentationBrowserMenuItem.Unchecked += (sender, args) =>
+            {
+                viewLoadedParams.CloseExtensioninInSideBar(this);
+            };
             this.viewLoadedParams.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+
+            DynamoView.CloseExtension += OnCloseExtension;
 
             // subscribe to the documentation open request event from Dynamo
             this.viewLoadedParams.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
@@ -82,6 +89,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
+            DynamoView.CloseExtension -= OnCloseExtension;
             this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
 
             this.BrowserView?.Dispose();
@@ -109,6 +117,14 @@ namespace Dynamo.DocumentationBrowser
 
             // forward the event to the ViewModel to handle
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
+        }
+
+        private void OnCloseExtension(String extensionTabName)
+        {
+            if (extensionTabName.Equals(Name))
+            {
+                this.documentationBrowserMenuItem.IsChecked = false;
+            }
         }
 
         private void AddToSidebar(bool displayDefaultContent)
