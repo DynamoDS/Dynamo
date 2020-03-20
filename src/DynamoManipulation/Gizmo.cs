@@ -171,10 +171,17 @@ namespace Dynamo.Manipulation
 
         private void OnViewCameraChanged(object o, RoutedEventArgs routedEventArgs)
         {
-            cameraPosition = routedEventArgs.Source as Point3D?;
-
-            // Redraw Gizmos
-            Redraw();
+            var newCameraPosition = routedEventArgs.Source as Point3D?;
+            // A change of behavior in helix when upgrading from v2015 is that the CameraChanged event gets fired
+            // several times, once for each individual property of Camera that changed.
+            // In order to avoid rendering the Gizmo several times, which leads to choppy camera rotation, we limit the
+            // rendering of the Gizmo to only be done when the position of the camera changed.
+            if (cameraPosition != newCameraPosition)
+            {
+                cameraPosition = newCameraPosition;
+                // Redraw Gizmos
+                Redraw();
+            }
         }
 
         public abstract bool HitTest(Point source, Vector direction, out object hitObject);
