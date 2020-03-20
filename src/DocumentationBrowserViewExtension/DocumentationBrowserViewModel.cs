@@ -59,6 +59,9 @@ namespace Dynamo.DocumentationBrowser
         private void OnLinkChanged(Uri link) => this.LinkChanged?.Invoke(link);
 
         private bool showBrowser;
+        /// <summary>
+        /// Determines the whether the browser control should be displayed.
+        /// </summary>
         public bool ShowBrowser
         {
             get
