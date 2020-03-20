@@ -84,7 +84,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void ViewExtensionIgnoresExternalEventsByDefault()
+        public void ViewExtensionIgnoresExternalEvents()
         {
             // Arrange
             var externalEvent = new OpenDocumentationLinkEventArgs(new Uri(externalLink));
@@ -97,38 +97,8 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.IsTrue(externalEvent.IsRemoteResource);
-            Assert.IsFalse(viewExtension.AllowRemoteResources);
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(0, tabsAfterExternalEventTrigger);
-        }
-
-        [Test]
-        public void RemoteResourceEventDisplaysWarningBanner()
-        {
-            // Arrange
-            var externalEvent = new OpenDocumentationLinkEventArgs(new Uri(externalLink, UriKind.RelativeOrAbsolute));
-            var localEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.RelativeOrAbsolute));
-
-            // create a view extension that allows external events
-            var viewExtension = SetupNewViewExtension(true);
-            viewExtension.AllowRemoteResources = true;
-
-            // trigger local event first so the sidebar is opened
-            viewExtension.HandleRequestOpenDocumentationLink(localEvent);
-            Assert.IsFalse(viewExtension.ViewModel.IsRemoteResource);
-            var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
-
-            // Act
-            var visibilityBeforeEvent = docsView.RemoteLinkBanner.Visibility;
-            viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
-            var visibilityAfterEvent = docsView.RemoteLinkBanner.Visibility;
-
-            // Assert
-            Assert.IsTrue(externalEvent.IsRemoteResource);
-            Assert.IsTrue(viewExtension.AllowRemoteResources);
-            Assert.IsTrue(viewExtension.ViewModel.IsRemoteResource);
-            Assert.AreEqual(Visibility.Collapsed, visibilityBeforeEvent);
-            Assert.AreEqual(Visibility.Visible, visibilityAfterEvent);
         }
 
         [Test]

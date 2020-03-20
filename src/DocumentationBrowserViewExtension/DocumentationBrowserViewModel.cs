@@ -23,7 +23,6 @@ namespace Dynamo.DocumentationBrowser
         #region Properties
 
         private bool shouldLoadDefaultContent;
-        internal bool AllowRemoteResources;
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -106,26 +105,9 @@ namespace Dynamo.DocumentationBrowser
 
             this.IsRemoteResource = e.IsRemoteResource;
 
-            if (this.IsRemoteResource)
-                HandleRemoteResource(e);
-            else
+            // Ignore requests to remote resources
+            if (!this.IsRemoteResource)
                 HandleLocalResource(e);
-        }
-
-        /// <summary>
-        /// If the link is not pointing to a local file, but to a network or internet address
-        /// we treat it as a remote resource that can be loaded in the browser directly
-        /// </summary>
-        /// <param name="e">The event to handle.</param>
-        private void HandleRemoteResource(OpenDocumentationLinkEventArgs e)
-        {
-            // respect the remote resource loading setting and bail if not allowed
-            // technically this is never called at the minute as the extension filters out these events,
-            // but code is here for when remote resources will be enabled
-            if (!this.AllowRemoteResources) return;
-
-            this.Link = e.Link;
-            return;
         }
 
         /// <summary>

@@ -29,36 +29,10 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
-        private bool allowRemoteResources;
-        /// <summary>
-        /// Setting to allow or disallow the documentation browser to load remote resources
-        /// such as web addresses or files from network shares. Defaults to false.
-        /// </summary>
-        public bool AllowRemoteResources
-        {
-            get
-            {
-                return this.allowRemoteResources;
-            }
-            set
-            {
-                this.allowRemoteResources = value;
-                this.ViewModel.AllowRemoteResources = value;
-            }
-        }
-
         public DocumentationBrowserViewExtension()
         {
-            // defaults to false for security considerations
-            // mechanisms to expose a setting in Dynamo or in the menu could be added 
-            // and the extension could respect those settings by setting this property
-            this.allowRemoteResources = false;
-
             // initialise the ViewModel and View for the window
-            this.ViewModel = new DocumentationBrowserViewModel()
-            {
-                AllowRemoteResources = this.AllowRemoteResources
-            };
+            this.ViewModel = new DocumentationBrowserViewModel();
             this.BrowserView = new DocumentationBrowserView(this.ViewModel);
         }
 
@@ -125,8 +99,8 @@ namespace Dynamo.DocumentationBrowser
         {
             if (args == null) return;
 
-            // if disallowed, ignore events targeting remote resources so the sidebar is not displayed
-            if (args.IsRemoteResource && !this.AllowRemoteResources)
+            // ignore events targeting remote resources so the sidebar is not displayed
+            if (args.IsRemoteResource)
                 return;
 
             // make sure the view is added to the Sidebar

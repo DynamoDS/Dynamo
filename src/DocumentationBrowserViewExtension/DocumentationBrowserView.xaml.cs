@@ -31,12 +31,6 @@ namespace Dynamo.DocumentationBrowser
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.Navigating += ShouldAllowNavigation;
-            this.documentationBrowser.Navigated += NavigationCompleted;
-        }
-
-        private void NavigationCompleted(object sender, NavigationEventArgs e)
-        {
-            // do something here ?
         }
 
         /// <summary>
@@ -48,7 +42,10 @@ namespace Dynamo.DocumentationBrowser
         {
             // do not allow refreshes, back or forward navigation
             if (e.NavigationMode != NavigationMode.New)
+            {
+                e.Cancel = true;
                 return;
+            }
 
             // we never set the uri if navigating to a local document, so safe to navigate
             if (e.Uri == null)
@@ -76,14 +73,6 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            if (this.viewModel.IsRemoteResource)
-            {
-                this.RemoteLinkBanner.Visibility = Visibility.Visible;
-                this.documentationBrowser.Navigate(link);
-                return;
-            }
-
-            this.RemoteLinkBanner.Visibility = Visibility.Collapsed;
             this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
         }
 
@@ -94,7 +83,6 @@ namespace Dynamo.DocumentationBrowser
         {
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            this.documentationBrowser.Navigated -= NavigationCompleted;
             this.documentationBrowser.Dispose();
         }
     }
