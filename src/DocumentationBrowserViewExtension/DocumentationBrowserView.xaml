@@ -9,13 +9,19 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         
              mc:Ignorable="d" 
-            HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
              Height="auto"
-             Width="auto"
-             >
-    <Grid Name="MainGrid" Background= "#353535"
-          >
+             Width="auto">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Name="MainGrid" Background= "#353535">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -25,7 +31,8 @@
         <WebBrowser 
             Name="documentationBrowser"
             Grid.Row="0"
-            HorizontalAlignment="Stretch" />
+            HorizontalAlignment="Stretch"
+            Visibility="{Binding Path=ShowBrowser,Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
         <!-- Remote Link Warning Banner -->
         <DockPanel Name="RemoteLinkBanner" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Stretch" Visibility="Collapsed">

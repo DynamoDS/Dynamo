@@ -52,11 +52,28 @@ namespace Dynamo.DocumentationBrowser
             get { return this.isRemoteResource; }
             set { this.isRemoteResource = value; RaisePropertyChanged(nameof(this.IsRemoteResource)); }
         }
-        public bool isRemoteResource;
+        private bool isRemoteResource;
 
 
         internal Action<Uri> LinkChanged;
         private void OnLinkChanged(Uri link) => this.LinkChanged?.Invoke(link);
+
+        private bool showBrowser;
+        public bool ShowBrowser
+        {
+            get
+            {
+                return showBrowser;
+            }
+            set
+            {
+                if (showBrowser != value)
+                {
+                    showBrowser = value;
+                    RaisePropertyChanged(nameof(ShowBrowser));
+                }
+            }
+        }
 
         #endregion
 
@@ -81,7 +98,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
-            if (e is null)
+            if (e == null)
                 NavigateToNoContentPage();
 
             this.IsRemoteResource = e.IsRemoteResource;
@@ -171,7 +188,9 @@ namespace Dynamo.DocumentationBrowser
         internal void EnsurePageHasContent()
         {
             if (this.shouldLoadDefaultContent || !this.HasContent)
+            {
                 NavigateToNoContentPage();
+            }
         }
 
         private void UpdateLinkSafely(string link)
@@ -261,7 +280,7 @@ namespace Dynamo.DocumentationBrowser
         /// <returns>An absolute path to a local file, as a string.</returns>
         private static string ResolveFilePath(Uri link)
         {
-            if (link is null)
+            if (link == null)
                 throw new FileNotFoundException();
 
             var address = link.ToString();

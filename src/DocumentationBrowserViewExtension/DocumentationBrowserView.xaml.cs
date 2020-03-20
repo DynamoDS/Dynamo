@@ -88,19 +88,6 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
-        /// Toggle the display of the embedded browser.
-        /// </summary>
-        /// <param name="show">True to show browser, false to hide it.</param>
-        internal void DisplayBrowser(bool show)
-        {
-            var visibility = show == true ? Visibility.Hidden : Visibility.Visible;
-            var shouldUpdateVisibility = this.documentationBrowser != null && this.documentationBrowser.Visibility != visibility;
-
-            if (shouldUpdateVisibility)
-                this.documentationBrowser.Visibility = visibility;
-        }
-
-        /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
         public void Dispose()

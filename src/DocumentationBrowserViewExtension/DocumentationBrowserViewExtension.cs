@@ -36,7 +36,10 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         public bool AllowRemoteResources
         {
-            get => this.allowRemoteResources;
+            get
+            {
+                return this.allowRemoteResources;
+            }
             set
             {
                 this.allowRemoteResources = value;
@@ -76,13 +79,15 @@ namespace Dynamo.DocumentationBrowser
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            this.viewLoadedParams = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
+            if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
+
+            this.viewLoadedParams = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText };
             this.documentationBrowserMenuItem.Click += (sender, args) =>
             {
-                AddToSidebar();
+                AddToSidebar(true);
             };
             this.viewLoadedParams.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
 
@@ -118,7 +123,7 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="args">The incoming event data.</param>
         public void HandleRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs args)
         {
-            if (args is null) return;
+            if (args == null) return;
 
             // if disallowed, ignore events targeting remote resources so the sidebar is not displayed
             if (args.IsRemoteResource && !this.AllowRemoteResources)
@@ -126,25 +131,27 @@ namespace Dynamo.DocumentationBrowser
 
             // make sure the view is added to the Sidebar
             // this also forces the Sidebar to open
-            AddToSidebar();
+            AddToSidebar(false);
 
             // forward the event to the ViewModel to handle
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
         }
 
-        private void AddToSidebar()
+        private void AddToSidebar(bool displayDefaultContent)
         {
             // verify the browser window has been initialised
-            if (this.BrowserView is null)
+            if (this.BrowserView == null)
             {
                 OnMessageLogged(LogMessage.Error(Resources.BrowserViewCannotBeAddedToSidebar));
                 return;
             }
 
-
             // make sure the documentation window is not empty before displaying it
             // we have to do this here because we cannot detect when the sidebar is displayed
-            this.ViewModel?.EnsurePageHasContent();
+            if (displayDefaultContent)
+            {
+                this.ViewModel?.EnsurePageHasContent();
+            }
 
             this.viewLoadedParams?.AddToExtensionsSideBar(this, this.BrowserView);
         }
@@ -157,7 +164,7 @@ namespace Dynamo.DocumentationBrowser
 
             if (dynamoViewModel != null && e.PropertyName == nameof(DynamoViewModel.ShowStartPage))
             {
-                this.BrowserView?.DisplayBrowser(dynamoViewModel.ShowStartPage);
+                ViewModel.ShowBrowser = !dynamoViewModel.ShowStartPage;
             }
         }
     }

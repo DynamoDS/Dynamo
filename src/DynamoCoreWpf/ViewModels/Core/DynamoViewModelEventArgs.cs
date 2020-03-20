@@ -147,7 +147,9 @@ namespace Dynamo.ViewModels
 
         public OpenDocumentationLinkEventArgs(Uri link)
         {
-            Link = link ?? throw new ArgumentNullException(nameof(link));
+            if (link == null) throw new ArgumentNullException(nameof(link));
+
+            Link = link;
             IsRemoteResource = link.IsAbsoluteUri && !link.IsFile;
         }
     }
