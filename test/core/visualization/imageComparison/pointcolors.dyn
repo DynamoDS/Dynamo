@@ -557,7 +557,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "Code Block",
+        "Name": "regularpoints",
         "Id": "777fb08ff9104828aebba305b6c1b6b2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -642,12 +642,12 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 355.0,
-        "Y": 473.0
+        "X": 354.11570327627931,
+        "Y": 473.88429672372069
       },
       {
         "ShowGeometry": true,
-        "Name": "GeometryColor.ByGeometryColor",
+        "Name": "colorpoints",
         "Id": "006e4d140ca944a4bb11a9030d4b15fe",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

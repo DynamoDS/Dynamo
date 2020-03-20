@@ -1,6 +1,7 @@
 ﻿
 //#define UPDATEIMAGEDATA
 
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
@@ -223,9 +224,204 @@ namespace WpfVisualizationTests
         }
         #endregion
         #region pointsAndLines
+        [Test]
+        public void points()
+        {
+            OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void pointsIsolated()
+        {
+            OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
+            RunCurrentModel();
+            View.BackgroundPreview.ViewModel.IsolationMode = true;
+
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void pointsSelected()
+        {
+            OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularpoints")).FirstOrDefault();
+            var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("colorpoints")).FirstOrDefault();
+            DynamoSelection.Instance.Selection.Add(node1);
+            DynamoSelection.Instance.Selection.Add(node2);
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void pointsFrozen()
+        {
+            OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularpoints")).FirstOrDefault();
+            var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("colorpoints")).FirstOrDefault();
+            node1.IsFrozen = true;
+            node2.IsFrozen = true;
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void lines()
+        {
+            OpenVisualizationTest(@"imageComparison\linecolors.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void linesIsolated()
+        {
+            OpenVisualizationTest(@"imageComparison\linecolors.dyn");
+            RunCurrentModel();
+            View.BackgroundPreview.ViewModel.IsolationMode = true;
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void linesSelected()
+        {
+            OpenVisualizationTest(@"imageComparison\linecolors.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("coloredLines")).FirstOrDefault();
+            var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
+            DynamoSelection.Instance.Selection.Add(node1);
+            DynamoSelection.Instance.Selection.Add(node2);
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
+        [Test]
+        public void linesFrozen()
+        {
+            OpenVisualizationTest(@"imageComparison\linecolors.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("coloredLines")).FirstOrDefault();
+            var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
+            node1.IsFrozen = true;
+            node2.IsFrozen = true;
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
         #endregion
 
         #region SpecialRenderPackages
+        [Test]
+        public void directManipulator()
+        {
+            var pointOriginNode =
+            new DSFunction(Model.LibraryServices.GetFunctionDescriptor("Point.ByCoordinates@double,double,double"));
+
+            var command = new Dynamo.Models.DynamoModel.CreateNodeCommand(pointOriginNode, 0, 0, true, false);
+            Model.ExecuteCommand(command);
+            RunCurrentModel();
+            DynamoSelection.Instance.Selection.Add(pointOriginNode);
+            DispatcherUtil.DoEvents();
+
+            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
+        }
+
         #endregion
     }
 }
