@@ -124,12 +124,12 @@
     <Compile Include="CompileAndExecute.cs" />
     <Compile Include="CoreUnitTests\StaticMirrorTest.cs" />
     <Compile Include="DebugTests\BasicTests.cs" />
-    <Compile Include="DebugTests\NamespaceConflictTest.cs" />
+    <Compile Include="NamespaceConflictTest.cs" />
     <Compile Include="DebugTests\RunEqualityTests.cs" />
     <Compile Include="DebugTests\RunWatchTestsIncluded.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DebugTests\SetValueTests.cs" />
+    <Compile Include="SetValueTests.cs" />
     <Compile Include="DSASM\ExecutionMirrorTests.cs" />
     <Compile Include="DSASM\HeapMarkSweepTests.cs" />
     <Compile Include="DSASM\MemorySafetyTest.cs" />

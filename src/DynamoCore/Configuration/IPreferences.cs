@@ -13,6 +13,7 @@ namespace Dynamo.Interfaces
         /// Collection of pairs [BackgroundPreviewName;isActive]
         /// </summary>
         List<BackgroundPreviewActiveState> BackgroundPreviews { get; set; }
+
         /// <summary>
         /// Indicates if preview bubbles should be displayed on nodes.
         /// </summary>
