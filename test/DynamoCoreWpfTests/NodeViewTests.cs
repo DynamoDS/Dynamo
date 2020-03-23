@@ -229,5 +229,51 @@ namespace DynamoCoreWpfTests
             // Delete temp file
             File.Delete(tempPath);
         }
+
+        [Test]
+        public void SettingOriginalNodeName()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid("37749b95-916a-4dfe-b69b-b516b2ccafe9");
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            string expectedOriginalName = "List Create";
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+
+            string newName = "NewName";
+            nodeViewModel.Name = newName;
+            Assert.AreEqual(nodeViewModel.IsRenamed, true);
+            Assert.AreEqual(nodeViewModel.Name, newName);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void SettingOriginalNodeNameOnCustomNode()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeNameCustomNode.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("d0b81747d16f48cfbc9992182783d229").ToString());
+
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            string expectedOriginalName = "NestedNode";
+
+            Assert.AreEqual(nodeViewModel.IsRenamed, false);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+
+            string newName = "NewName";
+            nodeViewModel.Name = newName;
+            Assert.AreEqual(nodeViewModel.IsRenamed, true);
+            Assert.AreEqual(nodeViewModel.Name, newName);
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
     }
 }

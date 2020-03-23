@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using ProtoCore.Mirror;
 
@@ -93,6 +94,8 @@ namespace Dynamo.Graph.Nodes
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
+            if (node.IsCustomFunction)
+                return GetCustomNodeOriginalName(node);
 
             var function = node as DSFunctionBase;
             if (function != null)
@@ -104,6 +107,12 @@ namespace Dynamo.Graph.Nodes
                 return elNameAttrib.Name;
 
             return nodeType.FullName;
+        }
+
+        private static string GetCustomNodeOriginalName(NodeModel node)
+        {
+            var customNodeFunction = node as Function;
+            return customNodeFunction.Definition.DisplayName;
         }
 
         private static void GetGraphicItemsFromMirrorData(MirrorData mirrorData, List<IGraphicItem> graphicItems)
