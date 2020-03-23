@@ -12,7 +12,7 @@ REM -/I ./../ include
 REM -  /Fo  output binary path
 REM file to compile Default.fx
 
-fxc /Vi /Od /Zi /T vs_5_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\vsDynamoMesh vsDynamoMesh.hlsl
-fxc /Vi /Od /Zi /T ps_5_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoMesh psDynamoMesh.hlsl
+fxc /Vi /Od /Zi /T vs_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\vsDynamoMesh vsDynamoMesh.hlsl
+fxc /Vi /Od /Zi /T ps_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoMesh psDynamoMesh.hlsl
 popd
 pause
