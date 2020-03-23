@@ -100,6 +100,23 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
+        /// Gets maintainers for a specific package
+        /// </summary>
+        /// <param name="packageInfo"></param>
+        /// <returns></returns>
+        internal PackageHeader GetPackageMaintainers(IPackageInfo packageInfo)
+        {
+            var header = FailFunc.TryExecute(() =>
+            {
+                var nv = new GetMaintainers("dynamo", packageInfo.Name);
+                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
+                return pkgResponse.content;
+            }, null);
+
+            return header;
+        }
+
+        /// <summary>
         /// Gets the Greg PackageVersion object for a specific version of a package
         /// </summary>
         /// <param name="header"></param>
@@ -243,7 +260,7 @@ namespace Dynamo.PackageManager
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
-            var header = GetPackageHeader(pkg);
+            var header = GetPackageMaintainers(pkg);
             return (header != null) && (header.maintainers.Any(maintainer => maintainer.username.Equals(username)));
         }
     }
