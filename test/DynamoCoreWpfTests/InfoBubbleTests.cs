@@ -86,7 +86,8 @@ namespace DynamoCoreWpfTests
 
         private string NullIfSystemUriCannotParseValue(string link)
         {
-            return Uri.TryCreate(link, UriKind.RelativeOrAbsolute, out Uri uri)
+            Uri uri;
+            return Uri.TryCreate(link, UriKind.RelativeOrAbsolute, out uri)
                 ? uri.ToString()
                 : null;
         }
