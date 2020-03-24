@@ -24,13 +24,9 @@ namespace WpfVisualizationTests
     public class HelixImageComparisonTests : HelixWatch3DViewModelTests
     {
         #region utilities
-        private static void UpdateTestData(string pathToUpdate,BitmapSource imageFileSource)
-        {
-            SaveBitMapSourceAsPNG(pathToUpdate, imageFileSource);
-        }
 
         /// <summary>
-        /// TODO This updated function exists in Helix 2.11 - update when possible.
+        /// TODO This updated function exists in Helix 2.12 - update when possible.
         /// Renders the viewport to a bitmap.
         /// </summary>
         /// <param name="view">The viewport.</param>
@@ -47,6 +43,10 @@ namespace WpfVisualizationTests
             view.RenderHost.Resize((int)w, (int)h);
             return rtb;
         }
+        private static void UpdateTestData(string pathToUpdate,BitmapSource imageFileSource)
+        {
+            SaveBitMapSourceAsPNG(pathToUpdate, imageFileSource);
+        }
 
         private static void SaveBitMapSourceAsPNG(string filePath, BitmapSource bitmapSource)
         {
@@ -58,7 +58,7 @@ namespace WpfVisualizationTests
             }
         }
 
-        private System.Drawing.Bitmap BitmapFromSource(BitmapSource bitmapsource)
+        private static System.Drawing.Bitmap BitmapFromSource(BitmapSource bitmapsource)
         {
             System.Drawing.Bitmap bitmap;
             using (MemoryStream outStream = new MemoryStream())
@@ -71,13 +71,28 @@ namespace WpfVisualizationTests
             return bitmap;
         }
 
-        private string generateTestDataPathFromTest(string testname)
+        private string GenerateTestDataPathFromTest(string testname)
         {
              var fileName = testname+".png";
              string relativePath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
                 string.Format(@"core\visualization\imageComparison\referenceImages\{0}", fileName));
             return relativePath;
+        }
+
+        private void RenderCurrentViewAndCompare(string testName)
+        {
+            DispatcherUtil.DoEvents();
+            var path = GenerateTestDataPathFromTest(testName);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View,1024, 1024);
+#if UPDATEIMAGEDATA
+            UpdateTestData(path, bitmapsource);
+#endif
+            var refimage = new BitmapImage(new Uri(path));
+            var refbitmap = BitmapFromSource(refimage);
+            var newImage = BitmapFromSource(bitmapsource);
+
+            compareImageColors(refbitmap, newImage);
         }
 
         //TODO consider something like:
@@ -108,16 +123,7 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
             RunCurrentModel();
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -127,18 +133,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
             DynamoSelection.Instance.Selection.Add(node);
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -148,18 +143,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
             node.IsFrozen = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -168,18 +152,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
             RunCurrentModel();
             View.BackgroundPreview.ViewModel.IsolationMode = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -189,18 +162,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
             DynamoSelection.Instance.Selection.Add(node3);
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -210,18 +172,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
             node3.IsFrozen = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
         #endregion
         #region pointsAndLines
@@ -230,18 +181,7 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
             RunCurrentModel();
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -251,18 +191,7 @@ namespace WpfVisualizationTests
             RunCurrentModel();
             View.BackgroundPreview.ViewModel.IsolationMode = true;
 
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -274,18 +203,7 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("colorpoints")).FirstOrDefault();
             DynamoSelection.Instance.Selection.Add(node1);
             DynamoSelection.Instance.Selection.Add(node2);
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -297,18 +215,7 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("colorpoints")).FirstOrDefault();
             node1.IsFrozen = true;
             node2.IsFrozen = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -316,18 +223,7 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -336,18 +232,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
             View.BackgroundPreview.ViewModel.IsolationMode = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -359,18 +244,7 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
             DynamoSelection.Instance.Selection.Add(node1);
             DynamoSelection.Instance.Selection.Add(node2);
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         [Test]
@@ -382,18 +256,7 @@ namespace WpfVisualizationTests
             var node2 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("regularLines")).FirstOrDefault();
             node1.IsFrozen = true;
             node2.IsFrozen = true;
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         #endregion
@@ -409,20 +272,10 @@ namespace WpfVisualizationTests
             Model.ExecuteCommand(command);
             RunCurrentModel();
             DynamoSelection.Instance.Selection.Add(pointOriginNode);
-            DispatcherUtil.DoEvents();
-
-            var path = generateTestDataPathFromTest(MethodBase.GetCurrentMethod().Name);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
-#if UPDATEIMAGEDATA
-            UpdateTestData(path, bitmapsource);
-#endif
-            var refimage = new BitmapImage(new Uri(path));
-            var refbitmap = BitmapFromSource(refimage);
-            var newImage = BitmapFromSource(bitmapsource);
-
-            compareImageColors(refbitmap, newImage);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
         #endregion
+
     }
 }
