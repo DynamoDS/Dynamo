@@ -17,6 +17,11 @@ namespace Dynamo.Tests
         {
             var logoutCalled = false;
 
+            var pc_noAuthProvider = new AuthenticationManager(null);
+            pc_noAuthProvider.Logout();
+
+            Assert.IsFalse(logoutCalled);
+
             var ap = new Mock<IAuthProvider>();
             ap.Setup(x => x.Logout()).Callback(() => logoutCalled = true);
 
@@ -35,6 +40,11 @@ namespace Dynamo.Tests
         public void Login_CausesLoginMethodToBeInvokedOnAuthProvider()
         {
             var called = false;
+
+            var pc_noAuthProvider = new AuthenticationManager(null);
+            pc_noAuthProvider.Login();
+
+            Assert.IsFalse(called);
 
             var ap = new Mock<IAuthProvider>();
             ap.Setup(x => x.Login()).Callback(() => called = true);
