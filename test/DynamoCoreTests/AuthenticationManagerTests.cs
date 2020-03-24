@@ -47,5 +47,32 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        #region Toggle Login State
+
+        [Test]
+        public void ToggleLoginState()
+        {
+            bool loginCalled = false;
+
+            var authProviderMock = new Mock<IAuthProvider>();
+            authProviderMock.Setup(x => x.Login()).Callback(() => loginCalled = true);
+
+            var authManager = new AuthenticationManager(authProviderMock.Object);
+
+            authManager.ToggleLoginState(authManager);
+            Assert.True(loginCalled);
+        }
+
+        [Test]
+        public void CanToggleLoginState()
+        {
+            var authProviderMock = new Mock<IAuthProvider>();
+            var authManager = new AuthenticationManager(authProviderMock.Object);
+
+            Assert.IsTrue(authManager.CanToggleLoginState(authManager));
+        }
+
+        #endregion
     }
 }
