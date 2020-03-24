@@ -32,11 +32,7 @@ namespace Dynamo.ViewModels
         {
             foreach (var pkg in Model.LocalPackages)
             {
-                // If the pkg is null due to invalid package structure, then don't load that package. 
-                if (pkg != null)
-                {
-                    LocalPackages.Add(new PackageViewModel(this.dynamoViewModel, pkg));
-                }
+                LocalPackages.Add(new PackageViewModel(this.dynamoViewModel, pkg));
             }
 
             this.Model.PackageAdded += (pkg) =>

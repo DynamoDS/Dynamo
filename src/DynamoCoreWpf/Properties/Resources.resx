@@ -927,6 +927,9 @@ You can always redownload the package.</value>
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>Failed to load an invalid package.</value>
+  </data>
   <data name="MessageFailedToUninstall" xml:space="preserve">
     <value>{0} failed to uninstall the package.  You may need to delete the package's root directory manually.</value>
   </data>

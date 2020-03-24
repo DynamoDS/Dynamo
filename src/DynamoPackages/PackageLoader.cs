@@ -310,7 +310,11 @@ namespace Dynamo.PackageManager
 
             foreach (var pkg in enumerable)
             {
-                TryLoadPackageIntoLibrary(pkg);
+                // If the pkg is null, then don't load that package into the Library.
+                if (pkg != null)
+                {
+                    TryLoadPackageIntoLibrary(pkg);
+                }
             }
 
             // Setting back the DisableRun property back to false, as the package loading is completed.
