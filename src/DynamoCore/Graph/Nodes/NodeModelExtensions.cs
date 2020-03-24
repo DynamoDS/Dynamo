@@ -95,7 +95,10 @@ namespace Dynamo.Graph.Nodes
         {
             if (node == null) return string.Empty;
             if (node.IsCustomFunction)
-                return GetCustomNodeOriginalName(node);
+            {
+                var customNodeFunction = node as Function;
+                return customNodeFunction?.Definition.DisplayName;
+            }
 
             var function = node as DSFunctionBase;
             if (function != null)
@@ -107,12 +110,6 @@ namespace Dynamo.Graph.Nodes
                 return elNameAttrib.Name;
 
             return nodeType.FullName;
-        }
-
-        private static string GetCustomNodeOriginalName(NodeModel node)
-        {
-            var customNodeFunction = node as Function;
-            return customNodeFunction.Definition.DisplayName;
         }
 
         private static void GetGraphicItemsFromMirrorData(MirrorData mirrorData, List<IGraphicItem> graphicItems)
