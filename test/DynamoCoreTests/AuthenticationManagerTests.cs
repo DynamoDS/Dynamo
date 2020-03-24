@@ -74,5 +74,29 @@ namespace Dynamo.Tests
         }
 
         #endregion
+
+        #region Properties
+
+        [Test]
+        public void Property_Username()
+        {
+            var authProviderMock = new Mock<IAuthProvider>();
+            var authManager = new AuthenticationManager(authProviderMock.Object);
+
+            authProviderMock.Setup(x => x.Username).Returns("test");
+
+            Assert.AreEqual(authManager.Username, "test");
+        }
+
+        [Test]
+        public void Property_AuthProvider()
+        {
+            var authProviderMock = new Mock<IAuthProvider>();
+            var authManager = new AuthenticationManager(authProviderMock.Object);
+
+            Assert.AreEqual(authProviderMock.Object, authManager.AuthProvider);
+        }
+
+        #endregion
     }
 }
