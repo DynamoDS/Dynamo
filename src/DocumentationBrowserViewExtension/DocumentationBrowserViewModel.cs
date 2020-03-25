@@ -1,5 +1,6 @@
 ﻿using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using System;
 using System.IO;
@@ -77,6 +78,8 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
         }
+
+        internal Action<ILogMessage> MessageLogged;
 
         #endregion
 
@@ -255,8 +258,16 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Clean up possible script tags from document
-            return Regex.Replace(result, SCRIPT_TAG_REGEX, "");
+            if (Regex.IsMatch(result, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
+            {
+                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
+            }
+
+            return result;
         }
+
+        private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));
 
         private string ReplaceTemplateInContentWithString(string content)
         {

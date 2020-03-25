@@ -72,6 +72,12 @@ namespace Dynamo.DocumentationBrowser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
+        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+        ///    &lt;meta charset=&quot;UTF-8&quot; /&gt;
+        ///&lt;/head&gt;
+        ///
         ///&lt;style&gt;
         ///  *{
         ///      transition: all 0.6s;
@@ -82,27 +88,9 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///  }
         ///
         ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
-        ///      color: white;
-        ///      margin: 0;
-        ///      background-color: #414141;
-        ///  }
-        ///
-        ///  #main{
-        ///      display: table;
-        ///      width: 100%;
-        ///      height: 100vh;
-        ///      text-align: center;
-        ///  }
-        ///
-        ///  .fof{
-        ///      display: table-cell;
-        ///      vertical-align: middle;
-        ///  }
-        ///
-        ///  .fof h1{
-        ///      fon [rest of string was truncated]&quot;;.
+        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
+        ///      font-size: 20px;
+        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format( [rest of string was truncated]&quot;;.
         /// </summary>
         public static string FileNotFound {
             get {
@@ -113,6 +101,12 @@ namespace Dynamo.DocumentationBrowser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
+        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
+        ///&lt;head&gt;
+        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+        ///&lt;/head&gt;
+        ///
         ///&lt;style&gt;
         ///  *{
         ///      transition: all 0.6s;
@@ -123,27 +117,9 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///  }
         ///
         ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
-        ///      color: white;
-        ///      margin: 0;
-        ///      background-color: #414141;
-        ///  }
-        ///
-        ///  #main{
-        ///      display: table;
-        ///      width: 100%;
-        ///      height: 100vh;
-        ///      text-align: center;
-        ///  }
-        ///
-        ///  .fof{
-        ///      display: table-cell;
-        ///      vertical-align: middle;
-        ///  }
-        ///
-        ///  .fof h1{
-        ///      fon [rest of string was truncated]&quot;;.
+        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
+        ///      font-size: 20px;
+        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;wof [rest of string was truncated]&quot;;.
         /// </summary>
         public static string InternalError {
             get {
@@ -181,41 +157,33 @@ namespace Dynamo.DocumentationBrowser.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
         ///
+        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
+        ///&lt;head&gt;
+        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
+        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+        ///&lt;/head&gt;
+        ///
         ///&lt;style&gt;
-        ///  *{
-        ///      transition: all 0.6s;
-        ///  }
-        ///
-        ///  html {
-        ///      height: 100%;
-        ///  }
-        ///
-        ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
+        ///  body {
         ///      color: white;
-        ///      margin: 0;
-        ///      background-color: #414141;
-        ///  }
-        ///
-        ///  #main{
-        ///      display: table;
-        ///      width: 100%;
-        ///      height: 100vh;
-        ///      text-align: center;
-        ///  }
-        ///
-        ///  .fof{
-        ///      display: table-cell;
-        ///      vertical-align: middle;
-        ///  }
-        ///
-        ///  .fof h1{
-        ///      fon [rest of string was truncated]&quot;;.
+        ///      font-size: 20px;
+        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
+        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
+        ///      background-color: #353535;
+        ///      padding: 1%; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string NoContent {
             get {
                 return ResourceManager.GetString("NoContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script tags detected in the help document have been removed..
+        /// </summary>
+        public static string ScriptTagsRemovalWarning {
+            get {
+                return ResourceManager.GetString("ScriptTagsRemovalWarning", resourceCulture);
             }
         }
     }

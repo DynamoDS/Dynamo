@@ -56,6 +56,11 @@ namespace Dynamo.DocumentationBrowser
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
+            this.ViewModel.MessageLogged += (msg) =>
+            {
+                OnMessageLogged(msg);
+            };
+
             this.viewLoadedParams = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
