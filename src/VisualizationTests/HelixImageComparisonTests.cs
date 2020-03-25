@@ -1,13 +1,14 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
 //#define UPDATEIMAGEDATA
-
+//#define SAVEDEBUGIMAGES
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -68,12 +69,13 @@ namespace WpfVisualizationTests
             return bitmap;
         }
 
-        private string GenerateTestDataPathFromTest(string testname)
+        private string GenerateTestDataPathFromTest(string testname,bool debug = false)
         {
+             var debugstring = debug ? "debug" : string.Empty;
              var fileName = testname+".png";
              string relativePath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
-                string.Format(@"core\visualization\imageComparison\referenceImages\{0}", fileName));
+                string.Format(@"core\visualization\imageComparison\referenceImages\{0}{1}", fileName,debugstring));
             return relativePath;
         }
 
@@ -89,6 +91,11 @@ namespace WpfVisualizationTests
             var refbitmap = BitmapFromSource(refimage);
             var newImage = BitmapFromSource(bitmapsource);
 
+#if SAVEDEBUGIMAGES
+            var debugPath = GenerateTestDataPathFromTest(path,true);
+            SaveBitMapSourceAsPNG(debugPath, imageFileSource);
+#endif
+
             compareImageColors(refbitmap, newImage);
         }
 
@@ -101,20 +108,39 @@ namespace WpfVisualizationTests
             Assert.AreEqual(image1.Height, image2.Height);
             Assert.AreEqual(image1.PixelFormat, image2.PixelFormat);
 
+            //x,y,expected,result
+            var differences = new List<Tuple<int, int, Color, Color>>();
+
             for (var x = 0; x < image1.Width; x++)
             {
                 for (var y = 0; y < image1.Height; y++)
                 {
                     var expectedCol = image1.GetPixel(x, y);
                     var otherCol = image2.GetPixel(x, y);
-                    Assert.AreEqual(expectedCol, otherCol,$"pixel {x}:{y} was not as expected");
+                    if(!(expectedCol == otherCol))
+                    {
+                        differences.Add(Tuple.Create(x, y, expectedCol, otherCol));
+                        Console.WriteLine($"{expectedCol}, {otherCol}, pixel {x}:{y} was not as expected");
+                    }
                 }
             }
+            var diff = CalculatePercentDiff(image1, differences);
+            Console.WriteLine($"% difference by pixels was {diff * 100}");
+            Assert.LessOrEqual(diff, .02);
+
+        }
+       
+        private static double CalculatePercentDiff(Bitmap image1, List<Tuple<int,int,Color,Color>> differences)
+        {
+            //TODO should we remove background pixels from this calculation via color?
+            // or other filtering techniques for more precision
+            var totalPixels = image1.Width * image1.Height;
+            return (double)differences.Count / (double)totalPixels;
         }
 
-        #endregion
+#endregion
 
-        #region meshes
+#region meshes
         [Test]
         public void StandardMeshGeometryRender()
         {
@@ -171,8 +197,8 @@ namespace WpfVisualizationTests
             node3.IsFrozen = true;
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
-        #endregion
-        #region pointsAndLines
+#endregion
+#region pointsAndLines
         [Test]
         public void points()
         {
@@ -256,9 +282,9 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-        #endregion
+#endregion
 
-        #region SpecialRenderPackages
+#region SpecialRenderPackages
         [Test]
         public void directManipulator()
         {
@@ -272,7 +298,7 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-        #endregion
+#endregion
 
     }
 }
