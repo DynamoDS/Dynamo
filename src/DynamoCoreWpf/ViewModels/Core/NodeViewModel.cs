@@ -238,30 +238,6 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.Description; }
         }
 
-        /// <summary>
-        /// The node description part of the nodes description
-        /// </summary>
-        [JsonIgnore]
-        public string NodeDescription
-        {
-            get
-            {
-                return Description.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[0];
-            }
-        }
-
-        /// <summary>
-        /// The DesignScript syntax part of the nodes description
-        /// </summary>
-        [JsonIgnore]
-        public string DesignScriptSyntaxDescription
-        {
-            get
-            {
-                return Description.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None)[2];
-            }
-        }
-
         [JsonIgnore]
         public bool IsCustomFunction
         {
