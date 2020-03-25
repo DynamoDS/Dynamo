@@ -248,19 +248,20 @@
                                     MaxWidth="320">
                             <StackPanel>
                                 <TextBlock TextWrapping="Wrap"
-                                           Text="Original node name: ">
+                                           Text="{x:Static p:Resources.NodeTooltipOriginalName}">
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap"
                                            Text="{Binding Path=OriginalName}"
                                            FontWeight="SemiBold">
                                 </TextBlock>
                             </StackPanel>
+                            <!--Space for splitting the original name and description-->
                             <StackPanel>
                                 <TextBlock Text="&#xD;" />
                             </StackPanel>
                             <StackPanel>
                                 <TextBlock TextWrapping="Wrap"
-                                           Text="Description: ">
+                                           Text="{x:Static p:Resources.NodeTooltipDescription}">
                                 </TextBlock>
                                 <TextBlock TextWrapping="Wrap"
                                            Text="{Binding Path=Description}"

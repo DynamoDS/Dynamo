@@ -3524,6 +3524,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Description: .
+        /// </summary>
+        public static string NodeTooltipDescription {
+            get {
+                return ResourceManager.GetString("NodeTooltipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original node name: .
+        /// </summary>
+        public static string NodeTooltipOriginalName {
+            get {
+                return ResourceManager.GetString("NodeTooltipOriginalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There was an error while finding node view customizations for {0}. Contact the author of this assembly for more information..
         /// </summary>
         public static string NodeViewCustomizationFindErrorMessage {
