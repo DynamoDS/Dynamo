@@ -56,10 +56,7 @@ namespace Dynamo.DocumentationBrowser
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
-            this.ViewModel.MessageLogged += (msg) =>
-            {
-                OnMessageLogged(msg);
-            };
+            this.ViewModel.MessageLogged += OnViewModelMessageLogged;
 
             this.viewLoadedParams = viewLoadedParams; 
 
@@ -96,6 +93,7 @@ namespace Dynamo.DocumentationBrowser
         {
             DynamoView.CloseExtension -= OnCloseExtension;
             this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
 
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
@@ -130,6 +128,11 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.documentationBrowserMenuItem.IsChecked = false;
             }
+        }
+
+        private void OnViewModelMessageLogged(ILogMessage msg)
+        {
+            OnMessageLogged(msg);
         }
 
         private void AddToSidebar(bool displayDefaultContent)
