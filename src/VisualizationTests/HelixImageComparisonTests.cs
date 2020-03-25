@@ -1,7 +1,7 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
 //#define UPDATEIMAGEDATA
-//#define SAVEDEBUGIMAGES
+#define SAVEDEBUGIMAGES
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
@@ -72,10 +72,10 @@ namespace WpfVisualizationTests
         private string GenerateTestDataPathFromTest(string testname,bool debug = false)
         {
              var debugstring = debug ? "debug" : string.Empty;
-             var fileName = testname+".png";
+             var fileName = testname+debugstring+".png";
              string relativePath = Path.Combine(
                 GetTestDirectory(ExecutingDirectory),
-                string.Format(@"core\visualization\imageComparison\referenceImages\{0}{1}", fileName,debugstring));
+                string.Format(@"core\visualization\imageComparison\referenceImages\{0}", fileName));
             return relativePath;
         }
 
@@ -92,8 +92,8 @@ namespace WpfVisualizationTests
             var newImage = BitmapFromSource(bitmapsource);
 
 #if SAVEDEBUGIMAGES
-            var debugPath = GenerateTestDataPathFromTest(path,true);
-            SaveBitMapSourceAsPNG(debugPath, imageFileSource);
+            var debugPath = GenerateTestDataPathFromTest(testName,true);
+            SaveBitMapSourceAsPNG(debugPath, bitmapsource);
 #endif
 
             compareImageColors(refbitmap, newImage);
