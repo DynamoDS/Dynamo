@@ -116,96 +116,36 @@
     <EmbeddedResource Include="Resources\FileNotFound.html" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Docs\ArgumentNullException.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\CustomNodeNotLoaded.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\Deprecated.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\DereferencingNonPointer.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\errorLibGCoreCannotMakePolycurveFromEmptyList.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\errorLibGCorePolycurveBranching.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\errorLibGCorePolycurveMoreThanOneWIRE.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\errorLibGCoreUnableToLoft.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\errorLibGCoreUnableUpdateSolidBySweep.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\ErrorPageTemplate.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\ExcelNotInstalled.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\FailedToCastFromNull.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\InvalidArrayIndexType.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\InvalidKeysLenghtErrorMessage.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kArrayOverIndexed.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kConvertArrayToNonArray.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kCyclicDependency.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kIndexOutOfRange.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kMethodHasInvalidArguments.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kMethodNotFound.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kMultipleSymbolFound.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\kPropertyOfClassNotFound.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\MessageErrorOpeningFileGeneral.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\MessageFailedToOpenCorruptedFile.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\NonOverloadMethodResolutionError.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\NothingIsSelectedWarning.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\OperationFailType1.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\RunCompletedWithWarningsMessage.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\UnhandledException.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Docs\UnhandledExceptionInDynamoEngine.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <EmbeddedResource Include="Docs\ArgumentNullException.html" />
+    <EmbeddedResource Include="Docs\CustomNodeNotLoaded.html" />
+    <EmbeddedResource Include="Docs\Deprecated.html" />
+    <EmbeddedResource Include="Docs\DereferencingNonPointer.html" />
+    <EmbeddedResource Include="Docs\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
+    <EmbeddedResource Include="Docs\errorLibGCorePolycurveBranching.html" />
+    <EmbeddedResource Include="Docs\errorLibGCorePolycurveMoreThanOneWIRE.html" />
+    <EmbeddedResource Include="Docs\errorLibGCoreUnableToLoft.html" />
+    <EmbeddedResource Include="Docs\errorLibGCoreUnableUpdateSolidBySweep.html" />
+    <EmbeddedResource Include="Docs\ErrorPageTemplate.html" />
+    <EmbeddedResource Include="Docs\ExcelNotInstalled.html" />
+    <EmbeddedResource Include="Docs\FailedToCastFromNull.html" />
+    <EmbeddedResource Include="Docs\InvalidArrayIndexType.html" />
+    <EmbeddedResource Include="Docs\InvalidKeysLenghtErrorMessage.html" />
+    <EmbeddedResource Include="Docs\kArrayOverIndexed.html" />
+    <EmbeddedResource Include="Docs\kConvertArrayToNonArray.html" />
+    <EmbeddedResource Include="Docs\kCyclicDependency.html" />
+    <EmbeddedResource Include="Docs\kIndexOutOfRange.html" />
+    <EmbeddedResource Include="Docs\kMethodHasInvalidArguments.html" />
+    <EmbeddedResource Include="Docs\kMethodNotFound.html" />
+    <EmbeddedResource Include="Docs\kMultipleSymbolFound.html" />
+    <EmbeddedResource Include="Docs\kPropertyOfClassNotFound.html" />
+    <EmbeddedResource Include="Docs\MessageErrorOpeningFileGeneral.html" />
+    <EmbeddedResource Include="Docs\MessageFailedToOpenCorruptedFile.html" />
+    <EmbeddedResource Include="Docs\NonOverloadMethodResolutionError.html" />
+    <EmbeddedResource Include="Docs\NothingIsSelectedWarning.html" />
+    <EmbeddedResource Include="Docs\OperationFailType1.html" />
+    <EmbeddedResource Include="Docs\RunCompletedWithWarningsMessage.html" />
+    <EmbeddedResource Include="Docs\UnhandledException.html" />
+    <EmbeddedResource Include="Docs\UnhandledExceptionInDynamoEngine.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

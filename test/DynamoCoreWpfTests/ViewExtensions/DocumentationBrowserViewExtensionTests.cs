@@ -23,6 +23,7 @@ namespace DynamoCoreWpfTests
         private const string localDocsFileLink = "ExcelNotInstalled.html";
         private const string indexPageHtmlHeader = "<h2>Dynamo Documentation Browser</h2>";
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
+        private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
 
@@ -72,6 +73,7 @@ namespace DynamoCoreWpfTests
             // Arrange
             ShowDocsBrowser();
             var docsView = GetDocsTabItem().Content as DocumentationBrowserView;
+            this.ViewModel.NewHomeWorkspaceCommand.Execute(null);
             var visibilityBeforeShowStartPageEvent = docsView.documentationBrowser.Visibility;
 
             // Act
@@ -145,7 +147,6 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri("missingFile.html", UriKind.Relative));
-            var fileMissingHtmlHeader = "<h3>Error 404</h3>";
             var viewExtension = SetupNewViewExtension(true);
 
             // Act
@@ -162,31 +163,79 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void DisplaysNoContentPageOnEmptyDocFile()
+        public void DisplaysHtmlEmbeddedInLoadedAssemblies()
         {
             // Arrange
             var viewExtension = SetupNewViewExtension(true);
 
-            // make the empty file first
-            var docsPath = DocumentationBrowserViewModel.GetBuiltInDocumentationFolderPath();
-            var emptyFileName = "empty.html";
-            var emptyFilePath = Path.Combine(docsPath, emptyFileName);
-            File.WriteAllText(emptyFilePath, string.Empty);
-
-            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(emptyFileName, UriKind.Relative));
+            // Reference an embedded HTML file in a loaded assembly
+            var assemblyName = "DocumentationBrowserViewExtension";
+            var fileName = "ArgumentNullException.html";
+            var uri = $"{assemblyName};{fileName}";
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
             // Act
             var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
             viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
             var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
             var htmlContent = GetSidebarDocsBrowserContents();
-            File.Delete(emptyFilePath);
 
             // Assert
             Assert.IsFalse(docsEvent.IsRemoteResource);
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(indexPageHtmlHeader));
+            Assert.IsTrue(htmlContent.Contains("<h2>Value cannot be null</h2>"));
+        }
+
+        [Test]
+        public void Displays404PageWhenLinkPointsToAssemblyThatCannotBeFound()
+        {
+            // Arrange
+            var viewExtension = SetupNewViewExtension(true);
+
+            // Reference an embedded HTML file in a loaded assembly
+            var assemblyName = "NonExisting";
+            var fileName = "Whatever.html";
+            var uri = $"{assemblyName};{fileName}";
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+            // Act
+            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.IsFalse(docsEvent.IsRemoteResource);
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+        }
+
+        [Test]
+        public void RemovesScriptTagsFromLoadedHtml()
+        {
+            // Arrange
+            var viewExtension = SetupNewViewExtension(true);
+
+            // Reference an embedded HTML file in a loaded assembly
+            var assemblyName = GetType().Assembly.FullName;
+            var fileName = "DocumentationBrowserScriptsTest.html";
+            var uri = $"{assemblyName};{fileName}";
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+            // Act
+            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.IsFalse(docsEvent.IsRemoteResource);
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(@"<h2 id=""heading"">Division by zero</h2>"));
+            Assert.IsFalse(htmlContent.Contains("<script"));
         }
 
         #region Helpers
@@ -234,7 +283,7 @@ namespace DynamoCoreWpfTests
 
         private void ShowDocsBrowser()
         {
-            GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.CheckedEvent));
         }
 
         #endregion

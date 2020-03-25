@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -13,10 +14,10 @@ namespace Dynamo.DocumentationBrowser
         #region Constants
 
         private const string HTML_TEMPLATE_IDENTIFIER = "%TEMPLATE%";
-        private const string DOCUMENTATION_FOLDER_NAME = "Docs";
         private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = nameof(Resources.InternalError) + ".html";
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
+        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
 
         #endregion
 
@@ -119,8 +120,16 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                LoadContentFromFile(e.Link);
-                this.Link = e.Link;
+                var content = LoadContentFromResources(e.Link.ToString());
+                if (content == null)
+                {
+                    NavigateToContentMissingPage();
+                }
+                else
+                {
+                    this.content = content;
+                    this.Link = e.Link;
+                }
             }
             catch (FileNotFoundException)
             {
@@ -199,40 +208,34 @@ namespace Dynamo.DocumentationBrowser
             return this.content;
         }
 
-        /// <summary>
-        /// Updates the content to be displayed in the browser and triggers the LinkChanged action.
-        /// </summary>
-        /// <param name="newContent">The content to display.</param>
-        internal void UpdateContent(string newContent)
-        {
-            if (string.IsNullOrWhiteSpace(newContent))
-                return;
-
-            this.content = newContent;
-            this.isRemoteResource = false;
-            OnLinkChanged(null);
-        }
-
-        private void LoadContentFromFile(Uri link)
-        {
-            var path = ResolveFilePath(link);
-            this.content = File.ReadAllText(path);
-
-            // when we have no content fall back to the no content page
-            if (string.IsNullOrWhiteSpace(this.content))
-                throw new TargetException();
-        }
-
         private string LoadContentFromResources(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
+            
             string result;
+            // If an assembly was specified in the uri, the resource will be searched there.
+            Assembly assembly;
+            var assemblyIndex = name.LastIndexOf(";");
+            if (assemblyIndex != -1)
+            {
+                var assemblyName = name.Substring(0, assemblyIndex);
+                // Ignore version and public key, in case they were specified.
+                var versionIndex = assemblyName.IndexOf(";");
+                if (versionIndex != -1)
+                {
+                    assemblyName = assemblyName.Substring(0, versionIndex);
+                }
+                assembly = Assembly.Load(assemblyName);
+                name = name.Substring(assemblyIndex + 1);
+            }
+            else
+            {
+                // Default to documentation browser assembly if no assembly was specified.
+                assembly = GetType().Assembly;
+            }
 
-            var assembly = GetType().Assembly;
-
-            var availableResources = assembly
-                .GetManifestResourceNames();
+            var availableResources = assembly.GetManifestResourceNames();
 
             var matchingResource = availableResources
                 .Where(str => str.EndsWith(name))
@@ -245,61 +248,14 @@ namespace Dynamo.DocumentationBrowser
             {
                 result = reader.ReadToEnd();
             }
-            return result;
+
+            // Clean up possible script tags from document
+            return Regex.Replace(result, SCRIPT_TAG_REGEX, "");
         }
 
         private string ReplaceTemplateInContentWithString(string content)
         {
             return this.content.Replace(HTML_TEMPLATE_IDENTIFIER, content);
-        }
-
-        #endregion
-
-        #region Path handling
-
-        /// <summary>
-        /// Resolves the path to local documentation file.
-        /// It attempts to use the given path and if it fails, it searches for the file in the built-in docs folder.
-        /// </summary>
-        /// <param name="link">The link to the file to resolve.</param>
-        /// <returns>An absolute path to a local file, as a string.</returns>
-        private static string ResolveFilePath(Uri link)
-        {
-            if (link == null)
-                throw new FileNotFoundException();
-
-            var address = link.ToString();
-
-            // always check if the uri is valid first
-            if (!Uri.IsWellFormedUriString(address, UriKind.RelativeOrAbsolute))
-                throw new ArgumentException(Resources.InvalidDocumentationLink);
-
-            // return the path to the file directly if it exists
-            if (File.Exists(address)) return address;
-
-            // search for file in the default docs folder and return its path if found
-            string docsFolderPath = GetBuiltInDocumentationFolderPath();
-            if (Directory.Exists(docsFolderPath))
-            {
-                var files = Directory.EnumerateFiles(docsFolderPath, address);
-                if (files != null && files.Any()) return files.First();
-            }
-
-            // if we reached this point it means the path could not be resolved
-            throw new FileNotFoundException(address);
-        }
-
-        /// <summary>
-        /// Returns the path to the default documentation folder.
-        /// This folder contains all the HTML documentation files that ship with Dynamo.
-        /// </summary>
-        /// <returns>The path to the default documentation folder.</returns>
-        public static string GetBuiltInDocumentationFolderPath()
-        {
-            var assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var docsFolderPath = Path.Combine(assemblyPath, DOCUMENTATION_FOLDER_NAME);
-
-            return docsFolderPath;
         }
 
         #endregion
