@@ -226,7 +226,12 @@ namespace Dynamo.DocumentationBrowser
                 {
                     assemblyName = assemblyName.Substring(0, versionIndex);
                 }
-                assembly = Assembly.Load(assemblyName);
+                assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == assemblyName).FirstOrDefault();
+                if (assembly == null)
+                {
+                    // The specified assembly is not loaded
+                    return null;
+                }
                 name = name.Substring(assemblyIndex + 1);
             }
             else

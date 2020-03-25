@@ -219,7 +219,7 @@ namespace DynamoCoreWpfTests
             var viewExtension = SetupNewViewExtension(true);
 
             // Reference an embedded HTML file in a loaded assembly
-            var assemblyName = GetType().Assembly.FullName;
+            var assemblyName = GetType().Assembly.GetName().Name;
             var fileName = "DocumentationBrowserScriptsTest.html";
             var uri = $"{assemblyName};{fileName}";
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
