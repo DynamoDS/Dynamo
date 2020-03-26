@@ -147,6 +147,9 @@
     <EmbeddedResource Include="Docs\UnhandledException.html" />
     <EmbeddedResource Include="Docs\UnhandledExceptionInDynamoEngine.html" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
