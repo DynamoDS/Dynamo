@@ -53,7 +53,7 @@ namespace MyZeroTouchNode
 
 This a simple example of a Zero-Touch node that performs a division. Taking a look at the exception message, it ends with a special formatted URI, following `href=`. This part of the message is not actually displayed to the final user, but instead is picked up by Dynamo to trigger the display of help content. Dissecting the syntax, three parts can be distinguished:
 1. `href=`: This marks where the message ends and the link information starts.
-2. `MyZeroTouchNode;`: This provides the name of the assembly which contains the HTML document. Semicolon is used to separate the assembly from the document.
+2. `MyZeroTouchNode;`: This provides the name of the assembly which contains the HTML document. This assembly must be available to Dynamo, which is automatically the case for Zero-Touch node assemblies. The semicolon is used to separate the assembly from the document.
 3. `DivisionByZero.html`: This is the name of the HTML file that should be displayed for help. This file must be an `Embedded Resource` in the specified assembly.
 
 
