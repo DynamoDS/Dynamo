@@ -257,7 +257,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PackageManagerCrashTestOnDownloadingInvalidPackage()
         {
-            string packageDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), @"core\PackageManagerTests\Autodesk Steel Package");
+            string packageDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Autodesk Steel Package");
 
             try
             {
