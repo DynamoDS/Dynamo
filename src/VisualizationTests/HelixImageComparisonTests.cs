@@ -1,7 +1,8 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
 //#define UPDATEIMAGEDATA
-#define SAVEDEBUGIMAGES
+//UNCOMMENT TO SAVE DEBUG IMAGES.
+//#define SAVEDEBUGIMAGES
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Selection;
 using DynamoCoreWpfTests.Utility;
@@ -98,10 +99,6 @@ namespace WpfVisualizationTests
 
             compareImageColors(refbitmap, newImage);
         }
-
-        //TODO consider something like:
-        //(diferentPixelsCount / (mainImage.width* mainImage.height))*100
-        //for a percent image diff.
         private static void compareImageColors(Bitmap image1,Bitmap image2)
         {
             Assert.AreEqual(image1.Width, image2.Width);
@@ -117,17 +114,37 @@ namespace WpfVisualizationTests
                 {
                     var expectedCol = image1.GetPixel(x, y);
                     var otherCol = image2.GetPixel(x, y);
-                    if(!(expectedCol == otherCol))
+                    if((ColorDistance(expectedCol,otherCol) > 128))
                     {
                         differences.Add(Tuple.Create(x, y, expectedCol, otherCol));
-                        Console.WriteLine($"{expectedCol}, {otherCol}, pixel {x}:{y} was not as expected");
+                    // this can be painfully slow, but is useful during debug - uncomment for more info.
+                    // Console.WriteLine($"{expectedCol}, {otherCol}, pixel {x}:{y} was not in expected range");
                     }
                 }
             }
             var diff = CalculatePercentDiff(image1, differences);
-            Console.WriteLine($"% difference by pixels was {diff * 100}");
-            Assert.LessOrEqual(diff, .02);
+            Console.WriteLine($"% difference by out of range pixels was {(diff * 100).ToString("N" + 3)}%");
+            Assert.LessOrEqual(diff, .01);
 
+        }
+
+        /// <summary>
+        /// Euclidean distance between colors.
+        /// Does not use the alpha channel.
+        /// </summary>
+        /// <param name="color1"></param>
+        /// <param name="color2"></param>
+        /// <returns></returns>
+        private static double ColorDistance(Color color1, Color color2)
+        {
+            var r1 = color1.R;
+            var g1 = color1.G;
+            var b1 = color1.B;
+
+            var r2 = color2.R;
+            var g2 = color2.G;
+            var b2 = color2.B;
+            return Math.Sqrt(Math.Pow((r2 - r1), 2) + Math.Pow((g2 - g1),2) + Math.Pow((b2 - b1),2));
         }
        
         private static double CalculatePercentDiff(Bitmap image1, List<Tuple<int,int,Color,Color>> differences)

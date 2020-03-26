@@ -2,7 +2,6 @@
 #define MESH
 #include"Common.hlsl"
 #include"CommonBuffers.hlsl"
-#include"DynamoCommonStructures.hlsl"
 
 //--------------------------------------------------------------------------------------
 // Phong Lighting Reflection Model
@@ -26,16 +25,17 @@ SamplerState LinearSampler
 	MaxAnisotropy = 16;
 };
 
-float4 main(PSInputCustom input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
+float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 {
 	//TODO move to common or pass in from material or the vParams.
 	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
 
 
-	//flags were passed through from vertex shader
+	//flags were passed through from a common buffer per model
 	//lets decode them
-	uint flags = int(input.customParams.x);
 
+	int flags = int(vParams.x);
+	
 	//our flags are packed in this order:
   /*
 	  None = 0,
