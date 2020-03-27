@@ -959,6 +959,17 @@ namespace ProtoScript.Runners
             return true;
         }
 
+        //TODO move to DEFS
+        //TODO what binary expressions should actually be converted to null assignments...
+        private bool IsLogicalOP(Operator op)
+        {
+            if(op is Operator.and || op is Operator.or)
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
         /// </summary>
@@ -982,7 +993,7 @@ namespace ProtoScript.Runners
                 }
 
                 IdentifierNode leftNode = bNode.LeftNode as IdentifierNode;
-                if (leftNode == null || leftNode.ArrayDimensions != null)
+                if (leftNode == null || leftNode.ArrayDimensions != null  || IsLogicalOP(bNode.Optr))
                 {
                     continue;
                 }
