@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using Analytics.NET.Google;
+using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Microsoft.Win32;
+
 
 namespace Dynamo.Logging
 {
@@ -16,6 +18,8 @@ namespace Dynamo.Logging
 
 #if DEBUG
         private const string ANALYTICS_PROPERTY = "UA-78361914-2";
+        private const string BUILD = "";
+        private const string RELEASE = "";
 #else
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
@@ -35,6 +39,9 @@ namespace Dynamo.Logging
             //in the same session so register only if the factory is not registered.
             if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+
+            if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+                service.Register(new ADPTrackerFactory());
 
             StabilityCookie.Startup();
 
@@ -59,6 +66,7 @@ namespace Dynamo.Logging
                 // Unregister the GATrackerFactory only after shutdown is recorded.
                 // Unregister is required, so that the host app can re-start Analytics service.
                 Service.Instance.Unregister(GATrackerFactory.Name);
+                Service.Instance.Unregister(ADPTrackerFactory.Name);
             }
             
             if (null != heartbeat)
