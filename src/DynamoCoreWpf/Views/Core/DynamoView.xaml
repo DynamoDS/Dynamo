@@ -712,6 +712,10 @@
                                   IsChecked="{Binding ShowPreviewBubbles, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowPreviewBubbles}"/>
                         <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowCodeBlockLineNumber, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowCodeBlockNodeLineNumber}"/>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />

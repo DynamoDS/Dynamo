@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Core;
-using Dynamo.Exceptions;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -724,9 +723,16 @@ namespace Dynamo.ViewModels
                         {
                             var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
 
-                            pmExtension.PackageLoader.LoadPackages(new List<Package> {p});
-
-                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                            if (p != null)
+                            {
+                                pmExtension.PackageLoader.LoadPackages(new List<Package> { p });
+                                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                            }
+                            else
+                            {
+                                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+                                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+                            }
                         }
                     }
                     catch (Exception e)

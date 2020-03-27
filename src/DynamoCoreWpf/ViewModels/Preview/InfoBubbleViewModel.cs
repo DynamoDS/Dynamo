@@ -80,6 +80,13 @@ namespace Dynamo.ViewModels
             set { content = value; RaisePropertyChanged("Content"); }
         }
 
+        private Uri documentationLink;
+        public Uri DocumentationLink
+        {
+            get { return documentationLink; }
+            set { documentationLink = value; RaisePropertyChanged(nameof(DocumentationLink)); }
+        }
+
         public Point targetTopLeft;
         public Point TargetTopLeft
         {
@@ -145,6 +152,7 @@ namespace Dynamo.ViewModels
             limitedDirection = Direction.None;
             ConnectingDirection = Direction.None;
             Content = string.Empty;
+            DocumentationLink = null;
             ZIndex = 3;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
@@ -163,6 +171,7 @@ namespace Dynamo.ViewModels
             UpdateContent(data.Text);
             TargetTopLeft = data.TopLeft;
             TargetBotRight = data.BotRight;
+            DocumentationLink = data.Link;
         }
 
         private bool CanUpdateInfoBubbleCommand(object parameter)
@@ -208,7 +217,19 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        private void OpenDocumentationLink(object parameter)
+        {
+            if (parameter is Uri)
+            {
+                var content = new OpenDocumentationLinkEventArgs((Uri)parameter);
+                this.DynamoViewModel.OpenDocumentationLink(content);
+            }
+        }
 
+        private bool CanOpenDocumentationLink(object parameter)
+        {
+            return true;
+        }
 
         // TODO:Kahheng Refactor away these
         #region TODO:Kahheng Refactor away these
@@ -275,27 +296,66 @@ namespace Dynamo.ViewModels
                     Content = FullContent;
                     break;
             }
-        }        
-
+        }
         #endregion
     }
 
     public struct InfoBubbleDataPacket
     {
+        private const string externalLinkIdentifier = "href=";
         public InfoBubbleViewModel.Style Style;
         public Point TopLeft;
         public Point BotRight;
         public string Text;
+        public Uri Link;
         public InfoBubbleViewModel.Direction ConnectingDirection;
 
-        public InfoBubbleDataPacket(InfoBubbleViewModel.Style style, Point topLeft, Point botRight,
-            string text, InfoBubbleViewModel.Direction connectingDirection)
+        public InfoBubbleDataPacket(
+            InfoBubbleViewModel.Style style,
+            Point topLeft,
+            Point botRight,
+            string text,
+            InfoBubbleViewModel.Direction connectingDirection)
         {
             Style = style;
             TopLeft = topLeft;
             BotRight = botRight;
-            Text = text;
+            Link = ParseLinkFromText(text);
+            Text = RemoveLinkFromText(text);
             ConnectingDirection = connectingDirection;
+        }
+
+
+        //Check if has link
+        private static string RemoveLinkFromText(string text)
+        {
+            // if there is no link, we do nothing
+            if (!text.Contains(externalLinkIdentifier)) return text;
+
+            // return the text without the link or identifier
+            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            return split[0];
+        }
+
+        private static Uri ParseLinkFromText(string text)
+        {
+            // if there is no link, we do nothing
+            if (!text.Contains(externalLinkIdentifier)) return null;
+
+            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
+            
+            // if we only have 1 substring, it means there wasn't anything after the identifier
+            if (split.Length <= 1) return null;
+
+            // try to parse the link into a URI and clear the link property on failure
+            try
+            {
+                return string.IsNullOrWhiteSpace(split[1]) ? null : new Uri(split[1], UriKind.RelativeOrAbsolute);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

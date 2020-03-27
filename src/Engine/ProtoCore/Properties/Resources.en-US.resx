@@ -199,7 +199,7 @@
     <value>Type '{0}' of argument '{1}' is not defined</value>
   </data>
   <data name="kArrayOverIndexed" xml:space="preserve">
-    <value>The index is outside the given range</value>
+    <value>The index is outside the given range href=kArrayOverIndexed.html</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
     <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
@@ -226,19 +226,19 @@
     <value>&gt; Runtime warning: {0}\n - \"{1}\" &lt;line: {2}, col: {3}&gt;</value>
   </data>
   <data name="kConvertArrayToNonArray" xml:space="preserve">
-    <value>Converting an array to {0} would cause array rank reduction and is not permitted</value>
+    <value>Converting an array to {0} would cause array rank reduction and is not permitted href=kConvertArrayToNonArray.html</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting a double to an int may lose information</value>
+    <value>Converting a double to an int may lose information. href=testing.html</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
     <value>Asked to convert non-convertible types</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>A cyclic dependency exists between two variables</value>
+    <value>A cyclic dependency exists between two variables href=kCyclicDependency.html</value>
   </data>
   <data name="kDeferencingNonPointer" xml:space="preserve">
-    <value>Internal error, please report: Dereferencing a non-pointer.</value>
+    <value>Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
     <value>The exception type '{0}' is not defined</value>
@@ -277,7 +277,7 @@
     <value>All paths through the method '{0}()' must return a value</value>
   </data>
   <data name="kIndexOutOfRange" xml:space="preserve">
-    <value>Index is out of range</value>
+    <value>Index is out of range href=kIndexOutOfRange.html</value>
   </data>
   <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
     <value>The amount in range expression should be an positive integer</value>
@@ -307,13 +307,13 @@
     <value>Method '{0}()' is already defined</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments</value>
+    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>Method '{0}()' can't be reached from here</value>
   </data>
   <data name="kMethodNotFound" xml:space="preserve">
-    <value>Method '{0}()' not found</value>
+    <value>Method '{0}()' not found href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
     <value>Internal error, please report: Method resolution failure on: {0}().</value>
@@ -328,13 +328,13 @@
     <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>
   </data>
   <data name="kMultipleSymbolFound" xml:space="preserve">
-    <value>Multiple definitions for '{0}' are found as {1}</value>
+    <value>Multiple definitions for '{0}' are found as {1} href=kMultipleSymbolFound.html</value>
   </data>
   <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
     <value>Multiple definitions for '{0}' are found as {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead</value>
+    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>No step size is specified in amount range expression</value>
@@ -349,7 +349,7 @@
     <value>Property '{0}' not found</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found</value>
+    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>An amount operator cannot be used together with a step operator</value>
@@ -881,11 +881,11 @@
     <value>Cannot support Longest and shortest zipped collections</value>
   </data>
   <data name="FailedToCastFromNull" xml:space="preserve">
-    <value>Null value cannot be cast to {0}</value>
+    <value>Null value cannot be cast to {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
     <value>Value cannot be null.
-Parameter name: {0}</value>
+Parameter name: {0}. href=ArgumentNullException.html.</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>No function called {0} on a {1} could be found</value>
@@ -921,19 +921,19 @@ Parameter name: {0}</value>
     <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>Variable {0} has been defined in this code block node. You cannot define a variable more than once.</value>
+    <value>Variable {0} has been defined in this code block node. You cannot define a variable more than once. href=testing.html</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
     <value>Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed.</value>
   </data>
   <data name="InvalidArrayIndexType" xml:space="preserve">
-    <value>List indices must be numeric.</value>
+    <value>List indices must be numeric. href=InvalidArrayIndexType.html.</value>
   </data>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
     <value>Cannot convert List to Dictionary type.</value>
   </data>
   <data name="NonOverloadMethodResolutionError" xml:space="preserve">
-    <value>{0} expects argument type(s) ({1}), but was called with ({2}).</value>
+    <value>{0} expects argument type(s) ({1}), but was called with ({2}). href=NonOverloadMethodResolutionError.html</value>
   </data>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
     <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>

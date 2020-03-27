@@ -76,6 +76,9 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="AnalyticsTests.cs" />
+    <Compile Include="Configuration\ContextTests.cs" />
+    <Compile Include="Configuration\ExecutionSessionTests.cs" />
+    <Compile Include="Configuration\PreferenceSettingsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />

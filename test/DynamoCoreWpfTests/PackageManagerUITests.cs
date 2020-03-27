@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows;
@@ -14,6 +16,25 @@ namespace DynamoCoreWpfTests
     public class PackageManagerUITests : SystemTestBase
     {
         #region Utility functions
+
+        protected void LoadPackage(string packageDirectory)
+        {
+            Model.PreferenceSettings.CustomPackageFolders.Add(packageDirectory);
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+        }
+
+        protected PackageLoader GetPackageLoader()
+        {
+            var extensions = Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>();
+            if (extensions.Any())
+            {
+                return extensions.First().PackageLoader;
+            }
+
+            return null;
+        }
 
         public IEnumerable<Window> GetWindowEnumerable(WindowCollection windows)
         {
@@ -231,6 +252,27 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(Dynamo.Wpf.Properties.Resources.PackageSearchViewSearchTextBox, searchViewModel.SearchBoxPrompt);
+        }
+
+        [Test]
+        public void PackageManagerCrashTestOnDownloadingInvalidPackage()
+        {
+            string packageDirectory = Path.Combine(GetTestDirectory(ExecutingDirectory), @"pkgs\Autodesk Steel Package");
+
+            try
+            {
+                LoadPackage(packageDirectory);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed to load the package: "+ e);
+            }
+
+            var loader = GetPackageLoader();
+            Assert.AreEqual(loader.LocalPackages.Count(), 0);
+
+            ViewModel.OnRequestManagePackagesDialog(null, null);
+            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         }
 
         #endregion

@@ -160,7 +160,7 @@
     <value>One or more input types are not matching. Lists as keys are not supported.</value>
   </data>
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
-    <value>Number of items does not match the number of keys.</value>
+    <value>Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>

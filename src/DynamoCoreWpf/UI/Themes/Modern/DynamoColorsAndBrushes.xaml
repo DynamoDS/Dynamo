@@ -61,6 +61,10 @@
     <!-- Node colors in selected state -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
+    <!-- NodeLabel background color -->
+    <SolidColorBrush x:Key="renamedLabelBackground"
+                     Color="#FCDC95" />
+
     <!--Update Manager-->
     <SolidColorBrush x:Key="UpdateManagerUpdateAvailableBrush" Color="OrangeRed"/>
     <SolidColorBrush x:Key="UpdateManagerUpToDateBrush" Color="Green"/>
