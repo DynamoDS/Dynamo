@@ -3,12 +3,11 @@
 #define MESH
 #include"Common.hlsl"
 #include"DataStructs.hlsl"
-#include"DynamoCommonStructures.hlsl"
 #pragma pack_matrix( row_major )
 
-PSInputCustom main(VSInput input)
+PSInput main(VSInput input)
 {
-    PSInputCustom output;
+    PSInput output;
 
     //our flags are packed in this order:
     /* 
@@ -57,9 +56,6 @@ PSInputCustom main(VSInput input)
 
     //set normal for interpolation	
     output.n = normalize(mul(input.n, (float3x3)mWorld));
-
-    //send our flags through to the frag shader
-    output.customParams.x = vParams.x;
 
     return output;
 }
