@@ -87,6 +87,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="packageInfo"></param>
         /// <returns></returns>
+        [Obsolete("This should no longer be used. Remove in 3.0.")]
         internal PackageHeader GetPackageHeader(IPackageInfo packageInfo)
         {
             var header = FailFunc.TryExecute(() =>
@@ -105,6 +106,7 @@ namespace Dynamo.PackageManager
         /// <param name="header"></param>
         /// <param name="version"></param>
         /// <returns></returns>
+        [Obsolete("No longer used. Remove in 3.0.")]
         internal PackageVersion GetGregPackageVersion(PackageHeader header, Version version)
         {
             foreach (var v in header.versions)
@@ -115,6 +117,30 @@ namespace Dynamo.PackageManager
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets the metadata for a specific version of a package.
+        /// </summary>
+        /// <param name="packageInfo">Name and version of a package</param>
+        /// <returns>Package version metadata</returns>
+        internal PackageVersion GetPackageVersionHeader(IPackageInfo packageInfo)
+        {
+            var req = new HeaderVersionDownload("dynamo", packageInfo.Name, packageInfo.Version.ToString());
+            var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            return pkgResponse.content;
+        }
+
+        /// <summary>
+        /// Gets the metadata for a specific version of a package.
+        /// </summary>
+        /// <param name="packageInfo">Name and version of a package</param>
+        /// <returns>Package version metadata</returns>
+        internal PackageVersion GetPackageVersionHeader(string id, string version)
+        {
+            var req = new HeaderVersionDownload(id, version);
+            var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            return pkgResponse.content;
         }
 
         /// <summary>
@@ -202,6 +228,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        [Obsolete()]
         internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
         {
             var pkgDownload = new HeaderDownload(id);

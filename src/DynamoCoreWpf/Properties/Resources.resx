@@ -952,11 +952,7 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of {0} than you are currently using:
-
-{1}
-
-Do you want to continue?</value>
+    <value>The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
     <value>You must select at least one custom node.</value>
@@ -2232,6 +2228,10 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
+    <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
   </data>
   <data name="NodeTooltipDescription" xml:space="preserve">
     <value>Description: </value>

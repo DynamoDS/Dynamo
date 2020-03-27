@@ -33,6 +33,9 @@ namespace Dynamo.PackageManager
         private string _name;
         public string Name { get { return Header != null ? Header.name : _name; } set { _name = value; } }
 
+        private string _id;
+        public string Id { get { return Header != null ? Header._id : _id; } set { _id = value; } }
+
         private string _downloadPath;
         public string DownloadPath { get { return _downloadPath; } set { _downloadPath = value; RaisePropertyChanged("DownloadPath"); } }
 
@@ -63,10 +66,10 @@ namespace Dynamo.PackageManager
             this.DownloadPath = filePath;
         }
 
-        private string BuildInstallDirectoryString(string packagesDirectory)
+        private static string BuildInstallDirectoryString(string packagesDirectory, string name)
         {
             // <user>/appdata/roaming/packages/package_name
-            return packagesDirectory + @"\" + this.Name.Replace("/", "_").Replace(@"\", "_");
+            return packagesDirectory + @"\" + name.Replace("/", "_").Replace(@"\", "_");
         }
 
         public bool Extract(DynamoModel dynamoModel, string installDirectory, out Package pkg)
@@ -80,10 +83,21 @@ namespace Dynamo.PackageManager
                 throw new Exception(Properties.Resources.PackageEmpty);
             }
 
+            // provide handle to installed package 
+            if (Header != null)
+                pkg = new Package(unzipPath, Header.name, VersionName, Header.license);
+            else
+                pkg = Package.FromDirectory(unzipPath, dynamoModel.Logger);
+
+            if (pkg == null)
+            {
+                return false;
+            }
+
             if (String.IsNullOrEmpty(installDirectory))
                 installDirectory = dynamoModel.PathManager.DefaultPackagesDirectory;
 
-            var installedPath = BuildInstallDirectoryString(installDirectory);
+            var installedPath = BuildInstallDirectoryString(installDirectory, pkg.Name);
             Directory.CreateDirectory(installedPath);
 
             // Now create all of the directories
@@ -94,11 +108,8 @@ namespace Dynamo.PackageManager
             foreach (string newPath in Directory.GetFiles(unzipPath, "*.*", SearchOption.AllDirectories))
                 File.Copy(newPath, newPath.Replace(unzipPath, installedPath));
 
-            // provide handle to installed package 
-            if(Header != null)
-                pkg = new Package(installedPath, Header.name, VersionName, Header.license);
-            else
-                pkg = Package.FromDirectory(installedPath, dynamoModel.Logger);
+            // Update root directory to final path
+            pkg.RootDirectory = installedPath;
 
             return true;
         }
