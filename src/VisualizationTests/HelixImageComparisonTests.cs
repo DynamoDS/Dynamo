@@ -70,7 +70,7 @@ namespace WpfVisualizationTests
             return bitmap;
         }
 
-        private string GenerateTestDataPathFromTest(string testname,bool debug = false)
+        private string GenerateImagePathFromTest(string testname,bool debug = false)
         {
              var debugstring = debug ? "debug" : string.Empty;
              var fileName = testname+debugstring+".png";
@@ -83,7 +83,7 @@ namespace WpfVisualizationTests
         private void RenderCurrentViewAndCompare(string testName)
         {
             DispatcherUtil.DoEvents();
-            var path = GenerateTestDataPathFromTest(testName);
+            var path = GenerateImagePathFromTest(testName);
             var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View,1024, 1024);
 #if UPDATEIMAGEDATA
             UpdateTestData(path, bitmapsource);
@@ -99,21 +99,21 @@ namespace WpfVisualizationTests
 
             compareImageColors(refbitmap, newImage);
         }
-        private static void compareImageColors(Bitmap image1,Bitmap image2)
+        private static void compareImageColors(Bitmap expectedImage,Bitmap actualImage)
         {
-            Assert.AreEqual(image1.Width, image2.Width);
-            Assert.AreEqual(image1.Height, image2.Height);
-            Assert.AreEqual(image1.PixelFormat, image2.PixelFormat);
+            Assert.AreEqual(expectedImage.Width, actualImage.Width);
+            Assert.AreEqual(expectedImage.Height, actualImage.Height);
+            Assert.AreEqual(expectedImage.PixelFormat, actualImage.PixelFormat);
 
             //x,y,expected,result
             var differences = new List<Tuple<int, int, Color, Color>>();
 
-            for (var x = 0; x < image1.Width; x++)
+            for (var x = 0; x < expectedImage.Width; x++)
             {
-                for (var y = 0; y < image1.Height; y++)
+                for (var y = 0; y < expectedImage.Height; y++)
                 {
-                    var expectedCol = image1.GetPixel(x, y);
-                    var otherCol = image2.GetPixel(x, y);
+                    var expectedCol = expectedImage.GetPixel(x, y);
+                    var otherCol = actualImage.GetPixel(x, y);
                     if((ColorDistance(expectedCol,otherCol) > 128))
                     {
                         differences.Add(Tuple.Create(x, y, expectedCol, otherCol));
@@ -122,7 +122,7 @@ namespace WpfVisualizationTests
                     }
                 }
             }
-            var diff = CalculatePercentDiff(image1, differences);
+            var diff = CalculatePercentDiff(expectedImage, differences);
             Console.WriteLine($"% difference by out of range pixels was {(diff * 100).ToString("N" + 3)}%");
             Assert.LessOrEqual(diff, .01);
 
