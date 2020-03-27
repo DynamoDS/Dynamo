@@ -260,8 +260,8 @@ namespace Dynamo.PackageManager
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
-            var header = GetPackageMaintainers(pkg);
-            return (header != null) && (header.maintainers.Any(maintainer => maintainer.username.Equals(username)));
+            var mnt = GetPackageMaintainers(pkg);
+            return (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
         }
     }
 }
