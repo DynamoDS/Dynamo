@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Diagnostics;
+using System.Windows.Navigation;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 
@@ -112,6 +113,22 @@ namespace Dynamo.ViewModels
             {
                 RequestShowHideGallery(showGallery);
             }
+        }
+
+        public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink;
+        public virtual void OnRequestOpenDocumentationLink(OpenDocumentationLinkEventArgs e)
+        {
+            // let any registered documentation link handlers process the request
+            // if no handlers are registered, we silently ignore the event
+            // note we don't fall back to handling the link with the default OS handler due to security concerns
+            RequestOpenDocumentationLink?.Invoke(e);
+        }
+
+        public event Action RequestShowHideSidebar;
+        public virtual void OnShowHideSidebar(bool show)
+        {
+            if (RequestShowHideSidebar != null)
+                RequestShowHideSidebar();
         }
 
         internal event RequestViewOperationHandler RequestViewOperation;

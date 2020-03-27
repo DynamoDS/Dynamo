@@ -121,7 +121,7 @@
     <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed.</value>
+    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
     <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>

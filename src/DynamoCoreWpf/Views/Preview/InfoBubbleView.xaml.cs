@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.Configuration;
 using Dynamo.UI;
@@ -92,7 +95,9 @@ namespace Dynamo.Controls
         // eventually removing the view. This is the result of the host canvas being 
         // virtualized. This property is used by InfoBubbleView to determine if it should 
         // still continue to access the InfoBubbleViewModel that it is bound to.
-        private bool IsDisconnected { get { return (this.ViewModel == null); } }    
+        private bool IsDisconnected { get { return (this.ViewModel == null); } }
+
+        private Hyperlink hyperlink;
 
         #endregion
 
@@ -443,9 +448,21 @@ namespace Dynamo.Controls
                 {
                     content = Wpf.Properties.Resources.InfoBubbleError + content;
                 }
+
                 TextBox textBox = GetNewTextBox(content);
                 ContentContainer.Children.Add(textBox);
+
+                if (viewModel.DocumentationLink != null)
+                {
+                    TextBlock linkBlock = GetHyperlinkTextBlock();
+                    ContentContainer.Children.Add(linkBlock);
+                }
             }
+        }
+
+        private void RequestNavigateToDocumentationLinkHandler(object sender, RequestNavigateEventArgs e)
+        {
+            this.viewModel.OpenDocumentationLinkCommand.Execute(e.Uri);
         }
 
         private TextBox GetNewTextBox(string text)
@@ -477,6 +494,50 @@ namespace Dynamo.Controls
             return textBox;
         }
 
+        private void UpdateHyperlink()
+        {
+            // if we have already generated a hyperlink then don't create a new one, but simply update the link uri
+            // this is to avoid losing track of objects that have event handler subscriptions
+            if (this.hyperlink != null)
+            {
+                this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+                return;
+            }
+
+            this.hyperlink = new Hyperlink();
+            this.hyperlink.NavigateUri = viewModel.DocumentationLink;
+            this.hyperlink.RequestNavigate += RequestNavigateToDocumentationLinkHandler;
+            this.hyperlink.Inlines.Add(Wpf.Properties.Resources.InfoBubbleDocumentationLinkText);
+        }
+
+        private TextBlock GetHyperlinkTextBlock()
+        {
+            this.UpdateHyperlink();
+
+            var font = SharedDictionaryManager.DynamoModernDictionary["OpenSansRegular"];
+            TextBlock linkBlock = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
+
+                Margin = ContentMargin,
+                MaxHeight = ContentMaxHeight,
+                MaxWidth = ContentMaxWidth,
+
+                Foreground = ContentForeground,
+                FontWeight = ContentFontWeight,
+                FontSize = ContentFontSize,
+
+                Background = Brushes.Transparent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+
+                FontFamily = font as FontFamily
+            };
+
+            linkBlock.Inlines.Add(this.hyperlink);
+
+            return linkBlock;
+        }
         #endregion
 
         #region Update Shape
@@ -873,6 +934,10 @@ namespace Dynamo.Controls
         {
             viewModel.PropertyChanged -= ViewModel_PropertyChanged;
             viewModel.RequestAction -= InfoBubbleRequestAction;
+            
+            // make sure we unsubscribe from handling the hyperlink click event
+            if (this.hyperlink != null)
+                this.hyperlink.RequestNavigate -= RequestNavigateToDocumentationLinkHandler;
         }
 
         #endregion
