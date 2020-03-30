@@ -29,7 +29,7 @@
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
   <SelectInRegionCommand X="163" Y="160" Width="0" Height="0" IsCrossSelection="false" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <SelectInRegionCommand X="202" Y="97" Width="299" Height="427" IsCrossSelection="true" />
+  <SelectInRegionCommand X="212" Y="97" Width="299" Height="427" IsCrossSelection="true" />
   <ConvertNodesToCodeCommand NodeId="3a379c45-d128-467b-a530-2b741d330dc4" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
 </Commands>

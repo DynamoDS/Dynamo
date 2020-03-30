@@ -2227,4 +2227,10 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>Description: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>Original node name: </value>
+  </data>
 </root>

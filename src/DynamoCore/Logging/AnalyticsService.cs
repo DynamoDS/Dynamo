@@ -1,6 +1,5 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using System;
 
 namespace Dynamo.Logging
 {
