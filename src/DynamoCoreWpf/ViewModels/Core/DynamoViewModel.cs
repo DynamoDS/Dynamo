@@ -2264,6 +2264,11 @@ namespace Dynamo.ViewModels
             ZoomInCommand.RaiseCanExecuteChanged();
         }
 
+        internal void OpenDocumentationLink(object parameter)
+        {
+            OnRequestOpenDocumentationLink((OpenDocumentationLinkEventArgs)parameter);
+        }
+
         private bool CanZoomIn(object parameter)
         {
             return CurrentSpaceViewModel.CanZoomIn;

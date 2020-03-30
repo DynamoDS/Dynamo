@@ -300,7 +300,11 @@ namespace Dynamo.PackageManager
 
             foreach (var pkg in enumerable)
             {
-                TryLoadPackageIntoLibrary(pkg);
+                // If the pkg is null, then don't load that package into the Library.
+                if (pkg != null)
+                {
+                    TryLoadPackageIntoLibrary(pkg);
+                }
             }
 
             var assemblies =

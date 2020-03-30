@@ -48,5 +48,16 @@ namespace Dynamo.Wpf.Extensions
         {
             dynamoViewModel.ForceRunExpressionCommand.Execute(showErrors);
         }
+
+        /// <summary>
+        /// Open a documentation link in the sidebar DocumentationBrowser embedded browser.
+        /// Link should ideally point to a local HTML file, but can also point to a web address.
+        /// </summary>
+        /// <param name="link">The Uri to the resource do display in the DocumentationBrowser.</param>
+        public void OpenDocumentationLinkCommand(Uri link)
+        {
+            var eventArgs = new OpenDocumentationLinkEventArgs(link);
+            dynamoViewModel.OpenDocumentationLink(eventArgs);
+        }
     }
 }
