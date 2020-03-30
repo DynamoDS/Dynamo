@@ -531,7 +531,7 @@ input : var[]..[]
 value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
-    <value>Custom node definition is not loaded!</value>
+    <value>Custom node definition is not loaded! href=CustomNodeNotLoaded.html</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
     <value>Run whenever an input to the graph is updated.</value>
@@ -588,7 +588,7 @@ value : bool = false</value>
     <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
   </data>
   <data name="NothingIsSelectedWarning" xml:space="preserve">
-    <value>Nothing is selected.</value>
+    <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
     <value>Search</value>
