@@ -643,10 +643,17 @@ namespace Dynamo.ViewModels
 
                 // form header version pairs and download and install all packages
                 dependencyVersionHeaders
-                    .Select((dep, i) => new PackageDownloadHandle()
-                    {
-                        Id = version.full_dependency_ids[i]._id,
-                        VersionName = dep.version
+                    .Select((dep, i) => {
+                        // Note that Name will be empty when calling from DownloadAndInstallPackage.
+                        // This is currently not an issue, as the code path belongs to the Workspace Dependency
+                        // extension, which does not display dependencies names.
+                        var dependencyPackageHeader = version.full_dependency_ids[i];
+                        return new PackageDownloadHandle()
+                        {
+                            Id = dependencyPackageHeader._id,
+                            VersionName = dep.version,
+                            Name = dependencyPackageHeader.name
+                        };
                     })
                     .ToList()
                     .ForEach(x => DownloadAndInstall(x, downloadPath));
