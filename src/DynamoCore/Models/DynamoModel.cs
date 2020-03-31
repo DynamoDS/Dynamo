@@ -1386,7 +1386,7 @@ namespace Dynamo.Models
         private void UpdateCustomNodeDefinition(CustomNodeDefinition definition)
         {
             RegisterCustomNodeDefinitionWithEngine(definition);
-            //MarkAllDependenciesAsModified(definition);
+            MarkAllDependenciesAsModified(definition);
         }
 
         /// <summary>
