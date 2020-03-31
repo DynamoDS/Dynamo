@@ -44,6 +44,11 @@ namespace Dynamo.Engine
         internal static event Action VMLibrariesReset;
 
         /// <summary>
+        /// This flag is used to check if any packages are currently being loaded, and to disable any executions that are triggered before the package loading is completed. See DYN-2101 for more info.
+        /// </summary>
+        internal static Boolean DisableRun = false;
+
+        /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
         /// </summary>
         internal event Action<TraceReconciliationEventArgs> TraceReconcliationComplete;
