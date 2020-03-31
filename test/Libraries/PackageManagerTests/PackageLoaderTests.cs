@@ -497,7 +497,7 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> { pkg });
 
-            // Assert that the Run is disabled temporatily when the package is still loading. 
+            // Assert that the Run is disabled temporarily when the package is still loading. 
             //Assert.IsTrue(RunDisabledWhilePackageLoading);
 
             // Assert that the DisableRun flag is set back to false, once the package loading is completed. 
