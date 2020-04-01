@@ -127,6 +127,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
+    <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
+    <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\WorkspaceDependencyViewExtensionTests.cs" />
     <Compile Include="WatchNodeTests.cs" />
     <Compile Include="WebRequestTests.cs" />
@@ -184,6 +186,10 @@
     <Compile Include="WorkspaceSaving.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">
+      <Project>{BE6D0644-05AF-4580-8597-B95920CE923F}</Project>
+      <Name>DocumentationBrowserViewExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -295,6 +301,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

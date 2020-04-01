@@ -10,6 +10,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand showFullContentCommand;
         private DelegateCommand showCondensedContentCommand;
         private DelegateCommand changeInfoBubbleStateCommand;
+        private DelegateCommand openDocumentationLinkCommand;
 
         public DelegateCommand UpdateContentCommand
         {
@@ -78,6 +79,18 @@ namespace Dynamo.ViewModels
                     changeInfoBubbleStateCommand = new DelegateCommand(ChangeInfoBubbleState, CanChangeInfoBubbleState);
                 }
                 return changeInfoBubbleStateCommand;
+            }
+        }
+
+        public DelegateCommand OpenDocumentationLinkCommand
+        {
+            get
+            {
+                if (openDocumentationLinkCommand == null)
+                {
+                    openDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink, CanOpenDocumentationLink);
+                }
+                return openDocumentationLinkCommand;
             }
         }
 

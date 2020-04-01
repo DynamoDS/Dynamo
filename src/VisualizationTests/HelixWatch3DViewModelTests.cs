@@ -776,7 +776,7 @@ namespace WpfVisualizationTests
             Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
         }
 
-        [Test]
+       [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
@@ -909,7 +909,7 @@ namespace WpfVisualizationTests
             var totalExecutionTime = (endTime - startTime).TotalSeconds;
             Assert.LessOrEqual(totalExecutionTime, 20);
         }
-
+       
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {

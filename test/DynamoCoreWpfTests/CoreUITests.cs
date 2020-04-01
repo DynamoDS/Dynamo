@@ -723,6 +723,7 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(content, infoBubble.Content);
                 Assert.AreEqual(InfoBubbleViewModel.Style.Error, infoBubble.InfoBubbleStyle);
                 Assert.AreEqual(InfoBubbleViewModel.Direction.Bottom, infoBubble.ConnectingDirection);
+                Assert.IsNull(infoBubble.DocumentationLink);
             }
         }
 

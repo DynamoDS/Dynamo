@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta charset="UTF-8" />
+</head>
+
+<style>
+  body {
+      color: white;
+      font-size: 20px;
+      font-family: "Artifakt Element", "Open Sans", sans-serif;
+      src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+      background-color: #353535;
+      padding: 1%;
+      overflow-x: hidden;
+      overflow-y: hidden;
+  }
+  
+  a {
+      color: lightgray;
+      cursor: pointer;
+      background-color: transparent;
+  }
+
+  hr { 
+    border: none; 
+    border-bottom: 1px solid #545454;
+  } 
+
+  </style>
+  
+  <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+  <!-- and custom styling in Dynamo sidepanel. -->
+  <body>
+  
+    <h2>Dynamo Documentation Browser</h2>
+    <hr >
+    <p>This sidebar will display any available documentation for the error selected.</p>
+    <br />
+    <br />
+    <h4>How do you select an error to view its documentation ?</h4>
+    <p>Click the "Read more..." link in the info bubble above a node that has a warning or error.</p>
+    <br />
+    <h4>No "Read more" link visible?</h4>
+    <p>This means the developers of the node (Dynamo team or third parties) have not included a documentation link for that error.</p>
+    <br />
+    <h4>Clicked "Read more" but still seeing this?</h4>
+    <p>This can happen if the documentation content was empty.</p>
+  
+  </body>
