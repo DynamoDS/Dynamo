@@ -21,24 +21,44 @@ namespace Dynamo.Tests.Migrations
         {
             //Arrange
             DynamoModel.EnableMigrationLogging = true;
-            string openPath = Path.Combine(TestDirectory, @"core\nodeLocationTest.dyn");
+            string openPath = string.Empty;
+            string tempPath = string.Empty;
 
-            //Act
-            // Open/Run XML test graph          
-            RunModel(openPath);
+            try
+            {
+                openPath = Path.Combine(TestDirectory, @"core\nodeLocationTest.dyn");
+                tempPath = Path.Combine(Path.GetTempPath(), "nodeLocationTest.dyn");
 
-            // Save/Open/Run JSON graph
-            string tempPath = Path.Combine(Path.GetTempPath(), "nodeLocationTest.dyn");
-            CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
-            CurrentDynamoModel.OpenFileFromPath(tempPath);
-            CurrentDynamoModel.CurrentWorkspace.RequestRun();
+                //Act
+                // Open/Run XML test graph          
+                RunModel(openPath);
 
-            //Assert
-            //Check that the file exists
-            Assert.IsTrue(File.Exists(Path.Combine(TestDirectory, @"core\MigrationLog_nodeLocationTest.xml")));//Validate the MigrationReport.WriteToXmlFile
+                // Save/Open/Run JSON graph              
+                CurrentDynamoModel.CurrentWorkspace.Save(tempPath);
+                CurrentDynamoModel.OpenFileFromPath(tempPath);
+                CurrentDynamoModel.CurrentWorkspace.RequestRun();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            } 
+            finally
+            {
+                //Assert
+                //This flag needs to be set to false because if not the next test cases will start to fail
+                DynamoModel.EnableMigrationLogging = false;
 
-            // Delete temp graph file
-            File.Delete(tempPath);
+                //Check that the file exists
+                Assert.IsTrue(File.Exists(Path.Combine(TestDirectory, @"core\MigrationLog_nodeLocationTest.xml")));//Validate the MigrationReport.WriteToXmlFile
+
+                if (File.Exists(tempPath))
+                {
+                    // Delete temp graph file
+                    File.Delete(tempPath);
+                }
+
+            }
+            
         }
     }
 }
