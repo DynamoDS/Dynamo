@@ -58,6 +58,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
+		[Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithContent()
         {
             // Mock Dynamo version
