@@ -177,7 +177,7 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
-            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version };
+            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version, BuildId = "CB159AA3-2F20-4791-AE8C-8939E90C9600", ReleaseId = "2.5.0", MasterId = "{4C7B248C-56D3-488F-8E23-8CAFD2651968}" };
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Dynamo.Logging
             {
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product,
-                    new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+                    new UserInfo(Session.UserId), new LicenseInfo("", "", "", "", 0, 0, 0), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
             }

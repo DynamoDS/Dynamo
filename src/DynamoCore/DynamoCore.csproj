@@ -72,6 +72,10 @@ limitations under the License.
     <DefineConstants>$(DefineConstants);USE_DSENGINE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Analytics.Net.ADP, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\extern\Analytics.NET\Analytics.Net.ADP.dll</HintPath>
+    </Reference>
     <Reference Include="Analytics.NET.Core">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
@@ -387,7 +391,7 @@ limitations under the License.
       <ExternLibG224 Include="$(SolutionDir)..\extern\LibG_224_0_1\*" />
       <ExternLibG2244 Include="$(SolutionDir)..\extern\LibG_224_4_0\*" />
       <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
-	  <ExternLibG226 Include="$(SolutionDir)..\extern\LibG_226_0_0\*" />
+      <ExternLibG226 Include="$(SolutionDir)..\extern\LibG_226_0_0\*" />
       <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
@@ -407,7 +411,7 @@ limitations under the License.
     <Copy SourceFiles="@(ExternLibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(ExternLibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
     <Copy SourceFiles="@(ExternLibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
-	<Copy SourceFiles="@(ExternLibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
+    <Copy SourceFiles="@(ExternLibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
     <Copy SourceFiles="@(ExternLibG)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
