@@ -709,4 +709,7 @@ Restart Dynamo to complete the uninstall.</value>
   <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
     <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
   </data>
+  <data name="Preview3DOutageTitle" xml:space="preserve">
+    <value>3D preview has been deactivated</value>
+  </data>
 </root>

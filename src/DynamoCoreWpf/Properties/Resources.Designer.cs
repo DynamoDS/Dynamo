@@ -19,7 +19,7 @@ namespace Dynamo.Wpf.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -4649,6 +4649,24 @@ namespace Dynamo.Wpf.Properties {
         public static string QueryMember {
             get {
                 return ResourceManager.GetString("QueryMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please check if the amount of generated geometry is correct. If it is, it might be necessary to disable preview for some nodes before reactivating the background 3D preview..
+        /// </summary>
+        public static string RenderingMemoryOutageDescription {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo ran out of memory trying to render geometry.
+        /// </summary>
+        public static string RenderingMemoryOutageSummary {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageSummary", resourceCulture);
             }
         }
         
