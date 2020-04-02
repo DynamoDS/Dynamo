@@ -977,13 +977,13 @@ namespace ProtoScript.Runners
             while (workingStack.Any())
             {
                 var bNode = workingStack.Pop() as BinaryExpressionNode;
-                if (bNode == null)
+                if (bNode == null || bNode.Optr != Operator.assign)
                 {
                     continue;
                 }
 
                 IdentifierNode leftNode = bNode.LeftNode as IdentifierNode;
-                if (leftNode == null || leftNode.ArrayDimensions != null  || bNode.Optr != Operator.assign)
+                if (leftNode == null || leftNode.ArrayDimensions != null)
                 {
                     continue;
                 }
