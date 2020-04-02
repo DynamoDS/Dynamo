@@ -14,14 +14,15 @@
              MouseLeave="OnNodeViewMouseLeave"
              PreviewMouseMove="OnNodeViewMouseMove"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown">
-    
+
     <Grid Name="grid"
           x:FieldModifier="public"
           HorizontalAlignment="Left">
-
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
-            <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNameHeight}"></RowDefinition>
+            <RowDefinition Height="Auto"
+                           MaxHeight="{StaticResource NodeNameHeight}">
+            </RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -50,7 +51,7 @@
                           Command="{Binding Path=UngroupCommand}" />
                 <MenuItem Name="addtoGroup"
                           Header="{x:Static p:Resources.ContextAddGroupFromSelection}"
-                          Command="{Binding Path=AddToGroupCommand}" />               
+                          Command="{Binding Path=AddToGroupCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}"
                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter},Mode=OneWay}">
                     <MenuItem IsCheckable="True"
@@ -76,12 +77,12 @@
                 </MenuItem>
                 <MenuItem Name="nodeIsFrozen"
                           Header="{x:Static p:Resources.NodesRunStatus}"
-                          IsChecked="{Binding IsFrozenExplicitly,Mode=OneWay}"   
+                          IsChecked="{Binding IsFrozenExplicitly,Mode=OneWay}"
                           IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}"
                           Command="{Binding Path=ToggleIsFrozenCommand}" />
                 <MenuItem Name="isVisible_cm"
                           Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"                          
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
                           Command="{Binding Path=ToggleIsVisibleCommand}"
                           Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem Name="isDisplayLabelsEnabled_cm"
@@ -115,21 +116,24 @@
         </Grid.ContextMenu>
 
         <Rectangle Name="frozenBorder"
-                Grid.Row="1"
-                Grid.ColumnSpan="3"
-                Grid.RowSpan="3"
-                Canvas.ZIndex="1"
-                Margin="-5,-5,-5,-5"
-                StrokeDashArray="2"
-                StrokeThickness="3"
-                Opacity=".5"
-                Stroke="#444">
+                   Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Grid.RowSpan="3"
+                   Canvas.ZIndex="1"
+                   Margin="-5,-5,-5,-5"
+                   StrokeDashArray="2"
+                   StrokeThickness="3"
+                   Opacity=".5"
+                   Stroke="#444">
             <Rectangle.Style>
                 <Style TargetType="{x:Type Rectangle}">
-                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="Visibility"
+                            Value="Hidden" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible"/>
+                        <DataTrigger Binding="{Binding IsFrozen}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -182,20 +186,22 @@
             <Rectangle.Style>
                 <Style TargetType="{x:Type Rectangle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                            <Setter Property="Opacity" Value ="0.5"/>
+                        <DataTrigger Binding="{Binding IsFrozen}"
+                                     Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Rectangle.Style>
-            <Rectangle.Fill>                
+            <Rectangle.Fill>
                 <Binding Path="State"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          ConverterParameter="BodyBackground"
-                         Converter="{StaticResource StateToColorConverter}">                     
-                </Binding>      
-                
+                         Converter="{StaticResource StateToColorConverter}">
+                </Binding>
+
             </Rectangle.Fill>
         </Rectangle>
 
@@ -218,8 +224,10 @@
             <Rectangle.Style>
                 <Style TargetType="{x:Type Rectangle}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                            <Setter Property="Opacity" Value ="0.5"/>
+                        <DataTrigger Binding="{Binding IsFrozen}"
+                                     Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.5" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -236,9 +244,31 @@
                 <dynui:DynamoToolTip AttachmentSide="Top"
                                      Style="{DynamicResource ResourceKey=SLightToolTip}">
                     <Grid>
-                        <TextBlock MaxWidth="320"
-                                   TextWrapping="Wrap"
-                                   Text="{Binding Path=Description}"></TextBlock>
+                        <StackPanel Orientation="Vertical"
+                                    MaxWidth="320">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{x:Static p:Resources.NodeTooltipOriginalName}">
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Path=OriginalName}"
+                                           FontWeight="SemiBold">
+                                </TextBlock>
+                            </StackPanel>
+                            <!--Space for splitting the original name and description-->
+                            <StackPanel>
+                                <TextBlock Text="&#xD;" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{x:Static p:Resources.NodeTooltipDescription}">
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Path=Description}"
+                                           FontWeight="Normal">
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
                     </Grid>
                 </dynui:DynamoToolTip>
             </Rectangle.ToolTip>
@@ -262,32 +292,83 @@
             </Border.Visibility>
         </Border>
 
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1"
+                    Grid.ColumnSpan="3"
+                    Panel.ZIndex="12"
+                    HorizontalAlignment="Center"
+                    Margin="3 0 3 0">
+            <TextBlock Name="NameBlock"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Stretch"
+                       Grid.ColumnSpan="3"
+                       Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                       Padding="5"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       FontFamily="{StaticResource OpenSansSemibold}"
+                       TextAlignment="Center"
+                       IsHitTestVisible="False"
+                       Background="{x:Null}"
+                       Style="{StaticResource SZoomFadeText}">
+                <TextBlock.Foreground>
+                    <Binding Path="State"
+                             UpdateSourceTrigger="PropertyChanged"
+                             Mode="OneWay"
+                             ConverterParameter="HeaderForeground"
+                             Converter="{StaticResource StateToColorConverter}">
+                    </Binding>
+                </TextBlock.Foreground>
+            </TextBlock>
 
-        <TextBlock Name="NameBlock"
-                   Grid.Row="1"
-                   Grid.ColumnSpan="3"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Stretch"
-                   Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
-                   Padding="5"
-                   FontSize="13"
-                   FontWeight="SemiBold"
-                   FontFamily="{StaticResource OpenSansSemibold}"
-                   TextAlignment="Center"
-                   IsHitTestVisible="False"
-                   Canvas.ZIndex="12"
-                   Height="{StaticResource NodeNameHeight}"
-                   Background="{x:Null}"
-                   Style="{StaticResource SZoomFadeText}">
-            <TextBlock.Foreground>
-                <Binding Path="State"
-                         UpdateSourceTrigger="PropertyChanged"
-                         Mode="OneWay"
-                         ConverterParameter="HeaderForeground"
-                         Converter="{StaticResource StateToColorConverter}">
-                </Binding>
-            </TextBlock.Foreground>
-        </TextBlock>
+            <Border CornerRadius="3,3,3,3"
+                    Height="12"
+                    Width="Auto"
+                    Background="{StaticResource renamedLabelBackground}"
+                    Margin="3 0 3 0">
+                <Border.Style>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsRenamed}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="Renamed"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontStyle="Italic"
+                           FontSize="8"
+                           Width="Auto"
+                           FontFamily="Consolas"
+                           Margin="2 0 2 0">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility"
+                                    Value="Hidden" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsRenamed}"
+                                             Value="True">
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Border>
+
+        </StackPanel>
+
+        
+
+
+
 
         <!-- INPUT PORTS -->
         <ItemsControl Name="inputPortControl"
@@ -345,16 +426,16 @@
 
             <Grid>
                 <TextBlock Name="lacingOptionTextBlock"
-                       Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
-                       ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                       Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
-                       FontFamily="Tahoma"
-                       FontSize="8"
-                       Margin="5"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Foreground="#99000000"
-                       FontWeight="Bold" />
+                           Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                           ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                           Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}"
+                           FontFamily="Tahoma"
+                           FontSize="8"
+                           Margin="5"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Foreground="#99000000"
+                           FontWeight="Bold" />
             </Grid>
         </StackPanel>
 
@@ -434,7 +515,7 @@
                 Grid.ColumnSpan="3"
                 Margin="0,4,0,0"
                 HorizontalAlignment="Left"
-                Background="Blue"/>
+                Background="Blue" />
 
         <Canvas ClipToBounds="False"
                 Grid.Row="4"

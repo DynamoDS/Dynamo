@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProtoCore.Properties
-{
-
-
+namespace ProtoCore.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace ProtoCore.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -107,7 +107,7 @@ namespace ProtoCore.Properties
         
         /// <summary>
         ///   Looks up a localized string similar to Value cannot be null.
-        ///Parameter name: {0}.
+        ///Parameter name: {0} href-ArgumentNullException.html.
         /// </summary>
         public static string ArgumentNullException {
             get {
@@ -404,7 +404,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Null value cannot be cast to {0}.
+        ///   Looks up a localized string similar to Null value cannot be cast to {0} href=FailedToCastFromNull.html.
         /// </summary>
         public static string FailedToCastFromNull {
             get {
@@ -971,7 +971,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List indices must be numeric..
+        ///   Looks up a localized string similar to List indices must be numeric. href=InvalidArrayIndexType.html.
         /// </summary>
         public static string InvalidArrayIndexType {
             get {
@@ -1034,7 +1034,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The index is outside the given range.
+        ///   Looks up a localized string similar to The index is outside the given range href=kArrayOverIndexed.html.
         /// </summary>
         public static string kArrayOverIndexed {
             get {
@@ -1115,7 +1115,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting an array to {0} would cause array rank reduction and is not permitted.
+        ///   Looks up a localized string similar to Converting an array to {0} would cause array rank reduction and is not permitted href=kConvertArrayToNonArray.html.
         /// </summary>
         public static string kConvertArrayToNonArray {
             get {
@@ -1124,7 +1124,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Converting a double to an int may lose information.
+        ///   Looks up a localized string similar to Converting a double to an int may lose information. href=testing.html.
         /// </summary>
         public static string kConvertDoubleToInt {
             get {
@@ -1142,7 +1142,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A cyclic dependency exists between two variables.
+        ///   Looks up a localized string similar to A cyclic dependency exists between two variables href=kCyclicDependency.html.
         /// </summary>
         public static string kCyclicDependency {
             get {
@@ -1151,7 +1151,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer..
+        ///   Looks up a localized string similar to Internal error, please report: Dereferencing a non-pointer. href=DeferencingNonPointer.html.
         /// </summary>
         public static string kDeferencingNonPointer {
             get {
@@ -1268,7 +1268,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Index is out of range.
+        ///   Looks up a localized string similar to Index is out of range href=kIndexOutOfRange.html.
         /// </summary>
         public static string kIndexOutOfRange {
             get {
@@ -1394,7 +1394,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead.
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has been deprecated, please use method &apos;{1}&apos; instead href=Deprecated.html.
         /// </summary>
         public static string kMethodDeprecated {
             get {
@@ -1403,7 +1403,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}()&apos; has some invalid arguments.
+        ///   Looks up a localized string similar to &apos;{0}()&apos; has some invalid arguments href=kMethodHasInvalidArguments.html.
         /// </summary>
         public static string kMethodHasInvalidArguments {
             get {
@@ -1421,7 +1421,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Method &apos;{0}()&apos; not found.
+        ///   Looks up a localized string similar to Method &apos;{0}()&apos; not found href=kMethodNotFound.html.
         /// </summary>
         public static string kMethodNotFound {
             get {
@@ -1466,7 +1466,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Multiple definitions for &apos;{0}&apos; are found as {1}.
+        ///   Looks up a localized string similar to Multiple definitions for &apos;{0}&apos; are found as {1} href=kMultipleSymbolFound.html.
         /// </summary>
         public static string kMultipleSymbolFound {
             get {
@@ -1520,7 +1520,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No property called {0} on {1} could be found.
+        ///   Looks up a localized string similar to No property called {0} on {1} could be found href=kPropertyOfClassNotFound.html.
         /// </summary>
         public static string kPropertyOfClassNotFound {
             get {
@@ -1970,7 +1970,7 @@ namespace ProtoCore.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2})..
+        ///   Looks up a localized string similar to {0} expects argument type(s) ({1}), but was called with ({2}). href=NonOverloadMethodResolutionError.html.
         /// </summary>
         public static string NonOverloadMethodResolutionError {
             get {

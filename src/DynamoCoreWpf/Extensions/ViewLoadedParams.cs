@@ -175,6 +175,24 @@ namespace Dynamo.Wpf.Extensions
             return dynamoMenuItems.First(item => item.Header.ToString() == type.ToDisplayString());
         }
 
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises an error with a documentation link or directly requests a documentation link to be opened.
+        /// Extensions should subscribe to this event to be able to handle RequestOpenDocumentationLink events from Dynamo.
+        /// </summary>
+        public event RequestOpenDocumentationLinkHandler RequestOpenDocumentationLink
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add
+            {
+                this.dynamoViewModel.RequestOpenDocumentationLink += value;
+            }
+            remove
+            {
+                this.dynamoViewModel.RequestOpenDocumentationLink -= value;
+            }
+        }
+
     }
     /// <summary>
     /// An enum that represents the different possible 
