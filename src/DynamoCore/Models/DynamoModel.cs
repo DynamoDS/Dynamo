@@ -2118,7 +2118,7 @@ namespace Dynamo.Models
             }
         }
 
-        public void Report3DPreviewOutage(string summary, string description)
+        internal void Report3DPreviewOutage(string summary, string description)
         {
             OnPreview3DOutage();
 

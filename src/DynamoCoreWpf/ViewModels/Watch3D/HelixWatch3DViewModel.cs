@@ -221,7 +221,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public event Action<Model3D> RequestAttachToScene;
-        protected void OnRequestAttachToScene(Model3D model3D)
+        protected virtual void OnRequestAttachToScene(Model3D model3D)
         {
             if (RequestAttachToScene != null)
             {
