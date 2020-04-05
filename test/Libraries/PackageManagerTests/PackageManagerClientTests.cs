@@ -415,11 +415,11 @@ namespace Dynamo.PackageManager.Tests
 
             var c = new Mock<IGregClient>();
             c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<GetMaintainers>()))
                 .Returns(mp);
 
             var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-            var res = pc.DoesCurrentUserOwnPackage(new Package("1","1","2.0.4","1"), username);
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1","Package","2.0.4","1"), username);
 
             Assert.IsFalse(res);
         }
@@ -445,11 +445,11 @@ namespace Dynamo.PackageManager.Tests
 
             var c = new Mock<IGregClient>();
             c.Setup(x =>
-                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<HeaderDownload>()))
+                x.ExecuteAndDeserializeWithContent<PackageHeader>(It.IsAny<GetMaintainers>()))
                 .Returns(mp);
 
             var pc = new PackageManagerClient(c.Object, MockMaker.Empty<IPackageUploadBuilder>(), "");
-            var res = pc.DoesCurrentUserOwnPackage(new Package("1", "1", "2.0.4", "1"), usrname);
+            var res = pc.DoesCurrentUserOwnPackage(new Package("1", "Package", "2.0.4", "1"), usrname);
 
             Assert.IsTrue(res);
         }
