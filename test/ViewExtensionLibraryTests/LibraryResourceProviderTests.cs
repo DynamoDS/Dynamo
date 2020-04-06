@@ -557,7 +557,7 @@ namespace ViewExtensionLibraryTests
             var result = Parallel.ForEach(list, x => observer.OnEvent(x));
 
             resetevent.WaitOne(250);
-			Assert.IsTrue(result.IsCompleted);
+            Assert.IsTrue(result.IsCompleted);
             controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
             controller.Verify(c => c.RaiseEvent(EventX, list.Sum()), Times.Once);
 
