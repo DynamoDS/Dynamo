@@ -393,7 +393,7 @@ namespace ViewExtensionLibraryTests
             Assert.AreEqual(3, model.NumElements);
 
             Assert.IsTrue(resetevent.WaitOne(timeout*100));
-			resetevent.Dispose();
+            resetevent.Dispose();
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated), Times.Once);
 
             var spec = customization.GetSpecification();
@@ -490,7 +490,7 @@ namespace ViewExtensionLibraryTests
             list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
 
             resetevent.WaitOne(timeout * 3);
-			resetevent.Dispose();
+            resetevent.Dispose();
 			controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<object[]>()), Times.Once);
             Assert.IsTrue(list.SequenceEqual(objexts[0] as IEnumerable<int>));
         }
@@ -514,7 +514,7 @@ namespace ViewExtensionLibraryTests
             list.ForEach(x => observer.OnEvent(x)); //notify OnEvent
 
             resetevent.WaitOne(timeout*3);
-			resetevent.Dispose();
+            resetevent.Dispose();
 			controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
             controller.Verify(c => c.RaiseEvent(EventX, list.Last()), Times.Once);
         }
@@ -535,7 +535,7 @@ namespace ViewExtensionLibraryTests
             var result = Parallel.ForEach(list, x => observer.OnEvent(x));
 
             resetevent.WaitOne(250);
-			resetevent.Dispose();
+            resetevent.Dispose();
 			Assert.IsTrue(result.IsCompleted);
             controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Once);
             controller.Verify(c => c.RaiseEvent(EventX, 55), Times.Once);
@@ -564,7 +564,7 @@ namespace ViewExtensionLibraryTests
             var list2 = Enumerable.Range(11, 10); //different range of values
             result = Parallel.ForEach(list2, x => observer.OnEvent(x));
             resetevent.WaitOne(250);
-			resetevent.Dispose();
+            resetevent.Dispose();
 			Assert.IsTrue(result.IsCompleted);
             controller.Verify(c => c.RaiseEvent(EventX, It.IsAny<int>()), Times.Exactly(2));
             controller.Verify(c => c.RaiseEvent(EventX, list2.Sum()), Times.Once); //doesn't contain old values
@@ -599,7 +599,7 @@ namespace ViewExtensionLibraryTests
             var result = Parallel.ForEach(requests, r => Assert.IsNotNull(provider.GetResource(r.Object, out ext)));
 
             resetevent.WaitOne(250);
-			resetevent.Dispose();
+            resetevent.Dispose();
 			Assert.IsTrue(result.IsCompleted);
         }
 
