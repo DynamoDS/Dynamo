@@ -43,7 +43,7 @@ namespace Dynamo.Tests
             at DynamoSandbox.DynamoCoreSetup.RunApplication(Application app)";
 
         [Test]
-		[Ignore("Test ignored because the web browser is not closed after the test execution")]
+        [Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithNoContent()
         {
             // Create a crash report to submit
@@ -59,7 +59,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-		[Ignore("Test ignored because the web browser is not closed after the test execution")]
+        [Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithContent()
         {
             // Mock Dynamo version
