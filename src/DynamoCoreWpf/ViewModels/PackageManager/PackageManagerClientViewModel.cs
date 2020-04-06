@@ -524,9 +524,9 @@ namespace Dynamo.ViewModels
                 }
 
                 // determine if any of the packages contain binaries or python scripts.  
-                var containsBinariesOrPythonScripts = dependencyVersionHeaders.Any(x => 
-                    x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) ||
+                var containsBinariesOrPythonScripts = dependencyVersionHeaders.Any(x =>
                     x.contains_binaries ||
+                    x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) ||
                     x.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
 
                 // if any do, notify user and allow cancellation

@@ -83,24 +83,6 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Gets the PackageHeader for a specific package
-        /// </summary>
-        /// <param name="packageInfo"></param>
-        /// <returns></returns>
-        [Obsolete("This should no longer be used. Remove in 3.0.")]
-        internal PackageHeader GetPackageHeader(IPackageInfo packageInfo)
-        {
-            var header = FailFunc.TryExecute(() =>
-            {
-                var nv = new HeaderDownload("dynamo", packageInfo.Name);
-                var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
-                return pkgResponse.content;
-            }, null);
-
-            return header;
-        }
-
-        /// <summary>
         /// Gets maintainers for a specific package
         /// </summary>
         /// <param name="packageInfo"></param>
@@ -115,25 +97,6 @@ namespace Dynamo.PackageManager
             }, null);
 
             return header;
-        }
-
-        /// <summary>
-        /// Gets the Greg PackageVersion object for a specific version of a package
-        /// </summary>
-        /// <param name="header"></param>
-        /// <param name="version"></param>
-        /// <returns></returns>
-        [Obsolete("No longer used. Remove in 3.0.")]
-        internal PackageVersion GetGregPackageVersion(PackageHeader header, Version version)
-        {
-            foreach (var v in header.versions)
-            {
-                if (new Version(v.version) == version)
-                {
-                    return v;
-                }
-            }
-            return null;
         }
 
         /// <summary>
