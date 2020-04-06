@@ -2240,9 +2240,9 @@ Uninstall the following packages: {0}?</value>
     <value>Original node name: </value>
   </data>
   <data name="RenderingMemoryOutageDescription" xml:space="preserve">
-    <value>Please check if the amount of generated geometry is correct. If it is, it might be necessary to disable preview for some nodes before reactivating the background 3D preview.</value>
+    <value>Please check if you intended to render this amount of Geometry and if you did, then consider turning off the preview of other nodes within your graph or lowering the amount of Geometry you wish to render. Dynamo will attempt to turn back on the 3D Background Preview and render your geometries when you next switch back from graph view navigation.</value>
   </data>
   <data name="RenderingMemoryOutageSummary" xml:space="preserve">
-    <value>Dynamo ran out of memory trying to render geometry</value>
+    <value>Dynamo has ran out of memory trying to render your Geometry causing it to disappear.</value>
   </data>
 </root>

@@ -4653,7 +4653,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please check if the amount of generated geometry is correct. If it is, it might be necessary to disable preview for some nodes before reactivating the background 3D preview..
+        ///   Looks up a localized string similar to Please check if you intended to render this amount of Geometry and if you did, then consider turning off the preview of other nodes within your graph or lowering the amount of Geometry you wish to render. Dynamo will attempt to turn back on the 3D Background Preview and render your geometries when you next switch back from graph view navigation..
         /// </summary>
         public static string RenderingMemoryOutageDescription {
             get {
@@ -4662,7 +4662,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dynamo ran out of memory trying to render geometry.
+        ///   Looks up a localized string similar to Dynamo has ran out of memory trying to render your Geometry causing it to disappear. .
         /// </summary>
         public static string RenderingMemoryOutageSummary {
             get {
