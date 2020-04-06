@@ -1373,6 +1373,26 @@ namespace Dynamo.Tests
             RunModel(dynFilePath);
             AssertPreviewValue("deb457c6-1b4b-4703-9476-db312b34a8e2", new object[] { null, null, null, null });
         }
+
+        [Test]
+        public void LogicUINodesDeleted()
+        {
+            RunModel(@"core\dsevaluation\testuilogicnodes.dyn");
+            this.CurrentDynamoModel.CurrentWorkspace.RequestRun();
+            var codeblock = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "Code Block").First();
+            var uiANDnode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "And").First();
+            var ztANDnode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.Name == "&&").First();
+            AssertPreviewValue(ztANDnode.GUID.ToString(),  true);
+
+
+            //delete binary expression AND node
+            this.CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(uiANDnode);
+            this.CurrentDynamoModel.CurrentWorkspace.RequestRun();
+
+            //assert other node value is still valid
+            AssertPreviewValue(ztANDnode.GUID.ToString(), true);
+            AssertPreviewValue(codeblock.GUID.ToString(), true);
+        }
     }
 
     [Category("GithubIssues")]

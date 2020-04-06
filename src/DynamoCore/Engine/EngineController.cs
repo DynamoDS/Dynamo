@@ -522,7 +522,8 @@ namespace Dynamo.Engine
         /// </summary>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            OnLibraryLoaded();
+            if(e.LibraryPaths.Any())
+                OnLibraryLoaded();
         }
 
         #region Implement IAstNodeContainer interface
