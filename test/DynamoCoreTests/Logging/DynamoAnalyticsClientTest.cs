@@ -95,11 +95,11 @@ namespace Dynamo.Tests.Loggings
             //This will get the value recorded in Registry about the crash/shoutdown
             string foundRegValue = (string)Registry.GetValue(REG_KEY, SHUTDOWN_TYPE_NAME, DEFAULT_RETURN_VALUE);
 
-            //AnalyticsService.
+            DynamoModel.IsCrashing = false;
 
             //Assert
             Assert.AreEqual(CurrentDynamoModel.CurrentWorkspace.Nodes.Count(), InitialNodesCount + 1);
-            Assert.AreEqual(ASSUMING_CRASHING_SHUTDOWN_VALUE, foundRegValue);
+            Assert.IsFalse(string.IsNullOrEmpty(foundRegValue));
         }
 
         /// <summary>
