@@ -2239,4 +2239,10 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeTooltipOriginalName" xml:space="preserve">
     <value>Original node name: </value>
   </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>Please check if the amount of generated geometry is correct. If it is, it might be necessary to disable preview for some nodes before reactivating the background 3D preview.</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>Dynamo ran out of memory trying to render geometry</value>
+  </data>
 </root>
