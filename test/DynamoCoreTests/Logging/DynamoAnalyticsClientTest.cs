@@ -49,6 +49,7 @@ namespace Dynamo.Tests.Loggings
 
         /// <summary>
         /// This test method will execute the StabilityCookie.WriteCrashingShutdown(); method
+        /// Also it will execute the event of adding a workspace model (AnalyticsService.OnWorkspaceAdded)
         /// </summary>
         [Test]
         [Category("UnitTests")]
@@ -82,7 +83,8 @@ namespace Dynamo.Tests.Loggings
                 }) as CustomNodeWorkspaceModel;
 
             //Act
-            //This will execute the 
+            //This will execute the custom workspace assigment and trigger the workspace assigment event
+            //The DynamoAnalyticsSession.Dispose() is executed automatically inside the Model and it will go to the crashing section.
             CurrentDynamoModel.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
 
             //This will add a new custom node to the workspace
