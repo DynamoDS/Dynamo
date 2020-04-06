@@ -29,6 +29,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        [Obsolete("No longer used. Remove in 3.0")]
         public Greg.Responses.PackageHeader Header { get; private set; }
         private string _name;
         public string Name { get { return Header != null ? Header.name : _name; } set { _name = value; } }
@@ -42,6 +43,7 @@ namespace Dynamo.PackageManager
         private string _versionName;
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
 
+        [Obsolete("No longer used. Remove in 3.0")]
         public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
         {
             this.Header = header;

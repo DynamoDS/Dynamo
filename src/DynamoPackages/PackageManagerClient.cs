@@ -145,6 +145,10 @@ namespace Dynamo.PackageManager
         {
             var req = new HeaderVersionDownload("dynamo", packageInfo.Name, packageInfo.Version.ToString());
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            if (!pkgResponse.success)
+            {
+                throw new Exception(pkgResponse.message);
+            }
             return pkgResponse.content;
         }
 
@@ -157,6 +161,10 @@ namespace Dynamo.PackageManager
         {
             var req = new HeaderVersionDownload(id, version);
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            if (!pkgResponse.success)
+            {
+                throw new Exception(pkgResponse.message);
+            }
             return pkgResponse.content;
         }
 
@@ -245,7 +253,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete()]
+        [Obsolete("No longer used. Delete in 3.0")]
         internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
         {
             var pkgDownload = new HeaderDownload(id);
