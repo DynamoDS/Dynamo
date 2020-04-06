@@ -4658,24 +4658,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please check if the amount of generated geometry is correct. If it is, it might be necessary to disable preview for some nodes before reactivating the background 3D preview..
-        /// </summary>
-        public static string RenderingMemoryOutageDescription {
-            get {
-                return ResourceManager.GetString("RenderingMemoryOutageDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Dynamo ran out of memory trying to render geometry.
-        /// </summary>
-        public static string RenderingMemoryOutageSummary {
-            get {
-                return ResourceManager.GetString("RenderingMemoryOutageSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Apply Changes.
         /// </summary>
         public static string RerunButton {
