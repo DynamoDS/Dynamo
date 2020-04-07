@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,9 +17,18 @@ namespace Dynamo.Tests.Search
     {
         [Test]
         [Category("UnitTests")]
-        public void TestInternalMigration()
+        public void TestAddChild()
         {
             var browserItem = new BrowserInternalElement();
+
+            var rootItem = new BrowserInternalElement("Root Node", null);
+            browserItem.AddChild(rootItem);
+
+            for (int i =0;i<10;i++)
+            {
+                var childItem = new BrowserInternalElement("Item"+i.ToString(),rootItem);
+                browserItem.AddChild(childItem);
+            }
         }
     }
 }
