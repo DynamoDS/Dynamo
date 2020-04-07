@@ -85,7 +85,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpfTests", "..\te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
 	ProjectSection(ProjectDependencies) = postProject
 		{133FC760-5699-46D9-BEA6-E816B5F01016} = {133FC760-5699-46D9-BEA6-E816B5F01016}
 	EndProjectSection
@@ -225,7 +225,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkspaceDependencyViewExte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DocumentationBrowserViewExtension", "DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj", "{BE6D0644-05AF-4580-8597-B95920CE923F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
 EndProject
 Global
