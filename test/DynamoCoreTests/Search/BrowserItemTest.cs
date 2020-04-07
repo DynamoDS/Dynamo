@@ -15,6 +15,9 @@ namespace Dynamo.Tests.Search
     [TestFixture]
     class BrowserItemTest
     {
+        /// <summary>
+        /// This test method will execute the BrowserElement.AddChild method.
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void TestAddChild()
@@ -22,13 +25,18 @@ namespace Dynamo.Tests.Search
             var browserItem = new BrowserInternalElement();
 
             var rootItem = new BrowserInternalElement("Root Node", null);
+            rootItem.Height = 100;
             browserItem.AddChild(rootItem);
 
             for (int i =0;i<10;i++)
             {
                 var childItem = new BrowserInternalElement("Item"+i.ToString(),rootItem);
+                childItem.Height = 100;
                 browserItem.AddChild(childItem);
             }
+
+            //Checks that the height has a value greater than 0
+            Assert.Greater(rootItem.Height,0);
         }
     }
 }
