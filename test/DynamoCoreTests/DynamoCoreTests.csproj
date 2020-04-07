@@ -90,6 +90,13 @@
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
+    <Compile Include="Logging\AnalyticsServiceTest.cs" />
+    <Compile Include="Logging\DynamoLoggerTest.cs" />
+    <Compile Include="Logging\HeartBeatTest.cs" />
+    <Compile Include="Logging\LogSourceTests.cs" />
+    <Compile Include="Logging\LogTest.cs" />
+    <Compile Include="Logging\DynamoAnalyticsClientTest.cs" />
+    <Compile Include="Logging\StabilityTrackingTest.cs" />
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
