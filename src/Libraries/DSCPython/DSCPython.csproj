@@ -7,7 +7,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9EEF4F42-6B3B-4358-9A8A-C2701539A822}</ProjectGuid>
+    <ProjectGuid>{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DSCPython</RootNamespace>
