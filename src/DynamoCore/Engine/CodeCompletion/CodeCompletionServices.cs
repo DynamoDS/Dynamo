@@ -69,7 +69,7 @@ namespace Dynamo.Engine.CodeCompletion
                 }
             }
 
-            return members.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
+            return members?.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
         /// <summary>
@@ -212,6 +212,7 @@ namespace Dynamo.Engine.CodeCompletion
                         cm.Alias = shortNames.ElementAt(i).Value;
                     }
                 }
+                // Filter out empty types
                 completions.AddRange(classMirrorGroup.
                     Where(x => !x.IsEmpty).
                         Select(x =>

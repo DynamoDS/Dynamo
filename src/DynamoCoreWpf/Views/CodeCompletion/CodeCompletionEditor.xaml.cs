@@ -159,9 +159,10 @@ namespace Dynamo.UI.Controls
             var engineController =
                 dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.GetCompletionsOnType(
-                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeCompletionData(x));
+            var completions = engineController.CodeCompletionServices.GetCompletionsOnType(
+                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver);
+            
+            return completions?.Select(x => new CodeCompletionData(x));
         }
 
         private IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
@@ -238,7 +239,7 @@ namespace Dynamo.UI.Controls
 
                     var completions = this.GetCompletionData(code, stringToComplete);
 
-                    if (!completions.Any())
+                    if (completions == null || !completions.Any())
                         return;
 
                     ShowCompletionWindow(completions);
