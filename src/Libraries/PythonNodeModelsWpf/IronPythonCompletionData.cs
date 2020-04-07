@@ -80,7 +80,7 @@ namespace Dynamo.Python
                 // lazily get the description
                 if (_description == null)
                 {
-                    _description = provider.GetDescription(this.Stub, this.Text, this.IsInstance).TrimEnd('\r', '\n');
+                    //_description = provider.GetDescription(this.Stub, this.Text, this.IsInstance).TrimEnd('\r', '\n');
                 }
 
                 return _description;

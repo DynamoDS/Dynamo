@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using Dynamo.Logging;
-using Dynamo.Python;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -106,7 +104,7 @@ namespace DynamoPythonTests
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
-
+        /*
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
@@ -434,5 +432,6 @@ namespace DynamoPythonTests
                 }
             }
         }
+        */
     }
 }

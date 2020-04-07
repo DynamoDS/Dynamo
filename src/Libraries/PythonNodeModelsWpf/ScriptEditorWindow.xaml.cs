@@ -91,6 +91,7 @@ namespace PythonNodeModelsWpf
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {
+            /*
             try
             {
                 if (e.Text == ".")
@@ -120,6 +121,7 @@ namespace PythonNodeModelsWpf
                 dynamoViewModel.Model.Logger.Log(ex.Message);
                 dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
+            */
         }
 
         #endregion
