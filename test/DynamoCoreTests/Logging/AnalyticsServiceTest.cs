@@ -64,7 +64,7 @@ namespace Dynamo.Tests.Loggings
                 }) as CustomNodeWorkspaceModel;
 
             //Act
-            //This will execute the 
+            //This will execute the custom workspace assigment and trigger the added workspace assigment event
             CurrentDynamoModel.OpenCustomNodeWorkspace(customWorkspace.CustomNodeId);
 
             //This will add a new custom node to the workspace
