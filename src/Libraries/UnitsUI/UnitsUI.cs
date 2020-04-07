@@ -323,7 +323,7 @@ namespace UnitsUI
         private VolumeFromString(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts)
         {
             Measure = Volume.FromDouble(0.0, VolumeUnit.CubicMeter);
-            Warning("AreaFromString is obsolete.", true);
+            Warning("VolumeFromString is obsolete.", true);
         }
 
         public VolumeFromString()
@@ -332,7 +332,7 @@ namespace UnitsUI
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("volume", Resources.VolumeFromStringPortDataVolumeToolTip)));
             RegisterAllPorts();
 
-            Warning("AreaFromString is obsolete.", true);
+            Warning("VolumeFromString is obsolete.", true);
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
