@@ -1,49 +1,119 @@
-﻿using Dynamo.Core;
-using Dynamo.Models;
-using Dynamo.Scheduler;
+﻿using System;
+using Dynamo.Core;
 using NUnit.Framework;
-using System.ComponentModel;
 
 namespace Dynamo.Tests.Core
 {
+    /// <summary>
+    /// Test class to test the NotificationObject class
+    /// </summary>
     [TestFixture]
     public class NotificationObjectTests : DynamoModelTestBase
     {
-        private class NotificationObjectTestingSubclass : NotificationObject
-        {
-            public bool TestProperty { get; set; }
+        private NotificationObjectTestingSubclass notificationObject;
 
-            public NotificationObjectTestingSubclass()
-            {
-                PropertyChanged += Test_PropertyChanged;
-            }
-
-            
-            private void Test_PropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                if (e.PropertyName.Equals("TestProperty"))
-                {
-                    RaisePropertyChanged("TestProperty");
-
-                    var manyProps = new string[] { "TestProperty", "TestProperty" };
-                    RaisePropertyChanged(manyProps);
-                }
-            }
-        }
-
-        NotificationObjectTestingSubclass notificationObject;
-
+        /// <summary>
+        /// Tests initialization
+        /// </summary>
         [SetUp]
         public void Init()
         {
             notificationObject = new NotificationObjectTestingSubclass();
+            notificationObject.RaisePropertyChangedCalled = false;
         }
 
+        /// <summary>
+        /// RaisePropertyChanged method testing
+        /// </summary>
         [Test]
-        [NUnit.Framework.Category("UnitTests")]
+        [Category("UnitTests")]
         public void RaisePropertyChangedTest()
         {
-            notificationObject.TestProperty = !notificationObject.TestProperty;
+            notificationObject.TestPropertySingle = !notificationObject.TestPropertySingle;
+            Assert.IsTrue(notificationObject.RaisePropertyChangedCalled);
+            
+            notificationObject.RaisePropertyChangedCalled = false; //Reset flag
+
+            notificationObject.TestPopertyMultiple = !notificationObject.TestPopertyMultiple;
+            Assert.IsTrue(notificationObject.RaisePropertyChangedCalled);
+            
+            notificationObject.RaisePropertyChangedCalled = false; //Reset flag
+
+            //The RaisePropertyChanged method that receives a string[] throws an ArgumentNullException if the array is null;
+            Assert.Throws<ArgumentNullException>(() => notificationObject.TestPropertyNull = !notificationObject.TestPropertyNull);
+            Assert.IsFalse(notificationObject.RaisePropertyChangedCalled);
+        }
+
+        /// <summary>
+        /// Derivate class from NotificationObject, designed to help in its testing
+        /// </summary>
+        private class NotificationObjectTestingSubclass : NotificationObject
+        {
+            private bool _testProperty;
+
+            /// <summary>
+            /// Used to test the RaisePopertyChanged method that receives a single property
+            /// </summary>
+            public bool TestPropertySingle
+            {
+                get { return _testProperty; }
+                set
+                {
+                    _testProperty = value;
+                    RaisePropertyChanged("TestProperty");
+                }
+            }
+
+            /// <summary>
+            /// Used to test the RaisePopertyChanged method that receives multiple properties
+            /// </summary>
+            public bool TestPopertyMultiple
+            {
+                get { return _testProperty; }
+                set
+                {
+                    _testProperty = value;
+
+                    string[] props = 
+                        {
+                            "TestProperty",
+                            "TestProperty"
+                        };
+
+                    RaisePropertyChanged(props);
+                }
+            }
+
+            /// <summary>
+            /// Used to test the RaisePopertyChanged method that receives multiple properties when the parameter is null
+            /// </summary>
+            public bool TestPropertyNull
+            {
+                get { return _testProperty; }
+                set
+                {
+                    _testProperty = value;
+
+                    string[] props = null;
+                    RaisePropertyChanged(props);
+                }
+            }
+
+            /// <summary>
+            /// Flag property to check whether the RaisePropertyChanged event was triggered or not
+            /// </summary>
+            public bool RaisePropertyChangedCalled { get; set; }
+
+            public NotificationObjectTestingSubclass()
+            {
+                PropertyChanged += Test_RaisePropertyChanged;
+                RaisePropertyChangedCalled = false;
+            }
+
+            private void Test_RaisePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+            {
+                RaisePropertyChangedCalled = true;
+            }
         }
     }
 }
