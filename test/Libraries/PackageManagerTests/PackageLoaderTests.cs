@@ -135,8 +135,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -166,8 +166,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -259,8 +259,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -497,11 +497,42 @@ namespace Dynamo.PackageManager.Tests
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> { pkg });
 
-            // Assert that the Run is disabled temporatily when the package is still loading. 
+            // Assert that the Run is disabled temporarily when the package is still loading. 
             Assert.IsTrue(RunDisabledWhilePackageLoading);
 
             // Assert that the DisableRun flag is set back to false, once the package loading is completed. 
             Assert.IsFalse(EngineController.DisableRun);
+        }
+
+        /// <summary>
+        /// This test simulates loading a mixed package type (containing both CN and ZT nodes)
+        /// on the fly and verifying that the nodes in the graph are resolved and run afterwards.
+        /// </summary>
+        [Test]
+        public void MixedPackageLoadTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\MixedPackageLoadTest.dyn");
+            OpenModel(openPath);
+
+            AssertPreviewValue("654bfcc3463e4950824336d4c9bd6126", null);
+            AssertPreviewValue("576f11ed5837460d80f2e354d853de68", null);
+
+            var loader = GetPackageLoader();
+
+            // Load the package when the graph is open in the workspace. 
+            string packageDirectory = Path.Combine(PackagesDirectory, "Mixed Package");
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+
+            var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
+            Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "Mixed Package", "bin", "FrogRiverOne.dll"))));
+
+            // Assert value of loaded ZT node.
+            AssertPreviewValue("654bfcc3463e4950824336d4c9bd6126", 9);
+
+            // Assert value of loaded CN is non-null.
+            AssertNonNull("576f11ed5837460d80f2e354d853de68");
+
         }
 
         [Test]

@@ -960,7 +960,8 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
+        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list.
+        /// Any expressions which are not assignments are not modified.
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
@@ -976,7 +977,7 @@ namespace ProtoScript.Runners
             while (workingStack.Any())
             {
                 var bNode = workingStack.Pop() as BinaryExpressionNode;
-                if (bNode == null)
+                if (bNode == null || bNode.Optr != Operator.assign)
                 {
                     continue;
                 }
@@ -1080,10 +1081,6 @@ namespace ProtoScript.Runners
             get
             {
                 return runnerCore;
-            }
-            private set
-            {
-                runnerCore = value;
             }
         }
 
