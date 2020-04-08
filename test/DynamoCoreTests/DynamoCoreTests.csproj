@@ -115,6 +115,7 @@
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="ProfilingTest.cs" />
+    <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
