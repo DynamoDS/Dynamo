@@ -2109,6 +2109,27 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
+        internal event VoidHandler Preview3DOutage;
+        private void OnPreview3DOutage()
+        {
+            if (Preview3DOutage != null)
+            {
+                Preview3DOutage();
+            }
+        }
+
+        internal void Report3DPreviewOutage(string summary, string description)
+        {
+            OnPreview3DOutage();
+
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.Preview3DOutageTitle, summary, description);
+
+            OnRequestTaskDialog(null, args);
+        }
+
         /// <summary>
         ///     Remove a workspace from the dynamo model.
         /// </summary>

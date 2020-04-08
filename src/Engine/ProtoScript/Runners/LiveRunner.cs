@@ -1082,10 +1082,6 @@ namespace ProtoScript.Runners
             {
                 return runnerCore;
             }
-            private set
-            {
-                runnerCore = value;
-            }
         }
 
         private ProtoCore.RuntimeCore runtimeCore = null;

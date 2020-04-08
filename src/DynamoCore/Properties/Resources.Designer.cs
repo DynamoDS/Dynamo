@@ -1163,6 +1163,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 3D preview has been deactivated.
+        /// </summary>
+        public static string Preview3DOutageTitle {
+            get {
+                return ResourceManager.GetString("Preview3DOutageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proceed anyway.
         /// </summary>
         public static string ProceedButton {
