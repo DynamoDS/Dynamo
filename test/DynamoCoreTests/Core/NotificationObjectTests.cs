@@ -54,7 +54,7 @@ namespace Dynamo.Tests.Core
             /// <summary>
             /// Used to test the RaisePopertyChanged method that receives a single property
             /// </summary>
-            public bool TestPropertySingle
+            internal bool TestPropertySingle
             {
                 get { return _testProperty; }
                 set
@@ -67,7 +67,7 @@ namespace Dynamo.Tests.Core
             /// <summary>
             /// Used to test the RaisePopertyChanged method that receives multiple properties
             /// </summary>
-            public bool TestPopertyMultiple
+            internal bool TestPopertyMultiple
             {
                 get { return _testProperty; }
                 set
@@ -87,7 +87,7 @@ namespace Dynamo.Tests.Core
             /// <summary>
             /// Used to test the RaisePopertyChanged method that receives multiple properties when the parameter is null
             /// </summary>
-            public bool TestPropertyNull
+            internal bool TestPropertyNull
             {
                 get { return _testProperty; }
                 set
@@ -102,9 +102,9 @@ namespace Dynamo.Tests.Core
             /// <summary>
             /// Flag property to check whether the RaisePropertyChanged event was triggered or not
             /// </summary>
-            public bool RaisePropertyChangedCalled { get; set; }
+            internal bool RaisePropertyChangedCalled { get; set; }
 
-            public NotificationObjectTestingSubclass()
+            internal NotificationObjectTestingSubclass()
             {
                 PropertyChanged += Test_RaisePropertyChanged;
                 RaisePropertyChangedCalled = false;
