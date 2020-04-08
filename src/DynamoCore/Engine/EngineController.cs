@@ -147,6 +147,7 @@ namespace Dynamo.Engine
             this.libraryServices = libraryServices;
             libraryServices.LibraryLoaded += LibraryLoaded;
             CompilationServices = new CompilationServices(libraryServices);
+            codeCompletionServices = new CodeCompletionServices(libraryServices.LibraryManagementCore);
 
             liveRunnerServices = new LiveRunnerServices(this, geometryFactoryFileName);
 
@@ -510,11 +511,6 @@ namespace Dynamo.Engine
             liveRunnerServices.ReloadAllLibraries(libraryServices.ImportedLibraries);
 
             VMLibrariesReset?.Invoke();
-
-            // The LiveRunner core is newly instantiated whenever a new library is imported
-            // due to which a new instance of CodeCompletionServices needs to be created with the new Core
-            codeCompletionServices = new CodeCompletionServices(LiveRunnerCore);
-            libraryServices.SetLiveCore(LiveRunnerCore);
         }
 
         /// <summary>
@@ -522,7 +518,8 @@ namespace Dynamo.Engine
         /// </summary>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
-            OnLibraryLoaded();
+            if(e.LibraryPaths.Any())
+                OnLibraryLoaded();
         }
 
         #region Implement IAstNodeContainer interface

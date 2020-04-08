@@ -83,15 +83,15 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Gets the PackageHeader for a specific package
+        /// Gets maintainers for a specific package
         /// </summary>
         /// <param name="packageInfo"></param>
         /// <returns></returns>
-        internal PackageHeader GetPackageHeader(IPackageInfo packageInfo)
+        internal PackageHeader GetPackageMaintainers(IPackageInfo packageInfo)
         {
             var header = FailFunc.TryExecute(() =>
             {
-                var nv = new HeaderDownload("dynamo", packageInfo.Name);
+                var nv = new GetMaintainers("dynamo", packageInfo.Name);
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
                 return pkgResponse.content;
             }, null);
@@ -100,21 +100,35 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Gets the Greg PackageVersion object for a specific version of a package
+        /// Gets the metadata for a specific version of a package.
         /// </summary>
-        /// <param name="header"></param>
-        /// <param name="version"></param>
-        /// <returns></returns>
-        internal PackageVersion GetGregPackageVersion(PackageHeader header, Version version)
+        /// <param name="packageInfo">Name and version of a package</param>
+        /// <returns>Package version metadata</returns>
+        internal PackageVersion GetPackageVersionHeader(IPackageInfo packageInfo)
         {
-            foreach (var v in header.versions)
+            var req = new HeaderVersionDownload("dynamo", packageInfo.Name, packageInfo.Version.ToString());
+            var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            if (!pkgResponse.success)
             {
-                if (new Version(v.version) == version)
-                {
-                    return v;
-                }
+                throw new Exception(pkgResponse.message);
             }
-            return null;
+            return pkgResponse.content;
+        }
+
+        /// <summary>
+        /// Gets the metadata for a specific version of a package.
+        /// </summary>
+        /// <param name="packageInfo">Name and version of a package</param>
+        /// <returns>Package version metadata</returns>
+        internal PackageVersion GetPackageVersionHeader(string id, string version)
+        {
+            var req = new HeaderVersionDownload(id, version);
+            var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
+            if (!pkgResponse.success)
+            {
+                throw new Exception(pkgResponse.message);
+            }
+            return pkgResponse.content;
         }
 
         /// <summary>
@@ -202,6 +216,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+        [Obsolete("No longer used. Delete in 3.0")]
         internal PackageManagerResult DownloadPackageHeader(string id, out PackageHeader header)
         {
             var pkgDownload = new HeaderDownload(id);
@@ -243,8 +258,8 @@ namespace Dynamo.PackageManager
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
-            var header = GetPackageHeader(pkg);
-            return (header != null) && (header.maintainers.Any(maintainer => maintainer.username.Equals(username)));
+            var mnt = GetPackageMaintainers(pkg);
+            return (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
         }
     }
 }
