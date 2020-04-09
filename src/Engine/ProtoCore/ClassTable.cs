@@ -538,10 +538,12 @@ namespace ProtoCore.DSASM
         /// <returns>Array of fully qualified name of all matching symbols</returns>
         public string[] GetAllMatchingClasses(string name)
         {
+            if (Constants.kInvalidIndex != IndexOf(name))
+                return new[] {name};
+
             var symbols = symbolTable.TryGetSymbols(name, s => s.Matches(name));
 
             var classes = new List<string>();
-
             if (symbols.Length > 1)
             {
                 var baseClass = GetCommonBaseClass(symbols);
