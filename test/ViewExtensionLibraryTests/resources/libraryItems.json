@@ -5217,6 +5217,14 @@
       "keywords": "2lowercase, to lowercase, tolowercase, lowercase"
     },
     {
+      "fullyQualifiedName": "DSCore.String.ToTitle",
+      "iconUrl": "http://localhost/icons/DSCore.String.ToTitle.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.String.ToTitle@string",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "2titlecase, to titlecase, to title case, totitlecase, titlecase"
+    },
+    {
       "fullyQualifiedName": "DSCore.String.ChangeCase",
       "iconUrl": "http://localhost/icons/DSCore.String.ChangeCase.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.String.ChangeCase@string,bool",
