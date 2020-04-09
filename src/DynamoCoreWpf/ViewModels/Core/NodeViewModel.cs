@@ -202,7 +202,7 @@ namespace Dynamo.ViewModels
             {
                 if (this.NodeModel is DummyNode)
                 {
-                    IsRenamed = !(this.NodeModel as DummyNode).FunctionName.EndsWith(nodeLogic.Name);
+                    IsRenamed = false;
                 }
                 else
                 {

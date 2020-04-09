@@ -181,11 +181,13 @@ namespace Dynamo.Graph.Workspaces
             else if (type == typeof(Function))
             {
                 var functionId = Guid.Parse(obj["FunctionSignature"].Value<string>());
+                var DisplayName = obj["Description"].Value<string>();
 
                 CustomNodeDefinition def = null;
                 CustomNodeInfo info = null;
-                bool isUnresolved = !manager.TryGetCustomNodeData(functionId, null, false, out def, out info);
-                Function function = manager.CreateCustomNodeInstance(functionId, null, false, def, info);
+                // Deserialize the Description as the Original display name
+                bool isUnresolved = !manager.TryGetCustomNodeData(functionId, DisplayName, false, out def, out info);
+                Function function = manager.CreateCustomNodeInstance(functionId, DisplayName, false, def, info);
                 node = function;
 
                 if (isUnresolved)
