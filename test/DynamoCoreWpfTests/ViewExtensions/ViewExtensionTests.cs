@@ -113,7 +113,6 @@ namespace DynamoCoreWpfTests
             };
             if (SetOwner)
             {
-                // Set the owner of the window to tuIDhe Dynamo window.
                 window.Owner = p.DynamoWindow;
             }
 
@@ -162,7 +161,6 @@ namespace DynamoCoreWpfTests
 
             var window = new Window
             {
-                // Set the owner of the window to tuIDhe Dynamo window.
                 Owner = p.DynamoWindow
             };
 
