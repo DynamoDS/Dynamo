@@ -94,8 +94,19 @@ namespace Dynamo.Graph.Nodes
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
+            // For dummy node, return the current name so that does not appear to be renamed
+            if (node is DummyNode)
+            {
+                return node.Name;
+            }
             if (node.IsCustomFunction)
             {
+                // If the custom node is not loaded, return the current name so that does not appear to be renamed
+                if ((node as Function).State == ElementState.Error && (node as Function).Definition.IsProxy)
+                {
+                    return node.Name;
+                }
+                // If the custom node is loaded, return original name as usual
                 var customNodeFunction = node as Function;
                 return customNodeFunction?.Definition.DisplayName;
             }

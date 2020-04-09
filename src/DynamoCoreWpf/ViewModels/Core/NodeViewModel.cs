@@ -200,11 +200,6 @@ namespace Dynamo.ViewModels
         {
             get 
             {
-                if (this.NodeModel is DummyNode)
-                {
-                    IsRenamed = false;
-                }
-                else
                 {
                     IsRenamed = OriginalName != nodeLogic.Name;
                 }
