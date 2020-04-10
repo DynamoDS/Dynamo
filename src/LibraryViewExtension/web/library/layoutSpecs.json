@@ -1135,6 +1135,9 @@
                   "path": "DSCoreNodes.DSCore.String.ToLower"
                 },
                 {
+                  "path": "DSCoreNodes.DSCore.String.ToTitle"
+                },
+                {
                   "path": "DSCoreNodes.DSCore.String.ToNumber"
                 },
                 {
