@@ -258,14 +258,34 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\originalNodeNameTests\originalNodeName.dyn");
 
-            // Get the node view for a specific node in the graph
+            // Get the node view for the dummy node in the graph
             NodeView nodeView = NodeViewWithGuid("94e8d6a8-5463-483c-9fe6-ace668670fae");
             // Get a reference to the current workspace
             NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
 
             Assert.AreEqual(false, nodeViewModel.IsRenamed);
-            string expectedOriginalName = "Colors.GetAllColors";
+            string expectedOriginalName = "Colors.GetAllColors_V1";
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckNotLoadedCustomNodeOriginalName()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the not loaded custom node in the graph
+            NodeView nodeView = NodeViewWithGuid("9c989a2a-a53b-4556-8972-cd2f66c1903e");
+            // Get a reference to the current workspace
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            string expectedOriginalName = "RootNode_V1";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+
+            Open(@"core\custom_node_dep_test\RootNode.dyf");
+            Assert.AreEqual(true, nodeViewModel.IsRenamed);
+            string expectedNewOriginalName = "RootNode";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedNewOriginalName);
         }
 
         [Test]
