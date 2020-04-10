@@ -976,8 +976,7 @@ namespace Dynamo.Tests
             var cbn = nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
             Assert.IsNotNull(cbn);
 
-            var error = "Multiple definitions for 'FFITarget.B.DupTargetTest' are found as FFITarget.C.B.DupTargetTest, FFITarget.B.DupTargetTest";
-            Assert.IsTrue(cbn.ToolTipText.Contains(error));
+            Assert.False(cbn.IsInErrorState);
         }
 
 
