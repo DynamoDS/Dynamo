@@ -200,9 +200,7 @@ namespace Dynamo.ViewModels
         {
             get 
             {
-                {
-                    IsRenamed = OriginalName != nodeLogic.Name;
-                }
+                IsRenamed = OriginalName != nodeLogic.Name;
                 return nodeLogic.Name; 
             }
             set { nodeLogic.Name = value; }
