@@ -274,7 +274,8 @@ namespace DynamoCoreWpfTests
             Open(@"core\originalNodeNameTests\originalNodeName.dyn");
 
             // Get the node view for the not loaded custom node in the graph
-            NodeView nodeView = NodeViewWithGuid("9c989a2a-a53b-4556-8972-cd2f66c1903e");
+            NodeView nodeView = NodeViewWithGuid("5795dc19-47c9-4084-a5da-df248e03edc4");
+            
             // Get a reference to the current workspace
             NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
 
