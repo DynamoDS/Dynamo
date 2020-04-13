@@ -91,6 +91,11 @@ namespace Dynamo.Graph.Nodes
             return results;
         }
 
+        /// <summary>
+        /// Getting the original name before graph author renamed the node
+        /// </summary>
+        /// <param name="node">target NodeModel</param>
+        /// <returns>Original node name as string</returns>
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
