@@ -31,9 +31,20 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += delegate { EditScriptContent(); };
+            // If it is a Debug build, display a pythone engine switcher
+            if (dynamoViewModel.IsDebugBuild)
+            {
+                var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
+                nodeView.MainContextMenu.Items.Add(editWindowItem);
+                editWindowItem.Click += delegate { EditScriptContent(); };
+                var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
+                nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
+                var pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
+                var pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
+                pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
+                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+            }
+
             nodeView.UpdateLayout();
 
             nodeView.MouseDown += view_MouseDown;
