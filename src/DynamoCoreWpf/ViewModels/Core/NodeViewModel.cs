@@ -207,17 +207,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The original name of the node.
+        /// The original name of the node. Notice this property will return
+        /// current node name if the node is dummy node or unloaded custom node.
         /// </summary>
         [JsonIgnore]
         public string OriginalName
         {
             get { return nodeLogic.GetOriginalName(); }
         }
-               
+
 
         /// <summary>
-        /// If a node has been renamed.
+        /// If a node has been renamed. Notice this boolean will be disabled
+        /// (always false) if the node is dummy node or unloaded custom node.
         /// </summary>
         [JsonIgnore]
         public bool IsRenamed
