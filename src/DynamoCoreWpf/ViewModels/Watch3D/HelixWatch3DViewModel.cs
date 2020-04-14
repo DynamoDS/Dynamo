@@ -1647,7 +1647,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// attaches them to the visual scene.
         /// </summary>
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
-        protected virtual void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
+        internal virtual void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
