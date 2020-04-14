@@ -392,7 +392,7 @@ namespace ViewExtensionLibraryTests
             model.Add(d3.Object);
             Assert.AreEqual(3, model.NumElements);
 
-            Assert.IsTrue(resetevent.WaitOne(timeout*100));
+            Assert.IsTrue(resetevent.WaitOne(timeout*200));
             resetevent.Dispose();
             controller.Verify(c => c.RaiseEvent(libraryDataUpdated), Times.Once);
 
