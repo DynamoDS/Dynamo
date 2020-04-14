@@ -177,7 +177,7 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
-            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version, BuildId = "CB159AA3-2F20-4791-AE8C-8939E90C9600", ReleaseId = "2.5.0", MasterId = "{4C7B248C-56D3-488F-8E23-8CAFD2651968}" };
+            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version, BuildId = "CB159AA3-2F20-4791-AE8C-8939E90C9600", ReleaseId = "2.5.0", MasterId = "{4C7B248C-56D3-488F-8E23-8CAFD2651968}" };
         }
 
         /// <summary>
