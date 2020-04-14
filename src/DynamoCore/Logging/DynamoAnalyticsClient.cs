@@ -18,8 +18,6 @@ namespace Dynamo.Logging
 
 #if DEBUG
         private const string ANALYTICS_PROPERTY = "UA-78361914-2";
-        private const string BUILD = "";
-        private const string RELEASE = "";
 #else
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
