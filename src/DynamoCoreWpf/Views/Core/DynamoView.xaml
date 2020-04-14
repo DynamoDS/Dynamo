@@ -814,6 +814,10 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
+                        <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowPythonEngineSwitcher}"
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuShowPythonEngineSwitcher}" />
                     </MenuItem>
                 </Menu>
 
