@@ -86,34 +86,50 @@ namespace WpfVisualizationTests
                 }
             }
 
-            Model = DynamoModel.Start(
-                new DynamoModel.DefaultStartConfiguration()
-                {
-                    StartInTestMode = true,
-                    PathResolver = pathResolver,
-                    GeometryFactoryPath = preloader.GeometryFactoryPath,
-                    UpdateManager = this.UpdateManager,
-                    ProcessMode = TaskProcessMode.Synchronous
-                });
+            Model = CreateModel(new DynamoModel.DefaultStartConfiguration()
+            {
+                StartInTestMode = true,
+                PathResolver = pathResolver,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                UpdateManager = this.UpdateManager,
+                ProcessMode = TaskProcessMode.Synchronous
+            });
 
             Model.EvaluationCompleted += Model_EvaluationCompleted;
 
-            ViewModel = DynamoViewModel.Start(
-                new DynamoViewModel.StartConfiguration()
-                {
-                    DynamoModel = Model,
-                    Watch3DViewModel = 
-                        HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
-                            null,
-                            new Watch3DViewModelStartupParams(Model), 
-                            Model.Logger)
-                });
+            var vmConfig = CreateViewModelStartConfiguration();
+            vmConfig.DynamoModel = Model;
+
+            ViewModel = DynamoViewModel.Start(vmConfig);
 
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
+        /// <summary>
+        /// Derived test classes can override this method to provide a customized Dynamo model.
+        /// </summary>
+        protected virtual DynamoModel CreateModel(DynamoModel.IStartConfiguration configuration)
+        {
+            return DynamoModel.Start(configuration);
+        }
+
+        /// <summary>
+        /// Derived test classes can override this method to provide a customized view model configuration.
+        /// </summary>
+        protected virtual DynamoViewModel.StartConfiguration CreateViewModelStartConfiguration()
+        {
+            return new DynamoViewModel.StartConfiguration()
+            {
+                DynamoModel = Model,
+                Watch3DViewModel = HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
+                    null,
+                    new Watch3DViewModelStartupParams(Model),
+                    Model.Logger)
+            };
         }
 
         private async void Model_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
