@@ -766,9 +766,6 @@ namespace Dynamo.Tests
 
             Assert.IsNotNull(expr1);
 
-            // Since there is a conflict with FFITarget.DesignScript.Point and FFITarget.Dynamo.Point,
-            // node to code generates the shortest unique name, which in this case will be
-            // Autodesk.Point for Autodesk.DesignScript.Geometry.Point
             Assert.AreEqual("ElementResolverTarget.StaticProperty", expr1.RightNode.ToString());
         }
 
@@ -957,7 +954,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        public void NonUniqueNamespaceConflict_on_node2code_doesNotCrash()
+        public void UniqueNamespace_on_node2code_noConflictWarning()
         {
             string libraryPath = "FFITarget.dll";
             if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
@@ -965,7 +962,7 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
-            // this graph contains a single "FFITarget.B.DupTargetTest" node that conflicts non-uniquely with namespace "FFITarget.C.B.DupTargetTest"
+            // this graph contains a single "FFITarget.B.DupTargetTest" node that should not conflict with namespace "FFITarget.C.B.DupTargetTest"
             OpenModel(@"core\node2code\NonUniqueNamespaceConflict_throwsNodeWarning.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             SelectAll(nodes);

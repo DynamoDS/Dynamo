@@ -90,7 +90,37 @@ namespace Dynamo.Engine
                 RightNode = rightNode,
                 Optr = Operator.dot
             };
-            return leftNode != newLeftNode ? node : RewriteNodeWithShortName(node);
+            return node;
+        }
+
+        public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
+        {
+            var name = node.ToString();
+            AssociativeNode iNode;
+            string[] strIdentList = name.Split('.');
+
+            if (strIdentList.Length == 1)
+            {
+                return new IdentifierNode(strIdentList[0]);
+            }
+
+            var rightNode = new IdentifierNode(strIdentList.Last());
+            string ident = "";
+            for (int i = 0; i < strIdentList.Length - 1; i++)
+            {
+                if (!string.IsNullOrEmpty(ident))
+                    ident += ".";
+                ident += strIdentList[i];
+            }
+            var leftNode = new IdentifierNode(ident);
+
+            var identListNode = new IdentifierListNode
+            {
+                LeftNode = leftNode,
+                RightNode = rightNode,
+                Optr = Operator.dot
+            };
+            return VisitIdentifierListNode(identListNode);
         }
 
         private bool TryShortenClassName(IdentifierListNode node, out AssociativeNode shortNameNode)
@@ -108,49 +138,17 @@ namespace Dynamo.Engine
             if (matchingClasses.Length == 0)
                 return false;
 
-            string className = qualifiedName.Split('.').Last();
-
-            var symbol = new ProtoCore.Namespace.Symbol(qualifiedName);
-            if (!symbol.Matches(node.ToString()))
+            if(qualifiedName != node.ToString())
                 return false;
 
-            shortNameNode = CreateNodeFromShortName(className, qualifiedName);
-            return shortNameNode != null;
-        }
-
-        private IdentifierListNode RewriteNodeWithShortName(IdentifierListNode node)
-        {
-            // Get class name from AST
-            string qualifiedName = CoreUtils.GetIdentifierExceptMethodName(node);
-
-            // if it is a global method
-            if (string.IsNullOrEmpty(qualifiedName))
-                return node;
-
-            // Make sure qualifiedName is not a property
-            var lNode = node.LeftNode;
-            var matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
-            while (matchingClasses.Length == 0 && lNode is IdentifierListNode)
-            {
-                qualifiedName = lNode.ToString();
-                matchingClasses = classTable.GetAllMatchingClasses(qualifiedName);
-                lNode = ((IdentifierListNode)lNode).LeftNode;
-            }
-            qualifiedName = lNode.ToString();
             string className = qualifiedName.Split('.').Last();
 
-            var newIdentList = CreateNodeFromShortName(className, qualifiedName);
-            if (newIdentList == null)
-                return node;
-
-            // Replace class name in input node with short name (newIdentList)
-            node = new IdentifierListNode
-            {
-                LeftNode = newIdentList,
-                RightNode = node.RightNode,
-                Optr = Operator.dot
-            };
-            return node;
+            //if (matchingClasses.Length == 1)
+            //{
+            //    className = matchingClasses[0];
+            //}
+            shortNameNode = CreateNodeFromShortName(className, qualifiedName);
+            return shortNameNode != null;
         }
 
         private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
@@ -168,23 +166,21 @@ namespace Dynamo.Engine
             }
             else
             {
-                shortName = resolver != null ? resolver.LookupShortName(qualifiedName) : null;
+                shortName = resolver?.LookupShortName(qualifiedName);
 
                 if (string.IsNullOrEmpty(shortName))
                 {
                     // Use the namespace list as input to derive the list of shortest unique names
                     var symbolList =
-                        matchingClasses.Select(matchingClass => new ProtoCore.Namespace.Symbol(matchingClass))
-                            .ToList();
-                    var shortNames = ProtoCore.Namespace.Symbol.GetShortestUniqueNames(symbolList);
+                        matchingClasses.Select(matchingClass => new Symbol(matchingClass)).ToList();
+                    var shortNames = Symbol.GetShortestUniqueNames(symbolList);
 
                     // Get the shortest name corresponding to the fully qualified name
-                    shortName = shortNames[new ProtoCore.Namespace.Symbol(qualifiedName)];
+                    shortName = shortNames[new Symbol(qualifiedName)];
                 }
             }
             // Rewrite the AST using the shortest name
-            var newIdentList = CoreUtils.CreateNodeFromString(shortName);
-            return newIdentList;
+            return CoreUtils.CreateNodeFromString(shortName);
 
         }
     }
