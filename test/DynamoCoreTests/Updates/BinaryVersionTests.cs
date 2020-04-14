@@ -4,9 +4,15 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests.Core
 {
+    /// <summary>
+    /// Test class to test the BinaryVersion class
+    /// </summary>
     [TestFixture]
     public class BinaryVersionTests : DynamoModelTestBase
     {
+        /// <summary>
+        /// FromString method test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void FromStringTest()
@@ -23,6 +29,9 @@ namespace Dynamo.Tests.Core
             Assert.IsNull(BinaryVersion.FromString("1.1.1.a"));
         }
 
+        /// <summary>
+        /// GetHashCode method test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void GetHashCodeTest()
@@ -33,6 +42,9 @@ namespace Dynamo.Tests.Core
             Assert.IsNotNull(bin.GetHashCode());
         }
 
+        /// <summary>
+        /// GetHashCode method test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void EqualsTest()
@@ -43,6 +55,9 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(firstBin.Equals(secondBin));
         }
 
+        /// <summary>
+        /// "Less than" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void LessThanOperatorTest()
@@ -59,6 +74,9 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(firstBin < secondBin);
         }
 
+        /// <summary>
+        /// "Less than or equal" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void LessOrEqualOperatorTest()
@@ -78,9 +96,12 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(bin <= secondBin);
         }
 
+        /// <summary>
+        /// "Greater than" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void MoreThanOperatorTest()
+        public void GreaterThanOperatorTest()
         {
             BinaryVersion firstBin = BinaryVersion.FromString("2.2.2.2");
 
@@ -94,9 +115,12 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(firstBin > secondBin);
         }
 
+        /// <summary>
+        /// "Greater than or equal" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void MoreOrEqualOperatorTest()   
+        public void GreaterOrEqualOperatorTest()   
         {
             BinaryVersion firstBin = BinaryVersion.FromString("2.2.2.2");
 
@@ -113,6 +137,9 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(firstBin >= secondBin);
         }
 
+        /// <summary>
+        /// "Equal" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void EqualOperatorTestTest()
@@ -129,6 +156,9 @@ namespace Dynamo.Tests.Core
             Assert.IsTrue(bin == secondBin);
         }
 
+        /// <summary>
+        /// "Not equal" operator test
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void NotEqualOperatorTestTest()
