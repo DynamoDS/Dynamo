@@ -4653,6 +4653,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision..
+        /// </summary>
+        public static string RenderingMemoryOutageDescription {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled..
+        /// </summary>
+        public static string RenderingMemoryOutageSummary {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply Changes.
         /// </summary>
         public static string RerunButton {

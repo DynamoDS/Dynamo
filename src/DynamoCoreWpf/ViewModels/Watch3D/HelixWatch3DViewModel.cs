@@ -21,7 +21,9 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
@@ -859,7 +861,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var meshPackages = packages.Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryForUpdatedPackages(meshPackages);
-            AggregateRenderPackages(meshPackages);
+            try
+            {
+                AggregateRenderPackages(meshPackages);
+            }
+            catch (OutOfMemoryException)
+            {
+                // This can happen when the amount of packages to render is too large
+                string summary = Resources.RenderingMemoryOutageSummary;
+                var description = Resources.RenderingMemoryOutageDescription;
+                (dynamoModel as DynamoModel).Report3DPreviewOutage(summary, description);
+            }
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
@@ -1635,7 +1647,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// attaches them to the visual scene.
         /// </summary>
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
-        private void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
+        protected virtual void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
