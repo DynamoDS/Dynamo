@@ -1000,15 +1000,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Python Engine Switcher.
-        /// </summary>
-        public static string DynamoViewDebugMenuShowPythonEngineSwitcher {
-            get {
-                return ResourceManager.GetString("DynamoViewDebugMenuShowPythonEngineSwitcher", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Verbose Logging.
         /// </summary>
         public static string DynamoViewDebugMenuVerboseLogging {

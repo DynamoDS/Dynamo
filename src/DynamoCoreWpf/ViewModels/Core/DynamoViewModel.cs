@@ -417,23 +417,6 @@ namespace Dynamo.ViewModels
            }
         }
 
-        /// <summary>
-        /// Enable Python Engine Switcher in Dynamo
-        /// </summary>
-        public bool ShowPythonEngineSwitcher
-        {
-            get { return model.DebugSettings.ShowPythonEngineSwitcher; }
-            set
-            {
-                model.DebugSettings.ShowPythonEngineSwitcher = value;
-                foreach(var nv in this.CurrentSpaceViewModel.Nodes)
-                {
-                    
-                }
-                RaisePropertyChanged(nameof(ShowPythonEngineSwitcher));
-            }
-        }
-
         public bool ShowDebugASTs
         {
             get { return IsDebugBuild && model.DebugSettings.ShowDebugASTs; }

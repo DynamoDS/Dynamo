@@ -2245,8 +2245,4 @@ Uninstall the following packages: {0}?</value>
   <data name="RenderingMemoryOutageSummary" xml:space="preserve">
     <value>Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled.</value>
   </data>
-  <data name="DynamoViewDebugMenuShowPythonEngineSwitcher" xml:space="preserve">
-    <value>Show Python Engine Switcher</value>
-    <comment>Debug menu | Show alternative Python engine switcher</comment>
-  </data>
 </root>

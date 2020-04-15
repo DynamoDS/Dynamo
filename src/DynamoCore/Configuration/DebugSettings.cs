@@ -10,7 +10,6 @@ namespace Dynamo.Configuration
     {
         private bool showDebugASTs = false;
         private bool verboseLogging = false;
-        private bool showPythonEngineSwitcher = false;
 
         /// <summary>
         /// Enable verbose logging this is a lot of data
@@ -21,7 +20,7 @@ namespace Dynamo.Configuration
             set
             {
                 verboseLogging = value;
-                RaisePropertyChanged(nameof(VerboseLogging));
+                RaisePropertyChanged("VerboseLogging");
             }
         }
 
@@ -34,20 +33,7 @@ namespace Dynamo.Configuration
             set
             {
                 showDebugASTs = value;
-                RaisePropertyChanged(nameof(ShowDebugASTs));
-            }
-        }
-
-        /// <summary>
-        /// Enable Python Engine Switcher in Dynamo
-        /// </summary>
-        internal bool ShowPythonEngineSwitcher
-        {
-            get { return showPythonEngineSwitcher; }
-            set
-            {
-                showPythonEngineSwitcher = value;
-                RaisePropertyChanged(nameof(ShowPythonEngineSwitcher));
+                RaisePropertyChanged("ShowDebugASTs");
             }
         }
     }

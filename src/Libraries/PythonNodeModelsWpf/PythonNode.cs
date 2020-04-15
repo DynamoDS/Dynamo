@@ -31,8 +31,8 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            // If it is a Debug build, display a python engine switcher
-            if (dynamoViewModel.ShowPythonEngineSwitcher)
+            // If it is a Debug build, display a pythone engine switcher
+            if (dynamoViewModel.IsDebugBuild)
             {
                 var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(editWindowItem);
