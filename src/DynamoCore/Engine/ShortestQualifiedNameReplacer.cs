@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using ProtoCore.Mirror;
 using ProtoCore.Namespace;
 using ProtoCore.SyntaxAnalysis;
 using ProtoCore.Utils;
@@ -96,14 +98,17 @@ namespace Dynamo.Engine
         public override AssociativeNode VisitIdentifierNode(IdentifierNode node)
         {
             var name = node.ToString();
-            AssociativeNode iNode;
             string[] strIdentList = name.Split('.');
 
+            // return IdentifierNode if identifier string is not separated by '.'
             if (strIdentList.Length == 1)
             {
                 return new IdentifierNode(strIdentList[0]);
             }
 
+            // create IdentifierListNode from string such that
+            // RightNode is IdentifierNode representing classname
+            // and LeftNode is IdentifierNode representing one or more namespaces.
             var rightNode = new IdentifierNode(strIdentList.Last());
             string ident = "";
             for (int i = 0; i < strIdentList.Length - 1; i++)
@@ -120,7 +125,7 @@ namespace Dynamo.Engine
                 RightNode = rightNode,
                 Optr = Operator.dot
             };
-            return VisitIdentifierListNode(identListNode);
+            return identListNode.Accept(this);
         }
 
         private bool TryShortenClassName(IdentifierListNode node, out AssociativeNode shortNameNode)
@@ -143,10 +148,6 @@ namespace Dynamo.Engine
 
             string className = qualifiedName.Split('.').Last();
 
-            //if (matchingClasses.Length == 1)
-            //{
-            //    className = matchingClasses[0];
-            //}
             shortNameNode = CreateNodeFromShortName(className, qualifiedName);
             return shortNameNode != null;
         }
@@ -154,34 +155,58 @@ namespace Dynamo.Engine
         private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
         {
             // Get the list of conflicting namespaces that contain the same class name
-            var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
-            if (matchingClasses.Length == 0)
+            var matchingClasses = classTable.ClassNodes.Where(x =>
+            {
+                var isHiddenInLibrary = x.ClassAttributes?.HiddenInLibrary ?? false;
+                return x.Name.Split('.').Last().Equals(className) && !isHiddenInLibrary;
+            }).ToList();
+
+            //var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
+            if (matchingClasses.Count == 0)
                 return null;
 
-            string shortName;
-            // if there is no class conflict simply use the class name as the shortest name
-            if (matchingClasses.Length == 1)
+            if (matchingClasses.Count == 1)
             {
-                shortName = className;
+                // If there is no class conflict simply use the class name as the shortest name.
+                return CoreUtils.CreateNodeFromString(className);
             }
-            else
+
+            var shortName = resolver?.LookupShortName(qualifiedName);
+            if (!string.IsNullOrEmpty(shortName))
             {
-                shortName = resolver?.LookupShortName(qualifiedName);
+                return CoreUtils.CreateNodeFromString(shortName);
+            }
 
-                if (string.IsNullOrEmpty(shortName))
+            // Use the namespace list to derive the list of shortest unique names
+            var symbolList =
+                matchingClasses.Select(matchingClass => new Symbol(matchingClass.Name));
+            var shortNames = Symbol.GetShortestUniqueNames(symbolList);
+
+            // Get the shortest name corresponding to the fully qualified name
+            if(shortNames.TryGetValue(new Symbol(qualifiedName), out shortName))
+            {
+                return CoreUtils.CreateNodeFromString(shortName);
+            }
+
+            // If shortName for fully qualified classname is not found, it could be a base class
+            // present in class hierarchy of any of the other matchingClasses, in which case
+            // set shortName to the one for the derived class.
+            var qualifiedClassNode = classTable.ClassNodes.FirstOrDefault(x => x.Name == qualifiedName);
+            var classHierarchies = matchingClasses.Select(y => classTable.GetClassHierarchy(y));
+            foreach (var hierarchy in classHierarchies)
+            {
+                // If A derives from B which derives from C, the hierarchy for A 
+                // is listed in that order: [A, B, C], so we start searching in reverse order.
+                for (int i = hierarchy.Count - 1; i >= 0; i--)
                 {
-                    // Use the namespace list as input to derive the list of shortest unique names
-                    var symbolList =
-                        matchingClasses.Select(matchingClass => new Symbol(matchingClass)).ToList();
-                    var shortNames = Symbol.GetShortestUniqueNames(symbolList);
-
-                    // Get the shortest name corresponding to the fully qualified name
-                    shortName = shortNames[new Symbol(qualifiedName)];
+                    if (hierarchy[i] == qualifiedClassNode)
+                    {
+                        shortName = shortNames[new Symbol(hierarchy[0].Name)];
+                        return CoreUtils.CreateNodeFromString(shortName);
+                    }
                 }
             }
-            // Rewrite the AST using the shortest name
-            return CoreUtils.CreateNodeFromString(shortName);
-
+            return null;
         }
     }
 }
