@@ -525,9 +525,17 @@ namespace Dynamo.ViewModels
 
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinariesOrPythonScripts = dependencyVersionHeaders.Any(x =>
-                    x.contains_binaries ||
-                    x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) ||
-                    x.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+                {
+                    // The contents (string) property of the PackageVersion object can be null for an empty package 
+                    // like LunchBox.
+                    var are_contents_empty = string.IsNullOrEmpty(x.contents);
+                    var contains_binaries = x.contains_binaries ||
+                                            !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant);
+                    var contains_python =
+                        !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant);
+                    return contains_binaries || contains_python;
+
+                });
 
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)

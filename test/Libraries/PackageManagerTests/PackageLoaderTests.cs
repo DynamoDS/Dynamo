@@ -46,6 +46,19 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void LoadPackagesDoesNotDuplicateLoadedAssemblies()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "AnotherPackage");
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            loader.LoadPackages(new List<Package> { pkg });
+            Assert.AreEqual(1, pkg.LoadedAssemblies.Count);
+            Assert.AreEqual("AnotherPackage", pkg.LoadedAssemblies.First().Name);
+            Assert.IsTrue(pkg.LoadedAssemblies.First().IsNodeLibrary);
+        }
+
+        [Test]
         public void PackageLoaderRequestsExtensionsBeLoaded()
         {
             var loader = GetPackageLoader();
