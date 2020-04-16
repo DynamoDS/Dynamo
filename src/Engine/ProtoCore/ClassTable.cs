@@ -422,21 +422,6 @@ namespace ProtoCore.DSASM
             return baseClass.FirstOrDefault();
         }
 
-        public IEnumerable<ClassNode> GetCommonBaseClassNodes(IEnumerable<ClassNode> classNodes)
-        {
-            var baseLists = new List<List<ClassNode>>();
-            foreach (var classNode in classNodes)
-            {
-                var baseNodes = GetClassHierarchy(classNode);
-                baseLists.Add(baseNodes);
-            }
-            var arr = baseLists.ToArray();
-
-            if (!arr.Any()) return null;
-
-            return ArrayUtils.GetCommonItems(arr);
-        }
-
         // Don't directly modify class table list.
         public ReadOnlyCollection<ClassNode> ClassNodes
         {
