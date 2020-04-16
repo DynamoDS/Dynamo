@@ -2,7 +2,7 @@
 using Dynamo.Updates;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.Core
+namespace Dynamo.Tests.Updates
 {
     /// <summary>
     /// Test class to test the BinaryVersion class
@@ -17,6 +17,7 @@ namespace Dynamo.Tests.Core
         [Category("UnitTests")]
         public void FromStringTest()
         {
+            //If the string is not valid, it should return null
             Assert.IsNull(BinaryVersion.FromString(null));
             Assert.IsNull(BinaryVersion.FromString(""));
 
@@ -27,6 +28,15 @@ namespace Dynamo.Tests.Core
             Assert.IsNull(BinaryVersion.FromString("1.a.1.1"));
             Assert.IsNull(BinaryVersion.FromString("1.1.a.1"));
             Assert.IsNull(BinaryVersion.FromString("1.1.1.a"));
+
+            //If the string is valid, check that the properties are filled correctly
+            BinaryVersion version = BinaryVersion.FromString("1.2.3.4");
+
+            Assert.IsNotNull(version);
+            Assert.AreEqual(1, version.FileMajor);
+            Assert.AreEqual(2, version.FileMinor);
+            Assert.AreEqual(3, version.FileBuild);
+            Assert.AreEqual(4, version.FilePrivate);
         }
 
         /// <summary>
@@ -37,8 +47,6 @@ namespace Dynamo.Tests.Core
         public void GetHashCodeTest()
         {
             BinaryVersion bin = BinaryVersion.FromString("1.1.1.1");
-                Console.WriteLine(bin.GetHashCode());
-
             Assert.IsNotNull(bin.GetHashCode());
         }
 
