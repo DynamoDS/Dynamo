@@ -1,8 +1,7 @@
-﻿using System;
-using Dynamo.Updates;
+﻿using Dynamo.Updates;
 using NUnit.Framework;
 
-namespace Dynamo.Tests.Updates
+namespace Dynamo.Tests
 {
     /// <summary>
     /// Test class to test the BinaryVersion class
