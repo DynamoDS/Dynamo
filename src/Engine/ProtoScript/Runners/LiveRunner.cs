@@ -1532,27 +1532,30 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
-            // Reset VM
-            ReInitializeLiveRunner();
-
-            if (!libraries.Any())
+            lock (mutexObject)
             {
-                return;
+                // Reset VM. This needs to be in mutex context as it turns DSExecutable null.
+                ReInitializeLiveRunner();
+
+                if (!libraries.Any())
+                {
+                    return;
+                }
+
+                // generate import node for each library in input list
+                List<AssociativeNode> importNodes = new List<AssociativeNode>();
+                foreach (string lib in libraries)
+                {
+                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
+                    importNode.ModuleName = lib;
+
+                    importNodes.Add(importNode);
+                }
+                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                string code = codeGen.GenerateCode();
+
+                SynchronizeInternal(code);
             }
-
-            // generate import node for each library in input list
-            List<AssociativeNode> importNodes = new List<AssociativeNode>();
-            foreach (string lib in libraries)
-            {
-                ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                importNode.ModuleName = lib;
-
-                importNodes.Add(importNode);
-            }
-            ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
-            string code = codeGen.GenerateCode();
-
-            UpdateCmdLineInterpreter(code);
         }
 
         /// <summary>
