@@ -1278,6 +1278,7 @@ namespace ProtoScript.Runners
         /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
         /// </summary>
         /// <param name="code"></param>
+        [Obsolete("No longer used. Remove in 3.0")]
         public void UpdateCmdLineInterpreter(string code)
         {
             lock (mutexObject)
