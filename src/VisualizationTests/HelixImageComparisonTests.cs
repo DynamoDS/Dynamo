@@ -93,7 +93,7 @@ namespace WpfVisualizationTests
             var newImage = BitmapFromSource(bitmapsource);
 
 #if SAVEDEBUGIMAGES
-            var debugPath = GenerateTestDataPathFromTest(testName,true);
+            var debugPath = GenerateImagePathFromTest(testName,true);
             SaveBitMapSourceAsPNG(debugPath, bitmapsource);
 #endif
 
@@ -157,65 +157,66 @@ namespace WpfVisualizationTests
 
 #endregion
 
-#region meshes
-        [Test]
-        public void StandardMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
+        #region meshes
+            [Test]
+            public void StandardMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
 
-        [Test]
-        public void StandardSelectedMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
-            DynamoSelection.Instance.Selection.Add(node);
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
+            [Test]
+            public void StandardSelectedMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
+                DynamoSelection.Instance.Selection.Add(node);
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
 
-        [Test]
-        public void StandardFrozenMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
-            node.IsFrozen = true;
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
+            [Test]
+            public void StandardFrozenMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                var node = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherenormal")).FirstOrDefault();
+                node.IsFrozen = true;
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
 
-        [Test]
-        public void IsolateAllMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            View.BackgroundPreview.ViewModel.IsolationMode = true;
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
+            [Test]
+            public void IsolateAllMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                View.BackgroundPreview.ViewModel.IsolationMode = true;
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
 
-        [Test]
-        public void VertColorSelectedMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
-            DynamoSelection.Instance.Selection.Add(node3);
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
+            [Test]
+            public void VertColorSelectedMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
+                DynamoSelection.Instance.Selection.Add(node3);
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
 
-        [Test]
-        public void VertColorFrozenMeshGeometryRender()
-        {
-            OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
-            RunCurrentModel();
-            var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
-            node3.IsFrozen = true;
-            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
-        }
-#endregion
-#region pointsAndLines
+            [Test]
+            public void VertColorFrozenMeshGeometryRender()
+            {
+                OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
+                RunCurrentModel();
+                var node3 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("spherevertcolors")).FirstOrDefault();
+                node3.IsFrozen = true;
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
+    #endregion
+
+        #region pointsAndLines
         [Test]
         public void points()
         {
@@ -299,9 +300,19 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-#endregion
+        #endregion
 
-#region SpecialRenderPackages
+        #region surfaces
+            [Test]
+            public void WavySurfaceRender()
+            {
+                OpenVisualizationTest(@"imageComparison\wavysurface.dyn");
+                RunCurrentModel();
+                RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+            }
+        #endregion
+
+        #region SpecialRenderPackages
         [Test]
         public void directManipulator()
         {
