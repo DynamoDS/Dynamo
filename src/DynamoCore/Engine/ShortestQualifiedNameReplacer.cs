@@ -198,8 +198,9 @@ namespace Dynamo.Engine
             // If shortName for fully qualified classname is not found, it could be a base class
             // present in class hierarchy of any of the other matchingClasses, in which case
             // set shortName to the one for the derived class.
-            var qualifiedClassNode = classTable.ClassNodes.FirstOrDefault(x => x.Name == qualifiedName);
-            var classHierarchies = matchingClasses.Select(y => classTable.GetClassHierarchy(y));
+            var qualifiedClassNode = matchingClasses.FirstOrDefault(x => x.Name == qualifiedName);
+            var classHierarchies = matchingClasses.Where(x => x != qualifiedClassNode).
+                Select(y => classTable.GetClassHierarchy(y));
             foreach (var hierarchy in classHierarchies)
             {
                 // If A derives from B, which derives from C, the hierarchy for A 

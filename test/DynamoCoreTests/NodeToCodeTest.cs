@@ -811,6 +811,10 @@ namespace Dynamo.Tests
                 CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
             }
 
+            // This file has a node from FFITarget.C.B.DupTargetTest namespace.
+            // Since this class is marked as hidden from library but is inherited by
+            // global class DupTargetTest, performing a Node2Code on this node, should
+            // emit the global class name in a CBN.
             OpenModel(@"core\node2code\ShortenNodeNameWithConflictingClass.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
