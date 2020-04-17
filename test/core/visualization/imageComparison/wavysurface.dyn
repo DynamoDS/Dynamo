@@ -11,8 +11,8 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "\\\\Mac\\Home\\Downloads\\Surface.sat",
-      "InputValue": ".\\Surface.sat",
+      "HintPath": "C:\\workspace\\zeusongit\\Dynamo\\test\\core\\visualization\\imageComparison\\wavysurface.sat",
+      "InputValue": ".\\wavysurface.sat",
       "NodeType": "ExtensionNode",
       "Id": "65089aea3cf14ff69fec136e447726ed",
       "Inputs": [],
@@ -687,7 +687,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.7.0.8375",
+      "Version": "2.7.0.8376",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
