@@ -2077,6 +2077,24 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestCompletionWithGlobalClassWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "Dupt";
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
+
+            // Expected 4 completion items
+            Assert.AreEqual(3, completions.Count());
+
+            string[] expectedValues = {"DupTargetTest", "A.DupTargetTest", "FFITarget.B.DupTargetTest"};
+            var expected = expectedValues.OrderBy(x => x);
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
@@ -2146,7 +2164,7 @@ var06 = g;
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
 
-            string[] expected = { "AnotherClassWithNameConflict" };
+            string[] expected = { "FirstNamespace.AnotherClassWithNameConflict" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

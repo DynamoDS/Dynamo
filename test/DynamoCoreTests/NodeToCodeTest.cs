@@ -770,6 +770,72 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithGlobalClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithGlobalClass.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr1 = asts[0] as BinaryExpressionNode;
+            var expr2 = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.AreEqual("DupTargetTest.DupTargetTest()", expr1.RightNode.ToString());
+            Assert.AreEqual("DupTargetTest.Foo(t1)", expr2.RightNode.ToString());
+
+        }
+
+        [Test]
+        public void TestShortestQualifiedNameReplacerWithConflictingClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithConflictingClass.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr1 = asts[0] as BinaryExpressionNode;
+            var expr2 = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.IsNotNull(expr2);
+
+            Assert.AreEqual("DupTargetTest.DupTargetTest()", expr1.RightNode.ToString());
+            Assert.AreEqual("DupTargetTest.Prop(t1)", expr2.RightNode.ToString());
+
+        }
+
+        [Test]
         public void TestBasicNode2CodeWorkFlow1()
         {
             // 1 -> a -> x
@@ -963,7 +1029,7 @@ namespace Dynamo.Tests
             }
 
             // this graph contains a single "FFITarget.B.DupTargetTest" node that should not conflict with namespace "FFITarget.C.B.DupTargetTest"
-            OpenModel(@"core\node2code\NonUniqueNamespaceConflict_throwsNodeWarning.dyn");
+            OpenModel(@"core\node2code\UniqueNamespace_on_node2code_noConflictWarning.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             SelectAll(nodes);
             var command = new DynamoModel.ConvertNodesToCodeCommand();

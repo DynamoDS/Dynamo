@@ -156,8 +156,8 @@ namespace Dynamo.Engine
             // Get the list of conflicting namespaces that contain the same class name
             var matchingClasses = classTable.ClassNodes.Where(x =>
             {
-                var isHiddenInLibrary = x.ClassAttributes?.HiddenInLibrary ?? false;
-                return x.Name.Split('.').Last().Equals(className) && !isHiddenInLibrary;
+                //var isHiddenInLibrary = x.ClassAttributes?.HiddenInLibrary ?? false;
+                return x.Name.Split('.').Last().Equals(className) /*&& !isHiddenInLibrary*/;
             }).ToList();
 
             //var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
@@ -181,6 +181,14 @@ namespace Dynamo.Engine
                 matchingClasses.Select(matchingClass => new Symbol(matchingClass.Name));
             var shortNames = Symbol.GetShortestUniqueNames(symbolList);
 
+            // remove hidden class if any from shortNames before proceeding
+            var hiddenClassNode = matchingClasses.FirstOrDefault(x => x.ClassAttributes?.HiddenInLibrary ?? false);
+            if(hiddenClassNode != null)
+            {
+                var keyToRemove = new Symbol(hiddenClassNode.Name);
+                shortNames.Remove(keyToRemove);
+            }
+
             // Get the shortest name corresponding to the fully qualified name
             if(shortNames.TryGetValue(new Symbol(qualifiedName), out shortName))
             {
@@ -194,7 +202,7 @@ namespace Dynamo.Engine
             var classHierarchies = matchingClasses.Select(y => classTable.GetClassHierarchy(y));
             foreach (var hierarchy in classHierarchies)
             {
-                // If A derives from B which derives from C, the hierarchy for A 
+                // If A derives from B, which derives from C, the hierarchy for A 
                 // is listed in that order: [A, B, C], so we start searching in reverse order.
                 for (int i = hierarchy.Count - 1; i >= 0; i--)
                 {
