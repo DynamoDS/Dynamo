@@ -31,7 +31,7 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            // If it is a Debug build, display a pythone engine switcher
+            // If it is a Debug build, display a python engine switcher
             if (dynamoViewModel.IsDebugBuild)
             {
                 var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
@@ -40,9 +40,15 @@ namespace PythonNodeModelsWpf
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
                 var pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
+                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
                 var pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
+                pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+
+                // Check the correct item based on NodeModel engine version
+                pythonNodeModel.Engine == pythonNodeModel.DefaultPythonEngine ? pythonEngine2Item.IsChecked = true : pythonEngine2Item.IsChecked = false;
+                pythonNodeModel.Engine == "CPython3" ? pythonEngine3Item.IsChecked = true : pythonEngine3Item.IsChecked = false;
             }
 
             nodeView.UpdateLayout();
@@ -109,6 +115,22 @@ namespace PythonNodeModelsWpf
                     editWindow.Show();
                 }
             }
+        }
+
+        /// <summary>
+        /// MenuItem click handler
+        /// </summary>
+        private void UpdateToPython2Engine()
+        {
+            pythonNodeModel.Engine = pythonNodeModel.DefaultPythonEngine;
+        }
+
+        /// <summary>
+        /// MenuItem click handler
+        /// </summary>
+        private void UpdateToPython3Engine()
+        {
+            pythonNodeModel.Engine = "CPython3";
         }
     }
 }
