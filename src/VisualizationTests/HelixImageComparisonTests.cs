@@ -42,7 +42,7 @@ namespace WpfVisualizationTests
             view.RenderHost.Resize((int)w, (int)h);
             return rtb;
         }
-        private static void UpdateTestData(string pathToUpdate,BitmapSource imageFileSource)
+        private static void UpdateTestData(string pathToUpdate, BitmapSource imageFileSource)
         {
             SaveBitMapSourceAsPNG(pathToUpdate, imageFileSource);
         }
@@ -70,13 +70,13 @@ namespace WpfVisualizationTests
             return bitmap;
         }
 
-        private string GenerateImagePathFromTest(string testname,bool debug = false)
+        private string GenerateImagePathFromTest(string testname, bool debug = false)
         {
-             var debugstring = debug ? "debug" : string.Empty;
-             var fileName = testname+debugstring+".png";
-             string relativePath = Path.Combine(
-                GetTestDirectory(ExecutingDirectory),
-                string.Format(@"core\visualization\imageComparison\referenceImages\{0}", fileName));
+            var debugstring = debug ? "debug" : string.Empty;
+            var fileName = testname + debugstring + ".png";
+            string relativePath = Path.Combine(
+               GetTestDirectory(ExecutingDirectory),
+               string.Format(@"core\visualization\imageComparison\referenceImages\{0}", fileName));
             return relativePath;
         }
 
@@ -84,7 +84,7 @@ namespace WpfVisualizationTests
         {
             DispatcherUtil.DoEvents();
             var path = GenerateImagePathFromTest(testName);
-            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View,1024, 1024);
+            var bitmapsource = DynamoRenderBitmap(BackgroundPreview.View, 1024, 1024);
 #if UPDATEIMAGEDATA
             UpdateTestData(path, bitmapsource);
 #endif
@@ -93,13 +93,13 @@ namespace WpfVisualizationTests
             var newImage = BitmapFromSource(bitmapsource);
 
 #if SAVEDEBUGIMAGES
-            var debugPath = GenerateTestDataPathFromTest(testName,true);
+            var debugPath = GenerateImagePathFromTest(testName,true);
             SaveBitMapSourceAsPNG(debugPath, bitmapsource);
 #endif
 
             compareImageColors(refbitmap, newImage);
         }
-        private static void compareImageColors(Bitmap expectedImage,Bitmap actualImage)
+        private static void compareImageColors(Bitmap expectedImage, Bitmap actualImage)
         {
             Assert.AreEqual(expectedImage.Width, actualImage.Width);
             Assert.AreEqual(expectedImage.Height, actualImage.Height);
@@ -114,11 +114,11 @@ namespace WpfVisualizationTests
                 {
                     var expectedCol = expectedImage.GetPixel(x, y);
                     var otherCol = actualImage.GetPixel(x, y);
-                    if((ColorDistance(expectedCol,otherCol) > 128))
+                    if ((ColorDistance(expectedCol, otherCol) > 128))
                     {
                         differences.Add(Tuple.Create(x, y, expectedCol, otherCol));
-                    // this can be painfully slow, but is useful during debug - uncomment for more info.
-                    // Console.WriteLine($"{expectedCol}, {otherCol}, pixel {x}:{y} was not in expected range");
+                        // this can be painfully slow, but is useful during debug - uncomment for more info.
+                        // Console.WriteLine($"{expectedCol}, {otherCol}, pixel {x}:{y} was not in expected range");
                     }
                 }
             }
@@ -144,10 +144,10 @@ namespace WpfVisualizationTests
             var r2 = color2.R;
             var g2 = color2.G;
             var b2 = color2.B;
-            return Math.Sqrt(Math.Pow((r2 - r1), 2) + Math.Pow((g2 - g1),2) + Math.Pow((b2 - b1),2));
+            return Math.Sqrt(Math.Pow((r2 - r1), 2) + Math.Pow((g2 - g1), 2) + Math.Pow((b2 - b1), 2));
         }
-       
-        private static double CalculatePercentDiff(Bitmap image1, List<Tuple<int,int,Color,Color>> differences)
+
+        private static double CalculatePercentDiff(Bitmap image1, List<Tuple<int, int, Color, Color>> differences)
         {
             //TODO should we remove background pixels from this calculation via color?
             // or other filtering techniques for more precision
@@ -155,9 +155,9 @@ namespace WpfVisualizationTests
             return (double)differences.Count / (double)totalPixels;
         }
 
-#endregion
+        #endregion
 
-#region meshes
+        #region meshes
         [Test]
         public void StandardMeshGeometryRender()
         {
@@ -214,8 +214,9 @@ namespace WpfVisualizationTests
             node3.IsFrozen = true;
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
-#endregion
-#region pointsAndLines
+        #endregion
+
+        #region pointsAndLines
         [Test]
         public void points()
         {
@@ -299,9 +300,19 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-#endregion
+        #endregion
 
-#region SpecialRenderPackages
+        #region surfaces
+        [Test]
+        public void WavySurfaceRender()
+        {
+            OpenVisualizationTest(@"imageComparison\wavysurface.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        #endregion
+
+        #region SpecialRenderPackages
         [Test]
         public void directManipulator()
         {
@@ -315,7 +326,7 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
-#endregion
+        #endregion
 
     }
 }
