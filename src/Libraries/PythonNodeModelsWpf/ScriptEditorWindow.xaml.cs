@@ -3,15 +3,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
-using Dynamo.Logging;
+using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using Dynamo.Wpf.Windows;
 
 namespace PythonNodeModelsWpf
 {
@@ -91,7 +91,6 @@ namespace PythonNodeModelsWpf
 
         private void OnTextAreaTextEntered(object sender, TextCompositionEventArgs e)
         {
-            /*
             try
             {
                 if (e.Text == ".")
@@ -121,7 +120,6 @@ namespace PythonNodeModelsWpf
                 dynamoViewModel.Model.Logger.Log(ex.Message);
                 dynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
-            */
         }
 
         #endregion

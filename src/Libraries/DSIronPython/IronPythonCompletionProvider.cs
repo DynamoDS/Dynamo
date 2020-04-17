@@ -6,7 +6,11 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
-using Python.Runtime;
+using IronPython.Runtime;
+using IronPython.Runtime.Types;
+using Microsoft.Scripting;
+using Microsoft.Scripting.Actions;
+using Microsoft.Scripting.Hosting;
 
 namespace Dynamo.Python
 {
@@ -15,12 +19,7 @@ namespace Dynamo.Python
     /// </summary>
     public class IronPythonCompletionProvider : LogSourceBase
     {
-        public IronPythonCompletionProvider(object o)
-        {
 
-        }
-
-        /*
         #region Properties and fields
 
         /// <summary>
@@ -39,8 +38,8 @@ namespace Dynamo.Python
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        private PyScope scope;
-        public PyScope Scope
+        private ScriptScope scope;
+        public ScriptScope Scope
         {
             get { return scope; }
             set { scope = value; }
@@ -1209,6 +1208,5 @@ namespace Dynamo.Python
             return text.Substring(startIndex + 1).Trim('.').Trim('(');
         }
         #endregion
-    */
     }
 }

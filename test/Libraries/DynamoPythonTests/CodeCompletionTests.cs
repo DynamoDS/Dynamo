@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Dynamo.Logging;
+using Dynamo.Python;
 using Dynamo.Utilities;
 using NUnit.Framework;
 
@@ -104,7 +106,7 @@ namespace DynamoPythonTests
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
-        /*
+        
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
@@ -115,7 +117,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
         }
-
+        
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicArrayVarSingleLine()
@@ -432,6 +434,5 @@ namespace DynamoPythonTests
                 }
             }
         }
-        */
     }
 }
