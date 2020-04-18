@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Runtime;
 
-public class DupTargetTest : FFITarget.C.B.DupTargetTest
+public class DupTargetTest  : FFITarget.C.B.DupTargetTest
 {
     public DupTargetTest()
     {
@@ -10,6 +10,17 @@ public class DupTargetTest : FFITarget.C.B.DupTargetTest
 
 namespace FFITarget
 {
+    namespace DSCore
+    {
+        public class List
+        {
+            public int Count()
+            {
+                return 999;
+            }
+        }
+    }
+
     namespace A
     {
         public class DupTargetTest

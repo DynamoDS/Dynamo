@@ -182,11 +182,15 @@ namespace Dynamo.Engine
             var shortNames = Symbol.GetShortestUniqueNames(symbolList);
 
             // remove hidden class if any from shortNames before proceeding
-            var hiddenClassNode = matchingClasses.FirstOrDefault(x => x.ClassAttributes?.HiddenInLibrary ?? false);
-            if(hiddenClassNode != null)
+            var hiddenClassNodes = matchingClasses.
+                Where(x => x.ClassAttributes?.HiddenInLibrary ?? false).ToList();
+            if(hiddenClassNodes.Any())
             {
-                var keyToRemove = new Symbol(hiddenClassNode.Name);
-                shortNames.Remove(keyToRemove);
+                foreach (var hiddenClassNode in hiddenClassNodes)
+                {
+                    var keyToRemove = new Symbol(hiddenClassNode.Name);
+                    shortNames.Remove(keyToRemove);
+                }
             }
 
             // Get the shortest name corresponding to the fully qualified name
@@ -205,7 +209,7 @@ namespace Dynamo.Engine
             {
                 // If A derives from B, which derives from C, the hierarchy for A 
                 // is listed in that order: [A, B, C], so we start searching in reverse order.
-                for (int i = hierarchy.Count - 1; i >= 0; i--)
+                for (int i = hierarchy.Count - 1; i > 0; i--)
                 {
                     if (hierarchy[i] == qualifiedClassNode)
                     {
