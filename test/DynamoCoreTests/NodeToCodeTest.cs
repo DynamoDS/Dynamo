@@ -744,6 +744,33 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithStaticPropertyInDefaultArgument()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortestQualifiedNameReplacerWithStaticPropertyInDefaultArgument.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var expr1 = result.AstNodes.First() as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr1);
+            Assert.AreEqual(
+                "ElementResolverTarget.StaticMethod2(ElementResolverTarget.StaticProperty.StaticProperty2.Method(ElementResolverTarget.Create()))",
+                expr1.RightNode.ToString());
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerWithStaticProperty()
         {
             string libraryPath = "FFITarget.dll";

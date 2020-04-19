@@ -6,6 +6,11 @@ public class DupTargetTest  : FFITarget.C.B.DupTargetTest
     {
 
     }
+
+    public string Bar()
+    {
+        return "GlobalClass";
+    }
 }
 
 namespace FFITarget

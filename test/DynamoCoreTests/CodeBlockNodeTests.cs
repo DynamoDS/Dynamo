@@ -2145,11 +2145,10 @@ var06 = g;
         public void TestCompletionOnBaseTypeReturnsOnlyBaseType()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
-            var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
-            Assert.AreEqual(3, completions.Count);
-            Assert.AreEqual("Foo", completions[0].Text);
-            Assert.AreEqual("DupTargetTest", completions[1].Text);
-            Assert.AreEqual("Bar", completions[2].Text);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.C.B.DupTargetTest").ToList();
+            Assert.AreEqual(2, completions.Count);
+            Assert.AreEqual("DupTargetTest", completions[0].Text);
+            Assert.AreEqual("Foo", completions[1].Text);
         }
 
         [Test]
