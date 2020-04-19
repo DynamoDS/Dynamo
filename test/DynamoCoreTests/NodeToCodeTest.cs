@@ -770,6 +770,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithFFITargetListClass()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\FFITarget.DSCore.List.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(2, asts.Count);
+
+            var expr = asts[1] as BinaryExpressionNode;
+
+            Assert.IsNotNull(expr);
+
+            Assert.AreEqual("FFITarget.List.Count(l)", expr.RightNode.ToString());
+
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerWithGlobalClass()
         {
             string libraryPath = "FFITarget.dll";

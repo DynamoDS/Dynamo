@@ -2083,7 +2083,7 @@ var06 = g;
             string code = "Dupt";
             var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
 
-            // Expected 4 completion items
+            // Expected 3 completion items
             Assert.AreEqual(3, completions.Count());
 
             string[] expectedValues = {"DupTargetTest", "A.DupTargetTest", "FFITarget.B.DupTargetTest"};
@@ -2126,6 +2126,30 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("x : CodeCompletionClass", "x");
             Assert.AreEqual(5, completions.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnDerivedTypeReturnsBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
+            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual("Foo", completions[0].Text);
+            Assert.AreEqual("DupTargetTest", completions[1].Text);
+            Assert.AreEqual("Bar", completions[2].Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnBaseTypeReturnsOnlyBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
+            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual("Foo", completions[0].Text);
+            Assert.AreEqual("DupTargetTest", completions[1].Text);
+            Assert.AreEqual("Bar", completions[2].Text);
         }
 
         [Test]
