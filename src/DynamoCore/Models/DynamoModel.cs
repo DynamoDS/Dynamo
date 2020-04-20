@@ -1775,6 +1775,8 @@ namespace Dynamo.Models
                     // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
                     if (!(resolvedNode is DummyNode))
                     {
+                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
+                        EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
@@ -1797,6 +1799,7 @@ namespace Dynamo.Models
                             connectorModel.Delete();
                             ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
                         }
+                        EngineController.DisableRun = false ;
                         resolvedDummyNode = true;
                     }
                 }
