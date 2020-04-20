@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
-
 using Autodesk.DesignScript.Runtime;
-
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
-using System.IO;
-using Dynamo.Configuration;
+using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
@@ -28,6 +26,7 @@ namespace PythonNodeModels
         }
 
         public static readonly string DefaultPythonEngine = "IronPython2";
+        public static readonly string PythonNet3Engine = "CPython3";
 
         private string engine = DefaultPythonEngine;
 
@@ -79,11 +78,11 @@ namespace PythonNodeModels
             }
 
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (Engine == "CPython3")
+            if (Engine == PythonNet3Engine)
             {
                 pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
             }
-            else if (Engine == "IronPython2")
+            else if (Engine == DefaultPythonEngine)
             {
                 pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -197,7 +195,6 @@ namespace DSCPython
         /// <summary>
         /// Called immediately before evaluation starts
         /// </summary>
-        /// <param name="engine">The engine used to do the evaluation</param>
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
@@ -215,7 +212,6 @@ namespace DSCPython
         /// Called when the evaluation has completed successfully or failed
         /// </summary>
         /// <param name="isSuccessful">Whether the evaluation succeeded or not</param>
-        /// <param name="engine">The engine used to do the evaluation</param>
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>

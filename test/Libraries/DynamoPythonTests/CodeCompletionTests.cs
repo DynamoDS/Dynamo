@@ -106,7 +106,7 @@ namespace DynamoPythonTests
             AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicNumVarSingleLine()
@@ -117,7 +117,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void CanMatchBasicArrayVarSingleLine()
