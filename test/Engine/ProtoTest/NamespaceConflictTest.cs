@@ -35,5 +35,16 @@ aO = a.Foo();
             thisTest.Verify("aO", 4);
         }
 
+        [Test]
+        public void DupImportTestNamespaceConflict02()
+        {
+            var mirror = thisTest.RunScriptSource(
+@"import(""FFITarget.dll"");
+b = B.DupTargetTest.DupTargetTest(); 
+"
+);
+            thisTest.VerifyBuildWarningMessage("Multiple definitions for 'B.DupTargetTest' are found as FFITarget.C.B.DupTargetTest, FFITarget.B.DupTargetTest");
+            thisTest.Verify("b", null);
+        }
     }
 }
