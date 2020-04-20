@@ -154,13 +154,9 @@ namespace Dynamo.Engine
         private AssociativeNode CreateNodeFromShortName(string className, string qualifiedName)
         {
             // Get the list of conflicting namespaces that contain the same class name
-            var matchingClasses = classTable.ClassNodes.Where(x =>
-            {
-                //var isHiddenInLibrary = x.ClassAttributes?.HiddenInLibrary ?? false;
-                return x.Name.Split('.').Last().Equals(className) /*&& !isHiddenInLibrary*/;
-            }).ToList();
+            var matchingClasses = classTable.ClassNodes.Where(
+                x => x.Name.Split('.').Last().Equals(className)).ToList();
 
-            //var matchingClasses = CoreUtils.GetResolvedClassName(classTable, AstFactory.BuildIdentifier(className));
             if (matchingClasses.Count == 0)
                 return null;
 
