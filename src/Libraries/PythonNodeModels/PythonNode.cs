@@ -18,6 +18,26 @@ namespace PythonNodeModels
 {
     public abstract class PythonNodeBase : VariableInputNode
     {
+        public static readonly string DefaultPythonEngine = "IronPython2";
+        private string engine = DefaultPythonEngine;
+
+        /// <summary>
+        /// Evaluation engine used to execute the Python script. 
+        /// Currently supported values: "IronPython2" (the default)
+        /// </summary>
+        public string Engine
+        {
+            get { return engine; }
+            set
+            {
+                if (engine != value)
+                {
+                    engine = value;
+                    RaisePropertyChanged("Engine");
+                }
+            }
+        }
+
         /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
