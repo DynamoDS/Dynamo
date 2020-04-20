@@ -32,20 +32,8 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
+            thisTest.Verify("aO", 4);
         }
 
-        [Test]
-        public void DupImportTestNamespaceConflict02()
-        {
-            var mirror = thisTest.RunScriptSource(
-@"import(""FFITarget.dll"");
-a = DupTargetTest.DupTargetTest(); 
-p = a;
-"
-);
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
-            thisTest.Verify("p", null);
-        }
     }
 }
