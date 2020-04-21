@@ -393,7 +393,7 @@ namespace ProtoCore.DSASM
         //Symbol table to manage symbols with namespace
         private Namespace.SymbolTable symbolTable = new Namespace.SymbolTable();
         
-        public List<ClassNode> GetClassHierarchy(ClassNode node)
+        internal List<ClassNode> GetClassHierarchy(ClassNode node)
         {
             var cNodes = new List<ClassNode> {node};
             
