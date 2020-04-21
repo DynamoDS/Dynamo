@@ -392,7 +392,14 @@ namespace ProtoCore.DSASM
 
         //Symbol table to manage symbols with namespace
         private Namespace.SymbolTable symbolTable = new Namespace.SymbolTable();
-        
+
+        /// <summary>
+        /// Returns the class hierarchy for a given class node.
+        /// If A derives from B, which in turn derives from C,
+        /// the hierarchy for A returned is in the order: [A, B, C].
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>List of classes in hierarchy.</returns>
         internal List<ClassNode> GetClassHierarchy(ClassNode node)
         {
             var cNodes = new List<ClassNode> {node};
