@@ -11,7 +11,11 @@ using ProtoCore.Utils;
 namespace Dynamo.Engine
 {
     /// <summary>
-    /// Replace a fully qualified function call with short name. 
+    /// Replaces a fully qualified class name with a short name.
+    /// Ensures that fully qualified namespaces of classes with the same name are
+    /// automatically shortened to partial namespaces so that they can still be resolved uniquely.
+    /// E.g., given {"A.B.C.D.E", "X.Y.A.B.E.C.E", "X.Y.A.C.B.E"}, all with the same class E,
+    /// their shortest unique names would be: {"D.E", "E.E", "C.B.E"}.
     /// </summary>
     internal class ShortestQualifiedNameReplacer : AstReplacer
     {
