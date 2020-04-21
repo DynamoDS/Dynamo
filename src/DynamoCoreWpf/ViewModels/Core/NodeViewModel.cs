@@ -225,11 +225,12 @@ namespace Dynamo.ViewModels
         public bool IsRenamed
         {
             get { return isRenamed; }
-            set {
-            if(isRenamed != value)
+            set
+            {
+                if (isRenamed != value)
                 {
-            isRenamed = value;
-            RaisePropertyChanged(nameof(IsRenamed));
+                    isRenamed = value;
+                    RaisePropertyChanged(nameof(IsRenamed));
                 }
             }
         }
