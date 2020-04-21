@@ -184,6 +184,8 @@ namespace Dynamo.Graph.Workspaces
 
                 CustomNodeDefinition def = null;
                 CustomNodeInfo info = null;
+                // Skip deserializing the Description Json property as the original one in dyf may 
+                // already be updated without syncing with the dyn
                 bool isUnresolved = !manager.TryGetCustomNodeData(functionId, null, false, out def, out info);
                 Function function = manager.CreateCustomNodeInstance(functionId, null, false, def, info);
                 node = function;

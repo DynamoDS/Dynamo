@@ -38,23 +38,65 @@
       ],
       "Replication": "Disabled",
       "Description": "Makes a new list out of the given inputs"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "QRImage.Color.Colors.GetAllColors",
+      "Id": "94e8d6a85463483c9fe6ace668670fae",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d4f2d438082a4b418cdee1a54605f9b9",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Return All Color\n\nColors.GetAllColors ( ): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "9c989a2a-a53b-4556-8972-cd2f66c1903e",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "5795dc1947c94084a5dadf248e03edc4",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Auto",
+      "Description": ""
     }
   ],
   "Connectors": [],
-  "Dependencies": [],
-  "NodeLibraryDependencies": [],
+  "Dependencies": [
+    "9c989a2a-a53b-4556-8972-cd2f66c1903e"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "QRImage",
+      "Version": "0.0.4",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "94e8d6a85463483c9fe6ace668670fae"
+      ]
+    }
+  ],
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.4.0.6186",
+      "Version": "2.7.0.8305",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Default Camera",
+      "Name": "Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -73,8 +115,28 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 315.33333333333326,
-        "Y": 217.99999999999994
+        "X": 124.33333333333326,
+        "Y": 216.99999999999994
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Colors.GetAllColors_V1",
+        "Id": "94e8d6a85463483c9fe6ace668670fae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 126.5,
+        "Y": 357.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "RootNode_V1",
+        "Id": "5795dc1947c94084a5dadf248e03edc4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 370.0,
+        "Y": 204.0
       }
     ],
     "Annotations": [],

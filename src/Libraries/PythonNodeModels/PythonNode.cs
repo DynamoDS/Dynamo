@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
-
 using Autodesk.DesignScript.Runtime;
-
-using DSIronPython;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
-using System.IO;
-using Dynamo.Configuration;
+using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
@@ -26,6 +23,24 @@ namespace PythonNodeModels
         protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public static readonly string DefaultPythonEngine = "IronPython2";
+        public static readonly string PythonNet3Engine = "CPython3";
+
+        private string engine = DefaultPythonEngine;
+
+        public string Engine
+        {
+            get { return engine; }
+            set
+            {
+                if (engine != value)
+                {
+                    engine = value;
+                    RaisePropertyChanged("Engine");
+                }
+            }
         }
 
         protected PythonNodeBase()
@@ -56,13 +71,30 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> backendMethod =
-                IronPythonEvaluator.EvaluateIronPythonScript;
+            
+            if (String.IsNullOrEmpty(Engine))
+            { 
+                Engine = DefaultPythonEngine;
+            }
+
+            Func<string, IList, IList, object> pythonEvaluatorMethod;
+            if (Engine == PythonNet3Engine)
+            {
+                pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+            }
+            else if (Engine == DefaultPythonEngine)
+            {
+                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+            }
+            else
+            {
+                throw new InvalidOperationException("Unknown Python engine " + Engine);
+            }
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod,
+                    pythonEvaluatorMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
