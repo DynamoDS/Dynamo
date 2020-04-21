@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 15
+# Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
@@ -98,6 +98,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "System", "System", "{88A44558-9148-4F1C-876B-46472793F3D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "..\test\System\IntegrationTests\IntegrationTests.csproj", "{1254D922-643B-4F0B-82BD-E9E02399B040}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Python", "Libraries\DynamoPython\Python.csproj", "{2B0F2800-6F62-4869-9074-088C5F6DCCA2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProtoTestConsoleRunner", "..\test\Engine\ProtoTestConsoleRunner\ProtoTestConsoleRunner.csproj", "{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}"
 EndProject
@@ -421,6 +423,14 @@ Global
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Release|x64.ActiveCfg = Release|x64
 		{1254D922-643B-4F0B-82BD-E9E02399B040}.Release|x64.Build.0 = Release|x64
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Debug|x64.ActiveCfg = Debug|x64
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Debug|x64.Build.0 = Debug|x64
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|x64.ActiveCfg = Release|x64
+		{2B0F2800-6F62-4869-9074-088C5F6DCCA2}.Release|x64.Build.0 = Release|x64
 		{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{672BF8EC-1116-49F6-B253-DFCE5CF7D4C9}.Debug|x64.ActiveCfg = Debug|x64
