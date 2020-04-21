@@ -33,7 +33,7 @@ namespace Dynamo.Python
             this.IsInstance = isInstance;
             this.provider = provider;
 
-            if (IronPythonCompletionData.TypeToIcon == null)
+            if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
             {
                 var assembly = Assembly.GetExecutingAssembly();
 
@@ -96,7 +96,7 @@ namespace Dynamo.Python
 
         private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
-            var name = string.Format(@"PythonNodeModelsWpf.Resources.{0}", resourceFileName);
+            var name = string.Format(@"DSIronPython.Resources.{0}", resourceFileName);
 
             var bitmapImage = new BitmapImage();
 
