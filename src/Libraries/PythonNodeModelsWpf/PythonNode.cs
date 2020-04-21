@@ -19,6 +19,8 @@ namespace PythonNodeModelsWpf
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
+        private MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
+        private MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -37,16 +39,22 @@ namespace PythonNodeModelsWpf
                 editWindowItem.Click += delegate { EditScriptContent(); };
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-                var pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
-                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
-                var pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
+                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); }; var pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
                 pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 
                 // Check the correct item based on NodeModel engine version
-                pythonNodeModel.Engine == pythonNodeModel.DefaultPythonEngine ? pythonEngine2Item.IsChecked = true : pythonEngine2Item.IsChecked = false;
-                pythonNodeModel.Engine == "CPython3" ? pythonEngine3Item.IsChecked = true : pythonEngine3Item.IsChecked = false;
+                if (pythonNodeModel.Engine == PythonNodeBase.DefaultPythonEngine)
+                {
+                    pythonEngine2Item.IsChecked = true;
+                    pythonEngine3Item.IsChecked = false;
+                }
+                else
+                {
+                    pythonEngine2Item.IsChecked = false;
+                    pythonEngine3Item.IsChecked = true;
+                }      
             }
 
             nodeView.UpdateLayout();
@@ -120,7 +128,9 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython2Engine()
         {
-            pythonNodeModel.Engine = pythonNodeModel.DefaultPythonEngine;
+            pythonNodeModel.Engine = PythonNodeBase.DefaultPythonEngine;
+            pythonEngine2Item.IsChecked = true;
+            pythonEngine3Item.IsChecked = false;
         }
 
         /// <summary>
@@ -128,7 +138,9 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython3Engine()
         {
-            pythonNodeModel.Engine = "CPython3";
+            pythonNodeModel.Engine = PythonNodeBase.PythonNet3Engine;
+            pythonEngine2Item.IsChecked = false;
+            pythonEngine3Item.IsChecked = true;
         }
     }
 }
