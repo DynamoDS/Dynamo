@@ -127,6 +127,13 @@
     <Compile Include="ProfilingTest.cs" />
     <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
+    <Compile Include="Search\SearchDictionaryTest.cs" />
+    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBaseTest.cs" />
+    <Compile Include="Search\SearchLibraryTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
@@ -151,6 +158,7 @@
     <Compile Include="UnicodeTest.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
+    <Compile Include="Updates\BinaryVersionTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
@@ -256,6 +264,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

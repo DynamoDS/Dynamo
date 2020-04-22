@@ -225,7 +225,14 @@ namespace Dynamo.ViewModels
         public bool IsRenamed
         {
             get { return isRenamed; }
-            set { isRenamed = value; RaisePropertyChanged(nameof(IsRenamed)); }
+            set
+            {
+                if (isRenamed != value)
+                {
+                    isRenamed = value;
+                    RaisePropertyChanged(nameof(IsRenamed));
+                }
+            }
         }
 
         [JsonIgnore]
