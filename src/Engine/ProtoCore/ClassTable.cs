@@ -392,8 +392,15 @@ namespace ProtoCore.DSASM
 
         //Symbol table to manage symbols with namespace
         private Namespace.SymbolTable symbolTable = new Namespace.SymbolTable();
-        
-        private List<ClassNode> GetClassHierarchy(ClassNode node)
+
+        /// <summary>
+        /// Returns the class hierarchy for a given class node.
+        /// If A derives from B, which in turn derives from C,
+        /// the hierarchy for A returned is in the order: [A, B, C].
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>List of classes in hierarchy.</returns>
+        internal List<ClassNode> GetClassHierarchy(ClassNode node)
         {
             var cNodes = new List<ClassNode> {node};
             
@@ -538,10 +545,17 @@ namespace ProtoCore.DSASM
         /// <returns>Array of fully qualified name of all matching symbols</returns>
         public string[] GetAllMatchingClasses(string name)
         {
+            // First check if there is an exact name match with fully qualified classname
+            Symbol symbol;
+            if (symbolTable.TryGetExactSymbol(name, out symbol))
+            {
+                if (Constants.kInvalidIndex != symbol.Id)
+                    return new[] {name};
+            }
+
             var symbols = symbolTable.TryGetSymbols(name, s => s.Matches(name));
 
             var classes = new List<string>();
-
             if (symbols.Length > 1)
             {
                 var baseClass = GetCommonBaseClass(symbols);

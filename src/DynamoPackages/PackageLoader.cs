@@ -294,7 +294,7 @@ namespace Dynamo.PackageManager
         /// <param name="packages"></param>
         public void LoadPackages(IEnumerable<Package> packages)
         {
-            var enumerable = packages.ToList();
+            var packageList = packages.ToList();
 
             // This fix is in reference to the crash reported in task: https://jira.autodesk.com/browse/DYN-2101
             // TODO: https://jira.autodesk.com/browse/DYN-2120. we will be re-evaluating this workflow, to find the best clean solution.
@@ -308,7 +308,7 @@ namespace Dynamo.PackageManager
             // Disabling the run here since new packages are being loaded. 
             EngineController.DisableRun = true;
 
-            foreach (var pkg in enumerable)
+            foreach (var pkg in packageList)
             {
                 // If the pkg is null, then don't load that package into the Library.
                 if (pkg != null)
@@ -320,9 +320,11 @@ namespace Dynamo.PackageManager
             // Setting back the DisableRun property back to false, as the package loading is completed.
             EngineController.DisableRun = false;
 
-            var assemblies =
-                enumerable.SelectMany(x => x.EnumerateAssembliesInBinDirectory().Where(y => y.IsNodeLibrary));
-            OnPackagesLoaded(assemblies.Select(x => x.Assembly));
+            var assemblies = packageList
+                .SelectMany(p => p.LoadedAssemblies.Where(y => y.IsNodeLibrary))
+                .Select(a => a.Assembly)
+                .ToList();
+            OnPackagesLoaded(assemblies);
         }
 
         public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
