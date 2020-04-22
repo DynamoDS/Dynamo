@@ -79,6 +79,8 @@
     <Compile Include="Configuration\ContextTests.cs" />
     <Compile Include="Configuration\ExecutionSessionTests.cs" />
     <Compile Include="Configuration\PreferenceSettingsTests.cs" />
+    <Compile Include="Core\DynamoSelectionTests.cs" />
+    <Compile Include="Core\AssemblyLoadedEventArgsTests.cs" />
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
