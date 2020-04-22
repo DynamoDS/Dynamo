@@ -175,7 +175,13 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
-            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version, BuildId = "CB159AA3-2F20-4791-AE8C-8939E90C9600", ReleaseId = "2.5.0", MasterId = "{4C7B248C-56D3-488F-8E23-8CAFD2651968}" };
+            string buildId = "", releaseId = "";
+            if (Version.TryParse(dynamoModel.Version, out Version ver))
+            {
+                buildId = $"{ver.Major}.{ver.Minor}.{ver.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
+                releaseId = $"{ver.Major}.{ver.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
+            }
+            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         /// <summary>
