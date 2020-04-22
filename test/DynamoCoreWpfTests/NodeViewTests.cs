@@ -339,14 +339,14 @@ namespace DynamoCoreWpfTests
             var nvm = ViewModel.CurrentSpaceViewModel.Nodes.First();
             nvm.PropertyChanged += NodeNameTest_PropChangedHandler;
             //get the nodes's name.
-            _ = nvm.Name;
+            var temp = nvm.Name;
             nvm.PropertyChanged -= NodeNameTest_PropChangedHandler;
         }
 
         private void NodeNameTest_PropChangedHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             //get the name,this will sometimes cause another propertyChanged event
-             _ = (sender as NodeViewModel).Name;
+             var temp = (sender as NodeViewModel).Name;
         }
     }
 }
