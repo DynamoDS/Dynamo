@@ -31,15 +31,15 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
+            var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
+            nodeView.MainContextMenu.Items.Add(editWindowItem);
+            editWindowItem.Click += delegate { EditScriptContent(); };
             // If it is a Debug build, display a python engine switcher
             if (dynamoViewModel.IsDebugBuild)
             {
-                var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
-                nodeView.MainContextMenu.Items.Add(editWindowItem);
-                editWindowItem.Click += delegate { EditScriptContent(); };
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); }; var pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
+                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
                 pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
@@ -128,6 +128,7 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython2Engine()
         {
+            // If PythonNodeBase.DefaultPythonEngine is updated to python 3, we should update this piece of code
             pythonNodeModel.Engine = PythonNodeBase.DefaultPythonEngine;
             pythonEngine2Item.IsChecked = true;
             pythonEngine3Item.IsChecked = false;
