@@ -32,7 +32,7 @@ a = DupTargetTest.DupTargetTest();
 aO = a.Foo();
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
+            thisTest.Verify("aO", 4);
         }
 
         [Test]
@@ -40,12 +40,11 @@ aO = a.Foo();
         {
             var mirror = thisTest.RunScriptSource(
 @"import(""FFITarget.dll"");
-a = DupTargetTest.DupTargetTest(); 
-p = a;
+b = B.DupTargetTest.DupTargetTest(); 
 "
 );
-            thisTest.VerifyBuildWarningCount(ProtoCore.BuildData.WarningID.MultipleSymbolFoundFromName, 1);
-            thisTest.Verify("p", null);
+            thisTest.VerifyBuildWarningMessage("Multiple definitions for 'B.DupTargetTest' are found as FFITarget.C.B.DupTargetTest, FFITarget.B.DupTargetTest");
+            thisTest.Verify("b", null);
         }
     }
 }
