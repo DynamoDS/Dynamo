@@ -552,6 +552,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(1, functionNodes.Count());
             var functionNode = functionNodes.First();
             Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
         }
 
         [Test]
