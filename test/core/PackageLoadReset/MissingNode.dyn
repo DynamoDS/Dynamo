@@ -1,0 +1,117 @@
+{
+  "Uuid": "63001d03-558d-4fae-a32c-767af1871c59",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Home",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "96dbab16-f1ce-4dfb-8e1c-1ec930eb7507",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "1c338137ab98476aaead678d47a583f0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "30682c8b9c3c4cc6963ee6e8d7dca18d",
+          "Name": "Point",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "QRImage.Color.Colors.GetAllColors",
+      "Id": "b3203366f0c048d8b1804f7b2dc3a6ae",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f23c1ee57e2140bd834b229eb3f7f6a9",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Return All Color\n\nColors.GetAllColors ( ): var[]..[]"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [
+    "96dbab16-f1ce-4dfb-8e1c-1ec930eb7507"
+  ],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "QRImage",
+      "Version": "0.0.4",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "b3203366f0c048d8b1804f7b2dc3a6ae"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8287",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "Id": "1c338137ab98476aaead678d47a583f0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "test",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 110.0,
+        "Y": 133.0
+      },
+      {
+        "Id": "b3203366f0c048d8b1804f7b2dc3a6ae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Name": "Colors.GetAllColors",
+        "ShowGeometry": true,
+        "Excluded": false,
+        "X": 280.5,
+        "Y": 321.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

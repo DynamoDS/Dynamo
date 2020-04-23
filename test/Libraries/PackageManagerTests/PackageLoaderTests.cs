@@ -533,7 +533,25 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert value of loaded CN is non-null.
             AssertNonNull("576f11ed5837460d80f2e354d853de68");
+        }
 
+        [Test]
+        public void LoadingAPackageWithBinariesDoesNotAffectCustomNodesUsedInHomeWorkspace()
+        {
+            // Open a custom node definition and a workspace where this custom node is used.
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\test.dyf"));
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\MissingNode.dyn"));
+
+            // Load a package which contains binaries, when the graph is open in the workspace. 
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(Path.Combine(PackagesDirectory, "Mixed Package"));
+            loader.LoadPackages(new List<Package> { pkg });
+
+            // Custom node in workspace should not have any warnings on them.
+            var functionNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>();
+            Assert.AreEqual(1, functionNodes.Count());
+            var functionNode = functionNodes.First();
+            Assert.AreEqual(ElementState.Active, functionNode.State);
         }
 
         [Test]
