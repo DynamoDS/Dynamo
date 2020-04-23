@@ -542,15 +542,21 @@ namespace Dynamo.PackageManager.Tests
             OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\test.dyf"));
             OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\MissingNode.dyn"));
 
+            // Get the custom node.
+            var functionNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>();
+            Assert.AreEqual(1, functionNodes.Count());
+            var functionNode = functionNodes.First();
+
+            // Custom node should be good before loading the package.
+            Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
+
             // Load a package which contains binaries, when the graph is open in the workspace. 
             var loader = GetPackageLoader();
             var pkg = loader.ScanPackageDirectory(Path.Combine(PackagesDirectory, "Mixed Package"));
             loader.LoadPackages(new List<Package> { pkg });
 
-            // Custom node in workspace should not have any warnings on them.
-            var functionNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>();
-            Assert.AreEqual(1, functionNodes.Count());
-            var functionNode = functionNodes.First();
+            // Custom node should remain good after loading the package.
             Assert.AreEqual(ElementState.Active, functionNode.State);
             AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
         }
