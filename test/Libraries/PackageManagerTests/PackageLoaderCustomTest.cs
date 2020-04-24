@@ -51,17 +51,16 @@ namespace Dynamo.PackageManager.Tests
             }
             Assert.AreEqual(2, expectedLoadedPackageNum);
 
-            var firstPkg = loader.LocalPackages.ElementAt(0);
+            var targetPkg = loader.LocalPackages.Where(x=>x.Name == "Custom Rounding").FirstOrDefault();
 
-            Assert.AreEqual("CAAD_RWTH", firstPkg.Group);
-            Assert.AreEqual("Custom Rounding", firstPkg.Name);
-            Assert.AreEqual("0.1.4", firstPkg.VersionName);
-            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", firstPkg.Description);
+            Assert.AreEqual("CAAD_RWTH", targetPkg.Group);
+            Assert.AreEqual("0.1.4", targetPkg.VersionName);
+            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", targetPkg.Description);
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
-                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", firstPkg.Contents);
-            Assert.AreEqual("0.5.2.10107", firstPkg.EngineVersion);
+                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", targetPkg.Contents);
+            Assert.AreEqual("0.5.2.10107", targetPkg.EngineVersion);
 
-            Assert.AreEqual(3, firstPkg.LoadedCustomNodes.Count);
+            Assert.AreEqual(3, targetPkg.LoadedCustomNodes.Count);
 
             var nextPkg = loader.LocalPackages.ElementAt(1);
 
