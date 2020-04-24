@@ -515,14 +515,12 @@ namespace Dynamo.Engine
         {
             if (e.LibraryPaths.Any())
             {
-                // Need to make compiled custom nodes available before resetting the VM
-                OnRequestCustomNodeRegistration();
                 OnLibraryLoaded();
             }
         }
 
         internal event EventHandler RequestCustomNodeRegistration;
-        private void OnRequestCustomNodeRegistration()
+        internal void OnRequestCustomNodeRegistration()
         {
             RequestCustomNodeRegistration?.Invoke(null, EventArgs.Empty);
         }

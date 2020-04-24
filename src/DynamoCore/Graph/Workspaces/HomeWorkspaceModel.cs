@@ -324,6 +324,8 @@ namespace Dynamo.Graph.Workspaces
 
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
+            // Need to make compiled custom nodes available before running the graph.
+            EngineController.OnRequestCustomNodeRegistration();
             // Mark all nodes as dirty so that AST for the whole graph will be
             // regenerated.
             MarkNodesAsModifiedAndRequestRun(Nodes);
