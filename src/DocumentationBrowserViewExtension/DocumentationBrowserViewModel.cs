@@ -47,13 +47,6 @@ namespace Dynamo.DocumentationBrowser
             document.body.style.width = widthPercentage;
         }
         adaptDPI() </script>";
-
-        private const string globalimgStyle = @"<style> img{
-        min-width:300px;
-        max-width:450px;
-        width:100%;
-                }
-        </style>";
         #endregion
 
         #region Properties
@@ -299,8 +292,6 @@ namespace Dynamo.DocumentationBrowser
             }
             //inject our DPI functions:
             result = result + DPISCRIPT;
-            //inject global image style
-            result = result + globalimgStyle;
 
             return result;
         }
