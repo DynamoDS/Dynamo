@@ -47,6 +47,13 @@ namespace Dynamo.DocumentationBrowser
             document.body.style.width = widthPercentage;
         }
         adaptDPI() </script>";
+
+        private const string globalimgStyle = @"<style> img{
+        min-width:300px;
+        max-width:450px;
+        width:100%;
+                }
+        </style>";
         #endregion
 
         #region Properties
@@ -242,7 +249,7 @@ namespace Dynamo.DocumentationBrowser
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            
+
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
             Assembly assembly;
@@ -292,6 +299,8 @@ namespace Dynamo.DocumentationBrowser
             }
             //inject our DPI functions:
             result = result + DPISCRIPT;
+            //inject global image style
+            result = result + globalimgStyle;
 
             return result;
         }
