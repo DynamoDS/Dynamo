@@ -18,7 +18,10 @@ namespace PythonNodeModels
 {
     public abstract class PythonNodeBase : VariableInputNode
     {
+        public static readonly string CPythonEngine = "CPython3";
         public static readonly string DefaultPythonEngine = "IronPython2";
+        public static List<string> PythonEngines { get { return new List<string> { DefaultPythonEngine, CPythonEngine }; } }
+
         private string engine = DefaultPythonEngine;
 
         /// <summary>
