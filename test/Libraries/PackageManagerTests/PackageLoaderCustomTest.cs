@@ -62,10 +62,9 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(3, targetPkg.LoadedCustomNodes.Count);
 
-            var nextPkg = loader.LocalPackages.ElementAt(1);
+            var nextPkg = loader.LocalPackages.Where(x => x.Name == "GetHighest").FirstOrDefault();
 
             Assert.AreEqual("CAAD_RWTH", nextPkg.Group);
-            Assert.AreEqual("GetHighest", nextPkg.Name);
             Assert.AreEqual("0.1.2", nextPkg.VersionName);
             Assert.AreEqual("Gets the highest value from a list", nextPkg.Description);
             Assert.AreEqual("Get Highest - Gets the highest value from a list", nextPkg.Contents);
