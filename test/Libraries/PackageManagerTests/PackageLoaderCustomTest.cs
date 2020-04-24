@@ -41,19 +41,27 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(loader.DefaultPackagesDirectory,
                 Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
 
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            var expectedLoadedPackageNum = 0;
+            foreach(var pkg in loader.LocalPackages)
+            {
+                if(pkg.Name == "Custom Rounding" || pkg.Name == "GetHighest")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
-            var pkg = loader.LocalPackages.ElementAt(0);
+            var firstPkg = loader.LocalPackages.ElementAt(0);
 
-            Assert.AreEqual("CAAD_RWTH", pkg.Group);
-            Assert.AreEqual("Custom Rounding", pkg.Name);
-            Assert.AreEqual("0.1.4", pkg.VersionName);
-            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", pkg.Description);
+            Assert.AreEqual("CAAD_RWTH", firstPkg.Group);
+            Assert.AreEqual("Custom Rounding", firstPkg.Name);
+            Assert.AreEqual("0.1.4", firstPkg.VersionName);
+            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", firstPkg.Description);
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
-                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
-            Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
+                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", firstPkg.Contents);
+            Assert.AreEqual("0.5.2.10107", firstPkg.EngineVersion);
 
-            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
+            Assert.AreEqual(3, firstPkg.LoadedCustomNodes.Count);
 
             var nextPkg = loader.LocalPackages.ElementAt(1);
 
