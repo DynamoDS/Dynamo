@@ -52,7 +52,7 @@ namespace Dynamo.Configuration
                 {
                     if (!debugModes.ContainsKey(key)) { continue; }
 
-                    debugModes[key].Enabled = bool.TryParse(section.Settings[key].Value, out bool enabled) ? enabled : false;
+                    debugModes[key].Enabled = Boolean.TryParse(section.Settings[key].Value, out bool enabled) ? enabled : false;
                 }
             }
             catch (Exception)
