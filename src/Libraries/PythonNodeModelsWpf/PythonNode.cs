@@ -32,7 +32,7 @@ namespace PythonNodeModelsWpf
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
             if (pythonNodeModel.Engine == PythonNodeModels.PythonNodeBase.DefaultPythonEngine)
-                pythonNodeModel.Notification(dynamoViewModel.Model, PythonNodeModels.Properties.Resources.IronPythonNotificationShortMessage, PythonNodeModels.Properties.Resources.IronPythonNotificationDetailedMessage);
+                pythonNodeModel.Notification(dynamoViewModel.Model, PythonNodeModels.Properties.Resources.IronPythonNotificationShortMessage, PythonNodeModels.Properties.Resources.IronPythonNotificationDetailedMessage, "IronPythonNotification");
 
             var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
