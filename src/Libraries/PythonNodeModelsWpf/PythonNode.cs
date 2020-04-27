@@ -45,7 +45,7 @@ namespace PythonNodeModelsWpf
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 
                 // Check the correct item based on NodeModel engine version
-                if (pythonNodeModel.Engine == PythonNodeBase.DefaultPythonEngine)
+                if (pythonNodeModel.EngineEnum == PythonEngineVersions.IronPython2)
                 {
                     pythonEngine2Item.IsChecked = true;
                     pythonEngine3Item.IsChecked = false;
@@ -129,7 +129,7 @@ namespace PythonNodeModelsWpf
         private void UpdateToPython2Engine()
         {
             // If PythonNodeBase.DefaultPythonEngine is updated to python 3, we should update this piece of code
-            pythonNodeModel.Engine = PythonNodeBase.DefaultPythonEngine;
+            pythonNodeModel.EngineEnum = PythonEngineVersions.IronPython2;
             pythonEngine2Item.IsChecked = true;
             pythonEngine3Item.IsChecked = false;
         }
@@ -139,7 +139,7 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython3Engine()
         {
-            pythonNodeModel.Engine = PythonNodeBase.PythonNet3Engine;
+            pythonNodeModel.EngineEnum = PythonEngineVersions.CPython3;
             pythonEngine2Item.IsChecked = false;
             pythonEngine3Item.IsChecked = true;
         }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
@@ -13,6 +15,18 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
+    /// <summary>
+    /// Enum of possible values of python engine versions
+    /// </summary>
+    public enum PythonEngineVersions
+    {
+        [Display(Name = "IronPython2")]
+        IronPython2 = 0,
+
+        [Display(Name = "CPython3")]
+        CPython3 = 1,
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         /// <summary>
@@ -25,12 +39,12 @@ namespace PythonNodeModels
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public static readonly string DefaultPythonEngine = "IronPython2";
-        public static readonly string PythonNet3Engine = "CPython3";
+        internal PythonEngineVersions DefaultPythonEngine = PythonEngineVersions.IronPython2;
 
-        private string engine = DefaultPythonEngine;
+        private PythonEngineVersions engine = PythonEngineVersions.IronPython2;
 
-        public string Engine
+        [JsonIgnore]
+        public PythonEngineVersions EngineEnum
         {
             get { return engine; }
             set
@@ -40,6 +54,21 @@ namespace PythonNodeModels
                     engine = value;
                     RaisePropertyChanged("Engine");
                 }
+            }
+        }
+
+        /// <summary>
+        /// Return the display name of python engine enum.
+        /// </summary>
+        public string Engine
+        {
+            get
+            {
+                return engine.GetType()?
+                    .GetMember(engine.ToString())?
+                    .First()?
+                    .GetCustomAttribute<DisplayAttribute>()?
+                    .Name;
             }
         }
 
@@ -71,18 +100,12 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            
-            if (String.IsNullOrEmpty(Engine))
-            { 
-                Engine = DefaultPythonEngine;
-            }
-
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (Engine == PythonNet3Engine)
+            if (EngineEnum == PythonEngineVersions.CPython3)
             {
                 pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
             }
-            else if (Engine == DefaultPythonEngine)
+            else if (EngineEnum == PythonEngineVersions.IronPython2)
             {
                 pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }
