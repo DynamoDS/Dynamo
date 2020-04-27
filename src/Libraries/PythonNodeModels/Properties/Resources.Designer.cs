@@ -19,7 +19,7 @@ namespace PythonNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -84,6 +84,24 @@ namespace PythonNodeModels.Properties {
         public static string EditHeader {
             get {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine..
+        /// </summary>
+        public static string IronPythonNotificationDetailedMessage {
+            get {
+                return ResourceManager.GetString("IronPythonNotificationDetailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This graph contains nodes that are using IronPython Engine..
+        /// </summary>
+        public static string IronPythonNotificationShortMessage {
+            get {
+                return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
             }
         }
         

@@ -14,9 +14,7 @@ using Dynamo.Graph.Workspaces;
 namespace PythonNodeModelsWpf
 {
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
-    {
-        private const string IronPythonNotificationShortMessage = "This graph contains nodes that are using IronPython Engine.";
-        private const string IronPythonNotificationDetailedMessage = "This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine.";
+    {       
         private DynamoViewModel dynamoViewModel;
         private PythonNode pythonNodeModel;
         private NodeView pythonNodeView;
@@ -34,7 +32,7 @@ namespace PythonNodeModelsWpf
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
             if (pythonNodeModel.Engine == PythonNodeModels.PythonNodeBase.DefaultPythonEngine)
-                pythonNodeModel.Notification(dynamoViewModel.Model, IronPythonNotificationShortMessage, IronPythonNotificationDetailedMessage);
+                pythonNodeModel.Notification(dynamoViewModel.Model, PythonNodeModels.Properties.Resources.IronPythonNotificationShortMessage, PythonNodeModels.Properties.Resources.IronPythonNotificationDetailedMessage);
 
             var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);

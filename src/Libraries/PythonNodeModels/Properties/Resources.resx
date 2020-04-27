@@ -138,7 +138,7 @@
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
-  </data>  
+  </data>
   <data name="PythonScriptEditorRevertButton" xml:space="preserve">
     <value>Revert</value>
   </data>
@@ -166,5 +166,11 @@
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
     <value>Python script to run.</value>
+  </data>
+  <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine.</value>
+  </data>
+  <data name="IronPythonNotificationShortMessage" xml:space="preserve">
+    <value>This graph contains nodes that are using IronPython Engine.</value>
   </data>
 </root>
