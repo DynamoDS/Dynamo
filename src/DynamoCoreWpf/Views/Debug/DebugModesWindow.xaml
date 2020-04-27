@@ -1,10 +1,9 @@
 ﻿<Window x:Class="Dynamo.Wpf.Views.Debug.DebugModesWindow"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Dynamo.Wpf.Views.Debug" Width="357"
-             ResizeMode="NoResize" Height="510"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             Title="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
+             ResizeMode="NoResize" Width="350" Height="510"
         >
    <StackPanel>
       <ListView Name="CheckList" Height="320" Margin="10,0">
