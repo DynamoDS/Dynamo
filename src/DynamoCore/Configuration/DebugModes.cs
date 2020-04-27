@@ -52,7 +52,8 @@ namespace Dynamo.Configuration
                 {
                     if (!debugModes.ContainsKey(key)) { continue; }
 
-                    debugModes[key].Enabled = Boolean.TryParse(section.Settings[key].Value, out bool enabled) ? enabled : false;
+                    bool enabled = false;
+                    debugModes[key].Enabled = Boolean.TryParse(section.Settings[key].Value, out enabled) ? enabled : false;
                 }
             }
             catch (Exception)
@@ -61,7 +62,8 @@ namespace Dynamo.Configuration
 
         public static bool Enabled(string name)
         {
-            return DebugModesEnabled && debugModes.TryGetValue(name, out DebugMode dMode) ? dMode.Enabled : false;
+            DebugMode dMode;
+            return DebugModesEnabled && debugModes.TryGetValue(name, out dMode) ? dMode.Enabled : false;
         }
     }
 }
