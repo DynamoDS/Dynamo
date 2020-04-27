@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -45,27 +44,6 @@ namespace DSIronPythonTests
                 );
 
                 Assert.AreEqual(expected, output);
-            }
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void FirstClassFunctions()
-        {
-            Func<string, string> func = s => s + " rule!";
-
-            var names = new ArrayList { "f" };
-            var vals = new ArrayList { func };
-
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                dynamic output = pythonEvaluator(
-                    "g = lambda x: f(x); OUT = g",
-                    names,
-                    vals
-                );
-
-                Assert.AreEqual("functions rule!", output("functions"));
             }
         }
         

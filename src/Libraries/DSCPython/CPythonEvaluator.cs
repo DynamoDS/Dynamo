@@ -40,15 +40,6 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
-            // TODO - it would be nice if users could modify a preference
-            // setting enabling the ability to load additional paths
-
-            // Container for paths that will be imported in the PythonEngine
-            //List<string> paths = new List<string>();
-
-            // Attempt to get the Standard Python Library
-            //string stdLib = pythonStandardLibPath();
-
             if (code != prev_code)
             {
                 Python.Included.Installer.SetupPython().Wait();
