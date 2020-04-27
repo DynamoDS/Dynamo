@@ -367,6 +367,21 @@ namespace ProtoCore
             }
         }
 
+        //private void RemoveCodeBlockRecursive(CodeBlock root, int cbID)
+        //{
+        //    for (int i = root.children.Count - 1; i >= 0; i--)
+        //    {
+        //        if (root.children[i].codeBlockId == cbID)
+        //        {
+        //            root.children.RemoveAt(i);
+        //        }
+        //        else
+        //        {
+        //            RemoveCodeBlockRecursive(root.children[i], cbID);
+        //        }
+        //    }
+        //}
+
         /// <summary>
         /// Reset the VM state for delta execution.
         /// </summary>
@@ -727,7 +742,7 @@ namespace ProtoCore
             // The TypeSystem is a record of all primitive and compiler generated types
             DSExecutable.TypeSystem = TypeSystem;
 
-            RuntimeTableIndex = CompleteCodeBlockList.Count;
+            RuntimeTableIndex = GetRuntimeTableSize();
 
 
             // Build the runtime symbols
@@ -760,6 +775,17 @@ namespace ProtoCore
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = CodeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;           
+        }
+
+        /// <summary>
+        /// Gets the size of the runtime table. Note: since blocks are stored consecutively
+        /// but may have gaps due to procedures being delete, this is based on largest id
+        /// rather than amount of blocks.
+        /// </summary>
+        private int GetRuntimeTableSize()
+        {
+            // Due to the way this list is constructed, the largest id is the one of the las block.
+            return CompleteCodeBlockList.Last().codeBlockId + 1;
         }
 
         public string GenerateTempVar()

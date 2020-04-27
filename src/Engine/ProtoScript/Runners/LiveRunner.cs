@@ -455,6 +455,7 @@ namespace ProtoScript.Runners
                     {
                         if (removeSubTree.AstNodes != null)
                         {
+                            // deletedBinaryExpressions.AddRange(removeSubTree.AstNodes.Where(n => n is BinaryExpressionNode));
                             deletedBinaryExpressions.AddRange(removeSubTree.AstNodes);
                         }
                     }
