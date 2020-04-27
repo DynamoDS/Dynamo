@@ -367,21 +367,6 @@ namespace ProtoCore
             }
         }
 
-        //private void RemoveCodeBlockRecursive(CodeBlock root, int cbID)
-        //{
-        //    for (int i = root.children.Count - 1; i >= 0; i--)
-        //    {
-        //        if (root.children[i].codeBlockId == cbID)
-        //        {
-        //            root.children.RemoveAt(i);
-        //        }
-        //        else
-        //        {
-        //            RemoveCodeBlockRecursive(root.children[i], cbID);
-        //        }
-        //    }
-        //}
-
         /// <summary>
         /// Reset the VM state for delta execution.
         /// </summary>
