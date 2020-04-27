@@ -299,8 +299,16 @@ namespace Dynamo.PackageManager.Tests
             var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
             loader.LoadPackages(new Package[] { package1,package2 });
 
-            // There are 2 packages loaded directly
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            // 2 packages loaded as expected
+            var expectedLoadedPackageNum = 0;
+            foreach (var pkg in loader.LocalPackages)
+            {
+                if (pkg.Name == "EvenOdd" || pkg.Name == "EvenOdd2")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
