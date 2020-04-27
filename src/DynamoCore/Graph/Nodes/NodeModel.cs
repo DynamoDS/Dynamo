@@ -14,6 +14,7 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
+using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -1203,6 +1204,19 @@ namespace Dynamo.Graph.Nodes
             if (elNameAttrib != null)
                 Name = elNameAttrib.Name;
 
+        }
+
+        /// <summary>
+        /// Logs a user defined messages to the Dynamo Logger, this notifiaction will be dispalyed
+        /// in the Notification Extension.
+        /// </summary>
+        /// <param name="dynamoModel"></param>
+        /// <param name="shortMessage"></param>
+        /// <param name="detailedMessage"></param>
+        /// <param name="title"></param>
+        public void Notification(DynamoModel dynamoModel, string shortMessage, string detailedMessage, string title = "Notification")
+        {
+            dynamoModel.Logger.LogNotification(this.GUID.ToString(), shortMessage, detailedMessage, title);
         }
 
         #region Modification Reporting
