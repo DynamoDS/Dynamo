@@ -763,13 +763,13 @@ namespace ProtoCore
         }
 
         /// <summary>
-        /// Gets the size of the runtime table. Note: since blocks are stored consecutively
-        /// but may have gaps due to procedures being delete, this is based on largest id
-        /// rather than amount of blocks.
+        /// Gets the size to be used for runtime tables of symbols, procedures and instruction streams.
+        /// Note: since blocks are stored consecutively but may have gaps due to procedures being deleted,
+        /// this is based on largest id rather than amount of blocks.
         /// </summary>
         private int GetRuntimeTableSize()
         {
-            // Due to the way this list is constructed, the largest id is the one of the las block.
+            // Due to the way this list is constructed, the largest id is the one of the last block.
             return CompleteCodeBlockList.Last().codeBlockId + 1;
         }
 
