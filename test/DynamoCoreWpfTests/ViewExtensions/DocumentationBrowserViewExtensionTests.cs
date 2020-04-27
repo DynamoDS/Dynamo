@@ -235,7 +235,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(1, tabsAfterExternalEventTrigger);
             Assert.IsTrue(htmlContent.Contains(@"<h2 id=""heading"">Division by zero</h2>"));
-            Assert.IsFalse(htmlContent.Contains("<script"));
+            Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
         }
 
         #region Helpers
