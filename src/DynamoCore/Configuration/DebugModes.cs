@@ -5,39 +5,55 @@ using System.Reflection;
 
 namespace Dynamo.Configuration
 {
-    internal class DebugModes
+    /// <summary>
+    /// Provide functionality around debug modes. Similar to feature flags.
+    /// </summary>
+    public class DebugModes
     {
-        static readonly Dictionary<string, DebugMode> debugModes;
-        private static bool DebugModesEnabled;
- 
+        static private readonly Dictionary<string, DebugMode> debugModes;
+        private static bool debugModesEnabled;
+
+        /// <summary>
+        /// Represents an instance of a debug mode
+        /// </summary>
         public class DebugMode
         {
+            /// <summary>
+            /// Name of the debug mode
+            /// </summary>
             public string Name;
+            /// <summary>
+            /// Description of the debug mode
+            /// </summary>
             public string Description;
+            /// <summary>
+            /// Whether debug mode is enabled or not
+            /// </summary>
             public bool Enabled;
         }
-
-        static void AddDebugMode(string name, string description)
+        private static void AddDebugMode(string name, string description)
         {
             debugModes[name] = new DebugMode()
             {
                 Name = name,
                 Description = description,
-                Enabled = false
+                Enabled = true
             };
         }
-        static void RegisterDebugModes()
+        private static void RegisterDebugModes()
         {
             // Add new debug modes here!!
             //
             // Example:
             // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
         }
-
+        /// <summary>
+        /// Static constructor
+        /// </summary>
         static DebugModes()
         {
             debugModes = new Dictionary<string, DebugMode>();
-            DebugModesEnabled = false;
+            debugModesEnabled = false;
             try
             {
                 RegisterDebugModes();
@@ -47,7 +63,7 @@ namespace Dynamo.Configuration
 
                 if (section == null) { return; }
 
-                DebugModesEnabled = true;
+                debugModesEnabled = true;
                 foreach (var key in section.Settings.AllKeys)
                 {
                     if (!debugModes.ContainsKey(key)) { continue; }
@@ -59,11 +75,43 @@ namespace Dynamo.Configuration
             catch (Exception)
             { }
         }
-
-        public static bool Enabled(string name)
+        /// <summary>
+        /// Enables/Disables a debug mode
+        /// </summary>
+        /// <param name="name">Name of the debug mode</param>
+        /// <param name="enabled">Enable/Disable debug mode</param>
+        public static void SetDebugModeEnabled(string name, bool enabled)
+        {
+            DebugMode dbgMode;
+            if (debugModes.TryGetValue(name, out dbgMode))
+            {
+                dbgMode.Enabled = enabled;
+            }
+        }
+        /// <summary>
+        /// Returns a dictionary of all the debug modes
+        /// </summary>
+        public static Dictionary<string, DebugMode> GetDebugModes()
+        {
+            return debugModes;
+        }
+        /// <summary>
+        /// Retrieves a debug mode
+        /// </summary>
+        /// <param name="name">Name of the debug mode</param>
+        public static DebugMode GetDebugMode(string name)
         {
             DebugMode dMode;
-            return DebugModesEnabled && debugModes.TryGetValue(name, out dMode) ? dMode.Enabled : false;
+            return debugModes.TryGetValue(name, out dMode) ? dMode : null;
+        }
+        /// <summary>
+        /// Retrieves the state of a debug mode (enabled/disabled)
+        /// </summary>
+        /// <param name="name">Name of the debug mode</param>
+        public static bool Enabled(string name)
+        {
+            DebugMode dbgMode;
+            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.Enabled : false;
         }
     }
 }
