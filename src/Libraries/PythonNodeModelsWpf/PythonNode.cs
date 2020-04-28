@@ -10,6 +10,7 @@ using PythonNodeModels;
 using System;
 using System.Windows;
 using Dynamo.Graph.Workspaces;
+using PythonNodeModelsWpf.Controls;
 
 namespace PythonNodeModelsWpf
 {
@@ -42,6 +43,10 @@ namespace PythonNodeModelsWpf
             nodeView.MouseDown += view_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
+
+            nodeView.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.PresentationGrid.DataContext = this.pythonNodeModel;
+            nodeView.PresentationGrid.Children.Add(new EngineLabel());
         }
 
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)

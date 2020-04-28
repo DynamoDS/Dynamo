@@ -87,6 +87,9 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\EngineLabel.xaml.cs">
+      <DependentUpon>EngineLabel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IronPythonCompletionData.cs" />
     <Compile Include="IronPythonCompletionProvider.cs" />
     <Compile Include="PythonNode.cs" />
@@ -151,6 +154,10 @@
     <EmbeddedResource Include="Resources\property.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\EngineLabel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ScriptEditorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
