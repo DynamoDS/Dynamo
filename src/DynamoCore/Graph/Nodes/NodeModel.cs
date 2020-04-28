@@ -1214,7 +1214,7 @@ namespace Dynamo.Graph.Nodes
         /// <param name="shortMessage"></param>
         /// <param name="detailedMessage"></param>
         /// <param name="title"></param>
-        public void Notification(DynamoModel dynamoModel, string shortMessage, string detailedMessage, string title = "Notification")
+        internal void LogNotification(DynamoModel dynamoModel, string shortMessage, string detailedMessage, string title = "Notification")
         {
             dynamoModel.Logger.LogNotification(this.GUID.ToString(), shortMessage, detailedMessage, title);
         }
