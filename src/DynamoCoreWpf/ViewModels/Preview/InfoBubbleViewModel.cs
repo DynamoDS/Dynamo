@@ -307,7 +307,7 @@ namespace Dynamo.ViewModels
         public Point TopLeft;
         public Point BotRight;
         public string Text;
-        public Uri Link;
+        internal Uri Link;
         public InfoBubbleViewModel.Direction ConnectingDirection;
 
         public InfoBubbleDataPacket(
