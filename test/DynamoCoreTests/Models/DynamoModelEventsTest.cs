@@ -27,6 +27,13 @@ namespace Dynamo.Tests.ModelsTest
         private bool requestCancelActiveStateForNode = false;
         private bool requestsRedraw = false;
         private bool requestNodeSelect = false;
+        private bool runCompleted = false;
+        private bool requestsCrashPrompt = false;
+        private bool requestTaskDialog = false;
+        private bool requestDownloadDynamo = false;
+        private bool requestBugReport = false;
+        private bool evaluationCompleted = false;
+        private bool refreshCompleted = false;
 
 
         private CodeBlockNodeModel CreateCodeBlockNode()
@@ -47,9 +54,12 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestDispatcherBeginInvoke()
         {
-            //Arrance
+            //Arrange
             //We need to create an event and include an exception
             EvaluationCompletedEventArgs e = new EvaluationCompletedEventArgs(true, new Exception("Test"));
+
+            //This will subcribe to the EvaluationCompleted event
+            CurrentDynamoModel.EvaluationCompleted += CurrentDynamoModel_EvaluationCompleted;
 
             //Act
             //This will call the OnRequestDispatcherBeginInvoke method in the else section (no subscribers to the event)
@@ -57,15 +67,19 @@ namespace Dynamo.Tests.ModelsTest
 
             //This will subscribe our local method to the RequestDispatcherBeginInvoke event
             DynCmd.RequestDispatcherBeginInvoke += DynamoModel_RequestDispatcherBeginInvoke;
-
+            
             //This will call the OnRequestDispatcherBeginInvoke method when we have subscribers
             CurrentDynamoModel.OnEvaluationCompleted(this, e);
 
             //Assert
             DynCmd.RequestDispatcherBeginInvoke -= DynamoModel_RequestDispatcherBeginInvoke;
+            CurrentDynamoModel.EvaluationCompleted -= CurrentDynamoModel_EvaluationCompleted;
             //This will validate that the local handler was executed and set the flag in true
             Assert.IsTrue(dispatcherExecuted);
+            Assert.IsTrue(evaluationCompleted);
         }
+
+       
 
         /// <summary>
         /// This test method will execute the event OnRequestDispatcherBeginInvoke
@@ -119,7 +133,7 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnWorkspaceClearing()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the RequestLayoutUpdate event
             CurrentDynamoModel.WorkspaceClearing += CurrentDynamoModel_WorkspaceClearing;
 
@@ -140,7 +154,7 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnWorkspaceRemoveStarted()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the WorkspaceRemoveStarted event
             CurrentDynamoModel.WorkspaceRemoveStarted += CurrentDynamoModel_WorkspaceRemoveStarted;
 
@@ -161,10 +175,13 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnDeletionStarted()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the DeletionStarted event
             CurrentDynamoModel.DeletionStarted += CurrentDynamoModel_DeletionStarted;
             List<ModelBase> modelsToDelete = new List<ModelBase>();
+            Guid groupid = Guid.NewGuid();
+            CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
+
             var annotations = CurrentDynamoModel.Workspaces.SelectMany(ws => ws.Annotations);
 
             foreach (var annotation in annotations)
@@ -174,6 +191,10 @@ namespace Dynamo.Tests.ModelsTest
             
             //Act
             var cancelEventArgs = new System.ComponentModel.CancelEventArgs();
+            CurrentDynamoModel.OnDeletionStarted(modelsToDelete, cancelEventArgs);
+
+            //Inside the OnDeletionStarted there is a condition checking the Cancel state, then we need to set the value to true
+            cancelEventArgs.Cancel = true;
             CurrentDynamoModel.OnDeletionStarted(modelsToDelete, cancelEventArgs);
 
             //Assert
@@ -189,7 +210,7 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnDeletionComplete()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the DeletionComplete event
             CurrentDynamoModel.DeletionComplete += CurrentDynamoModel_DeletionComplete;
           
@@ -211,7 +232,7 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestCancelActiveStateForNode()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the RequestCancelActiveStateForNode event
             CurrentDynamoModel.RequestCancelActiveStateForNode += CurrentDynamoModel_RequestCancelActiveStateForNode;
             var codeBlockNode1 = CreateCodeBlockNode();
@@ -234,12 +255,12 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestsRedraw()
         {
-            //Act
-            //This will subscribe our local method to the RequestCancelActiveStateForNode event
+            //Arrange
+            //This will subscribe our local method to the RequestsRedraw event
             CurrentDynamoModel.RequestsRedraw += CurrentDynamoModel_RequestsRedraw;
 
             //Act
-            //Using reflection we execute the OnRequestCancelActiveStateForNode method passing the code block node as parameter
+            //This will execute the OnRequestsRedraw method 
             CurrentDynamoModel.OnRequestsRedraw(this, new ModelEventArgs(null));
 
             //Assert
@@ -255,12 +276,12 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestSelect()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the RequestNodeSelect event
             CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
+            //This will execute the OnRequestSelect() method
             CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
 
             //Assert
@@ -276,18 +297,19 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRunCompleted()
         {
-            //Act
+            //Arrange
             //This will subscribe our local method to the RunCompleted event
             CurrentDynamoModel.RunCompleted += CurrentDynamoModel_RunCompleted;
 
             //Act
-            //Using reflection we execute the OnRunCompleted() method 
+            //This will execute the OnRunCompleted() method 
             CurrentDynamoModel.OnRunCompleted(this, true);
 
             //Assert
+            //Unsubcribe from event
             CurrentDynamoModel.RunCompleted -= CurrentDynamoModel_RunCompleted;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(runCompleted);
         }
 
         /// <summary>
@@ -297,39 +319,42 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestsCrashPrompt()
         {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
+            //Arrange
+            //This will subscribe our local method to the RequestsCrashPrompt event
+            CurrentDynamoModel.RequestsCrashPrompt += CurrentDynamoModel_RequestsCrashPrompt;
+            var crashArgs = new Dynamo.Core.CrashPromptArgs("Crash Event", "Test Message");
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
+            CurrentDynamoModel.OnRequestsCrashPrompt(this, crashArgs);
 
             //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
+            //Unsubcribe from event
+            CurrentDynamoModel.RequestsCrashPrompt -= CurrentDynamoModel_RequestsCrashPrompt;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(requestsCrashPrompt);
         }
 
+     
         /// <summary>
-        /// This test method will execute the DynamoModelEvent method OnRequestTaskDialog()
+        /// This test method will execute the method OnRequestTaskDialog()
         /// </summary>
         [Test]
         [Category("UnitTests")]
         public void TestOnRequestTaskDialog()
         {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
+            //Arrange
+            //This will subscribe our local method to the RequestTaskDialog event
+            CurrentDynamoModel.RequestTaskDialog += CurrentDynamoModel_RequestTaskDialog;
+            var args = new TaskDialogEventArgs(
+              new Uri("localhost", UriKind.Relative), "Test Dialog", "Summary", "Description");
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
+            CurrentDynamoModel.OnRequestTaskDialog(null, args);
 
             //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
+            CurrentDynamoModel.RequestTaskDialog -= CurrentDynamoModel_RequestTaskDialog;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(requestTaskDialog);
         }
 
         /// <summary>
@@ -339,18 +364,17 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestDownloadDynamo()
         {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
+            //Arrange
+            //This will subscribe our local method to the RequestDownloadDynamo event
+            CurrentDynamoModel.RequestDownloadDynamo += CurrentDynamoModel_RequestDownloadDynamo;
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
+            CurrentDynamoModel.OnRequestDownloadDynamo();
 
             //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
+            CurrentDynamoModel.RequestDownloadDynamo -= CurrentDynamoModel_RequestDownloadDynamo;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(requestDownloadDynamo);
         }
 
         /// <summary>
@@ -360,39 +384,17 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRequestBugReport()
         {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
+            //Arrange
+            //This will subscribe our local method to the RequestBugReport event
+            CurrentDynamoModel.RequestBugReport += CurrentDynamoModel_RequestBugReport;
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
+            CurrentDynamoModel.OnRequestBugReport();
 
             //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
+            CurrentDynamoModel.RequestBugReport -= CurrentDynamoModel_RequestBugReport;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
-        }
-
-        /// <summary>
-        /// This test method will execute the DynamoModelEvent method OnEvaluationCompleted()
-        /// </summary>
-        [Test]
-        [Category("UnitTests")]
-        public void TestOnEvaluationCompleted()
-        {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
-
-            //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
-
-            //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
-            //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(requestBugReport);
         }
 
         /// <summary>
@@ -402,25 +404,55 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void TestOnRefreshCompleted()
         {
-            //Act
-            //This will subscribe our local method to the RequestNodeSelect event
-            CurrentDynamoModel.RequestNodeSelect += CurrentDynamoModel_RequestNodeSelect;
+            //Arrange
+            //This will subscribe our local method to the RefreshCompleted event
+            CurrentDynamoModel.RefreshCompleted += CurrentDynamoModel_RefreshCompleted;
 
             //Act
-            //Using reflection we execute the OnRequestSelect() method passing the code block node as parameter
-            CurrentDynamoModel.OnRequestSelect(this, new ModelEventArgs(null));
+            CurrentDynamoModel.OnRefreshCompleted(CurrentDynamoModel.CurrentWorkspace, new EventArgs());
 
             //Assert
-            CurrentDynamoModel.RequestNodeSelect -= CurrentDynamoModel_RequestNodeSelect;
+            CurrentDynamoModel.RefreshCompleted -= CurrentDynamoModel_RefreshCompleted;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.IsTrue(requestNodeSelect);
+            Assert.IsTrue(refreshCompleted);
         }
 
+
+
         #region SubscriberEvents
+        private void CurrentDynamoModel_RefreshCompleted(Graph.Workspaces.HomeWorkspaceModel obj)
+        {
+            refreshCompleted = true;
+        }
+
+        private void CurrentDynamoModel_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
+        {
+            evaluationCompleted = true;
+        }
+
+        private void CurrentDynamoModel_RequestBugReport()
+        {
+            requestBugReport = true;
+        }
+
+        private void CurrentDynamoModel_RequestDownloadDynamo()
+        {
+            requestDownloadDynamo = true;
+        }
+
+        private void CurrentDynamoModel_RequestTaskDialog(object sender, TaskDialogEventArgs e)
+        {
+            requestTaskDialog = true;
+        }
+
+        private void CurrentDynamoModel_RequestsCrashPrompt(object sender, Dynamo.Core.CrashPromptArgs e)
+        {
+            requestsCrashPrompt = true;
+        }
 
         private void CurrentDynamoModel_RunCompleted(object sender, bool success)
         {
-            throw new NotImplementedException();
+            runCompleted = true;
         }
 
         private void CurrentDynamoModel_RequestNodeSelect(object sender, EventArgs e)
