@@ -18,7 +18,7 @@ namespace PythonNodeModels
     /// <summary>
     /// Enum of possible values of python engine versions
     /// </summary>
-    public enum PythonEngineVersions
+    public enum PythonEngineVersion
     {
         [Display(Name = "IronPython2")]
         IronPython2 = 0,
@@ -39,12 +39,10 @@ namespace PythonNodeModels
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        internal PythonEngineVersions DefaultPythonEngine = PythonEngineVersions.IronPython2;
-
-        private PythonEngineVersions engine = PythonEngineVersions.IronPython2;
+        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
 
         [JsonIgnore]
-        public PythonEngineVersions EngineEnum
+        public PythonEngineVersion EngineEnum
         {
             get { return engine; }
             set
@@ -52,7 +50,7 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged("Engine");
+                    RaisePropertyChanged("EngineEnum");
                 }
             }
         }
@@ -64,11 +62,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return engine.GetType()?
-                    .GetMember(engine.ToString())?
-                    .First()?
-                    .GetCustomAttribute<DisplayAttribute>()?
-                    .Name;
+                return engine.ToString();
             }
         }
 
@@ -101,11 +95,11 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (EngineEnum == PythonEngineVersions.CPython3)
+            if (EngineEnum == PythonEngineVersion.CPython3)
             {
                 pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
             }
-            else if (EngineEnum == PythonEngineVersions.IronPython2)
+            else if (EngineEnum == PythonEngineVersion.IronPython2)
             {
                 pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }
