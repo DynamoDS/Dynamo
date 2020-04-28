@@ -128,7 +128,6 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython2Engine()
         {
-            // If PythonNodeBase.DefaultPythonEngine is updated to python 3, we should update this piece of code
             pythonNodeModel.Engine = PythonEngineVersion.IronPython2;
             pythonEngine2Item.IsChecked = true;
             pythonEngine3Item.IsChecked = false;
