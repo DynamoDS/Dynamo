@@ -770,7 +770,13 @@ namespace ProtoCore
         private int GetRuntimeTableSize()
         {
             // Due to the way this list is constructed, the largest id is the one of the last block.
-            return CompleteCodeBlockList.Last().codeBlockId + 1;
+            var lastBlock = CompleteCodeBlockList.Last();
+            // If the last block has children, then its last child has the largest id.
+            if (lastBlock.children.Count > 0)
+            {
+                lastBlock = lastBlock.children.Last();
+            }
+            return lastBlock.codeBlockId + 1;
         }
 
         public string GenerateTempVar()
