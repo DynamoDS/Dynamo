@@ -1,21 +1,29 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
-
 using Autodesk.DesignScript.Runtime;
-
 using DSIronPython;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
-using System.IO;
-using Dynamo.Configuration;
+using Newtonsoft.Json.Converters;
+using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
+    /// <summary>
+    /// Enum of possible values of python engine versions
+    /// </summary>
+    public enum PythonEngineVersion
+    {
+        IronPython2,
+        CPython3
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         /// <summary>
@@ -26,6 +34,25 @@ namespace PythonNodeModels
         protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        /// <summary>
+        /// Return the user selected python engine enum.
+        /// </summary>
+        public PythonEngineVersion Engine
+        {
+            get { return engine; }
+            set
+            {
+                if (engine != value)
+                {
+                    engine = value;
+                    RaisePropertyChanged("Engine");
+                }
+            }
         }
 
         protected PythonNodeBase()
