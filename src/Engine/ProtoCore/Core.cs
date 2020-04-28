@@ -771,6 +771,8 @@ namespace ProtoCore
         {
             // Due to the way this list is constructed, the largest id is the one of the last block.
             var lastBlock = CompleteCodeBlockList.LastOrDefault();
+            // If there are no code blocks yet, then the required size for tables is 0.
+            // This happens when the first code block is being created and its id is being generated.
             if (lastBlock == null)
             {
                 return 0;
