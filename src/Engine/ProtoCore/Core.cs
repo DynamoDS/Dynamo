@@ -767,10 +767,15 @@ namespace ProtoCore
         /// Note: since blocks are stored consecutively but may have gaps due to procedures being deleted,
         /// this is based on largest id rather than amount of blocks.
         /// </summary>
-        private int GetRuntimeTableSize()
+        internal int GetRuntimeTableSize()
         {
             // Due to the way this list is constructed, the largest id is the one of the last block.
-            var lastBlock = CompleteCodeBlockList.Last();
+            var lastBlock = CompleteCodeBlockList.LastOrDefault();
+            if (lastBlock == null)
+            {
+                return 0;
+            }
+
             // If the last block has children, then its last child has the largest id.
             if (lastBlock.children.Count > 0)
             {
