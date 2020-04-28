@@ -19,6 +19,8 @@ namespace PythonNodeModelsWpf
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
+        private MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
+        private MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -32,6 +34,29 @@ namespace PythonNodeModelsWpf
             var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
+            // If it is a Debug build, display a python engine switcher
+            if (dynamoViewModel.IsDebugBuild)
+            {
+                var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
+                nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
+                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
+                pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
+                pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
+                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+
+                // Check the correct item based on NodeModel engine version
+                if (pythonNodeModel.Engine == PythonEngineVersion.IronPython2)
+                {
+                    pythonEngine2Item.IsChecked = true;
+                    pythonEngine3Item.IsChecked = false;
+                }
+                else
+                {
+                    pythonEngine2Item.IsChecked = false;
+                    pythonEngine3Item.IsChecked = true;
+                }      
+            }
+
             nodeView.UpdateLayout();
 
             nodeView.MouseDown += view_MouseDown;
@@ -96,6 +121,26 @@ namespace PythonNodeModelsWpf
                     editWindow.Show();
                 }
             }
+        }
+
+        /// <summary>
+        /// MenuItem click handler
+        /// </summary>
+        private void UpdateToPython2Engine()
+        {
+            pythonNodeModel.Engine = PythonEngineVersion.IronPython2;
+            pythonEngine2Item.IsChecked = true;
+            pythonEngine3Item.IsChecked = false;
+        }
+
+        /// <summary>
+        /// MenuItem click handler
+        /// </summary>
+        private void UpdateToPython3Engine()
+        {
+            pythonNodeModel.Engine = PythonEngineVersion.CPython3;
+            pythonEngine2Item.IsChecked = false;
+            pythonEngine3Item.IsChecked = true;
         }
     }
 }

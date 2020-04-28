@@ -9,10 +9,20 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
+    /// <summary>
+    /// Enum of possible values of python engine versions
+    /// </summary>
+    public enum PythonEngineVersion
+    {
+        IronPython2,
+        CPython3
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         /// <summary>
@@ -25,12 +35,13 @@ namespace PythonNodeModels
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
-        public static readonly string DefaultPythonEngine = "IronPython2";
-        public static readonly string PythonNet3Engine = "CPython3";
+        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
 
-        private string engine = DefaultPythonEngine;
-
-        public string Engine
+        [JsonConverter(typeof(StringEnumConverter))]
+        /// <summary>
+        /// Return the display name of python engine enum.
+        /// </summary>
+        public PythonEngineVersion Engine
         {
             get { return engine; }
             set
@@ -71,18 +82,12 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            
-            if (String.IsNullOrEmpty(Engine))
-            { 
-                Engine = DefaultPythonEngine;
-            }
-
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (Engine == PythonNet3Engine)
+            if (Engine == PythonEngineVersion.CPython3)
             {
                 pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
             }
-            else if (Engine == DefaultPythonEngine)
+            else if (Engine == PythonEngineVersion.IronPython2)
             {
                 pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }
