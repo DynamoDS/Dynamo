@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
@@ -51,7 +49,7 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged("EngineEnum");
+                    RaisePropertyChanged("Engine");
                 }
             }
         }
