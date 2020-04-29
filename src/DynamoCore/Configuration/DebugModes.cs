@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.IO;
 using System.Reflection;
+using System.Xml;
 
 namespace Dynamo.Configuration
 {
     /// <summary>
     /// Provide functionality around debug modes. Similar to feature flags.
     /// </summary>
-    public class DebugModes
+    internal class DebugModes
     {
         static private readonly Dictionary<string, DebugMode> debugModes;
         private static bool debugModesEnabled;
@@ -37,7 +38,7 @@ namespace Dynamo.Configuration
             {
                 Name = name,
                 Description = description,
-                Enabled = true
+                Enabled = false
             };
         }
         private static void RegisterDebugModes()
@@ -45,7 +46,43 @@ namespace Dynamo.Configuration
             // Add new debug modes here!!
             //
             // Example:
-            // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
+            AddDebugMode("TestDebugMode1", "Enabe/disable TestDebugMode.");
+            AddDebugMode("TestDebugMode2", "Enabe/disable TestDebugMode.");
+        }
+
+        private static void ClearDebugModes()
+        {
+            debugModes.Clear();
+        }
+
+        private static void LoadDebugModesStatusFromConfig(string configPath)
+        {
+            try
+            {
+                debugModesEnabled = false;
+
+                XmlDocument xml = new XmlDocument();
+                xml.Load(configPath);
+
+                if (xml == null) { return; }
+
+                debugModesEnabled = true;
+
+                var debugItems = xml.DocumentElement.SelectNodes("DebugMode");
+                foreach (XmlNode item in debugItems)
+                {
+                    var name = item.Attributes["name"].Value;
+                    bool enabled;
+                    Boolean.TryParse(item.Attributes["enabled"].Value, out enabled);
+
+                    if (!debugModes.ContainsKey(name)) { continue; }
+                    debugModes[name].Enabled = enabled;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
         /// <summary>
         /// Static constructor
@@ -53,24 +90,10 @@ namespace Dynamo.Configuration
         static DebugModes()
         {
             debugModes = new Dictionary<string, DebugMode>();
-            debugModesEnabled = false;
             try
             {
                 RegisterDebugModes();
-
-                var config = ConfigurationManager.OpenExeConfiguration(Assembly.GetExecutingAssembly().Location);
-                AppSettingsSection section = (AppSettingsSection)config.GetSection("DebugModes");
-
-                if (section == null) { return; }
-
-                debugModesEnabled = true;
-                foreach (var key in section.Settings.AllKeys)
-                {
-                    if (!debugModes.ContainsKey(key)) { continue; }
-
-                    bool enabled = false;
-                    debugModes[key].Enabled = Boolean.TryParse(section.Settings[key].Value, out enabled) ? enabled : false;
-                }
+                LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
             }
             catch (Exception)
             { }
