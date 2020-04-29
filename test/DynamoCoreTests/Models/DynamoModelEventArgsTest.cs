@@ -63,27 +63,38 @@ namespace Dynamo.Tests.ModelsTest
             Assert.IsTrue(zoom.hasPoint());
         }
 
+        /// <summary>
+        /// This test method will execute the next methods in the TaskDialogEventArgs class
+        /// void AddLeftAlignedButton(int id, string content)
+        /// Exception Exception { get; set; }
+        /// IEnumerable<Tuple<int, string, bool>> Buttons
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void TestTaskDialogEventArgs()
         {
             //Act
             const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            //Using the constructor of TaskDialogEventArgs, the properties ImageUri, DialogTitle, Summary and Description will be populated
             var args = new TaskDialogEventArgs(new Uri(imageUri, UriKind.Relative),
                "SymbolWarningTitle", "Summary", "Description");
 
+            //In this section is adding two buttons in the IEnumerable Buttons
             args.AddLeftAlignedButton(1000, "OK Button");
             args.AddLeftAlignedButton(1001, "Cancel Button");
 
+            //This will execute the Set method of the Exception property
             args.Exception = new Exception("Testing Exception");
 
             //Assert
+            //This will validate that the values of the properties ImageUri, DialogTitle, Summary and Description were stored correctly
             Assert.AreEqual(args.ImageUri.ToString(), imageUri);
             Assert.AreEqual(args.DialogTitle, "SymbolWarningTitle");
             Assert.AreEqual(args.Summary, "Summary");
             Assert.AreEqual(args.Description, "Description");
-            Assert.IsNotNull(args.Exception);
-            Assert.AreEqual(args.Buttons.ToObservableCollection().Count,2);
+
+            Assert.IsNotNull(args.Exception);//This will execute the Get method of the Exception property
+            Assert.AreEqual(args.Buttons.ToObservableCollection().Count,2);//This will execute the Get of the Buttons property
         }
 
         /// <summary>
@@ -186,8 +197,8 @@ namespace Dynamo.Tests.ModelsTest
             Assert.AreEqual(args.Y, 50);
         }
 
-        
 
+        //This method will be used in the TestPresetsNamePromptEventArgs() method when subscribing to the RequestPresetsNamePrompt event
         private void CurrentDynamoModel_RequestPresetsNamePrompt(PresetsNamePromptEventArgs obj)
         {
             obj.Description = "Test Description";
