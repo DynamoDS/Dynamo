@@ -46,8 +46,7 @@ namespace Dynamo.Configuration
             // Add new debug modes here!!
             //
             // Example:
-            AddDebugMode("TestDebugMode1", "Enabe/disable TestDebugMode.");
-            AddDebugMode("TestDebugMode2", "Enabe/disable TestDebugMode.");
+            // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
         }
 
         private static void ClearDebugModes()
