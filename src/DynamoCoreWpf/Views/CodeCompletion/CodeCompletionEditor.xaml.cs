@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,8 +51,9 @@ namespace Dynamo.UI.Controls
 
             nodeView.Unloaded += (obj, args) => IsDisposed = true;
             this.nodeViewModel = nodeView.ViewModel;
-            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
             this.DataContext = nodeViewModel.NodeModel;
+            this.dynamoViewModel = nodeViewModel.DynamoViewModel;
+            this.dynamoViewModel.PropertyChanged += OnDynamoViewModelPropertyChanged;
             this.InnerTextEditor.TextChanged += OnTextChanged;
             this.InnerTextEditor.TextArea.GotFocus+= OnTextAreaGotFocus; 
             this.InnerTextEditor.TextArea.LostFocus += OnTextAreaLostFocus;
@@ -157,9 +159,10 @@ namespace Dynamo.UI.Controls
             var engineController =
                 dynamoViewModel.EngineController;
 
-            return engineController.CodeCompletionServices.GetCompletionsOnType(
-                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver).
-                Select(x => new CodeCompletionData(x));
+            var completions = engineController.CodeCompletionServices.GetCompletionsOnType(
+                code, stringToComplete, dynamoViewModel.CurrentSpace.ElementResolver);
+            
+            return completions?.Select(x => new CodeCompletionData(x));
         }
 
         private IEnumerable<ICompletionData> SearchCompletions(string stringToComplete, Guid guid)
@@ -184,7 +187,18 @@ namespace Dynamo.UI.Controls
         private void OnTextChanged(object sender, EventArgs e)
         {
             if (WatermarkLabel.Visibility == Visibility.Visible)
+            {
                 WatermarkLabel.Visibility = Visibility.Collapsed;
+                this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.ShowCodeBlockLineNumber;
+            }
+        }
+
+        private void OnDynamoViewModelPropertyChanged(object sender, EventArgs e)
+        {
+            if((e as PropertyChangedEventArgs).PropertyName == nameof(dynamoViewModel.ShowCodeBlockLineNumber))
+            {
+                this.InnerTextEditor.ShowLineNumbers = dynamoViewModel.ShowCodeBlockLineNumber;
+            }
         }
 
         private void OnTextAreaTextEntering(object sender, TextCompositionEventArgs e)
@@ -225,7 +239,7 @@ namespace Dynamo.UI.Controls
 
                     var completions = this.GetCompletionData(code, stringToComplete);
 
-                    if (!completions.Any())
+                    if (completions == null || !completions.Any())
                         return;
 
                     ShowCompletionWindow(completions);
@@ -386,6 +400,11 @@ namespace Dynamo.UI.Controls
             };
 
             completionWindow.Show();
+        }
+
+        internal void Dispose()
+        {
+            this.dynamoViewModel.PropertyChanged -= OnDynamoViewModelPropertyChanged;
         }
     }
 }

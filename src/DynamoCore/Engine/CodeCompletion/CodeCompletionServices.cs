@@ -69,7 +69,7 @@ namespace Dynamo.Engine.CodeCompletion
                 }
             }
 
-            return members.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
+            return members?.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace Dynamo.Engine.CodeCompletion
             var partialName = stringToComplete.ToLower();
             // Add matching Classes
             var classMirrorGroups = StaticMirror.GetAllTypes(core).
-                Where(x => !x.IsHiddenInLibrary && x.Alias.ToLower().Contains(partialName)).
+                Where(x => x.Alias.ToLower().Contains(partialName)).
                     GroupBy(x => x.Alias);
 
             foreach (var classMirrorGroup in classMirrorGroups)
@@ -212,8 +212,9 @@ namespace Dynamo.Engine.CodeCompletion
                         cm.Alias = shortNames.ElementAt(i).Value;
                     }
                 }
+                // Filter out empty types
                 completions.AddRange(classMirrorGroup.
-                    Where(x => !x.IsEmpty).
+                    Where(x => !x.IsEmpty && !x.IsHiddenInLibrary).
                         Select(x =>
                                 CompletionData.ConvertMirrorToCompletionData(x, useShorterName,
                                     resolver: resolver)));

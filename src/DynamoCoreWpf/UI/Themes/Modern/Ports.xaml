@@ -136,7 +136,7 @@
                 </Rectangle>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                <TextBlock Name="portNameTb"
+                    <TextBlock Name="portNameTb"
                        Width="Auto"
                        HorizontalAlignment="Stretch"
                        Style="{StaticResource SZoomFadeText}"
@@ -148,6 +148,20 @@
                        IsHitTestVisible="False"
                        Background="{x:Null}"
                        Foreground="#555555">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UsingDefaultValue}" Value="True">
+                                        <Setter Property="FontStyle"
+                                                Value="Italic" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding UsingDefaultValue}" Value="False">
+                                        <Setter Property="FontStyle"
+                                                Value="Normal" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
                 </TextBlock>
                 <!-- We wrap the text block in a grid so that it wont be displayed on output port-->
                 <Grid Visibility="{Binding Path=UseLevelVisibility}" HorizontalAlignment="Right"> 

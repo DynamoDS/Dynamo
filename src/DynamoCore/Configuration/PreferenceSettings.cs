@@ -86,6 +86,11 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if code block node line numbers should  be displayed.
+        /// </summary>
+        public bool ShowCodeBlockLineNumber { get; set; }
+
+        /// <summary>
         /// Should connectors be visible?
         /// </summary>
         public bool ShowConnector { get; set; }
@@ -326,6 +331,7 @@ namespace Dynamo.Configuration
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
+            ShowCodeBlockLineNumber = true;
             ShowConnector = true;
             ConnectorType = ConnectorType.BEZIER;
             IsBackgroundGridVisible = true;

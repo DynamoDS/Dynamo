@@ -2077,6 +2077,24 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestCompletionWithGlobalClassWhenTyping()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            string code = "Dupt";
+            var completions = codeCompletionServices.SearchCompletions(code, Guid.Empty);
+
+            // Expected 3 completion items
+            Assert.AreEqual(3, completions.Count());
+
+            string[] expectedValues = {"DupTargetTest", "A.DupTargetTest", "FFITarget.B.DupTargetTest"};
+            var expected = expectedValues.OrderBy(x => x);
+            var actual = completions.Select(x => x.Text).OrderBy(x => x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMethodKeywordCompletionWhenTyping()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
@@ -2108,6 +2126,29 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("x : CodeCompletionClass", "x");
             Assert.AreEqual(5, completions.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnDerivedTypeReturnsBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
+            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual("Foo", completions[0].Text);
+            Assert.AreEqual("DupTargetTest", completions[1].Text);
+            Assert.AreEqual("Bar", completions[2].Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnBaseTypeReturnsOnlyBaseType()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.C.B.DupTargetTest").ToList();
+            Assert.AreEqual(2, completions.Count);
+            Assert.AreEqual("DupTargetTest", completions[0].Text);
+            Assert.AreEqual("Foo", completions[1].Text);
         }
 
         [Test]
@@ -2146,7 +2187,7 @@ var06 = g;
             // Expected 1 completion items
             Assert.AreEqual(1, completions.Count());
 
-            string[] expected = { "AnotherClassWithNameConflict" };
+            string[] expected = { "FirstNamespace.AnotherClassWithNameConflict" };
             var actual = completions.Select(x => x.Text).OrderBy(x => x);
 
             Assert.AreEqual(expected, actual);

@@ -460,24 +460,20 @@ namespace Dynamo.ViewModels
                     return;
                 }
             }
-            
-            // Try to get the package header for this package
-            var header = Model.GetPackageHeader(packageInfo);
-            if (header == null)
-            {
-                var result = MessageBox.Show(string.Format(Resources.MessagePackageNotFound, packageInfo.Name),
-                Resources.PackageDownloadErrorMessageBoxTitle, 
-                MessageBoxButton.OKCancel, MessageBoxImage.Question);
-                return;
-            }
 
             // Try to get the package version for this package
-            var version = Model.GetGregPackageVersion(header, packageInfo.Version);
-            if (version == null)
+            PackageVersion version;
+            try
             {
-                var result = MessageBox.Show(string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
-                Resources.PackageDownloadErrorMessageBoxTitle, 
-                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+                version = Model.GetPackageVersionHeader(packageInfo);
+            }
+            catch
+            {
+                MessageBox.Show(
+                    string.Format(Resources.MessagePackageVersionNotFound, packageInfo.Version.ToString(), packageInfo.Name),
+                    Resources.PackageDownloadErrorMessageBoxTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
                 return;
             }
             
@@ -502,39 +498,47 @@ namespace Dynamo.ViewModels
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
             {
-                // get all of the headers
-                var headers = version.full_dependency_ids.Select(dep => dep._id).Select((id) =>
+                // get all of the dependency version headers
+                var dependencyVersionHeaders = version.full_dependency_ids.Select((dep, i) =>
                 {
-                    PackageHeader pkgHeader;
-                    var res = Model.DownloadPackageHeader(id, out pkgHeader);
-
-                    if (!res.Success)
-                        MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackage, id),
+                    try
+                    {
+                        var depVersion = version.full_dependency_versions[i];
+                        var res = Model.GetPackageVersionHeader(dep._id, depVersion);
+                        return res;
+                    }
+                    catch
+                    {
+                        MessageBox.Show(
+                            String.Format(Resources.MessageFailedToDownloadPackageVersion, dep._id),
                             Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
-
-                    return pkgHeader;
+                        return null;
+                    }
                 }).ToList();
 
                 // if any header download fails, abort
-                if (headers.Any(x => x == null))
+                if (dependencyVersionHeaders.Any(x => x == null))
                 {
                     return;
                 }
 
-                var allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
-
                 // determine if any of the packages contain binaries or python scripts.  
-                var containsBinaries =
-                    allPackageVersions.Any(
-                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant) || x.Item2.contains_binaries);
+                var containsBinariesOrPythonScripts = dependencyVersionHeaders.Any(x =>
+                {
+                    // The contents (string) property of the PackageVersion object can be null for an empty package 
+                    // like LunchBox.
+                    var are_contents_empty = string.IsNullOrEmpty(x.contents);
+                    var contains_binaries = x.contains_binaries ||
+                                            !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsBinariesConstant);
+                    var contains_python =
+                        !are_contents_empty && x.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant);
+                    return contains_binaries || contains_python;
 
-                var containsPythonScripts =
-                    allPackageVersions.Any(
-                        x => x.Item2.contents.Contains(PackageManagerClient.PackageContainsPythonScriptsConstant));
+                });
 
                 // if any do, notify user and allow cancellation
-                if (containsBinaries || containsPythonScripts)
+                if (containsBinariesOrPythonScripts)
                 {
                     var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
@@ -545,21 +549,15 @@ namespace Dynamo.ViewModels
 
                 // Determine if there are any dependencies that are made with a newer version
                 // of Dynamo (this includes the root package)
-                var dynamoVersion = DynamoViewModel.Model.Version;
-                var dynamoVersionParsed = VersionUtilities.PartialParse(dynamoVersion, 3);
-                var futureDeps = allPackageVersions.FilterFuturePackages(dynamoVersionParsed);
+                var dynamoVersion = VersionUtilities.PartialParse(DynamoViewModel.Model.Version);
+                var futureDeps = dependencyVersionHeaders.Where(dep => VersionUtilities.PartialParse(dep.engine_version) > dynamoVersion);
 
                 // If any of the required packages use a newer version of Dynamo, show a dialog to the user
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    var versionList = FormatPackageVersionList(futureDeps);
-
-                    if (MessageBox.Show(String.Format(Resources.MessagePackageNewerDynamo,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        versionList),
-                        string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle,
-                        DynamoViewModel.BrandingResourceProvider.ProductName),
+                    if (MessageBox.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                        string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning) == MessageBoxResult.Cancel)
                     {
@@ -575,7 +573,7 @@ namespace Dynamo.ViewModels
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                foreach (var localPkg in headers.Select(x => localPkgs.FirstOrDefault(v => v.Name == x.name)))
+                foreach (var localPkg in version.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.ID == dep._id)))
                 {
                     if (localPkg == null) continue;
 
@@ -652,16 +650,28 @@ namespace Dynamo.ViewModels
                 }
 
                 // form header version pairs and download and install all packages
-                allPackageVersions
-                        .Select(x => new PackageDownloadHandle(x.Item1, x.Item2))
-                        .ToList()
-                        .ForEach(x => DownloadAndInstall(x, downloadPath));
+                dependencyVersionHeaders
+                    .Select((dep, i) => {
+                        // Note that Name will be empty when calling from DownloadAndInstallPackage.
+                        // This is currently not an issue, as the code path belongs to the Workspace Dependency
+                        // extension, which does not display dependencies names.
+                        var dependencyPackageHeader = version.full_dependency_ids[i];
+                        return new PackageDownloadHandle()
+                        {
+                            Id = dependencyPackageHeader._id,
+                            VersionName = dep.version,
+                            Name = dependencyPackageHeader.name
+                        };
+                    })
+                    .ToList()
+                    .ForEach(x => DownloadAndInstall(x, downloadPath));
             }
         }
 
         /// <summary>
         ///     Returns a newline delimited string representing the package name and version of the argument
         /// </summary>
+        [Obsolete("No longer used. Remove in 3.0.")]
         public static string FormatPackageVersionList(IEnumerable<Tuple<PackageHeader, PackageVersion>> packages)
         {
             return String.Join("\r\n", packages.Select(x => x.Item1.name + " " + x.Item2.version));
@@ -683,7 +693,7 @@ namespace Dynamo.ViewModels
             {
                 // Attempt to download package
                 string pathDl;
-                var res = Model.DownloadPackage(packageDownloadHandle.Header._id, packageDownloadHandle.VersionName, out pathDl);
+                var res = Model.DownloadPackage(packageDownloadHandle.Id, packageDownloadHandle.VersionName, out pathDl);
 
                 // if you fail, update download handle and return
                 if (!res.Success)
@@ -702,7 +712,7 @@ namespace Dynamo.ViewModels
                         Package dynPkg;
 
                         var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
-                        var firstOrDefault = pmExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
+                        var firstOrDefault = pmExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
                         if (firstOrDefault != null)
                         {
                             var dynModel = DynamoViewModel.Model;
@@ -722,11 +732,13 @@ namespace Dynamo.ViewModels
 
                         if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
                         {
-                            var p = Package.FromDirectory(dynPkg.RootDirectory, DynamoViewModel.Model.Logger);
-
-                            pmExtension.PackageLoader.LoadPackages(new List<Package> {p});
-
+                            pmExtension.PackageLoader.LoadPackages(new List<Package> {dynPkg});
                             packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        }
+                        else
+                        {
+                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+                            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
                         }
                     }
                     catch (Exception e)

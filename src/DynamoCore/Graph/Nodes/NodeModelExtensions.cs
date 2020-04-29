@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Engine;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using ProtoCore.Mirror;
 
@@ -90,9 +91,30 @@ namespace Dynamo.Graph.Nodes
             return results;
         }
 
+        /// <summary>
+        /// Getting the original name before graph author renamed the node
+        /// </summary>
+        /// <param name="node">target NodeModel</param>
+        /// <returns>Original node name as string</returns>
         internal static string GetOriginalName(this NodeModel node)
         {
             if (node == null) return string.Empty;
+            // For dummy node, return the current name so that does not appear to be renamed
+            if (node is DummyNode)
+            {
+                return node.Name;
+            }
+            if (node.IsCustomFunction)
+            {
+                // If the custom node is not loaded, return the current name so that does not appear to be renamed
+                if ((node as Function).State == ElementState.Error && (node as Function).Definition.IsProxy)
+                {
+                    return node.Name;
+                }
+                // If the custom node is loaded, return original name as usual
+                var customNodeFunction = node as Function;
+                return customNodeFunction?.Definition.DisplayName;
+            }
 
             var function = node as DSFunctionBase;
             if (function != null)

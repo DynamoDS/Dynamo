@@ -27,6 +27,23 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void ExtensionWindowIsClosedWithDynamo()
+        {
+            var dummyExtension = new DummyViewExtension()
+            {
+                SetOwner = false
+            };
+
+            RaiseLoadedEvent(this.View);
+            var extensionManager = View.viewExtensionManager;
+            extensionManager.Add(dummyExtension);
+
+            View.Close();
+
+            Assert.IsTrue(dummyExtension.WindowClosed);
+        }
+
+        [Test]
         public void ExtensionsSideBarExtensionsTest()
         {
             RaiseLoadedEvent(this.View);
@@ -63,7 +80,9 @@ namespace DynamoCoreWpfTests
 
     public class DummyViewExtension : IViewExtension
     {
-        public int Counter = 0;
+        public int Counter { get; set; }
+        public bool SetOwner { get; set; } = true;
+        public bool WindowClosed { get; set; }
 
         public string UniqueId
         {
@@ -87,11 +106,15 @@ namespace DynamoCoreWpfTests
                 Counter++;
             };
 
-            var window = new Window
+            var window = new Window();
+            window.Closed += (sender, args) =>
             {
-                // Set the owner of the window to tuIDhe Dynamo window.
-                Owner = p.DynamoWindow
+                WindowClosed = true;
             };
+            if (SetOwner)
+            {
+                window.Owner = p.DynamoWindow;
+            }
 
             p.AddToExtensionsSideBar(this, window);
         }
@@ -138,7 +161,6 @@ namespace DynamoCoreWpfTests
 
             var window = new Window
             {
-                // Set the owner of the window to tuIDhe Dynamo window.
                 Owner = p.DynamoWindow
             };
 

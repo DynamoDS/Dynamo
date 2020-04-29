@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private string astText = string.Empty;
         private bool isexplictFrozen;
         private bool canToggleFrozen = true;
+        private bool isRenamed = false;
         #endregion
 
         #region public members
@@ -197,8 +198,41 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Name
         {
-            get { return nodeLogic.Name; }
+            get 
+            {
+                IsRenamed = OriginalName != nodeLogic.Name;
+                return nodeLogic.Name; 
+            }
             set { nodeLogic.Name = value; }
+        }
+
+        /// <summary>
+        /// The original name of the node. Notice this property will return
+        /// current node name if the node is dummy node or unloaded custom node.
+        /// </summary>
+        [JsonIgnore]
+        public string OriginalName
+        {
+            get { return nodeLogic.GetOriginalName(); }
+        }
+
+
+        /// <summary>
+        /// If a node has been renamed. Notice this boolean will be disabled
+        /// (always false) if the node is dummy node or unloaded custom node.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsRenamed
+        {
+            get { return isRenamed; }
+            set
+            {
+                if (isRenamed != value)
+                {
+                    isRenamed = value;
+                    RaisePropertyChanged(nameof(IsRenamed));
+                }
+            }
         }
 
         [JsonIgnore]
