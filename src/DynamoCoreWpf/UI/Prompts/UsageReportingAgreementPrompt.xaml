@@ -41,7 +41,7 @@
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="8,8,8,0">
-            <views:RichTextFile x:Name="GoogleAnalyticsContent"
+            <views:RichTextFile x:Name="AdskAnalyticsContent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"
@@ -84,7 +84,7 @@
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
                        Name="AcceptAnalyticsReportingTextBlock"
-                       Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
+                       Text="{x:Static p:Resources.ConsentFormAdskAnalyticsCheckBoxContent}"/>
         </CheckBox>
         
         <!--The instrumentation checkbox will be hidden and unchecked by default-->

@@ -34,10 +34,10 @@ namespace Dynamo.UI.Prompts
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref instrumentationFile))
                 InstrumentationContent.File = instrumentationFile;
 
-            var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
+            var adskAnalyticsFile = "AutodeskAnalyticsConsent.rtf";
 
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
-                GoogleAnalyticsContent.File = googleAnalyticsFile;
+            if (viewModel.Model.PathManager.ResolveDocumentPath(ref adskAnalyticsFile))
+                AdskAnalyticsContent.File = adskAnalyticsFile;
 
             AcceptUsageReportingTextBlock.Text =
                 string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
