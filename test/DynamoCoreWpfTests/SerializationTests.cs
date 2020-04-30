@@ -27,6 +27,8 @@ namespace DynamoCoreWpfTests
 {
     internal class SerializationTests : DynamoViewModelUnitTest
     {
+        private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
+
         [Test]
         [Category("UnitTests")]
         public void TestBasicAttributes()
