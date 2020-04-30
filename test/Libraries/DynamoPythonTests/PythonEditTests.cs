@@ -70,9 +70,7 @@ namespace Dynamo.Tests
 
             JObject dynObj = JObject.Parse(fileContents);
             var pythonTokens = dynObj["Nodes"].Where(t => t.Value<string>("NodeType") == "PythonScriptNode").Select(t => t);
-            if (pythonTokens == null)
-                return;
-
+            Assert.IsNotNull(pythonTokens);
             Assert.IsTrue(pythonTokens.Any(t => t.Value<string>("Engine") == PythonEngineVersion.IronPython2.ToString()));
         }
 
