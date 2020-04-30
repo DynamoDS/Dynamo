@@ -138,7 +138,7 @@ namespace Dynamo.Tests.ModelsTest
             CurrentDynamoModel.WorkspaceClearing += CurrentDynamoModel_WorkspaceClearing;
 
             //Act
-            //Internall this will execute the OnWorkspaceClearing() method in DynamoModelEvents
+            //Internally this will execute the OnWorkspaceClearing() method in DynamoModelEvents
             CurrentDynamoModel.ClearCurrentWorkspace();
 
             //Assert
@@ -159,7 +159,7 @@ namespace Dynamo.Tests.ModelsTest
             CurrentDynamoModel.WorkspaceRemoveStarted += CurrentDynamoModel_WorkspaceRemoveStarted;
 
             //Act
-            //Internall this will execute the OnWorkspaceRemoveStarted() method in DynamoModelEvents
+            //Internally this will execute the OnWorkspaceRemoveStarted() method in DynamoModelEvents
             CurrentDynamoModel.RemoveWorkspace(CurrentDynamoModel.CurrentWorkspace);
 
             //Assert
