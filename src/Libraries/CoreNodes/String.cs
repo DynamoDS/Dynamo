@@ -118,6 +118,17 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Converts the given string to title case.
+        /// </summary>
+        /// <param name="str">String to be made title case.</param>
+        /// <returns name="str">Title case string.</returns>
+        /// <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        public static string ToTitle(string str)
+        {
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(str);
+        }
+
+        /// <summary>
         ///     Converts the given string to all uppercase characters or all
         ///     lowercase characters based on a boolean parameter.
         /// </summary>

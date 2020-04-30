@@ -1311,7 +1311,7 @@ a12;
             thisTest.Verify("bReadback", null);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
-            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("B.DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 
@@ -1337,7 +1337,7 @@ a12;
             thisTest.Verify("cReadback", 2);
 
             TestFrameWork.VerifyBuildWarning(ProtoCore.BuildData.WarningID.MultipleSymbolFound);
-            string[] classes = thisTest.GetAllMatchingClasses("DupTargetTest");
+            string[] classes = thisTest.GetAllMatchingClasses("B.DupTargetTest");
             Assert.True(classes.Length > 1, "More than one implementation of DupTargetTest class expected");
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using System.Xml;
@@ -65,6 +66,8 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetClasses();
+            if (!wordList.Any()) return null;
+
             String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             classHighlightRule.Regex = new Regex(regex);
 
@@ -87,6 +90,8 @@ namespace Dynamo.Wpf.Views
             };
 
             var wordList = engineController.CodeCompletionServices.GetGlobals();
+            if (!wordList.Any()) return null;
+
             String regex = String.Format(@"\b({0})\b", String.Join("|", wordList));
             methodHighlightRule.Regex = new Regex(regex);
 
@@ -134,8 +139,12 @@ namespace Dynamo.Wpf.Views
             var rules = editor.SyntaxHighlighting.MainRuleSet.Rules;
 
             rules.Add(CodeHighlightingRuleFactory.CreateNumberHighlightingRule());
-            rules.Add(CodeHighlightingRuleFactory.CreateClassHighlightRule(controller));
-            rules.Add(CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller));
+            
+            var classRule = CodeHighlightingRuleFactory.CreateClassHighlightRule(controller);
+            if(classRule != null) rules.Add(classRule);
+
+            var methodRule = CodeHighlightingRuleFactory.CreateMethodHighlightRule(controller);
+            if(methodRule != null) rules.Add(methodRule);
         }
     }
 }

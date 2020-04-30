@@ -77,6 +77,16 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ToTitle()
+        {
+            Assert.AreEqual("", String.ToTitle(""));
+            Assert.AreEqual("Oneword", String.ToTitle("oneword"));
+            Assert.AreEqual("ACRONYM", String.ToTitle("ACRONYM"));
+            Assert.AreEqual("Just A\tRandom Alternation Of\nCasing", String.ToTitle("jUsT A\tRanDoM ALTerNATION of\nCaSiNg"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void ChangeCase()
         {
             Assert.AreEqual("", String.ChangeCase("", false));

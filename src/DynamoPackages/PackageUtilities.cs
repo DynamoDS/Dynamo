@@ -7,12 +7,14 @@ using Greg.Responses;
 
 namespace Dynamo.PackageManager
 {
+    [Obsolete("No longer used. Remove in 3.0.")]
     public static class PackageUtilities
     {
         /// <summary>
         /// Obtain the packages from a list of packages that were created using a newer version
         /// of Dynamo than this one.
         /// </summary>
+        [Obsolete("No longer used. Remove in 3.0.")]
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> FilterFuturePackages(
             this IEnumerable<Tuple<PackageHeader, PackageVersion>> headerVersionPairs,
             Version currentAppVersion, int numberOfFieldsToCompare = 3)
