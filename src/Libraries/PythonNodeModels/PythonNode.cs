@@ -50,7 +50,7 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged("Engine");
+                    RaisePropertyChanged(nameof(Engine));
                 }
             }
         }
