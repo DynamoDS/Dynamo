@@ -16,6 +16,144 @@ namespace DynamoShapeManager
         /// </summary>
         private static readonly List<string> ProductsWithASM = new List<string>() { "Revit", "Civil", "Robot Structural Analysis", "FormIt" };
 
+        #region ASM DLLs per version (to be kept in sync with LibG)
+
+        private static readonly ISet<string> ASM224DllNames = new HashSet<string>()
+        {
+            "tbb.dll",
+            "tbbmalloc.dll",
+            "tsplines6A.dll",
+            "ASMMATRIX224A.dll",
+            "ASMBASE224A.dll",
+            "ASMLAW224A.dll",
+            "ASMKERN224A.dll",
+            "ASMGA224A.dll",
+            "ASMINTR224A.dll",
+            "ASMTOPT224A.dll",
+            "ASMCT224A.dll",
+            "ASMCSTR224A.dll",
+            "ASMEULR224A.dll",
+            "ASMBOOL224A.dll",
+            "ASMFCT224A.dll",
+            "ASMLOPT224A.dll",
+            "ASMRB224A.dll",
+            "ASMRBI224A.dll",
+            "ASMAHL224A.dll",
+            "ASMOFST224A.dll",
+            "ASMREM224A.dll",
+            "ASMCOVR224A.dll",
+            "ASMSKIN224A.dll",
+            "ASMSBOOL224A.dll",
+            "ASMBLND224A.dll",
+            "ASMDATAX224A.dll",
+            "ASMHEAL224A.dll",
+            "ASMSWP224A.dll",
+            "ASMDEFM224A.dll",
+            "ASMFREC224A.dll",
+            "ASMNPCH224A.dll",
+            "ASMOPER224A.dll",
+            "ASMIMPORT224A.dll",
+            "ASMLOP224A.dll",
+            "ASMSBAP224A.dll",
+            "ASMSHL224A.dll",
+            "ASMTWK224A.dll",
+            "ASMPID224A.dll",
+            "ASMUFLD224A.dll",
+            "ASMWELD224A.dll"
+        };
+
+        private static readonly ISet<string> ASM225DllNames = new HashSet<string>()
+        {
+            "tbb.dll",
+            "tbbmalloc.dll",
+            "tsplines7A.dll",
+            "ASMMATRIX225A.dll",
+            "ASMBASE225A.dll",
+            "ASMLAW225A.dll",
+            "ASMKERN225A.dll",
+            "ASMGA225A.dll",
+            "ASMINTR225A.dll",
+            "ASMTOPT225A.dll",
+            "ASMCT225A.dll",
+            "ASMCSTR225A.dll",
+            "ASMEULR225A.dll",
+            "ASMBOOL225A.dll",
+            "ASMFCT225A.dll",
+            "ASMLOPT225A.dll",
+            "ASMRB225A.dll",
+            "ASMRBI225A.dll",
+            "ASMAHL225A.dll",
+            "ASMOFST225A.dll",
+            "ASMREM225A.dll",
+            "ASMCOVR225A.dll",
+            "ASMSKIN225A.dll",
+            "ASMSBOOL225A.dll",
+            "ASMBLND225A.dll",
+            "ASMDATAX225A.dll",
+            "ASMHEAL225A.dll",
+            "ASMSWP225A.dll",
+            "ASMDEFM225A.dll",
+            "ASMFREC225A.dll",
+            "ASMNPCH225A.dll",
+            "ASMOPER225A.dll",
+            "ASMIMPORT225A.dll",
+            "ASMLOP225A.dll",
+            "ASMSBAP225A.dll",
+            "ASMSHL225A.dll",
+            "ASMTWK225A.dll",
+            "ASMPID225A.dll",
+            "ASMUFLD225A.dll",
+            "ASMWELD225A.dll"
+        };
+
+        private static readonly ISet<string> ASM226DllNames = new HashSet<string>()
+        {
+            "tbb.dll",
+            "tbbmalloc.dll",
+            "tsplines8A.dll",
+            "ASMBASE226A.dll",
+            "ASMLAW226A.dll",
+            "ASMKERN226A.dll",
+            "ASMGA226A.dll",
+            "ASMINTR226A.dll",
+            "ASMTOPT226A.dll",
+            "ASMCT226A.dll",
+            "ASMCSTR226A.dll",
+            "ASMEULR226A.dll",
+            "ASMBOOL226A.dll",
+            "ASMFCT226A.dll",
+            "ASMLOPT226A.dll",
+            "ASMRBASE226A.dll",
+            "ASMRBI226A.dll",
+            "ASMAHL226A.dll",
+            "ASMOFST226A.dll",
+            "ASMREM226A.dll",
+            "ASMCOVR226A.dll",
+            "ASMSKIN226A.dll",
+            "ASMSBOOL226A.dll",
+            "ASMBLND226A.dll",
+            "ASMDATAX226A.dll",
+            "ASMHEAL226A.dll",
+            "ASMSWP226A.dll",
+            "ASMDEFM226A.dll",
+            "ASMFREC226A.dll",
+            "ASMNPCH226A.dll",
+            "ASMOPER226A.dll",
+            "ASMIMPORT226A.dll",
+            "ASMLOP226A.dll",
+            "ASMSBAP226A.dll",
+            "ASMSHL226A.dll",
+            "ASMTWK226A.dll",
+            "ASMPID226A.dll",
+            "ASMUFLD226A.dll",
+            "ASMWELD226A.dll",
+            "AdpSDKWrapper.dll",
+            "AdpSDKUI.dll",
+            "AdpSDKCore.dll"
+        };
+
+        #endregion
+
         #region public properties
         public static readonly string GeometryFactoryAssembly = "LibG.ProtoInterface.dll";
         public static readonly string PreloaderAssembly = "LibG.AsmPreloader.Managed.dll";
@@ -454,18 +592,32 @@ namespace DynamoShapeManager
 
             //filter install locations missing tbb and tbbmalloc.dll
             return installs.Cast<KeyValuePair<string, Tuple<int, int, int, int>>>().Where(install =>
-            {
-                var files = Directory.EnumerateFiles(install.Key, "tbb*.dll").Select(x=>System.IO.Path.GetFileName(x));
-                if (files.Contains("tbb.dll") && files.Contains("tbbmalloc.dll"))
-                {
-                    return true;
-                }
-                return false;
-
-            });
+                IsASMInstallationComplete(install.Key, install.Value.Item1)
+            );
         }
 
-
+        /// <summary>
+        /// Given an ASM install location and its version, checks if all of the required files are present.
+        /// </summary>
+        /// <param name="location">Location where the ASM installation was found.</param>
+        /// <param name="majorVersion">Major version of ASM found in the specified location.</param>
+        /// <returns>Whether the location contains a complete ASM installation or not.</returns>
+        private static bool IsASMInstallationComplete(string location, int majorVersion)
+        {
+            var locationFileNames = Directory.EnumerateFiles(location);
+            switch (majorVersion)
+            {
+                case 226:
+                    return !ASM226DllNames.Except(locationFileNames).Any();
+                case 225:
+                    return !ASM225DllNames.Except(locationFileNames).Any();
+                case 224:
+                    return !ASM224DllNames.Except(locationFileNames).Any();
+                default:
+                    // We don't know this version so it's safest to assume it's not complete.
+                    return false;
+            }
+        }
 
         /// <summary>
         /// Extracts version of ASM dlls from a path by scanning for ASM dlls in the path.
