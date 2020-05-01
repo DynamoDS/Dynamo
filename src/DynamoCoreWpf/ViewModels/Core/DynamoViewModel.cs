@@ -724,12 +724,14 @@ namespace Dynamo.ViewModels
         {
             model.RequestBugReport += ReportABug;
             model.RequestDownloadDynamo += DownloadDynamo;
+            model.Preview3DOutage += Disable3DPreview;
         }
 
         private void UnsubscribeModelUiEvents()
         {
             model.RequestBugReport -= ReportABug;
             model.RequestDownloadDynamo -= DownloadDynamo;
+            model.Preview3DOutage -= Disable3DPreview;
         }
 
         private void SubscribeModelCleaningUpEvent()
@@ -866,6 +868,14 @@ namespace Dynamo.ViewModels
         internal static void DownloadDynamo()
         {
             Process.Start(new ProcessStartInfo("explorer.exe", Configurations.DynamoDownloadLink));
+        }
+
+        private void Disable3DPreview()
+        {
+            foreach (var item in Watch3DViewModels)
+            {
+                item.Active = false;
+            }
         }
 
         internal bool CanReportABug(object parameter)
@@ -2262,6 +2272,11 @@ namespace Dynamo.ViewModels
 
             CurrentSpaceViewModel.ZoomInInternal();
             ZoomInCommand.RaiseCanExecuteChanged();
+        }
+
+        internal void OpenDocumentationLink(object parameter)
+        {
+            OnRequestOpenDocumentationLink((OpenDocumentationLinkEventArgs)parameter);
         }
 
         private bool CanZoomIn(object parameter)

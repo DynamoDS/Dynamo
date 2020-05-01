@@ -19,7 +19,7 @@ namespace Dynamo.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -313,7 +313,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom node definition is not loaded!.
+        ///   Looks up a localized string similar to Custom node definition is not loaded! href=CustomNodeNotLoaded.html.
         /// </summary>
         public static string CustomNodeNotLoaded {
             get {
@@ -965,7 +965,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Nothing is selected..
+        ///   Looks up a localized string similar to Nothing is selected. href=NothingIsSelectedWarning.html.
         /// </summary>
         public static string NothingIsSelectedWarning {
             get {
@@ -1159,6 +1159,15 @@ namespace Dynamo.Properties {
         public static string PortsNameDescriptionDoNotEqualWarningMessage {
             get {
                 return ResourceManager.GetString("PortsNameDescriptionDoNotEqualWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 3D preview has been deactivated.
+        /// </summary>
+        public static string Preview3DOutageTitle {
+            get {
+                return ResourceManager.GetString("Preview3DOutageTitle", resourceCulture);
             }
         }
         

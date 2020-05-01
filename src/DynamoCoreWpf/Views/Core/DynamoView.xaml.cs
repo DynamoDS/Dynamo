@@ -230,6 +230,12 @@ namespace Dynamo.Controls
                 else
                 {
                     tab.Content = contentControl.Content;
+                    var extensionWindow = contentControl as Window;
+                    if (extensionWindow != null)
+                    {
+                        // Make sure the extension window closes with Dynamo
+                        extensionWindow.Owner = this;
+                    }
                 }
 
                 //Insert the tab at the end

@@ -82,6 +82,7 @@ namespace Dynamo.ViewModels
             CloseGalleryCommand = new DelegateCommand(p => OnRequestShowHideGallery(false), o => true);
             ShowNewPresetsDialogCommand = new DelegateCommand(ShowNewPresetStateDialogAndMakePreset, CanShowNewPresetStateDialog);
             NodeFromSelectionCommand = new DelegateCommand(CreateNodeFromSelection, CanCreateNodeFromSelection);
+            OpenDocumentationLinkCommand = new DelegateCommand(OpenDocumentationLink);
         }
         public DelegateCommand OpenIfSavedCommand { get; set; }
         public DelegateCommand OpenCommand { get; set; }
@@ -158,6 +159,7 @@ namespace Dynamo.ViewModels
         public DelegateCommand ShowGalleryCommand { get; set; }
         public DelegateCommand CloseGalleryCommand { get; set; }
         public DelegateCommand ShowNewPresetsDialogCommand { get; set; }
-        public DelegateCommand NodeFromSelectionCommand { get; set; }       
+        public DelegateCommand NodeFromSelectionCommand { get; set; }
+        public DelegateCommand OpenDocumentationLinkCommand { get; set; }
     }
 }

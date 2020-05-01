@@ -20,7 +20,9 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
 using Dynamo.Wpf.Properties;
@@ -219,7 +221,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         public event Action<Model3D> RequestAttachToScene;
-        protected void OnRequestAttachToScene(Model3D model3D)
+        protected virtual void OnRequestAttachToScene(Model3D model3D)
         {
             if (RequestAttachToScene != null)
             {
@@ -829,7 +831,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var meshPackages = packages.Cast<HelixRenderPackage>().Where(rp => rp.MeshVertexCount % 3 == 0);
 
             RemoveGeometryForUpdatedPackages(meshPackages);
-            AggregateRenderPackages(meshPackages);
+            try
+            {
+                AggregateRenderPackages(meshPackages);
+            }
+            catch (OutOfMemoryException)
+            {
+                // This can happen when the amount of packages to render is too large
+                string summary = Resources.RenderingMemoryOutageSummary;
+                var description = Resources.RenderingMemoryOutageDescription;
+                (dynamoModel as DynamoModel).Report3DPreviewOutage(summary, description);
+            }
 #if DEBUG
             renderTimer.Stop();
             Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));

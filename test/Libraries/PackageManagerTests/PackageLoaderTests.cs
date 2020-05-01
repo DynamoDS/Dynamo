@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Search.SearchElements;
@@ -43,6 +44,19 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadPackages(new List<Package> {pkg});
 
             Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
+        }
+
+        [Test]
+        public void LoadPackagesDoesNotDuplicateLoadedAssemblies()
+        {
+            var pkgDir = Path.Combine(PackagesDirectory, "AnotherPackage");
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(pkgDir);
+
+            loader.LoadPackages(new List<Package> { pkg });
+            Assert.AreEqual(1, pkg.LoadedAssemblies.Count);
+            Assert.AreEqual("AnotherPackage", pkg.LoadedAssemblies.First().Name);
+            Assert.IsTrue(pkg.LoadedAssemblies.First().IsNodeLibrary);
         }
 
         [Test]
@@ -135,8 +149,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
@@ -166,8 +180,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -259,8 +273,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 15 packages in "GitHub\Dynamo\test\pkgs"
-            Assert.AreEqual(15, loader.LocalPackages.Count());
+            // There are 16 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(16, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -286,8 +300,16 @@ namespace Dynamo.PackageManager.Tests
             var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
             loader.LoadPackages(new Package[] { package1,package2 });
 
-            // There are 2 packages loaded directly
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            // 2 packages loaded as expected
+            var expectedLoadedPackageNum = 0;
+            foreach (var pkg in loader.LocalPackages)
+            {
+                if (pkg.Name == "EvenOdd" || pkg.Name == "EvenOdd2")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -474,34 +496,77 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsNull(foundPkg);
         }
 
-        /// This test is added for this task: https://jira.autodesk.com/browse/DYN-2101. 
-        /// A followup task is added https://jira.autodesk.com/browse/DYN-2120 to refactor the approach to this solution.
-        /// This test needs to be modified in that case. 
         [Test]
-        [Category("TechDebt")]
         public void PackageLoadExceptionTest()
         {
-            Boolean RunDisabledWhilePackageLoading = false;
-
             string openPath = Path.Combine(TestDirectory, @"core\PackageLoadExceptionTest.dyn");
             OpenModel(openPath);
 
             var loader = GetPackageLoader();
-            loader.PackgeLoaded += (package) =>
-            {
-                RunDisabledWhilePackageLoading = EngineController.DisableRun;
-            };
 
             // Load the package when the graph is open in the workspace. 
             string packageDirectory = Path.Combine(PackagesDirectory, "Ampersand");
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> { pkg });
 
-            // Assert that the Run is disabled temporatily when the package is still loading. 
-            Assert.IsTrue(RunDisabledWhilePackageLoading);
+            // Dummy nodes are resolved, and more importantly, no exception was thrown.
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
+        }
 
-            // Assert that the DisableRun flag is set back to false, once the package loading is completed. 
-            Assert.IsFalse(EngineController.DisableRun);
+        /// <summary>
+        /// This test simulates loading a mixed package type (containing both CN and ZT nodes)
+        /// on the fly and verifying that the nodes in the graph are resolved and run afterwards.
+        /// </summary>
+        [Test]
+        public void MixedPackageLoadTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\MixedPackageLoadTest.dyn");
+            OpenModel(openPath);
+
+            AssertPreviewValue("654bfcc3463e4950824336d4c9bd6126", null);
+            AssertPreviewValue("576f11ed5837460d80f2e354d853de68", null);
+
+            var loader = GetPackageLoader();
+
+            // Load the package when the graph is open in the workspace. 
+            string packageDirectory = Path.Combine(PackagesDirectory, "Mixed Package");
+            var pkg = loader.ScanPackageDirectory(packageDirectory);
+            loader.LoadPackages(new List<Package> { pkg });
+
+            var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
+            Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "Mixed Package", "bin", "FrogRiverOne.dll"))));
+
+            // Assert value of loaded ZT node.
+            AssertPreviewValue("654bfcc3463e4950824336d4c9bd6126", 9);
+
+            // Assert value of loaded CN is non-null.
+            AssertNonNull("576f11ed5837460d80f2e354d853de68");
+        }
+
+        [Test]
+        public void LoadingAPackageWithBinariesDoesNotAffectCustomNodesUsedInHomeWorkspace()
+        {
+            // Open a custom node definition and a workspace where this custom node is used.
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\test.dyf"));
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\MissingNode.dyn"));
+
+            // Get the custom node.
+            var functionNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>();
+            Assert.AreEqual(1, functionNodes.Count());
+            var functionNode = functionNodes.First();
+
+            // Custom node should be good before loading the package.
+            Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
+
+            // Load a package which contains binaries, when the graph is open in the workspace. 
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(Path.Combine(PackagesDirectory, "Mixed Package"));
+            loader.LoadPackages(new List<Package> { pkg });
+
+            // Custom node should remain good after loading the package.
+            Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
         }
 
         [Test]

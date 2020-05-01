@@ -2578,6 +2578,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Read more....
+        /// </summary>
+        public static string InfoBubbleDocumentationLinkText {
+            get {
+                return ResourceManager.GetString("InfoBubbleDocumentationLinkText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error: .
         /// </summary>
         public static string InfoBubbleError {
@@ -3129,6 +3138,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems..
+        /// </summary>
+        public static string MessageFailedToDownloadPackageVersion {
+            get {
+                return ResourceManager.GetString("MessageFailedToDownloadPackageVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No node could be found with that Id..
         /// </summary>
         public static string MessageFailedToFindNodeById {
@@ -3183,6 +3201,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load an invalid package..
+        /// </summary>
+        public static string MessageInvalidPackage {
+            get {
+                return ResourceManager.GetString("MessageInvalidPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} elapsed for loading {1} main window..
         /// </summary>
         public static string MessageLoadingTime {
@@ -3228,11 +3255,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The following packages use a newer version of {0} than you are currently using:
-        ///
-        ///{1}
-        ///
-        ///Do you want to continue?.
+        ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
             get {
@@ -3520,6 +3543,24 @@ namespace Dynamo.Wpf.Properties {
         public static string NodesRunStatus {
             get {
                 return ResourceManager.GetString("NodesRunStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description: .
+        /// </summary>
+        public static string NodeTooltipDescription {
+            get {
+                return ResourceManager.GetString("NodeTooltipDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original node name: .
+        /// </summary>
+        public static string NodeTooltipOriginalName {
+            get {
+                return ResourceManager.GetString("NodeTooltipOriginalName", resourceCulture);
             }
         }
         
@@ -4613,6 +4654,24 @@ namespace Dynamo.Wpf.Properties {
         public static string QueryMember {
             get {
                 return ResourceManager.GetString("QueryMember", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision..
+        /// </summary>
+        public static string RenderingMemoryOutageDescription {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled..
+        /// </summary>
+        public static string RenderingMemoryOutageSummary {
+            get {
+                return ResourceManager.GetString("RenderingMemoryOutageSummary", resourceCulture);
             }
         }
         

@@ -178,18 +178,18 @@ namespace Dynamo.Tests
             }
             else if (value == null)
             {
-                Assert.IsTrue(data.IsNull);
+                Assert.IsTrue(data.IsNull, String.Format("Data {0} is not null", data.StringData));
             }
             else if (value is int)
             {
                 try
                 {
                     int mirrorData = Convert.ToInt32(data.Data);
-                    Assert.AreEqual((int)value, mirrorData);
+                    Assert.AreEqual((int)value, mirrorData, String.Format("Integer values are not equal value: {0} and data {1}", value, mirrorData));
                 }
                 catch (Exception e)
                 {
-                    Assert.Fail(e.Message);
+                    Assert.Fail(String.Format("Failed on Int assertion data {0} with this message: {1}", data.StringData, e.Message));
                 }
             }
             else if (value is double)
@@ -197,41 +197,36 @@ namespace Dynamo.Tests
                 try
                 {
                     double mirrorData = Convert.ToDouble(data.Data);
-                    Assert.AreEqual((double)value, mirrorData, 0.00001);
+                    Assert.AreEqual((double)value, mirrorData, 0.00001, String.Format("Double values are not equal value: {0} and data {1}", value, mirrorData));
                 }
                 catch (Exception e)
                 {
-                    Assert.Fail(e.Message);
+                    Assert.Fail(String.Format("Failed on Double assertion data {0} with this message: {1}", data.StringData, e.Message));
                 }
             }
             else if (data.IsPointer && data.Class.ClassName == "Function")
             {
-                Assert.AreEqual(data.Class.ClassName, value);
+                Assert.AreEqual(data.Class.ClassName, value, String.Format("Failed to validate the finding of Function {0},  value {1}", data.Class.ClassName, value));
             }
-            else if (data.IsDictionary) 
+            else if (data.IsDictionary)
             {
                 var thisData = data.Data as DesignScript.Builtin.Dictionary;
 
                 if (value is DesignScript.Builtin.Dictionary)
                 {
-                    var otherVal = (DesignScript.Builtin.Dictionary) value;
+                    var otherVal = (DesignScript.Builtin.Dictionary)value;
 
-                    if (otherVal.Count != thisData.Count)
-                    {
-                        Assert.Fail("Data and expected value are 2 different dictionaries.");
-                    }
+                    Assert.AreEqual(otherVal.Count, thisData.Count, String.Format("The number of elements on the collections (DesignScript.Builtin.Dictionary) didn't match, value size: {0} data size: {1} , so data and expected value are 2 different dictionaries", otherVal.Count, thisData.Count));
 
                     foreach (var key in otherVal.Keys)
                     {
                         var val = thisData.ValueAtKey(key);
-                        if (val == null)
-                        {
-                            Assert.Fail("Data and expected value are 2 different dictionaries.");
-                        }
+
+                        Assert.IsNotNull(val, String.Format("Element with key {0} was not found on the  data DesignScript.Builtin.Dictionary, so data and expected value are 2 different dictionaries.", key));
 
                         if (val.GetType().IsValueType)
                         {
-                            Assert.AreEqual(val, thisData.ValueAtKey(key));
+                            Assert.AreEqual(val, thisData.ValueAtKey(key), String.Format("Elements with key {0} are not equal on the dictionaries (DesignScript.Builtin.Dictionary), value element: {1} and data element: {2}", key, val, thisData.ValueAtKey(key)));
                         }
                     }
                 }
@@ -239,33 +234,26 @@ namespace Dynamo.Tests
                 {
                     var otherVal = (IDictionary)value;
 
-                    if (otherVal.Count != thisData.Count)
-                    {
-                        Assert.Fail("Data and expected value are 2 different dictionaries.");
-                    }
+                    Assert.AreEqual(otherVal.Count, thisData.Count, String.Format("The number of elements on the collections (IDictionary) didn't match, value size: {0} data size: {1} , so data and expected value are 2 different dictionaries", otherVal.Count, thisData.Count));
 
                     foreach (var key in otherVal.Keys)
                     {
-                        if (!(key is string))
-                        {
-                            Assert.Fail("Expected value is a dictionary with non-string key(s).");
-                        }
-                        var strKey = (string) key;
+                        Assert.IsTrue(key is string, String.Format("The key {0} on the value dictionary is not a string", key));
+
+                        var strKey = (string)key;
                         var val = thisData.ValueAtKey(strKey);
-                        if (val == null)
-                        {
-                            Assert.Fail("Data and expected value are 2 different dictionaries.");
-                        }
+
+                        Assert.IsNotNull(val, String.Format("Element with key {0} was not found on the  data IDictionary, so data and expected value are 2 different dictionaries.", strKey));
 
                         if (val.GetType().IsValueType)
                         {
-                            Assert.AreEqual(val, thisData.ValueAtKey(strKey));
+                            Assert.AreEqual(val, thisData.ValueAtKey(strKey), String.Format("Elements with key {0} are not equal on the dictionaries (IDictionary), value element: {1} and data element: {2}", strKey, val, thisData.ValueAtKey(strKey)));
                         }
                     }
                 }
             }
             else
-                Assert.AreEqual(value, data.Data);
+                Assert.AreEqual(value, data.Data, String.Format("The value {0} and data {1} are not equal", value, data));
         }
 
         private void AssertCollection(MirrorData data, IEnumerable collection)

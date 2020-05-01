@@ -1321,6 +1321,9 @@ You can always redownload the package.</value>
     <value>Failed to download package with id: {0}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content</comment>
   </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>Failed to load an invalid package.</value>
+  </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
@@ -1358,11 +1361,7 @@ You can always redownload the package.</value>
     <value>The package or one of its dependencies contains Python scripts or binaries. Do you want to continue?</value>
   </data>
   <data name="MessagePackageNewerDynamo" xml:space="preserve">
-    <value>The following packages use a newer version of {0} than you are currently using:
-
-{1}
-
-Do you want to continue?</value>
+    <value>The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?</value>
   </data>
   <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
     <value>You must select at least one custom node.</value>
@@ -2215,6 +2214,9 @@ Uninstall the following packages: {0}?</value>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>An indication of what applications outside of Dynamo your package depends on, such as Revit, Civil 3D or Photoshop. Users of your package will need to install these applications to fully utilize your package.</value>
   </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>Read more...</value>
+  </data>
   <data name="PackageSearchViewFilterByButton" xml:space="preserve">
     <value>Filter by</value>
   </data>
@@ -2226,5 +2228,21 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
+    <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
+  </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>Description: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>Original node name: </value>
+  </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>Please check if you intended to render this amount of geometry, and consider turning off the preview of other nodes within your graph, lowering the amount of Geometry you wish to render, or turning down the render precision.</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled.</value>
   </data>
 </root>

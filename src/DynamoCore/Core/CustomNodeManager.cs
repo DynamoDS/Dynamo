@@ -536,7 +536,7 @@ namespace Dynamo.Core
                         throw ex;
                     }
                 }
-                   else //(newInfo has owning Package, oldInfo does not)
+                else //(newInfo has owning Package, oldInfo does not)
                 {
                    
                     // This represents the case where a previous info was not from a package, but the current info

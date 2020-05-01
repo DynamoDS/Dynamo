@@ -960,7 +960,8 @@ namespace ProtoScript.Runners
         }
 
         /// <summary>
-        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list
+        /// Creates a list of null assignment statements where the lhs is retrieved from an ast list.
+        /// Any expressions which are not assignments are not modified.
         /// </summary>
         /// <param name="astList"></param>
         /// <returns></returns>
@@ -976,7 +977,7 @@ namespace ProtoScript.Runners
             while (workingStack.Any())
             {
                 var bNode = workingStack.Pop() as BinaryExpressionNode;
-                if (bNode == null)
+                if (bNode == null || bNode.Optr != Operator.assign)
                 {
                     continue;
                 }
@@ -1080,10 +1081,6 @@ namespace ProtoScript.Runners
             get
             {
                 return runnerCore;
-            }
-            private set
-            {
-                runnerCore = value;
             }
         }
 
@@ -1281,6 +1278,7 @@ namespace ProtoScript.Runners
         /// This api needs to be called by a command line REPL for each DS command/expression entered to be executed
         /// </summary>
         /// <param name="code"></param>
+        [Obsolete("No longer used. Remove in 3.0")]
         public void UpdateCmdLineInterpreter(string code)
         {
             lock (mutexObject)
@@ -1535,27 +1533,30 @@ namespace ProtoScript.Runners
         /// <param name="syncData"></param>
         public void ResetVMAndResyncGraph(IEnumerable<string> libraries)
         {
-            // Reset VM
-            ReInitializeLiveRunner();
-
-            if (!libraries.Any())
+            lock (mutexObject)
             {
-                return;
+                // Reset VM. This needs to be in mutex context as it turns DSExecutable null.
+                ReInitializeLiveRunner();
+
+                if (!libraries.Any())
+                {
+                    return;
+                }
+
+                // generate import node for each library in input list
+                List<AssociativeNode> importNodes = new List<AssociativeNode>();
+                foreach (string lib in libraries)
+                {
+                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
+                    importNode.ModuleName = lib;
+
+                    importNodes.Add(importNode);
+                }
+                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                string code = codeGen.GenerateCode();
+
+                SynchronizeInternal(code);
             }
-
-            // generate import node for each library in input list
-            List<AssociativeNode> importNodes = new List<AssociativeNode>();
-            foreach (string lib in libraries)
-            {
-                ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                importNode.ModuleName = lib;
-
-                importNodes.Add(importNode);
-            }
-            ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
-            string code = codeGen.GenerateCode();
-
-            UpdateCmdLineInterpreter(code);
         }
 
         /// <summary>

@@ -1,0 +1,124 @@
+{
+  "Uuid": "c8afee00-b22d-4617-90ac-a6ae18848e19",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "originalNodeNameCustomNode",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "6f65de85-d71f-46e1-b995-dfdeba2adbe3",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "d0b81747d16f48cfbc9992182783d229",
+      "Inputs": [
+        {
+          "Id": "2015b3fc037f4fbc92fea9ae666cb6da",
+          "Name": "num",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0d1fec0950bb4cf781a5d640c61f25b9",
+          "Name": "out",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Test nested node"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "12;",
+      "Id": "3ec35e031a54408e906bbfc1ecd31e35",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "218072b36cc64957a155de019f701a5f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "218072b36cc64957a155de019f701a5f",
+      "End": "2015b3fc037f4fbc92fea9ae666cb6da",
+      "Id": "b9ec71009060440bbd1cdb0f6e2efee7"
+    }
+  ],
+  "Dependencies": [
+    "6f65de85-d71f-46e1-b995-dfdeba2adbe3"
+  ],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.7706",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "NestedNode",
+        "Id": "d0b81747d16f48cfbc9992182783d229",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 232.66666666666674,
+        "Y": 257.66666666666669
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "3ec35e031a54408e906bbfc1ecd31e35",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 90.0,
+        "Y": 262.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
