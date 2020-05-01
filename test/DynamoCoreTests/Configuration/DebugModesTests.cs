@@ -28,10 +28,8 @@ namespace Dynamo.Tests.Configuration
                 testDebugModes[item.Attributes["name"].Value] = bool.Parse(item.Attributes["enabled"].Value);
             }
 
-            // Clear the any pre-existing debug modes.
             Type dbgModesType = typeof(DebugModes);
-            dbgModesType.GetMethod("ClearDebugModes", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
-
+   
             // Register the test debug modes.
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModes)
@@ -41,9 +39,6 @@ namespace Dynamo.Tests.Configuration
 
             // Load the enabled/disabled status from the test config file.
             dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
-
-            // Check that we have the same number of debug modes.
-            Assert.AreEqual(DebugModes.GetDebugModes().Count, testDebugModes.Count);
 
             foreach (var item in testDebugModes)
             {
@@ -75,11 +70,9 @@ namespace Dynamo.Tests.Configuration
 
             Assert.IsEmpty(debugItems);
 
-            // Clear the any pre-existing debug modes.
             Type dbgModesType = typeof(DebugModes);
-            dbgModesType.GetMethod("ClearDebugModes", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
 
-            var testDebugModeNames = new List<string>() { "test1", "test2" };
+            var testDebugModeNames = new List<string>() { "test5", "test6" };
             // Register the test debug modes.
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModeNames)
@@ -89,9 +82,6 @@ namespace Dynamo.Tests.Configuration
 
             // Load the enabled/disabled status from the test config file.
             dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
-
-            // Check that we have the same number of debug modes.
-            Assert.AreEqual(DebugModes.GetDebugModes().Count, testDebugModeNames.Count);
 
             foreach (var dbgModeName in testDebugModeNames)
             {
@@ -103,13 +93,9 @@ namespace Dynamo.Tests.Configuration
         [Category("UnitTests")]
         public void TestMissingConfig()
         {
-            string configPath = Path.Combine(TestDirectory, "testDebugModes", "missing.config");
-
-            // Clear the any pre-existing debug modes.
             Type dbgModesType = typeof(DebugModes);
-            dbgModesType.GetMethod("ClearDebugModes", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, null);
 
-            var testDebugModeNames = new List<string>() { "test1", "test2" };
+            var testDebugModeNames = new List<string>() { "test7", "test8" };
             // Register the test debug modes.
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModeNames)
@@ -118,10 +104,8 @@ namespace Dynamo.Tests.Configuration
             }
 
             // Load the enabled/disabled status from the test config file.
+            string configPath = Path.Combine(TestDirectory, "testDebugModes", "missing.config");
             dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
-
-            // Check that we have the same number of debug modes.
-            Assert.AreEqual(DebugModes.GetDebugModes().Count, testDebugModeNames.Count);
 
             foreach (var dbgModeName in testDebugModeNames)
             {

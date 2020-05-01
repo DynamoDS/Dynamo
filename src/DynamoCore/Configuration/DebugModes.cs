@@ -49,11 +49,6 @@ namespace Dynamo.Configuration
             // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
         }
 
-        private static void ClearDebugModes()
-        {
-            debugModes.Clear();
-        }
-
         private static void LoadDebugModesStatusFromConfig(string configPath)
         {
             try

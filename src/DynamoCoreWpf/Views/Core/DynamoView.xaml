@@ -818,7 +818,6 @@
                                   Name="DebugModes"
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
-                                  DataContext="{Binding Path=Model.UpdateManager}"
                                   IsCheckable="False" />
                </MenuItem>
                 </Menu>
