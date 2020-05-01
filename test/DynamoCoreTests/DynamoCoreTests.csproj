@@ -79,6 +79,8 @@
     <Compile Include="Configuration\ContextTests.cs" />
     <Compile Include="Configuration\ExecutionSessionTests.cs" />
     <Compile Include="Configuration\PreferenceSettingsTests.cs" />
+    <Compile Include="Core\DynamoSelectionTests.cs" />
+    <Compile Include="Core\AssemblyLoadedEventArgsTests.cs" />
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
@@ -101,6 +103,8 @@
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
+    <Compile Include="Models\DynamoModelEventArgsTest.cs" />
+    <Compile Include="Models\DynamoModelEventsTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />
@@ -125,6 +129,13 @@
     <Compile Include="ProfilingTest.cs" />
     <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
+    <Compile Include="Search\SearchDictionaryTest.cs" />
+    <Compile Include="Search\SearchElements\CodeBlockNodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\CustomNodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\NodeModelSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\NodeSearchElementTest.cs" />
+    <Compile Include="Search\SearchElements\SearchElementBaseTest.cs" />
+    <Compile Include="Search\SearchLibraryTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
@@ -255,6 +266,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

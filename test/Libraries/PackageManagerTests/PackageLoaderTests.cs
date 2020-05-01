@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Search.SearchElements;
@@ -299,8 +300,16 @@ namespace Dynamo.PackageManager.Tests
             var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
             loader.LoadPackages(new Package[] { package1,package2 });
 
-            // There are 2 packages loaded directly
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            // 2 packages loaded as expected
+            var expectedLoadedPackageNum = 0;
+            foreach (var pkg in loader.LocalPackages)
+            {
+                if (pkg.Name == "EvenOdd" || pkg.Name == "EvenOdd2")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -487,34 +496,21 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsNull(foundPkg);
         }
 
-        /// This test is added for this task: https://jira.autodesk.com/browse/DYN-2101. 
-        /// A followup task is added https://jira.autodesk.com/browse/DYN-2120 to refactor the approach to this solution.
-        /// This test needs to be modified in that case. 
         [Test]
-        [Category("TechDebt")]
         public void PackageLoadExceptionTest()
         {
-            Boolean RunDisabledWhilePackageLoading = false;
-
             string openPath = Path.Combine(TestDirectory, @"core\PackageLoadExceptionTest.dyn");
             OpenModel(openPath);
 
             var loader = GetPackageLoader();
-            loader.PackgeLoaded += (package) =>
-            {
-                RunDisabledWhilePackageLoading = EngineController.DisableRun;
-            };
 
             // Load the package when the graph is open in the workspace. 
             string packageDirectory = Path.Combine(PackagesDirectory, "Ampersand");
             var pkg = loader.ScanPackageDirectory(packageDirectory);
             loader.LoadPackages(new List<Package> { pkg });
 
-            // Assert that the Run is disabled temporarily when the package is still loading. 
-            Assert.IsTrue(RunDisabledWhilePackageLoading);
-
-            // Assert that the DisableRun flag is set back to false, once the package loading is completed. 
-            Assert.IsFalse(EngineController.DisableRun);
+            // Dummy nodes are resolved, and more importantly, no exception was thrown.
+            Assert.AreEqual(0, CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<DummyNode>().Count());
         }
 
         /// <summary>
@@ -545,7 +541,32 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert value of loaded CN is non-null.
             AssertNonNull("576f11ed5837460d80f2e354d853de68");
+        }
 
+        [Test]
+        public void LoadingAPackageWithBinariesDoesNotAffectCustomNodesUsedInHomeWorkspace()
+        {
+            // Open a custom node definition and a workspace where this custom node is used.
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\test.dyf"));
+            OpenModel(Path.Combine(TestDirectory, @"core\PackageLoadReset\MissingNode.dyn"));
+
+            // Get the custom node.
+            var functionNodes = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<Function>();
+            Assert.AreEqual(1, functionNodes.Count());
+            var functionNode = functionNodes.First();
+
+            // Custom node should be good before loading the package.
+            Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
+
+            // Load a package which contains binaries, when the graph is open in the workspace. 
+            var loader = GetPackageLoader();
+            var pkg = loader.ScanPackageDirectory(Path.Combine(PackagesDirectory, "Mixed Package"));
+            loader.LoadPackages(new List<Package> { pkg });
+
+            // Custom node should remain good after loading the package.
+            Assert.AreEqual(ElementState.Active, functionNode.State);
+            AssertPreviewValue(functionNode.AstIdentifierGuid, 7);
         }
 
         [Test]
