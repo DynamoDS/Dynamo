@@ -5,13 +5,22 @@
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
         xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
+                         xmlns:pythonNodeModel="clr-namespace:PythonNodeModels;assembly=PythonNodeModels"
+                         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" Height="500" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <ObjectDataProvider x:Key="engineEnum"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="pythonNodeModel:PythonEngineVersion" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -39,7 +48,7 @@
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
-                <ComboBox ItemsSource="{Binding nodeModel.PythonEngines, Mode=OneWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
                           SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           Style="{StaticResource ResourceKey=SComboBox}"
                           Name="EngineSelectorComboBox"
