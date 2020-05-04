@@ -133,8 +133,8 @@ namespace Dynamo.DocumentationBrowser
         {
             if (e == null)
                 NavigateToNoContentPage();
-
-            this.IsRemoteResource = e.IsRemoteResource;
+            else
+                this.IsRemoteResource = e.IsRemoteResource;
 
             // Ignore requests to remote resources
             if (!this.IsRemoteResource)
