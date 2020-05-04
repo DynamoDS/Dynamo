@@ -814,7 +814,12 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDumpLibrary}"
                                   Command="{Binding DumpLibraryToXmlCommand}"
                                   IsEnabled="True" />
-                    </MenuItem>
+                        <MenuItem Focusable="False"
+                                  Name="DebugModes"
+                                  Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
+                                  Click="OnDebugModesClick"
+                                  IsCheckable="False" />
+               </MenuItem>
                 </Menu>
 
                 <!--Titlebar buttons-->

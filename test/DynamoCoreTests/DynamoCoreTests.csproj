@@ -77,6 +77,7 @@
     </Compile>
     <Compile Include="AnalyticsTests.cs" />
     <Compile Include="Configuration\ContextTests.cs" />
+    <Compile Include="Configuration\DebugModesTests.cs" />
     <Compile Include="Configuration\ExecutionSessionTests.cs" />
     <Compile Include="Configuration\PreferenceSettingsTests.cs" />
     <Compile Include="Core\DynamoSelectionTests.cs" />
