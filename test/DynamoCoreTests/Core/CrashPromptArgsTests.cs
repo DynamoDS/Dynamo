@@ -8,21 +8,31 @@ namespace Dynamo.Tests.Core
     {
         [Test]
         [Category("UnitTests")]
-        public void CrashPromptArgsTest()
+        public void CrashPromptArgsConstructorTest()
         {
             //All the parameters filled
             CrashPromptArgs cpa = new CrashPromptArgs("Details", "Override Text", "File Path");
+
+            //Validate properties get correctly filled
+            Assert.AreEqual("Details", cpa.Details);
+            Assert.AreEqual("Override Text", cpa.OverridingText);
+            Assert.AreEqual("File Path", cpa.FilePath);
 
             Assert.IsTrue(cpa.HasDetails());
             Assert.IsTrue(cpa.IsDefaultTextOverridden());
             Assert.IsTrue(cpa.IsFilePath());
 
             //No parameters filled
-            CrashPromptArgs cpa3 = new CrashPromptArgs(null);
+            cpa = new CrashPromptArgs(null);
 
-            Assert.IsFalse(cpa3.HasDetails());
-            Assert.IsFalse(cpa3.IsDefaultTextOverridden());
-            Assert.IsFalse(cpa3.IsFilePath());
+            //Validate properties are null
+            Assert.IsNull(cpa.Details);
+            Assert.IsNull(cpa.OverridingText);
+            Assert.IsNull(cpa.FilePath);
+
+            Assert.IsFalse(cpa.HasDetails());
+            Assert.IsFalse(cpa.IsDefaultTextOverridden());
+            Assert.IsFalse(cpa.IsFilePath());
         }
     }
 }

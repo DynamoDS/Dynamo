@@ -955,6 +955,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Debug Modes.
+        /// </summary>
+        public static string DynamoViewDebugMenuDebugModes {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDebugModes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dump Library.
         /// </summary>
         public static string DynamoViewDebugMenuDumpLibrary {

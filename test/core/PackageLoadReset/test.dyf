@@ -1,0 +1,114 @@
+{
+  "Uuid": "96dbab16-f1ce-4dfb-8e1c-1ec930eb7507",
+  "IsCustomNode": true,
+  "Category": "test",
+  "Description": "",
+  "Name": "test",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 7.0,
+      "Id": "e82f21117d8a405385d8231f218d1e98",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b5f72d10a0e943a5b339accbdefab399",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "LuckyNumber",
+      "Id": "c640aa10ffb94f5b97b77b4891a515af",
+      "Inputs": [
+        {
+          "Id": "308b304db2dc4e74ae1453814c32ea0b",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b5f72d10a0e943a5b339accbdefab399",
+      "End": "308b304db2dc4e74ae1453814c32ea0b",
+      "Id": "ab4726cfced847f68601875fc653577b"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": false,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8435",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "e82f21117d8a405385d8231f218d1e98",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 117.99999999999989,
+        "Y": 54.8
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Output",
+        "Id": "c640aa10ffb94f5b97b77b4891a515af",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 261.4,
+        "Y": 61.2
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}

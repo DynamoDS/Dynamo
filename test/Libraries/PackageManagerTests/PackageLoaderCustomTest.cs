@@ -41,24 +41,30 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(loader.DefaultPackagesDirectory,
                 Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
 
-            Assert.AreEqual(2, loader.LocalPackages.Count());
+            var expectedLoadedPackageNum = 0;
+            foreach(var pkg in loader.LocalPackages)
+            {
+                if(pkg.Name == "Custom Rounding" || pkg.Name == "GetHighest")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(2, expectedLoadedPackageNum);
 
-            var pkg = loader.LocalPackages.ElementAt(0);
+            var targetPkg = loader.LocalPackages.Where(x=>x.Name == "Custom Rounding").FirstOrDefault();
 
-            Assert.AreEqual("CAAD_RWTH", pkg.Group);
-            Assert.AreEqual("Custom Rounding", pkg.Name);
-            Assert.AreEqual("0.1.4", pkg.VersionName);
-            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", pkg.Description);
+            Assert.AreEqual("CAAD_RWTH", targetPkg.Group);
+            Assert.AreEqual("0.1.4", targetPkg.VersionName);
+            Assert.AreEqual("This collection of nodes allows rounding, rounding up and rounding down to a specified precision.", targetPkg.Description);
             Assert.AreEqual("Round Up To Precision - Rounds a number *up* to a specified precision, Round Down To Precision - "
-                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", pkg.Contents);
-            Assert.AreEqual("0.5.2.10107", pkg.EngineVersion);
+                + "Rounds a number *down* to a specified precision, Round To Precision - Rounds a number to a specified precision", targetPkg.Contents);
+            Assert.AreEqual("0.5.2.10107", targetPkg.EngineVersion);
 
-            Assert.AreEqual(3, pkg.LoadedCustomNodes.Count);
+            Assert.AreEqual(3, targetPkg.LoadedCustomNodes.Count);
 
-            var nextPkg = loader.LocalPackages.ElementAt(1);
+            var nextPkg = loader.LocalPackages.Where(x => x.Name == "GetHighest").FirstOrDefault();
 
             Assert.AreEqual("CAAD_RWTH", nextPkg.Group);
-            Assert.AreEqual("GetHighest", nextPkg.Name);
             Assert.AreEqual("0.1.2", nextPkg.VersionName);
             Assert.AreEqual("Gets the highest value from a list", nextPkg.Description);
             Assert.AreEqual("Get Highest - Gets the highest value from a list", nextPkg.Contents);

@@ -152,6 +152,7 @@ limitations under the License.
     <Compile Include="Interfaces\IDynamoModel.cs" />
     <Compile Include="Library\ILibraryLoader.cs" />
     <Compile Include="Graph\Workspaces\ICustomNodeWorkspaceModel.cs" />
+    <Compile Include="Configuration\DebugModes.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitives.cs" />
     <Compile Include="Visualization\GeometryHolder.cs" />
     <Compile Include="Visualization\IRenderPackageSource.cs" />

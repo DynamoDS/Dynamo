@@ -137,7 +137,7 @@ namespace Dynamo.DocumentationBrowser
 
         private void AddToSidebar(bool displayDefaultContent)
         {
-            // verify the browser window has been initialised
+            // verify the browser window has been initialized
             if (this.BrowserView == null)
             {
                 OnMessageLogged(LogMessage.Error(Resources.BrowserViewCannotBeAddedToSidebar));
