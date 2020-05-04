@@ -235,7 +235,32 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(1, tabsAfterExternalEventTrigger);
             Assert.IsTrue(htmlContent.Contains(@"<h2 id=""heading"">Division by zero</h2>"));
-            Assert.IsFalse(htmlContent.Contains("<script"));
+            Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
+        }
+        [Test]
+        public void DPIScriptExists()
+        {
+            // Arrange
+            var viewExtension = SetupNewViewExtension(true);
+
+            // Reference an embedded HTML file in a loaded assembly
+            var assemblyName = GetType().Assembly.GetName().Name;
+            var fileName = "DocumentationBrowserScriptsTest.html";
+            var uri = $"{assemblyName};{fileName}";
+            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+            // Act
+            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.IsFalse(docsEvent.IsRemoteResource);
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(@"<script> function getDPIScale()"));
+            Assert.IsTrue(htmlContent.Contains(@"function adaptDPI()"));
         }
 
         #region Helpers

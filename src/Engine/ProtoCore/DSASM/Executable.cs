@@ -155,10 +155,10 @@ namespace ProtoCore.DSASM
             procedureTable = procTable;
 
             isBreakable = isBreakableBlock;
+            codeBlockId = core.GetRuntimeTableSize();
             core.CompleteCodeBlockList.Add(this);
-            this.codeBlockId = core.CompleteCodeBlockList.Count - 1;
 
-            symbols.RuntimeIndex = this.codeBlockId;
+            symbols.RuntimeIndex = codeBlockId;
 
             if (core.ProcNode != null)
             {

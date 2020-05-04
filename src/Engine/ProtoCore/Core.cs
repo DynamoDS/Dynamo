@@ -727,7 +727,7 @@ namespace ProtoCore
             // The TypeSystem is a record of all primitive and compiler generated types
             DSExecutable.TypeSystem = TypeSystem;
 
-            RuntimeTableIndex = CompleteCodeBlockList.Count;
+            RuntimeTableIndex = GetRuntimeTableSize();
 
 
             // Build the runtime symbols
@@ -760,6 +760,30 @@ namespace ProtoCore
             DSExecutable.Configurations = Configurations;
             DSExecutable.CodeToLocation = CodeToLocation;
             DSExecutable.CurrentDSFileName = CurrentDSFileName;           
+        }
+
+        /// <summary>
+        /// Gets the size to be used for runtime tables of symbols, procedures and instruction streams.
+        /// Note: since blocks are stored consecutively but may have gaps due to procedures being deleted,
+        /// this is based on largest id rather than amount of blocks.
+        /// </summary>
+        internal int GetRuntimeTableSize()
+        {
+            // Due to the way this list is constructed, the largest id is the one of the last block.
+            var lastBlock = CompleteCodeBlockList.LastOrDefault();
+            // If there are no code blocks yet, then the required size for tables is 0.
+            // This happens when the first code block is being created and its id is being generated.
+            if (lastBlock == null)
+            {
+                return 0;
+            }
+
+            // If the last block has children, then its last child has the largest id.
+            if (lastBlock.children.Count > 0)
+            {
+                lastBlock = lastBlock.children.Last();
+            }
+            return lastBlock.codeBlockId + 1;
         }
 
         public string GenerateTempVar()
