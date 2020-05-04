@@ -101,6 +101,8 @@
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
+    <Compile Include="Models\OpenFileCommandTest.cs" />
+    <Compile Include="Models\PausePlaybackCommandTest.cs" />
     <Compile Include="Models\RecordableCommandsTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
