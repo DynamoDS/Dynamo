@@ -45,9 +45,10 @@ namespace Dynamo.Configuration
         {
             // Add new debug modes here!!
             //
-            // Example:
-            // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
-            AddDebugMode("ADPAnalyticsTracker", "Enable/disable ADP analytics tracking. Consenting for Google analytics will opt-in to ADP as well.");
+            AddDebugMode("ADPAnalyticsTracker", @"Enable/disable ADP analytics tracking. 
+                Consenting for Google analytics will opt-in to ADP as well.
+                This debugMode should be enabled/disabled at startup.");
+
         }
 
         private static void LoadDebugModesStatusFromConfig(string configPath)
