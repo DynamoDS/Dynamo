@@ -9,7 +9,7 @@ namespace Dynamo.Configuration
     /// <summary>
     /// Provide functionality around debug modes. Similar to feature flags.
     /// </summary>
-    internal class DebugModes
+    internal static class DebugModes
     {
         static private readonly Dictionary<string, DebugMode> debugModes;
         private static bool debugModesEnabled;
