@@ -11,6 +11,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Properties;
+using Dynamo.Scheduler;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -274,6 +275,29 @@ b = c[w][x][y][z];";
             AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void CallingInstanceMethodStaticallyWithoutInstanceDoesNotCrash()
+        {
+            TaskStateChangedEventHandler evaluationDidNotFailHandler =
+                (DynamoScheduler sender, TaskStateChangedEventArgs args) =>
+                {
+                    Assert.AreNotEqual(TaskStateChangedEventArgs.State.ExecutionFailed, args.CurrentState);
+                };
+            try
+            {
+                CurrentDynamoModel.Scheduler.TaskStateChanged += evaluationDidNotFailHandler;
+                var codeBlockNode = CreateCodeBlockNode();
+                UpdateCodeBlockNodeContent(codeBlockNode, "Curve.Patch();");
+                Assert.AreEqual(ElementState.Warning, codeBlockNode.State);
+                Assert.AreEqual("Failed to obtain this object for 'Curve.Patch'", codeBlockNode.ToolTipText);
+            }
+            finally
+            {
+                CurrentDynamoModel.Scheduler.TaskStateChanged -= evaluationDidNotFailHandler;
+            }
+        }
+
         // Note: DYN-1684 - This test is expected to fail due to the functions being indeterminate
         //       We will need to figure out a way to test this once error handling is implemented
         //[Test]
@@ -286,9 +310,9 @@ b = c[w][x][y][z];";
         //    var codeBlockNode2 = CreateCodeBlockNode();
         //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
 
-        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
-        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
-        //}
+            //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+            //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+            //}
 
         [Test]
         [Category("UnitTests")]
