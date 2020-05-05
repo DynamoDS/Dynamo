@@ -23,22 +23,25 @@ namespace Dynamo.Configuration
             /// Name of the debug mode
             /// </summary>
             public string Name;
+
             /// <summary>
             /// Description of the debug mode
             /// </summary>
             public string Description;
+
             /// <summary>
             /// Whether debug mode is enabled or not
             /// </summary>
-            public bool Enabled;
+            public bool IsEnabled;
         }
+
         private static void AddDebugMode(string name, string description)
         {
             debugModes[name] = new DebugMode()
             {
                 Name = name,
                 Description = description,
-                Enabled = false
+                IsEnabled = false
             };
         }
         private static void RegisterDebugModes()
@@ -66,7 +69,7 @@ namespace Dynamo.Configuration
                         Boolean.TryParse(item.Attributes["enabled"].Value, out enabled);
 
                         if (!debugModes.ContainsKey(name)) { continue; }
-                        debugModes[name].Enabled = enabled;
+                        debugModes[name].IsEnabled = enabled;
                     }
                 }
                 else
@@ -79,20 +82,17 @@ namespace Dynamo.Configuration
                 Console.WriteLine(e);
             }
         }
+
         /// <summary>
         /// Static constructor
         /// </summary>
         static DebugModes()
         {
             debugModes = new Dictionary<string, DebugMode>();
-            try
-            {
-                RegisterDebugModes();
-                LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
-            }
-            catch (Exception)
-            { }
+            RegisterDebugModes();
+            LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
         }
+
         /// <summary>
         /// Enables/Disables a debug mode
         /// </summary>
@@ -103,9 +103,10 @@ namespace Dynamo.Configuration
             DebugMode dbgMode;
             if (debugModes.TryGetValue(name, out dbgMode))
             {
-                dbgMode.Enabled = enabled;
+                dbgMode.IsEnabled = enabled;
             }
         }
+
         /// <summary>
         /// Returns a dictionary of all the debug modes
         /// </summary>
@@ -113,23 +114,23 @@ namespace Dynamo.Configuration
         {
             return debugModes;
         }
+
         /// <summary>
         /// Retrieves a debug mode
         /// </summary>
         /// <param name="name">Name of the debug mode</param>
         public static DebugMode GetDebugMode(string name)
         {
-            DebugMode dMode;
-            return debugModes.TryGetValue(name, out dMode) ? dMode : null;
+            return debugModes.TryGetValue(name, out DebugMode dMode) ? dMode : null;
         }
+
         /// <summary>
         /// Retrieves the state of a debug mode (enabled/disabled)
         /// </summary>
         /// <param name="name">Name of the debug mode</param>
         public static bool IsEnabled(string name)
         {
-            DebugMode dbgMode;
-            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.Enabled : false;
+            return debugModesEnabled && debugModes.TryGetValue(name, out DebugMode dbgMode) ? dbgMode.IsEnabled : false;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Dynamo.Wpf.Views.Debug
             {
                 items.Add(new DebugModeListItem() {
                     Name = entry.Value.Name,
-                    Enabled = entry.Value.Enabled
+                    Enabled = entry.Value.IsEnabled
                 });
             }
             CheckList.ItemsSource = items;

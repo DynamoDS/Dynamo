@@ -43,7 +43,7 @@ namespace Dynamo.Tests.Configuration
             {
                 var dbgMode = DebugModes.GetDebugMode(item.Key);
                 Assert.IsNotNull(dbgMode);
-                Assert.AreEqual(dbgMode.Enabled, item.Value);
+                Assert.AreEqual(dbgMode.IsEnabled, item.Value);
             }
 
             var forceEnabled = false;
