@@ -169,6 +169,7 @@ namespace Dynamo.PackageManager
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+        [Obsolete("No longer used. Remove in 3.0.")]
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
             IEnumerable<PackageHeader> headers, PackageVersion version)
         {

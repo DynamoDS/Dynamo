@@ -254,6 +254,57 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CheckDummyNodeName()
+        {
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the dummy node in the graph
+            NodeView nodeView = NodeViewWithGuid("94e8d6a8-5463-483c-9fe6-ace668670fae");
+            // Get a reference to the dummy node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            string expectedOriginalName = "Colors.GetAllColors_V1";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckNotLoadedCustomNodeOriginalName()
+        {
+            // Custom node inside is not loaded this case so that renamed tag will be disabled
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the not loaded custom node in the graph
+            NodeView nodeView = NodeViewWithGuid("5795dc19-47c9-4084-a5da-df248e03edc4");
+            
+            // Get a reference to the custom node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(false, nodeViewModel.IsRenamed);
+            string expectedOriginalName = "RootNode_V1";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void CheckLoadedCustomNodeOriginalName()
+        {
+            // Opening the dyf first will make sure the custom node is loaded
+            // so that rename tag can function correctly in this case
+            Open(@"core\custom_node_dep_test\RootNode.dyf");
+            Open(@"core\originalNodeNameTests\originalNodeName.dyn");
+
+            // Get the node view for the not loaded custom node in the graph
+            NodeView nodeView = NodeViewWithGuid("5795dc19-47c9-4084-a5da-df248e03edc4");
+
+            // Get a reference to the custom node view model
+            NodeViewModel nodeViewModel = (nodeView.DataContext as NodeViewModel);
+
+            Assert.AreEqual(true, nodeViewModel.IsRenamed);
+            string expectedNewOriginalName = "RootNode";
+            Assert.AreEqual(nodeViewModel.OriginalName, expectedNewOriginalName);
+        }
+
+        [Test]
         public void SettingOriginalNodeNameOnCustomNode()
         {
             Open(@"core\originalNodeNameTests\originalNodeNameCustomNode.dyn");
@@ -274,6 +325,28 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.IsRenamed, true);
             Assert.AreEqual(nodeViewModel.Name, newName);
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void GettingNodeNameDoesNotTriggerPropertyChangeCycle()
+        {
+            //add a node
+            var numNode = new CoreNodeModels.Input.DoubleInput { X = 100, Y = 100 };
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
+
+            //subscribe to all property changes
+            var nvm = ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nvm.PropertyChanged += NodeNameTest_PropChangedHandler;
+            //get the nodes's name.
+            var temp = nvm.Name;
+            nvm.PropertyChanged -= NodeNameTest_PropChangedHandler;
+        }
+
+        private void NodeNameTest_PropChangedHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //get the name,this will sometimes cause another propertyChanged event
+             var temp = (sender as NodeViewModel).Name;
         }
     }
 }

@@ -48,12 +48,6 @@ namespace Dynamo.Engine
         /// Returns core which is used for parsing code and loading libraries
         /// </summary>
         public ProtoCore.Core LibraryManagementCore { get; private set; }
-        private ProtoCore.Core liveRunnerCore = null;
-
-        internal void SetLiveCore(ProtoCore.Core core)
-        {
-            liveRunnerCore = core;
-        }
 
         private class UpgradeHint
         {

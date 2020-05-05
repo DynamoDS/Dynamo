@@ -89,7 +89,7 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///
         ///  body{
         ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 20px;
+        ///      font-size: 14px;
         ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format( [rest of string was truncated]&quot;;.
         /// </summary>
         public static string FileNotFound {
@@ -118,7 +118,7 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///
         ///  body{
         ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 20px;
+        ///      font-size: 14px;
         ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;wof [rest of string was truncated]&quot;;.
         /// </summary>
         public static string InternalError {
@@ -166,7 +166,7 @@ namespace Dynamo.DocumentationBrowser.Properties {
         ///&lt;style&gt;
         ///  body {
         ///      color: white;
-        ///      font-size: 20px;
+        ///      font-size: 14px;
         ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
         ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
         ///      background-color: #353535;

@@ -1,0 +1,121 @@
+{
+  "Uuid": "ffc8d482-a226-44f8-833d-5bd31eca232a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "ShortenNodeNameWithConflictingClass",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.C.B.DupTargetTest.Prop",
+      "Id": "a7d9cc61cecc494fbf7c6e7f01903927",
+      "Inputs": [
+        {
+          "Id": "10bc472026934b24b99a614bdf23d3a4",
+          "Name": "dupTargetTest",
+          "Description": "FFITarget.C.B.DupTargetTest",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ad5e16daa4d34f30803e0f213b33cd86",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DupTargetTest.Prop: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.C.B.DupTargetTest.DupTargetTest",
+      "Id": "2deac5df4e12404b8d3db1cedc08480e",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "582d1de06ac041af8a8afce397b09fdc",
+          "Name": "DupTargetTest",
+          "Description": "DupTargetTest",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "DupTargetTest.DupTargetTest ( ): DupTargetTest"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "582d1de06ac041af8a8afce397b09fdc",
+      "End": "10bc472026934b24b99a614bdf23d3a4",
+      "Id": "4cad7609807c43a1bbd79703873efcdf"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8356",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DupTargetTest.Prop",
+        "Id": "a7d9cc61cecc494fbf7c6e7f01903927",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 849.0,
+        "Y": 535.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DupTargetTest.DupTargetTest",
+        "Id": "2deac5df4e12404b8d3db1cedc08480e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 533.0,
+        "Y": 582.5
+      }
+    ],
+    "Annotations": [],
+    "X": -158.0,
+    "Y": -135.0,
+    "Zoom": 1.0
+  }
+}

@@ -50,9 +50,9 @@
     <Reference Include="FontAwesome.WPF">
       <HintPath>..\..\extern\FontAwesome\FontAwesome.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.2.7240.28357, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.1.2.7240.28357\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=1.3.7408.23353, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
+      <HintPath>..\packages\Greg.1.3.7408.23353\lib\net47\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2015.1.629.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2015.1.629\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
@@ -321,6 +321,9 @@
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
+    <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
+      <DependentUpon>DebugModesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
@@ -1102,6 +1105,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Debug\DebugModesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Gallery\GalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

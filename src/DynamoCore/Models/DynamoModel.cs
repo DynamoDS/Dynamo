@@ -1039,6 +1039,7 @@ namespace Dynamo.Models
         public void Dispose()
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+            EngineController.RequestCustomNodeRegistration -= EngineController_RequestCustomNodeRegistration;
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -1454,6 +1455,7 @@ namespace Dynamo.Models
         {
             if (EngineController != null)
             {
+                EngineController.RequestCustomNodeRegistration -= EngineController_RequestCustomNodeRegistration;
                 EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
                 EngineController.Dispose();
@@ -1467,7 +1469,14 @@ namespace Dynamo.Models
 
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
+            EngineController.RequestCustomNodeRegistration += EngineController_RequestCustomNodeRegistration;
 
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
+        }
+
+        private void EngineController_RequestCustomNodeRegistration(object sender, EventArgs e)
+        {
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
         }
@@ -1775,8 +1784,6 @@ namespace Dynamo.Models
                     // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
                     if (!(resolvedNode is DummyNode))
                     {
-                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
-                        EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
@@ -1799,7 +1806,6 @@ namespace Dynamo.Models
                             connectorModel.Delete();
                             ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
                         }
-                        EngineController.DisableRun = false ;
                         resolvedDummyNode = true;
                     }
                 }
@@ -2106,6 +2112,27 @@ namespace Dynamo.Models
                Resources.InvalidInputSymbolWarningTitle, summary, description);
 
             args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
+            OnRequestTaskDialog(null, args);
+        }
+
+        internal event VoidHandler Preview3DOutage;
+        private void OnPreview3DOutage()
+        {
+            if (Preview3DOutage != null)
+            {
+                Preview3DOutage();
+            }
+        }
+
+        internal void Report3DPreviewOutage(string summary, string description)
+        {
+            OnPreview3DOutage();
+
+            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+               new Uri(imageUri, UriKind.Relative),
+               Resources.Preview3DOutageTitle, summary, description);
+
             OnRequestTaskDialog(null, args);
         }
 

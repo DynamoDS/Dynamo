@@ -40,6 +40,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
 using HelixToolkit.Wpf.SharpDX;
@@ -230,6 +231,12 @@ namespace Dynamo.Controls
                 else
                 {
                     tab.Content = contentControl.Content;
+                    var extensionWindow = contentControl as Window;
+                    if (extensionWindow != null)
+                    {
+                        // Make sure the extension window closes with Dynamo
+                        extensionWindow.Owner = this;
+                    }
                 }
 
                 //Insert the tab at the end
@@ -1556,6 +1563,13 @@ namespace Dynamo.Controls
         }
 #endif
 
+        private void OnDebugModesClick(object sender, RoutedEventArgs e)
+        {
+            var debugModesWindow = new DebugModesWindow();
+            debugModesWindow.Owner = this;
+            debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            debugModesWindow.ShowDialog();
+        }
         /// <summary>
         /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
