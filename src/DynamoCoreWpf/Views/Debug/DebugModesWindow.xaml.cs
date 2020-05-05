@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Configuration;
-using System.Linq;
-using System.Text;
 using System.Windows;
+using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.Views.Debug
 {

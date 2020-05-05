@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.IO;
 using System.Reflection;
+using System.Xml;
 using Dynamo.Configuration;
 using NUnit.Framework;
-using System.Xml;
-using System.IO;
 
 namespace Dynamo.Tests.Configuration
 {

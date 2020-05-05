@@ -43,10 +43,8 @@ namespace Dynamo.Configuration
         }
         private static void RegisterDebugModes()
         {
-            // Add new debug modes here!!
-            //
-            // Example:
-            // AddDebugMode("TestDebugMode", "Enabe/disable TestDebugMode.");
+            // Register app wide new debug modes here.
+            AddDebugMode("Python3DebugMode", "Enabe/disable Python3DebugMode.");
         }
 
         private static void LoadDebugModesStatusFromConfig(string configPath)
@@ -54,23 +52,26 @@ namespace Dynamo.Configuration
             try
             {
                 debugModesEnabled = false;
-
-                XmlDocument xml = new XmlDocument();
-                xml.Load(configPath);
-
-                if (xml == null) { return; }
-
-                debugModesEnabled = true;
-
-                var debugItems = xml.DocumentElement.SelectNodes("DebugMode");
-                foreach (XmlNode item in debugItems)
+                XmlDocument xmlDoc;
+                Exception ex;
+                if (DynamoUtilities.PathHelper.isValidXML(configPath, out xmlDoc, out ex))
                 {
-                    var name = item.Attributes["name"].Value;
-                    bool enabled;
-                    Boolean.TryParse(item.Attributes["enabled"].Value, out enabled);
+                    debugModesEnabled = true;
 
-                    if (!debugModes.ContainsKey(name)) { continue; }
-                    debugModes[name].Enabled = enabled;
+                    var debugItems = xmlDoc.DocumentElement.SelectNodes("DebugMode");
+                    foreach (XmlNode item in debugItems)
+                    {
+                        var name = item.Attributes["name"].Value;
+                        bool enabled;
+                        Boolean.TryParse(item.Attributes["enabled"].Value, out enabled);
+
+                        if (!debugModes.ContainsKey(name)) { continue; }
+                        debugModes[name].Enabled = enabled;
+                    }
+                }
+                else
+                {
+                    throw ex;
                 }
             }
             catch (Exception e)
