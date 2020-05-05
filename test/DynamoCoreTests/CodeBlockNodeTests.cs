@@ -310,9 +310,9 @@ b = c[w][x][y][z];";
         //    var codeBlockNode2 = CreateCodeBlockNode();
         //    UpdateCodeBlockNodeContent(codeBlockNode2, "def test(x, y = 2, z = 3){return = x + y + z;}test(1);");
 
-            //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
-            //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
-            //}
+        //    AssertPreviewValue(codeBlockNode1.GUID.ToString(), 3);
+        //    AssertPreviewValue(codeBlockNode2.GUID.ToString(), 6);
+        //}
 
         [Test]
         [Category("UnitTests")]
