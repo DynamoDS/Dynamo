@@ -126,7 +126,7 @@ namespace Dynamo.Configuration
         /// Retrieves the state of a debug mode (enabled/disabled)
         /// </summary>
         /// <param name="name">Name of the debug mode</param>
-        public static bool Enabled(string name)
+        public static bool IsEnabled(string name)
         {
             DebugMode dbgMode;
             return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.Enabled : false;

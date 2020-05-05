@@ -54,7 +54,7 @@ namespace Dynamo.Tests.Configuration
 
             foreach (var item in testDebugModes)
             {
-                Assert.AreEqual(DebugModes.Enabled(item.Key), forceEnabled);
+                Assert.AreEqual(DebugModes.IsEnabled(item.Key), forceEnabled);
             }
         }
         [Test]
@@ -85,7 +85,7 @@ namespace Dynamo.Tests.Configuration
             foreach (var dbgModeName in testDebugModeNames)
             {
                 Assert.IsNotNull(DebugModes.GetDebugMode(dbgModeName));
-                Assert.AreEqual(DebugModes.Enabled(dbgModeName), false);
+                Assert.AreEqual(DebugModes.IsEnabled(dbgModeName), false);
             }        
         }
         [Test]
@@ -109,7 +109,7 @@ namespace Dynamo.Tests.Configuration
             foreach (var dbgModeName in testDebugModeNames)
             {
                 Assert.IsNotNull(DebugModes.GetDebugMode(dbgModeName));
-                Assert.AreEqual(DebugModes.Enabled(dbgModeName), false);
+                Assert.AreEqual(DebugModes.IsEnabled(dbgModeName), false);
             }
         }
     }

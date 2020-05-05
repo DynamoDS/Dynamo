@@ -35,7 +35,7 @@ namespace PythonNodeModelsWpf
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += delegate { EditScriptContent(); };
             // If it is a Debug build, display a python engine switcher
-            if (Dynamo.Configuration.DebugModes.Enabled("Python3DebugMode"))
+            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
             {
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
