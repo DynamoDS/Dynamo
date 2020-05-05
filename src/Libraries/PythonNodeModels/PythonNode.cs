@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
+using DSCPython;
+using DSIronPython;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -25,6 +27,8 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
+         public static IEnumerable<PythonEngineVersion> pythonEngineVersionsList = Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
+
         /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
@@ -49,7 +53,7 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged("Engine");
+                    RaisePropertyChanged(nameof(Engine));
                 }
             }
         }
@@ -82,14 +86,16 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (Engine == PythonEngineVersion.CPython3)
+
+            Func<string, IList, IList, object> backendMethod;
+                
+            if (Engine == PythonEngineVersion.IronPython2)
             {
-                pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+                backendMethod = IronPythonEvaluator.EvaluateIronPythonScript; ;
             }
-            else if (Engine == PythonEngineVersion.IronPython2)
+            else if (Engine == PythonEngineVersion.CPython3)
             {
-                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+                backendMethod = CPythonEvaluator.EvaluatePythonScript;
             }
             else
             {
@@ -99,7 +105,7 @@ namespace PythonNodeModels
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    pythonEvaluatorMethod,
+                    backendMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -137,7 +143,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                return "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
                         "import sys" + Environment.NewLine +
                         "import clr" + Environment.NewLine +
                         "clr.AddReference('ProtoGeometry')" + Environment.NewLine +
