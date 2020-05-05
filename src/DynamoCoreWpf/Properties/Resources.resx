@@ -1729,8 +1729,8 @@ Do you want to install the latest Dynamo update?</value>
   <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
     <value>Autodesk A360</value>
   </data>
-  <data name="ConsentFormAdskAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>Yes, I would like to contribute to this program (Autodesk Analytics).</value>
+  <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>Yes, I would like to contribute to this program (Google Analytics).</value>
   </data>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
