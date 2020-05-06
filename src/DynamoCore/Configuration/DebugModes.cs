@@ -121,7 +121,8 @@ namespace Dynamo.Configuration
         /// <param name="name">Name of the debug mode</param>
         public static DebugMode GetDebugMode(string name)
         {
-            return debugModes.TryGetValue(name, out DebugMode dMode) ? dMode : null;
+            DebugMode dMode;
+            return debugModes.TryGetValue(name, out dMode) ? dMode : null;
         }
 
         /// <summary>
@@ -130,7 +131,8 @@ namespace Dynamo.Configuration
         /// <param name="name">Name of the debug mode</param>
         public static bool IsEnabled(string name)
         {
-            return debugModesEnabled && debugModes.TryGetValue(name, out DebugMode dbgMode) ? dbgMode.IsEnabled : false;
+            DebugMode dbgMode;
+            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.IsEnabled : false;
         }
     }
 }
