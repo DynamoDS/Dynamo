@@ -38,7 +38,7 @@ namespace Dynamo.Logging
             if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
-            if (true == Configuration.DebugModes.Enabled("ADPAnalyticsTracker"))
+            if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
             {
                 if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
                     service.Register(new ADPTrackerFactory());
@@ -68,7 +68,7 @@ namespace Dynamo.Logging
                 // Unregister is required, so that the host app can re-start Analytics service.
                 Service.Instance.Unregister(GATrackerFactory.Name);
 
-                if (true == Configuration.DebugModes.Enabled("ADPAnalyticsTracker"))
+                if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
                 {
                     Service.Instance.Unregister(ADPTrackerFactory.Name);
                 }
