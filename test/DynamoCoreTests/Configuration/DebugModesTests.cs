@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.IO;
 using System.Reflection;
+using System.Xml;
 using Dynamo.Configuration;
 using NUnit.Framework;
-using System.Xml;
-using System.IO;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -44,7 +43,7 @@ namespace Dynamo.Tests.Configuration
             {
                 var dbgMode = DebugModes.GetDebugMode(item.Key);
                 Assert.IsNotNull(dbgMode);
-                Assert.AreEqual(dbgMode.Enabled, item.Value);
+                Assert.AreEqual(dbgMode.IsEnabled, item.Value);
             }
 
             var forceEnabled = false;
@@ -55,7 +54,7 @@ namespace Dynamo.Tests.Configuration
 
             foreach (var item in testDebugModes)
             {
-                Assert.AreEqual(DebugModes.Enabled(item.Key), forceEnabled);
+                Assert.AreEqual(DebugModes.IsEnabled(item.Key), forceEnabled);
             }
         }
         [Test]
@@ -86,7 +85,7 @@ namespace Dynamo.Tests.Configuration
             foreach (var dbgModeName in testDebugModeNames)
             {
                 Assert.IsNotNull(DebugModes.GetDebugMode(dbgModeName));
-                Assert.AreEqual(DebugModes.Enabled(dbgModeName), false);
+                Assert.AreEqual(DebugModes.IsEnabled(dbgModeName), false);
             }        
         }
         [Test]
@@ -110,7 +109,7 @@ namespace Dynamo.Tests.Configuration
             foreach (var dbgModeName in testDebugModeNames)
             {
                 Assert.IsNotNull(DebugModes.GetDebugMode(dbgModeName));
-                Assert.AreEqual(DebugModes.Enabled(dbgModeName), false);
+                Assert.AreEqual(DebugModes.IsEnabled(dbgModeName), false);
             }
         }
     }
