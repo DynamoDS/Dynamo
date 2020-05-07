@@ -712,13 +712,4 @@ Restart Dynamo to complete the uninstall.</value>
   <data name="Preview3DOutageTitle" xml:space="preserve">
     <value>3D preview has been deactivated</value>
   </data>
-  <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions. Consider updating these nodes to use the new CPython 3.7 Engine.</value>
-  </data>
-  <data name="IronPythonDialogSummary" xml:space="preserve">
-    <value>This graph contains nodes that are using IronPython Engine.</value>
-  </data>
-  <data name="IronPythonDialogTitle" xml:space="preserve">
-    <value>Graph Contains Python Nodes using IronPyton Engine</value>
-  </data>
 </root>

@@ -88,20 +88,29 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine..
+        ///   Looks up a localized string similar to Python Engine Version.
         /// </summary>
-        public static string IronPythonNotificationDetailedMessage {
+        public static string PythonNodeContextMenuEngineSwitcher {
             get {
-                return ResourceManager.GetString("IronPythonNotificationDetailedMessage", resourceCulture);
+                return ResourceManager.GetString("PythonNodeContextMenuEngineSwitcher", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph contains nodes that are using IronPython Engine..
+        ///   Looks up a localized string similar to CPython3.
         /// </summary>
-        public static string IronPythonNotificationShortMessage {
+        public static string PythonNodeContextMenuEngineVersionThree {
             get {
-                return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
+                return ResourceManager.GetString("PythonNodeContextMenuEngineVersionThree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IronPython2.
+        /// </summary>
+        public static string PythonNodeContextMenuEngineVersionTwo {
+            get {
+                return ResourceManager.GetString("PythonNodeContextMenuEngineVersionTwo", resourceCulture);
             }
         }
         

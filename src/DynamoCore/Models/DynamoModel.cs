@@ -1702,7 +1702,6 @@ namespace Dynamo.Models
           bool forceManualExecutionMode,
           out WorkspaceModel workspace)
         {
-            CheckForIronPythonDependencies(fileContents);
             CustomNodeManager.AddUninitializedCustomNodesInPath(
                 Path.GetDirectoryName(filePath),
                 IsTestMode);
@@ -1750,33 +1749,6 @@ namespace Dynamo.Models
                 customNodeWorkspace.IsVisibleInDynamoLibrary = dynamoPreferences.IsVisibleInDynamoLibrary;
 
             return true;
-        }
-
-        private void CheckForIronPythonDependencies(string fileContents)
-        {
-            if (string.IsNullOrWhiteSpace(fileContents))
-                return;
-
-            JObject dynObj = JObject.Parse(fileContents);
-            var pythonTokens = dynObj["Nodes"].Where(t => t.Value<string>("NodeType") == "PythonScriptNode").Select(t => t);
-            if (pythonTokens == null)
-                return;
-
-            if (pythonTokens.Any(t => t.Value<string>("Engine") == "IronPython2"))
-                DisplayIronPythonWarning();
-        }
-
-        private void DisplayIronPythonWarning()
-        {
-            string summary = Resources.IronPythonDialogSummary;
-            var description = Resources.IronPythonDialogDescription;
-            const string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
-            var args = new TaskDialogEventArgs(
-               new Uri(imageUri, UriKind.Relative),
-               Resources.IronPythonDialogTitle, summary, description);
-
-            args.AddRightAlignedButton((int)ButtonId.Proceed, Resources.OKButton);
-            OnRequestTaskDialog(null, args);
         }
 
         // Attempts to reload all the dummy nodes in the current workspace and replaces them with resolved version. 

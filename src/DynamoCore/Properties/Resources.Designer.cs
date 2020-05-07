@@ -818,33 +818,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions. Consider updating these nodes to use the new CPython 3.7 Engine..
-        /// </summary>
-        public static string IronPythonDialogDescription {
-            get {
-                return ResourceManager.GetString("IronPythonDialogDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to This graph contains nodes that are using IronPython Engine..
-        /// </summary>
-        public static string IronPythonDialogSummary {
-            get {
-                return ResourceManager.GetString("IronPythonDialogSummary", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Graph Contains Python Nodes using IronPyton Engine.
-        /// </summary>
-        public static string IronPythonDialogTitle {
-            get {
-                return ResourceManager.GetString("IronPythonDialogTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Build error for library: {0}.
         /// </summary>
         public static string LibraryBuildError {
