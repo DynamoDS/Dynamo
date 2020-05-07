@@ -137,7 +137,7 @@ namespace Dynamo.PythonMigration
 
         private void OnNodeAdded(Graph.Nodes.NodeModel obj)
         {
-            if (NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
+            if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
                 && IsPythonNode(obj)
                 && ((PythonNode)obj).Engine == PythonEngineVersion.IronPython2)
             {
