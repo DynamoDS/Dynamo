@@ -97,9 +97,9 @@ namespace WpfVisualizationTests
             SaveBitMapSourceAsPNG(debugPath, bitmapsource);
 #endif
 
-            compareImageColors(refbitmap, newImage);
+            CompareImageColors(refbitmap, newImage);
         }
-        private static void compareImageColors(Bitmap expectedImage, Bitmap actualImage)
+        private static void CompareImageColors(Bitmap expectedImage, Bitmap actualImage)
         {
             Assert.AreEqual(expectedImage.Width, actualImage.Width);
             Assert.AreEqual(expectedImage.Height, actualImage.Height);
@@ -218,7 +218,7 @@ namespace WpfVisualizationTests
 
         #region pointsAndLines
         [Test]
-        public void points()
+        public void Points()
         {
             OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
             RunCurrentModel();
@@ -226,7 +226,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void pointsIsolated()
+        public void PointsIsolated()
         {
             OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
             RunCurrentModel();
@@ -236,7 +236,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void pointsSelected()
+        public void PointsSelected()
         {
             OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
             RunCurrentModel();
@@ -248,7 +248,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void pointsFrozen()
+        public void PointsFrozen()
         {
             OpenVisualizationTest(@"imageComparison\pointcolors.dyn");
             RunCurrentModel();
@@ -260,7 +260,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void lines()
+        public void Lines()
         {
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
@@ -268,7 +268,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void linesIsolated()
+        public void LinesIsolated()
         {
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
@@ -277,7 +277,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void linesSelected()
+        public void LinesSelected()
         {
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
@@ -289,7 +289,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void linesFrozen()
+        public void LinesFrozen()
         {
             OpenVisualizationTest(@"imageComparison\linecolors.dyn");
             RunCurrentModel();
@@ -314,7 +314,7 @@ namespace WpfVisualizationTests
 
         #region SpecialRenderPackages
         [Test]
-        public void directManipulator()
+        public void DirectManipulator()
         {
             var pointOriginNode =
             new DSFunction(Model.LibraryServices.GetFunctionDescriptor("Point.ByCoordinates@double,double,double"));

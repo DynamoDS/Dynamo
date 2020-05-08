@@ -101,13 +101,6 @@ namespace Dynamo.Controls
 
         private void RegisterViewEventHandlers()
         {
-            //var binding = new Binding("ActiveGeometry")
-            //{
-            //    Source = ViewModel,
-            //    Mode = BindingMode.OneWay,
-            //};
-            //watch_view.SetBinding(AttachedProperties.ActiveGeometryProperty, binding);
-
             watch_view.MouseDown += (sender, args) =>
             {
                 ViewModel.OnViewMouseDown(sender, args);
