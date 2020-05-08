@@ -404,20 +404,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to I agree to data collection in desktop products for Autodesk analytics programs..
+        /// </summary>
+        public static string ConsentFormADPAnalyticsCheckBoxContent {
+            get {
+                return ResourceManager.GetString("ConsentFormADPAnalyticsCheckBoxContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Yes, I would like to contribute to this program (Google Analytics)..
         /// </summary>
         public static string ConsentFormGoogleAnalyticsCheckBoxContent {
             get {
                 return ResourceManager.GetString("ConsentFormGoogleAnalyticsCheckBoxContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}.
-        /// </summary>
-        public static string ConsentFormInstrumentationCheckBoxContent {
-            get {
-                return ResourceManager.GetString("ConsentFormInstrumentationCheckBoxContent", resourceCulture);
             }
         }
         

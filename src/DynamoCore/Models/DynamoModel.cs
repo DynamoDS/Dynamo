@@ -594,11 +594,8 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
-            // If user does not agree to GA terms, do not try to launch the client at all
-            if (PreferenceSettings.IsAnalyticsReportingApproved)
-            {
-                InitializeInstrumentationLogger();
-            }
+            // Initialize instrumentation.
+            InitializeInstrumentationLogger();
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
             {

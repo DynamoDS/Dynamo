@@ -8,7 +8,6 @@ using Dynamo.Interfaces;
 using Dynamo.Models;
 using Microsoft.Win32;
 
-
 namespace Dynamo.Logging
 {
     class DynamoAnalyticsSession : IAnalyticsSession
@@ -135,6 +134,8 @@ namespace Dynamo.Logging
 
         private IPreferences preferences = null;
 
+        private IAnalyticsUI adpAnalyticsUI = null;
+
         public static IDisposable Disposable { get { return new Dummy(); } }
 
         private ProductInfo product;
@@ -148,10 +149,19 @@ namespace Dynamo.Logging
         {
             get
             {
-                return preferences != null 
+                return preferences != null
                     && Service.IsInitialized
                     && preferences.IsAnalyticsReportingApproved;
             }
+        }
+
+        /// <summary>
+        /// Return if ADP Analytics Client is allowed to send analytics info
+        /// </summary>
+        public bool ReportingADPAnalytics
+        {
+            get { return adpAnalyticsUI?.IsOptedIn() ?? false; }
+            set { adpAnalyticsUI?.SetOptedIn(value); }
         }
 
         /// <summary>
@@ -174,10 +184,15 @@ namespace Dynamo.Logging
             //reporting approved status.
             preferences = dynamoModel.PreferenceSettings;
 
+            adpAnalyticsUI = new ADPAnalyticsUI();
+
             if (Session == null) Session = new DynamoAnalyticsSession();
 
             //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
             Session.Start(dynamoModel);
+
+            Service.Instance.RegisterTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingAnalytics);
+            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == adpAnalyticsUI.IsOptedIn());
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
@@ -198,13 +213,12 @@ namespace Dynamo.Logging
         /// </summary>
         public void Start()
         {
-            if (preferences!= null && preferences.IsAnalyticsReportingApproved)
-            {
-                //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
-                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-                TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
-            }
+            if (!AreAnyAnalyticsEnabled()) return;
+
+            //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
+            Service.StartUp(product, new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+            TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
+            TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
         }
 
         public void ShutDown()
@@ -212,9 +226,14 @@ namespace Dynamo.Logging
             Dispose();
         }
 
+        private bool AreAnyAnalyticsEnabled()
+        {
+            return ReportingADPAnalytics || ReportingAnalytics;
+        }
+
         public void TrackEvent(Actions action, Categories category, string description, int? value)
         {
-            if (!ReportingAnalytics) return;
+            if (!AreAnyAnalyticsEnabled()) return;
 
             var e = AnalyticsEvent.Create(category.ToString(), action.ToString(), description, value);
             e.Track();
@@ -222,7 +241,9 @@ namespace Dynamo.Logging
 
         public void TrackPreference(string name, string stringValue, int? metricValue)
         {
-            if (ReportingAnalytics) TrackPreferenceInternal(name, stringValue, metricValue);
+            if (!AreAnyAnalyticsEnabled()) return;
+
+            TrackPreferenceInternal(name, stringValue, metricValue);
         }
 
         private void TrackPreferenceInternal(string name, string stringValue, int? metricValue)
@@ -233,7 +254,7 @@ namespace Dynamo.Logging
 
         public void TrackTimedEvent(Categories category, string variable, TimeSpan time, string description = "")
         {
-            if (!ReportingAnalytics) return;
+            if (!AreAnyAnalyticsEnabled()) return;
 
             var e = new TimedEvent(time)
             {
@@ -246,7 +267,7 @@ namespace Dynamo.Logging
 
         public void TrackScreenView(string viewName)
         {
-            if (!ReportingAnalytics) return;
+            if (!AreAnyAnalyticsEnabled()) return;
 
             var e = new ScreenViewEvent(viewName);
             e.Track();
@@ -260,7 +281,7 @@ namespace Dynamo.Logging
 
         public IDisposable CreateTimedEvent(Categories category, string variable, string description, int? value)
         {
-            if (!ReportingAnalytics) return Disposable;
+            if (!AreAnyAnalyticsEnabled()) return Disposable;
 
             var e = new TimedEvent()
             {
@@ -275,7 +296,7 @@ namespace Dynamo.Logging
 
         public IDisposable CreateCommandEvent(string name, string description, int? value)
         {
-            if (!ReportingAnalytics) return Disposable;
+            if (!AreAnyAnalyticsEnabled()) return Disposable;
 
             var e = new CommandEvent(name) { Description = description, Value = value };
             e.Track();
@@ -284,7 +305,7 @@ namespace Dynamo.Logging
 
         public IDisposable TrackFileOperationEvent(string filepath, Actions operation, int size, string description)
         {
-            if (!ReportingAnalytics) return Disposable;
+            if (!AreAnyAnalyticsEnabled()) return Disposable;
 
             var e = new FileOperationEvent()
             {

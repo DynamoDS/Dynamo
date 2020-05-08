@@ -52,13 +52,14 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <ScrollViewer Background="#363636" 
+        <ScrollViewer x:Name="ADPAnalyticsViewer"
+                      Background="#363636" 
                       Grid.Row="2"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="8,8,8,0">
-            <views:RichTextFile x:Name="InstrumentationContent"
+           <views:RichTextFile x:Name="ADPAnalyticsContent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"
@@ -87,14 +88,12 @@
                        Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
         </CheckBox>
         
-        <!--The instrumentation checkbox will be hidden and unchecked by default-->
-        <CheckBox x:Name="AcceptUsageReportingCheck"
+        <CheckBox x:Name="AcceptADPReportingCheck"
                   Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
-                  Click="ToggleIsUsageReportingChecked"
-                  Visibility="Hidden"
-                  Margin="35,16,15,14"
+                  Click="ToggleIsADPReportingChecked"
+                  Margin="15,16,15,14"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
                   FontSize="13.333"
@@ -102,7 +101,8 @@
             <TextBlock FontWeight="SemiBold"
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
-                       Name="AcceptUsageReportingTextBlock"/>
+                       Name="AcceptADPReportingTextBlock"
+                       Text="{x:Static p:Resources.ConsentFormADPAnalyticsCheckBoxContent}"/>
         </CheckBox>
 
         <!--Learn More Button-->
