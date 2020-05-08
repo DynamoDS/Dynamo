@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
@@ -25,12 +26,26 @@ namespace Dynamo.Tests
             base.GetLibrariesToPreload(libraries);
         }
 
+        /// <summary>
+        ///    Returns a list of python engines from the PythonEngineVersion Enum. 
+        /// </summary>
+        private IEnumerable<PythonEngineVersion> GetPythonEnginesList()
+        {
+            return Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
+        }
+
+        /// <summary>
+        ///    Updates Engine property for a single python node. 
+        /// </summary>
         private void UpdateEnginePropertyForPythonNode(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
         {
             pythonNode.Engine = pythonEngineVersion;
             pythonNode.MarkNodeAsModified();
         }
 
+        /// <summary>
+        ///    Updates Engine property for a list of python nodes. 
+        /// </summary>
         private void UpdateEnginePropertyForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
         {
             foreach (var pyNode in list) {
@@ -286,7 +301,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -308,7 +323,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -334,7 +349,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -359,7 +374,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -388,7 +403,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -399,7 +414,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        // This is failing for CPython3 Engine. 
+        [Category("Failure")]
+        // This test is failing for CPython3 Engine. 
+        // For numbers which use more than int32 type, are currently not being marshalled. It is throwing 
+        // an exception on line 158 in CPythonEvaluator.cs file. 
+        // The exception is https://github.com/pythonnet/pythonnet/blob/master/src/runtime/pyobject.cs#L146 
+        // when it is trying to get a managed object from the pyObject. 
         public void BigInteger_CanBeMarshaledAsInt64()
         {
             // open test graph
@@ -412,7 +432,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
+            foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
                  
