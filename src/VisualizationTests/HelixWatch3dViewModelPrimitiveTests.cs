@@ -18,7 +18,7 @@ namespace WpfVisualizationTests
     {
         #region meshes
         [Test]
-        public void Display_ByGeometryColor_HasColoredSpheres()
+        public void DisplayByGeometryColorHasColoredSpheres()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLinesSpheres.dyn");
 
@@ -41,7 +41,7 @@ namespace WpfVisualizationTests
         #region points and lines display colors
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredPoints()
+        public void DisplayByGeometryColorHasColoredPoints()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -59,7 +59,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredPoints_PreviewToggled()
+        public void DisplayByGeometryColorHasColoredPointsPreviewToggled()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -112,9 +112,9 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredPoints_CanSwitchBetweenMultipleNodes_AndSelectionUpdates()
+        public void DisplayByGeometryColorHasColoredPointsCanSwitchBetweenMultipleNodesAndSelectionUpdates()
         {
-            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
+            OpenVisualizationTest("Display.ByGeometryColorPointsSelection.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
@@ -163,7 +163,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredPt_Selection()
+        public void DisplayByGeometryColorHasColoredPtSelection()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -198,7 +198,7 @@ namespace WpfVisualizationTests
 
 
         [Test]
-        public void Display_ByGeometryColor_HasColoredLine_Selection()
+        public void DisplayByGeometryColorHasColoredLineSelection()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -237,7 +237,7 @@ namespace WpfVisualizationTests
 
         #region freeze
         [Test]
-        public void Points_Freeze_ColorIsCorrect()
+        public void PointsFreezeColorIsCorrect()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -275,7 +275,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Lines_Freeze_ColorIsCorrect()
+        public void LinesFreezeColorIsCorrect()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -319,7 +319,7 @@ namespace WpfVisualizationTests
         #region isolate geometry
 
         [Test]
-        public void IsolatedColoredPts_Becomes_Transparent()
+        public void IsolatedColoredPtsBecomesTransparent()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -376,7 +376,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void IsolatedColoredLines_Becomes_Transparent()
+        public void IsolatedColoredLinesBecomesTransparent()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 
@@ -433,7 +433,7 @@ namespace WpfVisualizationTests
         }
 
         [Test]
-        public void Isolated_AND_Frozen_ColoredPts_Becomes_Transparent()
+        public void IsolatedANDFrozenColoredPtsBecomesTransparent()
         {
             OpenVisualizationTest("Display.ByGeometryColorPointsLines.dyn");
 

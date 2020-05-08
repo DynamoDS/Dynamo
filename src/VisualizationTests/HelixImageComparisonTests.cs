@@ -3,11 +3,6 @@
 //#define UPDATEIMAGEDATA
 //UNCOMMENT TO SAVE DEBUG IMAGES.
 //#define SAVEDEBUGIMAGES
-using Dynamo.Graph.Nodes.ZeroTouch;
-using Dynamo.Selection;
-using DynamoCoreWpfTests.Utility;
-using HelixToolkit.Wpf.SharpDX;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +10,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using Dynamo.Graph.Nodes.ZeroTouch;
+using Dynamo.Selection;
+using DynamoCoreWpfTests.Utility;
+using HelixToolkit.Wpf.SharpDX;
+using NUnit.Framework;
 
 namespace WpfVisualizationTests
 {
