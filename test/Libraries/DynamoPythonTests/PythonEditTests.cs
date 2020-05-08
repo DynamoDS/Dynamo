@@ -8,7 +8,6 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
-using static PythonNodeModels.PythonNodeBase;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests
@@ -287,7 +286,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -309,7 +308,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -335,7 +334,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -360,7 +359,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -389,7 +388,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
@@ -413,7 +412,7 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
-            foreach (var pythonEngine in pythonEngineVersionsList)
+            foreach (var pythonEngine in PythonNodeBase.pythonEngineVersionsList)
             {
                 UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
                  

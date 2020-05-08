@@ -27,7 +27,7 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-         public static IEnumerable<PythonEngineVersion> pythonEngineVersionsList = Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
+        internal static IEnumerable<PythonEngineVersion> pythonEngineVersionsList;
 
         /// <summary>
         /// Private constructor used for serialization.
@@ -37,6 +37,7 @@ namespace PythonNodeModels
         protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             ArgumentLacing = LacingStrategy.Disabled;
+            pythonEngineVersionsList = Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
         }
 
         private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
