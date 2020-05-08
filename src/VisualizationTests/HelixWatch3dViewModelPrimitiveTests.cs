@@ -114,7 +114,7 @@ namespace WpfVisualizationTests
         [Test]
         public void DisplayByGeometryColorHasColoredPointsCanSwitchBetweenMultipleNodesAndSelectionUpdates()
         {
-            OpenVisualizationTest("Display.ByGeometryColorPointsSelection.dyn");
+            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
