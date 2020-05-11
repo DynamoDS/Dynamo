@@ -188,8 +188,7 @@ namespace Dynamo.Logging
             Session.Start(dynamoModel);
 
             Service.Instance.RegisterTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingAnalytics);
-            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => 
-                Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker") && true == adpAnalyticsUI.IsOptedIn());
+            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == ReportingADPAnalytics);
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
