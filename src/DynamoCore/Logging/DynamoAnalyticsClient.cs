@@ -37,11 +37,8 @@ namespace Dynamo.Logging
             if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
-            if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-            {
-                if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
-                    service.Register(new ADPTrackerFactory());
-            }
+            if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+                service.Register(new ADPTrackerFactory());
 
             StabilityCookie.Startup();
 
@@ -66,11 +63,7 @@ namespace Dynamo.Logging
                 // Unregister the GATrackerFactory only after shutdown is recorded.
                 // Unregister is required, so that the host app can re-start Analytics service.
                 Service.Instance.Unregister(GATrackerFactory.Name);
-
-                if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-                {
-                    Service.Instance.Unregister(ADPTrackerFactory.Name);
-                }
+                Service.Instance.Unregister(ADPTrackerFactory.Name);
             }
             
             if (null != heartbeat)
@@ -192,7 +185,8 @@ namespace Dynamo.Logging
             Session.Start(dynamoModel);
 
             Service.Instance.RegisterTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingAnalytics);
-            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == adpAnalyticsUI.IsOptedIn());
+            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => 
+                Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker") && true == adpAnalyticsUI.IsOptedIn());
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;

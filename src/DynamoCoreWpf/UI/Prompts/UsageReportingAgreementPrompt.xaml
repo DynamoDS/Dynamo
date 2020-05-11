@@ -52,14 +52,13 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <ScrollViewer x:Name="ADPAnalyticsViewer"
-                      Background="#363636" 
+        <ScrollViewer Background="#363636" 
                       Grid.Row="2"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="8,8,8,0">
-           <views:RichTextFile x:Name="ADPAnalyticsContent"
+            <views:RichTextFile x:Name="InstrumentationContent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"
@@ -70,11 +69,11 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <CheckBox x:Name="AcceptAnalyticsReportingCheck"
+        <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
                   Grid.Row="3"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
-                  Click="ToggleIsAnalyticsReportingChecked"
+                  Click="ToggleIsGoogleAnalyticsChecked"
                   Margin="15,16,15,0"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
@@ -84,16 +83,18 @@
             <TextBlock FontWeight="SemiBold"
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
-                       Name="AcceptAnalyticsReportingTextBlock"
+                       Name="AcceptGoogleAnalyticsTextBlock"
                        Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
         </CheckBox>
         
-        <CheckBox x:Name="AcceptADPReportingCheck"
+        <!--The instrumentation checkbox will be hidden and unchecked by default-->
+        <CheckBox x:Name="AcceptUsageReportingCheck"
                   Grid.Row="4"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
-                  Click="ToggleIsADPReportingChecked"
-                  Margin="15,16,15,14"
+                  Click="ToggleIsUsageReportingChecked"
+                  Visibility="Hidden"
+                  Margin="35,16,15,14"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
                   FontSize="13.333"
@@ -101,8 +102,7 @@
             <TextBlock FontWeight="SemiBold"
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
-                       Name="AcceptADPReportingTextBlock"
-                       Text="{x:Static p:Resources.ConsentFormADPAnalyticsCheckBoxContent}"/>
+                       Name="AcceptUsageReportingTextBlock"/>
         </CheckBox>
 
         <!--Learn More Button-->
