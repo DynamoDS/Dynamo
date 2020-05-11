@@ -187,8 +187,8 @@ namespace Dynamo.Logging
             //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
             Session.Start(dynamoModel);
 
-            Service.Instance.RegisterTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingAnalytics);
-            Service.Instance.RegisterTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == ReportingADPAnalytics);
+            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingAnalytics);
+            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == ReportingADPAnalytics);
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;

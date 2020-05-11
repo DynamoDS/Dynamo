@@ -41,7 +41,11 @@ namespace Dynamo.UI.Prompts
                 if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                     InstrumentationContent.File = adpAnalyticsFile;
 
-                AcceptUsageReportingCheck.IsChecked = Analytics.ReportingADPAnalytics;
+                AcceptADPAnalyticsTextBlock.Text =
+                    string.Format(Wpf.Properties.Resources.ConsentFormADPAnalyticsCheckBoxContent,
+                        dynamoViewModel.BrandingResourceProvider.ProductName);
+                AcceptADPAnalyticsCheck.Visibility = System.Windows.Visibility.Visible;
+                AcceptADPAnalyticsCheck.IsChecked = Analytics.ReportingADPAnalytics;
             }
             else
             {
@@ -63,20 +67,19 @@ namespace Dynamo.UI.Prompts
             AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
         }
 
+        private void ToggleIsADPAnalyticsChecked(object sender, RoutedEventArgs e)
+        {
+            Analytics.ReportingADPAnalytics = (
+                AcceptADPAnalyticsCheck.IsChecked.HasValue &&
+                AcceptADPAnalyticsCheck.IsChecked.Value);
+        }
+
         private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
         {
-            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-            {
-                Analytics.ReportingADPAnalytics = (
-                    AcceptUsageReportingCheck.IsChecked.HasValue &&
-                    AcceptUsageReportingCheck.IsChecked.Value);
-            } else
-            {
-                UsageReportingManager.Instance.SetUsageReportingAgreement(
-                    AcceptUsageReportingCheck.IsChecked.HasValue &&
-                    AcceptUsageReportingCheck.IsChecked.Value);
-                AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
-            }
+            UsageReportingManager.Instance.SetUsageReportingAgreement(
+                AcceptUsageReportingCheck.IsChecked.HasValue &&
+                AcceptUsageReportingCheck.IsChecked.Value);
+            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
         }
 
         private void ToggleIsGoogleAnalyticsChecked(object sender, RoutedEventArgs e)
@@ -105,7 +108,7 @@ namespace Dynamo.UI.Prompts
             // Update user agreement
             if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
             {
-                Analytics.ReportingADPAnalytics = AcceptUsageReportingCheck.IsChecked.Value;
+                Analytics.ReportingADPAnalytics = AcceptADPAnalyticsCheck.IsChecked.Value;
             } else
             {
                 UsageReportingManager.Instance.SetUsageReportingAgreement(AcceptUsageReportingCheck.IsChecked.Value);
