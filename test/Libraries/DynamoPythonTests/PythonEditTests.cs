@@ -39,10 +39,7 @@ namespace Dynamo.Tests
         /// </summary>
         private void UpdateEnginePropertyForPythonNode(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
         {
-            if (!pythonNode.Engine.Equals(pythonEngineVersion))
-            {
-                pythonNode.Engine = pythonEngineVersion;
-            }
+            pythonNode.Engine = pythonEngineVersion;
         }
 
         /// <summary>
@@ -51,11 +48,8 @@ namespace Dynamo.Tests
         private void UpdateEnginePropertyForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
         {
             foreach (var pyNode in list)
-            {
-                if (!pyNode.Engine.Equals(pythonEngineVersion))
-                {
-                    pyNode.Engine = pythonEngineVersion;
-                }
+            { 
+                pyNode.Engine = pythonEngineVersion;
             }
         }
 
