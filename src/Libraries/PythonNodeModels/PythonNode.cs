@@ -52,6 +52,7 @@ namespace PythonNodeModels
                 {
                     engine = value;
                     RaisePropertyChanged(nameof(Engine));
+                    OnNodeModified();
                 }
             }
         }

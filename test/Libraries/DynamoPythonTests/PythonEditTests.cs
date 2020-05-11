@@ -39,8 +39,10 @@ namespace Dynamo.Tests
         /// </summary>
         private void UpdateEnginePropertyForPythonNode(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
         {
-            pythonNode.Engine = pythonEngineVersion;
-            pythonNode.MarkNodeAsModified();
+            if (!pythonNode.Engine.Equals(pythonEngineVersion))
+            {
+                pythonNode.Engine = pythonEngineVersion;
+            }
         }
 
         /// <summary>
@@ -48,9 +50,12 @@ namespace Dynamo.Tests
         /// </summary>
         private void UpdateEnginePropertyForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
         {
-            foreach (var pyNode in list) {
-                pyNode.Engine = pythonEngineVersion;
-                pyNode.MarkNodeAsModified();
+            foreach (var pyNode in list)
+            {
+                if (!pyNode.Engine.Equals(pythonEngineVersion))
+                {
+                    pyNode.Engine = pythonEngineVersion;
+                }
             }
         }
 
@@ -416,10 +421,7 @@ namespace Dynamo.Tests
         [Test]
         [Category("Failure")]
         // This test is failing for CPython3 Engine. 
-        // For numbers which use more than int32 type, are currently not being marshalled. It is throwing 
-        // an exception on line 158 in CPythonEvaluator.cs file. 
-        // The exception is https://github.com/pythonnet/pythonnet/blob/master/src/runtime/pyobject.cs#L146 
-        // when it is trying to get a managed object from the pyObject. 
+        // The BigIntegers which use more than int64 type, are currently not being marshalled. 
         public void BigInteger_CanBeMarshaledAsInt64()
         {
             // open test graph

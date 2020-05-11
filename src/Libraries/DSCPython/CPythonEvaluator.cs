@@ -153,6 +153,10 @@ namespace DSCPython
                                 }
                                 return dict;
                             }
+                            else if(PyLong.IsLongType(pyObj))
+                            {
+                                return PyLong.AsLong(pyObj).ToInt64();
+                            }
                             else
                             {
                                 return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
