@@ -923,7 +923,10 @@ namespace ProtoCore
             #region Case 5: Replication and replication guide with type conversion and array promotion
             {
                 //Add as a first attempt a no-replication, but allowing up-promoting
-                replicationTrials.Add(new List<ReplicationInstruction>());
+                if (!replicationTrials.Any(rt => rt.Count == 0))
+                {
+                    replicationTrials.Insert(0, new List<ReplicationInstruction>());
+                }
 
                 foreach (List<ReplicationInstruction> replicationOption in replicationTrials)
                 {
