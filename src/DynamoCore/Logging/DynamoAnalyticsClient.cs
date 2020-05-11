@@ -153,7 +153,10 @@ namespace Dynamo.Logging
         /// </summary>
         public bool ReportingADPAnalytics
         {
-            get { return adpAnalyticsUI?.IsOptedIn() ?? false; }
+            get {
+                if (!Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker")) { return false; }
+                return adpAnalyticsUI?.IsOptedIn() ?? false; 
+            }
             set { adpAnalyticsUI?.SetOptedIn(value); }
         }
 
