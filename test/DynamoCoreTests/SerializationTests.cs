@@ -522,6 +522,7 @@ namespace Dynamo.Tests
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
         public static string jsonFolderNameDifferentCulture = "json_differentCulture";
+        private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -714,7 +715,7 @@ namespace Dynamo.Tests
         {
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Select(fi => fi.FullName).ToArray();
+            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
         }
 
         /// <summary>

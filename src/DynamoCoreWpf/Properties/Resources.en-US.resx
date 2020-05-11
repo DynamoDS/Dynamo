@@ -488,6 +488,10 @@ You will get a chance to save your work.</value>
     <value>Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
   </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>Debug Modes</value>
+    <comment>Debug menu | Show debug modes</comment>
+  </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
     <value>_Edit</value>
     <comment>Edit menu</comment>

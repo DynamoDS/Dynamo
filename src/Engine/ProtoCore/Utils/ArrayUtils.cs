@@ -302,25 +302,49 @@ namespace ProtoCore.Utils
                 return false;
             }
 
+            var svFound = GetFirstNonArrayStackValueRecursive(svArray, runtimeCore);
+            if (svFound.HasValue)
+            {
+                sv = svFound.Value.ShallowClone();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Recursively searches a stack value that is not an array in the given array.
+        /// </summary>
+        /// <param name="svArray">Stack value representing an array</param>
+        /// <param name="runtimeCore">Runtime core</param>
+        /// <returns>The first stack value found that is not an array. Null if none is found.</returns>
+        private static StackValue? GetFirstNonArrayStackValueRecursive(StackValue svArray, RuntimeCore runtimeCore)
+        {
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
             if (!array.Values.Any())
             {
-                return false;
+                return null;
             }
 
-            while (array.GetValueFromIndex(0, runtimeCore).IsArray)
+            foreach (var svItem in array.Values)
             {
-                array = rmem.Heap.ToHeapObject<DSArray>(array.GetValueFromIndex(0, runtimeCore));
-
-                // Handle the case where the array is valid but empty
-                if (!array.Values.Any())
+                if (svItem.IsArray)
                 {
-                    return false;
+                    var svFound = GetFirstNonArrayStackValueRecursive(svItem, runtimeCore);
+                    // If we found a non-array sv value, return it. Otherwise, keep looking in the array.
+                    if (svFound.HasValue)
+                    {
+                        return svFound;
+                    }
+                }
+                else
+                {
+                    return svItem;
                 }
             }
 
-            sv = array.GetValueFromIndex(0, runtimeCore).ShallowClone();
-            return true;
+            return null;
         }
 
         private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)

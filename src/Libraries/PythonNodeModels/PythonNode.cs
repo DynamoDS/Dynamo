@@ -83,13 +83,26 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> backendMethod =
-                IronPythonEvaluator.EvaluateIronPythonScript;
+            Func<string, IList, IList, object> pythonEvaluatorMethod;
+            if (Engine == PythonEngineVersion.CPython3)
+            {
+                // TODO: Uncomment this and replace the following code when merging Python3 changes in master
+                // pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+            }
+            else if (Engine == PythonEngineVersion.IronPython2)
+            {
+                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+            }
+            else
+            {
+                throw new InvalidOperationException("Unknown Python engine " + Engine);
+            }
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod,
+                    pythonEvaluatorMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
