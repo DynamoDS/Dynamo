@@ -215,7 +215,15 @@ namespace Dynamo.Logging
             //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
             Service.StartUp(product, new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
             TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-            TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
+
+            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+            {
+                TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
+                
+            } else
+            {
+                TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
+            }
         }
 
         public void ShutDown()
