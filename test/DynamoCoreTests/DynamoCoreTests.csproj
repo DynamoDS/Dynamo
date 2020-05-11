@@ -77,8 +77,11 @@
     </Compile>
     <Compile Include="AnalyticsTests.cs" />
     <Compile Include="Configuration\ContextTests.cs" />
+    <Compile Include="Configuration\DebugModesTests.cs" />
     <Compile Include="Configuration\ExecutionSessionTests.cs" />
     <Compile Include="Configuration\PreferenceSettingsTests.cs" />
+    <Compile Include="Core\DynamoSelectionTests.cs" />
+    <Compile Include="Core\AssemblyLoadedEventArgsTests.cs" />
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
@@ -117,6 +120,8 @@
     <Compile Include="Models\SelectModelCommandTest.cs" />
     <Compile Include="Models\UndoRedoCommandTest.cs" />
     <Compile Include="Models\UpdateModelValueCommandTest.cs" />
+    <Compile Include="Models\DynamoModelEventArgsTest.cs" />
+    <Compile Include="Models\DynamoModelEventsTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
     <Compile Include="NodeExecutionTest.cs" />
     <Compile Include="AnnotationModelTest.cs" />
@@ -173,6 +178,7 @@
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="Updates\BinaryVersionTests.cs" />
+    <Compile Include="Updates\UpdatesTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
