@@ -143,8 +143,8 @@ namespace ProtoCore.Utils
         }
 
         /// <summary>
-        /// Similar to GetTypeExamplesForLayer but it returns all arrays. Its purpose is to support
-        /// inspecting heterogeneous arrays in replication scenarios.
+        /// Similar to GetTypeExamplesForLayer but it returns all non-empty arrays.
+        /// Its purpose is to support inspecting heterogeneous arrays in replication scenarios.
         /// </summary>
         /// <param name="array"></param>
         /// <param name="runtimeCore"></param>
@@ -165,7 +165,10 @@ namespace ProtoCore.Utils
             {
                 if (sv.IsArray)
                 {
-                    result.Add(sv);
+                    if (!IsEmpty(sv, runtimeCore))
+                    {
+                        result.Add(sv);
+                    }
                 }
                 else
                 {
