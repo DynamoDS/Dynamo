@@ -20,13 +20,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="15" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--<TextBlock Foreground="{StaticResource headerForegroundInactive}"
-                    Grid.Row="1"
-                   Text="Python Engine:"
-                   FontSize="8" />-->
         <TextBlock Foreground="{StaticResource headerForegroundInactive}"
                     Grid.Row="1"
                    Text="{Binding Engine}"
