@@ -14,7 +14,6 @@ using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
-using Dynamo.Models;
 using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Utilities;

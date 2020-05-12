@@ -6,12 +6,11 @@
         Width="660"
         SizeToContent="Height"
         ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner"
-        Style="{DynamicResource DynamoWindowStyle}">
+        WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -65,7 +64,7 @@
                     Margin="10,0,10,10">
 
             <Button Content="OK"
-                    Style="{DynamicResource ResourceKey=STextButton}"
+                    Style="{StaticResource STextButton}"
                     Visibility="Visible"
                     Click="Button_Click"/>
 
