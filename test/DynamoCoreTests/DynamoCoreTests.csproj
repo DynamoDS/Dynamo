@@ -104,6 +104,7 @@
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
+    <Compile Include="Models\DynamoModelCommandsTest.cs" />
     <Compile Include="Models\DynamoModelEventArgsTest.cs" />
     <Compile Include="Models\DynamoModelEventsTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />
