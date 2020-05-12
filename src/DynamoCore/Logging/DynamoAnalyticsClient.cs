@@ -219,7 +219,6 @@ namespace Dynamo.Logging
                 if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
                 {
                     TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
-
                 }
                 else
                 {
