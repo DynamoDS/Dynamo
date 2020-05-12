@@ -1,0 +1,566 @@
+{
+  "Uuid": "47e082c4-1909-4dd5-a720-1ad7999bc654",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "spherecolors",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "0717b6ba5f394326beb85633264d56dc",
+      "Inputs": [
+        {
+          "Id": "39dcf314282145d8bc655c4c3554eccb",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b5d39541d2d14c409cb0ba2c82ca7899",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4668bb9952234a6382061f267d1e0e91",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.ByGeometryColor@Autodesk.DesignScript.Geometry.Geometry,DSCore.Color",
+      "Id": "3ae7e616b020476abbe38a86427f8247",
+      "Inputs": [
+        {
+          "Id": "c877f49a0bef4d459d5ddd0811e5794c",
+          "Name": "geometry",
+          "Description": "The geometry to which you would like to apply color.\n\nGeometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "171fa393ba494140877473a242a96e8a",
+          "Name": "color",
+          "Description": "The color.\n\nColor",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1dc36b9fa32d4f369523eaa57a86d82f",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display geometry using a color.\n\nGeometryColor.ByGeometryColor (geometry: Geometry, color: Color): GeometryColor"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.ColorPalette, CoreNodeModels",
+      "InputValue": {
+        "R": 255,
+        "G": 20,
+        "B": 147,
+        "A": 255
+      },
+      "NodeType": "ColorInputNode",
+      "Id": "4855e82a6ab6402d9621cad191f248eb",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5b957f1299834d608c98e7946da5a566",
+          "Name": "Color",
+          "Description": "Selected Color.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Select a Color from the palette"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Modifiers.GeometryColor.BySurfaceColors@Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][]",
+      "Id": "2ec81f11e2ef44e6a4737ae20c43404a",
+      "Inputs": [
+        {
+          "Id": "953303647a82488f8ccb4025d535f17c",
+          "Name": "surface",
+          "Description": "The surface on which to apply the colors.\n\nSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e7ee62334ac74d26be1329800b2e4738",
+          "Name": "colors",
+          "Description": "A two dimensional list of Colors. The list of colors must be square. Attempting to pass a jagged array will result in an exception.\n\nColor[][]\nDefault value : [[DSCore.Color.ByARGB(255, 255, 0, 0), DSCore.Color.ByARGB(255, 255, 255, 0)], [DSCore.Color.ByARGB(255, 0, 255, 255), DSCore.Color.ByARGB(255, 0, 0, 255)]]",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f3fc04e1a0cf4ec885b0a267229c07d1",
+          "Name": "GeometryColor",
+          "Description": "A Display object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Display color values on a surface. The colors provided are converted internally to an image texture which is mapped to the surface.\n\nGeometryColor.BySurfaceColors (surface: Surface, colors: Color[][] = [[DSCore.Color.ByARGB(255, 255, 0, 0), DSCore.Color.ByARGB(255, 255, 255, 0)], [DSCore.Color.ByARGB(255, 0, 255, 255), DSCore.Color.ByARGB(255, 0, 0, 255)]]): GeometryColor"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Explode",
+      "Id": "300280a59f0c4be681371858a69f6d7c",
+      "Inputs": [
+        {
+          "Id": "b3b295bacea74dc28fc7e0ae2265ebac",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0729a4d294da4b8bbfd0d07ea5e6f521",
+          "Name": "Geometry[]",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Separates compound or non-separated elements into their component parts.\n\nGeometry.Explode ( ): Geometry[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.OfRepeatedItem@var[]..[],int",
+      "Id": "31fa0b8cb7094c52a5d366e8950c878c",
+      "Inputs": [
+        {
+          "Id": "af73b8275b424e19a2f3f5e9f258c8a9",
+          "Name": "item",
+          "Description": "The item to repeat.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "348c1eaa5b5f4bc4a053ecd0e5b35491",
+          "Name": "amount",
+          "Description": "The number of times to repeat.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a94f319747f84197920d336ccf650726",
+          "Name": "list",
+          "Description": "List of repeated items.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a list containing the given item the given number of times.\n\nList.OfRepeatedItem (item: var[]..[], amount: int): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "0ca2e7b8236d49ee80077e374748a37a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "981b7fa0cf074f30b4598be7801b2d6b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Id": "d21045caebcf4d4cb439636cd6b74df1",
+      "Inputs": [
+        {
+          "Id": "c2f34ac9f05d44109daef8ba70ac3652",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2baddd0c5bc94b1381954c92a1b49be1",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "6ccc075c1bee49348d869c5fd6f31da3",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "85aff01b5fd9482d930459c2802a40e4",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "750f7f86d4cc49cab117b47d31eb8f30",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Id": "f3c2a224c74a47b19259d90e97a8612b",
+      "Inputs": [
+        {
+          "Id": "9501e08924fe46d59a9ab5970458660f",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "217d2844411e410fbb559cc52f2199db",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b3c440a21de64e63b3d53af6d38bd4d4",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d5194c0532004aa8bb9b6c59790f5b5c",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b8462d42759a4f3f93c32cd25b3aca99",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "67e7364efceb46adbb6c5a304c19eccc",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9aa85399ea1a420eb2fde8943e5873a4",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4668bb9952234a6382061f267d1e0e91",
+      "End": "c2f34ac9f05d44109daef8ba70ac3652",
+      "Id": "b6e9619a704a442bb56f37ab9ac3691e"
+    },
+    {
+      "Start": "5b957f1299834d608c98e7946da5a566",
+      "End": "171fa393ba494140877473a242a96e8a",
+      "Id": "13a05e57663f4cbcae04e2fdbaebb1f8"
+    },
+    {
+      "Start": "5b957f1299834d608c98e7946da5a566",
+      "End": "af73b8275b424e19a2f3f5e9f258c8a9",
+      "Id": "b62e6f6d3c604de18b652cab96640553"
+    },
+    {
+      "Start": "0729a4d294da4b8bbfd0d07ea5e6f521",
+      "End": "9501e08924fe46d59a9ab5970458660f",
+      "Id": "4e0335322d1b4e2c9890ec335e7276fd"
+    },
+    {
+      "Start": "a94f319747f84197920d336ccf650726",
+      "End": "e7ee62334ac74d26be1329800b2e4738",
+      "Id": "2e96cc6b28174abdae93d46542a1455a"
+    },
+    {
+      "Start": "981b7fa0cf074f30b4598be7801b2d6b",
+      "End": "348c1eaa5b5f4bc4a053ecd0e5b35491",
+      "Id": "7fb17001b5434042ba3fd564ee190c4f"
+    },
+    {
+      "Start": "750f7f86d4cc49cab117b47d31eb8f30",
+      "End": "c877f49a0bef4d459d5ddd0811e5794c",
+      "Id": "6d154ee13e454b009e2df398a16e438a"
+    },
+    {
+      "Start": "750f7f86d4cc49cab117b47d31eb8f30",
+      "End": "b3b295bacea74dc28fc7e0ae2265ebac",
+      "Id": "69d84e96e1cb4b5e85dfda742cbc952a"
+    },
+    {
+      "Start": "b8462d42759a4f3f93c32cd25b3aca99",
+      "End": "953303647a82488f8ccb4025d535f17c",
+      "Id": "1783a37c97fe4db283b033a45a7983ad"
+    },
+    {
+      "Start": "9aa85399ea1a420eb2fde8943e5873a4",
+      "End": "2baddd0c5bc94b1381954c92a1b49be1",
+      "Id": "cd8f4db079bb498699911e7eb20cb7f1"
+    },
+    {
+      "Start": "9aa85399ea1a420eb2fde8943e5873a4",
+      "End": "217d2844411e410fbb559cc52f2199db",
+      "Id": "4ed7e94be16a47f6b88237e45bb90c94"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.0.8086",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -0.81703829765319824,
+      "EyeY": 2.7927491664886475,
+      "EyeZ": 11.597020149230957,
+      "LookX": -0.070914268493652344,
+      "LookY": -2.044940710067749,
+      "LookZ": -13.08929443359375,
+      "UpX": 0.00033210896071977913,
+      "UpY": 0.9981347918510437,
+      "UpZ": 0.061048109084367752
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "spherenormal",
+        "Id": "0717b6ba5f394326beb85633264d56dc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 99.435846234592532,
+        "Y": 153.29390928713036
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "spherevertcolors",
+        "Id": "3ae7e616b020476abbe38a86427f8247",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 708.5569780732186,
+        "Y": 209.63361478793072
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color Palette",
+        "Id": "4855e82a6ab6402d9621cad191f248eb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 33.897934060452087,
+        "Y": 475.45913791805549
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "sphereflatcolors",
+        "Id": "2ec81f11e2ef44e6a4737ae20c43404a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 997.741738304578,
+        "Y": 380.31342363659832
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Geometry.Explode",
+        "Id": "300280a59f0c4be681371858a69f6d7c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 375.27882969565536,
+        "Y": 448.83072909017869
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.OfRepeatedItem",
+        "Id": "31fa0b8cb7094c52a5d366e8950c878c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 176.46280495151967,
+        "Y": 635.52886870260772
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0ca2e7b8236d49ee80077e374748a37a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 73.6656115582802,
+        "Y": 744.38602325055763
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Geometry.Translate",
+        "Id": "d21045caebcf4d4cb439636cd6b74df1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 384.85023833527157,
+        "Y": 269.33144157911215
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Geometry.Translate",
+        "Id": "f3c2a224c74a47b19259d90e97a8612b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 645.58504397200261,
+        "Y": 680.52853691713733
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "67e7364efceb46adbb6c5a304c19eccc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 72.0,
+        "Y": 278.0
+      }
+    ],
+    "Annotations": [],
+    "X": 73.165193171902985,
+    "Y": -82.622463509417344,
+    "Zoom": 0.97137735563105332
+  }
+}
