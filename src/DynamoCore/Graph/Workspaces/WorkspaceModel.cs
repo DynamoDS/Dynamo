@@ -2065,9 +2065,9 @@ namespace Dynamo.Graph.Workspaces
             Guid deterministicGuid;
             if (!Guid.TryParse(id, out deterministicGuid))
             {
-                Console.WriteLine("The id was not a guid, converting to a guid");
+                Debug.WriteLine("The id was not a guid, converting to a guid");
                 deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, id);
-                Console.WriteLine(id + " becomes " + deterministicGuid);
+                Debug.WriteLine(id + " becomes " + deterministicGuid);
             }
 
             return deterministicGuid;

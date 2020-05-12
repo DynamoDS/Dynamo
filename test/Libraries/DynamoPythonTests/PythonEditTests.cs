@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {

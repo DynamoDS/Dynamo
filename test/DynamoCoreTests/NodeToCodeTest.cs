@@ -612,6 +612,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestShortestQualifiedNameReplacerWithClassConflicts()
+        {
+            string libraryPath = "FFITarget.dll";
+            if (!CurrentDynamoModel.EngineController.LibraryServices.IsLibraryLoaded(libraryPath))
+            {
+                CurrentDynamoModel.EngineController.LibraryServices.ImportLibrary(libraryPath);
+            }
+
+            OpenModel(@"core\node2code\ShortenNodeNameWithClassConflicts.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            var result = engine.ConvertNodesToCode(nodes, nodes);
+            result = NodeToCodeCompiler.ConstantPropagationForTemp(result, Enumerable.Empty<string>());
+            NodeToCodeCompiler.ReplaceWithShortestQualifiedName(engine.LibraryServices.LibraryManagementCore.ClassTable, result.AstNodes);
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.AstNodes);
+
+            var asts = result.AstNodes.ToList();
+            Assert.AreEqual(6, asts.Count);
+
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Revit.Elements.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "RevitFamily.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "archilab.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "RevitProject.Parameter.Parameter()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Revit.Elements.Category.Category()"));
+            Assert.IsTrue(asts.Any(x => (x as BinaryExpressionNode).RightNode.ToString() == "Rhythm.Category.Category()"));
+        }
+
+        [Test]
         public void TestShortestQualifiedNameReplacerTypedIdentiferFFITarget()
         {
             string libraryPath = "FFITarget.dll";

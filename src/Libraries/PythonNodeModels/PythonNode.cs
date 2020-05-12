@@ -41,7 +41,7 @@ namespace PythonNodeModels
 
         [JsonConverter(typeof(StringEnumConverter))]
         /// <summary>
-        /// Return the display name of python engine enum.
+        /// Return the user selected python engine enum.
         /// </summary>
         public PythonEngineVersion Engine
         {
@@ -85,16 +85,15 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
+            Func<string, IList, IList, object> pythonEvaluatorMethod;
 
-            Func<string, IList, IList, object> backendMethod;
-                
             if (Engine == PythonEngineVersion.IronPython2)
             {
-                backendMethod = IronPythonEvaluator.EvaluateIronPythonScript; ;
+                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
             }
             else if (Engine == PythonEngineVersion.CPython3)
             {
-                backendMethod = CPythonEvaluator.EvaluatePythonScript;
+                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
             }
             else
             {
@@ -104,7 +103,7 @@ namespace PythonNodeModels
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod,
+                    pythonEvaluatorMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,

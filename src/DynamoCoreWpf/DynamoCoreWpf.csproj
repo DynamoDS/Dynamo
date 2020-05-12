@@ -321,6 +321,9 @@
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
     <Compile Include="Views\Core\DynamoOpenFileDialog.cs" />
+    <Compile Include="Views\Debug\DebugModesWindow.xaml.cs">
+      <DependentUpon>DebugModesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Gallery\GalleryView.xaml.cs">
       <DependentUpon>GalleryView.xaml</DependentUpon>
     </Compile>
@@ -1102,6 +1105,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\Debug\DebugModesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Gallery\GalleryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
