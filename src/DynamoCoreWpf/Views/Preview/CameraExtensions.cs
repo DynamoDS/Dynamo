@@ -63,10 +63,10 @@ namespace Dynamo.Controls
             throw new HelixToolkitException("Unproject camera error.");
         }
 
-        internal static Ray3D Point2DToRay3D(this Viewport3DX viewport, System.Windows.Point point2d)
+        internal static HelixToolkit.Wpf.Ray3D Point2DToRay3D(this Viewport3DX viewport, System.Windows.Point point2d)
         {
             var r = viewport.Point2DToRay(point2d.ToVector2());
-            return new Ray3D(r.Position.ToPoint3D(), r.Direction.ToVector3D());
+            return new HelixToolkit.Wpf.Ray3D(r.Position.ToPoint3D(), r.Direction.ToVector3D());
         }
 
         internal static Point3D GetCameraPosition(this Viewport3DX viewport)

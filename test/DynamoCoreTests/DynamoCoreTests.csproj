@@ -162,6 +162,7 @@
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="UpdateManagerTests.cs" />
     <Compile Include="Updates\BinaryVersionTests.cs" />
+    <Compile Include="Updates\UpdatesTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />

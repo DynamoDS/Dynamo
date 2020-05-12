@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dynamo.Configuration;
-using System.Linq;
-using System.Text;
 using System.Windows;
+using Dynamo.Configuration;
 
 namespace Dynamo.Wpf.Views.Debug
 {
@@ -24,7 +22,7 @@ namespace Dynamo.Wpf.Views.Debug
             {
                 items.Add(new DebugModeListItem() {
                     Name = entry.Value.Name,
-                    Enabled = entry.Value.Enabled
+                    Enabled = entry.Value.IsEnabled
                 });
             }
             CheckList.ItemsSource = items;

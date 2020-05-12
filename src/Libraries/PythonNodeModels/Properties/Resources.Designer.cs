@@ -86,7 +86,40 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Python Engine Version.
+        /// </summary>
+        public static string PythonNodeContextMenuEngineSwitcher
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonNodeContextMenuEngineSwitcher", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Python3.
+        /// </summary>
+        public static string PythonNodeContextMenuEngineVersionThree
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonNodeContextMenuEngineVersionThree", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Python2.
+        /// </summary>
+        public static string PythonNodeContextMenuEngineVersionTwo
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonNodeContextMenuEngineVersionTwo", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>

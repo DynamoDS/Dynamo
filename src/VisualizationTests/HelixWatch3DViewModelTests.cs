@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -33,7 +34,6 @@ using Watch3DNodeModels;
 using Watch3DNodeModelsWpf;
 using Color = System.Windows.Media.Color;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 
 namespace WpfVisualizationTests
 {
@@ -45,7 +45,7 @@ namespace WpfVisualizationTests
     /// </summary>
     public class VisualizationTest : SystemTestBase
     {
-        protected IEnumerable<Model3D> BackgroundPreviewGeometry
+        protected IEnumerable<Element3D> BackgroundPreviewGeometry
         {
             get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
         }
@@ -368,6 +368,30 @@ namespace WpfVisualizationTests
             Assert.AreEqual(BackgroundPreviewGeometry.NumberOfInvisiblePoints(), 0);
         }
 
+        [Test]
+        public void ColorCache_Updated_OnNode_Removed()
+        {
+            var model = ViewModel.Model;
+            OpenVisualizationTest("Display.ByGeometryColorPoints_Selection.dyn");
+            var ws = model.CurrentWorkspace;
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1547, 0, 0));
+            //should have 2 entires, one for each point node.
+            Assert.AreEqual(2, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+            //remove one of the points and assert cache has one less key
+            var redPtsNode = ws.Nodes.Where(x => x.Name == "red").FirstOrDefault();
+            var greenPtsNode = ws.Nodes.Where(x => x.Name == "green").FirstOrDefault();
+            ws.RemoveAndDisposeNode(redPtsNode);
+
+            //assert less points are drawn.
+            DispatcherUtil.DoEvents();
+            Assert.True(BackgroundPreviewGeometry.HasNumberOfPointsCurvesAndMeshes(1331, 0, 0));
+            Assert.AreEqual(1, (ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel).colorCache.Keys.Count);
+
+        }
+
         #endregion
 
         #region workspace tests
@@ -585,13 +609,13 @@ namespace WpfVisualizationTests
 
             var homeColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
 
-            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor.ToColor4());
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor);
 
             OpenVisualizationTest("Points.dyf");
 
             var customColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
 
-            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor.ToColor4());
+            Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor);
         }
 
         [Test]
@@ -602,7 +626,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
 
-            Assert.AreEqual(vm.SceneItems.Count(), 3);
+            Assert.AreEqual(vm.SceneItems.Count(), 5);
         }
 
         [Test]
@@ -620,9 +644,9 @@ namespace WpfVisualizationTests
             var connector = watch3DNode.InPorts[0].Connectors.First();
             watch3DNode.InPorts[0].Connectors.Remove(connector);
 
-            // Three items, the grid, the axes, and the light will remain.
+            // Four items, the grid, the axes, direction light and the headlight will remain.
             var view = FindFirstWatch3DNodeView();
-            Assert.AreEqual(view.View.Items.Count, 3);
+            Assert.AreEqual(4, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
 
             var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
@@ -634,8 +658,25 @@ namespace WpfVisualizationTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            // View contains 3 default items and a collection of lines from the node connected to the Watch3D node
-            Assert.AreEqual(4, view.View.Items.Count);
+            // View contains 4 default items and a collection of lines from the node connected to the Watch3D node
+            Assert.AreEqual(5, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
+        }
+
+        [Test]
+        public void HelixWatch3dViewModel_HeadLight_Camera_HaveSameLookVector()
+        {
+            var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+            var camdir = bPreviewVm.Camera.LookDirection;
+            var headlight = bPreviewVm.SceneItems.Where(x => x.Name.ToLower().Contains("headlight")).FirstOrDefault();
+            var headlightDir = (headlight as DirectionalLight3D).Direction;
+            Assert.AreEqual(camdir, headlightDir);
+
+            //move the camera
+            bPreviewVm.Camera.LookDirection = new Vector3D(5,5,5);
+            //assert they match
+            headlightDir = (headlight as DirectionalLight3D).Direction;
+            Assert.AreEqual(new Vector3D(5, 5, 5), headlightDir);
+
         }
 
         [Test]
@@ -649,7 +690,7 @@ namespace WpfVisualizationTests
             // check if grid has not redraw
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has not been hidden");
-            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
             Assert.AreEqual(Visibility.Hidden, grid.Visibility, "Background grid has not been hidden");
         }
 
@@ -664,7 +705,7 @@ namespace WpfVisualizationTests
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsFalse(bPreviewVm.IsGridVisible, "Background grid has become visible");
-            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
             Assert.AreEqual(Visibility.Hidden, grid.Visibility, "Background grid has become visible");
         }
 
@@ -680,7 +721,7 @@ namespace WpfVisualizationTests
             var bPreviewVm = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             Assert.IsTrue(bPreviewVm.Active, "Background has become inactive");
             Assert.IsTrue(bPreviewVm.IsGridVisible, "Background grid has not appeared");
-            var grid = bPreviewVm.Model3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            var grid = bPreviewVm.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
             Assert.AreEqual(Visibility.Visible, grid.Visibility, "Background grid has not appeared");
         }
 
@@ -741,23 +782,23 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
-            Assert.AreEqual(1, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
-            // Freeze the ByGeometryColor node making the corresponding alpha channel value decrease
+            Assert.IsFalse((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
+            // Freeze the ByGeometryColor node and check the frozen flag.
             Model.CurrentWorkspace.Nodes.Where(x => x.Name.Contains("ByGeometryColor")).FirstOrDefault().IsFrozen = true;
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
-            Assert.AreEqual(0.5, dynGeometry.FirstOrDefault().Geometry.Colors.FirstOrDefault().Alpha);
+            Assert.IsTrue((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
         }
 
-        [Test]
+       [Test]
         public void Display_ByGeometryColor_HasColoredMesh()
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
 
@@ -794,7 +835,7 @@ namespace WpfVisualizationTests
 
             // By default the DisplayLabels for the code block node is set to false, 
             // so the Model3DDictionary wouldn't have the geometry object corresponding to the Labels. 
-            var geometryHasLabels = helix.Model3DDictionary.ContainsKey(labelKey); 
+            var geometryHasLabels = helix.Element3DDictionary.ContainsKey(labelKey); 
             Assert.IsFalse(geometryHasLabels);
 
             // We set the DisplayLabels to true to view the Labels in the preview geometry.
@@ -802,7 +843,7 @@ namespace WpfVisualizationTests
 
             // Now the Labels are shown in the preview geometry. 
             // The code block node has 64 points, so there should be 64 labels. 
-            var geometryWithLabels = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            var geometryWithLabels = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(64, geometryWithLabels.TextInfo.Count);
 
             // Clicking on a single value from the output of the watch node
@@ -828,18 +869,70 @@ namespace WpfVisualizationTests
 
             // The value selected is x:0, y:0 and z:1, 
             // so the label that is shown should be [0,0,1].
-            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(1, geometry.TextInfo.Count);
             Assert.AreEqual("[0,0,1]", geometry.TextInfo[0].Text);
         }
 
         [Test]
+        // This test will select a sphere object 30 times from a list of sphere's, to display 
+        // the corresponding label for that sphere object. After the Helix update, this workflow was causing
+        // delays and would cause dynamo to hang. The fix was added in this PR: https://github.com/DynamoDS/Dynamo/pull/10399
+        // Before the fix, this test would take around 5 mins to finish but now this test finishes in just 20 secs. 
+        public void PerformanceTestOnLabelsAfterHelixUpgrade()
+        {
+            System.DateTime startTime = System.DateTime.Now;
+            OpenVisualizationTest("PerformanceTestOnLabelsAfterHelixUpgrade.dyn");
+            var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+
+            RunCurrentModel();
+
+            var codeBlockGUID = "07b8781c-8f73-4721-b0e5-d86b8484ca97";
+            NodeModel codeBlockNodeModel = ws.Nodes.Where(node => node.GUID.ToString() == codeBlockGUID).FirstOrDefault();
+
+            // The Key to identify the Label's geometry object from Model3DDictionary.
+            var labelKey = codeBlockNodeModel.AstIdentifierForPreview + ":text";
+
+            var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
+
+            // Clicking on a single value from the output of the watch node
+            // should show only one label corresponding to that value.  
+            var nodeView = View.ChildrenOfType<NodeView>().First(nv => nv.ViewModel.Name == "Watch");
+            var parentTreeViewItem = nodeView.ChildOfType<TreeViewItem>();
+
+            // Selcting a sphere object 70 different times to render new labels again. 
+            for (int i = 0; i < 30; i++)
+            {
+
+                var itemIndex = i % 10;
+                var treeViewItem = parentTreeViewItem.ChildrenOfType<TreeViewItem>().ElementAt(itemIndex);
+
+                View.Dispatcher.Invoke(() =>
+                {
+                    treeViewItem.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = Mouse.MouseUpEvent
+                    });
+                });
+
+                DispatcherUtil.DoEvents();
+
+                var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+                Assert.AreEqual(1, geometry.TextInfo.Count);
+                Assert.AreEqual("[" + itemIndex + "]", geometry.TextInfo[0].Text);
+            }
+            System.DateTime endTime = System.DateTime.Now;
+            var totalExecutionTime = (endTime - startTime).TotalSeconds;
+            Assert.LessOrEqual(totalExecutionTime, 20);
+        }
+       
+        [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
-
-            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test
@@ -847,7 +940,9 @@ namespace WpfVisualizationTests
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>().FirstOrDefault();
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(6, numberOfColors);
-            Assert.AreEqual(52, ((PhongMaterial)dynGeometry.Material).DiffuseMap.Width);
+            //decompress the texture to get the width
+            var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
+            Assert.AreEqual(52, width);
         }
 
         [Test]
@@ -1083,8 +1178,8 @@ namespace WpfVisualizationTests
             // check if label has been added to corresponding geometry
             var helix = ViewModel.BackgroundPreviewViewModel as HelixWatch3DViewModel;
             var labelKey = getGeometryOwnerNode(nodeView).AstIdentifierForPreview.Name + ":text";
-            Assert.IsTrue(helix.Model3DDictionary.ContainsKey(labelKey), "Label has not been added to selected geometry item");
-            var geometry = (helix.Model3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
+            Assert.IsTrue(helix.Element3DDictionary.ContainsKey(labelKey), "Label has not been added to selected geometry item");
+            var geometry = (helix.Element3DDictionary[labelKey] as GeometryModel3D).Geometry as BillboardText3D;
             Assert.AreEqual(expectedNumberOfLabels, geometry.TextInfo.Count);
         }
 
@@ -1106,25 +1201,25 @@ namespace WpfVisualizationTests
 
             // select original node
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
-            var originalNode = vm.Model3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0" + ":mesh"];
-            var otherNode = vm.Model3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1" + ":mesh"];
-            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty)); 
-            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            var originalNode = vm.Element3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0" + ":mesh"];
+            var otherNode = vm.Element3DDictionary["var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1" + ":mesh"];
+            Assert.IsTrue(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(otherNode));
 
             // deselect original node
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:0");
-            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsFalse((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(otherNode));
 
             // select another node
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0:1");
-            Assert.IsFalse((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsFalse(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
 
             // Select node one level up
             vm.AddLabelForPath("var_88f09e6c057f4a5c95a7f4f0b25161e2:0:0");
-            Assert.IsTrue((bool)originalNode.GetValue(AttachedProperties.ShowSelectedProperty));
-            Assert.IsTrue((bool)otherNode.GetValue(AttachedProperties.ShowSelectedProperty));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(originalNode));
+            Assert.IsTrue(AttachedProperties.GetShowSelected(otherNode));
         }
 
     }
@@ -1135,10 +1230,11 @@ namespace WpfVisualizationTests
             {
                 HelixWatch3DViewModel.DefaultAxesName,
                 HelixWatch3DViewModel.DefaultGridName,
+                HelixWatch3DViewModel.HeadLightName,
                 HelixWatch3DViewModel.DefaultLightName
             };
 
-        public static int TotalPoints(this IEnumerable<Model3D> dictionary)
+        public static int TotalPoints(this IEnumerable<Element3D> dictionary)
         {
             var points = dictionary.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
 
@@ -1154,24 +1250,24 @@ namespace WpfVisualizationTests
         /// </summary>
         /// <param name="dictionary"></param>
         /// <returns></returns>
-        public static int TotalMeshes(this IEnumerable<Model3D> dictionary)
+        public static int TotalMeshes(this IEnumerable<Element3D> dictionary)
         {
             return dictionary.Count(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
         }
 
-        public static IEnumerable<DynamoGeometryModel3D> Meshes(this IEnumerable<Model3D> geometry)
+        public static IEnumerable<DynamoGeometryModel3D> Meshes(this IEnumerable<Element3D> geometry)
         {
             var candidates = geometry.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name));
             return candidates.Cast<DynamoGeometryModel3D>();
         }
 
-        public static IEnumerable<LineGeometryModel3D> Curves(this IEnumerable<Model3D> geometry)
+        public static IEnumerable<LineGeometryModel3D> Curves(this IEnumerable<Element3D> geometry)
         {
             var candidates = geometry.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name));
             return candidates.Cast<LineGeometryModel3D>();
         }
 
-        public static IEnumerable<PointGeometryModel3D> Points(this IEnumerable<Model3D> geometry)
+        public static IEnumerable<PointGeometryModel3D> Points(this IEnumerable<Element3D> geometry)
         {
             var candidates = geometry.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name));
             return candidates.Cast<PointGeometryModel3D>();
@@ -1212,7 +1308,7 @@ namespace WpfVisualizationTests
             return false;
         }
 
-        public static int TotalCurves(this IEnumerable<Model3D> dictionary)
+        public static int TotalCurves(this IEnumerable<Element3D> dictionary)
         {
             var lines = dictionary.Where(g => g is LineGeometryModel3D && ! keyList.Contains(g.Name)).ToArray();
 
@@ -1221,7 +1317,7 @@ namespace WpfVisualizationTests
                 : 0;
         }
 
-        public static int TotalText(this IEnumerable<Model3D> dictionary)
+        public static int TotalText(this IEnumerable<Element3D> dictionary)
         {
             var text = dictionary
                 .Where(g => g is BillboardTextModel3D && !keyList.Contains(g.Name))
@@ -1234,82 +1330,96 @@ namespace WpfVisualizationTests
                 : 0;
         }
 
-        public static int TotalCurveVerticesOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
+        public static int TotalCurveVerticesOfColor(this IEnumerable<Element3D> dictionary, Color4 color)
         {
             var geoms = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name)).Cast<LineGeometryModel3D>();
 
             return geoms.Sum(g => g.Geometry.Colors.Count(c => c == color));
         }
 
-        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Model3D> geometry, int numberOfPoints, 
+        public static bool HasNumberOfPointsCurvesAndMeshes(this IEnumerable<Element3D> dictionary, int numberOfPoints, 
             int numberOfCurves, int numberOfMeshes)
         {
-            return geometry.TotalPoints() == numberOfPoints &&
-                   geometry.TotalCurves() == numberOfCurves &&
-                   geometry.TotalMeshes() == numberOfMeshes;
+            return dictionary.TotalPoints() == numberOfPoints &&
+                   dictionary.TotalCurves() == numberOfCurves &&
+                   dictionary.TotalMeshes() == numberOfMeshes;
         }
 
-        public static int NumberOfInvisiblePoints(this IEnumerable<Model3D> dictionary)
+        public static int NumberOfInvisiblePoints(this IEnumerable<Element3D> dictionary)
         {
             var points = dictionary.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
 
             return points.Any() ? points.Count(g => g.Visibility == Visibility.Hidden) : 0;
         }
 
-        public static int NumberOfInvisibleCurves(this IEnumerable<Model3D> dictionary)
+        public static int NumberOfInvisibleCurves(this IEnumerable<Element3D> dictionary)
         {
             var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
 
             return lines.Any() ? lines.Count(g => g.Visibility == Visibility.Hidden) : 0;
         }
 
-        public static int NumberOfInvisibleMeshes(this IEnumerable<Model3D> dictionary)
+        public static int NumberOfInvisibleMeshes(this IEnumerable<Element3D> dictionary)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D).ToArray();
             return geoms.Any() ? geoms.Count(g => g.Visibility == Visibility.Hidden) : 0;
         }
 
-        public static bool HasVisibleObjects(this IEnumerable<Model3D> dictionary)
+        public static bool HasVisibleObjects(this IEnumerable<Element3D> dictionary)
         {
             return dictionary.Any(g => g.Visibility == Visibility.Visible);
         }
 
-        public static bool HasNoUserCreatedModel3DObjects(this IEnumerable<Model3D> dictionary)
+        public static bool HasNoUserCreatedModel3DObjects(this IEnumerable<Element3D> dictionary)
         {
             return dictionary.All(g => keyList.Contains(g.Name));
         }
 
-        public static bool HasAnyMeshes(this IEnumerable<Model3D> dictionary)
+        public static bool HasAnyMeshes(this IEnumerable<Element3D> dictionary)
         {
             return dictionary.TotalMeshes() > 0;
         }
 
-        public static int TotalMeshVerticesToRender(this IEnumerable<Model3D> dictionary)
+        public static int TotalMeshVerticesToRender(this IEnumerable<Element3D> dictionary)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any()? geoms.SelectMany(g=>g.Geometry.Positions).Count() : 0;
         }
 
-        public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
+        public static bool HasAnyMeshVerticesOfColor(this IEnumerable<Element3D> dictionary, Color4 color)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any(g => g.Geometry.Colors.Any(c => c == color));
         }
 
-        public static bool HasMeshVerticesAllOfColor(this IEnumerable<Model3D> dictionary, Color4 color)
+        public static bool HasMeshVerticesAllOfColor(this IEnumerable<Element3D> dictionary, Color4 color)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.All(g => g.Geometry.Colors.All(c => c == color));
         }
 
-        public static bool HasAnyColorMappedMeshes(this IEnumerable<Model3D> dictionary)
+        public static bool HasAnyColorMappedMeshes(this IEnumerable<Element3D> dictionary)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D && !keyList.Contains(g.Name)).Cast<DynamoGeometryModel3D>();
 
             return geoms.Any(g => ((PhongMaterial)g.Material).DiffuseMap != null);
+        }
+
+        /// <summary>
+        /// Checks if a specific Geometry3d object has an exact number of matching colors within its Vertex Color collection.
+        /// </summary>
+        /// <param name="geomModel"></param>
+        /// <param name="color"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public static bool HasSpecificColorCount(this GeometryModel3D geomModel, Color4 color, int count)
+        {
+            var colorsFromObj = geomModel.Geometry.Colors;
+            var matchingColorsFromObjCount = colorsFromObj.Where(x => x == color).Count();
+            return count == matchingColorsFromObjCount;
         }
     }
 }
