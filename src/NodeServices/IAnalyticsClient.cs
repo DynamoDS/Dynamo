@@ -166,6 +166,11 @@ namespace Dynamo.Logging
         bool ReportingAnalytics { get; }
 
         /// <summary>
+        /// Checks if Google analytics reporting is ON.
+        /// </summary>
+        bool ReportingGoogleAnalytics { get; }
+
+        /// <summary>
         /// Checks if ADP analytics reporting is ON.
         /// </summary>
         bool ReportingADPAnalytics { get; set; }
