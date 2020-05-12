@@ -138,7 +138,7 @@
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
-  </data>  
+  </data>
   <data name="PythonScriptEditorRevertButton" xml:space="preserve">
     <value>Revert</value>
   </data>
@@ -166,5 +166,14 @@
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
     <value>Python script to run.</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
+    <value>Python Engine Version</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
+    <value>Python3</value>
+  </data>
+  <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
+    <value>Python2</value>
   </data>
 </root>
