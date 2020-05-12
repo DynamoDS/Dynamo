@@ -594,8 +594,12 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
-            // Initialize instrumentation.
-            InitializeInstrumentationLogger();
+            // If user does not agree to GA or ADP terms, do not try to launch the client at all
+            if (PreferenceSettings.IsAnalyticsReportingApproved ||
+                PreferenceSettings.IsADPAnalyticsReportingApproved)
+            {
+                InitializeInstrumentationLogger();
+            }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
             {
