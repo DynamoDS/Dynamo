@@ -1357,6 +1357,7 @@ namespace Dynamo.Controls
             }
 
             viewExtensionManager.MessageLogged -= Log;
+            this.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
