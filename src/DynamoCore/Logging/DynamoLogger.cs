@@ -157,7 +157,20 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean IsTestMode = false)
+        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode) instead.")]
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory) : this(debugSettings, logDirectory, false)
+        {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DynamoLogger"/> class
+        /// with specified debug settings and directory where to write logs
+        /// </summary>
+        /// <param name="debugSettings">Debug settings</param>
+        /// <param name="logDirectory">Directory path where log file will be written</param>
+        /// <param name="isTestMode">Test mode is true or false.</param>
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode)
         {
             lock (guardMutex)
             {
@@ -169,7 +182,7 @@ namespace Dynamo.Logging
 
                 notifications = new List<NotificationMessage>();
 
-                testMode = IsTestMode;
+                testMode = isTestMode;
 
                 if (!testMode)
                 {
