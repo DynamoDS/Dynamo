@@ -5,7 +5,6 @@ using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Exceptions;
-using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
 {
@@ -75,6 +74,7 @@ namespace Dynamo.Logging
         private string _warning;
         private WarningLevel _warningLevel;
         private bool _isDisposed;
+        private bool testMode;
 
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }
@@ -157,7 +157,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory)
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean IsTestMode = false)
         {
             lock (guardMutex)
             {
@@ -169,7 +169,12 @@ namespace Dynamo.Logging
 
                 notifications = new List<NotificationMessage>();
 
-                StartLogging(logDirectory);
+                testMode = IsTestMode;
+
+                if (!testMode)
+                {
+                    StartLoggingToConsoleAndFile(logDirectory);
+                }
             }
         }
 
@@ -196,6 +201,13 @@ namespace Dynamo.Logging
                 //Don't overwhelm the logging system
                 if (debugSettings.VerboseLogging)
                     Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
+
+                // In test mode, write the logs only to std out. 
+                if (testMode)
+                {
+                    Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
+                    return;
+                }
 
                 switch (level)
                 {
@@ -377,7 +389,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Begin logging.
         /// </summary>
-        private void StartLogging(string logDirectory)
+        private void StartLoggingToConsoleAndFile(string logDirectory)
         {
             lock (this.guardMutex)
             {
