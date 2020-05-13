@@ -7,6 +7,7 @@ using NUnit.Framework;
 using PythonNodeModels;
 using Dynamo.Graph.Nodes.CustomNodes;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -40,6 +41,37 @@ namespace Dynamo.Tests
 
             // workspace has changes
             Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void PythonNodeEnginePropertyTest()
+        {
+            // open file
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            // get the python node and check Engine property
+            var workspace = model.CurrentWorkspace;
+            var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var pynode = nodeModel as PythonNode;
+            Assert.AreEqual(pynode.Engine, PythonEngineVersion.IronPython2);
+
+            // workspace has no changes
+            Assert.IsFalse(model.CurrentWorkspace.HasUnsavedChanges);
+
+            // Serialize DYN and deserialize to double check check Engine field
+            var path = GetNewFileNameOnTempPath();
+            ViewModel.Model.CurrentWorkspace.Save(path);
+
+            var fileContents = File.ReadAllText(path);
+            if (string.IsNullOrWhiteSpace(fileContents))
+                return;
+
+            JObject dynObj = JObject.Parse(fileContents);
+            var pythonTokens = dynObj["Nodes"].Where(t => t.Value<string>("NodeType") == "PythonScriptNode").Select(t => t);
+            Assert.IsNotNull(pythonTokens);
+            Assert.IsTrue(pythonTokens.Any(t => t.Value<string>("Engine") == PythonEngineVersion.IronPython2.ToString()));
         }
 
         [Test]

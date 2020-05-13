@@ -19,7 +19,34 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
+        private const string DPISCRIPT = @"<script> function getDPIScale()
+        {
+            var dpi = 96.0;
+            if (window.screen.deviceXDPI != undefined)
+            {
+                dpi = window.screen.deviceXDPI;
+            }
+            else
+            {
+                var tmpNode = document.createElement('DIV');
+                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
+                document.body.appendChild(tmpNode);
+                dpi = parseInt(tmpNode.offsetWidth);
+                tmpNode.parentNode.removeChild(tmpNode);
+            }
 
+            return dpi / 96.0;
+        }
+
+        function adaptDPI()
+        {
+            var dpiScale = getDPIScale();
+            document.body.style.zoom = dpiScale;
+
+            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
+            document.body.style.width = widthPercentage;
+        }
+        adaptDPI() </script>";
         #endregion
 
         #region Properties
@@ -106,8 +133,8 @@ namespace Dynamo.DocumentationBrowser
         {
             if (e == null)
                 NavigateToNoContentPage();
-
-            this.IsRemoteResource = e.IsRemoteResource;
+            else
+                this.IsRemoteResource = e.IsRemoteResource;
 
             // Ignore requests to remote resources
             if (!this.IsRemoteResource)
@@ -215,7 +242,7 @@ namespace Dynamo.DocumentationBrowser
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            
+
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
             Assembly assembly;
@@ -263,6 +290,8 @@ namespace Dynamo.DocumentationBrowser
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
             }
+            //inject our DPI functions:
+            result = result + DPISCRIPT;
 
             return result;
         }

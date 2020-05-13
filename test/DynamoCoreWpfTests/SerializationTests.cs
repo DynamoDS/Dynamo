@@ -27,6 +27,7 @@ namespace DynamoCoreWpfTests
 {
     internal class SerializationTests : DynamoViewModelUnitTest
     {
+
         [Test]
         [Category("UnitTests")]
         public void TestBasicAttributes()
@@ -469,6 +470,8 @@ namespace DynamoCoreWpfTests
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
+        private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
+
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -1006,7 +1009,7 @@ namespace DynamoCoreWpfTests
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }
             .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
-            return fis.Select(fi => fi.FullName).ToArray();
+            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
         }
 
 

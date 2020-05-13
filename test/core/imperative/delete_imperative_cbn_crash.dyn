@@ -1,0 +1,174 @@
+{
+  "Uuid": "5cbd5e74-0c40-4731-8de5-a14376da2743",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "crash_repro",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Curve.StartPoint": {
+        "Key": "Autodesk.DesignScript.Geometry.Curve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Curve.EndPoint": {
+        "Key": "Autodesk.DesignScript.Geometry.Curve",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Math": {
+        "Key": "DSCore.Math",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "def giveMeEPlusPi()\n{\n  impPi = [Imperative]\n  {\n    return giveMePi();\n  }\n  impE = [Imperative]\n  {\n    return giveMeE();\n  }\n  return Math.Sum([impPi, impE]);\n}\n\ndef giveMeE()\n{\n  return 2.718;\n}\n\ndef giveMePi()\n{\n  return 3.142;\n};",
+      "Id": "a531f0bb1b8b42418b58a5676e2b0107",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a=giveMeEPlusPi();",
+      "Id": "0692b19256834a9187f3bcd500d513f1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6867de1c60b84ac5944f76aea5f0520a",
+          "Name": "",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "b=a+1;",
+      "Id": "235f53bad91345d0986ab9c6588cba45",
+      "Inputs": [
+        {
+          "Id": "44f93bd8548141c9a8f2f7338c925e21",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db93f82ac4874eff840022e9abeb5731",
+          "Name": "",
+          "Description": "b",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "def grpCrvs(Curve:var[]..[])\n    {\n    \tdis1 = (Curve.StartPoint)<1>.DistanceTo(Curve<2>)==0\n        ||(Curve.EndPoint)<1>.DistanceTo(Curve<2>)==0;\n    \tind1 = DSCore.List.AllIndicesOf(dis1<1>,true);\n    \tbln1 = true;\n    \tind2 = [Imperative]\n    \t{\n    \t\twhile (bln1)\n    \t\t{\n    \t\t\tcnt1 = DSCore.List.Count(ind1);\n    \t\t\tind1 = grpIndx(ind1);\n    \t\t\tcnt2 = DSCore.List.Count(ind1);\n    \t\t\tbln1 = cnt2!=cnt1;\n    \t\t}\n    \t\treturn = ind1;\n    \t}\n    \tcrv1 = DSCore.List.GetItemAtIndex(Curve,ind2);\n    \treturn = crv1;\n    };\n\n    def grpIndx(ind:var[]..[])\n    {\n    \tind1 = DSCore.List.SetIntersection(ind<1>,ind<2>);\n    \tcnt1 = DSCore.List.Count(ind1<1><2>)>1;\n    \tind2 = DSCore.List.FilterByBoolMask(ind,cnt1<1>)[\"in\"];\n    \tind3 = DSCore.List.UniqueItems(DSCore.List.Flatten(ind2<1>,-1)<1>);\n    \tind4 = DSCore.List.UniqueItems(DSCore.List.Sort(ind3<1>));\n    \treturn = ind4;\n    };",
+      "Id": "45f0db0fc014481e9b7f939da54f2adc",
+      "Inputs": [],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6867de1c60b84ac5944f76aea5f0520a",
+      "End": "44f93bd8548141c9a8f2f7338c925e21",
+      "Id": "27eebd44113640e7a1f161caeadac75e"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8475",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "a531f0bb1b8b42418b58a5676e2b0107",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 554.2,
+        "Y": 95.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "0692b19256834a9187f3bcd500d513f1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -19.0,
+        "Y": 26.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "235f53bad91345d0986ab9c6588cba45",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 213.83216955952196,
+        "Y": 28.548083791714419
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "45f0db0fc014481e9b7f939da54f2adc",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -113.913086330586,
+        "Y": 147.03575124246467
+      }
+    ],
+    "Annotations": [],
+    "X": 83.554627092476267,
+    "Y": 60.75454555821301,
+    "Zoom": 0.68246059654089
+  }
+}

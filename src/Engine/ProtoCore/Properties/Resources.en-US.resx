@@ -885,7 +885,7 @@
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
     <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html.</value>
+Parameter name: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>No function called {0} on a {1} could be found</value>
@@ -927,7 +927,7 @@ Parameter name: {0}. href=ArgumentNullException.html.</value>
     <value>Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed.</value>
   </data>
   <data name="InvalidArrayIndexType" xml:space="preserve">
-    <value>List indices must be numeric. href=InvalidArrayIndexType.html.</value>
+    <value>List indices must be numeric. href=InvalidArrayIndexType.html</value>
   </data>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
     <value>Cannot convert List to Dictionary type.</value>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using Analytics.NET.Google;
+using Analytics.NET.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Microsoft.Win32;
+
 
 namespace Dynamo.Logging
 {
@@ -36,6 +38,12 @@ namespace Dynamo.Logging
             if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
+            if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+            {
+                if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+                    service.Register(new ADPTrackerFactory());
+            }
+
             StabilityCookie.Startup();
 
             heartbeat = Heartbeat.GetInstance(model);
@@ -59,6 +67,11 @@ namespace Dynamo.Logging
                 // Unregister the GATrackerFactory only after shutdown is recorded.
                 // Unregister is required, so that the host app can re-start Analytics service.
                 Service.Instance.Unregister(GATrackerFactory.Name);
+
+                if (true == Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                {
+                    Service.Instance.Unregister(ADPTrackerFactory.Name);
+                }
             }
             
             if (null != heartbeat)
@@ -169,7 +182,14 @@ namespace Dynamo.Logging
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
-            product = new ProductInfo() { Name = "Dynamo", VersionString = appversion, AppVersion = dynamoModel.Version };
+            string buildId = "", releaseId = "";
+            Version version;
+            if (Version.TryParse(dynamoModel.Version, out version))
+            {
+                buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
+                releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
+            }
+            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         /// <summary>
@@ -181,8 +201,7 @@ namespace Dynamo.Logging
             if (preferences!= null && preferences.IsAnalyticsReportingApproved)
             {
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product,
-                    new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
+                Service.StartUp(product, new UserInfo(Session.UserId), preferences.IsAnalyticsReportingApproved ? TimeSpan.FromMinutes(30) : TimeSpan.MaxValue);
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
             }
