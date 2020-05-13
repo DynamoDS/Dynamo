@@ -120,9 +120,15 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = true;
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             this.content = null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -150,14 +156,14 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                var content = LoadContentFromResources(e.Link.ToString());
-                if (content == null)
+                var targetcontent = LoadContentFromResources(e.Link.ToString());
+                if (targetcontent == null)
                 {
                     NavigateToContentMissingPage();
                 }
                 else
                 {
-                    this.content = content;
+                    this.content = targetcontent;
                     this.Link = e.Link;
                 }
             }
@@ -223,7 +229,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.Link = new Uri(link, UriKind.Relative);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // silently ignore any exceptions as otherwise it brings down all of Dynamo
             }
@@ -256,7 +262,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     assemblyName = assemblyName.Substring(0, versionIndex);
                 }
-                assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == assemblyName).FirstOrDefault();
+                assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == assemblyName);
                 if (assembly == null)
                 {
                     // The specified assembly is not loaded
@@ -273,15 +279,24 @@ namespace Dynamo.DocumentationBrowser
             var availableResources = assembly.GetManifestResourceNames();
 
             var matchingResource = availableResources
-                .Where(str => str.EndsWith(name))
-                .FirstOrDefault();
+                .FirstOrDefault(str => str.EndsWith(name));
 
             if (string.IsNullOrEmpty(matchingResource)) return null;
 
-            using (Stream stream = assembly.GetManifestResourceStream(matchingResource))
-            using (StreamReader reader = new StreamReader(stream))
+            Stream stream = null;
+            try
             {
-                result = reader.ReadToEnd();
+                stream = assembly.GetManifestResourceStream(matchingResource);
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    result = reader.ReadToEnd();
+                    stream = null;
+                }
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Dispose();
             }
 
             // Clean up possible script tags from document

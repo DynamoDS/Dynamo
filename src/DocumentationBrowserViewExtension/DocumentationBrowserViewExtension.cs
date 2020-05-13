@@ -48,17 +48,18 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        public void Startup(ViewStartupParams p)
         {
+            // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public void Loaded(ViewLoadedParams p)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
 
-            this.viewLoadedParams = viewLoadedParams; 
+            this.viewLoadedParams = p; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -86,17 +87,24 @@ namespace Dynamo.DocumentationBrowser
             Dispose();
         }
 
-        /// <summary>
-        /// Dispose function after extension is closed
-        /// </summary>
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
+            // Cleanup
             DynamoView.CloseExtension -= OnCloseExtension;
             this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
             this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
 
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
+        }
+
+        /// <summary>
+        /// Dispose function after extension is closed
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
