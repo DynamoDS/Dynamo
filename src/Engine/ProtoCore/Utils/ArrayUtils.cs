@@ -142,6 +142,47 @@ namespace ProtoCore.Utils
             return usageFreq;
         }
 
+        /// <summary>
+        /// Similar to GetTypeExamplesForLayer but it returns all non-empty arrays.
+        /// Its purpose is to support inspecting heterogeneous arrays in replication scenarios.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        internal static List<StackValue> GetTypeExamplesForLayerWithoutArraySampling(StackValue array, RuntimeCore runtimeCore)
+        {
+            var result = new List<StackValue>();
+            var alreadyFoundTypes = new HashSet<int>();
+
+            if (!array.IsArray)
+            {
+                result.Add(array);
+                return result;
+            }
+
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.Values)
+            {
+                if (sv.IsArray)
+                {
+                    if (!IsEmpty(sv, runtimeCore))
+                    {
+                        result.Add(sv);
+                    }
+                }
+                else
+                {
+                    if (!alreadyFoundTypes.Contains(sv.metaData.type))
+                    {
+                        alreadyFoundTypes.Add(sv.metaData.type);
+                        result.Add(sv);
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// Generate type statistics for given layer of an array

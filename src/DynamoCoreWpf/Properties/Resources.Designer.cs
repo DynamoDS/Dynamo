@@ -61,16 +61,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] _dynamo {
-            get {
-                object obj = ResourceManager.GetObject("_dynamo", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not get version..
         /// </summary>
         public static string AboutWindowCannotGetVersion {
@@ -4423,6 +4413,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] psDynamoMesh {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -5565,6 +5565,16 @@ namespace Dynamo.Wpf.Properties {
         public static string VersionValueGreaterThan0 {
             get {
                 return ResourceManager.GetString("VersionValueGreaterThan0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] vsDynamoMesh {
+            get {
+                object obj = ResourceManager.GetObject("vsDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

@@ -106,7 +106,7 @@ namespace Autodesk.DesignScript.Interfaces
         IEnumerable<byte> PointVertexColors { get; }
 
         /// <summary>
-        /// A collection containing all mesh vertex indices.
+        /// A collection containing all point vertex indices.
         /// </summary>
         IEnumerable<int> PointIndices { get; }
 

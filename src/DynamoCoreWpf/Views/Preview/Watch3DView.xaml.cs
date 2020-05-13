@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -10,7 +11,6 @@ using Dynamo.Visualization;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
-using Model3D = HelixToolkit.Wpf.SharpDX.Model3D;
 using Point = System.Windows.Point;
 
 namespace Dynamo.Controls
@@ -46,6 +46,7 @@ namespace Dynamo.Controls
             InitializeComponent();
             Loaded += ViewLoadedHandler;
             Unloaded += ViewUnloadedHandler;
+
         }
 
         #endregion
@@ -62,13 +63,32 @@ namespace Dynamo.Controls
 
             UnRegisterViewEventHandlers();
 
-            ViewModel.RequestAttachToScene -= ViewModelRequestAttachToSceneHandler;
             ViewModel.RequestCreateModels -= RequestCreateModelsHandler;
             ViewModel.RequestRemoveModels -= RequestRemoveModelsHandler;
             ViewModel.RequestViewRefresh -= RequestViewRefreshHandler;
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
+        }
+
+        private void RegisterEventHandlers()
+        {
+            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+
+            RegisterButtonHandlers();
+
+            RegisterViewEventHandlers();
+
+            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
+            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
+            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
+            ViewModel.RequestClickRay += GetClickRay;
+            ViewModel.RequestCameraPosition += GetCameraPosition;
+            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
+
+            ViewModel.UpdateUpstream();
+            ViewModel.OnWatchExecution();
+
         }
 
         private void RegisterButtonHandlers()
@@ -111,6 +131,7 @@ namespace Dynamo.Controls
 
         private void UnRegisterViewEventHandlers()
         {
+
             watch_view.MouseDown -= ViewModel.OnViewMouseDown;
             watch_view.MouseUp -= ViewModel.OnViewMouseUp;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
@@ -140,22 +161,12 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
-            CompositionTarget.Rendering += CompositionTargetRenderingHandler;
+            var grid = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
+            var axes = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultAxesName];
+            var directionalLight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultLightName];
+            var headlight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.HeadLightName];
 
-            RegisterButtonHandlers();
-
-            RegisterViewEventHandlers();
-
-            ViewModel.RequestAttachToScene += ViewModelRequestAttachToSceneHandler;
-            ViewModel.RequestCreateModels += RequestCreateModelsHandler;
-            ViewModel.RequestRemoveModels += RequestRemoveModelsHandler;
-            ViewModel.RequestViewRefresh += RequestViewRefreshHandler;
-            ViewModel.RequestClickRay += GetClickRay;
-            ViewModel.RequestCameraPosition += GetCameraPosition;
-            ViewModel.RequestZoomToFit += ViewModel_RequestZoomToFit;
-
-            ViewModel.UpdateUpstream();
-            ViewModel.OnWatchExecution();
+            RegisterEventHandlers();
         }
 
         private void ViewModel_RequestZoomToFit(BoundingBox bounds)
@@ -191,14 +202,6 @@ namespace Dynamo.Controls
             else
             {
                 Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() => ViewModel.DeleteGeometryForNode(node)));
-            }
-        }
-
-        private void ViewModelRequestAttachToSceneHandler(Model3D model3D)
-        {
-            if (!model3D.IsAttached && View != null && View.RenderHost != null)
-            {
-                model3D.Attach(View.RenderHost);
             }
         }
 
