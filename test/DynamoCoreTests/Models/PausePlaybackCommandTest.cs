@@ -16,7 +16,7 @@ namespace Dynamo.Tests.ModelsTest
             //Arrange
             var cmd = new PausePlaybackCommandDerivedTest(10);
 
-            //Act/Assert
+            //Assert
             //When the ExecuteCore method is executed for a PausePlaybackCommand class it will throw a exception
             Assert.Throws<NotImplementedException>(() => cmd.ExecuteTest(CurrentDynamoModel));
         }

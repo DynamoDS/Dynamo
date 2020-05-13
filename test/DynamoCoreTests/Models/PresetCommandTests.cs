@@ -29,7 +29,7 @@ namespace Dynamo.Tests.ModelsTest
             XmlDocument xmlDocument = new XmlDocument();        
             XmlElement elemTest = xmlDocument.CreateElement("TestCommand");
 
-            //Act//Assert
+            //Assert
             //Because we don't have guids it will reach the Exception section in de DeserializeCore method
             Assert.Throws<ArgumentNullException>( () => DynamoModel.AddPresetCommand.DeserializeCore(elemTest));
         }

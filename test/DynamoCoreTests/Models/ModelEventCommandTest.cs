@@ -29,8 +29,6 @@ namespace Dynamo.Tests.ModelsTest
 
             //Act
             XmlElement elemTest = xmlDocument.CreateElement("TestModelEventCommand");
-
-            //Act
             var command1 = new ModelEventCommand(cbn.GUID,"testEvent1",1);
             var command2 = new ModelEventCommand(cbn.GUID, "testEvent2");
             var command3 = new ModelEventCommand(modelGuid, "testEvent3");         
