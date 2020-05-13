@@ -1,8 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
+using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
@@ -145,24 +148,62 @@ namespace Dynamo.Tests.ModelsTest
         [Category("UnitTests")]
         public void DynamoModel_SelectModelImpl()
         {
-            //Arrange
-            //This guid already exist in the .dyn file (List.Create), then it will execute a specific code in GetNodeFromCommand method
-            Guid existingNodeGuid = new Guid("81c94fd0-35a0-4680-8535-00aff41192d3");
-
             string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
             RunModel(openPath);
 
-            var command = new DynCmd.CreateNodeCommand(existingNodeGuid.ToString(), "List.Create", 0, 0, true, true);
+            Guid id = Guid.NewGuid();
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
-            //Act
-            CurrentDynamoModel.ExecuteCommand(command);
+            //Select the node and notes
+            DynamoSelection.Instance.Selection.Add(addNode);
 
-            //Assert
-            //Validating that the NodeCommand was successfully created.
-            Assert.IsNotNull(command);
-            Assert.AreEqual(command.Name, "List.Create");
-            Assert.AreEqual(command.ModelGuid.ToString(), existingNodeGuid.ToString());
+            var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
+            var selectCommand = new DynamoModel.SelectModelCommand(ids,ModifierKeys.Shift);
+
+            CurrentDynamoModel.ExecuteCommand(selectCommand);
         }
 
+        
+        [Test]
+        [Category("UnitTests")]
+        public void DynamoModel_BeginDuplicateConnection()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
+            RunModel(openPath);
+
+            Guid id = Guid.NewGuid();
+            Guid existingNodeGuid = new Guid("81c94fd0-35a0-4680-8535-00aff41192d3");
+
+            var connectionCommand = new DynamoModel.MakeConnectionCommand(id,0,PortType.Input, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
+
+            var connectionCommand2 = new DynamoModel.MakeConnectionCommand(id, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
+
+            var codeBlockNode1 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode1, "3;");
+
+            var connectionCommand3 = new DynamoModel.MakeConnectionCommand(existingNodeGuid, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
+
+            CurrentDynamoModel.ExecuteCommand(connectionCommand);
+            CurrentDynamoModel.ExecuteCommand(connectionCommand2);
+            CurrentDynamoModel.ExecuteCommand(connectionCommand3);
+        }
+
+        private CodeBlockNodeModel CreateCodeBlockNode()
+        {
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            var command = new DynCmd.CreateNodeCommand(cbn, 0, 0, true, false);
+
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            Assert.IsNotNull(cbn);
+            return cbn;
+        }
+
+        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
+            CurrentDynamoModel.ExecuteCommand(command);
+        }
     }
 }
