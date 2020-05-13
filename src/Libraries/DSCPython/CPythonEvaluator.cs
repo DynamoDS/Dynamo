@@ -43,39 +43,55 @@ namespace DSCPython
             if (code != prev_code)
             {
                 Python.Included.Installer.SetupPython().Wait();
-                PythonEngine.Initialize();
-                using (Py.GIL())
+
+                if (!PythonEngine.IsInitialized)
                 {
-                    using (PyScope scope = Py.CreateScope())
+                    PythonEngine.Initialize();
+                    PythonEngine.BeginAllowThreads();
+                }
+
+                IntPtr gs = PythonEngine.AcquireLock();
+                try
+                {
+                    using (Py.GIL())
                     {
-                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                        for (int i = 0; i < amt; i++)
+                        using (PyScope scope = Py.CreateScope())
                         {
-                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
-                        }
+                            int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
-                        try
-                        {
-                            OnEvaluationBegin(scope, code, bindingValues);
-                            scope.Exec(code);
-                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            for (int i = 0; i < amt; i++)
+                            {
+                                scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                            }
 
-                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
+                            try
+                            {
+                                OnEvaluationBegin(scope, code, bindingValues);
+                                scope.Exec(code);
+                                OnEvaluationEnd(false, scope, code, bindingValues);
 
-                            return OutputMarshaler.Marshal(result);
-                        }
-                        catch (Exception e)
-                        {
-                            OnEvaluationEnd(false, scope, code, bindingValues);
-                            throw e;
+                                var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
+
+                                return OutputMarshaler.Marshal(result);
+                            }
+                            catch (Exception e)
+                            {
+                                OnEvaluationEnd(false, scope, code, bindingValues);
+                                throw e;
+                            }
                         }
                     }
                 }
+                catch (PythonException pe)
+                {
+                    throw pe;
+                }
+                finally
+                {
+                    PythonEngine.ReleaseLock(gs);
+                }
             }
-
-            return null;
-            
+            return null;  
         }
 
         #region Marshalling
