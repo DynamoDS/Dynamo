@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -594,9 +595,27 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
-            // If user does not agree to GA or ADP terms, do not try to launch the client at all
-            if (PreferenceSettings.IsAnalyticsReportingApproved ||
-                PreferenceSettings.IsADPAnalyticsReportingApproved)
+
+            bool areAnalyticsDisabled = false;
+            try
+            {
+                // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
+                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altoghether.
+                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
+                if (assemblyConfig != null)
+                {
+                    var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
+                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabled);
+                }
+            } catch(Exception)
+            {}
+            
+            if (areAnalyticsDisabled)
+            {
+                // If user skipped analytics from assembly configuration, do not try to launch the client at all 
+                // Skip call to instrumentation logger initialization.
+            }
+            else
             {
                 InitializeInstrumentationLogger();
             }
