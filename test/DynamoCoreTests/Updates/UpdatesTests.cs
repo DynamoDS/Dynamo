@@ -36,7 +36,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(eventArgs.UpdateAvailable);
 
             eventArgs = new UpdateDownloadedEventArgs(e, null);
-
+            //UpdateAvailable depends on FileLocation. If it's null, it will be false.
             Assert.IsFalse(eventArgs.UpdateAvailable);
         }
         #endregion
@@ -44,7 +44,7 @@ namespace Dynamo.Tests
         #region UpdateManagerConfiguration
         [Test]
         [Category("UnitTests")]
-        public void UpdateManagerConfiguration_LoadTest()
+        public void UpdateManagerConfigurationLoadTest()
         {
             Assert.IsNull(UpdateManagerConfiguration.Load(null, updateManager));
             Assert.IsNull(UpdateManagerConfiguration.Load("", updateManager));
@@ -54,7 +54,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void UpdateManagerConfiguration_SaveTest()
+        public void UpdateManagerConfigurationSaveTest()
         {
             var config = new UpdateManagerConfiguration();
             Assert.DoesNotThrow(() => config.Save(Path.GetTempFileName(), updateManager));
@@ -62,24 +62,18 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CheckNewerDailyBuildTest()
+        public void UpdateManagerConfigurationPropertiesTest()
         {
             var config = new UpdateManagerConfiguration();
-            var oldValue = config.CheckNewerDailyBuild;
+            var checkNewerDailyBuildOldValue = config.CheckNewerDailyBuild;
 
             config.CheckNewerDailyBuild = !config.CheckNewerDailyBuild;
-            Assert.AreEqual(!oldValue, config.CheckNewerDailyBuild);
-        }
+            Assert.AreEqual(!checkNewerDailyBuildOldValue, config.CheckNewerDailyBuild);
 
-        [Test]
-        [Category("UnitTests")]
-        public void ForceUpdateTest()
-        {
-            var config = new UpdateManagerConfiguration();
-            var oldValue = config.ForceUpdate;
+            var forceUpdateOldValue = config.ForceUpdate;
 
             config.ForceUpdate = !config.ForceUpdate;
-            Assert.AreEqual(!oldValue, config.ForceUpdate);
+            Assert.AreEqual(!forceUpdateOldValue, config.ForceUpdate);
         }
         #endregion
 
@@ -114,6 +108,7 @@ namespace Dynamo.Tests
         {
             var lookup = new DynamoLookupChildTest();
 
+            //LatestProduct will be null in this case because in DynamoLookupChildTest, the implementation of GetDynamoInstallLocations returns an empty list.
             Assert.IsNull(lookup.LatestProduct);
             Assert.IsNull(lookup.GetDynamoVersion(Path.GetTempPath()));
             Assert.IsNotNull(lookup.GetDynamoUserDataLocations());
@@ -123,7 +118,7 @@ namespace Dynamo.Tests
         #region UpdateRequest
         [Test]
         [Category("UnitTests")]
-        public void UpdateRequest_ConstructorTest()
+        public void UpdateRequestConstructorTest()
         {
             var path = new Uri(Path.GetTempPath());
             var updateRequest = new UpdateRequest(path, updateManager);
