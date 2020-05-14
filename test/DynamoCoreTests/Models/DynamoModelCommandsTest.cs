@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -9,6 +10,7 @@ using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using NUnit.Framework;
+using static Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests.ModelsTest
 {
@@ -177,7 +179,7 @@ namespace Dynamo.Tests.ModelsTest
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
-            //Select the node and notes
+            //Select the node created (DSFunction)
             DynamoSelection.Instance.Selection.Add(addNode);
             var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
             var selectCommand = new DynamoModel.SelectModelCommand(ids,ModifierKeys.Shift);
@@ -229,29 +231,64 @@ namespace Dynamo.Tests.ModelsTest
             Assert.IsNotNull(connectionCommand3);
         }
 
+        /// <summary>
+        /// This test method will execute the next methods from the DynamoModel class
+        /// private void UngroupModelImpl(UngroupModelCommand command)
+        /// private void AddToGroupImpl(AddModelToGroupCommand command)
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void UngroupGrouplImplTest()
         {
             //Arrange
+            var guid1 = Guid.Empty;
+            var command1 = new AddModelToGroupCommand(guid1);
+            var command2 = new UngroupModelCommand(guid1);
+
+            //Act
+            //Internally this will execute the AddToGroupImpl method
+            command1.Execute(CurrentDynamoModel);
+            //Internally this will execute the UngroupModelImpl method
+            command2.Execute(CurrentDynamoModel);
+
+            //Assert
+            //Verify that the command was created successfully and that the guids match
+            Assert.IsNotNull(command1);
+            Assert.AreEqual(command1.ModelGuid, guid1);
+            Assert.IsNotNull(command2);
+            Assert.AreEqual(command2.ModelGuid, guid1);
+        }
+
+        /// <summary>
+        /// This test method will execute the next methods from the DynamoModel class
+        /// void CreatePresetStateImpl(AddPresetCommand command)
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void CreatePresetStateImplTest()
+        {
+            //Arrange
             string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
             RunModel(openPath);
+            var guidState = Guid.NewGuid();
 
             //This will add a new DSFunction node to the current workspace
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
 
-            //Select the node and notes
+            //Select the node created (DSFunction)
             DynamoSelection.Instance.Selection.Add(addNode);
             var ids = DynamoSelection.Instance.Selection.OfType<NodeModel>().Select(x => x.GUID).ToList();
-            var selectCommand = new DynamoModel.SelectModelCommand(ids, ModifierKeys.Shift);
+            var addPresetCommand = new AddPresetCommand("PresetName", "Preset Description", ids);
 
             //Act
-            CurrentDynamoModel.ExecuteCommand(selectCommand);
+            addPresetCommand.Execute(CurrentDynamoModel);
 
             //Assert
-            Assert.Greater(ids.Count, 0); //At least one guid was found
-            Assert.IsNotNull(selectCommand);
+            //Validates that the AddPresetCommand was created correctly
+            Assert.IsNotNull(addPresetCommand);
+            Assert.AreEqual(addPresetCommand.PresetStateName, "PresetName");
+            Assert.AreEqual(addPresetCommand.PresetStateDescription, "Preset Description");
         }
     }
 }

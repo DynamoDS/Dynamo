@@ -118,6 +118,7 @@
     <Compile Include="Models\PausePlaybackCommandTest.cs" />
     <Compile Include="Models\PresetCommandTests.cs" />
     <Compile Include="Models\RecordableCommandsTest.cs" />
+    <Compile Include="Models\RunSettingsTest.cs" />
     <Compile Include="Models\SelectModelCommandTest.cs" />
     <Compile Include="Models\UndoRedoCommandTest.cs" />
     <Compile Include="Models\UpdateModelValueCommandTest.cs" />
