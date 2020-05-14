@@ -116,7 +116,6 @@ namespace Dynamo.UI.Prompts
             }
 
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptAnalyticsReportingCheck.IsChecked.Value);
-            Analytics.ReportingADPAnalytics = AcceptAnalyticsReportingCheck.IsChecked.Value;
             Close();
         }
 
