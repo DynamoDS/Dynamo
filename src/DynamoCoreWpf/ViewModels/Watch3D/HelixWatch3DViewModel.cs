@@ -192,13 +192,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
 
         private Object element3DDictionaryMutex = new object();
-        /// <summary>
-        /// Mutex object
-        /// </summary>
-        public Object Element3DDictionaryMutex
-        {
-            get { return element3DDictionaryMutex; }
-        }
 
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
 
