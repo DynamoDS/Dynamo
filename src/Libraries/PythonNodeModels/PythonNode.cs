@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
+using DSCPython;
+using DSIronPython;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -39,7 +41,7 @@ namespace PythonNodeModels
 
         [JsonConverter(typeof(StringEnumConverter))]
         /// <summary>
-        /// Return the display name of python engine enum.
+        /// Return the user selected python engine enum.
         /// </summary>
         public PythonEngineVersion Engine
         {
@@ -49,7 +51,8 @@ namespace PythonNodeModels
                 if (engine != value)
                 {
                     engine = value;
-                    RaisePropertyChanged("Engine");
+                    RaisePropertyChanged(nameof(Engine));
+                    OnNodeModified();
                 }
             }
         }
@@ -83,13 +86,14 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-            if (Engine == PythonEngineVersion.CPython3)
+
+            if (Engine == PythonEngineVersion.IronPython2)
             {
-                pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
             }
-            else if (Engine == PythonEngineVersion.IronPython2)
+            else if (Engine == PythonEngineVersion.CPython3)
             {
-                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
+                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
             }
             else
             {
@@ -137,7 +141,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                return "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
                         "import sys" + Environment.NewLine +
                         "import clr" + Environment.NewLine +
                         "clr.AddReference('ProtoGeometry')" + Environment.NewLine +

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
@@ -1076,9 +1077,9 @@ namespace Dynamo.Graph.Workspaces
             Guid deterministicGuid;
             if (!Guid.TryParse(obj.Value<string>(), out deterministicGuid))
             {
-                Console.WriteLine("the id was not a guid, converting to a guid");
+                Debug.WriteLine("the id was not a guid, converting to a guid");
                 deterministicGuid = GuidUtility.Create(GuidUtility.UrlNamespace, obj.Value<string>());
-                Console.WriteLine(obj + " becomes " + deterministicGuid);
+                Debug.WriteLine(obj + " becomes " + deterministicGuid);
             }
             return deterministicGuid;
         }
@@ -1191,7 +1192,7 @@ namespace Dynamo.Graph.Workspaces
             if (!Guid.TryParse(reference, out id))
             {
                 // If this is not a guid, it won't be in the resolver.
-                Console.WriteLine("not a guid");
+                Debug.WriteLine("not a guid");
                 return null;
             }
             object model;
@@ -1213,7 +1214,7 @@ namespace Dynamo.Graph.Workspaces
             if (!Guid.TryParse(reference, out id))
             {
                 // If this is not a guid, it won't be in the resolver.
-                Console.WriteLine("not a guid");
+                Debug.WriteLine("not a guid");
                 return null;
             }
             object model;

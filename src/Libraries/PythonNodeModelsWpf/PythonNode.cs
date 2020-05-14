@@ -19,6 +19,7 @@ namespace PythonNodeModelsWpf
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
+        private MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
         private MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
         private MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
 
@@ -31,16 +32,17 @@ namespace PythonNodeModelsWpf
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
             workspaceModel = nodeView.ViewModel.WorkspaceViewModel.Model;
 
-            var editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
             nodeView.MainContextMenu.Items.Add(editWindowItem);
-            editWindowItem.Click += delegate { EditScriptContent(); };
+            editWindowItem.Click += EditScriptContent;
+
             // If it is a Debug build, display a python engine switcher
-            if (dynamoViewModel.IsDebugBuild)
+            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
             {
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
-                pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
+                pythonEngine2Item.Click += UpdateToPython2Engine;
+                pythonEngine3Item.Click += UpdateToPython3Engine;
+
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 
@@ -59,7 +61,7 @@ namespace PythonNodeModelsWpf
 
             nodeView.UpdateLayout();
 
-            nodeView.MouseDown += view_MouseDown;
+            nodeView.MouseDown += View_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
         }
@@ -70,6 +72,9 @@ namespace PythonNodeModelsWpf
             {
                 editWindow.Close();
             }
+            editWindowItem.Click -= EditScriptContent;
+            pythonEngine2Item.Click -= UpdateToPython2Engine;
+            pythonEngine3Item.Click -= UpdateToPython3Engine;
         }
 
         private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
@@ -91,11 +96,11 @@ namespace PythonNodeModelsWpf
             }
         }
 
-        private void view_MouseDown(object sender, MouseButtonEventArgs e)
+        private void View_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ClickCount >= 2)
             {
-                EditScriptContent();
+                EditScriptContent(null, null);
                 e.Handled = true;
             }
         }
@@ -105,7 +110,7 @@ namespace PythonNodeModelsWpf
             editWindow = null;
         }
 
-        private void EditScriptContent()
+        private void EditScriptContent(object sender, EventArgs e)
         {
             using (var cmd = Dynamo.Logging.Analytics.TrackCommandEvent("PythonEdit"))
             {
@@ -126,7 +131,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// MenuItem click handler
         /// </summary>
-        private void UpdateToPython2Engine()
+        private void UpdateToPython2Engine(object sender, EventArgs e)
         {
             pythonNodeModel.Engine = PythonEngineVersion.IronPython2;
             pythonEngine2Item.IsChecked = true;
@@ -136,7 +141,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// MenuItem click handler
         /// </summary>
-        private void UpdateToPython3Engine()
+        private void UpdateToPython3Engine(object sender, EventArgs e)
         {
             pythonNodeModel.Engine = PythonEngineVersion.CPython3;
             pythonEngine2Item.IsChecked = false;

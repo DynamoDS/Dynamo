@@ -18,6 +18,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndict = IN[0]\r\n\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [dict[\"dict\"], dict[\"list\"]]",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "490a8d54d0fa4782ae18c81f6eef8306",
       "Inputs": [
@@ -74,14 +75,15 @@
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.1.0.7071",
-      "RunType": "Automatic",
+      "Version": "2.7.0.8544",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -98,21 +100,21 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Python Script",
         "Id": "490a8d54d0fa4782ae18c81f6eef8306",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Python Script",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 519.33333333333326,
         "Y": 132.00000000000006
       },
       {
-        "ShowGeometry": true,
-        "Name": "Code Block",
         "Id": "e1f1c82d24b0484d93990fca95926011",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Code Block",
+        "ShowGeometry": true,
         "Excluded": false,
         "X": 73.333333333333371,
         "Y": 144.33333333333337
