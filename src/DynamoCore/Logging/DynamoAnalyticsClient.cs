@@ -135,6 +135,8 @@ namespace Dynamo.Logging
 
         private IPreferences preferences = null;
 
+        private IAnalyticsUI adpAnalyticsUI = null;
+
         public static IDisposable Disposable { get { return new Dummy(); } }
 
         private ProductInfo product;
@@ -152,6 +154,19 @@ namespace Dynamo.Logging
                     && Service.IsInitialized
                     && preferences.IsAnalyticsReportingApproved;
             }
+        }
+
+        /// <summary>
+        /// Return if ADP Analytics Client is allowed to send analytics info
+        /// </summary>
+        public bool ReportingADPAnalytics
+        {
+            get
+            {
+                if (!Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker")) { return false; }
+                return adpAnalyticsUI?.IsOptedIn() ?? false;
+            }
+            set { adpAnalyticsUI?.SetOptedIn(value); }
         }
 
         /// <summary>
@@ -173,6 +188,8 @@ namespace Dynamo.Logging
             //Set the preferences, so that we can get live value of analytics 
             //reporting approved status.
             preferences = dynamoModel.PreferenceSettings;
+
+            adpAnalyticsUI = new ADPAnalyticsUI();
 
             if (Session == null) Session = new DynamoAnalyticsSession();
 

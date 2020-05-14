@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
+using Dynamo.Logging;
 using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
@@ -29,26 +30,43 @@ namespace Dynamo.UI.Prompts
             }
             viewModel = dynamoViewModel;
 
-            var instrumentationFile = "InstrumentationConsent.rtf";
-
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref instrumentationFile))
-                InstrumentationContent.File = instrumentationFile;
-
             var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
                 GoogleAnalyticsContent.File = googleAnalyticsFile;
 
-            AcceptUsageReportingTextBlock.Text =
-                string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
-                    dynamoViewModel.BrandingResourceProvider.ProductName);
-            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
+            AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
+
             AcceptUsageReportingCheck.Visibility =
                 UsageReportingManager.Instance.IsAnalyticsReportingApproved ?
                 System.Windows.Visibility.Visible :
                 System.Windows.Visibility.Hidden;
-            AcceptAnalyticsReportingCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
+            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+            {
+                var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
+                if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
+                    InstrumentationContent.File = adpAnalyticsFile;
+
+                AcceptUsageReportingTextBlock.Text =
+                    string.Format(Wpf.Properties.Resources.ConsentFormADPAnalyticsCheckBoxContent,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
+
+                AcceptUsageReportingCheck.IsChecked = Analytics.ReportingADPAnalytics;
+            }
+            else
+            {
+                var instrumentationFile = "InstrumentationConsent.rtf";
+                if (viewModel.Model.PathManager.ResolveDocumentPath(ref instrumentationFile))
+                    InstrumentationContent.File = instrumentationFile;
+
+                AcceptUsageReportingTextBlock.Text =
+                    string.Format(Wpf.Properties.Resources.ConsentFormInstrumentationCheckBoxContent,
+                    dynamoViewModel.BrandingResourceProvider.ProductName);
+
+                AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
+                
+            }
         }
 
         private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
@@ -61,10 +79,12 @@ namespace Dynamo.UI.Prompts
 
         private void ToggleIsAnalyticsReportingChecked(object sender, RoutedEventArgs e)
         {
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(
-                AcceptAnalyticsReportingCheck.IsChecked.HasValue && 
-                AcceptAnalyticsReportingCheck.IsChecked.Value);
-            if (AcceptAnalyticsReportingCheck.IsChecked == true)
+            var isAnalyticsEnabled = AcceptAnalyticsReportingCheck.IsChecked.HasValue &&
+                            AcceptAnalyticsReportingCheck.IsChecked.Value;
+
+            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(isAnalyticsEnabled);
+
+            if (isAnalyticsEnabled)
             {
                 AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Visible;
             }
@@ -72,15 +92,31 @@ namespace Dynamo.UI.Prompts
             {
                 AcceptUsageReportingCheck.Visibility = System.Windows.Visibility.Hidden;
                 AcceptUsageReportingCheck.IsChecked = false;
-                UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+
+                if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                {
+                    Analytics.ReportingADPAnalytics = false;
+                } else
+                {
+                    UsageReportingManager.Instance.SetUsageReportingAgreement(false);
+                }
             }
         }
 
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
             // Update user agreement
-            UsageReportingManager.Instance.SetUsageReportingAgreement(AcceptUsageReportingCheck.IsChecked.Value);
+            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+            {
+                Analytics.ReportingADPAnalytics = AcceptUsageReportingCheck.IsChecked.Value;
+            }
+            else
+            {
+                UsageReportingManager.Instance.SetUsageReportingAgreement(AcceptUsageReportingCheck.IsChecked.Value);
+            }
+
             UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptAnalyticsReportingCheck.IsChecked.Value);
+            Analytics.ReportingADPAnalytics = AcceptAnalyticsReportingCheck.IsChecked.Value;
             Close();
         }
 

@@ -53,6 +53,15 @@ namespace Dynamo.Logging
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
 
         /// <summary>
+        /// Returns if ADP analytics reporting is ON
+        /// </summary>
+        public static bool ReportingADPAnalytics
+        {
+            get { return client?.ReportingADPAnalytics ?? false; }
+            set { if (client != null) client.ReportingADPAnalytics = value; }
+        }
+
+        /// <summary>
         /// Tracks application startup time
         /// </summary>
         /// <param name="productName">Dynamo product name</param>
