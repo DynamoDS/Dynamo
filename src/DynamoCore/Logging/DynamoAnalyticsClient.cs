@@ -203,6 +203,8 @@ namespace Dynamo.Logging
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
+            //Dynamo app name.
+            var hostName = dynamoModel.HostName.Length > 0 ? dynamoModel.HostName : "Dynamo";
 
             string buildId = "", releaseId = "";
             Version version;
@@ -211,7 +213,7 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
+            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         /// <summary>
