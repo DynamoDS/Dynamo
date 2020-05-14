@@ -156,14 +156,14 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                var targetcontent = LoadContentFromResources(e.Link.ToString());
-                if (targetcontent == null)
+                var targetContent = LoadContentFromResources(e.Link.ToString());
+                if (targetContent == null)
                 {
                     NavigateToContentMissingPage();
                 }
                 else
                 {
-                    this.content = targetcontent;
+                    this.content = targetContent;
                     this.Link = e.Link;
                 }
             }
