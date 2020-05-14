@@ -15,7 +15,7 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
     {
-        private ViewLoadedParams viewLoadedParams;
+        private ViewLoadedParams viewLoadedParamsRefenrence;
         private MenuItem documentationBrowserMenuItem;
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -48,18 +48,18 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewLoadedParams)
         {
             // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
 
-            this.viewLoadedParams = p; 
+            this.viewLoadedParamsRefenrence = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -71,12 +71,12 @@ namespace Dynamo.DocumentationBrowser
             {
                 viewLoadedParams.CloseExtensioninInSideBar(this);
             };
-            this.viewLoadedParams.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+            this.viewLoadedParamsRefenrence.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
 
             DynamoView.CloseExtension += OnCloseExtension;
 
             // subscribe to the documentation open request event from Dynamo
-            this.viewLoadedParams.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
+            this.viewLoadedParamsRefenrence.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
 
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
@@ -91,7 +91,7 @@ namespace Dynamo.DocumentationBrowser
         {
             // Cleanup
             DynamoView.CloseExtension -= OnCloseExtension;
-            this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            this.viewLoadedParamsRefenrence.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
             this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
 
             this.BrowserView?.Dispose();
@@ -159,7 +159,7 @@ namespace Dynamo.DocumentationBrowser
                 this.ViewModel?.EnsurePageHasContent();
             }
 
-            this.viewLoadedParams?.AddToExtensionsSideBar(this, this.BrowserView);
+            this.viewLoadedParamsRefenrence?.AddToExtensionsSideBar(this, this.BrowserView);
         }
 
         // hide browser directly when startpage is shown to deal with air space problem.

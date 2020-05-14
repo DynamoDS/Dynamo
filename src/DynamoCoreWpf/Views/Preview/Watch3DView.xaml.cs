@@ -160,11 +160,6 @@ namespace Dynamo.Controls
 
             if (ViewModel == null) return;
 
-            var grid = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
-            var axes = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultAxesName];
-            var directionalLight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultLightName];
-            var headlight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.HeadLightName];
-
             RegisterEventHandlers();
         }
 
