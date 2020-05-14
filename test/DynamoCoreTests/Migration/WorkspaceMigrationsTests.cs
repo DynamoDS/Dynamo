@@ -26,6 +26,9 @@ namespace Dynamo.Tests.Migrations
 
             using (StringWriter stringWriter = new StringWriter())
             {
+                TextWriter standardOutput = Console.Out;
+
+                // Set the console out to a string object to verify the log message.
                 Console.SetOut(stringWriter);
 
                 //Act
@@ -35,8 +38,8 @@ namespace Dynamo.Tests.Migrations
 
                 consoleOutput = stringWriter.ToString();
 
-                StreamWriter sw = new StreamWriter(Console.OpenStandardOutput());
-                Console.SetOut(sw);
+                // Set the console out back to std out. 
+                Console.SetOut(standardOutput);
             }
 
             //Checks that the console output text contains the migration info
