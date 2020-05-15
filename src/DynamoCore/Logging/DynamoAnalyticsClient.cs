@@ -15,12 +15,6 @@ namespace Dynamo.Logging
         private Heartbeat heartbeat;
         private UsageLog logger;
 
-#if DEBUG
-        private const string ANALYTICS_PROPERTY = "UA-78361914-2";
-#else
-        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
-#endif
-
         public DynamoAnalyticsSession()
         {
             UserId = GetUserID();
@@ -29,17 +23,6 @@ namespace Dynamo.Logging
 
         public void Start(DynamoModel model)
         {
-            //Whether enabled or not, we still record the startup.
-            var service = Service.Instance;
-            
-            //Some clients such as Revit may allow start/close Dynamo multiple times
-            //in the same session so register only if the factory is not registered.
-            if(service.GetTrackerFactory(GATrackerFactory.Name) == null)
-                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
-                service.Register(new ADPTrackerFactory());
-
             StabilityCookie.Startup();
 
             heartbeat = Heartbeat.GetInstance(model);
@@ -54,17 +37,6 @@ namespace Dynamo.Logging
                 StabilityCookie.WriteCrashingShutdown();
             else
                 StabilityCookie.WriteCleanShutdown();
-
-            // If the Analytics Client was initialized, shut it down.
-            // Otherwise skip this step because it would cause an exception.
-            if (Service.IsInitialized)
-            {
-                Service.ShutDown();
-                // Unregister the GATrackerFactory only after shutdown is recorded.
-                // Unregister is required, so that the host app can re-start Analytics service.
-                Service.Instance.Unregister(GATrackerFactory.Name);
-                Service.Instance.Unregister(ADPTrackerFactory.Name);
-            }
             
             if (null != heartbeat)
                 Heartbeat.DestroyInstance();
@@ -124,6 +96,12 @@ namespace Dynamo.Logging
         {
             public void Dispose() { }
         }
+
+#if DEBUG
+        private const string ANALYTICS_PROPERTY = "UA-78361914-2";
+#else
+        private const string ANALYTICS_PROPERTY = "UA-52186525-1";
+#endif
 
         private IPreferences preferences = null;
 
@@ -198,9 +176,6 @@ namespace Dynamo.Logging
             //Setup Analytics service, StabilityCookie, Heartbeat and UsageLog.
             Session.Start(dynamoModel);
 
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => true == ReportingGoogleAnalytics);
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => true == ReportingADPAnalytics);
-
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
 
@@ -214,6 +189,24 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
+        private void RegisterTrackers()
+        {
+            var service = Service.Instance;
+
+            //Some clients such as Revit may allow start/close Dynamo multiple times
+            //in the same session so register only if the factory is not registered.
+            if (preferences.IsAnalyticsReportingApproved && service.GetTrackerFactory(GATrackerFactory.Name) == null)
+                // Register Google Tracker only if the user is opted in.
+                service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
+
+            if (preferences.IsADPAnalyticsReportingApproved && service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+                // Register ADP Tracker only if the user is opted in.
+                service.Register(new ADPTrackerFactory());
+
+            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+        }
+
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -223,6 +216,7 @@ namespace Dynamo.Logging
             if (preferences != null && 
                 (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
             {
+                RegisterTrackers();
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
@@ -368,6 +362,17 @@ namespace Dynamo.Logging
 
         public void Dispose()
         {
+            // If the Analytics Client was initialized, shut it down.
+            // Otherwise skip this step because it would cause an exception.
+            if (Service.IsInitialized)
+            {
+                Service.ShutDown();
+                // Unregister the GATrackerFactory only after shutdown is recorded.
+                // Unregister is required, so that the host app can re-start Analytics service.
+                Service.Instance.Unregister(GATrackerFactory.Name);
+                Service.Instance.Unregister(ADPTrackerFactory.Name);
+            }
+
             if (Session != null)
             {
                 Session.Dispose();
