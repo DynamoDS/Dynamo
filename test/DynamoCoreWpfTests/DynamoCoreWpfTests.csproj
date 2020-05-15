@@ -164,6 +164,7 @@
     <Compile Include="CrashReportingTests.cs" />
     <Compile Include="RecentFileTests.cs" />
     <Compile Include="RecordedTests.cs" />
+    <Compile Include="GeometryRegressionTests.cs" />
     <Compile Include="RunSettingsTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
