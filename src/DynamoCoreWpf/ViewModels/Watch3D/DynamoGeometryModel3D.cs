@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Scene;
-using SharpDX;
-using SharpDX.Direct3D;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using Buffer = SharpDX.Direct3D11.Buffer;
-using MapFlags = SharpDX.Direct3D11.MapFlags;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
 
     [Flags]
-    internal enum DynamoMeshShaderFlags
+    internal enum DynamoMeshShaderStates
     {
         None = 0,
         /// <summary>
@@ -114,14 +106,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <returns></returns>
         private int GenerateEnumFromState()
         {
-            var finalFlag = (int)(DynamoMeshShaderFlags.None)
-                 + (int)(IsFrozenData ? DynamoMeshShaderFlags.IsFrozen : 0)
-                 + (int)(IsSelectedData ? DynamoMeshShaderFlags.IsSelected : 0)
-                  + (int)(IsIsolatedData ? DynamoMeshShaderFlags.IsIsolated : 0)
-                   + (int)(IsSpecialRenderPackageData ? DynamoMeshShaderFlags.IsSpecialRenderPackage : 0)
-                    + (int)(HasTransparencyData ? DynamoMeshShaderFlags.HasTransparency : 0)
-                     + (int)(RequiresPerVertexColor ? DynamoMeshShaderFlags.RequiresPerVertexColor : 0)
-                      + (int)(IsFlatShaded ? DynamoMeshShaderFlags.FlatShade : 0);
+            var finalFlag = (int)(DynamoMeshShaderStates.None)
+                 + (int)(IsFrozenData ? DynamoMeshShaderStates.IsFrozen : 0)
+                 + (int)(IsSelectedData ? DynamoMeshShaderStates.IsSelected : 0)
+                  + (int)(IsIsolatedData ? DynamoMeshShaderStates.IsIsolated : 0)
+                   + (int)(IsSpecialRenderPackageData ? DynamoMeshShaderStates.IsSpecialRenderPackage : 0)
+                    + (int)(HasTransparencyData ? DynamoMeshShaderStates.HasTransparency : 0)
+                     + (int)(RequiresPerVertexColor ? DynamoMeshShaderStates.RequiresPerVertexColor : 0)
+                      + (int)(IsFlatShaded ? DynamoMeshShaderStates.FlatShade : 0);
 
             return finalFlag;
         }
