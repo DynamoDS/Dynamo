@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Runtime;
@@ -17,6 +18,7 @@ namespace Dynamo.Python
     /// <summary>
     /// Provides code completion for the Python Editor
     /// </summary>
+    [SupressImportIntoVM]
     public class IronPythonCompletionProvider : LogSourceBase
     {
         #region Properties and fields
