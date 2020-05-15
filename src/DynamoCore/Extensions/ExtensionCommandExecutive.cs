@@ -11,6 +11,7 @@ namespace Dynamo.Extensions
         public ExtensionCommandExecutive(DynamoModel model)
         {
             dynamoModel = model;
+            //TODO cleanup.
             MessageLogged += (message) => { dynamoModel.Logger.Log(message); };
         }
 

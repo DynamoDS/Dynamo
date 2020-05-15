@@ -55,13 +55,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable
     {
-        protected readonly NodeModel watchModel;
+        protected  NodeModel watchModel;
 
-        protected readonly IDynamoModel dynamoModel;
-        protected readonly IScheduler scheduler;
-        protected readonly IPreferences preferences;
-        protected readonly ILogger logger;
-        protected readonly IEngineControllerManager engineManager;
+        protected  IDynamoModel dynamoModel;
+        protected  IScheduler scheduler;
+        protected  IPreferences preferences;
+        protected  ILogger logger;
+        protected  IEngineControllerManager engineManager;
         protected IRenderPackageFactory renderPackageFactory;
         protected IDynamoViewModel viewModel;
 
@@ -817,7 +817,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public void Dispose()
         {
             Dispose(true);
-            GC.SuppressFinalize(this);
+           // GC.SuppressFinalize(this);
         }
     }
 }

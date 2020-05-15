@@ -104,7 +104,7 @@ namespace Watch3DNodeModels
         // to be applied when the view model is constructed.
         internal XmlNode initialCameraData;
 
-        internal event Action<XmlNode> Deserialized;
+        public event Action<XmlNode> Deserialized;
         internal void OnDeserialized(XmlNode node)
         {
             if (Deserialized != null)
@@ -113,7 +113,7 @@ namespace Watch3DNodeModels
             }
         }
 
-        internal event Action<XmlElement> Serialized;
+        public event Action<XmlElement> Serialized;
         internal void OnSerialized(XmlElement element)
         {
             if (Serialized != null)

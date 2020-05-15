@@ -157,7 +157,6 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
         }
-
         #endregion
 
         #region Command Methods
@@ -357,5 +356,6 @@ namespace Dynamo.ViewModels
                 return null;
             }
         }
+       
     }
 }
