@@ -14,11 +14,11 @@ namespace Dynamo.Tests.ModelsTest
         public void RunSettingsConstructorTest()
         {
             //Act
-            //Ejecuting the constructor without parameters
+            //Executing the constructor without parameters
             var runSettings = new RunSettings();
 
             //Assert
-            //Validate that the default values are set to the properties when using the parameterless constructor
+            //Validate that the default properties values are set when using the parameterless constructor
             Assert.AreEqual(runSettings.RunPeriod, RunSettings.DefaultRunPeriod);
             Assert.AreEqual(runSettings.RunType, RunType.Manual);
             Assert.AreEqual(runSettings.RunEnabled, true);
