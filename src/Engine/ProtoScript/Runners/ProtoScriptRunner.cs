@@ -163,15 +163,14 @@ namespace ProtoScript.Runners
 
                 // Initialize the entry point interpreter
                 int locals = 0; // This is the global scope, there are no locals
-
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                 if (runtimeCore.CurrentExecutive.CurrentDSASMExec == null)
                 {
+                    ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore);
                     runtimeCore.CurrentExecutive.CurrentDSASMExec = interpreter.runtime;
                 }
 
-                interpreter.runtime.BounceUsingExecutive(
-                    interpreter.runtime,
+                runtimeCore.CurrentExecutive.CurrentDSASMExec.BounceUsingExecutive(
+                    runtimeCore.CurrentExecutive.CurrentDSASMExec,
                     codeBlock.codeBlockId,
                     runtimeCore.StartPC,
                     stackFrame,
