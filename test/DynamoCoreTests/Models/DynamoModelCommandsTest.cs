@@ -55,11 +55,11 @@ namespace Dynamo.Tests.ModelsTest
             string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
             RunModel(openPath);
 
-            //This command is created with CreateAsDownstreamNode flas as true
+            //This command is created with CreateAsDownstreamNode flag as true
             var cmdOne = new DynamoModel.CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid,
                 "CoreNodeModels.CreateList", 0, 0, x, y, true, false);
 
-            //This command is created with CreateAsDownstreamNode flas as false
+            //This command is created with CreateAsDownstreamNode flag as false
             var cmdTwo = new DynamoModel.CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid,
                 "CoreNodeModels.CreateList", 0, 0, x, y, false, false);
 
@@ -113,6 +113,7 @@ namespace Dynamo.Tests.ModelsTest
             string openPath = Path.Combine(TestDirectory, @"core\DetailedPreviewMargin_Test.dyn");
             RunModel(openPath);
 
+            //When a CreateNodeCommand is executed internally calls the GetNodeFromCommand() method
             var command = new DynamoModel.CreateNodeCommand(existingNodeGuid.ToString(), "List.Create", 0, 0, true, true);  
 
             //Act
