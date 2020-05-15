@@ -1,9 +1,5 @@
 ﻿using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Shaders;
-using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using System;
-using System.IO;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -27,7 +23,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal class DynamoMeshRenderVertexShaderDescription
         {
-            
+            protected DynamoMeshRenderVertexShaderDescription()
+            {
+                // Do nothing for now
+            }
+
             public static byte[] VSMeshDataSamplerByteCode
             {
                 get
@@ -42,6 +42,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal class DynamoMeshRenderPixelShaderDescription
         {
+            protected DynamoMeshRenderPixelShaderDescription()
+            {
+                // Do nothing for now
+            }
+
             public static byte[] PSMeshDataSamplerByteCode
             {
                 get

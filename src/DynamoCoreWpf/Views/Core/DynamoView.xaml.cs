@@ -1054,7 +1054,7 @@ namespace Dynamo.Controls
         {
             var bitmapSource =BackgroundPreview.View.RenderBitmap();
             //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
-            var rtBitmap = new RenderTargetBitmap((int)bitmapSource.PixelWidth, (int)bitmapSource.PixelHeight, 96, 96,
+            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, 96, 96,
      PixelFormats.Pbgra32);
             rtBitmap.Render(BackgroundPreview.View);
             var encoder = new PngBitmapEncoder();
