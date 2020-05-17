@@ -171,6 +171,16 @@ namespace Dynamo.Logging
         bool ReportingUsage { get; }
 
         /// <summary>
+        /// Checks if Google analytics reporting is ON.
+        /// </summary>
+        bool ReportingGoogleAnalytics { get; }
+
+        /// <summary>
+        /// Checks if ADP analytics reporting is ON.
+        /// </summary>
+        bool ReportingADPAnalytics { get; set; }
+
+        /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
