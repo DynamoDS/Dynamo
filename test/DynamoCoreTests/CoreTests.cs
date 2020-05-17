@@ -16,6 +16,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Tests.Loggings;
 using NUnit.Framework;
 using DynCmd = Dynamo.Models.DynamoModel;
 
@@ -235,10 +236,17 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void CanClearLog()
         {
-            Assert.AreNotEqual(0, CurrentDynamoModel.Logger.LogText.Length);
+            // Get the dynamo logger in non-test mode, as we write the logs
+            // to dynamo console and to a file only in non-test mode. 
 
-            CurrentDynamoModel.Logger.ClearLog();
-            Assert.AreEqual(0, CurrentDynamoModel.Logger.LogText.Length);
+            DynamoLoggerTest dynamoLoggerTest = new DynamoLoggerTest();
+            var logger = dynamoLoggerTest.GetDynamoLoggerWithTestModeFalse();
+
+            Assert.AreNotEqual(0, logger.LogText.Length);
+
+            logger.ClearLog();
+
+            Assert.AreEqual(0, logger.LogText.Length);
         }
 
         // Clearworkspace
