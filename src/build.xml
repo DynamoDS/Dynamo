@@ -17,7 +17,8 @@
 </Target>
 
 <Target Name="RestorePackages">
-    <Exec Command="$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe restore $(Solution)"/>
-  </Target>
+  <Exec Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe" />
+  <Exec Command="$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe restore $(Solution)"/>
+</Target>
 
 </Project>
