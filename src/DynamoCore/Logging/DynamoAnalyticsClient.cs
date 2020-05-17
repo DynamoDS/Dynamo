@@ -120,7 +120,7 @@ namespace Dynamo.Logging
         {
             get
             {
-                return ReportingGoogleAnalytics || ReportingADPAnalytics;
+                return Service.IsInitialized && (ReportingGoogleAnalytics || ReportingADPAnalytics);
             }
         }
 
@@ -189,21 +189,23 @@ namespace Dynamo.Logging
             product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
-        private void RegisterTrackers()
+        private void RegisterGATracker(Service service)
         {
-            var service = Service.Instance;
-
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
-            if (preferences.IsAnalyticsReportingApproved && service.GetTrackerFactory(GATrackerFactory.Name) == null)
-                // Register Google Tracker only if the user is opted in.
+            if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
-            if (preferences.IsADPAnalyticsReportingApproved && service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
-                // Register ADP Tracker only if the user is opted in.
+            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+        }
+
+        private void RegisterADPTracker(Service service)
+        {
+            //Some clients such as Revit may allow start/close Dynamo multiple times
+            //in the same session so register only if the factory is not registered.
+            if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
                 service.Register(new ADPTrackerFactory());
 
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
             Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
         }
 
@@ -216,7 +218,20 @@ namespace Dynamo.Logging
             if (preferences != null && 
                 (preferences.IsAnalyticsReportingApproved || preferences.IsADPAnalyticsReportingApproved))
             {
-                RegisterTrackers();
+                //Register trackers
+                var service = Service.Instance;
+
+                // Use separate functions to avoid loading the tracker dlls if they are not opted in (as an extra safety measure).
+                // ADP will be loaded because opt-in/opt-out is handled/serialized exclusively by the ADP module.
+                
+                // Register Google Tracker only if the user is opted in.
+                if (preferences.IsAnalyticsReportingApproved)
+                    RegisterGATracker(service);
+
+                // Register ADP Tracker only if the user is opted in.
+                if (preferences.IsADPAnalyticsReportingApproved)
+                    RegisterADPTracker(service);
+
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
@@ -281,6 +296,8 @@ namespace Dynamo.Logging
 
         public void TrackException(Exception ex, bool isFatal)
         {
+            if (!ReportingAnalytics) return;
+
             //Continue recording exception in all scenarios.
             Service.TrackException(ex, isFatal);
         }
@@ -365,13 +382,7 @@ namespace Dynamo.Logging
             // If the Analytics Client was initialized, shut it down.
             // Otherwise skip this step because it would cause an exception.
             if (Service.IsInitialized)
-            {
                 Service.ShutDown();
-                // Unregister the GATrackerFactory only after shutdown is recorded.
-                // Unregister is required, so that the host app can re-start Analytics service.
-                Service.Instance.Unregister(GATrackerFactory.Name);
-                Service.Instance.Unregister(ADPTrackerFactory.Name);
-            }
 
             if (Session != null)
             {
