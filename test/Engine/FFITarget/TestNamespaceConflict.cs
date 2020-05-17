@@ -1,6 +1,6 @@
 ﻿using Autodesk.DesignScript.Runtime;
 
-public class DupTargetTest  : FFITarget.C.B.DupTargetTest
+public class DupTargetTest : FFITarget.C.B.DupTargetTest
 {
     public DupTargetTest()
     {
@@ -32,7 +32,7 @@ namespace FFITarget
         {
             public DupTargetTest()
             {
-                   
+
             }
 
             public DupTargetTest(int prop)
@@ -108,9 +108,7 @@ namespace FFITarget
                 public int Prop { get; set; }
 
             }
-        
+
+        }
     }
-}
-
-
 }

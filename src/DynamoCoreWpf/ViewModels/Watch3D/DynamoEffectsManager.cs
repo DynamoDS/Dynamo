@@ -36,7 +36,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            public static ShaderDescription  VertexShaderDynamoMeshDescription = new ShaderDescription(nameof(VertexShaderDynamoMeshDescription), ShaderStage.Vertex,
+            public static readonly ShaderDescription  VertexShaderDynamoMeshDescription = new ShaderDescription(nameof(VertexShaderDynamoMeshDescription), ShaderStage.Vertex,
           new ShaderReflector(), VSMeshDataSamplerByteCode);
         }
 
@@ -55,7 +55,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            public static ShaderDescription PixelShaderDynamoMeshDescription = new ShaderDescription(nameof(PixelShaderDynamoMeshDescription), ShaderStage.Pixel,
+            public static readonly ShaderDescription PixelShaderDynamoMeshDescription = new ShaderDescription(nameof(PixelShaderDynamoMeshDescription), ShaderStage.Pixel,
           new ShaderReflector(), PSMeshDataSamplerByteCode);
         }
 
