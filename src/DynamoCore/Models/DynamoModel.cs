@@ -571,7 +571,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
 
             foreach (var exception in exceptions)
             {

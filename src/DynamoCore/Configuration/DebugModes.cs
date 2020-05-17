@@ -11,7 +11,7 @@ namespace Dynamo.Configuration
     /// </summary>
     internal static class DebugModes
     {
-        static private readonly Dictionary<string, DebugMode> debugModes;
+        static private readonly Dictionary<string, DebugMode> debugModes = new Dictionary<string, DebugMode>();
         private static bool debugModesEnabled;
 
         /// <summary>
@@ -89,7 +89,6 @@ namespace Dynamo.Configuration
         /// </summary>
         static DebugModes()
         {
-            debugModes = new Dictionary<string, DebugMode>();
             RegisterDebugModes();
             LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
         }
@@ -133,7 +132,7 @@ namespace Dynamo.Configuration
         public static bool IsEnabled(string name)
         {
             DebugMode dbgMode;
-            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.IsEnabled : false;
+            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) && dbgMode.IsEnabled;
         }
     }
 }

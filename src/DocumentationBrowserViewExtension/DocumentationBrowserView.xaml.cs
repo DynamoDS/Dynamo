@@ -91,15 +91,22 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
+            this.viewModel.LinkChanged -= NavigateToPage;
+            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
+            this.documentationBrowser.Dispose();
+            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+        }
+
         /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            this.documentationBrowser.Dispose();
-            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

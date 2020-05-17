@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.Extensions
         /// Exceptions thrown from this method will be caught by Dynamo and 
         /// displayed.
         /// </summary>
-        void Startup(ViewStartupParams p);
+        void Startup(ViewStartupParams viewLoadedParams);
 
         /// <summary>
         /// Action to be invoked when DynamoView is loaded.
@@ -41,7 +41,7 @@ namespace Dynamo.Wpf.Extensions
         /// Exceptions thrown from this method will be caught by Dynamo and 
         /// displayed.
         /// </summary>
-        void Loaded(ViewLoadedParams p);
+        void Loaded(ViewLoadedParams viewLoadedParams);
 
         /// <summary>
         /// Action to be invoked when shutdown has begun.  This gives the UI a last minute chance to interact
