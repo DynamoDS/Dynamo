@@ -74,7 +74,7 @@ namespace Dynamo.Logging
         private string _warning;
         private WarningLevel _warningLevel;
         private bool _isDisposed;
-        private bool testMode;
+        private readonly bool testMode;
 
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }

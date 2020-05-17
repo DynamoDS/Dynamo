@@ -123,19 +123,19 @@ namespace Dynamo.Manipulation
             UnregisterEventHandlers();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
             manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewStartupParams)
         {
-            viewLoadedParams = p;
+            viewLoadedParams = viewStartupParams;
 
-            WorkspaceModel = p.CurrentWorkspaceModel;
-            BackgroundPreviewViewModel = p.BackgroundPreviewViewModel;
-            RenderPackageFactory = p.RenderPackageFactory;
-            CommandExecutive = p.CommandExecutive;
+            WorkspaceModel = viewStartupParams.CurrentWorkspaceModel;
+            BackgroundPreviewViewModel = viewStartupParams.BackgroundPreviewViewModel;
+            RenderPackageFactory = viewStartupParams.RenderPackageFactory;
+            CommandExecutive = viewStartupParams.CommandExecutive;
 
             RegisterEventHandlers();
         }
