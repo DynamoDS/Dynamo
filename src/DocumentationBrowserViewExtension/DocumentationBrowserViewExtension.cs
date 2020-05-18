@@ -103,7 +103,7 @@ namespace Dynamo.DocumentationBrowser
             documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
-            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
         }
 
         /// <summary>
