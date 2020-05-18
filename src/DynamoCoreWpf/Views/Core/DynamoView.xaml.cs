@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -414,6 +415,10 @@ namespace Dynamo.Controls
         }
 
         #region NodeViewCustomization
+        public void LoadNodeViewCustomizations(Assembly library)
+        {
+            nodeViewCustomizationLibrary.Add(new AssemblyNodeViewCustomizations(library));
+        }
 
         private void LoadNodeViewCustomizations()
         {
