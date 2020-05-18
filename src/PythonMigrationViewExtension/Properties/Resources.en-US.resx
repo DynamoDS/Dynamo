@@ -132,4 +132,7 @@
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
     <value>This graph contains nodes that are using the old IronPython Engine.</value>
   </data>
+  <data name="PythonMigrationWarningUriString" xml:space="preserve">
+    <value>PythonMigrationViewExtension;PythonMigrationWarning.html</value>
+  </data>
 </root>

@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Dynamo.UI;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.PythonMigration
 {
@@ -21,14 +23,23 @@ namespace Dynamo.PythonMigration
     /// </summary>
     public partial class IronPythonInfoDialog : Window
     {
-        public IronPythonInfoDialog()
+        ViewLoadedParams ViewLoaded { get; set; }
+        public IronPythonInfoDialog(ViewLoadedParams viewLoadedParams)
         {
+            this.ViewLoaded = viewLoadedParams;
             InitializeComponent();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void OnMoreInformationButtonClicked(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+            var link = new Uri(Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
+            this.ViewLoaded.ViewModelCommandExecutive.OpenDocumentationLinkCommand(link);
         }
     }
 }

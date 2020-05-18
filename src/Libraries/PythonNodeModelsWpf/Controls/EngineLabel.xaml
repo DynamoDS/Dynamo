@@ -24,6 +24,7 @@
 
         <TextBlock Foreground="{StaticResource headerForegroundInactive}"
                     Grid.Row="1"
+                   Name="currentEngine"
                    Text="{Binding Engine}"
                    FontSize="8" />
     </Grid>

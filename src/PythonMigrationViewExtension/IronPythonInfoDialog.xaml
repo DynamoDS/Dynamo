@@ -62,8 +62,13 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="10,0,10,10">
-
+            <Button Content="More Information"
+                    Name="MoreInformationBtn"
+                    Style="{StaticResource STextButton}"
+                    Visibility="Visible"
+                    Click="OnMoreInformationButtonClicked" />
             <Button Content="OK"
+                    Name="OkBtn"
                     Style="{StaticResource STextButton}"
                     Visibility="Visible"
                     Click="Button_Click"/>

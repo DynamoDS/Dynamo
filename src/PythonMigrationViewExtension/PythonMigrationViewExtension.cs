@@ -1,18 +1,13 @@
 ﻿using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
-using Dynamo.Models;
 using Dynamo.PythonMigration.Properties;
-using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace Dynamo.PythonMigration
 {
@@ -20,15 +15,15 @@ namespace Dynamo.PythonMigration
     {
         private const string EXTENSION_NAME = "Python Migration";
         private const string EXTENSION_GUID = "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d";
-        private const string PYTHON_SCRIPT_NODE_TYPE = "PythonScriptNode";
 
         private ViewLoadedParams LoadedParams { get; set; }
-        private DynamoViewModel DynamoViewModel { get; set; }
+        internal DynamoViewModel DynamoViewModel { get; set; }
         private NotificationMessage IronPythonNotification { get; set; }
-        private WorkspaceModel CurrentWorkspace { get; set; }
+        internal WorkspaceModel CurrentWorkspace { get; set; }
+        internal GraphPythonDependencies PythonDependencies { get; set; }
 
-        private Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
-        private Dictionary<Guid, IronPythonInfoDialog> DialogTracker = new Dictionary<Guid, IronPythonInfoDialog>();
+        internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
+        internal Dictionary<Guid, IronPythonInfoDialog> DialogTracker = new Dictionary<Guid, IronPythonInfoDialog>();
 
         /// <summary>
         /// Extension GUID
@@ -57,29 +52,11 @@ namespace Dynamo.PythonMigration
         public void Loaded(ViewLoadedParams p)
         {
             LoadedParams = p;
+            PythonDependencies = new GraphPythonDependencies(LoadedParams);
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
             SubscribeToDynamoEvents();
 
-        }
-
-        private void CheckForIronPythonDependencies(WorkspaceModel workspace)
-        {
-            if (workspace == null)
-                return;
-
-            var workspacePythonNodes = workspace.Nodes
-                .Where(n => IsPythonNode(n))
-                .Select(n => n as PythonNode);
-
-            if (workspacePythonNodes == null)
-                return;
-
-            if (workspacePythonNodes.Any(n => n.Engine == PythonEngineVersion.IronPython2))
-            {
-                LogIronPythonNotification();
-                DisplayIronPythonDialog();
-            }                  
         }
 
         private void DisplayIronPythonDialog()
@@ -91,7 +68,7 @@ namespace Dynamo.PythonMigration
             string summary = Resources.IronPythonDialogSummary;
             var description = Resources.IronPythonDialogDescription;
 
-            var dialog = new IronPythonInfoDialog();
+            var dialog = new IronPythonInfoDialog(LoadedParams);
             dialog.Title = Resources.IronPythonDialogTitle;
             dialog.SummaryText.Text = summary;
             dialog.DescriptionText.Text = description;
@@ -138,8 +115,7 @@ namespace Dynamo.PythonMigration
         private void OnNodeAdded(Graph.Nodes.NodeModel obj)
         {
             if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
-                && IsPythonNode(obj)
-                && ((PythonNode)obj).Engine == PythonEngineVersion.IronPython2)
+                && GraphPythonDependencies.IsIronPythonNode(obj))
             {
                 LogIronPythonNotification();
             }
@@ -149,14 +125,13 @@ namespace Dynamo.PythonMigration
         {
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             CurrentWorkspace = workspace as WorkspaceModel;
-            CheckForIronPythonDependencies(CurrentWorkspace);
+            if (PythonDependencies.ContainsIronPythonDependencies())
+            {
+                LogIronPythonNotification();
+                DisplayIronPythonDialog();
+            }
         }
 
         #endregion
-
-        private static bool IsPythonNode(NodeModel obj)
-        {
-            return obj.NodeType == PYTHON_SCRIPT_NODE_TYPE || obj.Name == nameof(PythonNodeModels.PythonStringNode);
-        }
     }
 }

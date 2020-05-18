@@ -104,5 +104,14 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PythonMigrationViewExtension;PythonMigrationWarning.html.
+        /// </summary>
+        public static string PythonMigrationWarningUriString {
+            get {
+                return ResourceManager.GetString("PythonMigrationWarningUriString", resourceCulture);
+            }
+        }
     }
 }
