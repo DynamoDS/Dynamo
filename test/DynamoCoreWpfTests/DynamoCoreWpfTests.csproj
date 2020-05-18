@@ -171,6 +171,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PublishPackageViewModelTests.cs" />
     <Compile Include="CrashReportingTests.cs" />
+    <Compile Include="PythonNodeCustomizationTests.cs" />
     <Compile Include="RecentFileTests.cs" />
     <Compile Include="RecordedTests.cs" />
     <Compile Include="RunSettingsTests.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
+    <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\WorkspaceDependencyViewExtensionTests.cs" />
@@ -258,6 +260,11 @@
       <Name>DynamoConversions</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
+      <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
+      <Name>PythonNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
@@ -267,6 +274,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
+      <Project>{10af430d-0d3a-49ce-a63d-848912959745}</Project>
+      <Name>PythonMigrationViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
