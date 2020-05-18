@@ -1,5 +1,7 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Analytics.NET.ADP;
+using Autodesk.Analytics.Core;
 
 namespace Dynamo.Logging
 {
@@ -8,6 +10,8 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
+        private static IAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -26,6 +30,21 @@ namespace Dynamo.Logging
                 Analytics.TrackScreenView("CustomWorkspace");
             else
                 Analytics.TrackScreenView("Workspace");
+        }
+
+        /// <summary>
+        /// Indicates whether the user has opted-in to ADP analytics.
+        /// </summary>
+        internal static bool IsADPOptedIn 
+        {
+            get
+            {
+                return adpAnalyticsUI.IsOptedIn();
+            }
+            set
+            {
+                adpAnalyticsUI.SetOptedIn(value);
+            }
         }
 
         /// <summary>

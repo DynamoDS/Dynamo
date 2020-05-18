@@ -62,6 +62,11 @@ namespace Dynamo.Interfaces
         bool IsAnalyticsReportingApproved { get; set; }
 
         /// <summary>
+        /// Indicates whether ADP analytics reporting is approved or not.
+        /// </summary>
+        bool IsADPAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
         /// Indicates first run
         /// </summary>
         bool IsFirstRun { get; set; }
