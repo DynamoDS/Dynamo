@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
@@ -12,7 +11,6 @@ using PythonNodeModels;
 
 namespace PythonNodeModelsWpf
 {
-    [SupressImportIntoVM]
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
     {
         private DynamoViewModel dynamoViewModel;

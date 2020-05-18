@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using Autodesk.DesignScript.Runtime;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
@@ -11,7 +10,6 @@ namespace Dynamo.Python
 {
     /// Implements AvalonEdit ICompletionData interface to provide the entries in the
     /// completion drop down.
-    [SupressImportIntoVM]
     public class IronPythonCompletionData : ICompletionData
     {
         
