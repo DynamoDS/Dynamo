@@ -596,7 +596,7 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
-            bool areAnalyticsDisabled = false;
+            bool areAnalyticsDisabledFromConfig = false;
             try
             {
                 // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
@@ -605,12 +605,12 @@ namespace Dynamo.Models
                 if (assemblyConfig != null)
                 {
                     var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabled);
+                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
                 }
             } catch(Exception)
             {}
             
-            if (areAnalyticsDisabled)
+            if (areAnalyticsDisabledFromConfig)
             {
                 // If user skipped analytics from assembly configuration, do not try to launch the client at all 
                 // Skip call to instrumentation logger initialization.
