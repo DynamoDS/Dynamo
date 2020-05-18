@@ -72,8 +72,8 @@ namespace Dynamo.Configuration
         /// </summary>
         [XmlIgnore]
         public bool IsADPAnalyticsReportingApproved { 
-            get { return Logging.Analytics.ReportingADPAnalytics; }
-            set { Logging.Analytics.ReportingADPAnalytics = value; } 
+            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
         }
         #endregion
 

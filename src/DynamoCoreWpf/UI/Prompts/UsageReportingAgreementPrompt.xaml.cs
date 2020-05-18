@@ -45,7 +45,7 @@ namespace Dynamo.UI.Prompts
                     string.Format(Wpf.Properties.Resources.ConsentFormADPAnalyticsCheckBoxContent,
                         dynamoViewModel.BrandingResourceProvider.ProductName);
                 AcceptADPAnalyticsCheck.Visibility = System.Windows.Visibility.Visible;
-                AcceptADPAnalyticsCheck.IsChecked = Analytics.ReportingADPAnalytics;
+                AcceptADPAnalyticsCheck.IsChecked = AnalyticsService.IsADPOptedIn;
             }
             else
             {
@@ -69,7 +69,7 @@ namespace Dynamo.UI.Prompts
 
         private void ToggleIsADPAnalyticsChecked(object sender, RoutedEventArgs e)
         {
-            Analytics.ReportingADPAnalytics = (
+            AnalyticsService.IsADPOptedIn = (
                 AcceptADPAnalyticsCheck.IsChecked.HasValue &&
                 AcceptADPAnalyticsCheck.IsChecked.Value);
         }
@@ -108,7 +108,7 @@ namespace Dynamo.UI.Prompts
             // Update user agreement
             if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
             {
-                Analytics.ReportingADPAnalytics = AcceptADPAnalyticsCheck.IsChecked.Value;
+                AnalyticsService.IsADPOptedIn = AcceptADPAnalyticsCheck.IsChecked.Value;
             } else
             {
                 UsageReportingManager.Instance.SetUsageReportingAgreement(AcceptUsageReportingCheck.IsChecked.Value);
