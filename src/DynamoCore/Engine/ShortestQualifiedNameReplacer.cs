@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-
+using System.Text;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
@@ -113,14 +113,14 @@ namespace Dynamo.Engine
             // RightNode is IdentifierNode representing classname
             // and LeftNode is IdentifierNode representing one or more namespaces.
             var rightNode = new IdentifierNode(strIdentList.Last());
-            string ident = "";
+            StringBuilder bld = new StringBuilder();
             for (int i = 0; i < strIdentList.Length - 1; i++)
             {
-                if (!string.IsNullOrEmpty(ident))
-                    ident += ".";
-                ident += strIdentList[i];
+                if (!string.IsNullOrEmpty(bld.ToString()))
+                    bld.Append(".");
+                bld.Append(strIdentList[i]);
             }
-            var leftNode = new IdentifierNode(ident);
+            var leftNode = new IdentifierNode(bld.ToString());
 
             var identListNode = new IdentifierListNode
             {

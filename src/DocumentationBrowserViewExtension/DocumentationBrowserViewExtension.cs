@@ -16,7 +16,7 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
     {
-        private ViewLoadedParams viewLoadedParams;
+        private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -51,6 +51,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void Startup(ViewStartupParams viewLoadedParams)
         {
+            // Do nothing for now
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
@@ -59,18 +60,19 @@ namespace Dynamo.DocumentationBrowser
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
 
-            this.viewLoadedParams = viewLoadedParams; 
+            this.viewLoadedParamsReference = viewLoadedParams; 
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
             this.documentationBrowserMenuItem.Checked += MenuItemCheckHandler;
             this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
-            this.viewLoadedParams.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+            this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+
 
             DynamoView.CloseExtension += OnCloseExtension;
 
             // subscribe to the documentation open request event from Dynamo
-            this.viewLoadedParams.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
+            this.viewLoadedParamsReference.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
 
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
@@ -78,7 +80,7 @@ namespace Dynamo.DocumentationBrowser
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
         {
-            viewLoadedParams.CloseExtensioninInSideBar(this);
+            viewLoadedParamsReference.CloseExtensioninInSideBar(this);
         }
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
@@ -91,19 +93,26 @@ namespace Dynamo.DocumentationBrowser
             Dispose();
         }
 
-        /// <summary>
-        /// Dispose function after extension is closed
-        /// </summary>
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
+            // Cleanup
             DynamoView.CloseExtension -= OnCloseExtension;
-            this.viewLoadedParams.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
             this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
             documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
             documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
-            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+        }
+
+        /// <summary>
+        /// Dispose function after extension is closed
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -158,7 +167,7 @@ namespace Dynamo.DocumentationBrowser
                 this.ViewModel?.EnsurePageHasContent();
             }
 
-            this.viewLoadedParams?.AddToExtensionsSideBar(this, this.BrowserView);
+            this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.BrowserView);
         }
 
         // hide browser directly when startpage is shown to deal with air space problem.

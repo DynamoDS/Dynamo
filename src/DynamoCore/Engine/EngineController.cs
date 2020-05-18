@@ -522,7 +522,7 @@ namespace Dynamo.Engine
         internal event EventHandler RequestCustomNodeRegistration;
         internal void OnRequestCustomNodeRegistration()
         {
-            RequestCustomNodeRegistration?.Invoke(null, EventArgs.Empty);
+            RequestCustomNodeRegistration?.Invoke(this, EventArgs.Empty);
         }
 
         #region Implement IAstNodeContainer interface
