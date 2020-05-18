@@ -140,11 +140,12 @@ namespace Dynamo.Logging
         /// </summary>
         private bool ReportingADPAnalytics
         {
-            get {
-                if (!Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker")) { return false; }
-                return Service.IsInitialized && AnalyticsService.IsADPOptedIn; 
+            get 
+            {
+                return preferences != null
+                    && Service.IsInitialized
+                    && preferences.IsADPAnalyticsReportingApproved; 
             }
-            set { AnalyticsService.IsADPOptedIn = value; }
         }
 
         /// <summary>
@@ -192,7 +193,8 @@ namespace Dynamo.Logging
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
         }
 
         private void RegisterADPTracker(Service service)
@@ -202,7 +204,8 @@ namespace Dynamo.Logging
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
                 service.Register(new ADPTrackerFactory());
 
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
         }
 
         /// <summary>
@@ -292,8 +295,6 @@ namespace Dynamo.Logging
 
         public void TrackException(Exception ex, bool isFatal)
         {
-            if (!ReportingAnalytics) return;
-
             //Continue recording exception in all scenarios.
             Service.TrackException(ex, isFatal);
         }
