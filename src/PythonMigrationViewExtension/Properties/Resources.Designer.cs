@@ -61,7 +61,8 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please consider updating these nodes to use the new CPython 3.7 Engine..
+        ///   Looks up a localized string similar to Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
+        ///There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default. During this transition time, please consider updating the Python nodes inside this graph to use the CPython3 engine, or reach out to the original graph author to do so..
         /// </summary>
         public static string IronPythonDialogDescription {
             get {
@@ -70,7 +71,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph contains nodes that are using the old IronPython Engine..
+        ///   Looks up a localized string similar to This graph contains nodes that reference an outdated Python engine..
         /// </summary>
         public static string IronPythonDialogSummary {
             get {
@@ -79,7 +80,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Graph Contains Python Nodes using the old IronPyton Engine.
+        ///   Looks up a localized string similar to Graph contains outdated Python engine.
         /// </summary>
         public static string IronPythonDialogTitle {
             get {
@@ -97,7 +98,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This graph contains nodes that are using the old IronPython Engine..
+        ///   Looks up a localized string similar to This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor..
         /// </summary>
         public static string IronPythonNotificationShortMessage {
             get {

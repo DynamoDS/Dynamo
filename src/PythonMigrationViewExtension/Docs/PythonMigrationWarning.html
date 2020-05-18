@@ -147,10 +147,9 @@
 
     <h2>Updating your IronPython2 script to use CPython3</h2>
     <p>
-        As of January 1st, 2020 Python 2 is no longer supported by the Python community, this means that there will be
-        no
-        additional features and no more fixes...... blabla bla SOME GOODE EXPLANATION OF WHY DYNAMO IS MOVING TO PYTHON
-        3.......
+        As of January 1st, 2020 IronPython2  is no longer supported by the Python community and while work is being done on Ironpython3, it is not yet ready for use. 
+        We are upgrading the Python Node in Dynamo to use the CPython3 engine (Python 3) instead of IronPython2 (Python 2) to allow access to popular modern libraries and alleviate security concerns 
+        now that all maintenance work on IronPython2 has ceased. Upgrading IronPython2 to CPython3 will allow us to stay up to date with the latest Python features, security fixes and changes.
     </p>
 
     <h3>What does it mean for you?</h4>
@@ -158,30 +157,30 @@
             Python 3 and Python 2 aren't different languages, Python 3 is a new and enhanced version of Python 2.
             However Python 3 isn't necessarily backwards compatible with Python 2 code. So what do you need to do as a
             Dynamo Python script developer, in most cases nothing, in the rare occasions where you do run into
-            incompatible
-            syntax you will need to upgrade these parts of your script to Python 3 syntax.
+            incompatible syntax you will need to upgrade these parts of your script to Python 3 syntax.
         </p>
         <p>
-            As mentioned mostly your Python scripts will be able to run with both the IronPython2 and CPython3 engine
-            selected. If this isn't the case we have made it easy for you to update your script. If you are the nerdy
-            type that wants to dive deeper into the difference between the two Python versions, here are a few
-            links to get you started:
-        <ul>
-            <li>
-                <a href="https://docs.python.org/3/howto/pyporting.html">The official "Porting Python 2 Code to Python
-                    3"
-                    guide</a>
-            </li>
-            <li>
-                <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
-            </li>
-        </ul>
+            Typically, Python scripts will be able to run with either the IronPython2 or CPython3 engine selected. 
+            For the cases where your script contains syntax that has changed between versions, we have made it easier for you to update your script. 
+            If you are curious about diving deeper into the differences between the two Python versions, here are two external links to get you started:
+            <ul>
+                <li>
+                    <a href="https://docs.python.org/3/howto/pyporting.html">
+                        The official "Porting Python 2 Code to Python
+                        3"
+                        guide
+                    </a>
+                </li>
+                <li>
+                    <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
+                </li>
+            </ul>
         </p>
 
         <p>
             If you on the other hand prefer things to just work without having to dig too much into the specifics,
             we have included a automatic code converter in the Python node. With this, all you need to do is
-            switch to the CPython3 engine and Dynamo will give you a table that shows you which changes are needed
+            switch to the CPython3 engine and Dynamo will give you a window that shows you which changes are needed
             and give you the option to decline or accept the conversion.
         </p>
 
