@@ -66,6 +66,15 @@ namespace Dynamo.Configuration
         /// Indicates whether analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether ADP analytics reporting is approved or not.
+        /// </summary>
+        [XmlIgnore]
+        public bool IsADPAnalyticsReportingApproved { 
+            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+        }
         #endregion
 
         #region UI & Graphics settings

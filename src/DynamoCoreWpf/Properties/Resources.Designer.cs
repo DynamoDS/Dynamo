@@ -394,7 +394,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes, I would like to contribute to this program (Google Analytics)..
+        ///   Looks up a localized string similar to I agree to data collection in desktop products for Autodesk analytics programs..
+        /// </summary>
+        public static string ConsentFormADPAnalyticsCheckBoxContent {
+            get {
+                return ResourceManager.GetString("ConsentFormADPAnalyticsCheckBoxContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I agree to contribute to the Google Analytics program..
         /// </summary>
         public static string ConsentFormGoogleAnalyticsCheckBoxContent {
             get {
