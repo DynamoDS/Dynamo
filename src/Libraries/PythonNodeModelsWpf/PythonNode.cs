@@ -65,8 +65,7 @@ namespace PythonNodeModelsWpf
             nodeModel.Disposed += NodeModel_Disposed;
 
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.DataContext = this.pythonNodeModel;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel());
+            nodeView.PresentationGrid.Children.Add(new EngineLabel(nodeModel));
         }
 
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)

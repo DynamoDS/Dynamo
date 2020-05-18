@@ -61,7 +61,8 @@
                           Width="Auto"
                           Margin="2"
                           Grid.Column="1"
-                          Foreground="{StaticResource DynamoStandardLableTextBrush}" />
+                          Foreground="{StaticResource DynamoStandardLableTextBrush}" 
+                          Visibility="Collapsed"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
             </StackPanel>

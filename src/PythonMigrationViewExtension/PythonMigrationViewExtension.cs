@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Dynamo.PythonMigration
 {
-    public class PythonMigrationViewExtension : IViewExtension
+    internal class PythonMigrationViewExtension : IViewExtension
     {
         private const string EXTENSION_NAME = "Python Migration";
         private const string EXTENSION_GUID = "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d";
@@ -37,6 +37,7 @@ namespace Dynamo.PythonMigration
 
         public void Shutdown()
         {
+            Dispose();
         }
 
         public void Startup(ViewStartupParams p)

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PythonNodeModels;
 
 namespace PythonNodeModelsWpf.Controls
 {
@@ -20,9 +21,11 @@ namespace PythonNodeModelsWpf.Controls
     /// </summary>
     public partial class EngineLabel : UserControl
     {
-        public EngineLabel()
+        private PythonNodeBase NodeModel { get; set; }
+        public EngineLabel(PythonNodeModels.PythonNodeBase nodeModel)
         {
             InitializeComponent();
+            NodeModel = nodeModel;
         }
     }
 }

@@ -28,28 +28,31 @@ namespace PythonNodeModelsWpf
             pythonStringNodeModel = nodeModel;
             pythonStringNodeView = nodeView;
 
-            var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
-            nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-            pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
-            pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
-            pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
-            pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+            // If it is a Debug build, display a python engine switcher
+            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            {
+                var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
+                nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
+                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
+                pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
+                pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
+                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 
-            // Check the correct item based on NodeModel engine version
-            if (pythonStringNodeModel.Engine == PythonEngineVersion.IronPython2)
-            {
-                pythonEngine2Item.IsChecked = true;
-                pythonEngine3Item.IsChecked = false;
-            }
-            else
-            {
-                pythonEngine2Item.IsChecked = false;
-                pythonEngine3Item.IsChecked = true;
+                // Check the correct item based on NodeModel engine version
+                if (pythonStringNodeModel.Engine == PythonEngineVersion.IronPython2)
+                {
+                    pythonEngine2Item.IsChecked = true;
+                    pythonEngine3Item.IsChecked = false;
+                }
+                else
+                {
+                    pythonEngine2Item.IsChecked = false;
+                    pythonEngine3Item.IsChecked = true;
+                }
             }
 
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
-            nodeView.PresentationGrid.DataContext = this.pythonStringNodeModel;
-            nodeView.PresentationGrid.Children.Add(new EngineLabel());
+            nodeView.PresentationGrid.Children.Add(new EngineLabel(pythonStringNodeModel));
         }
 
         /// <summary>

@@ -25,7 +25,7 @@
         <TextBlock Foreground="{StaticResource headerForegroundInactive}"
                     Grid.Row="1"
                    Name="currentEngine"
-                   Text="{Binding Engine}"
+                   Text="{Binding NodeModel.Engine}"
                    FontSize="8" />
     </Grid>
 </UserControl>

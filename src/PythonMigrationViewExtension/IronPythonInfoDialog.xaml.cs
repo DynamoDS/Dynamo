@@ -19,7 +19,7 @@ using Dynamo.Wpf.Extensions;
 namespace Dynamo.PythonMigration
 {
     /// <summary>
-    /// Interaction logic for UserControl1.xaml
+    /// Interaction logic for IronPythonInfoDialog.xaml
     /// </summary>
     public partial class IronPythonInfoDialog : Window
     {
