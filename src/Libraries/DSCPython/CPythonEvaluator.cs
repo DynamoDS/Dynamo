@@ -9,13 +9,13 @@ using Python.Runtime;
 namespace DSCPython
 {
     [SupressImportIntoVM]
-    public enum EvaluationState { Begin, Success, Failed }
+    internal enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    public delegate void EvaluationEventHandler(EvaluationState state,
-                                                PyScope scope,
-                                                string code,
-                                                IList bindingValues);
+    internal delegate void EvaluationEventHandler(EvaluationState state,
+                                                  PyScope scope,
+                                                  string code,
+                                                  IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -195,13 +195,13 @@ namespace DSCPython
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        public static event EvaluationEventHandler EvaluationBegin;
+        internal static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        public static event EvaluationEventHandler EvaluationEnd;
+        internal static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         /// Called immediately before evaluation starts
