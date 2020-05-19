@@ -727,7 +727,7 @@ namespace Dynamo.ViewModels
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
-                        InstallStateCheck(packageDownloadHandle, downloadPath);
+                        SetPackageState(packageDownloadHandle, downloadPath);
                     }
                     catch (Exception e)
                     {
@@ -742,7 +742,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void InstallStateCheck(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
