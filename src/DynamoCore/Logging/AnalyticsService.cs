@@ -39,11 +39,12 @@ namespace Dynamo.Logging
         {
             get
             {
-                return adpAnalyticsUI.IsOptedIn();
+                return Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker") && adpAnalyticsUI.IsOptedIn();
             }
             set
             {
-                adpAnalyticsUI.SetOptedIn(value);
+                if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                    adpAnalyticsUI.SetOptedIn(value);
             }
         }
 
