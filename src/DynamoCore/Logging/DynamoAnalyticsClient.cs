@@ -295,7 +295,8 @@ namespace Dynamo.Logging
 
         public void TrackException(Exception ex, bool isFatal)
         {
-            //Continue recording exception in all scenarios.
+            if (!ReportingAnalytics) return;
+
             Service.TrackException(ex, isFatal);
         }
 
