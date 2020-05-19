@@ -2429,6 +2429,10 @@ namespace ProtoCore.Lang
                     is2DArray = true;
                     numOfCols = Math.Max(elementArray.Count, numOfCols);
                 }
+                else
+                {
+                    numOfCols = Math.Max(1, numOfCols);
+                }
             }
             if (is2DArray == false)
                 return sv;

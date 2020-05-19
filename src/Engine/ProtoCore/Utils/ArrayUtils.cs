@@ -337,7 +337,6 @@ namespace ProtoCore.Utils
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, RuntimeCore runtimeCore)
         {
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             if (!svArray.IsArray)
             {
                 return false;

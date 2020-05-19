@@ -94,6 +94,7 @@
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
+    <Compile Include="Logging\AnalyticsServiceModulesTest.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
     <Compile Include="Logging\HeartBeatTest.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
+    <Compile Include="Models\DynamoModelCommandsTest.cs" />
     <Compile Include="Models\CreateAndConnectNodeCommandTest.cs" />
     <Compile Include="Models\CreateCustomNodeCommandTest.cs" />
     <Compile Include="Models\CreateNodeCommandTest.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Models\PausePlaybackCommandTest.cs" />
     <Compile Include="Models\PresetCommandTests.cs" />
     <Compile Include="Models\RecordableCommandsTest.cs" />
+    <Compile Include="Models\RunSettingsTest.cs" />
     <Compile Include="Models\SelectModelCommandTest.cs" />
     <Compile Include="Models\UndoRedoCommandTest.cs" />
     <Compile Include="Models\UpdateModelValueCommandTest.cs" />

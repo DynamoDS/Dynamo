@@ -332,13 +332,13 @@ namespace DynamoCoreWpfTests
         public void GettingNodeNameDoesNotTriggerPropertyChangeCycle()
         {
             //add a node
-            var numNode = new CoreNodeModels.Input.DoubleInput { X = 100, Y = 100 };
+            var numNode = new CoreNodeModels.Input.DoubleInput();
             ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
 
             //subscribe to all property changes
             var nvm = ViewModel.CurrentSpaceViewModel.Nodes.First();
             nvm.PropertyChanged += NodeNameTest_PropChangedHandler;
-            //get the nodes's name.
+            //get the node name.
             var temp = nvm.Name;
             nvm.PropertyChanged -= NodeNameTest_PropChangedHandler;
         }
