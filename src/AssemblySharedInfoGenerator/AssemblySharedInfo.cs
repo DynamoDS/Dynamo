@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Flavor=Release")] // a.k.a. "Comments"
 #endif
 
-[assembly: CLSCompliant(true)]
+[assembly: CLSCompliant(false)]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -45,7 +45,7 @@ using System.Runtime.InteropServices;
 // to distinguish one build from another. AssemblyFileVersion is specified
 // in AssemblyVersionInfo.cs so that it can be easily incremented by the
 // automated build process.
-[assembly: AssemblyVersion("2.7.0.8085")]
+[assembly: AssemblyVersion("2.7.0.8346")]
 
 
 // By default, the "Product version" shown in the file properties window is
@@ -64,4 +64,4 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyFileVersion("2.7.0.8085")]
+[assembly: AssemblyFileVersion("2.7.0.8346")]

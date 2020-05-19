@@ -94,10 +94,7 @@
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
-            ItemsSource="{Binding SceneItems}"
-            ShowFieldOfView="False" 
             EffectsManager="{Binding EffectsManager}"
-            RenderTechniquesManager="{Binding RenderTechniquesManager}"
             BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">
             <hx:Viewport3DX.InputBindings>
                 <KeyBinding Command="hx:ViewportCommands.ZoomExtents" Gesture="Ctrl+E"/>
@@ -110,7 +107,11 @@
                 <MouseBinding Command="hx:ViewportCommands.SetTarget" Gesture="Ctrl+RightDoubleClick"/>
                 <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
                 <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
-            </hx:Viewport3DX.InputBindings>            
+            </hx:Viewport3DX.InputBindings>
+            <hx:GroupModel3D
+                x:Name="Models"
+                ItemsSource="{Binding SceneItems}"
+            />
         </hx:Viewport3DX>
         
         <Thumb Name ="resizeThumb" 

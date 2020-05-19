@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.Tests</RootNamespace>
     <AssemblyName>DynamoCoreTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
     <TargetFrameworkProfile />
@@ -94,6 +94,7 @@
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
+    <Compile Include="Logging\AnalyticsServiceModulesTest.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
     <Compile Include="Logging\HeartBeatTest.cs" />
@@ -104,6 +105,24 @@
     <Compile Include="Migration\MigrationReportTests.cs" />
     <Compile Include="Migration\MigrationTests.cs" />
     <Compile Include="Migration\WorkspaceMigrationsTests.cs" />
+    <Compile Include="Models\DynamoModelCommandsTest.cs" />
+    <Compile Include="Models\CreateAndConnectNodeCommandTest.cs" />
+    <Compile Include="Models\CreateCustomNodeCommandTest.cs" />
+    <Compile Include="Models\CreateNodeCommandTest.cs" />
+    <Compile Include="Models\CreateNoteCommandTest.cs" />
+    <Compile Include="Models\CreateProxyNodeCommandTest.cs" />
+    <Compile Include="Models\ForceRunCancelCommandTest.cs" />
+    <Compile Include="Models\GroupModelCommandTests.cs" />
+    <Compile Include="Models\ModelEventCommandTest.cs" />
+    <Compile Include="Models\MutateTestCommandTest.cs" />
+    <Compile Include="Models\OpenFileCommandTest.cs" />
+    <Compile Include="Models\PausePlaybackCommandTest.cs" />
+    <Compile Include="Models\PresetCommandTests.cs" />
+    <Compile Include="Models\RecordableCommandsTest.cs" />
+    <Compile Include="Models\RunSettingsTest.cs" />
+    <Compile Include="Models\SelectModelCommandTest.cs" />
+    <Compile Include="Models\UndoRedoCommandTest.cs" />
+    <Compile Include="Models\UpdateModelValueCommandTest.cs" />
     <Compile Include="Models\DynamoModelEventArgsTest.cs" />
     <Compile Include="Models\DynamoModelEventsTest.cs" />
     <Compile Include="MultiOutputNodeTest.cs" />

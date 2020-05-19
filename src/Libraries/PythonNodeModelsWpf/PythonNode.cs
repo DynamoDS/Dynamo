@@ -19,9 +19,9 @@ namespace PythonNodeModelsWpf
         private WorkspaceModel workspaceModel;
         private ScriptEditorWindow editWindow;
         private ModelessChildWindow.WindowRect editorWindowRect;
-        private MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
-        private MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
-        private MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
+        private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
+        private readonly MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = true };
+        private readonly MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = true };
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -34,7 +34,6 @@ namespace PythonNodeModelsWpf
 
             nodeView.MainContextMenu.Items.Add(editWindowItem);
             editWindowItem.Click += EditScriptContent;
-
             // If it is a Debug build, display a python engine switcher
             if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
             {
@@ -42,7 +41,6 @@ namespace PythonNodeModelsWpf
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
                 pythonEngine2Item.Click += UpdateToPython2Engine;
                 pythonEngine3Item.Click += UpdateToPython3Engine;
-
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Windows.Navigation;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 

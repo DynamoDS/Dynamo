@@ -1,13 +1,9 @@
-﻿using Dynamo.Logging;
-using Dynamo.Updates;
-using Moq;
-using NUnit.Framework;
-using DynUpdateManager = Dynamo.Updates.UpdateManager;
+﻿using System;
+using System.Collections.Generic;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using System.Collections.Generic;
-using System;
-using Dynamo.Interfaces;
+using Dynamo.Logging;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Loggings
 {
@@ -17,6 +13,28 @@ namespace Dynamo.Tests.Loggings
         private const string DOWNLOAD_SOURCE_PATH_S = "http://downloadsourcepath/";
         private const string SIGNATURE_SOURCE_PATH_S = "http://SignatureSourcePath/";
         private PathManager pathManager;
+        internal DynamoLogger logger;
+
+        // Returns the dynamo logger object in non-test mode. 
+        internal DynamoLogger GetDynamoLoggerWithTestModeFalse()
+        {
+            pathManager = new PathManager(new PathManagerParams{ });
+
+            // Ensure we have all directories in place.
+            var exceptions = new List<Exception>();
+            pathManager.EnsureDirectoryExistence(exceptions);
+
+            //By setting the VerboseLogging we will enable a piece of code inside the method::
+            //private void Log(string message, LogLevel level, bool reportModification)
+            var debugSettings = new DebugSettings
+            {
+                VerboseLogging = true
+            };
+
+            var logger = new DynamoLogger(debugSettings, pathManager.LogDirectory, false);
+
+            return logger;
+        }
 
         /// <summary>
         /// This test method will check the LogEventArgs.LogEventArgs
@@ -45,27 +63,9 @@ namespace Dynamo.Tests.Loggings
         [Category("UnitTests")]
         public void test_dynamologger_logger()
         {
-            //Arrange
-            //This has been done in the base class but we need to do it again because the pathManager is private
-            var config = CreateStartConfiguration(dynamoSettings);
-            pathManager = new PathManager(new PathManagerParams
-            {
-                CorePath = config.DynamoCorePath,
-                HostPath = config.DynamoHostPath,
-                PathResolver = config.PathResolver
-            });
-
-            // Ensure we have all directories in place.
-            var exceptions = new List<Exception>();
-            pathManager.EnsureDirectoryExistence(exceptions);
-
-            //By setting the VerboseLogging we will enable a piece of code inside the method::
-            //private void Log(string message, LogLevel level, bool reportModification)
-            var debugSettings = new DebugSettings
-            {
-                VerboseLogging = true
-            };
-            var logger = new DynamoLogger(debugSettings, pathManager.LogDirectory);
+            // Get the dynamo logger in non-test mode, as we write the logs
+            // to dynamo console and to a file only in non-test mode.
+            logger = GetDynamoLoggerWithTestModeFalse();
 
             //Act
             logger.LogWarning("Testing Logging Warning", WarningLevel.Error);
@@ -77,7 +77,7 @@ namespace Dynamo.Tests.Loggings
             logger.LogError("Testing Logging Error","Error Details");
 
             //Assert
-            //Check if the logged info was inserted inside the logged text (the log file cannot be opened due that is being used by the base class)
+            //Check if the logged info is stored in the LogText property (the log file cannot be opened due that is being used by the base class)
             Assert.IsTrue(logger.LogText.Contains("Testing Logging Warning"));
 
             logger.Dispose();

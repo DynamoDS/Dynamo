@@ -199,6 +199,15 @@ namespace ProtoCore.Lang.Replication
             List<ReplicationInstruction> replicationInstructions, 
             RuntimeCore runtimeCore)
         {
+            return ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore, true);
+        }
+
+        private static List<List<StackValue>> ComputeAllReducedParams(
+            List<StackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            RuntimeCore runtimeCore,
+            bool performArraySampling)
+        {
             //Copy the types so unaffected ones get copied back directly
             var basicList = new List<StackValue>(formalParams);
 
@@ -214,7 +223,7 @@ namespace ProtoCore.Lang.Replication
                     //This should generally be a collection, so we need to do a one phase unboxing
                     var targets = reducedParams.Select(r => r[index]).ToList();
                     var target = basicList[index];
-                    
+
                     if (!target.IsArray)
                     {
 #if DEBUG
@@ -233,7 +242,15 @@ namespace ProtoCore.Lang.Replication
                     var arrayStats = new HashSet<StackValue>();
                     foreach (var targetTemp in targets)
                     {
-                        var temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).Values.ToList();
+                        List<StackValue> temp;
+                        if (performArraySampling)
+                        {
+                            temp = ArrayUtils.GetTypeExamplesForLayer(targetTemp, runtimeCore).Values.ToList();
+                        }
+                        else
+                        {
+                            temp = ArrayUtils.GetTypeExamplesForLayerWithoutArraySampling(targetTemp, runtimeCore);
+                        }
                         arrayStats.UnionWith(temp);
                     }
 
@@ -254,6 +271,24 @@ namespace ProtoCore.Lang.Replication
             }
 
             return reducedParams;
+        }
+
+        /// <summary>
+        /// Similar to ComputeAllReducedParams except for the fact that all arrays are inspected
+        /// for compatible types. As a result, the number of produced reduced params can increase
+        /// considerably, which is why this should only be used in the context of a last resort
+        /// replication match criteria.
+        /// </summary>
+        /// <param name="formalParams"></param>
+        /// <param name="replicationInstructions"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        internal static List<List<StackValue>> ComputeAllReducedParamsWithoutArraySampling(
+            List<StackValue> formalParams,
+            List<ReplicationInstruction> replicationInstructions,
+            RuntimeCore runtimeCore)
+        {
+            return ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore, false);
         }
 
         /// <summary>

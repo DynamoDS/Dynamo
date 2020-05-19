@@ -27,16 +27,6 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-        /// <summary>
-        /// Private constructor used for serialization.
-        /// </summary>
-        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
-        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
-        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
-        {
-            ArgumentLacing = LacingStrategy.Disabled;
-        }
-
         private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
 
         [JsonConverter(typeof(StringEnumConverter))]
@@ -60,6 +50,16 @@ namespace PythonNodeModels
         protected PythonNodeBase()
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        /// <summary>
+        /// Private constructor used for serialization.
+        /// </summary>
+        /// <param name="inPorts">A collection of <see cref="PortModel"/> objects.</param>
+        /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
+        protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
