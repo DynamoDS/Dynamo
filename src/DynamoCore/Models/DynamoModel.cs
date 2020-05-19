@@ -608,7 +608,7 @@ namespace Dynamo.Models
                     bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
                 }
             }
-            catch (ApplicationException)
+            catch (Exception)
             {
                 // Do nothing for now
             }
