@@ -191,7 +191,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
 
-        private Object element3DDictionaryMutex = new object();
+        private readonly Object element3DDictionaryMutex = new object();
 
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
 
@@ -1078,7 +1078,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             lock (element3DDictionaryMutex)
             {
                 geometryModels = Element3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value as Element3D != null).ToArray();
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value is Element3D).ToArray();
             }
 
             return geometryModels;

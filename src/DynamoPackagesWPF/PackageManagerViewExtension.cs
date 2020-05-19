@@ -46,9 +46,9 @@ namespace Dynamo.PackageManager.UI
             packageManager.PackageLoader.PackgeLoaded -= packageLoadedHandler;
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-           
+           // Do nothing for now
         }
 
         public void Shutdown()
@@ -56,9 +56,9 @@ namespace Dynamo.PackageManager.UI
             Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewLoadedParams)
         {
-            var packageManager = p.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            var packageManager = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
 
             //when this extension is started up we should look for all packages,

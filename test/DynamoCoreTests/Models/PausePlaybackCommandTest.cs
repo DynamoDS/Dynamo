@@ -48,7 +48,7 @@ namespace Dynamo.Tests.ModelsTest
                 //This will raise a NotImplementedException since ExecuteCore should not be implemented for a PausePlaybackCommand 
                 base.ExecuteCore(dynamoModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
