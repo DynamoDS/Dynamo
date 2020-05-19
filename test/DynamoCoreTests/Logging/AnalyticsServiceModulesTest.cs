@@ -32,6 +32,9 @@ namespace Dynamo.Tests.Loggings
         [Test]
         public void TestLoadedAssembliesOnStartup()
         {
+            if (!DebugModes.IsEnabled("ADPAnalyticsTracker"))
+                return;
+
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().Select(o => o.GetName().Name).OrderBy(o => o).ToList();
             Assert.IsTrue(loadedAssemblies.Contains("Analytics.NET.Core"));
             Assert.IsTrue(loadedAssemblies.Contains("Analytics.Net.ADP"));
