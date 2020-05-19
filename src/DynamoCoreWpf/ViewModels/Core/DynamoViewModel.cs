@@ -532,22 +532,6 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
-
-            // This can be removed after this bug is fixed in .net 4.7
-            // https://developercommunity.visualstudio.com/content/problem/244615/setfinalsizemaxdiscrepancy-getting-stuck-in-an-inf.html
-            // if the key "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace" has a value true in the 
-            // dynamoCoreWpf.config file we will set the switch here before the view is created.
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            var gridSwitchKey = "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace";
-            var gridSwitchKeyValue = config.AppSettings.Settings[gridSwitchKey];
-            bool gridSwitch = false;
-            if(gridSwitchKeyValue != null)
-            {
-                bool.TryParse(gridSwitchKeyValue.Value, out gridSwitch);
-                AppContext.SetSwitch(gridSwitchKey, gridSwitch);
-            }
-
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
