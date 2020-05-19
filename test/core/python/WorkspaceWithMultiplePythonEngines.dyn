@@ -1,8 +1,8 @@
 {
-  "Uuid": "13bd6959-7de4-49d4-98c9-fe6c75aced8c",
+  "Uuid": "bef3f908-3d5a-4c6b-8b03-62b4398a3e26",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "BigIntegerToLong",
+  "Name": "WorkspaceWithMultiplePythonEngines",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -12,13 +12,13 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [2059130726864, 2*10e13, int(2*10e13), -9223372036854775808, 9223372036854775808]",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = sys.version[0:5]",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
-      "Id": "547d1dd9203746bbaa2b7bd448c8124a",
+      "Id": "d060e68f510f43fe8990c2c1ba7e0f80",
       "Inputs": [
         {
-          "Id": "f39b2d33b15a4634b8c24228f2e985b3",
+          "Id": "b48375a915524b858db8efe02dc17f2b",
           "Name": "IN[0]",
           "Description": "Input #0",
           "UsingDefaultValue": false,
@@ -29,7 +29,7 @@
       ],
       "Outputs": [
         {
-          "Id": "20ae72e54022449fb5547939aa05cbd2",
+          "Id": "39d3443cd98e4262a3731b4302c70052",
           "Name": "OUT",
           "Description": "Result of the python script",
           "UsingDefaultValue": false,
@@ -42,15 +42,17 @@
       "Description": "Runs an embedded IronPython script."
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "DSCore.Object.Type@var",
-      "Id": "23088248d7b1441abbc5ada07fcdf154",
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [IN[0], sys.version[0:5]]",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "4050d23e529c43e9b6140506d8adb06b",
       "Inputs": [
         {
-          "Id": "4fc5a9ec1dac43c298f2fb819b6c0c44",
-          "Name": "obj",
-          "Description": "An object.\n\nvar",
+          "Id": "fd8ec3827e954bd6907078e1f64d0517",
+          "Name": "IN[0]",
+          "Description": "Input #0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -59,24 +61,24 @@
       ],
       "Outputs": [
         {
-          "Id": "ea6928c8a2814de193d882a42613ba21",
-          "Name": "string",
-          "Description": "Type of object.",
+          "Id": "3812af09105341a38adb48ffcc59326c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Replication": "Auto",
-      "Description": "Returns the type of object represented as string.\n\nObject.Type (obj: var): string"
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
     }
   ],
   "Connectors": [
     {
-      "Start": "20ae72e54022449fb5547939aa05cbd2",
-      "End": "4fc5a9ec1dac43c298f2fb819b6c0c44",
-      "Id": "49b834023f51443b81132f6231bb8a52"
+      "Start": "39d3443cd98e4262a3731b4302c70052",
+      "End": "fd8ec3827e954bd6907078e1f64d0517",
+      "Id": "505c65c87c6041578db45e09a2f3a4a6"
     }
   ],
   "Dependencies": [],
@@ -87,7 +89,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.7.0.8544",
+      "Version": "2.7.0.8613",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -105,24 +107,24 @@
     },
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "Python Script",
-        "Id": "547d1dd9203746bbaa2b7bd448c8124a",
+        "Id": "d060e68f510f43fe8990c2c1ba7e0f80",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Python Script",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 202.0,
-        "Y": 293.0
+        "X": 269.0,
+        "Y": 222.0
       },
       {
-        "ShowGeometry": true,
-        "Name": "Object.Type",
-        "Id": "23088248d7b1441abbc5ada07fcdf154",
+        "Id": "4050d23e529c43e9b6140506d8adb06b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
+        "Name": "Python Script",
+        "ShowGeometry": true,
         "Excluded": false,
-        "X": 436.0,
-        "Y": 367.0
+        "X": 449.0,
+        "Y": 229.0
       }
     ],
     "Annotations": [],

@@ -1,8 +1,8 @@
 {
-  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "Uuid": "69d56f13-dfb7-432a-949d-881a8a7b1ed7",
   "IsCustomNode": false,
-  "Description": "",
-  "Name": "python",
+  "Description": null,
+  "Name": "pythonEngineTest",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -12,13 +12,13 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "ok",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\n# dataEnteringNode = IN\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = sys.version[0:5]\r\n\r\n# OUT = aList.count(123)\r\n\r\n#OUT = IN[0].count(4)",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
-      "Id": "3bcad14ed08642789e08ed2759ef92f3",
+      "Id": "83a5b1d2dc584d8f823f861ac7d565f1",
       "Inputs": [
         {
-          "Id": "37ea236c248443e8ab731221202dbd82",
+          "Id": "f589c4cafeac4c1da76d2309d5ef4653",
           "Name": "IN[0]",
           "Description": "Input #0",
           "UsingDefaultValue": false,
@@ -29,7 +29,7 @@
       ],
       "Outputs": [
         {
-          "Id": "991bcc5eecea4d1caae50e5a64129e59",
+          "Id": "b2ecb973514a4b20a506357affcddc47",
           "Name": "OUT",
           "Description": "Result of the python script",
           "UsingDefaultValue": false,
@@ -49,9 +49,9 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
+      "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.7.0.8544",
+      "Version": "2.7.0.8584",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },
@@ -71,12 +71,12 @@
       {
         "ShowGeometry": true,
         "Name": "Python Script",
-        "Id": "3bcad14ed08642789e08ed2759ef92f3",
+        "Id": "83a5b1d2dc584d8f823f861ac7d565f1",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 259.0,
-        "Y": 148.5
+        "X": 464.0,
+        "Y": 240.5
       }
     ],
     "Annotations": [],
