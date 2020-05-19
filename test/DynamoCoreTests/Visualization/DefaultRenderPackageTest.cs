@@ -26,16 +26,60 @@ namespace Dynamo.Tests.Visualization
             render.SetColors(WhiteByteArrayOfLength(2));
 
             //Assert
+            //Checking that the properties were populated correctly
             Assert.AreEqual((render.PointVertexColors as List<byte>).Count,12);
             Assert.AreEqual((render.LineStripVertexColors as List<byte>).Count,8);
             Assert.AreEqual((render.Colors as byte[]).Length,8);
 
-            render.Clear();
+            render.Clear();//Empty some properties of the DefaultRenderPackage class
 
             //Assert
+            //Checking that the properties were cleaned
             Assert.AreEqual((render.PointVertexColors as List<byte>).Count,0);
             Assert.AreEqual((render.LineStripVertexColors as List<byte>).Count,0);
 
+        }
+
+        /// <summary>
+        /// This test method will validate the next properties from the DefaultRenderPackage class:
+        /// HasRenderingData
+        /// LineStripIndices
+        /// MeshIndices
+        /// MeshTextureCoordinates
+        /// PointIndices
+        /// ColorsStride
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void DefaultRenderPackage_Properties()
+        {
+            //Arrange
+            var render = new DefaultRenderPackage();
+
+            //Act
+            //This will populate the HasRenderingData property
+            render.ApplyPointVertexColors(WhiteByteArrayOfLength(3));
+
+            //This will populate the LineStripIndices property
+            render.AddLineStripVertex(1, 2, 5);
+
+            //This will populate the MeshIndices property
+            render.AddTriangleVertex(1,4,5);
+
+            //This will populate the MeshTextureCoordinates property
+            render.AddTriangleVertexUV(2,5);
+
+            //This will populate the PointIndices property
+            render.AddPointVertex(3, 6, 4);
+
+            //Assert
+            //Checking that the properties have the right value
+            Assert.IsTrue(render.HasRenderingData);
+            Assert.AreEqual((render.LineStripIndices as List<int>).Count, 1);
+            Assert.AreEqual((render.MeshIndices as List<int>).Count,1);
+            Assert.AreEqual((render.MeshTextureCoordinates as List<double>).Count,2);
+            Assert.AreEqual((render.PointIndices as List<int>).Count,1);
+            Assert.AreEqual(render.ColorsStride,0);
         }
 
         private byte[] WhiteByteArrayOfLength(int numberOfVertices)
