@@ -600,22 +600,21 @@ namespace Dynamo.Models
             try
             {
                 // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
-                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altoghether.
+                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
                 var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
                 if (assemblyConfig != null)
                 {
                     var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
                     bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
                 }
-            } catch(Exception)
-            {}
-            
-            if (areAnalyticsDisabledFromConfig)
-            {
-                // If user skipped analytics from assembly configuration, do not try to launch the client at all 
-                // Skip call to instrumentation logger initialization.
             }
-            else
+            catch (Exception)
+            {
+                // Do nothing for now
+            }
+            // If user skipped analytics from assembly configuration, do not try to launch the client at all 
+            // Skip call to instrumentation logger initialization.
+            if (!areAnalyticsDisabledFromConfig)
             {
                 InitializeInstrumentationLogger();
             }
