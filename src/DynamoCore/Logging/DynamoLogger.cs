@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Exceptions;
 
 namespace Dynamo.Logging
@@ -188,6 +189,8 @@ namespace Dynamo.Logging
                 {
                     StartLoggingToConsoleAndFile(logDirectory);
                 }
+
+                XmlDocumentationExtensions.LogToConsole += Log;
             }
         }
 
@@ -448,6 +451,8 @@ namespace Dynamo.Logging
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+
+            XmlDocumentationExtensions.LogToConsole -= Log;
         }
 
         /// <summary>
