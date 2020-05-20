@@ -624,10 +624,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnShutdown()
         {
-            viewModel = null;
-            EffectsManager.Dispose();
-            EffectsManager = null;
-            
+ 
         }
 
         protected override void OnClear()
@@ -2303,11 +2300,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             if (disposing)
             {
+                viewModel = null;
                 var effectsManager = EffectsManager as DynamoEffectsManager;
                 if (effectsManager != null)
                 {
                     effectsManager.Dispose();
-                    //TODO this is already being done in shutdown.
                     effectsManager = null;
                    
                 }
@@ -2321,7 +2318,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     sceneItem.Dispose();
                 }
                 sceneItems.Clear();
-                element3DDictionary.Values.ToList().ForEach(x => x.Dispose());
+                foreach (var item in Element3DDictionary.Values)
+                {
+                    item.Dispose();
+                }
                 element3DDictionary.Clear();
                 
             }
