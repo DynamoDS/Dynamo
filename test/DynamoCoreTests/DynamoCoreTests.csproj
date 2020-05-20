@@ -89,7 +89,6 @@
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
-    <Compile Include="Logging\AnalyticsServiceModulesTest.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
     <Compile Include="Logging\HeartBeatTest.cs" />

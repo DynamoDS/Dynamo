@@ -605,7 +605,8 @@ namespace Dynamo.Models
                 if (assemblyConfig != null)
                 {
                     var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    if (disableAnalyticsValue != null)
+                        bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
                 }
             } catch(Exception)
             {}

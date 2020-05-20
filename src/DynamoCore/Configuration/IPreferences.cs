@@ -54,10 +54,11 @@ namespace Dynamo.Interfaces
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
         /// </summary>
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         bool IsUsageReportingApproved { get; set; }
 
         /// <summary>
-        /// Indicates whether analytics reporting is approved or not.
+        /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         bool IsAnalyticsReportingApproved { get; set; }
 
