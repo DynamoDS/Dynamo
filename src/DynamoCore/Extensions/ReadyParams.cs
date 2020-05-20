@@ -13,7 +13,7 @@ namespace Dynamo.Extensions
     public class ReadyParams : IDisposable
     {
         private  DynamoModel dynamoModel;
-        private  StartupParams startupParams;
+        private readonly StartupParams startupParams;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadyParams"/> class.
