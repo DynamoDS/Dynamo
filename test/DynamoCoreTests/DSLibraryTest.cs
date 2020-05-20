@@ -123,6 +123,19 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void TestLoadDllFileWithApostropheInPathSuccess()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = Path.Combine(TestDirectory, "pkgs", "Pack'age", "bin", @"Package.dll");
+      
+            libraryServices.ImportLibrary(libraryPath);
+
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestLibraryAcrossSessions()
         {
             LibraryLoaded = false;
