@@ -160,6 +160,11 @@ namespace Dynamo.Tests
             factoryMoq.Object.Register<AnalyticsEvent>(trackerMoq.Object);
 
             Service.Instance.Register(factoryMoq.Object);
+
+            Service.Instance.AddTrackerFactoryFilter(factoryName, () => {
+                return CurrentDynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
+                }
+            );
         }
 
         public override void Cleanup()
