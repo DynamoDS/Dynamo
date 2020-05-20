@@ -1344,6 +1344,8 @@ namespace Dynamo.Controls
             //SHOW or HIDE GALLERY
             dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
 
+            //first all view extensions have their shutdown methods called
+            //when this view is finally disposed, dispose will be called on them.
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
                 try
@@ -1352,15 +1354,12 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log(ext.Name + ": " + exc.Message);
+                    Log($"{ext.Name} :  {exc.Message} during shutdown" );
                 }
             }
-            sharedExtensionParams.Dispose();
+          
 
             viewExtensionManager.MessageLogged -= Log;
-            BackgroundPreview.DataContext = null;
-            BackgroundPreview.watch_view.Items.Clear();
-            BackgroundPreview.watch_view.DataContext = null;
             BackgroundPreview = null;
             background_grid.Children.Clear();
 
@@ -1368,7 +1367,9 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
+            
             this.Dispose();
+            sharedExtensionParams?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
@@ -2053,6 +2054,20 @@ namespace Dynamo.Controls
 
         public void Dispose()
         {
+            //TODO we should be careful with this, viewExtensions also have their shutdown method called
+            //when the dynamoWindow closes so it's possible there are some double dispose issues for ours or
+            //external extensions. Looking for feedback here!
+            foreach (var ext in viewExtensionManager.ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log($"{ext.Name} :  {exc.Message} during dispose");
+                }
+            }
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;

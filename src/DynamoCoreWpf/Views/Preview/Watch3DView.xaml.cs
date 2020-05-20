@@ -68,7 +68,14 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
-           
+            this.DataContext = null;
+            if(watch_view != null)
+            {
+                watch_view.Items.Clear();
+                watch_view.DataContext = null;
+                watch_view.Dispose();
+            }
+        
         }
 
         private void RegisterEventHandlers()

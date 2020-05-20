@@ -572,6 +572,7 @@ namespace DynamoCoreWpfTests
                 var isTestMode = DynamoModel.IsTestMode;
 
                 // First time run, check if dynamo did set it back to false after running
+                //TODO this is a very fragile test, it fails under debug here as the view does not load fast enough.
                 Assert.AreEqual(false, UsageReportingManager.Instance.FirstRun);
 
                 // CollectionInfoOption To FALSE
@@ -701,7 +702,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
         #endregion
