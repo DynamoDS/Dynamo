@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Dynamo.Logging;
 using Dynamo.Updates;
+using Moq;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -17,6 +19,7 @@ namespace Dynamo.Tests
         [SetUp]
         public void Init()
         {
+            //Create an instance of the UpdateManager class to be used in the tests.
             var config = UpdateManagerConfiguration.GetSettings(null);
             updateManager = new UpdateManager(config);
         }
@@ -46,6 +49,7 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void UpdateManagerConfigurationLoadTest()
         {
+            //Testing all the calls for Load that return null
             Assert.IsNull(UpdateManagerConfiguration.Load(null, updateManager));
             Assert.IsNull(UpdateManagerConfiguration.Load("", updateManager));
             Assert.IsNull(UpdateManagerConfiguration.Load("filePath", updateManager));
@@ -57,23 +61,42 @@ namespace Dynamo.Tests
         public void UpdateManagerConfigurationSaveTest()
         {
             var config = new UpdateManagerConfiguration();
-            Assert.DoesNotThrow(() => config.Save(Path.GetTempFileName(), updateManager));
+            var goodPath = Path.GetTempFileName();
+            var badPath = "W:\\PathThatDoesntExists";
+
+            //Happy path
+            Assert.DoesNotThrow(() => config.Save(goodPath, updateManager));
+            //Happy path with null UpdateManager
+            Assert.DoesNotThrow(() => config.Save(goodPath, null));
+
+            //if statement in the catch block
+            Assert.DoesNotThrow(() => config.Save(badPath, updateManager));
+            //else statement of the catch block
+            //Assert.Throws<Exception>(() => config.Save(badPath, null));
         }
 
         [Test]
         [Category("UnitTests")]
         public void UpdateManagerConfigurationPropertiesTest()
         {
-            var config = new UpdateManagerConfiguration();
-            var checkNewerDailyBuildOldValue = config.CheckNewerDailyBuild;
+            var config = (UpdateManagerConfiguration)updateManager.Configuration;
 
-            config.CheckNewerDailyBuild = !config.CheckNewerDailyBuild;
-            Assert.AreEqual(!checkNewerDailyBuildOldValue, config.CheckNewerDailyBuild);
+            //ConfigFilePath
+            Assert.NotNull(config.ConfigFilePath);
 
-            var forceUpdateOldValue = config.ForceUpdate;
+            //CheckNewerDailyBuild
+            //Set to false and then true to trigger if statement.
+            config.CheckNewerDailyBuild = false;
+            config.CheckNewerDailyBuild = true;
 
-            config.ForceUpdate = !config.ForceUpdate;
-            Assert.AreEqual(!forceUpdateOldValue, config.ForceUpdate);
+            Assert.AreEqual(true, config.CheckNewerDailyBuild);
+
+            //ForceUpdate
+            //Set to false and then true to trigger if statement.
+            config.ForceUpdate = false;
+            config.ForceUpdate = true;
+
+            Assert.AreEqual(true, config.ForceUpdate);
         }
         #endregion
 
@@ -82,15 +105,93 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void QuitAndInstallUpdateTest()
         {
+            //This handler is used to cover the if statement
+            updateManager.ShutdownRequested += TestShutdownRequestedHandler;
             Assert.DoesNotThrow(() => updateManager.QuitAndInstallUpdate());
+        }
+
+        private void TestShutdownRequestedHandler(IUpdateManager updateManager) { }
+
+        [Test]
+        [Category("UnitTests")]
+        public void BaseVersionTest()
+        {
+            updateManager.DownloadedUpdateInfo = new AppVersionInfo() { Version = BinaryVersion.FromString("5.5.5.5") };
+            updateManager.UpdateInfo = new AppVersionInfo() { Version = BinaryVersion.FromString("5.5.5.5") };
+
+            //These two cases are to cover both routes in the BaseVersion if statement.
+            //ProductVersion < HostVersion
+            updateManager.HostVersion = new Version(9, 9, 9, 9);
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
+
+            //ProductVersion > HostVersion
+            updateManager.HostVersion = new Version(1, 1, 1, 1);
+            Assert.IsTrue(updateManager.IsUpdateAvailable);
         }
 
         [Test]
         [Category("UnitTests")]
-        public void HostApplicationBeginQuitTest()
+        public void UpdateManagerPropertiesTest()
         {
-            Assert.DoesNotThrow(() => updateManager.HostApplicationBeginQuit());
+            //CheckNewerDailyBuild
+            //Set to false and then true to trigger if statement.
+            updateManager.CheckNewerDailyBuilds = false;
+            updateManager.CheckNewerDailyBuilds = true;
+
+            Assert.AreEqual(true, updateManager.CheckNewerDailyBuilds);
+
+            //ForceUpdate
+            //Set to false and then true to trigger if statement.
+            updateManager.ForceUpdate = false;
+            updateManager.ForceUpdate = true;
+
+            Assert.AreEqual(true, updateManager.ForceUpdate);
+
+            //HostName
+            updateManager.HostName = "Host Name";
+            Assert.AreEqual("Host Name", updateManager.HostName);
+
+            //UpdateFileLocation
+            var um = new UpdateManager(new UpdateManagerConfiguration());
+            //  For a new UpdateManager, the UpdateFileLocation property is not initialized.
+            Assert.IsNullOrEmpty(updateManager.UpdateFileLocation);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsStableBuildTest()
+        {
+            //If fileName does not contain installNameBase, returns false.
+            Assert.IsFalse(UpdateManager.IsStableBuild("InstallNameBase", "FileName"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void IsDailyBuildTest()
+        {
+            //If fileName does not contain installNameBase, returns false.
+            Assert.IsFalse(UpdateManager.IsDailyBuild("InstallNameBase", "FileName"));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void RegisterExternalApplicationProcessIdTest()
+        {
+            //This is a void method that sets a private attribute. There is no way to validate whether the
+            //value was changed or not, but this covers the code and makes sure no exceptions are thrown.
+            Assert.DoesNotThrow(() => updateManager.RegisterExternalApplicationProcessId(1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void OnLogTest()
+        {
+            updateManager.Log += TestLogHandler;
+            updateManager.OnLog(new LogEventArgs("Test", LogLevel.Console));
+            //TODO: Validate the log was written.
+        }
+        
+        private void TestLogHandler(LogEventArgs args) { }
         #endregion
 
         #region DynamoLookup
