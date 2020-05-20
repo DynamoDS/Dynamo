@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DSCPython;
 using DSIronPython;
 using Dynamo.Configuration;
 using Dynamo.Graph;
@@ -42,7 +41,6 @@ namespace PythonNodeModels
                 {
                     engine = value;
                     RaisePropertyChanged(nameof(Engine));
-                    OnNodeModified();
                 }
             }
         }
@@ -86,14 +84,15 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             Func<string, IList, IList, object> pythonEvaluatorMethod;
-
-            if (Engine == PythonEngineVersion.IronPython2)
+            if (Engine == PythonEngineVersion.CPython3)
             {
-                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
+                // TODO: Uncomment this and replace the following code when merging Python3 changes in master
+                // pythonEvaluatorMethod = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }
-            else if (Engine == PythonEngineVersion.CPython3)
+            else if (Engine == PythonEngineVersion.IronPython2)
             {
-                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
+                pythonEvaluatorMethod = DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript;
             }
             else
             {
@@ -141,7 +140,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
                         "import sys" + Environment.NewLine +
                         "import clr" + Environment.NewLine +
                         "clr.AddReference('ProtoGeometry')" + Environment.NewLine +

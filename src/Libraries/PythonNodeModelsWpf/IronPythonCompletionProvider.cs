@@ -19,7 +19,6 @@ namespace Dynamo.Python
     /// </summary>
     public class IronPythonCompletionProvider : LogSourceBase
     {
-
         #region Properties and fields
 
         /// <summary>
