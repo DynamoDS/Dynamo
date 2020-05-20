@@ -232,7 +232,7 @@ namespace Dynamo.Logging
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
-                TrackPreferenceInternal("ReportingGoogleAnalytics", "", ReportingAnalytics ? 1 : 0);
+                TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
         }
