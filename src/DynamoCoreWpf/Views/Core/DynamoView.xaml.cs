@@ -74,7 +74,7 @@ namespace Dynamo.Controls
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
-        private ReadyParams sharedExtensionParams;
+        private ViewLoadedParams sharedViewExtensionLoadedParams;
         /// <summary>
         /// This event is raised on the dynamo view when an extension tab is closed.
         /// </summary>
@@ -734,9 +734,8 @@ namespace Dynamo.Controls
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
-            sharedExtensionParams = new ViewLoadedParams(this, dynamoViewModel);
-
-            this.DynamoLoadedViewExtensionHandler(sharedExtensionParams as ViewLoadedParams, viewExtensionManager.ViewExtensions);
+            sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
+            this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams as ViewLoadedParams, viewExtensionManager.ViewExtensions);
 
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
@@ -1369,7 +1368,7 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
             
             this.Dispose();
-            sharedExtensionParams?.Dispose();
+            sharedViewExtensionLoadedParams?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to

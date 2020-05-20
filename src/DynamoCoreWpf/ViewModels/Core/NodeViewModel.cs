@@ -648,7 +648,6 @@ namespace Dynamo.ViewModels
                 p.Dispose();
             }
             ErrorBubble.Dispose();
-            ErrorBubble = null;
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             base.Dispose();
         }
