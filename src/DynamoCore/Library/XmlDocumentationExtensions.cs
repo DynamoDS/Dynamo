@@ -370,7 +370,7 @@ namespace Dynamo.Engine
                                 currentDocNode.Summary = reader.Value.CleanUpDocString();
                                 break;
                             case XmlTagType.Parameter: 
-                                // If <returns> tag is missing around text after <params> tag, the text is added as a new parameter
+                                // If a tag is missing around text after <params> tag, the text is added as a new parameter
                                 // under the previous parameter name. This check avoids that safely.
                                 if (!currentDocNode.Parameters.ContainsKey(currentParamName))
                                 {
