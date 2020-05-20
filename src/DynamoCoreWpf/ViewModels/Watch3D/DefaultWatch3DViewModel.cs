@@ -816,7 +816,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         public void Dispose()
         {
             Dispose(true);
-           // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
     }
 }
