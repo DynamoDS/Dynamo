@@ -117,10 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="_dynamo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\viewmodels\watch3d\resources\_dynamo.bfx;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="AboutWindowCannotGetVersion" xml:space="preserve">
     <value>Could not get version.</value>
     <comment>To indicate not abe to get Dynamo version</comment>
@@ -240,10 +236,13 @@
     <value>Compact</value>
   </data>
   <data name="ConsentFormGoogleAnalyticsCheckBoxContent" xml:space="preserve">
-    <value>Yes, I would like to contribute to this program (Google Analytics).</value>
+    <value>I agree to contribute to the Google Analytics program.</value>
   </data>
   <data name="ConsentFormInstrumentationCheckBoxContent" xml:space="preserve">
     <value>I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}</value>
+  </data>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>I agree to data collection in desktop products for Autodesk analytics programs.</value>
   </data>
   <data name="ContextAddGroupFromSelection" xml:space="preserve">
     <value>Add To Group</value>
@@ -487,6 +486,10 @@ You will get a chance to save your work.</value>
   <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
     <value>Verbose Logging</value>
     <comment>Debug menu | Verbose logging</comment>
+  </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>Debug Modes</value>
+    <comment>Debug menu | Show debug modes</comment>
   </data>
   <data name="DynamoViewEditMenu" xml:space="preserve">
     <value>_Edit</value>
@@ -2225,6 +2228,13 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="CrashPromptGithubNewIssueTitle" xml:space="preserve">
     <value>Crash report from Dynamo {0}</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>

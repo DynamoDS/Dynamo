@@ -142,6 +142,47 @@ namespace ProtoCore.Utils
             return usageFreq;
         }
 
+        /// <summary>
+        /// Similar to GetTypeExamplesForLayer but it returns all non-empty arrays.
+        /// Its purpose is to support inspecting heterogeneous arrays in replication scenarios.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        internal static List<StackValue> GetTypeExamplesForLayerWithoutArraySampling(StackValue array, RuntimeCore runtimeCore)
+        {
+            var result = new List<StackValue>();
+            var alreadyFoundTypes = new HashSet<int>();
+
+            if (!array.IsArray)
+            {
+                result.Add(array);
+                return result;
+            }
+
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.Values)
+            {
+                if (sv.IsArray)
+                {
+                    if (!IsEmpty(sv, runtimeCore))
+                    {
+                        result.Add(sv);
+                    }
+                }
+                else
+                {
+                    if (!alreadyFoundTypes.Contains(sv.metaData.type))
+                    {
+                        alreadyFoundTypes.Add(sv.metaData.type);
+                        result.Add(sv);
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         /// <summary>
         /// Generate type statistics for given layer of an array
@@ -296,31 +337,54 @@ namespace ProtoCore.Utils
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, RuntimeCore runtimeCore)
         {
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             if (!svArray.IsArray)
             {
                 return false;
             }
 
+            var svFound = GetFirstNonArrayStackValueRecursive(svArray, runtimeCore);
+            if (svFound.HasValue)
+            {
+                sv = svFound.Value.ShallowClone();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Recursively searches a stack value that is not an array in the given array.
+        /// </summary>
+        /// <param name="svArray">Stack value representing an array</param>
+        /// <param name="runtimeCore">Runtime core</param>
+        /// <returns>The first stack value found that is not an array. Null if none is found.</returns>
+        private static StackValue? GetFirstNonArrayStackValueRecursive(StackValue svArray, RuntimeCore runtimeCore)
+        {
+            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             var array = rmem.Heap.ToHeapObject<DSArray>(svArray);
             if (!array.Values.Any())
             {
-                return false;
+                return null;
             }
 
-            while (array.GetValueFromIndex(0, runtimeCore).IsArray)
+            foreach (var svItem in array.Values)
             {
-                array = rmem.Heap.ToHeapObject<DSArray>(array.GetValueFromIndex(0, runtimeCore));
-
-                // Handle the case where the array is valid but empty
-                if (!array.Values.Any())
+                if (svItem.IsArray)
                 {
-                    return false;
+                    var svFound = GetFirstNonArrayStackValueRecursive(svItem, runtimeCore);
+                    // If we found a non-array sv value, return it. Otherwise, keep looking in the array.
+                    if (svFound.HasValue)
+                    {
+                        return svFound;
+                    }
+                }
+                else
+                {
+                    return svItem;
                 }
             }
 
-            sv = array.GetValueFromIndex(0, runtimeCore).ShallowClone();
-            return true;
+            return null;
         }
 
         private static StackValue[] GetFlattenValue(StackValue array, RuntimeCore runtimeCore)

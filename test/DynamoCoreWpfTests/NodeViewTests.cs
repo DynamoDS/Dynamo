@@ -326,5 +326,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.Name, newName);
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
         }
+
+        [Test]
+        [Category("RegressionTests")]
+        public void GettingNodeNameDoesNotTriggerPropertyChangeCycle()
+        {
+            //add a node
+            var numNode = new CoreNodeModels.Input.DoubleInput();
+            ViewModel.Model.CurrentWorkspace.AddAndRegisterNode(numNode, true);
+
+            //subscribe to all property changes
+            var nvm = ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nvm.PropertyChanged += NodeNameTest_PropChangedHandler;
+            //get the node name.
+            var temp = nvm.Name;
+            nvm.PropertyChanged -= NodeNameTest_PropChangedHandler;
+        }
+
+        private void NodeNameTest_PropChangedHandler(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //get the name,this will sometimes cause another propertyChanged event
+             var temp = (sender as NodeViewModel).Name;
+        }
     }
 }

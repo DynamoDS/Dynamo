@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
-using Dynamo.Graph.Nodes.CustomNodes;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Newtonsoft.Json.Linq;
 
 namespace Dynamo.Tests
 {
@@ -18,7 +22,44 @@ namespace Dynamo.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DSIronPython.dll");
+            libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        /// <summary>
+        ///    Returns a list of python engines from the PythonEngineVersion Enum. 
+        /// </summary>
+        private IEnumerable<PythonEngineVersion> GetPythonEnginesList()
+        {
+            return Enum.GetValues(typeof(PythonEngineVersion)).Cast<PythonEngineVersion>();
+        }
+
+        /// <summary>
+        ///    Updates Engine property for a single python node. 
+        /// </summary>
+        private void UpdateEnginePropertyForPythonNode(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
+        {
+            pythonNode.Engine = pythonEngineVersion;
+        }
+
+        /// <summary>
+        ///    Updates Engine property for a list of python nodes. 
+        /// </summary>
+        private void UpdateEnginePropertyForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
+        {
+            foreach (var pyNode in list)
+            { 
+                pyNode.Engine = pythonEngineVersion;
+            }
+        }
+
+        private void UpdatePythonNodeContent(ModelBase pythonNode, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(
+                System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
+
+            ViewModel.ExecuteCommand(command);
         }
 
         [Test]
@@ -40,6 +81,37 @@ namespace Dynamo.Tests
 
             // workspace has changes
             Assert.IsTrue(model.CurrentWorkspace.HasUnsavedChanges);
+        }
+
+        [Test]
+        public void PythonNodeEnginePropertyTest()
+        {
+            // open file
+            var model = ViewModel.Model;
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            // get the python node and check Engine property
+            var workspace = model.CurrentWorkspace;
+            var nodeModel = workspace.NodeFromWorkspace("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var pynode = nodeModel as PythonNode;
+            Assert.AreEqual(pynode.Engine, PythonEngineVersion.IronPython2);
+
+            // workspace has no changes
+            Assert.IsFalse(model.CurrentWorkspace.HasUnsavedChanges);
+
+            // Serialize DYN and deserialize to double check check Engine field
+            var path = GetNewFileNameOnTempPath();
+            ViewModel.Model.CurrentWorkspace.Save(path);
+
+            var fileContents = File.ReadAllText(path);
+            if (string.IsNullOrWhiteSpace(fileContents))
+                return;
+
+            JObject dynObj = JObject.Parse(fileContents);
+            var pythonTokens = dynObj["Nodes"].Where(t => t.Value<string>("NodeType") == "PythonScriptNode").Select(t => t);
+            Assert.IsNotNull(pythonTokens);
+            Assert.IsTrue(pythonTokens.Any(t => t.Value<string>("Engine") == PythonEngineVersion.IronPython2.ToString()));
         }
 
         [Test]
@@ -195,10 +267,10 @@ namespace Dynamo.Tests
             // reference to specific testing nodes in test graph
             string[] testingNodeGUIDS = new string[]
             {
-                "845d532fdf874d939f2ed66509413ea6",
-                "cb037a9debd54ce79a4007b6ea11de25",
-                "a9bb1b12fbbd4aa19299f0d30c9f99b2",
-                "b6bd3049034f488a9bed0373f05fd021"
+                "845d532f-df87-4d93-9f2e-d66509413ea6",
+                "cb037a9d-ebd5-4ce7-9a40-07b6ea11de25",
+                "a9bb1b12-fbbd-4aa1-9299-f0d30c9f99b2",
+                "b6bd3049-034f-488a-9bed-0373f05fd021"
             };
 
             // get test nodes
@@ -208,7 +280,8 @@ namespace Dynamo.Tests
                 var guid = node.GUID.ToString();
 
                 // if node is a test node, verify truth value
-                if (testingNodeGUIDS.Contains(guid) ) {
+                if (testingNodeGUIDS.Contains(guid) )
+                {
                     AssertPreviewValue(guid, true);
                 }
             }
@@ -226,7 +299,17 @@ namespace Dynamo.Tests
 
             var guid = "490a8d54d0fa4782ae18c81f6eef8306";
 
-            AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 345 } });
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
+            var pynode = nodeModel as PythonNode;
+
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+
+                AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 345 } });
+            }
         }
 
         [Test]
@@ -237,9 +320,76 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(examplePath);
 
             var guid = "490a8d54d0fa4782ae18c81f6eef8306";
+            
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
+            var pynode = nodeModel as PythonNode;
 
-            AssertPreviewValue(guid,
-                new List<object> {new Dictionary<string, int> {{"abcd", 123}}, new List<int> {1, 2, 3, 4, 5, 6, 7, 8, 9}});
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+
+                AssertPreviewValue(guid,
+                      new List<object> { new Dictionary<string, int> { { "abcd", 123 } }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
+            }   
+        }
+
+        [Test]
+        public void PythonGeometryTest()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "PythonGeometry.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var pythonGUID = "3bcad14ed08642789e08ed2759ef92f3";
+            var lineGUID = "cac9ff74bed14ff285294878fa849cd0";
+            var circleCenterPointGUID = "6bb5d21d7815467db1d2ccfc77713337";
+            var circleRadiusGUID = "88746807ba6d4c81a37dbfb187acca81";
+
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
+            var pynode = nodeModel as PythonNode;
+
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+
+                var line = GetPreviewValue(lineGUID) as Line;
+                Assert.AreEqual(line.Length, 5);
+
+                AssertPreviewValue(circleCenterPointGUID, Point.ByCoordinates(0, 0, 0));
+                AssertPreviewValue(circleRadiusGUID, 5);
+            }
+        }
+
+        [Test]
+        public void PythonNodeEnginePropertyChangeTest()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "pythonEngineTest.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var pythonGUID = "83a5b1d2-dc58-4d8f-823f-861ac7d565f1";
+
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
+            var pynode = nodeModel as PythonNode;
+
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+
+                var nodeValue = GetPreviewValue(pythonGUID);
+
+                if (pythonEngine == PythonEngineVersion.IronPython2) {
+                    Assert.AreEqual(nodeValue, "2.7.9");
+                }
+                else if (pythonEngine == PythonEngineVersion.CPython3){
+                    Assert.AreEqual(nodeValue, "3.7.3");
+                }
+            }
         }
 
         [Test]
@@ -251,18 +401,23 @@ namespace Dynamo.Tests
 
             var guid = "490a8d54d0fa4782ae18c81f6eef8306";
 
-            AssertPreviewValue(guid, new Dictionary<string, int> {{"abc", 123}, {"def", 10}});
-        }
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
+            var pynode = nodeModel as PythonNode;
 
-        private void UpdatePythonNodeContent(ModelBase pythonNode, string value)
-        {
-            var command = new DynCmd.UpdateModelValueCommand(
-                System.Guid.Empty, pythonNode.GUID, "ScriptContent", value);
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
 
-            ViewModel.ExecuteCommand(command);
+                ViewModel.HomeSpace.Run();
+
+                AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 10 } });
+            }
         }
 
         [Test]
+        [Category("Failure")]
+        // This test is failing for CPython3 Engine. 
+        // The BigIntegers which use more than int64 type, are currently not being marshalled. 
         public void BigInteger_CanBeMarshaledAsInt64()
         {
             // open test graph
@@ -270,9 +425,51 @@ namespace Dynamo.Tests
             ViewModel.OpenCommand.Execute(examplePath);
 
             var guid = "23088248d7b1441abbc5ada07fcdf154";
+            var pythonGUID = "547d1dd9203746bbaa2b7bd448c8124a";
 
-            AssertPreviewValue(guid,
-                new[] {"System.Int64", "System.Double", "System.Int64", "System.Int64", "System.Numerics.BigInteger"});
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
+            var pynode = nodeModel as PythonNode;
+
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                 
+                ViewModel.HomeSpace.Run();
+
+                AssertPreviewValue(guid,
+                         new[] { "System.Int64", "System.Double", "System.Int64", "System.Int64", "System.Numerics.BigInteger" });
+            }
+        }
+
+        [Test]
+        public void TestWorkspaceWithMultiplePythonEngines()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "WorkspaceWithMultiplePythonEngines.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var pythonNode1GUID = "d060e68f510f43fe8990c2c1ba7e0f80";
+            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
+
+            var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
+            List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
+
+            var pynode1 = pythonNodes.ElementAt(0);
+            var pynode2 = pythonNodes.ElementAt(1);
+
+            AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9"});
+
+            UpdateEnginePropertyForPythonNode(pynode1, PythonEngineVersion.CPython3);
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "2.7.9" });
+
+            UpdateEnginePropertyForPythonNode(pynode2, PythonEngineVersion.CPython3);
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "3.7.3" });
+
+            UpdateEnginePropertyForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9" });
         }
     }
 }

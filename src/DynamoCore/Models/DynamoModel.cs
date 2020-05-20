@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -570,7 +571,7 @@ namespace Dynamo.Models
             IsHeadless = config.IsHeadless;
 
             DebugSettings = new DebugSettings();
-            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory);
+            Logger = new DynamoLogger(DebugSettings, pathManager.LogDirectory, IsTestMode);
 
             foreach (var exception in exceptions)
             {
@@ -594,8 +595,26 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
-            // If user does not agree to GA terms, do not try to launch the client at all
-            if (PreferenceSettings.IsAnalyticsReportingApproved)
+
+            bool areAnalyticsDisabledFromConfig = false;
+            try
+            {
+                // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
+                // Using the "DisableAnalytics" configuration setting, a user can skip loading analytics binaries altogether.
+                var assemblyConfig = ConfigurationManager.OpenExeConfiguration(GetType().Assembly.Location);
+                if (assemblyConfig != null)
+                {
+                    var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
+                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                }
+            }
+            catch (Exception)
+            {
+                // Do nothing for now
+            }
+            // If user skipped analytics from assembly configuration, do not try to launch the client at all 
+            // Skip call to instrumentation logger initialization.
+            if (!areAnalyticsDisabledFromConfig)
             {
                 InitializeInstrumentationLogger();
             }
@@ -1039,6 +1058,7 @@ namespace Dynamo.Models
         public void Dispose()
         {
             EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
+            EngineController.RequestCustomNodeRegistration -= EngineController_RequestCustomNodeRegistration;
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
@@ -1454,6 +1474,7 @@ namespace Dynamo.Models
         {
             if (EngineController != null)
             {
+                EngineController.RequestCustomNodeRegistration -= EngineController_RequestCustomNodeRegistration;
                 EngineController.TraceReconcliationComplete -= EngineController_TraceReconcliationComplete;
                 EngineController.MessageLogged -= LogMessage;
                 EngineController.Dispose();
@@ -1467,7 +1488,14 @@ namespace Dynamo.Models
 
             EngineController.MessageLogged += LogMessage;
             EngineController.TraceReconcliationComplete += EngineController_TraceReconcliationComplete;
+            EngineController.RequestCustomNodeRegistration += EngineController_RequestCustomNodeRegistration;
 
+            foreach (var def in CustomNodeManager.LoadedDefinitions)
+                RegisterCustomNodeDefinitionWithEngine(def);
+        }
+
+        private void EngineController_RequestCustomNodeRegistration(object sender, EventArgs e)
+        {
             foreach (var def in CustomNodeManager.LoadedDefinitions)
                 RegisterCustomNodeDefinitionWithEngine(def);
         }
@@ -1775,8 +1803,6 @@ namespace Dynamo.Models
                     // If the resolved node is also a dummy node, then skip it else replace the dummy node with the resolved version of the node. 
                     if (!(resolvedNode is DummyNode))
                     {
-                        // Disable graph runs temporarily while the dummy node is replaced with the resolved version of that node.
-                        EngineController.DisableRun = true;
                         currentWorkspace.RemoveAndDisposeNode(dn);
                         currentWorkspace.AddAndRegisterNode(resolvedNode, false);
 
@@ -1799,7 +1825,6 @@ namespace Dynamo.Models
                             connectorModel.Delete();
                             ConnectorModel.Make(startNode, endNode, connectorModel.Start.Index, connectorModel.End.Index, connectorModel.GUID);
                         }
-                        EngineController.DisableRun = false ;
                         resolvedDummyNode = true;
                     }
                 }

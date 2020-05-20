@@ -219,10 +219,11 @@ namespace Dynamo.ViewModels
 
         private void OpenDocumentationLink(object parameter)
         {
-            if (parameter is Uri)
+            var url = parameter as Uri;
+            if (url != null)
             {
-                var content = new OpenDocumentationLinkEventArgs((Uri)parameter);
-                this.DynamoViewModel.OpenDocumentationLink(content);
+                var targetContent = new OpenDocumentationLinkEventArgs((Uri)parameter);
+                this.DynamoViewModel.OpenDocumentationLink(targetContent);
             }
         }
 
@@ -307,7 +308,7 @@ namespace Dynamo.ViewModels
         public Point TopLeft;
         public Point BotRight;
         public string Text;
-        public Uri Link;
+        internal Uri Link;
         public InfoBubbleViewModel.Direction ConnectingDirection;
 
         public InfoBubbleDataPacket(

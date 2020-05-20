@@ -191,8 +191,8 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 3 exception related events are tracked
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(6));
+            //1 startup + 2 analytics optin status events
+            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(3));
             loggerMoq.Verify(l=>l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 

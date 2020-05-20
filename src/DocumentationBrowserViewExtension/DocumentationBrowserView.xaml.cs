@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.Logging;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,8 +32,22 @@ namespace Dynamo.DocumentationBrowser
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.Navigating += ShouldAllowNavigation;
+            this.documentationBrowser.DpiChanged += DocumentationBrowser_DpiChanged;
         }
 
+        private void DocumentationBrowser_DpiChanged(object sender, DpiChangedEventArgs args)
+        {
+            try
+            {
+                // it's possible we're trying to invoke this before the adaptDPI function is
+                // injected into the script scope, wrap this in a try catch.
+                documentationBrowser.InvokeScript("adaptDPI()");
+            }
+            catch (Exception e)
+            {
+                viewModel.MessageLogged?.Invoke(LogMessage.Info($"failed to set DPI,{e.Message}"));
+            }
+        }
         /// <summary>
         /// Redirect the user to the browser if they press a link in the documentation browser
         /// </summary>
@@ -76,14 +91,22 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            // Cleanup
+            this.viewModel.LinkChanged -= NavigateToPage;
+            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
+            this.documentationBrowser.Dispose();
+            this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
+        }
+
         /// <summary>
         /// Dispose function for DocumentationBrowser
         /// </summary>
         public void Dispose()
         {
-            this.viewModel.LinkChanged -= NavigateToPage;
-            this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            this.documentationBrowser.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

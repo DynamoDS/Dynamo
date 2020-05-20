@@ -1,23 +1,58 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml;
-
 using Autodesk.DesignScript.Runtime;
-
+using DSCPython;
 using DSIronPython;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
-using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
-using System.IO;
-using Dynamo.Configuration;
+using Newtonsoft.Json.Converters;
+using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
+    /// <summary>
+    /// Enum of possible values of python engine versions
+    /// </summary>
+    public enum PythonEngineVersion
+    {
+        IronPython2,
+        CPython3
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
+        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        /// <summary>
+        /// Return the user selected python engine enum.
+        /// </summary>
+        public PythonEngineVersion Engine
+        {
+            get { return engine; }
+            set
+            {
+                if (engine != value)
+                {
+                    engine = value;
+                    RaisePropertyChanged(nameof(Engine));
+                    OnNodeModified();
+                }
+            }
+        }
+
+        protected PythonNodeBase()
+        {
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
         /// <summary>
         /// Private constructor used for serialization.
         /// </summary>
@@ -25,12 +60,6 @@ namespace PythonNodeModels
         /// <param name="outPorts">A collection of <see cref="PortModel"/> objects.</param>
         protected PythonNodeBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        protected PythonNodeBase()
-        {
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -56,13 +85,25 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> backendMethod =
-                IronPythonEvaluator.EvaluateIronPythonScript;
+            Func<string, IList, IList, object> pythonEvaluatorMethod;
+
+            if (Engine == PythonEngineVersion.IronPython2)
+            {
+                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
+            }
+            else if (Engine == PythonEngineVersion.CPython3)
+            {
+                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
+            }
+            else
+            {
+                throw new InvalidOperationException("Unknown Python engine " + Engine);
+            }
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    backendMethod,
+                    pythonEvaluatorMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -100,7 +141,7 @@ namespace PythonNodeModels
         {
             get
             {
-                return  "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
+                return "# " + Properties.Resources.PythonScriptEditorImports + Environment.NewLine +
                         "import sys" + Environment.NewLine +
                         "import clr" + Environment.NewLine +
                         "clr.AddReference('ProtoGeometry')" + Environment.NewLine +

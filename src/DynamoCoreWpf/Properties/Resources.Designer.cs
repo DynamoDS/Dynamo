@@ -61,16 +61,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
-        public static byte[] _dynamo {
-            get {
-                object obj = ResourceManager.GetObject("_dynamo", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not get version..
         /// </summary>
         public static string AboutWindowCannotGetVersion {
@@ -404,7 +394,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Yes, I would like to contribute to this program (Google Analytics)..
+        ///   Looks up a localized string similar to I agree to data collection in desktop products for Autodesk analytics programs..
+        /// </summary>
+        public static string ConsentFormADPAnalyticsCheckBoxContent {
+            get {
+                return ResourceManager.GetString("ConsentFormADPAnalyticsCheckBoxContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I agree to contribute to the Google Analytics program..
         /// </summary>
         public static string ConsentFormGoogleAnalyticsCheckBoxContent {
             get {
@@ -951,6 +950,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewDebugMenuCheckDailyBuild {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuCheckDailyBuild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug Modes.
+        /// </summary>
+        public static string DynamoViewDebugMenuDebugModes {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDebugModes", resourceCulture);
             }
         }
         
@@ -4414,6 +4422,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] psDynamoMesh {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -5556,6 +5574,16 @@ namespace Dynamo.Wpf.Properties {
         public static string VersionValueGreaterThan0 {
             get {
                 return ResourceManager.GetString("VersionValueGreaterThan0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] vsDynamoMesh {
+            get {
+                object obj = ResourceManager.GetObject("vsDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

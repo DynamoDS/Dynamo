@@ -19,7 +19,34 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
+        private const string DPISCRIPT = @"<script> function getDPIScale()
+        {
+            var dpi = 96.0;
+            if (window.screen.deviceXDPI != undefined)
+            {
+                dpi = window.screen.deviceXDPI;
+            }
+            else
+            {
+                var tmpNode = document.createElement('DIV');
+                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
+                document.body.appendChild(tmpNode);
+                dpi = parseInt(tmpNode.offsetWidth);
+                tmpNode.parentNode.removeChild(tmpNode);
+            }
 
+            return dpi / 96.0;
+        }
+
+        function adaptDPI()
+        {
+            var dpiScale = getDPIScale();
+            document.body.style.zoom = dpiScale;
+
+            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
+            document.body.style.width = widthPercentage;
+        }
+        adaptDPI() </script>";
         #endregion
 
         #region Properties
@@ -93,9 +120,15 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = true;
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             this.content = null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -106,8 +139,8 @@ namespace Dynamo.DocumentationBrowser
         {
             if (e == null)
                 NavigateToNoContentPage();
-
-            this.IsRemoteResource = e.IsRemoteResource;
+            else
+                this.IsRemoteResource = e.IsRemoteResource;
 
             // Ignore requests to remote resources
             if (!this.IsRemoteResource)
@@ -123,14 +156,14 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                var content = LoadContentFromResources(e.Link.ToString());
-                if (content == null)
+                var targetContent = LoadContentFromResources(e.Link.ToString());
+                if (targetContent == null)
                 {
                     NavigateToContentMissingPage();
                 }
                 else
                 {
-                    this.content = content;
+                    this.content = targetContent;
                     this.Link = e.Link;
                 }
             }
@@ -196,7 +229,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.Link = new Uri(link, UriKind.Relative);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // silently ignore any exceptions as otherwise it brings down all of Dynamo
             }
@@ -215,7 +248,7 @@ namespace Dynamo.DocumentationBrowser
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            
+
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
             Assembly assembly;
@@ -229,7 +262,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     assemblyName = assemblyName.Substring(0, versionIndex);
                 }
-                assembly = AppDomain.CurrentDomain.GetAssemblies().Where(a => a.GetName().Name == assemblyName).FirstOrDefault();
+                assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == assemblyName);
                 if (assembly == null)
                 {
                     // The specified assembly is not loaded
@@ -246,15 +279,24 @@ namespace Dynamo.DocumentationBrowser
             var availableResources = assembly.GetManifestResourceNames();
 
             var matchingResource = availableResources
-                .Where(str => str.EndsWith(name))
-                .FirstOrDefault();
+                .FirstOrDefault(str => str.EndsWith(name));
 
             if (string.IsNullOrEmpty(matchingResource)) return null;
 
-            using (Stream stream = assembly.GetManifestResourceStream(matchingResource))
-            using (StreamReader reader = new StreamReader(stream))
+            Stream stream = null;
+            try
             {
-                result = reader.ReadToEnd();
+                stream = assembly.GetManifestResourceStream(matchingResource);
+                using (StreamReader reader = new StreamReader(stream))
+                {
+                    result = reader.ReadToEnd();
+                    stream = null;
+                }
+            }
+            finally
+            {
+                if (stream != null)
+                    stream.Dispose();
             }
 
             // Clean up possible script tags from document
@@ -263,6 +305,8 @@ namespace Dynamo.DocumentationBrowser
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
             }
+            //inject our DPI functions:
+            result = result + DPISCRIPT;
 
             return result;
         }

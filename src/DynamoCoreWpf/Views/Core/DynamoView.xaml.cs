@@ -40,6 +40,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
 using HelixToolkit.Wpf.SharpDX;
@@ -626,13 +627,11 @@ namespace Dynamo.Controls
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    var camera1 = BackgroundPreview.View.CameraController;
-                    camera1.Zoom(-0.5 * BackgroundPreview.View.ZoomSensitivity);
+                    BackgroundPreview.View.AddZoomForce(-0.5);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    var camera2 = BackgroundPreview.View.CameraController;
-                    camera2.Zoom(0.5 * BackgroundPreview.View.ZoomSensitivity);
+                    BackgroundPreview.View.AddZoomForce(0.5);
                     break;
             }
         }
@@ -1053,13 +1052,12 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            var canvas = (DPFCanvas)BackgroundPreview.View.RenderHost;
-
+            var bitmapSource =BackgroundPreview.View.RenderBitmap();
+            //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
+            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, 96, 96,
+     PixelFormats.Pbgra32);
+            rtBitmap.Render(BackgroundPreview.View);
             var encoder = new PngBitmapEncoder();
-            var rtBitmap = new RenderTargetBitmap((int)canvas.ActualWidth, (int)canvas.ActualHeight, 96, 96,
-                PixelFormats.Pbgra32);
-            rtBitmap.Render(canvas);
-
             encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
 
             if (File.Exists(e.Path))
@@ -1562,6 +1560,13 @@ namespace Dynamo.Controls
         }
 #endif
 
+        private void OnDebugModesClick(object sender, RoutedEventArgs e)
+        {
+            var debugModesWindow = new DebugModesWindow();
+            debugModesWindow.Owner = this;
+            debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            debugModesWindow.ShowDialog();
+        }
         /// <summary>
         /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>

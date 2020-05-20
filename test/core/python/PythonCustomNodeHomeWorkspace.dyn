@@ -2,7 +2,7 @@
   "Uuid": "c858978f-0411-4a88-a690-160622d6d562",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "python custom node test home workspace",
+  "Name": "PythonCustomNodeHomeWorkspace",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -109,14 +109,15 @@
   "Dependencies": [
     "ad7f8950-a02c-4dae-872e-3754d8c354f3"
   ],
+  "NodeLibraryDependencies": [],
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.6256",
-      "RunType": "Automatic",
+      "Version": "2.7.0.8544",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
