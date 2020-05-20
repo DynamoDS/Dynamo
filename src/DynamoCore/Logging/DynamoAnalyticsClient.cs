@@ -175,6 +175,7 @@ namespace Dynamo.Logging
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
+            var hostName = dynamoModel?.HostName ?? "Dynamo";
 
             string buildId = "", releaseId = "";
             Version version;
@@ -183,7 +184,7 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = "Dynamo", VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
+            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         private void RegisterGATracker(Service service)
@@ -193,8 +194,7 @@ namespace Dynamo.Logging
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
 
-            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-                Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
         }
 
         private void RegisterADPTracker(Service service)
@@ -204,8 +204,7 @@ namespace Dynamo.Logging
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
                 service.Register(new ADPTrackerFactory());
 
-            if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-                Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
         }
 
         /// <summary>
@@ -234,15 +233,7 @@ namespace Dynamo.Logging
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
                 Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
-
-                if (Configuration.DebugModes.IsEnabled("ADPAnalyticsTracker"))
-                {
-                    TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
-                }
-                else
-                {
-                    TrackPreferenceInternal("ReportingUsage", "", ReportingUsage ? 1 : 0);
-                }
+                TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
         }
 
