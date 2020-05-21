@@ -1,16 +1,15 @@
-﻿using Dynamo.Models;
+﻿using Dynamo.Configuration;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using PythonNodeModelsWpf;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace DynamoCoreWpfTests
 {
@@ -83,6 +82,9 @@ namespace DynamoCoreWpfTests
         public void CanChangePythonEngineFromContextMenuOnPythonFromStringNode()
         {
             // Arrange
+            // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
+            // from the nodes context menu
+            SetupDebugMode();
             var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
             var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
 
@@ -158,6 +160,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
 
+        }
+
+        private void SetupDebugMode()
+        {
+            string configPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config");
+            Type dbgModesType = typeof(DebugModes);
+
+            // Load the enabled/disabled status from the test config file.
+            dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
         }
     }
 }
