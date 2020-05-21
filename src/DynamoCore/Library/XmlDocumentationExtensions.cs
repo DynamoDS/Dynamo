@@ -386,7 +386,8 @@ namespace Dynamo.Engine
                                 }
                                 else
                                 {
-                                    OnMissingXmlTags($"{currentDocNode.FullyQualifiedName} is missing some XML documentation tags");
+                                    OnMissingXmlTags(
+                                        $"{currentDocNode.FullyQualifiedName} {Properties.Resources.MissingXmlTagConsoleMessage}");
                                 }
 
                                 break;
