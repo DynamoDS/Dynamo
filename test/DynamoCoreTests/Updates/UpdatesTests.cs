@@ -36,10 +36,11 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(e, eventArgs.Error);
             Assert.AreEqual(fileLocation, eventArgs.UpdateFileLocation);
+            
+            //UpdateAvailable depends on FileLocation. If it's null, it will be false, else it is true.
             Assert.IsTrue(eventArgs.UpdateAvailable);
-
+            
             eventArgs = new UpdateDownloadedEventArgs(e, null);
-            //UpdateAvailable depends on FileLocation. If it's null, it will be false.
             Assert.IsFalse(eventArgs.UpdateAvailable);
         }
         #endregion
@@ -62,17 +63,16 @@ namespace Dynamo.Tests
         {
             var config = new UpdateManagerConfiguration();
             var goodPath = Path.GetTempFileName();
-            var badPath = "W:\\PathThatDoesntExists";
+            var badPath = "W:\\PathThatDoesntExist";
 
             //Happy path
             Assert.DoesNotThrow(() => config.Save(goodPath, updateManager));
-            //Happy path with null UpdateManager
-            Assert.DoesNotThrow(() => config.Save(goodPath, null));
 
             //if statement in the catch block
             Assert.DoesNotThrow(() => config.Save(badPath, updateManager));
-            //else statement of the catch block
-            //Assert.Throws<Exception>(() => config.Save(badPath, null));
+            
+            //else statement in the catch block
+            Assert.Throws<DirectoryNotFoundException>(() => config.Save(badPath, null));
         }
 
         [Test]
@@ -80,9 +80,6 @@ namespace Dynamo.Tests
         public void UpdateManagerConfigurationPropertiesTest()
         {
             var config = (UpdateManagerConfiguration)updateManager.Configuration;
-
-            //ConfigFilePath
-            Assert.NotNull(config.ConfigFilePath);
 
             //CheckNewerDailyBuild
             //Set to false and then true to trigger if statement.
@@ -186,9 +183,15 @@ namespace Dynamo.Tests
         [Category("UnitTests")]
         public void OnLogTest()
         {
+            //Create and validate the LogEventArgs
+            var logEventArgs = new LogEventArgs("Test", LogLevel.Console);
+
+            Assert.AreEqual(LogLevel.Console, logEventArgs.Level);
+            Assert.AreEqual("Test", logEventArgs.Message);
+
+            //Bind the handler and call OnLog
             updateManager.Log += TestLogHandler;
-            updateManager.OnLog(new LogEventArgs("Test", LogLevel.Console));
-            //TODO: Validate the log was written.
+            updateManager.OnLog(logEventArgs);
         }
         
         private void TestLogHandler(LogEventArgs args) { }
