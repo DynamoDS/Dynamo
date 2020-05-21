@@ -712,4 +712,7 @@ Restart Dynamo to complete the uninstall.</value>
   <data name="Preview3DOutageTitle" xml:space="preserve">
     <value>3D preview has been deactivated</value>
   </data>
+  <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
+    <value>{0} is missing some XML documentation tags.</value>
+  </data>
 </root>
