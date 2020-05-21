@@ -12,7 +12,7 @@ namespace Dynamo.Extensions
     /// </summary>
     public class ReadyParams : IDisposable
     {
-        private  DynamoModel dynamoModel;
+        private readonly DynamoModel dynamoModel;
         private readonly StartupParams startupParams;
 
         /// <summary>
