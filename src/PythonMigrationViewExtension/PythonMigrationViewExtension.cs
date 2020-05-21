@@ -17,11 +17,10 @@ namespace Dynamo.PythonMigration
 
         private ViewLoadedParams LoadedParams { get; set; }
         internal DynamoViewModel DynamoViewModel { get; set; }
-        private NotificationMessage IronPythonNotification { get; set; }
         internal WorkspaceModel CurrentWorkspace { get; set; }
         internal GraphPythonDependencies PythonDependencies { get; set; }
-        internal Dispatcher Dispatcher { get; set; }
-        internal DynamoView DynamoView { get; set; }
+        private Dispatcher Dispatcher { get; set; }
+        private DynamoView DynamoView { get; set; }
 
         internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
         internal Dictionary<Guid, IronPythonInfoDialog> DialogTracker = new Dictionary<Guid, IronPythonInfoDialog>();
