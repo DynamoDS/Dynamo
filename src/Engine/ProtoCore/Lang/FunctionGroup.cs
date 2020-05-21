@@ -81,6 +81,10 @@ namespace ProtoCore
             out HashSet<FunctionEndPoint> lookup)
         {
             lookup = new HashSet<FunctionEndPoint>();
+
+            if (reducedFormalParams.Count == 0)
+                return false;
+
             foreach (List<StackValue> formalParamSet in reducedFormalParams)
             {
                 List<FunctionEndPoint> feps = GetExactTypeMatches(context, formalParamSet, new List<ReplicationInstruction>(), stackFrame, runtimeCore);
