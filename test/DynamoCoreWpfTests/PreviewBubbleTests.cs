@@ -303,7 +303,7 @@ namespace DynamoCoreWpfTests
 
             // preview is expanded, and its size will be slighly larger than the size of node view.
             // See PR: https://github.com/DynamoDS/Dynamo/pull/6799
-            Assert.IsTrue(ElementIsInContainer(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
+            Assert.IsTrue(ElementIsInContainerWithEpsilonCompare(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }
 
         [Test]
@@ -374,6 +374,20 @@ namespace DynamoCoreWpfTests
             relativePosition.X += offset;
             
             return (relativePosition.X == 0) && (element.ActualWidth <= container.ActualWidth);
+        }
+
+        /// <summary>
+        /// Similar to ElementIsInContainer but allows for an epsilon difference
+        /// when comparing equality.
+        /// </summary>
+        private bool ElementIsInContainerWithEpsilonCompare(FrameworkElement element, FrameworkElement container, int offset)
+        {
+            const double Epsilon = 1e-10;
+            Func<double, double, bool> epsilonEqual = (a, b) => a >= b - Epsilon && a <= b + Epsilon;
+            var relativePosition = element.TranslatePoint(new Point(), container);
+            relativePosition.X += offset;
+
+            return epsilonEqual(relativePosition.X, 0) && (element.ActualWidth <= container.ActualWidth);
         }
 
         private void RaiseMouseEnterOnNode(IInputElement nv)

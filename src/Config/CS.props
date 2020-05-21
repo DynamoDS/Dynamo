@@ -2,7 +2,7 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
@@ -19,7 +19,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\$(Platform)\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
@@ -35,7 +35,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)..\bin\AnyCPU\$(Configuration)</OutputPath>
     <NunitPath Condition=" '$(NunitPath)' == '' ">$(SolutionDir)..\extern\NUnit</NunitPath>
@@ -68,6 +68,6 @@
   </PropertyGroup>
   <!--This is used to set the framework version for icon resource dll generation (lookup of system.drawing.dll)-->
   <PropertyGroup>
-    <ResourceGeneration_FrameworkVersion>v4.7</ResourceGeneration_FrameworkVersion>
+    <ResourceGeneration_FrameworkVersion>v4.8</ResourceGeneration_FrameworkVersion>
   </PropertyGroup>
 </Project>
