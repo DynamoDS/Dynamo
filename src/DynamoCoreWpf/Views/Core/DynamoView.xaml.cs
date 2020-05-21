@@ -2053,20 +2053,7 @@ namespace Dynamo.Controls
 
         public void Dispose()
         {
-            //TODO we should be careful with this, viewExtensions also have their shutdown method called
-            //when the dynamoWindow closes so it's possible there are some double dispose issues for ours or
-            //external extensions. Looking for feedback here!
-            foreach (var ext in viewExtensionManager.ViewExtensions)
-            {
-                try
-                {
-                    ext.Dispose();
-                }
-                catch (Exception exc)
-                {
-                    Log($"{ext.Name} :  {exc.Message} during dispose");
-                }
-            }
+            viewExtensionManager.Dispose();
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;
