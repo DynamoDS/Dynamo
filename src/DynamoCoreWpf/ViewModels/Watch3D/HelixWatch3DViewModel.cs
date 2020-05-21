@@ -1996,6 +1996,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         ? Enumerable.Repeat(highlightColor, points.Positions.Count)
                         : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
+                    points.UpdateColors();
                     pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
                 }
             }
