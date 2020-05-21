@@ -701,7 +701,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
         #endregion

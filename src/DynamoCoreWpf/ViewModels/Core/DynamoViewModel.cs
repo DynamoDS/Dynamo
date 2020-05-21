@@ -67,7 +67,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         
-        private List<DefaultWatch3DViewModel> watch3DViewModels = new List<DefaultWatch3DViewModel>();
+        private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -2507,7 +2507,10 @@ namespace Dynamo.ViewModels
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
+            {
                 OnRequestClose(this, EventArgs.Empty);
+            }
+
 
             BackgroundPreviewViewModel.Dispose();
 
@@ -2518,6 +2521,11 @@ namespace Dynamo.ViewModels
             }
 
             UsageReportingManager.DestroyInstance();
+            this.model.CommandStarting -= OnModelCommandStarting;
+            this.model.CommandCompleted -= OnModelCommandCompleted;
+            BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
+            WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
+            model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
 
             return true;
         }

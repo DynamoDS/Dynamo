@@ -275,9 +275,12 @@ namespace Dynamo.WorkspaceDependency
         {
             loadedParams.CurrentWorkspaceChanged -= OnWorkspaceChanged;
             loadedParams.CurrentWorkspaceCleared -= OnWorkspaceCleared;
+            currentWorkspace.PropertyChanged -= OnWorkspacePropertyChanged;
             WorkspaceModel.DummyNodesReloaded -= TriggerDependencyRegen;
             DynamoView.CloseExtension -= this.OnExtensionTabClosedHandler;
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseExtensionTab;
+            PackageDependencyTable.ItemsSource = null;
+            dataRows = null;
         }
 
         private void Refresh_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
