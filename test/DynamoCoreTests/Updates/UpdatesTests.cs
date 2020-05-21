@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using Dynamo.Logging;
 using Dynamo.Updates;
-using Moq;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
