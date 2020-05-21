@@ -160,6 +160,11 @@ namespace Dynamo.Tests
             factoryMoq.Object.Register<AnalyticsEvent>(trackerMoq.Object);
 
             Service.Instance.Register(factoryMoq.Object);
+
+            Service.Instance.AddTrackerFactoryFilter(factoryName, () => {
+                return CurrentDynamoModel.PreferenceSettings.IsAnalyticsReportingApproved;
+                }
+            );
         }
 
         public override void Cleanup()
@@ -174,7 +179,7 @@ namespace Dynamo.Tests
             VerifyEventTracking(Times.Exactly(1));
             //1 ApplicationLifecycle Start + 3 for exception + 6 other events
             trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.AtLeast(10));
-            loggerMoq.Verify(l => l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Exactly(2));
+            loggerMoq.Verify(l => l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -191,8 +196,8 @@ namespace Dynamo.Tests
             dynamoSettings.IsAnalyticsReportingApproved = true;
             dynamoSettings.IsUsageReportingApproved = true;
 
-            //1 startup + 3 exception related events are tracked
-            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(6));
+            //1 startup + 2 analytics optin status events
+            trackerMoq.Verify(t => t.Track(It.IsAny<AnalyticsEvent>(), factoryMoq.Object), Times.Exactly(3));
             loggerMoq.Verify(l=>l.Log(It.IsAny<string>(), It.IsAny<string>()), Times.Never());
         }
 

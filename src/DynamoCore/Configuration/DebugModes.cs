@@ -11,7 +11,7 @@ namespace Dynamo.Configuration
     /// </summary>
     internal static class DebugModes
     {
-        static private readonly Dictionary<string, DebugMode> debugModes;
+        static private readonly Dictionary<string, DebugMode> debugModes = new Dictionary<string, DebugMode>();
         private static bool debugModesEnabled;
 
         /// <summary>
@@ -48,8 +48,6 @@ namespace Dynamo.Configuration
         {
             // Register app wide new debug modes here.
             AddDebugMode("Python3DebugMode", "Enable/disable Python3 Engine.");
-            AddDebugMode("ADPAnalyticsTracker", "Enable/disable ADP analytics tracking. " + 
-                "Consenting for Google analytics will opt-in to ADP as well. This debugMode should be enabled/disabled at startup.");
         }
 
         private static void LoadDebugModesStatusFromConfig(string configPath)
@@ -90,7 +88,6 @@ namespace Dynamo.Configuration
         /// </summary>
         static DebugModes()
         {
-            debugModes = new Dictionary<string, DebugMode>();
             RegisterDebugModes();
             LoadDebugModesStatusFromConfig(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "debug.config"));
         }
@@ -134,7 +131,7 @@ namespace Dynamo.Configuration
         public static bool IsEnabled(string name)
         {
             DebugMode dbgMode;
-            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) ? dbgMode.IsEnabled : false;
+            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) && dbgMode.IsEnabled;
         }
     }
 }

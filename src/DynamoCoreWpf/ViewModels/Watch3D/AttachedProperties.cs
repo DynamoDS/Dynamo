@@ -304,31 +304,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         #endregion
 
-        //#region Active Geometry property
-
-        //public static readonly DependencyProperty ActiveGeometryProperty = DependencyProperty.RegisterAttached(
-        //    "ActiveGeometry",
-        //    typeof(GeometryModel3D),
-        //    typeof(Viewport3DX),
-        //    new PropertyMetadata(null, ActiveGeometryPropertyChanged));
-
-        //public static void SetActiveGeometry(DependencyObject element, GeometryModel3D value)
-        //{
-        //    element.SetValue(ActiveGeometryProperty, value);
-        //}
-
-        //public static GeometryModel3D GetActiveGeometry(DependencyObject element)
-        //{
-        //    return (GeometryModel3D)element.GetValue(ActiveGeometryProperty);
-        //}
-
-        //private static void ActiveGeometryPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args)
-        //{
-
-        //}
-
-        //#endregion
-
         #region utils
         
         /// <summary>

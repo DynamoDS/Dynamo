@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -160,11 +159,6 @@ namespace Dynamo.Controls
             ViewModel = DataContext as HelixWatch3DViewModel;
 
             if (ViewModel == null) return;
-
-            var grid = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultGridName];
-            var axes = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultAxesName];
-            var directionalLight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.DefaultLightName];
-            var headlight = ViewModel.Element3DDictionary[HelixWatch3DViewModel.HeadLightName];
 
             RegisterEventHandlers();
         }

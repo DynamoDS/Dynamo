@@ -130,7 +130,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(Exception), ExpectedMessage = "The package does not exist")]
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
         public void FailureOnGetPackageVersionHeaderByPackageId()
         {
             var mockGreg = new Mock<IGregClient>();
@@ -165,7 +165,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(result.version, version);
         }
 
-        [Test, ExpectedException(typeof(Exception), ExpectedMessage = "The package does not exist")]
+        [Test, ExpectedException(typeof(ApplicationException), ExpectedMessage = "The package does not exist")]
         public void FailureOnGetPackageVersionHeaderByPackageName()
         {
             var mockGreg = new Mock<IGregClient>();

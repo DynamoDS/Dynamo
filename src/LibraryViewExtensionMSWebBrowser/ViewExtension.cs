@@ -34,18 +34,18 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
             get { return ExtensionName; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-            viewStartupParams = p;
-            p.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
+            this.viewStartupParams = viewStartupParams;
+            viewStartupParams.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewStartupParams)
         {
             if (!DynamoModel.IsTestMode)
             {
-                viewLoadedParams = p;
-                controller = new LibraryViewController(p.DynamoWindow, p.CommandExecutive, customization);
+                viewLoadedParams = viewStartupParams;
+                controller = new LibraryViewController(viewStartupParams.DynamoWindow, viewStartupParams.CommandExecutive, customization);
                 controller.AddLibraryView();
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }

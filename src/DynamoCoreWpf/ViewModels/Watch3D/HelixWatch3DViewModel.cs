@@ -23,7 +23,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Visualization;
@@ -165,7 +164,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private static readonly Color4 defaultLineColor = new Color4(new Color3(0, 0, 0));
         private static readonly Color4 defaultPointColor = new Color4(new Color3(0, 0, 0));
-        private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f,0.7f,0.7f));
+        private static readonly Color4 defaultDeadColor = new Color4(new Color3(0.7f, 0.7f, 0.7f));
         private static readonly float defaultDeadAlphaScale = 0.2f;
         private const float defaultLabelOffset = 0.025f;
 
@@ -192,6 +191,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
 
+        private readonly Object element3DDictionaryMutex = new object();
+
+        private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
+
+        //internal only for testing.
+        //used to cache point and curve color collections so colors can be efficiently switched between selected and non selected. (freeze, isolate etc)
+        internal Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
+        // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
+        private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces
+            = new Dictionary<string, List<Tuple<string, Vector3>>>();
+
+
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
@@ -200,17 +211,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         #endregion
 
         #region events
-        //TODO rename this to avoid any as many api breaks as possible?
-        public Object Element3DDictionaryMutex = new object();
-        private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
-
-        //internal only for testing.
-        //used to cache point and curve color collections so colors can be efficently swtiched between selected and non selected. (freeze, isolate etc)
-        internal Dictionary<string, Color4Collection> colorCache = new Dictionary<string, Color4Collection>();
-        // Dictionary<nodeId, List<Tuple<nodeArrayItemId, labelPosition>>>
-        private readonly Dictionary<string, List<Tuple<string, Vector3>>> labelPlaces 
-            = new Dictionary<string, List<Tuple<string, Vector3>>>();
-
         public event Action RequestViewRefresh;
         protected void OnRequestViewRefresh()
         {
@@ -231,7 +231,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
 
         /// <summary>
-        /// An envent requesting to create geometries from render packages.
+        /// An event requesting to create geometries from render packages.
         /// </summary>
         public event Action<RenderPackageCache, bool> RequestCreateModels;
         private void OnRequestCreateModels(RenderPackageCache packages, bool forceAsyncCall = false)
@@ -288,7 +288,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             get
             {
-                lock (Element3DDictionaryMutex)
+                lock (element3DDictionaryMutex)
                 {
                     return element3DDictionary;
                 }
@@ -296,23 +296,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             set
             {
-                lock (Element3DDictionaryMutex)
+                lock (element3DDictionaryMutex)
                 {
                     element3DDictionary = value;
                 }
             }
         }
-
-        //private GeometryModel3D activeGeometry;
-        //internal GeometryModel3D ActiveGeometry
-        //{
-        //    get { return activeGeometry; }
-        //    set
-        //    {
-        //        activeGeometry = value;
-        //        RaisePropertyChanged(nameof(ActiveGeometry));
-        //    }
-        //}
 
         public LineGeometry3D Grid
         {
@@ -640,7 +629,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnClear()
         {
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 var keysList = new List<string> { DefaultLightName, HeadLightName, DefaultGridName, DefaultAxesName };
 
@@ -884,7 +873,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void DeleteGeometries(KeyValuePair<string, Element3D>[] geometryModels, bool requestUpdate)
         {
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 if (!geometryModels.Any())
                 {
@@ -1078,9 +1067,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnSceneItemsChanged()
         {
             UpdateSceneItems();
-            //TODO unclear if these are still required.
-            //since sceneItems are observable and we force them to update
-            //by clearing and readdding all items.
             RaisePropertyChanged("SceneItems");
             OnRequestViewRefresh();
         }
@@ -1089,7 +1075,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             KeyValuePair<string, Element3D>[] geometryModels;
 
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 geometryModels = Element3DDictionary
                         .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value is Element3D).ToArray();
@@ -1102,7 +1088,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             KeyValuePair<string, Element3D>[] geometryModels;
 
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 geometryModels = Element3DDictionary
                         .Where(x => x.Key.Contains(identifier) && x.Value is GeometryModel3D).ToArray();
@@ -1485,7 +1471,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void RemoveGeometryForUpdatedPackages(IEnumerable<IRenderPackage> packages)
         {
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 var packageDescrips = packages.Select(p => p.Description.Split(':')[0]).Distinct();
 
@@ -1516,7 +1502,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // make var_guid from var_guid:0:1
             var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
             var labelName = nodePath + TextKey;
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 // first, remove current labels of the node
                 // it does not crash if there is no such key in dictionary
@@ -1592,7 +1578,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             var nodePath = path.Contains(':') ? path.Remove(path.IndexOf(':')) : path;
             var labelName = nodePath + TextKey;
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 var sceneItemsChanged = Element3DDictionary.Remove(labelName);
 
@@ -1659,7 +1645,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             }
 
-            lock (Element3DDictionaryMutex)
+            lock (element3DDictionaryMutex)
             {
                 foreach (var rp in packages)
                 {
@@ -2010,6 +1996,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         ? Enumerable.Repeat(highlightColor, points.Positions.Count)
                         : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
+                    points.UpdateColors();
                     pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
                 }
             }
@@ -2345,28 +2332,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             this.cameraPosition = cameraPosition.ToVector3();
         }
 
-        public int Compare(Element3D a, Element3D b)
+        public int Compare(Element3D x, Element3D y)
         {
             // if at least one of them is not GeometryModel3D
             // we either sort by being GeometryModel3D type (result is 1 or -1) 
             // or don't care about order (result is 0)
-            if (a == null && b == null)
+            if (x == null && y == null)
             {
                 return 0;
             }
 
-            if (a == null)
+            if (x == null)
             {
                 return -1;
             }
 
-            if (b == null)
+            if (y == null)
             {
                 return 1;
             }
 
-            var textA = a.GetType() == typeof(BillboardTextModel3D);
-            var textB = b.GetType() == typeof(BillboardTextModel3D);
+            var textA = x.GetType() == typeof(BillboardTextModel3D);
+            var textB = y.GetType() == typeof(BillboardTextModel3D);
             var result = textA.CompareTo(textB);
 
             // if at least one of them is text
@@ -2379,16 +2366,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             // under Isolate Selected Geometry mode, selected geometries will have higher precedence
             // and rendered as closer to the camera compared to unselected geometries
-            var selectedA = AttachedProperties.GetIsolationMode(a) &&
-                !AttachedProperties.GetShowSelected(a) && !AttachedProperties.IsSpecialRenderPackage(a);
-            var selectedB = AttachedProperties.GetIsolationMode(b) &&
-                !AttachedProperties.GetShowSelected(b) && !AttachedProperties.IsSpecialRenderPackage(b);
+            var selectedA = AttachedProperties.GetIsolationMode(x) &&
+                !AttachedProperties.GetShowSelected(x) && !AttachedProperties.IsSpecialRenderPackage(x);
+            var selectedB = AttachedProperties.GetIsolationMode(y) &&
+                !AttachedProperties.GetShowSelected(y) && !AttachedProperties.IsSpecialRenderPackage(y);
             result = selectedA.CompareTo(selectedB);
             if (result != 0) return result;
 
             // if only one of transA and transB has transparency, sort by having this property
-            var transA = AttachedProperties.GetHasTransparencyProperty(a);
-            var transB = AttachedProperties.GetHasTransparencyProperty(b);
+            var transA = AttachedProperties.GetHasTransparencyProperty(x);
+            var transB = AttachedProperties.GetHasTransparencyProperty(y);
             result = transA.CompareTo(transB);
             if (result != 0) return result;
 
@@ -2396,8 +2383,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             if (transA)
             {
                 // compare distance
-                var boundsA = a.Bounds;
-                var boundsB = b.Bounds;
+                var boundsA = x.Bounds;
+                var boundsB = y.Bounds;
                 var cpA = (boundsA.Maximum + boundsA.Minimum) / 2;
                 var cpB = (boundsB.Maximum + boundsB.Minimum) / 2;
                 var dA = Vector3.DistanceSquared(cpA, cameraPosition);
@@ -2407,8 +2394,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // if both items does not have transparency, sort following next order: mesh, line, point
-            var pointA = a is PointGeometryModel3D;
-            var pointB = b is PointGeometryModel3D;
+            var pointA = x is PointGeometryModel3D;
+            var pointB = y is PointGeometryModel3D;
             result = pointA.CompareTo(pointB);
 
             if (pointA || pointB)
@@ -2416,8 +2403,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 return result;
             }
 
-            var lineA = a is LineGeometryModel3D;
-            var lineB = b is LineGeometryModel3D;
+            var lineA = x is LineGeometryModel3D;
+            var lineB = y is LineGeometryModel3D;
             return lineA.CompareTo(lineB);
         }
     }
