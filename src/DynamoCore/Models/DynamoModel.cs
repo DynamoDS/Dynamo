@@ -596,6 +596,21 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
+            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+
+            var hostUpdateManager = config.UpdateManager;
+
+            if (hostUpdateManager != null)
+            {
+                HostName = hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+            }
+            else
+            {
+                HostName = string.Empty;
+                HostVersion = null;
+            }
+
             bool areAnalyticsDisabledFromConfig = false;
             try
             {
@@ -765,21 +780,6 @@ namespace Dynamo.Models
             AddHomeWorkspace();
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-
-            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
-
-            var hostUpdateManager = config.UpdateManager;
-
-            if (hostUpdateManager != null)
-            {
-                HostName = hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
-            }
-            else
-            {
-                HostName = string.Empty;
-                HostVersion = null;
-            }
 
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
