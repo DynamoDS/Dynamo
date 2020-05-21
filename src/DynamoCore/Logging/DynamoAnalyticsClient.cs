@@ -175,7 +175,8 @@ namespace Dynamo.Logging
 
             //Dynamo app version.
             var appversion = dynamoModel.AppVersion;
-            var hostName = dynamoModel?.HostName ?? "Dynamo";
+            
+            var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
             string buildId = "", releaseId = "";
             Version version;
