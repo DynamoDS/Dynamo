@@ -23,10 +23,10 @@ namespace Dynamo.PythonMigration
     /// </summary>
     public partial class IronPythonInfoDialog : Window
     {
-        ViewLoadedParams ViewLoaded { get; set; }
-        public IronPythonInfoDialog(ViewLoadedParams viewLoadedParams)
+        PythonMigrationViewExtension ViewModel { get; set; }
+        internal IronPythonInfoDialog(PythonMigrationViewExtension viewModel)
         {
-            this.ViewLoaded = viewLoadedParams;
+            this.ViewModel = viewModel;
             InitializeComponent();
         }
 
@@ -37,9 +37,8 @@ namespace Dynamo.PythonMigration
 
         private void OnMoreInformationButtonClicked(object sender, RoutedEventArgs e)
         {
+            this.ViewModel.OpenPythonMigrationWarningDocumentation();
             this.Close();
-            var link = new Uri(Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
-            this.ViewLoaded.ViewModelCommandExecutive.OpenDocumentationLinkCommand(link);
         }
     }
 }

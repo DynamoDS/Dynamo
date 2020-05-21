@@ -1,13 +1,12 @@
-﻿using Dynamo.Graph.Nodes;
+﻿using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PythonMigration.Properties;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using PythonNodeModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Windows.Threading;
 
 namespace Dynamo.PythonMigration
 {
@@ -21,6 +20,8 @@ namespace Dynamo.PythonMigration
         private NotificationMessage IronPythonNotification { get; set; }
         internal WorkspaceModel CurrentWorkspace { get; set; }
         internal GraphPythonDependencies PythonDependencies { get; set; }
+        internal Dispatcher Dispatcher { get; set; }
+        internal DynamoView DynamoView { get; set; }
 
         internal Dictionary<Guid, NotificationMessage> NotificationTracker = new Dictionary<Guid, NotificationMessage>();
         internal Dictionary<Guid, IronPythonInfoDialog> DialogTracker = new Dictionary<Guid, IronPythonInfoDialog>();
@@ -56,8 +57,10 @@ namespace Dynamo.PythonMigration
             PythonDependencies = new GraphPythonDependencies(LoadedParams);
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
+            Dispatcher = Dispatcher.CurrentDispatcher;
+            DynamoView = LoadedParams.DynamoWindow as DynamoView;
+             
             SubscribeToDynamoEvents();
-
         }
 
         private void DisplayIronPythonDialog()
@@ -66,16 +69,14 @@ namespace Dynamo.PythonMigration
             if (DialogTracker.ContainsKey(CurrentWorkspace.Guid))
                 return;
 
-            string summary = Resources.IronPythonDialogSummary;
-            var description = Resources.IronPythonDialogDescription;
-
-            var dialog = new IronPythonInfoDialog(LoadedParams);
-            dialog.Title = Resources.IronPythonDialogTitle;
-            dialog.SummaryText.Text = summary;
-            dialog.DescriptionText.Text = description;
+            var dialog = new IronPythonInfoDialog(this);
             dialog.Owner = LoadedParams.DynamoWindow;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                dialog.Show();
+            }), DispatcherPriority.Background);
+
             DialogTracker[CurrentWorkspace.Guid] = dialog;
-            dialog.Show();
         }
 
         private void LogIronPythonNotification()
@@ -90,6 +91,12 @@ namespace Dynamo.PythonMigration
                 Resources.IronPythonNotificationDetailedMessage);
         }
 
+        internal void OpenPythonMigrationWarningDocumentation()
+        {
+            var link = new Uri(Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
+            LoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(link);
+        }
+
         #region Events
 
         private void SubscribeToDynamoEvents()
@@ -98,6 +105,7 @@ namespace Dynamo.PythonMigration
             DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded += OnNodeAdded;
             DynamoViewModel.Model.Logger.NotificationLogged += OnNotificationLogged;
         }
+
         private void UnsubscribeFromDynamoEvents()
         {
             LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
@@ -132,7 +140,6 @@ namespace Dynamo.PythonMigration
                 DisplayIronPythonDialog();
             }
         }
-
         #endregion
     }
 }
