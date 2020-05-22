@@ -68,8 +68,6 @@
     <Compile Include="Controls\EngineLabel.xaml.cs">
       <DependentUpon>EngineLabel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="IronPythonCompletionData.cs" />
-    <Compile Include="IronPythonCompletionProvider.cs" />
     <Compile Include="PythonNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonStringNode.cs" />
@@ -113,18 +111,6 @@
     <EmbeddedResource Include="Resources\ICSharpCode.PythonBinding.Resources.Python.xshd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\method.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\namespace.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\privateMethod.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\property.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\EngineLabel.xaml">
