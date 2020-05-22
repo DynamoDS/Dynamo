@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,62 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EditHeader" xml:space="preserve">
-    <value>Edit...</value>
+  <data name="IronPythonDialogDescription" xml:space="preserve">
+    <value>Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
+There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default.</value>
   </data>
-  <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
-    <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
+  <data name="IronPythonDialogSummary" xml:space="preserve">
+    <value>This graph contains nodes that reference an outdated Python engine.</value>
   </data>
-  <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
-    <value>Script Editor Open</value>
+  <data name="IronPythonDialogTitle" xml:space="preserve">
+    <value>Graph contains outdated Python engine</value>
   </data>
-  <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
-    <value>Result of the python script</value>
+  <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine.</value>
   </data>
-  <data name="PythonScriptDescription" xml:space="preserve">
-    <value>Runs an embedded IronPython script.</value>
-    <comment>Description for Python Script</comment>
+  <data name="IronPythonNotificationShortMessage" xml:space="preserve">
+    <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
   </data>
-  <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
-    <value>Save Changes</value>
-  </data>
-  <data name="PythonScriptEditorRunButton" xml:space="preserve">
-    <value>Run</value>
-  </data>
-  <data name="PythonScriptEditorRevertButton" xml:space="preserve">
-    <value>Revert</value>
-  </data>
-  <data name="PythonScriptEditorCaption" xml:space="preserve">
-    <value>Edit Python Script...</value>
-  </data>
-  <data name="PythonScriptEditorCodeComment" xml:space="preserve">
-    <value>Place your code below this line</value>
-  </data>
-  <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Load the Python Standard and DesignScript Libraries</value>
-  </data>
-  <data name="PythonScriptEditorInputComment" xml:space="preserve">
-    <value>The inputs to this node will be stored as a list in the IN variables.</value>
-    <comment>It is comment in the code. IN shouldn't be translated.</comment>
-  </data>
-  <data name="PythonScriptEditorOutputComment" xml:space="preserve">
-    <value>Assign your output to the OUT variable.</value>
-    <comment>It is comment in the code. OUT shouldn't be translated.</comment>
-  </data>
-  <data name="PythonScriptFromStringDescription" xml:space="preserve">
-    <value>Runs a IronPython script from a string.</value>
-    <comment>Description for Python Script From String</comment>
-  </data>
-  <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
-    <value>Python script to run.</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
-    <value>Python Engine Version</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
-    <value>IronPython2</value>
+  <data name="PythonMigrationWarningUriString" xml:space="preserve">
+    <value>PythonMigrationViewExtension;PythonMigrationWarning.html</value>
   </data>
 </root>
