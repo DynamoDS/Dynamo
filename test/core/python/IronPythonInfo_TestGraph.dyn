@@ -18,6 +18,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Enable Python support and load DesignScript library\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n#sys.path.append(r'C:\\Program Files (x86)\\IronPython 2.7\\DLLs')\r\n#sys.path.append(r'C:\\Program Files (x86)\\IronPython 2.7\\Lib')\r\n\r\n# Hard-coded path to Core\r\n#import sys\r\n#sys.path.append(r'C:\\Users\\alfarok\\Documents\\Dynamo_alfarok\\bin\\AnyCPU\\Debug\\Lib')\r\n\r\nimport sqlite3\r\nimport xml\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\noutput = [sys.version, sys.builtin_module_names, sys.path]\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = output",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "a847ee633a75496cbac328c83f194a14",
       "Inputs": [
@@ -184,6 +185,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Enable Python support and load DesignScript library\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Import Python Standard Library\r\n# This import/append is no longer required as of 11/2018\r\nimport sys\r\nsys.path.append(r'C:\\Program Files (x86)\\IronPython 2.7\\Lib')\r\n\r\n# Load a module from standard lib\r\nimport csv\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\noutput = []\r\n\r\ncsvPath = r\"../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test2.csv\";\r\nf = open(csvPath, 'r')\r\n\r\nreader = csv.reader(f)\r\nfor row in reader:\r\n    output.append(row)\r\nf.close()\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = output",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "678e4cef98a041f9bfadbc1dd6bc2b16",
       "Inputs": [
@@ -215,6 +217,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Enable Python support and load DesignScript library\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Load a module from Python Standard Lib\r\n# Included OOTB as of 11/2018\r\nimport csv\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\noutput = []\r\n\r\ncsvPath = r\"../../../test/Engine/ProtoTest/ImportFiles/CSV/Set1/test2.csv\";\r\nf = open(csvPath, 'r')\r\n\r\nreader = csv.reader(f)\r\nfor row in reader:\r\n    output.append(row)\r\nf.close()\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = output",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "069aea607b584907aad32c7690115823",
       "Inputs": [
@@ -371,6 +374,7 @@
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
       "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\ninputPaths = IN[0]\r\noutput = []\r\n\r\nfor path in inputPaths:\r\n\tif '\\\\' in path:\r\n\t\tdir = path.rsplit(\"\\\\\", 1)[1]\r\n\t\toutput.append(dir)\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = output",
+      "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "b6097d2e77e94d278fc5094409bcbb04",
       "Inputs": [
@@ -470,7 +474,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
       "NodeType": "CodeBlockNode",
-      "Code": "58;",
+      "Code": "59;",
       "Id": "da01dad07d7b48a3ae8a17a088a16edd",
       "Inputs": [],
       "Outputs": [
@@ -767,13 +771,14 @@
     }
   ],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.1.0.6746",
+      "Version": "2.7.0.8613",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -802,7 +807,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "sys.path",
+        "Name": "sys.builtin_module_names",
         "Id": "1bf6138873764338ae7ef80aeafb9b7b",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -832,7 +837,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "sys.builtin_module_names",
+        "Name": "sys.path",
         "Id": "21caa17696104a1eb0e0067ce6df79a7",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -989,13 +994,13 @@
           "678e4cef98a041f9bfadbc1dd6bc2b16"
         ],
         "Left": 1415.7908641256415,
-        "Top": 866.0837439765736,
-        "Width": 174.0,
-        "Height": 153.5,
+        "Top": 866.5837439765736,
+        "Width": 221.0,
+        "Height": 153.0,
         "FontSize": 14.0,
         "InitialTop": 926.5837439765736,
-        "InitialHeight": 123.0,
-        "TextblockHeight": 50.5,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 50.0,
         "Background": "#FFFF7BAC"
       },
       {
@@ -1010,11 +1015,11 @@
         ],
         "Left": 213.88601433900078,
         "Top": 596.28876029050764,
-        "Width": 769.96651587988572,
+        "Width": 810.46651587988572,
         "Height": 486.42103183544066,
         "FontSize": 14.0,
         "InitialTop": 626.28876029050764,
-        "InitialHeight": 477.01846702877572,
+        "InitialHeight": 281.13396561388788,
         "TextblockHeight": 20.0,
         "Background": "#FFFF7BAC"
       },
@@ -1026,11 +1031,11 @@
         ],
         "Left": 1437.5057162070743,
         "Top": 1028.3652466140056,
-        "Width": 144.5,
+        "Width": 144.0,
         "Height": 170.0,
         "FontSize": 14.0,
         "InitialTop": 1105.3652466140056,
-        "InitialHeight": 123.0,
+        "InitialHeight": 145.0,
         "TextblockHeight": 67.0,
         "Background": "#FFFF7BAC"
       },
@@ -1048,7 +1053,7 @@
         "Height": 234.44912180099357,
         "FontSize": 14.0,
         "InitialTop": 627.16144819478961,
-        "InitialHeight": 234.44912180099357,
+        "InitialHeight": 230.44912180099357,
         "TextblockHeight": 20.0,
         "Background": "#FFFF7BAC"
       },
@@ -1066,7 +1071,7 @@
         "Height": 209.13544356991213,
         "FontSize": 14.0,
         "InitialTop": 877.6255823527539,
-        "InitialHeight": 209.13544356991213,
+        "InitialHeight": 231.13544356991213,
         "TextblockHeight": 20.0,
         "Background": "#FFFF7BAC"
       },
@@ -1080,11 +1085,11 @@
         ],
         "Left": 1636.5399254430697,
         "Top": 736.24399157567791,
-        "Width": 472.25373397631051,
+        "Width": 471.75373397631051,
         "Height": 211.52604432949965,
         "FontSize": 14.0,
         "InitialTop": 766.24399157567791,
-        "InitialHeight": 211.52604432949965,
+        "InitialHeight": 233.52604432949965,
         "TextblockHeight": 20.0,
         "Background": "#FFFF7BAC"
       },
@@ -1098,11 +1103,11 @@
         ],
         "Left": 1634.2428657137957,
         "Top": 956.81049154884238,
-        "Width": 576.6662572406226,
-        "Height": 142.51859987193643,
+        "Width": 576.1662572406226,
+        "Height": 143.51859987193643,
         "FontSize": 14.0,
         "InitialTop": 986.81049154884238,
-        "InitialHeight": 142.51859987193643,
+        "InitialHeight": 155.51859987193643,
         "TextblockHeight": 20.0,
         "Background": "#FFFF7BAC"
       }

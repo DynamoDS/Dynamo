@@ -157,7 +157,6 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
         }
-
         #endregion
 
         #region Command Methods
@@ -219,10 +218,11 @@ namespace Dynamo.ViewModels
 
         private void OpenDocumentationLink(object parameter)
         {
-            if (parameter is Uri)
+            var url = parameter as Uri;
+            if (url != null)
             {
-                var content = new OpenDocumentationLinkEventArgs((Uri)parameter);
-                this.DynamoViewModel.OpenDocumentationLink(content);
+                var targetContent = new OpenDocumentationLinkEventArgs((Uri)parameter);
+                this.DynamoViewModel.OpenDocumentationLink(targetContent);
             }
         }
 
@@ -357,5 +357,6 @@ namespace Dynamo.ViewModels
                 return null;
             }
         }
+       
     }
 }

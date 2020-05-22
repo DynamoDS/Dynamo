@@ -191,7 +191,7 @@ namespace ProtoCore
             RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
-            var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
+            var reducedParams = Replicator.ComputeAllReducedParamsWithoutArraySampling(formalParams, replicationInstructions, runtimeCore);
 
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {

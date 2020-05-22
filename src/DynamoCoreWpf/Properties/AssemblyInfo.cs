@@ -40,3 +40,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
+[assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

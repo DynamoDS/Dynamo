@@ -131,6 +131,20 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
+           
+            ViewModel.ZoomChanged -= vm_ZoomChanged;
+            ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
+            ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
+            ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
+         
+            ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
+            ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+            //TODO move to model method
+            ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
+            ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
+            ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -143,6 +157,7 @@ namespace Dynamo.Views
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
+            
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
