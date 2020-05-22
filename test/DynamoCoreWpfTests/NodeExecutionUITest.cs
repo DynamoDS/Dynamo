@@ -14,7 +14,6 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class NodeExecutionUITest : DynamoViewModelUnitTest
     {
-
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
         [Category("DynamoUI")]

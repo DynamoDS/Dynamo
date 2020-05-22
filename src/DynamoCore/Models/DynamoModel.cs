@@ -596,6 +596,21 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
+            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
+
+            var hostUpdateManager = config.UpdateManager;
+
+            if (hostUpdateManager != null)
+            {
+                HostName = hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+            }
+            else
+            {
+                HostName = string.Empty;
+                HostVersion = null;
+            }
+
             bool areAnalyticsDisabledFromConfig = false;
             try
             {
@@ -605,7 +620,8 @@ namespace Dynamo.Models
                 if (assemblyConfig != null)
                 {
                     var disableAnalyticsValue = assemblyConfig.AppSettings.Settings["DisableAnalytics"];
-                    bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
+                    if (disableAnalyticsValue != null)
+                        bool.TryParse(disableAnalyticsValue.Value, out areAnalyticsDisabledFromConfig);
                 }
             }
             catch (Exception)
@@ -763,21 +779,6 @@ namespace Dynamo.Models
             AddHomeWorkspace();
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-
-            UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
-
-            var hostUpdateManager = config.UpdateManager;
-
-            if (hostUpdateManager != null)
-            {
-                HostName = hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
-            }
-            else
-            {
-                HostName = string.Empty;
-                HostVersion = null;
-            }
 
             UpdateManager.Log += UpdateManager_Log;
             if (!IsTestMode && !IsHeadless)
@@ -1065,6 +1066,8 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+            LibraryServices.MessageLogged -= LogMessage;
+            LibraryServices.LibraryLoaded -= LibraryLoaded;
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
@@ -1091,6 +1094,11 @@ namespace Dynamo.Models
             {
                 ws.Dispose();
             }
+            NodeFactory.MessageLogged -= LogMessage;
+            CustomNodeManager.MessageLogged -= LogMessage;
+            CustomNodeManager.Dispose();
+            MigrationManager.MessageLogged -= LogMessage;
+
         }
 
         private void InitializeCustomNodeManager()

@@ -56,7 +56,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DefaultWatch3DViewModel : NotificationObject, IWatch3DViewModel, IDisposable
     {
         protected readonly NodeModel watchModel;
-
         protected readonly IDynamoModel dynamoModel;
         protected readonly IScheduler scheduler;
         protected readonly IPreferences preferences;

@@ -48,7 +48,6 @@ namespace Dynamo.Configuration
         {
             // Register app wide new debug modes here.
             AddDebugMode("Python3DebugMode", "Enable/disable Python3 Engine.");
-            AddDebugMode("ADPAnalyticsTracker", "Enable/disable ADP analytics tracking.");
         }
 
         private static void LoadDebugModesStatusFromConfig(string configPath)

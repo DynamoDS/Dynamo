@@ -238,7 +238,7 @@ namespace Dynamo.Manipulation
 
         public void Shutdown()
         {
-            
+            Dispose();   
         }
 
         #endregion

@@ -76,6 +76,17 @@ namespace Dynamo.Utilities
             }
         }
 
+        public static IEnumerable<T> GetChildrenWindowsOfType<T>(this Window view) where T : Window
+        {
+            if (view == null)
+                throw new ArgumentNullException(nameof(view));
+
+            return view.OwnedWindows
+                .Cast<Window>()
+                .Where(x => x.GetType() == typeof(T))
+                .Select(x => x as T);
+        }
+
         /// <summary>
         /// Computes rectangle taking into account relative element.
         /// </summary>

@@ -8,11 +8,12 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Windows;
 using PythonNodeModels;
+using PythonNodeModelsWpf.Controls;
 
 namespace PythonNodeModelsWpf
 {
     public class PythonNodeViewCustomization : VariableInputNodeViewCustomization, INodeViewCustomization<PythonNode>
-    {
+    {       
         private DynamoViewModel dynamoViewModel;
         private PythonNode pythonNodeModel;
         private NodeView pythonNodeView;
@@ -62,6 +63,9 @@ namespace PythonNodeModelsWpf
             nodeView.MouseDown += View_MouseDown;
             nodeModel.DeletionStarted += NodeModel_DeletionStarted;
             nodeModel.Disposed += NodeModel_Disposed;
+
+            nodeView.PresentationGrid.Visibility = Visibility.Visible;
+            nodeView.PresentationGrid.Children.Add(new EngineLabel(nodeModel));
         }
 
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)

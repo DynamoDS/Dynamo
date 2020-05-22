@@ -624,7 +624,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnShutdown()
         {
-            EffectsManager = null;
+ 
         }
 
         protected override void OnClear()
@@ -1996,6 +1996,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         ? Enumerable.Repeat(highlightColor, points.Positions.Count)
                         : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
+                    points.UpdateColors();
                     pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
                 }
             }
@@ -2300,14 +2301,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             if (disposing)
             {
+                viewModel = null;
                 var effectsManager = EffectsManager as DynamoEffectsManager;
-                if (effectsManager != null) effectsManager.Dispose();
+                if (effectsManager != null)
+                {
+                    effectsManager.Dispose();
+                    effectsManager = null;
+                   
+                }
+                SelectedMaterial = null;
+                WhiteMaterial = null;
+                FrozenMaterial = null;
+                IsolatedMaterial = null;
 
                 foreach (var sceneItem in SceneItems)
                 {
                     sceneItem.Dispose();
                 }
+                sceneItems.Clear();
+                foreach (var item in Element3DDictionary.Values)
+                {
+                    item.Dispose();
+                }
+                element3DDictionary.Clear();
+                
             }
+            base.Dispose(disposing);
         }
     }
 

@@ -19,7 +19,7 @@ namespace PythonNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -90,36 +90,30 @@ namespace PythonNodeModels.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Python Engine Version.
         /// </summary>
-        public static string PythonNodeContextMenuEngineSwitcher
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineSwitcher {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineSwitcher", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Python3.
+        ///   Looks up a localized string similar to CPython3.
         /// </summary>
-        public static string PythonNodeContextMenuEngineVersionThree
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineVersionThree {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineVersionThree", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Python2.
+        ///   Looks up a localized string similar to IronPython2.
         /// </summary>
-        public static string PythonNodeContextMenuEngineVersionTwo
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineVersionTwo {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineVersionTwo", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
