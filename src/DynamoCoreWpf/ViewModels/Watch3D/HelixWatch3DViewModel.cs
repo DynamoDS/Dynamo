@@ -136,6 +136,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// context using the HelixToolkit. An instance of this class
     /// can act as the data source for a <see cref="Watch3DView"/>
     /// </summary>
+    [Obsolete("This will be moved to a new project in a future version of Dynamo")]
     public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
         #region private members
@@ -2341,6 +2342,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// 5. All transparent geometry, ordered by distance from the camera.
     /// 6. All text.
     /// </summary>
+    [Obsolete("This will be moved to a new project in a future version of Dynamo")]
     public class Element3DComparer : IComparer<Element3D>
     {
         private readonly Vector3 cameraPosition;

@@ -172,6 +172,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// <summary>
     /// A Dynamo mesh class which supports sending data to our custom shader.
     /// </summary>
+    [Obsolete("This will be moved to a new project in a future version of Dynamo")]
     public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
         public DynamoGeometryModel3D()
@@ -212,6 +213,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// Each WPF Model object relates to a sharpdx - scene node - Element3d is a wrapper on sceneNode so
     /// these are essentially the same.
     /// </summary>
+    [Obsolete("This will be moved to a new project in a future version of Dynamo")]
     public class DynamoMeshNode : MeshNode
     {
    
