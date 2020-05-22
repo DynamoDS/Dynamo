@@ -33,8 +33,8 @@ namespace PythonNodeModelsWpf
             {
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-                pythonEngine2Item.Click += delegate { UpdateToPython2Engine(); };
-                pythonEngine3Item.Click += delegate { UpdateToPython3Engine(); };
+                pythonEngine2Item.Click += UpdateToPython2Engine;
+                pythonEngine3Item.Click += UpdateToPython3Engine;
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
                 pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
 
@@ -51,14 +51,22 @@ namespace PythonNodeModelsWpf
                 }
             }
 
+            nodeModel.Disposed += NodeModel_Disposed;
+
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
             nodeView.PresentationGrid.Children.Add(new EngineLabel(pythonStringNodeModel));
+        }
+
+        private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)
+        {
+            pythonEngine2Item.Click -= UpdateToPython2Engine;
+            pythonEngine3Item.Click -= UpdateToPython3Engine;
         }
 
         /// <summary>
         /// MenuItem click handler
         /// </summary>
-        private void UpdateToPython2Engine()
+        private void UpdateToPython2Engine(object sender, EventArgs e)
         {
             pythonStringNodeModel.Engine = PythonEngineVersion.IronPython2;
             pythonEngine2Item.IsChecked = true;
@@ -68,7 +76,7 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// MenuItem click handler
         /// </summary>
-        private void UpdateToPython3Engine()
+        private void UpdateToPython3Engine(object sender, EventArgs e)
         {
             pythonStringNodeModel.Engine = PythonEngineVersion.CPython3;
             pythonEngine2Item.IsChecked = false;
