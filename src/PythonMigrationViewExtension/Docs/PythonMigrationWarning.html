@@ -48,95 +48,98 @@
     }
 
     samp {
-      margin-top: 10px;
-      display: block;
-      color: lightgrey;
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
     }
 
     code .k {
-      color: #dcdcaa;
-      font-weight: bold;
+        color: #dcdcaa;
+        font-weight: bold;
     }
 
     code .s {
-      color: #ce9178;
+        color: #ce9178;
     }
 
     code .v {
-      color: #b5cea8;
+        color: #b5cea8;
     }
 
     code .o {
-      color: #c586c0;
-      font-weight: bold;
+        color: #c586c0;
+        font-weight: bold;
     }
 
     code .i {
-      color: #569cd6;
-      font-weight: bold;
+        color: #569cd6;
+        font-weight: bold;
     }
 
     code .b {
-      color: #9cdcfe;
-      font-weight: bold;
+        color: #9cdcfe;
+        font-weight: bold;
     }
 
     code .e {
-      color: #43c9b0;
+        color: #43c9b0;
     }
 
-    code > .nl .nl {
-      padding-left: 10px;
+    code>.nl .nl {
+        padding-left: 10px;
     }
 
     code .nl {
-      display: block;
+        display: block;
     }
 
     thead {
-      text-align: center;
+        text-align: center;
     }
 
     .hidden-lg {
-      display: none;
+        display: none;
     }
 
     @media screen and (max-width: 600px) {
-      table {
-        width: 100%;
-      }
+        table {
+            width: 100%;
+        }
 
-      table, th, td {
-        border: none;
-      }
+        table,
+        th,
+        td {
+            border: none;
+        }
 
-      tr {
-        border: 1px solid white;
-        display: block;
-      }
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
 
-      td, th {
-        display: block;
-      }
+        td,
+        th {
+            display: block;
+        }
 
-      .hidden-lg {
-        display: block;
-        font-weight: bold;
-        text-align: center;
-        border-bottom: 1px solid white;
-      }
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
 
-      .hidden-sm {
-        display: none;
-      }
+        .hidden-sm {
+            display: none;
+        }
 
-      .spaced-sm {
-        margin-top: 20px;
-      }
+        .spaced-sm {
+            margin-top: 20px;
+        }
 
-      tbody tr:first-of-type {
-        border-bottom: none;
-      }
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
     }
 </style>
 
@@ -145,69 +148,91 @@
 
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-    <h2>Updating your Python nodes to use Python 3</h2>
+    <h2>Updating your Python nodes for Python 3</h2>
     <p>
-        Since the introduction of Python 3 in 2008, Python 2 and 3 have been supported side-by-side by the Python Software Foundation and the broader Python Community.
-        This ended on January 1, 2020 when Python 2 support from the PSF officially ended. Moving Dynamo to Python 3 will allow Dynamo users to access popular modern libraries and continue to receive new features,
-        maintenance, and security patches.
+        Since the introduction of Python 3 in 2008, Python 2 and 3 have been supported side-by-side by the Python
+        Software Foundation (PSF) and the broader Python Community.
     </p>
+    <p>
+        This stopped on January 1st 2020, when Python 2 support from the PSF officially ended.
+    </p>
+
     <h3>Why did we need to change the Python version</h3>
     <p>
-        Dynamo, like many C#-based environments, has used a tool called IronPython to move data between .NET objects and Python scripts.
-        Unfortunately, IronPython has not been updated to Python 3, so Dynamo is moving to use the standard native Python interpreter (aka CPython.)
-        In addition to the benefits of moving from 2 to 3, this means it will be possible for Dynamo graphs to use Python libraries with native extensions
-        that were not possible to load in IronPython (like NumPy, SciPy, and Pandas, among many others.)
+        Dynamo, and many other C#-based environments, uses a tool called IronPython to move data between .NET objects
+        and Python scripts.
+        Unfortunately, IronPython has not been updated to Python 3, so Dynamo is now transitioning to use the standard
+        native Python interpreter (aka CPython.)
+    </p>
+    <p>
+        In addition, this means it will be possible for Dynamo graphs to benefit from Python libraries that include
+        native extensions that were not accessible
+        in IronPython, such as NumPy, SciPy, and Pandas.
+    </p>
+    <p>
+        Moving Dynamo to Python 3 will allow Dynamo users to access popular modern libraries and continue to access new
+        platform features, essential maintenance, and security patches.
     </p>
 
     <h3>What does this mean for you and your Python-containing graphs?</h3>
     <p>
-        If you are not the author of the graph or the Python nodes in it, you should contact the author and let them know about these Python changes so they can make the appropriate changes where needed.
-        If you are the author continue to read this to know how these changes may affect your python nodes and how to make the changes needed.
+        If you are not the author of the particular graph you are using (or the Python nodes it contains), please
+        contact the author and let them know about these changes so they can make the appropriate changes where
+        necessary.
+    </p>
+    <p>
+        If you are the author of the graph, please continue to read the guidance below to understand how these changes
+        may affect your Python nodes and how to make any changes.
     </p>
 
     <p>
-        Python 3 is fundamentally the same language as Python 2, but there have been changes to syntax and the core library to make Python more consistent and learnable,
-        and to make Unicode support more reliable. Some Python 2 programs will run unmodified on Python 3, but a lot of common constructs will require small changes (including the print statement!)
-        Luckily, many of these can be made mechanically.
+        Python 3 is fundamentally the same language as Python 2, but there have been changes to syntax and the core
+        library to make Python more consistent and learnable, and to have improved Unicode support.
+    </p>
+    <p>
+        Some Python 2 programs will run as normal on Python 3, but a lot of common constructs will require small
+        changes, including the print statement. Luckily, many of these can be automated.
     </p>
 
+    <h3>How to make changes to your Python nodes for Python 3 </h3>
     <p>
-        Typically, Python scripts will be able to run with either the IronPython2 or CPython3 engine selected.
-        For the cases where your script contains syntax that has changed between versions, we have made it easier for you to update your script.
-        If you are curious about diving deeper into the differences between the two Python versions, here are two external links to get you started:
-        <ul>
-            <li>
-                <a href="https://docs.python.org/3/howto/pyporting.html">
-                    The official "Porting Python 2 Code to Python
-                    3"
-                    guide
-                </a>
-            </li>
-            <li>
-                <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
-            </li>
-        </ul>
+        Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your
+        script contains syntax that has changed between versions, we have made it easier for you to update your script
+        by including an automatic code converter in the Python node.
     </p>
-
     <p>
-        If you on the other hand prefer things to just work without having to dig too much into the specifics,
-        we have included a automatic code converter in the Python node. With this, all you need to do is
-        switch to the CPython3 engine and Dynamo will give you a window that shows you which changes are needed
-        and give you the option to decline or accept the conversion.
+        Using this, all you need to do is switch to the CPython3 engine and Dynamo will let you know which changes are
+        needed and will give you the option to decline or accept the conversion.
+    </p>
+    <p>
+        If you are curious about diving deeper into the differences between the two Python versions, here are two
+        external links to get you started:
+    <ul>
+        <li>
+            <a href="https://docs.python.org/3/howto/pyporting.html">
+                The official "Porting Python 2 Code to Python
+                3"
+                guide
+            </a>
+        </li>
+        <li>
+            <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
+        </li>
+    </ul>
     </p>
 
     <h3>Key syntax changes in Python 3</h3>
     <p>
-        We have put together a small list of some of the key syntax changes between Python 2 and Python 3,
-        things
-        is by no means a full list but a section of some the most used features that has changed syntax.
+        Below, you can find a list that includes some of the key syntax changes between Python 2 and Python 3. Please
+        note that this is by no means an exhaustive list but instead a selection of some of the most widely used
+        features that have been affected.
     </p>
 
 
-    <h4><b>The Print Function</b></h4>
+    <h4><b>Print Function</b></h4>
     <p>
-        The print-syntax is probably the most widely known change, and even though it isn't really used
-        in Dynamo we include a sample of how the <code>print</code> statement has changed.
+        The print syntax is probably the most widely-known change. Even though it is not often used in Dynamo, here is
+        an example showing how the <code>print</code> statement has changed.
     </p>
 
     <table>
@@ -230,11 +255,10 @@
 
     <h4><b>Integer division</b></h4>
     <p>
-        This change will not raise any exceptions in your script, but it might affect the output.
-        The default division operator behavior in Python 2.x when presented with integer operands is
-        to use classic division which truncates the decimal place and returns an integer.
-        When given a pair of floating-point operands, it returns the actual floating-point quotient (aka true
-        division).
+        This change will not raise any exceptions in your script, but it might affect the output. When presented with
+        integer operands, the default division operator behavior in Python 2.x is to use classic division which
+        truncates the decimal place and returns an integer. When given a pair of floating-point operands, it returns the
+        actual floating-point quotient (aka true division).
     </p>
 
     <table>
@@ -269,12 +293,12 @@
 
     <h4><b>xrange</b></h4>
     <p>
-        <code>xrange</code> is usually used in combination with a for-loop or list-comprehensive statements.
-        It is generally faster to iterate over <code>xrange()</code> compared to <code>range()</code> when you
-        only need to iterate once.
-        In Python 3, the <code>range()</code> was implemented like the <code>xrange()</code> function so that a
-        dedicated xrange() function does not exist anymore
-        (<code>xrange()</code> raises a NameError in Python 3).
+        <code>xrange</code> is usually used in combination with a for-loop or list-comprehensive statements. When you
+        only need to iterate once, it is generally faster to iterate over <code>xrange()</code> compared with
+        <code>range()</code>.
+        In Python 3, the <code>range()</code> was implemented in the same way as the <code>xrange()</code> function, so
+        that a dedicated <code>xrange()</code>
+        function no longer exists. Instead, xrange() raises a NameError.
     </p>
 
     <table>
@@ -309,10 +333,9 @@
 
     <h4><b>Raising and handling exceptions</b></h4>
     <p>
-        Where Python 2 accepts both notations, the ‘old’ and the ‘new’ syntax, Python 3 raises a SyntaxError
-        if we don’t enclose the exception argument in parentheses. Also the handling of exceptions has slightly
-        changed in Python 3.
-        In Python 3 we have to use the “as” keyword.
+        Where Python 2 accepts both notations - the ‘old’ and the ‘new’ syntax - Python 3 raises a SyntaxError if we
+        don’t enclose the exception argument in parentheses. The handling of exceptions has also slightly changed in
+        Python 3, where we now need to include the “as” keyword.
     </p>
 
     <table>

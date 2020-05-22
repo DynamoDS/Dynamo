@@ -62,7 +62,7 @@ namespace Dynamo.PythonMigration.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
-        ///There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default. During this transition time, please consider updating the Python nodes inside this graph to use the CPython3 engine, or reach out to the original graph author to do so..
+        ///There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default..
         /// </summary>
         public static string IronPythonDialogDescription {
             get {
