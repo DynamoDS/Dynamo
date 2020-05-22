@@ -7,28 +7,13 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
 using Dynamo.Tests;
 using NUnit.Framework;
+using ProtoCore.Namespace;
 
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class NodeExecutionUITest : DynamoViewModelUnitTest
     {
-        private CodeBlockNodeModel CreateCodeBlockNode()
-        {
-            var model = GetModel();
-            var cbn = new CodeBlockNodeModel(model.LibraryServices);
-            var command1 = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
-            model.ExecuteCommand(command1);
-            return cbn;
-        }
-
-        private void UpdateCodeBlockNodeContent(string code, Guid guid)
-        {
-            var model = GetModel();
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, guid, "Code", code);
-            model.ExecuteCommand(command);
-        }
-
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
         [Category("DynamoUI")]
@@ -245,20 +230,25 @@ namespace DynamoCoreWpfTests
         public void NewWorkspaceFunctionDefinitionTest()
         {
             // Create code block node and define DS function "test"
-            var cbn = CreateCodeBlockNode();
+            var model = GetModel(); 
 
             var code = "def test(x:int = 1){return = x;}test();";
-            UpdateCodeBlockNodeContent(code, cbn.GUID);
+            var cbn = new CodeBlockNodeModel(code, 0, 0, model.LibraryServices, new ElementResolver());
+
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            model.ExecuteCommand(command);
+
             AssertPreviewValue(cbn.GUID.ToString(), 1);
 
             // Create empty new workspace 
             ViewModel.NewHomeWorkspaceCommand.Execute(null);
 
             // Create code block node and invoke test function
-            cbn = CreateCodeBlockNode();
-
             code = "test();";
-            UpdateCodeBlockNodeContent(code, cbn.GUID);
+            cbn = new CodeBlockNodeModel(code, 0, 0, model.LibraryServices, new ElementResolver());
+            
+            command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            model.ExecuteCommand(command);
 
             // Assert that function "test" is not defined any longer
             // by asserting null for code block node invoking it.
