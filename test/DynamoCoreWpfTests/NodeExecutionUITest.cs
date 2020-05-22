@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using CoreNodeModels.Input;
+using DesignScript.Builtin;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -11,8 +13,21 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class NodeExecutionUITest : DynamoViewModelUnitTest
     {
+        private CodeBlockNodeModel CreateCodeBlockNode()
+        {
+            var model = GetModel();
+            var cbn = new CodeBlockNodeModel(model.LibraryServices);
+            var command1 = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+            model.ExecuteCommand(command1);
+            return cbn;
+        }
 
-        #region NodeExecution
+        private void UpdateCodeBlockNodeContent(string code, Guid guid)
+        {
+            var model = GetModel();
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty, guid, "Code", code);
+            model.ExecuteCommand(command);
+        }
 
         //case 1 : Node in Freeze and Not execute state. True for all parent nodes.
         [Test]
@@ -225,6 +240,29 @@ namespace DynamoCoreWpfTests
 
         }
 
-        #endregion
+        [Test]
+        [Category("DynamoUI")]
+        public void NewWorkspaceFunctionDefinitionTest()
+        {
+            // Create code block node and define DS function "test"
+            var cbn = CreateCodeBlockNode();
+
+            var code = "def test(x:int = 1){return = x;}test();";
+            UpdateCodeBlockNodeContent(code, cbn.GUID);
+            AssertPreviewValue(cbn.GUID.ToString(), 1);
+
+            // Create empty new workspace 
+            ViewModel.NewHomeWorkspaceCommand.Execute(null);
+
+            // Create code block node and invoke test function
+            cbn = CreateCodeBlockNode();
+
+            code = "test();";
+            UpdateCodeBlockNodeContent(code, cbn.GUID);
+
+            // Assert that function "test" is not defined any longer
+            // by asserting null for code block node invoking it.
+            AssertPreviewValue(cbn.GUID.ToString(), null);
+        }
     }
 }
