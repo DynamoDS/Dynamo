@@ -321,6 +321,7 @@ namespace WpfVisualizationTests
 
             var command = new Dynamo.Models.DynamoModel.CreateNodeCommand(pointOriginNode, 0, 0, true, false);
             Model.ExecuteCommand(command);
+            View.BackgroundPreview.ViewModel.NavigationKeyIsDown = true;
             RunCurrentModel();
             DynamoSelection.Instance.Selection.Add(pointOriginNode);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);

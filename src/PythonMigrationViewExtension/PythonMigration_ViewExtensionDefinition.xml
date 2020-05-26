@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\PythonMigrationViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.PythonMigration.PythonMigrationViewExtension</TypeName>
+</ViewExtensionDefinition>

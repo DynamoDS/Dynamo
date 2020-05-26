@@ -114,6 +114,8 @@ namespace Watch3DNodeModelsWpf
             //from all workspaces.
             this.dynamoModel.Workspaces.ToList().ForEach(ws => OnWorkspaceRemoved(ws));
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionChangedHandler;
+            (this.watchModel as Watch3D).Serialized -= SerializeCamera;
+            (this.watchModel as Watch3D).Deserialized -= watchNode_Deserialized;
             OnClear();
         }
     }

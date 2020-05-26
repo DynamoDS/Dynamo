@@ -68,6 +68,14 @@ namespace Dynamo.Controls
             ViewModel.RequestClickRay -= GetClickRay;
             ViewModel.RequestCameraPosition -= GetCameraPosition;
             ViewModel.RequestZoomToFit -= ViewModel_RequestZoomToFit;
+            this.DataContext = null;
+            if(watch_view != null)
+            {
+                watch_view.Items.Clear();
+                watch_view.DataContext = null;
+                watch_view.Dispose();
+            }
+        
         }
 
         private void RegisterEventHandlers()
@@ -100,41 +108,36 @@ namespace Dynamo.Controls
 
         private void RegisterViewEventHandlers()
         {
-            watch_view.MouseDown += (sender, args) =>
-            {
-                ViewModel.OnViewMouseDown(sender, args);
-            };
+            watch_view.MouseDown += ViewModel.OnViewMouseDown;
+            watch_view.MouseUp += WatchViewMouseUphandler;
+            watch_view.MouseMove += ViewModel.OnViewMouseMove;
+            watch_view.CameraChanged += WatchViewCameraChangedHandler;
+          
+        }
 
-            watch_view.MouseUp += (sender, args) =>
+        private void WatchViewCameraChangedHandler(object sender, RoutedEventArgs e)
+        {
+            var view = sender as Viewport3DX;
+            if (view != null)
             {
-                ViewModel.OnViewMouseUp(sender, args);
-                //Call update on completion of user manipulation of the scene
-                runUpdateClipPlane = true;
-            };
+                e.Source = view.GetCameraPosition();
+            }
+            ViewModel.OnViewCameraChanged(sender, e);
+        }
 
-            watch_view.MouseMove += (sender, args) =>
-            {
-                ViewModel.OnViewMouseMove(sender, args);
-            };
-
-            watch_view.CameraChanged += (sender, args) =>
-            {
-                var view = sender as Viewport3DX;
-                if (view != null)
-                {
-                    args.Source = view.GetCameraPosition();
-                }
-                ViewModel.OnViewCameraChanged(sender, args);
-            };
+        private void WatchViewMouseUphandler(object sender, MouseButtonEventArgs e)
+        {
+            ViewModel.OnViewMouseUp(sender, e);
+            //Call update on completion of user manipulation of the scene
+            runUpdateClipPlane = true;
         }
 
         private void UnRegisterViewEventHandlers()
         {
-
             watch_view.MouseDown -= ViewModel.OnViewMouseDown;
-            watch_view.MouseUp -= ViewModel.OnViewMouseUp;
+            watch_view.MouseUp -= WatchViewMouseUphandler;
             watch_view.MouseMove -= ViewModel.OnViewMouseMove;
-            watch_view.CameraChanged -= ViewModel.OnViewCameraChanged;
+            watch_view.CameraChanged -= WatchViewCameraChangedHandler;
          }		         
 
         private void UnregisterButtonHandlers()
@@ -152,6 +155,8 @@ namespace Dynamo.Controls
         private void ViewUnloadedHandler(object sender, RoutedEventArgs e)
         {
             UnregisterEventHandlers();
+            Loaded -= ViewLoadedHandler;
+            Unloaded -= ViewUnloadedHandler;
         }
 
         private void ViewLoadedHandler(object sender, RoutedEventArgs e)

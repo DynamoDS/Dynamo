@@ -34,7 +34,7 @@ namespace Dynamo.Core
     ///     with this type.  This object implements late initialization of custom nodes by providing a 
     ///     single interface to initialize custom nodes.  
     /// </summary>
-    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager
+    public class CustomNodeManager : LogSourceBase, ICustomNodeSource, ICustomNodeManager, IDisposable
     {
         /// <summary>
         /// This function creates CustomNodeManager
@@ -1402,6 +1402,11 @@ namespace Dynamo.Core
             }
 
             return idSet;
+        }
+
+        public void Dispose()
+        {
+            this.loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
         }
     }
 }
