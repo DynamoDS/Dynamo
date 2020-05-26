@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            // get the `Edit...` menu item from the nodes context menu so we can simulate the clik event.
+            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .Cast<MenuItem>()
@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
-            // after simulating the click event get the opend Script editor window
+            // after simulating the click event get the opened Script editor window
             // and fetch the EngineSelector dropdown
             var scriptEditorWindow = this.View.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
             var windowGrid = scriptEditorWindow.Content as Grid;
