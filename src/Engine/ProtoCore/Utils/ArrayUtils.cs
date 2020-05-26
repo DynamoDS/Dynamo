@@ -117,18 +117,25 @@ namespace ProtoCore.Utils
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
         }
 
-        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
+        /// <summary>
+        /// This method returns the distinct reduced params for all the elements inside the
+        /// currentReducedParam, if it is an array. If it is not an array, it just returns the currentReducedParam.
+        /// </summary>
+        /// <param name="currentReducedParam"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns> A dictionary where the value is the current ReducedParam and the key is its metaData type</returns>
+        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue currentReducedParam, RuntimeCore runtimeCore)
         {
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
-            if (!array.IsArray)
+            if (!currentReducedParam.IsArray)
             {
-                usageFreq.Add(array.metaData.type, array);
+                usageFreq.Add(currentReducedParam.metaData.type, currentReducedParam);
                 return usageFreq;
             }
 
             //This is the element on the heap that manages the data structure
-            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(currentReducedParam);
             foreach (var sv in dsArray.Values)
             {
                 if (!usageFreq.ContainsKey(sv.metaData.type))
