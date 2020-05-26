@@ -1,23 +1,18 @@
-﻿using Dynamo;
-using Dynamo.Configuration;
-using Dynamo.Interfaces;
-using Dynamo.Models;
-using Dynamo.Scheduler;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Dynamo.PythonMigration;
 using System.Reflection;
+using System.Windows;
 using System.Windows.Controls;
-using Dynamo.DocumentationBrowser;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Wpf.Extensions;
+using Dynamo;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.PythonMigration;
+using Dynamo.Scheduler;
 using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
 {
@@ -46,6 +41,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
         {
+            SetupDebugMode();
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -137,6 +133,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
         {
+            SetupDebugMode();
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -196,6 +193,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
         {
+            SetupDebugMode();
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -227,6 +225,15 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
+        }
+
+        private void SetupDebugMode()
+        {
+            string configPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config");
+            Type dbgModesType = typeof(DebugModes);
+
+            // Load the enabled/disabled status from the test config file.
+            dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
         }
         #endregion
     }

@@ -1,15 +1,15 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Utilities;
-using DynamoCoreWpfTests.Utility;
-using NUnit.Framework;
-using PythonNodeModelsWpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Configuration;
+using Dynamo.Utilities;
+using DynamoCoreWpfTests.Utility;
+using NUnit.Framework;
+using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
 {
@@ -31,6 +31,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanChangeEngineFromScriptEditorDropDown()
         {
+            SetupDebugMode();
             // Arrange
             var expectedAvailableEnignes = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
             var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
@@ -68,6 +69,7 @@ namespace DynamoCoreWpfTests
             var engineAfterChange = engineSelectorComboBox.SelectedItem = engineChange;
 
             // Assert
+            Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
             CollectionAssert.AreEqual(expectedAvailableEnignes, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
             Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonNodeModels.PythonEngineVersion.CPython3);
