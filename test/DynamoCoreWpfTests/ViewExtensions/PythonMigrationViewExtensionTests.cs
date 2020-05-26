@@ -41,7 +41,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
         {
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -133,7 +133,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
         {
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -193,7 +193,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
         {
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -225,15 +225,6 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
-        }
-
-        private void SetupDebugMode()
-        {
-            string configPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config");
-            Type dbgModesType = typeof(DebugModes);
-
-            // Load the enabled/disabled status from the test config file.
-            dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
         }
         #endregion
     }

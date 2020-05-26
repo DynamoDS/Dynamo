@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
@@ -31,7 +30,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanChangeEngineFromScriptEditorDropDown()
         {
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             var expectedAvailableEnignes = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
             var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
@@ -86,7 +85,7 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
             var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
 
@@ -162,15 +161,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
 
-        }
-
-        private void SetupDebugMode()
-        {
-            string configPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config");
-            Type dbgModesType = typeof(DebugModes);
-
-            // Load the enabled/disabled status from the test config file.
-            dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
         }
     }
 }

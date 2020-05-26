@@ -133,7 +133,7 @@ namespace Dynamo.PythonMigration
         {
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             CurrentWorkspace = workspace as WorkspaceModel;
-            if (PythonDependencies.ContainsIronPythonDependencies() && Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            if (Configuration.DebugModes.IsEnabled("Python3DebugMode") && PythonDependencies.ContainsIronPythonDependencies())
             {
                 LogIronPythonNotification();
                 DisplayIronPythonDialog();
