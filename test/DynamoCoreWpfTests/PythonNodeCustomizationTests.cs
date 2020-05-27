@@ -1,15 +1,14 @@
-﻿using Dynamo.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using Dynamo.Configuration;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using PythonNodeModelsWpf;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace DynamoCoreWpfTests
 {
@@ -31,6 +30,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanChangeEngineFromScriptEditorDropDown()
         {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             var expectedAvailableEnignes = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
             var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
@@ -42,7 +42,7 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            // get the `Edit...` menu item from the nodes context menu so we can simulate the clik event.
+            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .Cast<MenuItem>()
@@ -52,7 +52,7 @@ namespace DynamoCoreWpfTests
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
-            // after simulating the click event get the opend Script editor window
+            // after simulating the click event get the opened Script editor window
             // and fetch the EngineSelector dropdown
             var scriptEditorWindow = this.View.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
             var windowGrid = scriptEditorWindow.Content as Grid;
@@ -68,6 +68,7 @@ namespace DynamoCoreWpfTests
             var engineAfterChange = engineSelectorComboBox.SelectedItem = engineChange;
 
             // Assert
+            Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
             CollectionAssert.AreEqual(expectedAvailableEnignes, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
             Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonNodeModels.PythonEngineVersion.CPython3);
@@ -84,7 +85,7 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            SetupDebugMode();
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
             var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
 
@@ -160,15 +161,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
 
-        }
-
-        private void SetupDebugMode()
-        {
-            string configPath = Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config");
-            Type dbgModesType = typeof(DebugModes);
-
-            // Load the enabled/disabled status from the test config file.
-            dbgModesType.GetMethod("LoadDebugModesStatusFromConfig", BindingFlags.Static | BindingFlags.NonPublic).Invoke(null, new object[] { configPath });
         }
     }
 }
