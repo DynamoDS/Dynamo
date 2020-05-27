@@ -132,7 +132,7 @@ namespace Dynamo.Tests.Engine
             CurrentDynamoModel.EngineController.Dispose();
 
             //Assert
-            //Because the object was already disposed then when calling the ReconcileTraceDataAndNotify() method 
+            //Because the object was already disposed then when calling the ReconcileTraceDataAndNotify() method will raise an exception
             Assert.Throws<ObjectDisposedException>( () => CurrentDynamoModel.EngineController.ReconcileTraceDataAndNotify());
 
         }

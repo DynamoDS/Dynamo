@@ -25,7 +25,6 @@ namespace Dynamo.Tests.Engine
             //This the id of a CoreNodeModels.Input.StringInput node inside the .dyn file
             var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("10d3d247-5378-4186-8f2d-286db0cc61a5");
             var runtimeMirror = CurrentDynamoModel.EngineController.GetMirror(node.AstIdentifierBase);
-            //CurrentDynamoModel.CurrentWorkspace.up
 
             //Assert
             //Verify that the runtimeMirror was created correctly
@@ -48,7 +47,7 @@ namespace Dynamo.Tests.Engine
             CurrentDynamoModel.EngineController.VerboseLogging = true;
 
             //We cannot set the VerboseLogging flag before the Model is created then in order to execute the UpdateGraph()
-            //we need to call the OpenFileCommand againt with the VerboseLogging already set to true
+            //we need to call the OpenFileCommand again with the VerboseLogging already set to true
             var openPath2 = Path.Combine(TestDirectory, @"core\Angle.dyn");
 
             //Act
