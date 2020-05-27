@@ -147,11 +147,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private Technique renderTechnique;
         private PerspectiveCamera camera;
-        private readonly Vector3D directionalLightDirection = new Vector3D(-0.5f, -1.0f, 0.0f);
-        private DirectionalLight3D directionalLight;
         private DirectionalLight3D headLight;
 
-        private readonly Color4 directionalLightColor = new Color4(0.9f, 0.9f, 0.9f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
@@ -1259,36 +1256,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 throw new Exception("Helix could not be initialized.");
             }
 
-            // Create the directional light singleton and add it to the dictionary
-
-            directionalLight = new DirectionalLight3D
-            {
-                Color = directionalLightColor.ToColor(),
-                Direction = directionalLightDirection,
-                Name = DefaultLightName
-            };
-
-            //directionalLight.SetBinding(
-            //    DirectionalLight3D.DirectionProperty,
-            //    new Binding(nameof(PerspectiveCamera.LookDirection))
-            //    {
-            //        Source = this.Camera,
-            //        Converter = new CameraToHeadLightDirectionConverter()
-            //    }
-            //);
-
-            //if (!Element3DDictionary.ContainsKey(DefaultLightName))
-            //{
-            //    AttachedProperties.SetIsSpecialRenderPackage(directionalLight, true);
-            //    Element3DDictionary.Add(DefaultLightName, directionalLight);
-            //}
-
             // Create the headlight singleton and add it to the dictionary
 
             headLight = new DirectionalLight3D
             {
                 Color = System.Windows.Media.Color.FromRgb(230, 230, 230),
-                //Color = System.Windows.Media.Color.FromRgb(255, 255, 255),
                 Direction = new Vector3D(0, 0, 1),
                 Name = HeadLightName
             };
@@ -1297,8 +1269,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 DirectionalLight3D.DirectionProperty,
                 new Binding(nameof(PerspectiveCamera.LookDirection))
                 {
-                    Source = this.Camera,
-                    Converter = new CameraToHeadLightDirectionConverter()
+                    Source = this.Camera
                 }
             );
 
@@ -2339,20 +2310,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 
             }
             base.Dispose(disposing);
-        }
-
-        private class CameraToHeadLightDirectionConverter : IValueConverter
-        {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                //return new Vector3D(1, -1, -5);
-                return value;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-            {
-                throw new NotImplementedException();
-            }
         }
     }
 

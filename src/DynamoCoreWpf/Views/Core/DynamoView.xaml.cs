@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -56,15 +55,6 @@ namespace Dynamo.Controls
     /// </summary>
     public partial class DynamoView : Window, IDisposable
     {
-        [DllImport("RenderedApi.dll")]
-        private static extern void initialize();
-
-        [DllImport("RenderedApi.dll")]
-        private static extern void startCapture();
-
-        [DllImport("RenderedApi.dll")]
-        private static extern void endCapture();
-
         public const string BackgroundPreviewName = "BackgroundPreview";
 
         private const int navigationInterval = 100;
@@ -214,8 +204,6 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
             FocusableGrid.InputBindings.Clear();
-
-            initialize();
         }
 
         // This method adds a tab item to the right side bar and 
@@ -2061,16 +2049,6 @@ namespace Dynamo.Controls
             {
                 HidePopupWhenWindowDeactivated();
             }
-        }
-
-        private void startCapture_Click(object sender, RoutedEventArgs e)
-        {
-            startCapture();
-        }
-
-        private void endCapture_Click(object sender, RoutedEventArgs e)
-        {
-            endCapture();
         }
 
         public void Dispose()
