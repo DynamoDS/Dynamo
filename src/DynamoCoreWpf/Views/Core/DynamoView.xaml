@@ -1819,6 +1819,12 @@
                                                     Margin="2.5,5,5,5" 
                                                      VerticalAlignment="Stretch"
                                                      DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
+                    <Button Name="start"
+                        Content="Start"
+                        Click="startCapture_Click"/>
+                    <Button Name="end"
+                        Content="End"
+                        Click="endCapture_Click"/>
                 </WrapPanel>
                 
                 <!--NotificationControl for showing run-time notifications-->
