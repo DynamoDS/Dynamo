@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Engine
 {

@@ -1,9 +1,8 @@
-﻿using Dynamo.Engine;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections;
-using System.IO;
 using System.Reflection;
+using Dynamo.Engine;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Engine
 {
