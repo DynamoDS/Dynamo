@@ -33,6 +33,8 @@ namespace DynamoCoreWpfTests
                 Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
             };
         }
+        private List<string> raisedEvents = new List<string>();
+
 
         /// <summary>
         /// This test is created to check if the extension displays a dialog to the user
@@ -71,14 +73,10 @@ namespace DynamoCoreWpfTests
             // Arrange
             string pythonNodeName = "Python Script";
             RaiseLoadedEvent(this.View);
-            var raisedEvents = new List<string>();
 
             // Act
             // open file
-            this.ViewModel.Model.Logger.NotificationLogged += delegate (Dynamo.Logging.NotificationMessage obj)
-            {
-                raisedEvents.Add(obj.Sender);
-            };
+            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
 
             var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
@@ -93,6 +91,11 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
         }
 
+        private void Logger_NotificationLogged(Dynamo.Logging.NotificationMessage obj)
+        {
+            raisedEvents.Add(obj.Sender);
+        }
+
         /// <summary>
         /// This test verifies an IronPython warning notification is logged to the Dynamo Logger 
         /// only one time per open graph
@@ -103,14 +106,12 @@ namespace DynamoCoreWpfTests
             // Arrange
             string pythonNodeName = "Python Script";
             RaiseLoadedEvent(this.View);
-            var raisedEvents = new List<string>();
+            raisedEvents = new List<string>();
 
             // Act
             // open file
-            this.ViewModel.Model.Logger.NotificationLogged += delegate (Dynamo.Logging.NotificationMessage obj)
-            {
-                raisedEvents.Add(obj.Sender);
-            };
+            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged1;
+          
 
             var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
@@ -125,6 +126,14 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodesCountBeforeNodeAdded+2, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
+            raisedEvents.Clear();
+            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged1;
+
+        }
+
+        private void Logger_NotificationLogged1(Dynamo.Logging.NotificationMessage obj)
+        {
+            raisedEvents.Add(obj.Sender);
         }
 
 
