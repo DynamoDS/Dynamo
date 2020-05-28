@@ -510,7 +510,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\compiledShaders\psDynamoMesh" />
+    <None Include="ViewModels\Watch3D\compiledShaders\psDynamoPointLine" />
     <None Include="ViewModels\Watch3D\compiledShaders\vsDynamoMesh" />
+    <None Include="ViewModels\Watch3D\compiledShaders\vsDynamoPointLine" />
     <Resource Include="UI\Images\cursors.psd" />
     <Resource Include="UI\Images\cursors1.psd" />
   </ItemGroup>

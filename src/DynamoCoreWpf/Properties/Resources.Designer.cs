@@ -4432,6 +4432,16 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] psDynamoPointLine {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoPointLine", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Online.
         /// </summary>
         public static string PublishPackage {
@@ -5583,6 +5593,16 @@ namespace Dynamo.Wpf.Properties {
         public static byte[] vsDynamoMesh {
             get {
                 object obj = ResourceManager.GetObject("vsDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] vsDynamoPointLine {
+            get {
+                object obj = ResourceManager.GetObject("vsDynamoPointLine", resourceCulture);
                 return ((byte[])(obj));
             }
         }

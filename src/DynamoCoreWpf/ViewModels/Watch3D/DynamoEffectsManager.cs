@@ -53,7 +53,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal static class DynamoPointLineVertexShaderDescription
         {
-            internal static byte[] VSPointLineDataSamplerByteCode { get; }
+            internal static byte[] VSPointLineDataSamplerByteCode
+            {
+                get { return Properties.Resources.vsDynamoPointLine; }
+            }
 
             internal static readonly ShaderDescription VertexShaderDynamoPointLineDescription = new ShaderDescription(nameof(VertexShaderDynamoPointLineDescription), 
                     ShaderStage.Vertex, new ShaderReflector(), VSPointLineDataSamplerByteCode);
@@ -61,7 +64,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal static class DynamoPointLinePixelShaderDescription
         {
-            internal static byte[] PSPointLineDataSamplerByteCode { get; }
+            internal static byte[] PSPointLineDataSamplerByteCode
+            {
+                get { return Properties.Resources.psDynamoPointLine; }
+            }
 
             internal static readonly ShaderDescription PixelShaderDynamoPointLineDescription = new ShaderDescription(nameof(PixelShaderDynamoPointLineDescription),
                 ShaderStage.Pixel, new ShaderReflector(), PSPointLineDataSamplerByteCode);
