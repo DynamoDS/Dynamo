@@ -1,12 +1,10 @@
-#ifndef VSPOINTDEFAULT_HLSL
 #ifndef PSPOINTLINEDEFAULT_HLSL
 #define PSPOINTLINEDEFAULT_HLSL
 #define POINTLINE
 #include"Common.hlsl"
-#include"DataStructs.hlsl"
-#pragma pack_matrix( row_major )
+#include"CommonBuffers.hlsl"
 
-float4 main(PSInputPS input)
+float4 main(PSInputPS input) : SV_Target
 {
 	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
 
@@ -18,11 +16,12 @@ float4 main(PSInputPS input)
 	// if this is a special render package - it should render with the material colors, ambient light
 	// and not be directionally lit.
 	if (isSpecialRenderPackage) {
-		return vMaterialDiffuse + vMaterialEmissive + vMaterialAmbient * vLightAmbient;
+		return input.c;
 	}
 
 	/// set diffuse alpha if selected or normal
-	I.a = vMaterialDiffuse.a;
+	//I.a = vMaterialDiffuse.a;
+	float4 I = input.c;
 
 	//if frozen half alpha
 	if (isFrozen) 
@@ -40,7 +39,6 @@ float4 main(PSInputPS input)
 	{
 		I = lerp(vSelectionColor, I, 0.3);
 	}
-
 
 	return I;
 }

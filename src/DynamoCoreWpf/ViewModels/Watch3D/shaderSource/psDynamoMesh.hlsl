@@ -136,5 +136,5 @@ float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 	}
 
 
-	return I * input.c;
+	return I;
 }
