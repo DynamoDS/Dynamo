@@ -67,15 +67,15 @@ float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 	// normals that are not as expected.
 	// SV_IsFrontFace is a system value (GPU sets this for us) you can read about here:
     //https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-semantics
-	 input.n = isFrontFacing ? input.n : -input.n;
+	input.n = isFrontFacing ? input.n : -input.n;
 
-	 // if this is a special render package - it should render with the material colors, ambient light
-	 // and not be directionally lit.
-	 if (isSpecialRenderPackage) {
-		 return vMaterialDiffuse + vMaterialEmissive + vMaterialAmbient * vLightAmbient;
-	 }
+	// if this is a special render package - it should render with the material colors, ambient light
+	// and not be directionally lit.
+	if (isSpecialRenderPackage) {
+		return vMaterialDiffuse + vMaterialEmissive + vMaterialAmbient * vLightAmbient;
+	}
 
-	//we need to support diffuse masps for nodes like Display.BySurfaceColors which use diffuse maps
+	//we need to support diffuse maps for nodes like Display.BySurfaceColors which use diffuse maps
 	//instead of vertex colors.
 	if (bHasDiffuseMap)
 	{
@@ -95,47 +95,46 @@ float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 	// this variable can be used for light accumulation
 	float4 I = vMaterialEmissive + vMaterialAmbient * vLightAmbient;
 
-// compute lighting based on all lights in scene.
-// simple phong model with specular highlight.
-for (int i = 0; i < NumLights; ++i)
-{
-	if (Lights[i].iLightType == 1) // directional
+	// compute lighting based on all lights in scene.
+	// simple phong model with specular highlight.
+	for (int i = 0; i < NumLights; ++i)
 	{
-		float3 lightDirection = normalize((float3) Lights[i].vLightDir); // light dir	
-		//reflect is an hlsl instrinsic.
-		float3 reflectedLightDir = reflect(-lightDirection, input.n);
-		I += calcPhongLighting(Lights[i].vLightColor, input.c, input.n, lightDirection, eye, reflectedLightDir);
+		if (Lights[i].iLightType == 1) // directional
+		{
+			float3 lightDirection = normalize((float3) Lights[i].vLightDir); // light dir	
+			//reflect is an hlsl instrinsic.
+			float3 reflectedLightDir = reflect(-lightDirection, input.n);
+			I += calcPhongLighting(Lights[i].vLightColor, input.c, input.n, lightDirection, eye, reflectedLightDir);
+		}
 	}
-}
 
-/// set diffuse alpha if selected or normal
-I.a = vMaterialDiffuse.a;
+	/// set diffuse alpha if selected or normal
+	I.a = vMaterialDiffuse.a;
 
-//if frozen half alpha
-if(isFrozen) {
-	I.a = .5f;
-}
-//if isolated - alpha should always be low - 
-//overriding other alpha values (except if selected)
-if(isIsolated && !isSelected)
-{
-	I.a = .1f;
-}
-
-
-if (requiresPerVertexColoration)
-{
-	//multiply the vert color by the light
-	I = I * input.c;
-}
-
-if (isSelected && !isIsolated)
-{
-	I = lerp(vSelectionColor, I, 0.3);
-}
+	//if frozen half alpha
+	if (isFrozen) 
+	{
+		I.a = .5f;
+	}
+	//if isolated - alpha should always be low - 
+	//overriding other alpha values (except if selected)
+	if (isIsolated && !isSelected)
+	{
+		I.a = .1f;
+	}
 
 
-return I * input.c;
+	if (requiresPerVertexColoration)
+	{
+		//multiply the vert color by the light
+		I = I * input.c;
+	}
+
+	if (isSelected && !isIsolated)
+	{
+		I = lerp(vSelectionColor, I, 0.3);
+	}
 
 
+	return I * input.c;
 }

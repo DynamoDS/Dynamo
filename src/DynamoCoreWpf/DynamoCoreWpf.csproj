@@ -303,6 +303,7 @@
     <Compile Include="ViewModels\Watch3D\DynamoGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoLineGeometryModel3D.cs" />
     <Compile Include="ViewModels\Watch3D\DynamoPointGeometryModel3D.cs" />
+    <Compile Include="ViewModels\Watch3D\DynamoPointLineMaterialVariable.cs" />
     <Compile Include="ViewModels\Watch3D\HelixWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\DefaultWatch3DViewModel.cs" />
     <Compile Include="ViewModels\Watch3D\IWatch3DViewModel.cs" />
@@ -1293,9 +1294,7 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\Watch3D\shaderSource\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />

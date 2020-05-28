@@ -174,22 +174,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// </summary>
     public class DynamoGeometryModel3D : MaterialGeometryModel3D
     {
-        public DynamoGeometryModel3D()
-        {
-        }
-
         protected override SceneNode OnCreateSceneNode()
         {
             return new DynamoMeshNode();
         }
 
+        // TODO: Make private in 3.0
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
             DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), 
                 typeof(GeometryModel3D), new UIPropertyMetadata(false, RequirePerVertexColorationChanged));
 
         private static void RequirePerVertexColorationChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
-            ((obj as GeometryModel3D).SceneNode.RenderCore as DynamoGeometryMeshCore).SetPropertyData(e);
+            AttachedProperties.HandleMeshPropertyChange(obj as DynamoGeometryModel3D, e);
         }
 
         /// <summary>

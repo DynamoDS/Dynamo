@@ -16,23 +16,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DynamoEffectsManager : DefaultEffectsManager
     {
         internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";
+        internal static readonly string DynamoPointLineShaderName = "DynamoPointLineShader";
 
-        public DynamoEffectsManager() : base() {
+        public DynamoEffectsManager()
+        {
             AddDynamoTechniques();
         }
 
-        internal class DynamoMeshRenderVertexShaderDescription
+        internal static class DynamoMeshRenderVertexShaderDescription
         {
-            protected DynamoMeshRenderVertexShaderDescription()
-            {
-                // Do nothing for now
-            }
-
             public static byte[] VSMeshDataSamplerByteCode
             {
                 get
                 {
-                    return Dynamo.Wpf.Properties.Resources.vsDynamoMesh;
+                    return Properties.Resources.vsDynamoMesh;
                 }
             }
 
@@ -40,18 +37,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
           new ShaderReflector(), VSMeshDataSamplerByteCode);
         }
 
-        internal class DynamoMeshRenderPixelShaderDescription
+        internal static class DynamoMeshRenderPixelShaderDescription
         {
-            protected DynamoMeshRenderPixelShaderDescription()
-            {
-                // Do nothing for now
-            }
-
             public static byte[] PSMeshDataSamplerByteCode
             {
                 get
                 {
-                    return Dynamo.Wpf.Properties.Resources.psDynamoMesh;
+                    return Properties.Resources.psDynamoMesh;
                 }
             }
 
@@ -59,6 +51,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
           new ShaderReflector(), PSMeshDataSamplerByteCode);
         }
 
+        internal static class DynamoPointLineVertexShaderDescription
+        {
+            internal static byte[] VSPointLineDataSamplerByteCode { get; }
+
+            internal static readonly ShaderDescription VertexShaderDynamoPointLineDescription = new ShaderDescription(nameof(VertexShaderDynamoPointLineDescription), 
+                    ShaderStage.Vertex, new ShaderReflector(), VSPointLineDataSamplerByteCode);
+        }
+
+        internal static class DynamoPointLinePixelShaderDescription
+        {
+            internal static byte[] PSPointLineDataSamplerByteCode { get; }
+
+            internal static readonly ShaderDescription PixelShaderDynamoPointLineDescription = new ShaderDescription(nameof(PixelShaderDynamoPointLineDescription),
+                ShaderStage.Pixel, new ShaderReflector(), PSPointLineDataSamplerByteCode);
+        }
 
         protected void AddDynamoTechniques()
         {
@@ -70,7 +77,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 {
                     new ShaderPassDescription(DefaultPassNames.Default)
                     {
-                        ShaderList = new ShaderDescription[]
+                        ShaderList = new[]
                         {
                             DynamoMeshRenderVertexShaderDescription.VertexShaderDynamoMeshDescription,
                             DynamoMeshRenderPixelShaderDescription.PixelShaderDynamoMeshDescription,
@@ -80,8 +87,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     },
                 }
             };
-
             AddTechnique(dynamoCustomMeshTech);
+
+            var dynamoCustomPointLineTech = new TechniqueDescription(DynamoPointLineShaderName)
+            {
+                InputLayoutDescription = new InputLayoutDescription(
+                    DynamoPointLineVertexShaderDescription.VSPointLineDataSamplerByteCode,
+                    DefaultInputLayout.VSInputPoint),
+                PassDescriptions = new[]
+                {
+                    new ShaderPassDescription(DefaultPassNames.Default)
+                    {
+                        ShaderList = new[]
+                        {
+                            DynamoPointLineVertexShaderDescription.VertexShaderDynamoPointLineDescription,
+                            DynamoPointLinePixelShaderDescription.PixelShaderDynamoPointLineDescription
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
+                    }
+                }
+            };
+            AddTechnique(dynamoCustomPointLineTech);
         }
     }
 }

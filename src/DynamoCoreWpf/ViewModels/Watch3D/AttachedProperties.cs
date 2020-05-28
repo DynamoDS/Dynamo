@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using SharpDX;
+using Point = SharpDX.Point;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -93,34 +94,35 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
 
-                if ((bool)args.NewValue)
-                {
-                    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
-                    if (GetIsolationMode(geom))
-                    {
-                        //selected, isolated, and frozen.
-                        if (GetIsFrozen(geom))
-                        {
-                            SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
-                        }
-                        //selected and isolated, so we just reset the colors.
-                        else
-                        {
-                            //reset the colors
-                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                        }
-                    }
-                    //only selected.
-                    else
-                    {
-                        //TODO cache this and update after helix 2.11 is released
-                        SetAllColors(geom, HelixWatch3DViewModel.SelectedMaterial.DiffuseColor);
-                    }
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                //if ((bool)args.NewValue)
+                //{
+                //    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
+                //    if (GetIsolationMode(geom))
+                //    {
+                //        //selected, isolated, and frozen.
+                //        if (GetIsFrozen(geom))
+                //        {
+                //            SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
+                //        }
+                //        //selected and isolated, so we just reset the colors.
+                //        else
+                //        {
+                //            //reset the colors
+                //            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
+                //        }
+                //    }
+                //    //only selected.
+                //    else
+                //    {
+                //        //TODO cache this and update after helix 2.11 is released
+                //        SetAllColors(geom, HelixWatch3DViewModel.SelectedMaterial.DiffuseColor);
+                //    }
+                //}
+                //else
+                //{
+                //    OnPointOrLinePropertySetFalse(geom);
+                //}
+                HandlePointLinePropertyChange(geom, args);
             }
         }
 
@@ -199,19 +201,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var meshGeom = geom as DynamoGeometryModel3D;
             if (meshGeom != null)
             {
-
-             HandleMeshPropertyChange(meshGeom, e);
+                HandleMeshPropertyChange(meshGeom, e);
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
-                if ((bool)e.NewValue)
-                {
-                    SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, false);
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                //if ((bool)e.NewValue)
+                //{
+                //    SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, false);
+                //}
+                //else
+                //{
+                //    OnPointOrLinePropertySetFalse(geom);
+                //}
+                HandlePointLinePropertyChange(geom, e);
             }
         }
 
@@ -257,14 +259,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
-                if ((bool)e.NewValue)
-                {
-                    SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, false);
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                //if ((bool)e.NewValue)
+                //{
+                //    SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, false);
+                //}
+                //else
+                //{
+                //    OnPointOrLinePropertySetFalse(geom);
+                //}
+                HandlePointLinePropertyChange(geom, e);
             }
         }
 
@@ -290,6 +293,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 HandleMeshPropertyChange(meshGeom, args);
             }
+            else if (d is DynamoLineGeometryModel3D)
+            {
+                var lineGeom = d as DynamoLineGeometryModel3D;
+                HandlePointLinePropertyChange(lineGeom, args);
+            }
         }
 
         public static void SetIsSpecialRenderPackage(DependencyObject element, bool value)
@@ -311,13 +319,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="meshGeom"></param>
         /// <param name="args"></param>
-        private static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
+        internal static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
         {
             var meshCore = meshGeom?.SceneNode?.RenderCore as DynamoGeometryMeshCore;
-            if (meshCore != null)
-            {
-                meshCore.SetPropertyData(args);
-            }
+            meshCore?.SetPropertyData(args);
+        }
+
+        private static void HandlePointLinePropertyChange(GeometryModel3D pointLineGeom,
+            DependencyPropertyChangedEventArgs args)
+        {
+            var materialCore = pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineCore;
+            var materialVar = materialCore?.MaterialVariables as DynamoPointLineMaterialVariable;
+            materialVar?.SetPropertyData(args);
         }
 
         /// <summary>

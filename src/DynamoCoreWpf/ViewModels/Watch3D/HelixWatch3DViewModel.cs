@@ -1484,8 +1484,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
         {
-            if (!(String.IsNullOrEmpty(objId)) && this.colorCache.ContainsKey(objId) && this.element3DDictionary.ContainsKey(objId)){
-                (element3DDictionary[objId] as HelixToolkit.Wpf.SharpDX.GeometryModel3D).Geometry.Colors = colorCache[objId];
+            if (!(string.IsNullOrEmpty(objId)) && this.colorCache.ContainsKey(objId) &&
+                this.element3DDictionary.ContainsKey(objId))
+            {
+                ((GeometryModel3D) element3DDictionary[objId]).Geometry.Colors = colorCache[objId];
             }
         }
 
@@ -1663,7 +1665,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                     
                     //If this render package belongs to special render package, then create
-                    //and update the corresponding GeometryModel. Sepcial renderpackage are
+                    //and update the corresponding GeometryModel. Special renderpackage are
                     //defined based on its description containing one of the constants from
                     //RenderDescriptions struct.
                     if (UpdateGeometryModelForSpecialRenderPackage(rp, baseId))
@@ -2073,7 +2075,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Thickness = thickness,
-                IsHitTestVisible = false,
+                IsHitTestVisible = true,
                 IsSelected = rp.IsSelected
             };
             return lineGeometry3D;
