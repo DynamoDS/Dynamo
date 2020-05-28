@@ -42,6 +42,7 @@ namespace DynamoCoreWpfTests
         public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
         {
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DynamoModel.IsTestMode = false;
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -57,6 +58,7 @@ namespace DynamoCoreWpfTests
         
             // Assert
             Assert.IsTrue(isIronPythonDialogOpen);
+            DynamoModel.IsTestMode = true;
         }
 
         /// <summary>
@@ -134,6 +136,7 @@ namespace DynamoCoreWpfTests
         public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
         {
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DynamoModel.IsTestMode = false;
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -160,6 +163,7 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(0, secondGraphIronPythonDialog.Count());
+            DynamoModel.IsTestMode = true;
         }
 
         /// <summary>
@@ -194,6 +198,7 @@ namespace DynamoCoreWpfTests
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
         {
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DynamoModel.IsTestMode = false;
             // Arrange
             RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
@@ -214,6 +219,7 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.ExtensionTabItems.Count);
             Assert.IsTrue(hasDocumentationBrowserTab);
+            DynamoModel.IsTestMode = true;
         }
 
         #region Helpers
