@@ -19,20 +19,8 @@ namespace DynamoCoreWpfTests
     class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {
         private PythonMigrationViewExtension viewExtension = new PythonMigrationViewExtension();
-
-        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
-
-        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
-        {
-            return new DynamoModel.DefaultStartConfiguration()
-            {
-                PathResolver = pathResolver,
-                StartInTestMode = true,
-                GeometryFactoryPath = this.preloader.GeometryFactoryPath,
-                ProcessMode = TaskProcessMode.Synchronous,
-                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { this.PackagesDirectory } }
-            };
-        }
+         
+       
         private List<string> raisedEvents = new List<string>();
 
 
@@ -45,10 +33,6 @@ namespace DynamoCoreWpfTests
         {
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             DynamoModel.IsTestMode = false;
-            // Arrange
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            extensionManager.Add(viewExtension);
 
             // Act
             // open file
@@ -72,8 +56,7 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             string pythonNodeName = "Python Script";
-            RaiseLoadedEvent(this.View);
-
+            raisedEvents = new List<string>();
             // Act
             // open file
             this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
@@ -89,6 +72,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodesCountBeforeNodeAdded+1, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
+            raisedEvents.Clear();
+            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
         }
 
         private void Logger_NotificationLogged(Dynamo.Logging.NotificationMessage obj)
@@ -105,12 +90,11 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             string pythonNodeName = "Python Script";
-            RaiseLoadedEvent(this.View);
             raisedEvents = new List<string>();
 
             // Act
             // open file
-            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged1;
+            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
           
 
             var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
@@ -127,13 +111,8 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
-            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged1;
+            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
 
-        }
-
-        private void Logger_NotificationLogged1(Dynamo.Logging.NotificationMessage obj)
-        {
-            raisedEvents.Add(obj.Sender);
         }
 
 
@@ -147,9 +126,6 @@ namespace DynamoCoreWpfTests
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             DynamoModel.IsTestMode = false;
             // Arrange
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            extensionManager.Add(viewExtension);
             var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
             var examplePathEmptyFile = Path.Combine(UnitTestBase.TestDirectory, @"core\Home.dyn");
 
@@ -181,11 +157,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanDetectIronPythonNodesInGraph()
         {
-            // Arrange
-            RaiseLoadedEvent(this.View);
             var extensionManager = View.viewExtensionManager;
-            extensionManager.Add(viewExtension);
-
             // Act
             // open file
             Open(@"core\python\python.dyn");
@@ -208,10 +180,6 @@ namespace DynamoCoreWpfTests
         {
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             DynamoModel.IsTestMode = false;
-            // Arrange
-            RaiseLoadedEvent(this.View);
-            var extensionManager = View.viewExtensionManager;
-            extensionManager.Add(viewExtension);
 
             // Act
             // open file
@@ -231,16 +199,5 @@ namespace DynamoCoreWpfTests
             DynamoModel.IsTestMode = true;
         }
 
-        #region Helpers
-        public static void RaiseLoadedEvent(FrameworkElement element)
-        {
-            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
-
-            eventMethod.Invoke(element, new object[] { args });
-        }
-        #endregion
     }
 }
