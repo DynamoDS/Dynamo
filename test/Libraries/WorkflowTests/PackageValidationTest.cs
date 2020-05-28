@@ -89,7 +89,7 @@ namespace Dynamo.Tests
         public void ConvertMeshIntoLinePointsSurfaces()
         {
             var testFilePath = Path.Combine(TestDirectory,
-    @"core\userdata\0.8\packages\MeshToolkit.0.8.2\extra\ConvertMeshIntoLinePointsSurfaces.dyn");
+    @"core\userdata\0.8\packages\MeshToolkit\extra\ConvertMeshIntoLinePointsSurfaces.dyn");
 
             RunModel(testFilePath);
 
@@ -126,7 +126,7 @@ namespace Dynamo.Tests
         public void CreateMeshFromSolids()
         {
             var testFilePath = Path.Combine(TestDirectory,
-@"core\userdata\0.8\packages\MeshToolkit.0.8.2\extra\CreateMeshUsingGeometryAndQueryAllProperties.dyn");
+@"core\userdata\0.8\packages\MeshToolkit\extra\CreateMeshUsingGeometryAndQueryAllProperties.dyn");
 
             RunModel(testFilePath);
 
@@ -151,7 +151,7 @@ namespace Dynamo.Tests
         public void CreateMeshUsingVerticesAndFaceIndices()
         {
             var testFilePath = Path.Combine(TestDirectory,
-@"core\userdata\0.8\packages\MeshToolkit.0.8.2\extra\CreateMeshUsingVerticesAndFaceIndices.dyn");
+@"core\userdata\0.8\packages\MeshToolkit\extra\CreateMeshUsingVerticesAndFaceIndices.dyn");
 
             RunModel(testFilePath);
 
@@ -190,7 +190,7 @@ namespace Dynamo.Tests
         public void SliceMesh()
         {
             var testFilePath = Path.Combine(TestDirectory,
-                        @"core\userdata\0.8\packages\MeshToolkit.0.8.2\extra\SliceMesh.dyn");
+                        @"core\userdata\0.8\packages\MeshToolkit\extra\SliceMesh.dyn");
 
             RunModel(testFilePath);
 
