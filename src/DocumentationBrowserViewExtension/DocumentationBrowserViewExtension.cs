@@ -5,6 +5,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Dynamo.DocumentationBrowser
@@ -63,15 +64,10 @@ namespace Dynamo.DocumentationBrowser
 
             // Add a button to Dynamo View menu to manually show the window
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
-            this.documentationBrowserMenuItem.Checked += (sender, args) =>
-            {
-                AddToSidebar(true);
-            };
-            this.documentationBrowserMenuItem.Unchecked += (sender, args) =>
-            {
-                viewLoadedParams.CloseExtensioninInSideBar(this);
-            };
+            this.documentationBrowserMenuItem.Checked += MenuItemCheckHandler;
+            this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
             this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+
 
             DynamoView.CloseExtension += OnCloseExtension;
 
@@ -80,6 +76,16 @@ namespace Dynamo.DocumentationBrowser
 
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+        }
+
+        private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
+        {
+            viewLoadedParamsReference.CloseExtensioninInSideBar(this);
+        }
+
+        private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
+        {
+            AddToSidebar(true);
         }
 
         public void Shutdown()
@@ -93,9 +99,11 @@ namespace Dynamo.DocumentationBrowser
             DynamoView.CloseExtension -= OnCloseExtension;
             this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
             this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
-
+            documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
+            documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
+            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
         }
 
         /// <summary>

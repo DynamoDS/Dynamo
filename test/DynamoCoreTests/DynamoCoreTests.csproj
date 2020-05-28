@@ -183,6 +183,9 @@
     <Compile Include="Updates\UpdatesTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
+    <Compile Include="Visualization\DefaultGraphicPrimitivesTest.cs" />
+    <Compile Include="Visualization\DefaultRenderPackageTest.cs" />
+    <Compile Include="Visualization\RenderPackageCacheTest.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />

@@ -1066,6 +1066,8 @@ namespace Dynamo.Models
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
+            LibraryServices.MessageLogged -= LogMessage;
+            LibraryServices.LibraryLoaded -= LibraryLoaded;
 
             EngineController.VMLibrariesReset -= ReloadDummyNodes;
 
@@ -1092,6 +1094,11 @@ namespace Dynamo.Models
             {
                 ws.Dispose();
             }
+            NodeFactory.MessageLogged -= LogMessage;
+            CustomNodeManager.MessageLogged -= LogMessage;
+            CustomNodeManager.Dispose();
+            MigrationManager.MessageLogged -= LogMessage;
+
         }
 
         private void InitializeCustomNodeManager()

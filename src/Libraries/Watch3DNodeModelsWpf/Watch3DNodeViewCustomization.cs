@@ -173,6 +173,7 @@ namespace Watch3DNodeModelsWpf
                 watch3DViewModel.ViewCameraChanged -= onCameraChanged;
                 watch3DViewModel.Dispose();
             }
+            watch3dModel.Serialized -= model_Serialized;
             DataBridge.Instance.UnregisterCallback(watch3dModel.GUID.ToString());
         }
     }

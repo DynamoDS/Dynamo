@@ -44,6 +44,7 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated -= currentApplicationDeactivated;
             }
+            MembersListBox.ItemsSource = null;
         }
 
         private void currentApplicationDeactivated(object sender, EventArgs e)

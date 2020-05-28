@@ -45,6 +45,11 @@ namespace PythonNodeModelsWpf
 
             InitializeComponent();
 
+            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            {
+                EngineSelectorComboBox.Visibility = Visibility.Visible;
+            }
+
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
 

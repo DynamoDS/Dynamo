@@ -269,7 +269,8 @@ namespace DynamoCoreWpfTests
             }
 
             var loader = GetPackageLoader();
-            Assert.AreEqual(loader.LocalPackages.Count(), 0);
+            var packageFound = loader.LocalPackages.Any(x => x.Name == "Autodesk Steel Connections 2020");
+            Assert.IsFalse(packageFound);
 
             ViewModel.OnRequestManagePackagesDialog(null, null);
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
