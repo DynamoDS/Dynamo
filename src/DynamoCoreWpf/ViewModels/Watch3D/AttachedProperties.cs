@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// Properties used by Dynamo to extend the capabilities of 
     /// GeometryModel3D objects. 
     /// </summary>
-    [Obsolete("This will be moved to a new project in a future version of Dynamo")]
+    [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public static class AttachedProperties
     {
 

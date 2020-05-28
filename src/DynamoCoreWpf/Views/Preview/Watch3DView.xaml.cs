@@ -29,7 +29,7 @@ namespace Dynamo.Controls
 
         #region public properties
 
-        [Obsolete("This will change its type in a future version of Dynamo")]
+        [Obsolete("Do not use! This will change its type in a future version of Dynamo.")]
         public Viewport3DX View
         {
             get { return watch_view; }

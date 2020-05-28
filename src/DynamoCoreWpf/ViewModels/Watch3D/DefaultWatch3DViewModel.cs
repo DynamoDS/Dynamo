@@ -305,7 +305,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// Handle requests to reset colors on geometry graphics objects given an id.
         /// </summary>
         /// <param name="objId">id of the object</param>
-        [Obsolete("This will be moved to a new project in a future version of Dynamo")]
+        [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
         protected virtual void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
         {
             //override in derived classes
