@@ -72,7 +72,7 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
-        /// <returns></returns>
+        /// <returns>Returns true, if it can find a matching FEP for all the reduced params. Returns False otherwise.</returns>
         public bool CanGetExactMatchStatics(
             Runtime.Context context,
             List<List<StackValue>> reducedFormalParams,
