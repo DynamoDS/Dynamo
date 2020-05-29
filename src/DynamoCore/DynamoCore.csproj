@@ -394,6 +394,7 @@ limitations under the License.
       <ExternLibG225 Include="$(SolutionDir)..\extern\LibG_225_0_0\*" />
       <ExternLibG226 Include="$(SolutionDir)..\extern\LibG_226_0_0\*" />
       <ExternLibG Include="$(SolutionDir)..\extern\LibG_*\*" />
+      <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
       <LocalizedResources Include="$(SolutionDir)..\extern\Localized\**\*.*" />
