@@ -1,9 +1,8 @@
-﻿using Dynamo.Engine.Profiling;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Dynamo.Engine.Profiling;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 namespace Dynamo.Tests.Engine.Profiling
@@ -11,6 +10,12 @@ namespace Dynamo.Tests.Engine.Profiling
     [TestFixture]
     class ProfilingDataTest : DynamoModelTestBase
     {
+        /// <summary>
+        /// This test method will execute the next methods from the ProfilingData class
+        /// internal Dictionary<Guid, NodeProfilingData> NodeProfilingData
+        /// internal void UnregisterNode(Guid guid)
+        /// void UnregisterDeletedNodes(IEnumerable<NodeModel> modelNodes)
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void ProfilingDataRegisterUnRegisterNodesTest()
@@ -45,6 +50,11 @@ namespace Dynamo.Tests.Engine.Profiling
             Assert.AreEqual(nodeData.Count, 0);
         }
 
+        /// <summary>
+        /// This test method will execute the next methods from the NodeProfilingData class
+        /// public void Dispose()
+        /// internal TimeSpan? ExecutionTime
+        /// </summary>
         [Test]
         [Category("UnitTests")]
         public void NodeProfilingDataDispose()
