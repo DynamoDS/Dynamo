@@ -105,8 +105,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     new ShaderPassDescription(DefaultPassNames.Default)
                     {
                         ShaderList = new[]
-                        {
+                        {     
                             DynamoPointLineVertexShaderDescription.VertexShaderDynamoPointLineDescription,
+                            DefaultGSShaderDescriptions.GSPoint,
                             DynamoPointLinePixelShaderDescription.PixelShaderDynamoPointLineDescription
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,

@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
-            return new DynamoPointNode();
+            return new DynamoPointNode() { Material = material };
         }
     }
 
