@@ -40,8 +40,9 @@ namespace Dynamo.PythonMigration
             Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
+            // Do nothing for now 
         }
 
         public void Dispose()
