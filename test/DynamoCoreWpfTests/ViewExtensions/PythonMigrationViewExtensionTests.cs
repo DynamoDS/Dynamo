@@ -118,6 +118,7 @@ namespace DynamoCoreWpfTests
             raisedEvents.Clear();
             this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
             DispatcherUtil.DoEvents();
+
         }
 
 
