@@ -146,6 +146,7 @@
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="ProfilingTest.cs" />
+    <Compile Include="PropertiesTests\PropertiesTests.cs" />
     <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
     <Compile Include="Search\SearchDictionaryTest.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Updates\BinaryVersionTests.cs" />
     <Compile Include="Updates\UpdatesTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
+    <Compile Include="Utilities\UtilitiesTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
     <Compile Include="Visualization\DefaultGraphicPrimitivesTest.cs" />
     <Compile Include="Visualization\DefaultRenderPackageTest.cs" />
