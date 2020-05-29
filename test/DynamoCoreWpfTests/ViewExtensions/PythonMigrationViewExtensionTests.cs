@@ -12,6 +12,7 @@ using Dynamo.Models;
 using Dynamo.PythonMigration;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -45,6 +46,7 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.IsTrue(isIronPythonDialogOpen);
             DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
         }
 
         /// <summary>
@@ -74,6 +76,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
             this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
+            DispatcherUtil.DoEvents();
         }
 
         private void Logger_NotificationLogged(Dynamo.Logging.NotificationMessage obj)
@@ -103,6 +106,8 @@ namespace DynamoCoreWpfTests
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
             this.ViewModel.ExecuteCommand(new DynamoModel.
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
+            
+            DispatcherUtil.DoEvents();
 
             var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
@@ -112,7 +117,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
             this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
-
+            DispatcherUtil.DoEvents();
         }
 
 
@@ -133,22 +138,28 @@ namespace DynamoCoreWpfTests
             // open file
             Open(examplePathIronPython);
             var ironPythonWorkspaceId = this.ViewModel.CurrentSpace.Guid;
+            DispatcherUtil.DoEvents();
+
             var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
             Assert.IsNotNull(ironPythonDialog);
+            Assert.IsTrue(ironPythonDialog.IsLoaded);
             ironPythonDialog.OkBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+            DispatcherUtil.DoEvents();
             // Open empty file before open the the IronPython file again
             Open(examplePathEmptyFile);
             Assert.AreNotEqual(ironPythonWorkspaceId, this.ViewModel.CurrentSpace.Guid);
-            
+            DispatcherUtil.DoEvents();
 
             Open(examplePathIronPython);
             Assert.AreEqual(ironPythonWorkspaceId, this.ViewModel.CurrentSpace.Guid);
             var secondGraphIronPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
 
+            DispatcherUtil.DoEvents();
             // Assert
             Assert.AreEqual(0, secondGraphIronPythonDialog.Count());
             DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
         }
 
         /// <summary>
@@ -169,6 +180,7 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
+            DispatcherUtil.DoEvents();
         }
 
         /// <summary>
@@ -185,18 +197,22 @@ namespace DynamoCoreWpfTests
             // open file
             var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
             Open(examplePath);
+            DispatcherUtil.DoEvents();
 
             var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
             var viewExtensionTabsBeforeBtnClick = this.View.ExtensionTabItems.Count;
+            DispatcherUtil.DoEvents();
 
             ironPythonDialog.MoreInformationBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             var hasDocumentationBrowserTab = this.View.ExtensionTabItems
                 .Any(x => x.Header.ToString() == "Documentation Browser");
+            DispatcherUtil.DoEvents();
 
             // Assert
             Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.ExtensionTabItems.Count);
             Assert.IsTrue(hasDocumentationBrowserTab);
             DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
         }
 
     }
