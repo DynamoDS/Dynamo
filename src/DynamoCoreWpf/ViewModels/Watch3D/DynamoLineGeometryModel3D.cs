@@ -13,6 +13,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             return new DynamoLineNode();
         }
+
+        /// <summary>
+        /// This method is used to set the dynamo interaction state into an existing material slot
+        /// which is sent to the shader buffer for lines.
+        /// </summary>
+        /// <param name="state"></param>
+        internal void SetState(int state)
+        {  
+             //TODO should we also use this for points if it works for lines to make them consistent?
+            this.material.FadingNearDistance = state;
+        }
     }
 
     public class DynamoLineNode : LineNode
@@ -24,7 +35,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
-            return host.EffectsManager[DynamoEffectsManager.DynamoPointLineShaderName];
+            //TODO create new shader for lines and use it here.
+            return host.EffectsManager[DynamoEffectsManager.DynamoPointShaderName];
         }
     }
 }

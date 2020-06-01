@@ -16,7 +16,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DynamoEffectsManager : DefaultEffectsManager
     {
         internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";
-        internal static readonly string DynamoPointLineShaderName = "DynamoPointLineShader";
+        internal static readonly string DynamoPointShaderName = "DynamoPointLineShader";
 
         public DynamoEffectsManager()
         {
@@ -95,7 +95,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             };
             AddTechnique(dynamoCustomMeshTech);
 
-            var dynamoCustomPointLineTech = new TechniqueDescription(DynamoPointLineShaderName)
+            var dynamoCustomPointLineTech = new TechniqueDescription(DynamoPointShaderName)
             {
                 InputLayoutDescription = new InputLayoutDescription(
                     DynamoPointLineVertexShaderDescription.VSPointLineDataSamplerByteCode,
@@ -116,6 +116,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
             };
             AddTechnique(dynamoCustomPointLineTech);
+            //TODO add line shader with correct GS shader
         }
     }
 }

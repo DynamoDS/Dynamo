@@ -328,9 +328,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private static void HandlePointLinePropertyChange(GeometryModel3D pointLineGeom,
             DependencyPropertyChangedEventArgs args)
         {
-            var materialCore = pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineCore;
-            var materialVar = materialCore?.MaterialVariables as DynamoPointLineMaterialVariable;
-            materialVar?.SetPropertyData(args);
+            //TODO should also work for lines as well, add type check
+            if ((pointLineGeom as DynamoPointGeometryModel3D) != null)
+            {
+                (pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineCore).SetPropertyData(args,pointLineGeom as DynamoPointGeometryModel3D);
+            } 
         }
 
         /// <summary>

@@ -5,9 +5,9 @@
 #include"DataStructs.hlsl"
 #pragma pack_matrix( row_major )
 
-PSInputPS main(VSInputPS input)
+GSInputPS main(VSInputPS input)
 {
-    PSInputPS output;
+	GSInputPS output;
 
 	output.p = input.p;
 	//set position into clip space	
@@ -15,7 +15,7 @@ PSInputPS main(VSInputPS input)
 	output.p = mul(output.p, mView);
 	output.p = mul(output.p, mProjection);
 
-	output.c = input.c;
+	output.c = input.c * pColor;
 	
 	return output;
 }
