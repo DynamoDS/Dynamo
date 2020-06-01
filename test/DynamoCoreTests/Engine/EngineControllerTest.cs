@@ -70,36 +70,6 @@ namespace Dynamo.Tests.Engine
         }
 
         /// <summary>
-        /// This test method will execute the next method from the EngineController class:
-        /// bool GenerateGraphSyncDataForCustomNode(IEnumerable<NodeModel> nodes, CustomNodeDefinition definition, bool verboseLogging)
-        /// </summary>
-
-        [Test]
-        [Category("UnitTests")]
-        public void EngineControllerGenerateGraphSyncDataForCustomNodeTest()
-        {
-            //Arrange
-            CurrentDynamoModel.CurrentWorkspace = null;
-            var openPath = Path.Combine(TestDirectory, @"core\nodeLocationTest.dyn");
-
-            SyncDataManager syncDataManager = new SyncDataManager();
-            syncDataManager.AddNode(Guid.NewGuid(), new IntNode(1));
-
-            GraphSyncData graphSyncdata = syncDataManager.GetSyncData();
-            Queue<GraphSyncData> graphSyncDataQueue = new Queue<GraphSyncData>();
-            graphSyncDataQueue.Enqueue(graphSyncdata);
-
-            //Act
-            //Using reflection we need to set up the Queue field (graphSyncDataQueue) because is private and all the times is empty (all the elements are deleted)
-            FieldInfo field = CurrentDynamoModel.EngineController.GetType().GetField("graphSyncDataQueue", BindingFlags.Instance | BindingFlags.NonPublic);
-            field.SetValue(CurrentDynamoModel.EngineController, graphSyncDataQueue);
-
-            //Assert
-            //The GenerateGraphSyncDataForCustomNodeTest method will raise an exception due that the graphSyncDataQueue has one element
-            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.CustomNodeManager.CreateCustomNode("someNode", "someCategory", ""));
-        }
-
-        /// <summary>
         /// This test method will execute the void ReconcileTraceDataAndNotify() method from the EngineController class
         /// </summary>
         [Test]

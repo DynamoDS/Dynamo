@@ -89,7 +89,6 @@
     <Compile Include="Engine\LinkedListOfListTest.cs" />
     <Compile Include="Engine\LiveRunnerServicesTest.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacerTest.cs" />
-    <Compile Include="Engine\SyncDataManagerTest.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
