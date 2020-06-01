@@ -40,8 +40,9 @@ namespace Dynamo.PythonMigration
             Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
+            // Do nothing for now 
         }
 
         public void Dispose()
@@ -133,7 +134,9 @@ namespace Dynamo.PythonMigration
         {
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             CurrentWorkspace = workspace as WorkspaceModel;
-            if (Configuration.DebugModes.IsEnabled("Python3DebugMode") && PythonDependencies.ContainsIronPythonDependencies())
+            if (Configuration.DebugModes.IsEnabled("Python3DebugMode")
+                && !Models.DynamoModel.IsTestMode
+                && PythonDependencies.ContainsIronPythonDependencies())
             {
                 LogIronPythonNotification();
                 DisplayIronPythonDialog();

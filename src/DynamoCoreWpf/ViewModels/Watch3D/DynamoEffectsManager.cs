@@ -1,5 +1,6 @@
 ﻿using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Shaders;
+using System;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -13,6 +14,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// For an intro to dx vertex and fragment shaders see 
     /// https://docs.microsoft.com/en-us/windows/win32/direct3dgetstarted/work-with-shaders-and-shader-resources
     /// </summary>
+    [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public class DynamoEffectsManager : DefaultEffectsManager
     {
         internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";

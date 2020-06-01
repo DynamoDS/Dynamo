@@ -626,7 +626,7 @@ namespace WpfVisualizationTests
             var view = FindFirstWatch3DNodeView();
             var vm = view.ViewModel as HelixWatch3DNodeViewModel;
 
-            Assert.AreEqual(vm.SceneItems.Count(), 5);
+            Assert.AreEqual(vm.SceneItems.Count(), 4);
         }
 
         [Test]
@@ -644,9 +644,9 @@ namespace WpfVisualizationTests
             var connector = watch3DNode.InPorts[0].Connectors.First();
             watch3DNode.InPorts[0].Connectors.Remove(connector);
 
-            // Four items, the grid, the axes, direction light and the headlight will remain.
+            // Three items, the grid, the axes and the headlight will remain.
             var view = FindFirstWatch3DNodeView();
-            Assert.AreEqual(4, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
+            Assert.AreEqual(3, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
 
             var linesNode = ws.Nodes.First(n => n.GUID.ToString() == "7c1cecee-43ed-43b5-a4bb-5f71c50341b2");
 
@@ -658,8 +658,8 @@ namespace WpfVisualizationTests
             ViewModel.Model.ExecuteCommand(cmd1);
             ViewModel.Model.ExecuteCommand(cmd2);
 
-            // View contains 4 default items and a collection of lines from the node connected to the Watch3D node
-            Assert.AreEqual(5, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
+            // View contains 3 default items and a collection of lines from the node connected to the Watch3D node
+            Assert.AreEqual(4, ((HelixWatch3DViewModel)view.DataContext).Element3DDictionary.Count());
         }
 
         [Test]
@@ -782,7 +782,7 @@ namespace WpfVisualizationTests
         {
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
-            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             DynamoCoreWpfTests.Utility.DispatcherUtil.DoEvents();
             var dynGeometry = BackgroundPreviewGeometry.OfType<DynamoGeometryModel3D>();
             Assert.IsFalse((dynGeometry.FirstOrDefault().SceneNode.RenderCore as DynamoGeometryMeshCore).IsFrozenData);
@@ -798,7 +798,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.ByGeometryColor.dyn");
             RunCurrentModel();
 
-            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             // Check if there is any vertices matching color "Color.ByARGB(255,255,0,255)
             Assert.True(BackgroundPreviewGeometry.HasAnyMeshVerticesOfColor(new Color4(new Color3(1.0f, 0, 1.0f))));
 
@@ -932,7 +932,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest("Display.BySurfaceColors.dyn");
             RunCurrentModel();
             DispatcherUtil.DoEvents();
-            Assert.AreEqual(5, BackgroundPreviewGeometry.Count());
+            Assert.AreEqual(4, BackgroundPreviewGeometry.Count());
             Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
 
             // These checks are more specific to this test

@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.Extensions
         /// Exceptions thrown from this method will be caught by Dynamo and 
         /// displayed.
         /// </summary>
-        void Startup(ViewStartupParams viewLoadedParams);
+        void Startup(ViewStartupParams viewStartupParams);
 
         /// <summary>
         /// Action to be invoked when DynamoView is loaded.
