@@ -85,6 +85,10 @@
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
+    <Compile Include="Engine\EngineControllerTest.cs" />
+    <Compile Include="Engine\LinkedListOfListTest.cs" />
+    <Compile Include="Engine\LiveRunnerServicesTest.cs" />
+    <Compile Include="Engine\ShortestQualifiedNameReplacerTest.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
@@ -229,6 +233,10 @@
       <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
       <Name>ProtoImperative</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoScript\ProtoScript.csproj">
+      <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
+      <Name>ProtoScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
