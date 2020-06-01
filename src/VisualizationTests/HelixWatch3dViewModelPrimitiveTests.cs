@@ -521,10 +521,10 @@ namespace WpfVisualizationTests
                 IsHitTestVisible = true,
                 RequiresPerVertexColoration = false,
             };
-            Assert.False((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).IsSpecialRenderPackageData);
+            Assert.False((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsSpecialRenderPackageData);
             AttachedProperties.SetIsSpecialRenderPackage(mockManipulator, true);
             //assert that setting this attached property updated the meshcore data.
-            Assert.IsTrue((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).IsSpecialRenderPackageData);
+            Assert.IsTrue((mockManipulator.SceneNode.RenderCore as DynamoGeometryMeshCore).dataCore.IsSpecialRenderPackageData);
           
         }
         #endregion

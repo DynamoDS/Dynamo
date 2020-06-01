@@ -8,12 +8,21 @@ float4 main(PSInputPS input) : SV_Target
 {
 	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
 	//reusing this param.
-	int flags = int(pBlendingFactor);
+	int flags = int(fadeNearDistance);
 	bool isFrozen = flags & 1;
 	bool isSelected = flags & 2;
 	bool isIsolated = flags & 4;
 	bool isSpecialRenderPackage = flags & 8;
 	bool requiresPerVertexColoration = flags & 32;
+
+	//if the figure is a circle,
+	//clip pixels outside relative radius.
+	 if (pfParams[2] == 1)
+    {
+        float len = length(input.t);
+        if (len > 1.4142)
+            discard;
+    }
 
 	// if this is a special render package - it should render with the material colors, ambient light
 		// and not be directionally lit.
