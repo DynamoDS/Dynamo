@@ -510,7 +510,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="ViewModels\Watch3D\compiledShaders\psDynamoMesh" />
-    <None Include="ViewModels\Watch3D\compiledShaders\psDynamoPointLine" />
+    <None Include="ViewModels\Watch3D\compiledShaders\psDynamoPoint" />
+    <None Include="ViewModels\Watch3D\compiledShaders\psDynamoLine" />
     <None Include="ViewModels\Watch3D\compiledShaders\vsDynamoMesh" />
     <None Include="ViewModels\Watch3D\compiledShaders\vsDynamoPointLine" />
     <Resource Include="UI\Images\cursors.psd" />
@@ -1292,8 +1293,6 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="ViewModels\Watch3D\shaderSource\psDynamoPoint.hlsl" />
-    <None Include="ViewModels\Watch3D\shaderSource\psDynamoLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
