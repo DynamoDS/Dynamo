@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
-            return new DynamoLineNode() {Material = material};
+            return new DynamoLineNode() { Material = material };
         }
 
         /// <summary>
@@ -30,13 +30,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override RenderCore OnCreateRenderCore()
         {
-            return new DynamoPointLineCore();
+            return new DynamoPointLineRenderCore();
         }
 
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
             //TODO create new shader for lines and use it here.
-            return host.EffectsManager[DynamoEffectsManager.DynamoPointShaderName];
+            return host.EffectsManager[DynamoEffectsManager.DynamoLineShaderName];
         }
     }
 }

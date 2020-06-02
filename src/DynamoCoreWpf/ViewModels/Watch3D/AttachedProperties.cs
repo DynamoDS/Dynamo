@@ -331,7 +331,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //TODO should also work for lines as well, add type check
             if ((pointLineGeom as DynamoPointGeometryModel3D) != null)
             {
-                (pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineCore).SetPropertyData(args,pointLineGeom as DynamoPointGeometryModel3D);
+                (pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineRenderCore).SetPropertyData(args,pointLineGeom as DynamoPointGeometryModel3D);
             } 
         }
 

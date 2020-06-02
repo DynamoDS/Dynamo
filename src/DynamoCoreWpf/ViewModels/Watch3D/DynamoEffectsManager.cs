@@ -16,7 +16,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     public class DynamoEffectsManager : DefaultEffectsManager
     {
         internal static readonly string DynamoMeshShaderName = "DynamoMeshShader";
-        internal static readonly string DynamoPointShaderName = "DynamoPointLineShader";
+        internal static readonly string DynamoPointShaderName = "DynamoPointShader";
+        internal static readonly string DynamoLineShaderName = "DynamoLineShader";
 
         public DynamoEffectsManager()
         {
@@ -95,7 +96,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             };
             AddTechnique(dynamoCustomMeshTech);
 
-            var dynamoCustomPointLineTech = new TechniqueDescription(DynamoPointShaderName)
+            var dynamoCustomPointTech = new TechniqueDescription(DynamoPointShaderName)
             {
                 InputLayoutDescription = new InputLayoutDescription(
                     DynamoPointLineVertexShaderDescription.VSPointLineDataSamplerByteCode,
@@ -115,8 +116,30 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     }
                 }
             };
-            AddTechnique(dynamoCustomPointLineTech);
+            AddTechnique(dynamoCustomPointTech);
+
             //TODO add line shader with correct GS shader
+            var dynamoCustomLineTech = new TechniqueDescription(DynamoLineShaderName)
+            {
+                InputLayoutDescription = new InputLayoutDescription(
+                    DynamoPointLineVertexShaderDescription.VSPointLineDataSamplerByteCode,
+                    DefaultInputLayout.VSInputPoint),
+                PassDescriptions = new[]
+                {
+                    new ShaderPassDescription(DefaultPassNames.Default)
+                    {
+                        ShaderList = new[]
+                        {
+                            DynamoPointLineVertexShaderDescription.VertexShaderDynamoPointLineDescription,
+                            DefaultGSShaderDescriptions.GSLine,
+                            DynamoPointLinePixelShaderDescription.PixelShaderDynamoPointLineDescription
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
+                    }
+                }
+            };
+            AddTechnique(dynamoCustomLineTech);
         }
     }
 }

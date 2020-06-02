@@ -18,7 +18,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void SetState(int state)
         {
-            this.material.FadingNearDistance = state;
+            material.FadingNearDistance = state;
         }
     }
 
@@ -26,7 +26,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override RenderCore OnCreateRenderCore()
         {
-            return new DynamoPointLineCore();
+            return new DynamoPointLineRenderCore();
         }
 
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
@@ -35,10 +35,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         }
     }
 
-    internal class DynamoPointLineCore : PointLineRenderCore
+    internal class DynamoPointLineRenderCore : PointLineRenderCore
     {
         private DynamoRenderCoreDataStore dataCore;
-        public DynamoPointLineCore()
+        public DynamoPointLineRenderCore()
         {
             dataCore = new DynamoRenderCoreDataStore(SetAffectsRender<bool>);
         }
@@ -50,8 +50,15 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //to store our interaction state which will be sent to the shader.
             if(geo is DynamoPointGeometryModel3D || geo is DynamoLineGeometryModel3D)
             {
-                (geo as DynamoPointGeometryModel3D).SetState(this.dataCore.GenerateEnumFromState());
-               //TODO actually implement a line shader that uses fadeNearDistance for state packing;
+                if (geo is DynamoPointGeometryModel3D)
+                {
+                    (geo as DynamoPointGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
+                }
+                //TODO actually implement a line shader that uses fadeNearDistance for state packing;
+                else
+                {
+                    (geo as DynamoLineGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
+                }
             }
            
         }
