@@ -30,6 +30,7 @@ namespace Dynamo.Tests.Engine.Profiling
             var nodeData = profiling.NodeProfilingData;
 
             //Assert
+            //Checking that the code block was registered correctly
             Assert.IsNotNull(nodeData);
             Assert.AreEqual(nodeData.Count, 1);
 
@@ -37,6 +38,7 @@ namespace Dynamo.Tests.Engine.Profiling
             profiling.UnregisterNode(nodeData.First().Key);
 
             //Assert
+            //Checking that the code block was unregistered successfully
             Assert.AreEqual(nodeData.Count, 0);
 
             var cbn2 = CreateCodeBlockNode();
@@ -47,6 +49,7 @@ namespace Dynamo.Tests.Engine.Profiling
             nodeData = profiling.NodeProfilingData;
 
             //Assert
+            //Checking that the second code block was unregistered correctly
             Assert.AreEqual(nodeData.Count, 0);
         }
 

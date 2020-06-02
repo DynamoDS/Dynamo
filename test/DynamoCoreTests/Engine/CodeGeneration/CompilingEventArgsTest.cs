@@ -30,7 +30,7 @@ namespace Dynamo.Tests.Engine.CodeGeneration
             var eventArgsCompiled = new CompiledEventArgs(guid, associativeNodes);
 
             //Assert
-            //Validates that the Guid values are correct
+            //Validates that the Guid values were stored correctly
             Assert.AreEqual(eventArgsCompiling.NodeId, guid);
             Assert.AreEqual(eventArgsCompiled.NodeId, guid);
             Assert.AreEqual((eventArgsCompiled.AstNodes as List<AssociativeNode>).Count, associativeNodes.Count);
