@@ -13,7 +13,6 @@ float4 main(PSInputPS input) : SV_Target
 	bool isSelected = flags & 2;
 	bool isIsolated = flags & 4;
 	bool isSpecialRenderPackage = flags & 8;
-	bool requiresPerVertexColoration = flags & 32;
 
 	//if the figure is a circle,
 	//clip pixels outside relative radius.
@@ -31,7 +30,6 @@ float4 main(PSInputPS input) : SV_Target
 	}
 
 	/// set diffuse alpha if selected or normal
-	//I.a = vMaterialDiffuse.a;
 	float4 I = input.c;
 
 	//if frozen half alpha

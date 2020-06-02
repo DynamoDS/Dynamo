@@ -16,7 +16,8 @@ fxc /Vi /Od /Zi /T vs_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\v
 fxc /Vi /Od /Zi /T ps_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoMesh psDynamoMesh.hlsl
 
 fxc /Vi /Od /Zi /T vs_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\vsDynamoPointLine vsDynamoPointLine.hlsl
-fxc /Vi /Od /Zi /T ps_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoPointLine psDynamoPointLine.hlsl
+fxc /Vi /Od /Zi /T ps_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoPoint psDynamoPoint.hlsl
+fxc /Vi /Od /Zi /T ps_4_0 /I ./helix_shader_defs/COMMON /Fo ..\compiledShaders\psDynamoLine psDynamoLine.hlsl
 
 popd
 pause

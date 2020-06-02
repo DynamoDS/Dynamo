@@ -329,9 +329,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             DependencyPropertyChangedEventArgs args)
         {
             //TODO should also work for lines as well, add type check
-            if ((pointLineGeom as DynamoPointGeometryModel3D) != null)
+            if (pointLineGeom is DynamoPointGeometryModel3D || pointLineGeom is DynamoLineGeometryModel3D)
             {
-                (pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineRenderCore).SetPropertyData(args,pointLineGeom as DynamoPointGeometryModel3D);
+                (pointLineGeom?.SceneNode?.RenderCore as DynamoPointLineRenderCore)?.SetPropertyData(args, pointLineGeom);
             } 
         }
 

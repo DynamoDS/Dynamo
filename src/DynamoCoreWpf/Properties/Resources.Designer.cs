@@ -4424,6 +4424,16 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] psDynamoLine {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoLine", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] psDynamoMesh {
             get {
                 object obj = ResourceManager.GetObject("psDynamoMesh", resourceCulture);
@@ -4434,9 +4444,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static byte[] psDynamoPointLine {
+        public static byte[] psDynamoPoint {
             get {
-                object obj = ResourceManager.GetObject("psDynamoPointLine", resourceCulture);
+                object obj = ResourceManager.GetObject("psDynamoPoint", resourceCulture);
                 return ((byte[])(obj));
             }
         }

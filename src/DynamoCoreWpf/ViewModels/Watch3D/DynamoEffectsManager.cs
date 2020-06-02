@@ -63,15 +63,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     ShaderStage.Vertex, new ShaderReflector(), VSPointLineDataSamplerByteCode);
         }
 
-        internal static class DynamoPointLinePixelShaderDescription
+        internal static class DynamoPointPixelShaderDescription
         {
-            internal static byte[] PSPointLineDataSamplerByteCode
+            internal static byte[] PSPointDataSamplerByteCode
             {
-                get { return Properties.Resources.psDynamoPointLine; }
+                get { return Properties.Resources.psDynamoPoint; }
             }
 
-            internal static readonly ShaderDescription PixelShaderDynamoPointLineDescription = new ShaderDescription(nameof(PixelShaderDynamoPointLineDescription),
-                ShaderStage.Pixel, new ShaderReflector(), PSPointLineDataSamplerByteCode);
+            internal static readonly ShaderDescription PixelShaderDynamoPointDescription = new ShaderDescription(nameof(PixelShaderDynamoPointDescription),
+                ShaderStage.Pixel, new ShaderReflector(), PSPointDataSamplerByteCode);
+        }
+
+        internal static class DynamoLinePixelShaderDescription
+        {
+            internal static byte[] PSLineDataSamplerByteCode
+            {
+                get { return Properties.Resources.psDynamoLine; }
+            }
+
+            internal static readonly ShaderDescription PixelShaderDynamoLineDescription = new ShaderDescription(nameof(PixelShaderDynamoLineDescription),
+                ShaderStage.Pixel, new ShaderReflector(), PSLineDataSamplerByteCode);
         }
 
         protected void AddDynamoTechniques()
@@ -109,7 +120,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {     
                             DynamoPointLineVertexShaderDescription.VertexShaderDynamoPointLineDescription,
                             DefaultGSShaderDescriptions.GSPoint,
-                            DynamoPointLinePixelShaderDescription.PixelShaderDynamoPointLineDescription
+                            DynamoPointPixelShaderDescription.PixelShaderDynamoPointDescription
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
@@ -132,7 +143,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         {
                             DynamoPointLineVertexShaderDescription.VertexShaderDynamoPointLineDescription,
                             DefaultGSShaderDescriptions.GSLine,
-                            DynamoPointLinePixelShaderDescription.PixelShaderDynamoPointLineDescription
+                            DynamoLinePixelShaderDescription.PixelShaderDynamoLineDescription
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess

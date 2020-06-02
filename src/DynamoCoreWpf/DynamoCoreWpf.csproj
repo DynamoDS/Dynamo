@@ -1292,6 +1292,8 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoPoint.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
