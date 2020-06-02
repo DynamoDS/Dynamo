@@ -35,8 +35,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit">
-      <HintPath>..\..\..\extern\avalonEdit\ICSharpCode.AvalonEdit.dll</HintPath>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
@@ -101,7 +102,7 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-	<ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
+    <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
       <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
       <Name>DSIronPython</Name>
       <Private>False</Private>
