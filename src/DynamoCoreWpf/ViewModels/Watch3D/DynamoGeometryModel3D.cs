@@ -51,7 +51,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return new DynamoMeshNode();
         }
 
-        // TODO: Make private in 3.0
+        [Obsolete("This property will be deprecated and made internal in Dynamo 3.0.")]
         public static readonly DependencyProperty RequiresPerVertexColorationProperty =
             DependencyProperty.Register("RequiresPerVertexColoration", typeof(bool), 
                 typeof(GeometryModel3D), new UIPropertyMetadata(false, RequirePerVertexColorationChanged));
