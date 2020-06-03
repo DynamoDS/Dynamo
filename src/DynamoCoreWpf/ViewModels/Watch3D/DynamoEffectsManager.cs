@@ -131,7 +131,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             };
             AddTechnique(dynamoCustomPointTech);
 
-            //TODO add line shader with correct GS shader
             var dynamoCustomLineTech = new TechniqueDescription(DynamoLineShaderName)
             {
                 InputLayoutDescription = new InputLayoutDescription(
