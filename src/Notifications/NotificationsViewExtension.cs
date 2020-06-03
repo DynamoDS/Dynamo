@@ -16,8 +16,8 @@ namespace Dynamo.Notifications
     {
         private ViewLoadedParams viewLoadedParams;
         private Action<Logging.NotificationMessage> notificationHandler;
-
         private ObservableCollection<Logging.NotificationMessage> notifications;
+        private bool disposed;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -57,11 +57,15 @@ namespace Dynamo.Notifications
 
         public void Dispose()
         {
-            UnregisterEventHandlers();
-            //for some reason the menuItem was not being gc'd in tests without manually removing it
-            viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
-            BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
-            notificationsMenuItem = null;
+            if (!disposed)
+            {
+                UnregisterEventHandlers();
+                //for some reason the menuItem was not being gc'd in tests without manually removing it
+                viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
+                BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
+                notificationsMenuItem = null;
+                disposed = true;
+            }
         }
 
         private void UnregisterEventHandlers()
@@ -70,10 +74,10 @@ namespace Dynamo.Notifications
             Notifications.CollectionChanged -= notificationsMenuItem.NotificationsChangeHandler;
         }
 
-        public void Loaded(ViewLoadedParams p)
+        public void Loaded(ViewLoadedParams viewStartupParams)
         {
-            viewLoadedParams = p;
-            dynamoWindow = p.DynamoWindow;
+            viewLoadedParams = viewStartupParams;
+            dynamoWindow = viewStartupParams.DynamoWindow;
             var viewModel = dynamoWindow.DataContext as DynamoViewModel;
             logger = viewModel.Model.Logger;
 
@@ -85,7 +89,7 @@ namespace Dynamo.Notifications
                 AddNotifications();
             };
 
-            p.NotificationRecieved += notificationHandler;
+            viewStartupParams.NotificationRecieved += notificationHandler;
 
             //add a new menuItem to the Dynamo mainMenu.
             notificationsMenuItem = new NotificationsMenuItem(this);
@@ -93,7 +97,7 @@ namespace Dynamo.Notifications
             //the parent of the menuItem we created
             (notificationsMenuItem.MenuItem.Parent as ContentControl).Content = null;
             //place the menu into the DynamoMenu
-            p.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
+            viewStartupParams.dynamoMenu.Items.Add(notificationsMenuItem.MenuItem);
         }
 
         internal void AddNotifications()
@@ -107,9 +111,9 @@ namespace Dynamo.Notifications
             this.Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-           
+           // Do nothing for now
         }
     }
 }

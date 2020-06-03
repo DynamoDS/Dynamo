@@ -58,7 +58,6 @@ namespace DynamoCoreWpfTests
             }
 
             Open(@"UI\CoreUINodes.dyn");
-
             var nodeView = NodeViewWithGuid("6869c998-b819-4686-8849-6f36162c4182"); // NodeViewOf<Watch3D>();
             var watchView = nodeView.ChildrenOfType<Watch3DView>().FirstOrDefault();
             Assert.NotNull(watchView);

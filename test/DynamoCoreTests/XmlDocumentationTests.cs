@@ -41,7 +41,37 @@ namespace Dynamo.Tests
 </doc>
 "));
 
-        private FunctionDescriptor GetMyMethod()
+        private static XmlReader BadFormatSamples = XmlReader.Create(new StringReader(
+            @"
+<doc>          
+    <members>
+        <member name=""M:MyNamespace.MyClass.MyBadlyDocumentedMethod1(System.Double,System.Double,System.Double)"">
+            <summary>
+            My method bla bla bla bla summary.
+            </summary>
+            <param name=""a"">Double a.</param>
+            <param name=""b"">Double b.</param>
+            <param name=""c"">Double c.</param>
+            <search>
+            move,push
+            </search>
+            <weights>0.4,0.2</weights>
+            Missing returns tag.
+        </member>
+        <member name=""M:MyNamespace.MyClass.MyBadlyDocumentedMethod2(System.Double,System.Double,System.Double)"">
+            <summary>
+            My method bla bla bla bla summary.
+            </summary>
+            <param name=""a"">Double a.</param>
+            <param name=""b"">Double b.</param>
+            <param name=""c"">Double c.</param>
+            Missing tag.
+        </member>
+    </members>
+</doc>
+"));
+
+        private FunctionDescriptor GetMyMethod(string methodName = "MyMethod")
         {
             var parms = new List<TypedParameter>()
             {
@@ -54,7 +84,7 @@ namespace Dynamo.Tests
             {
                 Assembly = "MyAssembly.dll",
                 ClassName = "MyNamespace.MyClass",
-                FunctionName = "MyMethod",
+                FunctionName = methodName,
                 Parameters = parms,
                 ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var),
                 FunctionType = FunctionType.InstanceMethod
@@ -135,6 +165,32 @@ namespace Dynamo.Tests
             var summary = method.GetSummary(SampleDocument);
 
             Assert.AreEqual("Constructor summary.", summary);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSummary_FromBadlyDocumentedMethod()
+        {
+            var method = GetMyMethod("MyBadlyDocumentedMethod1");
+
+            Assert.DoesNotThrow(() =>
+            {
+                var searchTags = method.GetSearchTags(BadFormatSamples).ToList();
+
+                Assert.AreEqual(2, searchTags.Count);
+                Assert.AreEqual("move", searchTags[0]);
+                Assert.AreEqual("push", searchTags[1]);
+            });
+
+            method = GetMyMethod("MyBadlyDocumentedMethod2");
+
+            Assert.DoesNotThrow(() =>
+            {
+                var summary = method.GetSummary(BadFormatSamples);
+
+                Assert.AreEqual("My method bla bla bla bla summary.", summary);
+            });
+
         }
 
         [Test]

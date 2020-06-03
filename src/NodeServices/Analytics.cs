@@ -48,7 +48,7 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Returns if analytics reporting is ON
+        /// Returns if any analytics reporting is ON (Google, ADP etc.)
         /// </summary>
         public static bool ReportingAnalytics { get { return client != null && client.ReportingAnalytics; } }
 

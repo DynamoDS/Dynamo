@@ -547,10 +547,9 @@ namespace ProtoCore.DSASM
         {
             // First check if there is an exact name match with fully qualified classname
             Symbol symbol;
-            if (symbolTable.TryGetExactSymbol(name, out symbol))
+            if (symbolTable.TryGetExactSymbol(name, out symbol) && Constants.kInvalidIndex != symbol.Id)
             {
-                if (Constants.kInvalidIndex != symbol.Id)
-                    return new[] {name};
+                return new[] {name};
             }
 
             var symbols = symbolTable.TryGetSymbols(name, s => s.Matches(name));

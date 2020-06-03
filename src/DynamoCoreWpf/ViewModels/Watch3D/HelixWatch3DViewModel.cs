@@ -136,6 +136,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// context using the HelixToolkit. An instance of this class
     /// can act as the data source for a <see cref="Watch3DView"/>
     /// </summary>
+    [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public class HelixWatch3DViewModel : DefaultWatch3DViewModel
     {
         #region private members
@@ -147,11 +148,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private LineGeometry3D worldAxes;
         private Technique renderTechnique;
         private PerspectiveCamera camera;
-        private readonly Vector3D directionalLightDirection = new Vector3D(-0.5f, -1.0f, 0.0f);
-        private DirectionalLight3D directionalLight;
         private DirectionalLight3D headLight;
 
-        private readonly Color4 directionalLightColor = new Color4(0.7f, 0.7f, 0.7f, 1.0f);
         private readonly Color4 defaultSelectionColor = new Color4(new Color3(0, 158.0f / 255.0f, 1.0f));
         private readonly Color4 defaultMaterialColor = new Color4(new Color3(1.0f, 1.0f, 1.0f));
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
@@ -191,7 +189,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private Dictionary<string, string> nodesSelected = new Dictionary<string, string>();
 
-        private Object element3DDictionaryMutex = new object();
+        private readonly Object element3DDictionaryMutex = new object();
 
         private Dictionary<string, Element3D> element3DDictionary = new Dictionary<string, Element3D>();
 
@@ -624,7 +622,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override void OnShutdown()
         {
-            EffectsManager = null;
+ 
         }
 
         protected override void OnClear()
@@ -1078,7 +1076,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             lock (element3DDictionaryMutex)
             {
                 geometryModels = Element3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value as Element3D != null).ToArray();
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value is Element3D).ToArray();
             }
 
             return geometryModels;
@@ -1259,33 +1257,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 throw new Exception("Helix could not be initialized.");
             }
 
-            // Create the directional light singleton and add it to the dictionary
-
-            directionalLight = new DirectionalLight3D
-            {
-                Color = directionalLightColor.ToColor(),
-                Direction = directionalLightDirection,
-                Name = DefaultLightName
-            };
-
-            if (!Element3DDictionary.ContainsKey(DefaultLightName))
-            {
-                AttachedProperties.SetIsSpecialRenderPackage(directionalLight, true);
-                Element3DDictionary.Add(DefaultLightName, directionalLight);
-            }
-
             // Create the headlight singleton and add it to the dictionary
 
             headLight = new DirectionalLight3D
             {
-                Color = System.Windows.Media.Color.FromRgb(128, 128, 128),
+                Color = System.Windows.Media.Color.FromRgb(230, 230, 230),
                 Direction = new Vector3D(0, 0, 1),
                 Name = HeadLightName
             };
 
             headLight.SetBinding(
-                DirectionalLight3D.DirectionProperty, 
-                new Binding(nameof(PerspectiveCamera.LookDirection)) {
+                DirectionalLight3D.DirectionProperty,
+                new Binding(nameof(PerspectiveCamera.LookDirection))
+                {
                     Source = this.Camera
                 }
             );
@@ -1996,6 +1980,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         ? Enumerable.Repeat(highlightColor, points.Positions.Count)
                         : Enumerable.Repeat(defaultPointColor, points.Positions.Count));
 
+                    points.UpdateColors();
                     pointGeom.Size = highlightOn ? highlightSize : defaultPointSize;
                 }
             }
@@ -2300,14 +2285,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         {
             if (disposing)
             {
+                viewModel = null;
                 var effectsManager = EffectsManager as DynamoEffectsManager;
-                if (effectsManager != null) effectsManager.Dispose();
+                if (effectsManager != null)
+                {
+                    effectsManager.Dispose();
+                    effectsManager = null;
+                   
+                }
+                SelectedMaterial = null;
+                WhiteMaterial = null;
+                FrozenMaterial = null;
+                IsolatedMaterial = null;
 
                 foreach (var sceneItem in SceneItems)
                 {
                     sceneItem.Dispose();
                 }
+                sceneItems.Clear();
+                foreach (var item in Element3DDictionary.Values)
+                {
+                    item.Dispose();
+                }
+                element3DDictionary.Clear();
+                
             }
+            base.Dispose(disposing);
         }
     }
 
@@ -2322,6 +2325,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// 5. All transparent geometry, ordered by distance from the camera.
     /// 6. All text.
     /// </summary>
+    [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public class Element3DComparer : IComparer<Element3D>
     {
         private readonly Vector3 cameraPosition;

@@ -144,6 +144,17 @@ namespace Dynamo.Wpf.Extensions
 
         public void Dispose()
         {
+            foreach (var ext in ViewExtensions)
+            {
+                try
+                {
+                    ext.Dispose();
+                }
+                catch (Exception exc)
+                {
+                    Log($"{ext.Name} :  {exc.Message} during dispose");
+                }
+            }
             viewExtensions.Clear();
             viewExtensionLoader.MessageLogged -= Log;
         }

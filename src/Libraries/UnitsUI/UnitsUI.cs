@@ -71,9 +71,14 @@ namespace UnitsUI
                 UpdateSourceTrigger = UpdateSourceTrigger.Explicit
             });
 
-            tb.OnChangeCommitted += () => model.OnNodeModified();
+            tb.OnChangeCommitted += TextChangehandler; 
 
             (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
+        }
+
+        private void TextChangehandler()
+        {
+            mesBaseModel.OnNodeModified();
         }
 
         void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -108,7 +113,7 @@ namespace UnitsUI
 
         public void Dispose()
         {
-            tb.OnChangeCommitted += () => mesBaseModel.OnNodeModified();
+            tb.OnChangeCommitted -= TextChangehandler;
         }
     }
 

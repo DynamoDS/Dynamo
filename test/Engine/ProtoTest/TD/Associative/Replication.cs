@@ -4969,6 +4969,32 @@ px2 = DummyPoint2D.X(l2);
             thisTest.Verify("px2", new object[] { new object[] { 0 }, new object[] { } });
         }
 
+        [Test]
+        public void TestReplicationWithNestedEmptyLists()
+        {
+            string code =
+@"
+def foo( x:var[] )
+{
+    return x;
+}
+
+a = [[],[]];
+b = [[1],[]];
+c = [[],[1]];
+d = [null,[]];
+out1 = foo(a);
+out2 = foo(b);
+out3 = foo(c);
+out4 = foo(d);
+";
+            var mirror = thisTest.RunScriptSource(code);
+            thisTest.Verify("out1", new object[] { new object[] { }, new object[] { } });
+            thisTest.Verify("out2", new object[] { new object[] { 1 }, new object[] { } });
+            thisTest.Verify("out3", new object[] { new object[] { }, new object[] { 1 } });
+            thisTest.Verify("out4", new object[] { null, new object[] { } });
+        }
+
         // This tests the case 4 block in the computeFeps method (CallSite.cs)
         [Test]
         public void TestReplicationWithNullElementInNestedLists()

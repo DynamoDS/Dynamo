@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MeshToolkit</name>
+    </assembly>
+    <namespaces>
+        <namespace name="Autodesk.Dynamo.MeshToolkit">
+            <category>MeshToolkit</category>
+        </namespace>
+        <namespace name="Autodesk.Dynamo.MeshToolkit.Display">
+                <category>MeshToolkit</category>
+        </namespace>
+    </namespaces>
+      <classes>
+        <class name="Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay" shortname="MeshDisplay"/>
+        <class name="Autodesk.Dynamo.MeshToolkit.Mesh" shortname="Mesh"/>
+    </classes>
+</doc>

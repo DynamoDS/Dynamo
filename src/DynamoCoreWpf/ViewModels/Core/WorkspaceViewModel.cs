@@ -503,6 +503,7 @@ namespace Dynamo.ViewModels
             Nodes.Clear();
             Notes.Clear();
             Connectors.Clear();
+            Errors.Clear();
             InCanvasSearchViewModel.Dispose();
         }
 

@@ -110,7 +110,7 @@ namespace Dynamo.PackageManager
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
             if (!pkgResponse.success)
             {
-                throw new Exception(pkgResponse.message);
+                throw new ApplicationException(pkgResponse.message);
             }
             return pkgResponse.content;
         }
@@ -126,7 +126,7 @@ namespace Dynamo.PackageManager
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
             if (!pkgResponse.success)
             {
-                throw new Exception(pkgResponse.message);
+                throw new ApplicationException(pkgResponse.message);
             }
             return pkgResponse.content;
         }

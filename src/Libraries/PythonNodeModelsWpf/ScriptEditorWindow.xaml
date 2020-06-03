@@ -5,13 +5,22 @@
         xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
         xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
+                         xmlns:pythonNodeModel="clr-namespace:PythonNodeModels;assembly=PythonNodeModels"
+                         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" Height="500" Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}"/>
+                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <ObjectDataProvider x:Key="engineEnum"
+                                MethodName="GetValues"
+                                ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="pythonNodeModel:PythonEngineVersion" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -22,7 +31,7 @@
         </Border>
         <Grid HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
@@ -39,6 +48,21 @@
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
+                          SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                          Style="{StaticResource ResourceKey=SComboBox}"
+                          Name="EngineSelectorComboBox"
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Right"
+                          VerticalContentAlignment="Center"
+                          HorizontalContentAlignment="Left"
+                          FontSize="14px"
+                          Height="40"
+                          Width="Auto"
+                          Margin="2"
+                          Grid.Column="1"
+                          Foreground="{StaticResource DynamoStandardLableTextBrush}" 
+                          Visibility="Collapsed"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
             </StackPanel>

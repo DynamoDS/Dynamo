@@ -170,9 +170,9 @@
     <value>Python Engine Version</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>Python3</value>
+    <value>CPython3</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
-    <value>Python2</value>
+    <value>IronPython2</value>
   </data>
 </root>

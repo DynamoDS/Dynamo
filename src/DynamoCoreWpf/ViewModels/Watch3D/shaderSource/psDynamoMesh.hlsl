@@ -10,7 +10,7 @@
 // The specular and diffuse reflection constants for the currently loaded material (k_d and k_s)
 float4 calcPhongLighting(float4 LColor, float4 vMaterialTexture, float3 N, float3 L, float3 V, float3 R)
 {
-	float4 Id = vMaterialTexture * float4(1, 1, 1, 1) * saturate(dot(N, L));
+	float4 Id = vMaterialTexture * vMaterialDiffuse * saturate(dot(N, L));
 	float4 Is = vMaterialSpecular * pow(saturate(dot(R, V)), sMaterialShininess);
 	return (Id + Is) * LColor;
 }
@@ -97,6 +97,7 @@ float4 main(PSInput input, bool isFrontFacing : SV_IsFrontFace) : SV_Target
 
 // compute lighting based on all lights in scene.
 // simple phong model with specular highlight.
+	float4 vMaterialTexture = 1.0f;
 for (int i = 0; i < NumLights; ++i)
 {
 	if (Lights[i].iLightType == 1) // directional
@@ -104,7 +105,7 @@ for (int i = 0; i < NumLights; ++i)
 		float3 lightDirection = normalize((float3) Lights[i].vLightDir); // light dir	
 		//reflect is an hlsl instrinsic.
 		float3 reflectedLightDir = reflect(-lightDirection, input.n);
-		I += calcPhongLighting(Lights[i].vLightColor, input.c, input.n, lightDirection, eye, reflectedLightDir);
+		I += calcPhongLighting(Lights[i].vLightColor, vMaterialTexture, input.n, lightDirection, eye, reflectedLightDir);
 	}
 }
 
@@ -135,7 +136,7 @@ if (isSelected && !isIsolated)
 }
 
 
-return I * input.c;
+return I;
 
 
 }
