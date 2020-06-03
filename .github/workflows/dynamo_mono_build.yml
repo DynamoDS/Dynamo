@@ -15,15 +15,15 @@ jobs:
       uses: nuget/setup-nuget@v1
       
     - name: Nuget Restore on DynamoMono solution
-      run: nuget restore $GITHUB_WORKSPACE/Dynamo/src/Dynamo.Mono.sln
+      run: nuget restore $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
       
     - name: Build Dynamo with mono xbuild
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
-           xbuild /p:Configuration=Release $GITHUB_WORKSPACE/Dynamo/src/Dynamo.Mono.sln
+           xbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
-        cd "$GITHUB_WORKSPACE/Dynamo/bin/AnyCPU/Release"
+        cd "$GITHUB_WORKSPACE/bin/AnyCPU/Release"
         echo "***Locating DynamoSandbox!***"
         test "./DynamoSandbox.exe" && echo "DynamoSandbox exists!"
