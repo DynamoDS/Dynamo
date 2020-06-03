@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Setup Nuget.exe to use on VM
-      run: echo Hello, world!
+      uses: nuget/setup-nuget@v1
       
     - name: Nuget Restore on DynamoMono solution
       run: nuget restore $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.Mono.sln
