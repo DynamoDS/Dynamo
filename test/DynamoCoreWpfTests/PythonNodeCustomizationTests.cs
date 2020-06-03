@@ -30,7 +30,6 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanChangeEngineFromScriptEditorDropDown()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
             var expectedAvailableEnignes = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
             var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
@@ -85,7 +84,6 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
             var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
 
