@@ -1,16 +1,10 @@
-﻿using Dynamo.Controls;
-using Dynamo.Graph.Workspaces;
-using Dynamo.ViewModels;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Wpf;
 using PythonNodeModels;
 using PythonNodeModelsWpf.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace PythonNodeModelsWpf
 {

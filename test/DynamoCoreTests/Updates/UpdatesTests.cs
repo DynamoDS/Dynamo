@@ -104,6 +104,7 @@ namespace Dynamo.Tests
             //This handler is used to cover the if statement
             updateManager.ShutdownRequested += TestShutdownRequestedHandler;
             Assert.DoesNotThrow(() => updateManager.QuitAndInstallUpdate());
+            updateManager.ShutdownRequested -= TestShutdownRequestedHandler;
         }
 
         private void TestShutdownRequestedHandler(IUpdateManager updateManager) { }
@@ -191,6 +192,7 @@ namespace Dynamo.Tests
             //Bind the handler and call OnLog
             updateManager.Log += TestLogHandler;
             updateManager.OnLog(logEventArgs);
+            updateManager.Log -= TestLogHandler;
         }
         
         private void TestLogHandler(LogEventArgs args) { }

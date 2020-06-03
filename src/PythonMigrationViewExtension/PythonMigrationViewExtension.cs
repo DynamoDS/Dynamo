@@ -1,12 +1,12 @@
-﻿using Dynamo.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Threading;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PythonMigration.Properties;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Windows.Threading;
 
 namespace Dynamo.PythonMigration
 {
@@ -40,8 +40,9 @@ namespace Dynamo.PythonMigration
             Dispose();
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
+            // Do nothing for now 
         }
 
         public void Dispose()
@@ -133,7 +134,9 @@ namespace Dynamo.PythonMigration
         {
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             CurrentWorkspace = workspace as WorkspaceModel;
-            if (PythonDependencies.ContainsIronPythonDependencies())
+            if (Configuration.DebugModes.IsEnabled("Python3DebugMode")
+                && !Models.DynamoModel.IsTestMode
+                && PythonDependencies.ContainsIronPythonDependencies())
             {
                 LogIronPythonNotification();
                 DisplayIronPythonDialog();

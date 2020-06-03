@@ -46,8 +46,7 @@
       <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="StarMath, Version=2.0.14.1114, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\StarMath\StarMath.dll</HintPath>
+      <HintPath>..\..\packages\StarMath.2.0.14.1114\lib\portable-net45+sl5+wp8+win8\StarMath.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -73,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="MIConvexHull.xml" />
+    <Content Include="StarMath.XML" />
     <Content Include="Tessellation_DynamoCustomization.xml" />
   </ItemGroup>
   <ItemGroup>

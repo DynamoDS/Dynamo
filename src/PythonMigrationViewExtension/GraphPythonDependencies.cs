@@ -1,8 +1,8 @@
-﻿using Dynamo.Graph.Nodes;
+﻿using System;
+using System.Linq;
+using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
-using System;
-using System.Linq;
 
 namespace Dynamo.PythonMigration
 {

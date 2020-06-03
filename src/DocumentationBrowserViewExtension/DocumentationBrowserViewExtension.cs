@@ -49,7 +49,7 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
             // Do nothing for now
         }

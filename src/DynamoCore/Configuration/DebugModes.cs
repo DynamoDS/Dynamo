@@ -50,7 +50,7 @@ namespace Dynamo.Configuration
             AddDebugMode("Python3DebugMode", "Enable/disable Python3 Engine.");
         }
 
-        private static void LoadDebugModesStatusFromConfig(string configPath)
+        internal static void LoadDebugModesStatusFromConfig(string configPath)
         {
             try
             {
