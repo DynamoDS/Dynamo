@@ -7,20 +7,25 @@
 float4 main(PSInputPS input) : SV_Target
 {
 	float4 vSelectionColor = float4(0.0, 0.62, 1.0, 1.0);
-	//reusing this param.
+	
+	//our flags are packed in this order:
+  /*
+	  None = 0,
+	  IsFrozen = 1,
+	  IsSelected = 2,
+	  IsIsolated = 4,
+	  IsSpecialRenderPackage = 8,
+	  HasTransparency = 16, //not used
+	  RequiresPerVertexColoration = 32
+	  FlatShade = 64 //not used
+	  */
+
+	//reusing this param for state data.
 	int flags = int(fadeNearDistance);
 	bool isFrozen = flags & 1;
 	bool isSelected = flags & 2;
 	bool isIsolated = flags & 4;
-	bool isSpecialRenderPackage = flags & 8;
 
-	// if this is a special render package - it should render with the material colors, ambient light
-		// and not be directionally lit.
-	if (isSpecialRenderPackage) {
-		return input.c;
-	}
-
-	/// set diffuse alpha if selected or normal
 	float4 I = input.c;
 
 	//if frozen half alpha
@@ -32,7 +37,7 @@ float4 main(PSInputPS input) : SV_Target
 	//overriding other alpha values (except if selected)
 	if (isIsolated && !isSelected)
 	{
-		I.a = .1f;
+		I.a = .2f;
 	}
 
 	if (isSelected && !isIsolated)
@@ -40,7 +45,7 @@ float4 main(PSInputPS input) : SV_Target
 		I = lerp(vSelectionColor, I, 0.3);
 	}
 
-	return I;
+	 return I;
 }
 
 #endif

@@ -10,6 +10,7 @@ GSInputPS main(VSInputPS input)
 	GSInputPS output;
 
 	output.p = input.p;
+
 	//set position into clip space	
 	output.p = mul(output.p, mWorld);
 	output.p = mul(output.p, mView);

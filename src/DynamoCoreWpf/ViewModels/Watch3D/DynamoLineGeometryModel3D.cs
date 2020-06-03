@@ -11,7 +11,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
-            return new DynamoLineNode() { Material = material };
+            // Override the default value of 100 set in the base LineMaterialCore class:
+            // https://github.com/helix-toolkit/helix-toolkit/blob/develop/Source/HelixToolkit.SharpDX.Shared/Model/Material/LineMaterialCore.cs#L80
+            // as we are using it to pass state info to the shader.
+            material.FadingNearDistance = 0;
+            return new DynamoLineNode { Material = material };
         }
 
         /// <summary>
@@ -20,9 +24,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="state"></param>
         internal void SetState(int state)
-        {  
-             //TODO should we also use this for points if it works for lines to make them consistent?
-            this.material.FadingNearDistance = state;
+        {
+            // Reuse FadingNearDistance because our shader does not use it and we need space for an int
+            // to store our interaction state which will be sent to the shader.
+            material.FadingNearDistance = state;
         }
     }
 
@@ -35,7 +40,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected override IRenderTechnique OnCreateRenderTechnique(IRenderHost host)
         {
-            //TODO create new shader for lines and use it here.
             return host.EffectsManager[DynamoEffectsManager.DynamoLineShaderName];
         }
     }

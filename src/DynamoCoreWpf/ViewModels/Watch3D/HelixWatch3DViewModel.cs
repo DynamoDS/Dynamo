@@ -1482,15 +1482,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected override void AttachedProperties_RequestResetColorsForDynamoGeometryModel(string objId)
-        {
-            if (!(string.IsNullOrEmpty(objId)) && this.colorCache.ContainsKey(objId) &&
-                this.element3DDictionary.ContainsKey(objId))
-            {
-                ((GeometryModel3D) element3DDictionary[objId]).Geometry.Colors = colorCache[objId];
-            }
-        }
-
         private bool InCustomNode()
         {
             return dynamoModel.CurrentWorkspace is CustomNodeWorkspaceModel;

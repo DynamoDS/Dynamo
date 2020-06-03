@@ -13,11 +13,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
-            return new DynamoPointNode() { Material = material };
+            return new DynamoPointNode { Material = material };
         }
 
         internal void SetState(int state)
         {
+            // Reuse FadingNearDistance because our shader does not use it and we need space for an int
+            // to store our interaction state which will be sent to the shader.
             material.FadingNearDistance = state;
         }
     }
@@ -45,16 +47,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         internal void SetPropertyData(DependencyPropertyChangedEventArgs args, GeometryModel3D geo)
         {
-            this.dataCore.SetPropertyData(args);
-            //re reuse blending factor because our shader does not use it and we need space for an int
-            //to store our interaction state which will be sent to the shader.
+            dataCore.SetPropertyData(args);
+            
             if(geo is DynamoPointGeometryModel3D || geo is DynamoLineGeometryModel3D)
             {
                 if (geo is DynamoPointGeometryModel3D)
                 {
                     (geo as DynamoPointGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
                 }
-                //TODO actually implement a line shader that uses fadeNearDistance for state packing;
                 else
                 {
                     (geo as DynamoLineGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
