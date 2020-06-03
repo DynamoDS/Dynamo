@@ -33,7 +33,7 @@ namespace Dynamo.Tests.Configuration
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModes)
             {
-                addDebugMode.Invoke(null, new object[] { dbgModeName.Key, dbgModeName.Key });
+                addDebugMode.Invoke(null, new object[] { dbgModeName.Key, dbgModeName.Key, false });
             }
 
             // Load the enabled/disabled status from the test config file.
@@ -76,7 +76,7 @@ namespace Dynamo.Tests.Configuration
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModeNames)
             {
-                addDebugMode.Invoke(null, new object[] { dbgModeName, dbgModeName });
+                addDebugMode.Invoke(null, new object[] { dbgModeName, dbgModeName, false });
             }
 
             // Load the enabled/disabled status from the test config file.
@@ -99,7 +99,7 @@ namespace Dynamo.Tests.Configuration
             MethodInfo addDebugMode = dbgModesType.GetMethod("AddDebugMode", BindingFlags.Static | BindingFlags.NonPublic);
             foreach (var dbgModeName in testDebugModeNames)
             {
-                addDebugMode.Invoke(null, new object[] { dbgModeName, dbgModeName });
+                addDebugMode.Invoke(null, new object[] { dbgModeName, dbgModeName, false });
             }
 
             // Load the enabled/disabled status from the test config file.
