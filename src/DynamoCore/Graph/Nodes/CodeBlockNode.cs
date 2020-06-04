@@ -827,18 +827,18 @@ namespace Dynamo.Graph.Nodes
 
         private void SetOutputPorts()
         {
-            var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeStatements);
-
-            if (allDefs.Any() == false)
-                return;
-
             // This extension method is used instead because 
             // observableCollection has very odd behavior when cleared - 
             // there is no way to reference the cleared items and so they 
             // cannot be cleaned up properly
             
             // Clear out all the output port models
-            OutPorts.RemoveAll((p) => { return true; });
+            OutPorts.RemoveAll((p) => true);
+            
+            var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeStatements);
+
+            if (allDefs.Any() == false)
+                return;
 
             foreach (var def in allDefs)
             {
