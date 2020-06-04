@@ -939,21 +939,21 @@ namespace Dynamo.Tests
             {
 
                 // This older task is kept because it wasn't re-scheduled.
-                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID), // 1
+                MakeUpdateRenderPackageAsyncTask(nodes[0].GUID), // 0
 
                 // These older tasks are to be dropped.
-                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //2
-                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //3
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //1
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //2
 
                 // This higher priority task moves to the front.
-                MakeUpdateGraphAsyncTask(), //4
+                MakeUpdateGraphAsyncTask(), //3
 
                 // These newer tasks will be kept.
-                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //6
-                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //7
+                MakeUpdateRenderPackageAsyncTask(nodes[1].GUID), //4
+                MakeUpdateRenderPackageAsyncTask(nodes[2].GUID), //5
 
                 // This higher priority task moves to the front.
-                MakeUpdateGraphAsyncTask(), //8 
+                MakeUpdateGraphAsyncTask(), //6 
             };
 
             // Due to defaulting to auto-run mode, multiple UpdateGraphAsyncTask
@@ -972,10 +972,10 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeUpdateGraphAsyncTask: 8",
-                "FakeUpdateRenderPackageAsyncTask: 1",
-                "FakeUpdateRenderPackageAsyncTask: 6",
-                "FakeUpdateRenderPackageAsyncTask: 7",
+                "FakeUpdateGraphAsyncTask: 6",
+                "FakeUpdateRenderPackageAsyncTask: 0",
+                "FakeUpdateRenderPackageAsyncTask: 4",
+                "FakeUpdateRenderPackageAsyncTask: 5",
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1014,7 +1014,7 @@ namespace Dynamo.Tests
                 "FakeCompileCustomNodeAsyncTask: 1",
                 "FakeUpdateGraphAsyncTask: 2",
                 "FakeDelegateBasedAsyncTask: 3",
-                "FakeUpdateRenderPackageAsyncTask: 5"
+                "FakeUpdateRenderPackageAsyncTask: 4"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1049,11 +1049,11 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeSetTraceDataAsyncTask: 5",
-                "FakeUpdateGraphAsyncTask: 3",
-                "FakeCompileCustomNodeAsyncTask: 4",
+                "FakeSetTraceDataAsyncTask: 4",
+                "FakeUpdateGraphAsyncTask: 2",
+                "FakeCompileCustomNodeAsyncTask: 3",
                 "FakeUpdateRenderPackageAsyncTask: 0",
-                "FakeDelegateBasedAsyncTask: 2"
+                "FakeDelegateBasedAsyncTask: 1"
             };
 
             Assert.AreEqual(expected.Count, results.Count);
@@ -1075,9 +1075,9 @@ namespace Dynamo.Tests
             {
                 MakeUpdateRenderPackageAsyncTask(Guid.NewGuid()),   // Normal 0
                 MakeDelegateBasedAsyncTask(),                       // Normal 1
-                MakeUpdateGraphAsyncTask(),                         // Above normal 4
-                MakeCompileCustomNodeAsyncTask(),                   // Above normal 5
-                MakeSetTraceDataAsyncTask(),                        // Highest 6
+                MakeUpdateGraphAsyncTask(),                         // Above normal 2
+                MakeCompileCustomNodeAsyncTask(),                   // Above normal 3
+                MakeSetTraceDataAsyncTask(),                        // Highest 4
             };
 
             var scheduler = dynamoModel.Scheduler;
@@ -1090,9 +1090,9 @@ namespace Dynamo.Tests
 
             var expected = new List<string>
             {
-                "FakeSetTraceDataAsyncTask: 6",
-                "FakeUpdateGraphAsyncTask: 4",
-                "FakeCompileCustomNodeAsyncTask: 5",
+                "FakeSetTraceDataAsyncTask: 4",
+                "FakeUpdateGraphAsyncTask: 2",
+                "FakeCompileCustomNodeAsyncTask: 3",
                 "FakeUpdateRenderPackageAsyncTask: 0",
                 "FakeDelegateBasedAsyncTask: 1",
             };
