@@ -20,7 +20,7 @@
         8) DesignScriptBuiltin.dll
         9) VMDataBridge.dll</description>
         <summary>This package contains the core assemblies for Dynamo.</summary>
-        <copyright>Copyright Autodesk 2019</copyright>
+        <copyright>Copyright Autodesk 2020</copyright>
         <dependencies>
             <group targetFramework=".NETFramework4.8">
                 <dependency id="Prism" version="4.1"/>
