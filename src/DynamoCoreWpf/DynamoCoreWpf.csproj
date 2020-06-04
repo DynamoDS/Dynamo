@@ -1291,14 +1291,14 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\CommonBuffers.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\DataStructs.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\psDynamoLine.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\psDynamoMesh.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\psDynamoPoint.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\vsDynamoMesh.hlsl" />
-    <Content Include="ViewModels\Watch3D\shaderSource\vsDynamoPointLine.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\CommonBuffers.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\DataStructs.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoLine.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoMesh.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\psDynamoPoint.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\vsDynamoMesh.hlsl" />
+    <None Include="ViewModels\Watch3D\shaderSource\vsDynamoPointLine.hlsl" />
     <Resource Include="UI\Images\bubble-arrow.png" />
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
