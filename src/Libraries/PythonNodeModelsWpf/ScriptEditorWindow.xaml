@@ -67,7 +67,7 @@
                         VerticalAlignment="Bottom" 
                         Margin="2" 
                         Grid.Column="1"
-                        Visibility="{Binding nodeModel.Engine, Converter={StaticResource PythonEngineVersionToVisibilityConverter}}"/>
+                        Visibility="{Binding nodeModel.Engine, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}, Converter={StaticResource PythonEngineVersionToVisibilityConverter}}"/>
                 <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
                           SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           Style="{StaticResource ResourceKey=SComboBox}"

@@ -100,6 +100,7 @@
     <ProjectReference Include="..\..\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
       <Project>{10AF430D-0D3A-49CE-A63D-848912959745}</Project>
       <Name>PythonMigrationViewExtension</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
