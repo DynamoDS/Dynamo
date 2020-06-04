@@ -32,7 +32,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillDisplayDialogWhenOpeningGraphWithIronPythonNodes()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             // Act
@@ -91,6 +91,8 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillOnlyLogNotificationWhenAddingAnIronPythonNodeOnce()
         {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+
             // Arrange
             string pythonNodeName = "Python Script";
             raisedEvents = new List<string>();
@@ -121,6 +123,52 @@ namespace DynamoCoreWpfTests
 
         }
 
+        /// <summary>
+        /// Adding Python nodes that use IronPython should not generate notifications
+        /// when the Python2ObsoleteMode is disabled.
+        /// </summary>
+        [Test]
+        public void WillNotLogNotificationWhenAddingNodeWhenPython2ObsoleteFlagIsOff()
+        {
+            var debugMode = DebugModes.GetDebugMode("Python2ObsoleteMode");
+            bool shouldReenable = false;
+            if (debugMode != null && debugMode.IsEnabled)
+            {
+                debugMode.IsEnabled = false;
+                shouldReenable = true;
+            }
+
+            // Arrange
+            string pythonNodeName = "Python Script";
+            raisedEvents = new List<string>();
+
+            // Act
+            // open file
+            this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
+
+
+            var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
+
+            this.ViewModel.ExecuteCommand(new DynamoModel.
+                CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
+
+            DispatcherUtil.DoEvents();
+
+            var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
+
+            // Assert
+            Assert.AreEqual(nodesCountBeforeNodeAdded + 1, nodesCountAfterNodeAdded);
+            Assert.AreEqual(raisedEvents.Count, 0);
+            raisedEvents.Clear();
+            this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
+            DispatcherUtil.DoEvents();
+
+            if (shouldReenable)
+            {
+                debugMode.IsEnabled = true;
+            }
+        }
+
 
         /// <summary>
         /// This test verifies that the IronPython dialog wont show the second time a graph is opened
@@ -129,7 +177,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillNotDisplayDialogWhenOpeningGraphWithIronPythonNodesSecondTimeInSameSession()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
             // Arrange
             var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
@@ -191,7 +239,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             // Act

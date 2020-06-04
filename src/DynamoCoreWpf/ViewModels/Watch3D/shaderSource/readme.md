@@ -49,7 +49,7 @@ Here are some examples:
 |---|---|---|---|---|---|---|
 | Selected  | none  | blueish (regular colors when isolated)  |  overrides all other states - but interacts with isolated |   |   |   |
 | Isolated  | * .1  | none  | none  | when isolated geometry is transparent,  when isolated  and selected - it has full alpha |   |   |
-| Frozen  | *.2  |  | none  | none  |   |   |
+| Frozen  | *.5  |  | none  | none  |   |   |
 | FlatShade  | none | none  |  none | uses texture colors with no lighting at all. (unlit)  |   |   |
 | Special  | none  |  none  | none  | potentially unlit  |   |   |
 | Transparent| ?  |   |   |   |   |   |
