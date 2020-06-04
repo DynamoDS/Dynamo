@@ -34,7 +34,7 @@ namespace Dynamo.Configuration
             public bool IsEnabled;
         }
 
-        private static void AddDebugMode(string name, string description, bool isEnabled = false)
+        internal static void AddDebugMode(string name, string description, bool isEnabled = false)
         {
             debugModes[name] = new DebugMode()
             {
@@ -43,6 +43,7 @@ namespace Dynamo.Configuration
                 IsEnabled = isEnabled
             };
         }
+
         private static void RegisterDebugModes()
         {
             // Register app wide new debug modes here.
