@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
+using Dynamo.PythonMigration;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -15,6 +19,21 @@ using PythonNodeModels;
 
 namespace PythonNodeModelsWpf
 {
+    public class PythonEngineVersionToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if ((PythonEngineVersion)value == PythonEngineVersion.CPython3)
+                return Visibility.Visible;
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     /// <summary>
     /// Interaction logic for ScriptEditorWindow.xaml
     /// </summary>
@@ -29,6 +48,7 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        internal NodeView nodeView;
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel, 
@@ -39,6 +59,7 @@ namespace PythonNodeModelsWpf
         {
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
+            this.nodeView = nodeView;
 
             completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
@@ -167,8 +188,13 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
-
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            var viewEx = (WpfUtilities.FindUpVisualTree<DynamoView>(nodeView) as DynamoView).viewExtensionManager.ViewExtensions.FirstOrDefault(x => x.UniqueId == "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d");
+            (viewEx as PythonMigrationViewExtension).OpenPythonMigrationWarningDocumentation();
+        }
     }
 }

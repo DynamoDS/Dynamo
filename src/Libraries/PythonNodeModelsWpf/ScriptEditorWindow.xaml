@@ -1,13 +1,17 @@
-﻿<dww:ModelessChildWindow x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
-        xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
-        xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
-                         xmlns:pythonNodeModel="clr-namespace:PythonNodeModels;assembly=PythonNodeModels"
-                         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" Height="500" Width="600">
+﻿<dww:ModelessChildWindow 
+    x:Class="PythonNodeModelsWpf.ScriptEditorWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
+    xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+    xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
+    xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
+    xmlns:local="clr-namespace:PythonNodeModelsWpf"
+    xmlns:pythonNodeModel="clr-namespace:PythonNodeModels;assembly=PythonNodeModels"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" 
+    Height="500" 
+    Width="600">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -21,6 +25,7 @@
                     <x:Type TypeName="pythonNodeModel:PythonEngineVersion" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <local:PythonEngineVersionToVisibilityConverter x:Key="PythonEngineVersionToVisibilityConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -35,7 +40,13 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
-                <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}" Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" Name="button3" Click="OnRunClicked" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="2">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}" 
+                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" 
+                        Name="RunPythonScriptButton" 
+                        Click="OnRunClicked" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Bottom" 
+                        Margin="2">
                     <Button.Resources>
                         <Polygon
                             x:Key="Shape"
@@ -48,6 +59,15 @@
                 </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButton}" 
+                        Style="{DynamicResource ResourceKey=STextButton}" 
+                        Name="MoreInfoButton" 
+                        Click="OnMoreInfoClicked" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Bottom" 
+                        Margin="2" 
+                        Grid.Column="1"
+                        Visibility="{Binding nodeModel.Engine, Converter={StaticResource PythonEngineVersionToVisibilityConverter}}"/>
                 <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
                           SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           Style="{StaticResource ResourceKey=SComboBox}"
@@ -63,8 +83,22 @@
                           Grid.Column="1"
                           Foreground="{StaticResource DynamoStandardLableTextBrush}" 
                           Visibility="Collapsed"/>
-                <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button2" Click="OnSaveClicked" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="2" Grid.Column="1"/>
-                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" Style="{DynamicResource ResourceKey=STextButton}" Name="button1" Click="OnRevertClicked" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="2" Grid.Column="1"/>
+                <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" 
+                        Style="{DynamicResource ResourceKey=STextButton}" 
+                        Name="SaveScriptChangesButton" 
+                        Click="OnSaveClicked" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Bottom" 
+                        Margin="2" 
+                        Grid.Column="1"/>
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" 
+                        Style="{DynamicResource ResourceKey=STextButton}" 
+                        Name="RevertScriptChangesButton" 
+                        Click="OnRevertClicked" 
+                        VerticalAlignment="Bottom" 
+                        HorizontalAlignment="Right" 
+                        Margin="2" 
+                        Grid.Column="1"/>
             </StackPanel>
         </Grid>
     </Grid>

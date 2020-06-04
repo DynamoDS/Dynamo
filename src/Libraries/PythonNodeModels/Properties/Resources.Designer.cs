@@ -86,7 +86,7 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Python Engine Version.
         /// </summary>
@@ -169,6 +169,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string PythonScriptEditorMoreInfoButton {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMoreInfoButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assign your output to the OUT variable..
         /// </summary>
         public static string PythonScriptEditorOutputComment {
@@ -196,7 +205,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Changes.
+        ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string PythonScriptEditorSaveChangesButton {
             get {

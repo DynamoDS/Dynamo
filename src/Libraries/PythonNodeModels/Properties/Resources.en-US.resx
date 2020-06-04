@@ -134,7 +134,7 @@
     <comment>Description for Python Script</comment>
   </data>
   <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
-    <value>Save Changes</value>
+    <value>Save</value>
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
@@ -174,5 +174,8 @@
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
+  </data>
+  <data name="PythonScriptEditorMoreInfoButton" xml:space="preserve">
+    <value>More Information</value>
   </data>
 </root>
