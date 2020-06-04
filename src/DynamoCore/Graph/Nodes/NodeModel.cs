@@ -2348,10 +2348,10 @@ namespace Dynamo.Graph.Nodes
             // requested to update its value. When the QueryMirrorDataAsyncTask
             // returns, it will update cachedMirrorData with the latest value.
             //
-            lock (cachedValueMutex)
-            {
-                cachedValue = null;
-            }
+            //lock (cachedValueMutex)
+            //{
+            //    cachedValue = null;
+            //}
 
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
@@ -2363,6 +2363,10 @@ namespace Dynamo.Graph.Nodes
             if (runtimeMirror != null)
             {
                 CachedValue = runtimeMirror.GetData();
+            }
+            else
+            {
+                CachedValue = null;
             }
         }
 
