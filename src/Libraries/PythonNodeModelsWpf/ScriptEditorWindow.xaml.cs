@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -40,7 +40,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
@@ -101,6 +101,8 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
+                    //TODO this should return some mono compatible format
+                    //we'll then convert it to PythonCompletionData
                     var completions = completionProvider.GetCompletionData(subString, false);
 
                     if (completions.Length == 0)

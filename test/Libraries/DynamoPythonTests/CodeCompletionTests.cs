@@ -380,6 +380,7 @@ namespace DynamoPythonTests
             completionProvider.UpdateImportedTypes(str);
 
             Assert.AreEqual(3, completionProvider.ImportedTypes.Count);
+            //TODO use IScriptScope instead.
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("repeat"));
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("izip"));
             Assert.IsTrue(completionProvider.Scope.ContainsVariable("math"));

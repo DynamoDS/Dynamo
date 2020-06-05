@@ -1,4 +1,7 @@
-﻿namespace Autodesk.DesignScript.Interfaces
+﻿using System;
+using System.Collections.Generic;
+
+namespace Autodesk.DesignScript.Interfaces
 {
     /// <summary>
     /// Provides application configuration
@@ -188,4 +191,115 @@
         /// <param name="baseDirectory"></param>
         void PreloadAsmLibraries(string baseDirectory);
     }
+
+    //TODO should this live in DynamoServices?
+    //make these internal somehow?
+    public interface IExternalCodeCompletionProviderCore
+    {
+        /// <summary>
+        /// The scope used by the engine.  This is where all the loaded symbols
+        /// are stored.  It's essentially an environment dictionary.
+        /// </summary>
+        IScriptScope Scope { get; set; }
+
+        /// <summary>
+        /// Already discovered variable types
+        /// </summary>
+        Dictionary<string, Type> VariableTypes { get; set; }
+
+        /// <summary>
+        /// Types that have already been imported into the scope
+        /// </summary>
+        Dictionary<string, Type> ImportedTypes { get; set; }
+
+        /// <summary>
+        /// Generate completion data for the specified text, while import the given types into the
+        /// scope and discovering variable assignments.
+        /// </summary>
+        /// <param name="code">The code to parse</param>
+        /// <param name="expand">Determines if the entire namespace should be used</param>
+        /// <returns>Return a list of IronPythonCompletionData </returns>
+        IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false);
+
+        /// <summary>
+        /// Try to generate a description from a typename
+        /// </summary>
+        /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
+        /// <param name="item">Everything after the stub</param>
+        /// <param name="isInstance">Whether it's an instance or not</param>
+        string GetDescription(string stub, string item, bool isInstance);
+
+        bool MatchingEngine(string engineName);
+
+        //TODO think about this, more general?
+        void ImportStdLibrary(string dynamoCorePath);
+
+        void Log(string message);
+
+    }
+
+
+    /// <summary>
+    /// This interface is essentially the same as ICompletionData from AvalonEdit 
+    /// except it does not include any references to WPF.
+    /// </summary>
+    public interface IExternalCodeCompletionData
+    {
+        //TODO hmmmmmm what about image path or image instead?
+      
+        ExternalCodeCompletionType CompletionType  { get; }
+        //
+        // Summary:
+        //     Gets the text. This property is used to filter the list of visible elements.
+        string Text { get; }
+        //
+        // Summary:
+        //     The displayed content. This can be the same as 'Text', or a WPF UIElement if
+        //     you want to display rich content.
+        object Content { get; }
+        //
+        // Summary:
+        //     Gets the description.
+        object Description { get; }
+        //
+        // Summary:
+        //     Gets the priority. This property is used in the selection logic. You can use
+        //     it to prefer selecting those items which the user is accessing most frequently.
+        double Priority { get; }
+    }
+
+    public interface IScriptScope
+    {
+        bool ContainsVariable(string name);
+    }
+
+    public enum ExternalCodeCompletionType
+    {
+        NAMESPACE,
+        METHOD,
+        FIELD,
+        CLASS,
+        PROPERTY,
+        ENUM,
+        OTHER
+    };
+
+    /// <summary>
+    /// This internal interface exists to support the legacy IronPythonCompletionProvider 
+    /// without having a compile time reference from PythonNodeModel/WPF on DSIronPython.
+    /// This interface should be removed when the legacy class is removed in 3.0.
+    /// </summary>
+    internal interface ILegacyPythonCompletionCore
+    {
+        void UpdateImportedTypes(string code);
+        void UpdateVariableTypes(string code);
+        Dictionary<string, Type> FindAllVariableAssignments(string code);
+        Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code);
+        Type TryGetType(string name);
+        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
+        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
+        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
+
+    }
+
 }
