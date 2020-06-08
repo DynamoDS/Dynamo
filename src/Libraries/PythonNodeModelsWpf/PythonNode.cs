@@ -8,7 +8,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Windows;
-using ProtoCore.AST;
 using PythonNodeModels;
 using PythonNodeModelsWpf.Controls;
 
