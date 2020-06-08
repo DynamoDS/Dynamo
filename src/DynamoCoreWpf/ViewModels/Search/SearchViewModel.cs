@@ -18,7 +18,6 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -160,9 +159,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Items that were found during search.
         /// </summary>
-        private List<NodeSearchElementViewModel> searchResults;
+        private ObservableCollection<NodeSearchElementViewModel> searchResults;
 
         private IEnumerable<NodeSearchElementViewModel> filteredResults;
+
+        private ObservableCollection<NodeSearchElementViewModel> filteredSearchResults;
         /// <summary>
         /// Filtered search results.
         /// </summary>
@@ -179,6 +180,19 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal ObservableCollection<NodeSearchElementViewModel> FilteredSearchResults
+        {
+            get
+            {
+                return filteredSearchResults;
+            }
+            set
+            {
+                filteredSearchResults = new ObservableCollection<NodeSearchElementViewModel>(ToggleSelect(value));
+                RaisePropertyChanged("filteredSearchResults");
+            }
+        }
+
         /// <summary>
         /// Filters search items, if category was selected.
         /// </summary>
@@ -188,6 +202,8 @@ namespace Dynamo.ViewModels
             FilteredResults = searchResults.Where(x => allowedCategories
                                                                        .Select(cat => cat.Name)
                                                                        .Contains(x.Category));
+
+            FilteredSearchResults = new ObservableCollection<NodeSearchElementViewModel>(FilteredResults);
 
             // Report selected categories to instrumentation
             StringBuilder strBuilder = new StringBuilder();
@@ -351,8 +367,8 @@ namespace Dynamo.ViewModels
 
         private void InitializeCore()
         {
-            searchResults = new List<NodeSearchElementViewModel>();
-            filteredResults = new List<NodeSearchElementViewModel>();
+            searchResults = new ObservableCollection<NodeSearchElementViewModel>();
+            filteredSearchResults = new ObservableCollection<NodeSearchElementViewModel>();
             searchCategories = new List<SearchCategory>();
 
             Visible = false;
@@ -825,9 +841,9 @@ namespace Dynamo.ViewModels
                 return;
 
             var foundNodes = Search(query);
-            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
+            searchResults = new ObservableCollection<NodeSearchElementViewModel>(foundNodes);
 
-            FilteredResults = searchResults;
+            FilteredSearchResults = searchResults;
             UpdateSearchCategories();
 
             RaisePropertyChanged("FilteredResults");
@@ -972,7 +988,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void ExecuteSelectedItem()
         {
-            var selected = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            var selected = FilteredSearchResults.FirstOrDefault(item => item.IsSelected);
 
             if (selected != null)
             {
@@ -986,12 +1002,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void MoveSelection(Direction direction)
         {
-            var oldItem = FilteredResults.FirstOrDefault(item => item.IsSelected);
+            var oldItem = FilteredSearchResults.FirstOrDefault(item => item.IsSelected);
             if (oldItem == null) return;
 
-            int newItemIndex = FilteredResults.IndexOf(oldItem);
+            int newItemIndex = FilteredSearchResults.IndexOf(oldItem);
             if ((newItemIndex <= 0 && direction == Direction.Up) ||
-                (newItemIndex >= FilteredResults.Count() - 1 && direction == Direction.Down)) return;
+                (newItemIndex >= FilteredSearchResults.Count() - 1 && direction == Direction.Down)) return;
 
             if (direction == Direction.Down)
             {
@@ -1003,7 +1019,7 @@ namespace Dynamo.ViewModels
             }
 
             oldItem.IsSelected = false;
-            var newItem = FilteredResults.ElementAt(newItemIndex);
+            var newItem = FilteredSearchResults.ElementAt(newItemIndex);
             newItem.IsSelected = true;
         }
 

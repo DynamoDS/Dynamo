@@ -121,7 +121,7 @@
                      Background="Transparent"
                      BorderBrush="Transparent"
                      ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                     ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
+                     ItemsSource="{Binding FilteredSearchResults, NotifyOnTargetUpdated=True}"
                      TargetUpdated="OnMembersListBoxUpdated"
                      PreviewMouseWheel="OnMembersListBoxMouseWheel">
                 <ListBox.ItemTemplate>
