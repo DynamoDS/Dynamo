@@ -42,6 +42,11 @@ namespace PythonNodeModelsWpf
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
                 pythonEngine2Item.Click += UpdateToPython2Engine;
+                // Bind menu item check state to the Engine property in the ViewModel.
+                // By doing this, we make sure the check status is in sync with the ViewModel,
+                // no matter if we update it through the context menu or other means.
+                // Setting the IsChecked property, on the other hand, is error prone and redundant
+                // once data binding has been set up.
                 pythonEngine2Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonNodeModel.Engine))
                 {
                     Source = pythonNodeModel,
