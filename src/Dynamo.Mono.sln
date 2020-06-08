@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoConversions", "Libraries\DynamoConversions\DynamoConversions.csproj", "{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}"
 EndProject
@@ -139,13 +139,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoApplications", "Dynam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonNodeModels", "Libraries\PythonNodeModels\PythonNodeModels.csproj", "{8872CA17-C10D-43B9-8393-5C5A57065EB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapewaysClient", "ShapewaysClient\ShapewaysClient.csproj", "{756CEBA5-4E20-4403-8448-C3C47957975B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Watch3DNodeModels", "Libraries\Watch3DNodeModels\Watch3DNodeModels.csproj", "{31183026-DE70-49CB-BC7C-0DFD0A088F62}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeometryColor", "Libraries\GeometryColor\GeometryColor.csproj", "{A50C198C-DA6E-4081-BC53-0F44D287F207}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignScriptBuiltin", "Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj", "{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -427,14 +427,6 @@ Global
 		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Release|x64.ActiveCfg = Release|x64
 		{8872CA17-C10D-43B9-8393-5C5A57065EB0}.Release|x64.Build.0 = Release|x64
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|x64.ActiveCfg = Debug|x64
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Debug|x64.Build.0 = Debug|x64
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|x64.ActiveCfg = Release|x64
-		{756CEBA5-4E20-4403-8448-C3C47957975B}.Release|x64.Build.0 = Release|x64
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62}.Debug|x64.ActiveCfg = Debug|x64
@@ -459,6 +451,14 @@ Global
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Release|x64.ActiveCfg = Release|Any CPU
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE}.Release|x64.Build.0 = Release|Any CPU
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Debug|x64.ActiveCfg = Debug|x64
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Debug|x64.Build.0 = Debug|x64
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Release|x64.ActiveCfg = Release|x64
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -498,5 +498,9 @@ Global
 		{31183026-DE70-49CB-BC7C-0DFD0A088F62} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{A50C198C-DA6E-4081-BC53-0F44D287F207} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{C0D6DEE5-5532-4345-9C66-4C00D7FDB8BE} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0783ABDB-2174-4C9D-9BD6-079718E64543}
 	EndGlobalSection
 EndGlobal
