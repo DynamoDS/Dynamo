@@ -3,6 +3,7 @@ using IronPython.Runtime;
 using IronPython.Runtime.Types;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Actions;
+using Microsoft.Scripting.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -737,11 +738,79 @@ namespace DSIronPython
             return items;
         }
 
+        public object LookupMember(string name, object n)
+        {
+            if(!(n is NamespaceTracker))
+            {
+                throw new ArgumentException("parameter n must be of type NameSpaceTracker");
+            }
+            var nst = n as NamespaceTracker;
+            object varOutput;
 
+            var periodIndex = name.IndexOf('.');
+            if (periodIndex == -1)
+            {
+                if (nst.TryGetValue(name, out varOutput))
+                {
+                    return varOutput;
+                }
+                return null;
+            }
 
-#endregion
+            var currentName = name.Substring(0, periodIndex);
+            var theRest = name.Substring(periodIndex + 1);
 
-        public IScriptScope Scope { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+            if (nst.TryGetValue(currentName, out varOutput))
+            {
+                if (varOutput is NamespaceTracker)
+                {
+                    return LookupMember(theRest, varOutput as NamespaceTracker);
+                }
+            }
+            return null;
+        }
+
+        public object LookupMember(string name)
+        {
+            object varOutput;
+
+            var periodIndex = name.IndexOf('.');
+            if (periodIndex == -1)
+            {
+                if (scope.TryGetVariable(name, out varOutput))
+                {
+                    return varOutput;
+                }
+                return null;
+            }
+            var currentName = name.Substring(0, periodIndex);
+            var theRest = name.Substring(periodIndex + 1);
+
+            if (scope.TryGetVariable(currentName, out varOutput))
+            {
+                if (varOutput is NamespaceTracker)
+                {
+                    return LookupMember(theRest, varOutput as NamespaceTracker);
+                }
+            }
+            return null;
+
+        }
+
+        private ScriptEngine engine;
+        public object Engine
+        {
+            get { return engine; }
+            set { engine = (ScriptEngine)value; }
+        }
+        private ScriptScope scope;
+        public object Scope
+        {
+            get { return scope; }
+            set { scope = (ScriptScope)value; }
+        }
+
+        #endregion
 
         /// <summary>
         /// Already discovered variable types
@@ -754,6 +823,7 @@ namespace DSIronPython
         /// Types that have already been imported into the scope
         /// </summary>
         public Dictionary<string, Type> ImportedTypes { get; set; }
+
 
         public IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false)
         {
@@ -877,7 +947,7 @@ namespace DSIronPython
 
         public bool MatchingEngine(string engineName)
         {
-           if (engineName == "ironPython2")
+           if (engineName == "IronPython2")
             {
                 return true;
             }
@@ -922,7 +992,7 @@ namespace DSIronPython
 
 
         #region constructor
-        public IronPythonCodeCompletionProviderCore(string dynamoCoreDir)
+        public IronPythonCodeCompletionProviderCore()
         {
             engine = IronPython.Hosting.Python.CreateEngine();
             scope = engine.CreateScope();
@@ -996,7 +1066,8 @@ namespace DSIronPython
     }
 
     //TODO move to own file?
-    //TODO better name
+    //TODO better name - this class does not have a dep on Avalonedit or WPF...
+    //This is the concrete type that gets returned and converted to avalonedit type on WPF side.
     internal class IronPythonCodeCompletionData2 : IExternalCodeCompletionData
     {
         private IExternalCodeCompletionProviderCore provider;
@@ -1008,7 +1079,7 @@ namespace DSIronPython
             this.Text = text;
             this.Stub = stub;
             this.IsInstance = isInstance;
-            this.provider = provider;
+            this.provider = providerCore;
             this.CompletionType = completionType;
         }
 

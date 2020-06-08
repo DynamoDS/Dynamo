@@ -12,12 +12,13 @@ using IronPython.Runtime.Types;
 using Microsoft.Scripting;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
+using PythonNodeModels;
 
 namespace Dynamo.Python
 {
 
     //TODO move to own file
-    public class SharedCompletionProvider : LogSourceBase
+    internal class SharedCompletionProvider : LogSourceBase
     {
         private IExternalCodeCompletionProviderCore providerImplementation;
 
@@ -25,9 +26,63 @@ namespace Dynamo.Python
         #endregion
 
         #region constructors
+        //TODO consider using string to make this constructor more flexible.
+        internal SharedCompletionProvider(PythonEngineVersion version ,string dynamoCoreDir)
+        {
+            var versionName = Enum.GetName(typeof(PythonEngineVersion), version);
+            var matchingCore = FindMatchingCodeCompletionCore(versionName, this.AsLogger()) ;
+            if(matchingCore != null)
+            {
+                this.providerImplementation = matchingCore;
+                this.providerImplementation.ImportStdLibrary(dynamoCoreDir);
+            }
+        }
+
+        internal static IExternalCodeCompletionProviderCore FindMatchingCodeCompletionCore 
+            (string versionName, ILogger logger = null)
+        {
+            try
+            {
+                var completionType = typeof(IExternalCodeCompletionProviderCore);
+                var loadedCodeCompletionTypes = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s => s.GetTypes())
+                    .Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface);
+                //instantiate them - so we can check which is a match using their match method
+                foreach (var type in loadedCodeCompletionTypes)
+                {
+                    var inst = Activator.CreateInstance(type);
+
+                    if ((inst as IExternalCodeCompletionProviderCore).MatchingEngine(versionName))
+                    {
+                        return inst as IExternalCodeCompletionProviderCore;
+                    }
+                }
+
+                //if no matching completionprovider is found, just use the first one.
+                if (loadedCodeCompletionTypes.Any())
+                {
+                    var inst = Activator.CreateInstance(loadedCodeCompletionTypes.First());
+                    logger?.Log($"could not find a matching completion core for {versionName}, using instance of {inst.GetType().ToString()}");
+                    return inst as IExternalCodeCompletionProviderCore;
+                }
+            }
+            catch(Exception e)
+            {
+                logger?.Log(e);
+                return null;
+            }
+            logger?.Log("could not find any IExternalCodeCompletionCore Types Loaded");
+            return null;
+
+        }
         #endregion
 
         #region Methods
+        internal ICompletionData[] GetCompletionData(string code, bool expand = false)
+        {
+            return this.providerImplementation?.GetCompletionData(code, expand).
+                Select(x => new IronPythonCompletionData(x)).ToArray();
+        }
         #endregion
     }
 
@@ -54,8 +109,8 @@ namespace Dynamo.Python
         private ScriptEngine engine;
         public ScriptEngine Engine
         {
-            get { return engine; }
-            set { engine = value; }
+            get { return (ScriptEngine)(providerImplementation as ILegacyPythonCompletionCore).Engine; }
+            set { (providerImplementation as ILegacyPythonCompletionCore).Engine = value; }
         }
 
         /// <summary>
@@ -65,8 +120,8 @@ namespace Dynamo.Python
         private ScriptScope scope;
         public ScriptScope Scope
         {
-            get { return scope; }
-            set { scope = value; }
+            get { return (ScriptScope)(providerImplementation as ILegacyPythonCompletionCore).Scope; }
+            set { (providerImplementation as ILegacyPythonCompletionCore).Scope = value; }
         }
 
         /// <summary>
@@ -151,25 +206,15 @@ namespace Dynamo.Python
         /// </summary>
         public IronPythonCompletionProvider(string dynamoCoreDir)
         {
-            //TODO reuse this in sharedcompletion constructor.
-            var completionType = typeof(IExternalCodeCompletionProviderCore);
-            var loadedCodeCompletionTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
-                .Where(p => completionType.IsAssignableFrom(p));
-            //instantiate them - so we can check which is a match using their match method
-
-            foreach (var type in loadedCodeCompletionTypes)
+            var versionName = Enum.GetName(typeof(PythonEngineVersion), PythonEngineVersion.IronPython2);
+            var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName,this.AsLogger());
+            if (matchingCore != null)
             {
-                var inst = Activator.CreateInstance(type);
-                if ((inst as IExternalCodeCompletionProviderCore).MatchingEngine("ironPython2"))
-                {
-                    this.providerImplementation = inst as IExternalCodeCompletionProviderCore;
-                    this.providerImplementation.ImportStdLibrary(dynamoCoreDir);
-                    break;
-                }
+                this.providerImplementation = matchingCore;
+                this.providerImplementation.ImportStdLibrary(dynamoCoreDir);
             }
-            //TODO add logic to fail well if no provider is found.
         }
+
         #endregion
 
         #region Methods
@@ -196,7 +241,7 @@ namespace Dynamo.Python
         {
             //TODO do conversion
             return this.providerImplementation.GetCompletionData(code, expand).
-                Select(x=> new IronPythonCompletionData(x,x.)
+                Select(x => new IronPythonCompletionData(x)).ToArray();
         }
 
         /// <summary>
@@ -283,29 +328,7 @@ namespace Dynamo.Python
         /// <returns>The type as an object</returns>
         public object LookupMember(string name, NamespaceTracker n)
         {
-            object varOutput;
-
-            var periodIndex = name.IndexOf('.');
-            if (periodIndex == -1)
-            {
-                if (n.TryGetValue(name, out varOutput))
-                {
-                    return varOutput;
-                }
-                return null;
-            }
-
-            var currentName = name.Substring(0, periodIndex);
-            var theRest = name.Substring(periodIndex + 1);
-
-            if (n.TryGetValue(currentName, out varOutput))
-            {
-                if (varOutput is NamespaceTracker)
-                {
-                    return LookupMember(theRest, varOutput as NamespaceTracker);
-                }
-            }
-            return null;
+            return (this.providerImplementation as ILegacyPythonCompletionCore).LookupMember(name, n);
         }
 
         /// <summary>
@@ -315,29 +338,7 @@ namespace Dynamo.Python
         /// <returns>The type as an object</returns>
         public object LookupMember(string name)
         {
-            object varOutput;
-
-            var periodIndex = name.IndexOf('.');
-            if (periodIndex == -1)
-            {
-                if (scope.TryGetVariable(name, out varOutput))
-                {
-                    return varOutput;
-                }
-                return null;
-            }
-            var currentName = name.Substring(0, periodIndex);
-            var theRest = name.Substring(periodIndex + 1);
-
-            if (scope.TryGetVariable(currentName, out varOutput))
-            {
-                if (varOutput is NamespaceTracker)
-                {
-                    return LookupMember(theRest, varOutput as NamespaceTracker);
-                }
-            }
-            return null;
-
+            return (this.providerImplementation as ILegacyPythonCompletionCore).LookupMember(name);
         }
 
         /// <summary>

@@ -196,11 +196,6 @@ namespace Autodesk.DesignScript.Interfaces
     //make these internal somehow?
     public interface IExternalCodeCompletionProviderCore
     {
-        /// <summary>
-        /// The scope used by the engine.  This is where all the loaded symbols
-        /// are stored.  It's essentially an environment dictionary.
-        /// </summary>
-        IScriptScope Scope { get; set; }
 
         /// <summary>
         /// Already discovered variable types
@@ -268,11 +263,6 @@ namespace Autodesk.DesignScript.Interfaces
         double Priority { get; }
     }
 
-    public interface IScriptScope
-    {
-        bool ContainsVariable(string name);
-    }
-
     public enum ExternalCodeCompletionType
     {
         NAMESPACE,
@@ -299,7 +289,10 @@ namespace Autodesk.DesignScript.Interfaces
         IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
         IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
         IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
-
+        object LookupMember(string name, object namesSaceTracker);
+        object LookupMember(string name);
+        object Engine { get; set; }
+        object Scope { get; set; }
     }
 
 }

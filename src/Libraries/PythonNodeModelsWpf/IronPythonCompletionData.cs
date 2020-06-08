@@ -9,9 +9,6 @@ using ICSharpCode.AvalonEdit.Editing;
 
 namespace Dynamo.Python
 {
-    //TODO we may need to keep this class to feed to avalon edit.
-    [Obsolete("Do Not Use! This class will be removed in a future version of Dynamo," +
-       "Instead Reference the cross platform ICompletionData interface.")]
     /// Implements AvalonEdit ICompletionData interface to provide the entries in the
     /// completion drop down.
     public class IronPythonCompletionData : ICompletionData
@@ -41,24 +38,11 @@ namespace Dynamo.Python
             this.Text = data.Text;
             this._description = data.Description as string;
 
-            //TODO pull into shared method
-            if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-
-                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
-                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
-                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
-            }
+            buildCompletionTypeToIconMap();
 
             this._image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
 
         }
-
         public IronPythonCompletionData(string text, string stub, bool isInstance, CompletionType type, IronPythonCompletionProvider provider)
         {
             this.Text = text;
@@ -66,18 +50,7 @@ namespace Dynamo.Python
             this.IsInstance = isInstance;
             this.provider = provider;
 
-            if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-
-                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
-                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
-                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
-            }
+            buildCompletionTypeToIconMap();
 
             this._image = TypeToIcon[type];
         }
@@ -138,6 +111,22 @@ namespace Dynamo.Python
             bitmapImage.StreamSource = assembly.GetManifestResourceStream(name);
             bitmapImage.EndInit();
             return bitmapImage;
+        }
+
+        private void buildCompletionTypeToIconMap()
+        {
+            if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+
+                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
+                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
+                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
+                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
+                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
+                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
+                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
+            }
         }
     }
 
