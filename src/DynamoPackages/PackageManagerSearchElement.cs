@@ -172,14 +172,23 @@ namespace Dynamo.PackageManager
         public static IEnumerable<Tuple<PackageHeader, PackageVersion>> ListRequiredPackageVersions(
             IEnumerable<PackageHeader> headers, PackageVersion version)
         {
-            return headers.Zip(
-                version.full_dependency_versions,
-                (header, v) => new Tuple<PackageHeader, string>(header, v))
-                .Select(
-                    (pair) =>
-                        new Tuple<PackageHeader, PackageVersion>(
-                        pair.Item1,
-                        pair.Item1.versions.First(x => x.version == pair.Item2)));
+            try
+            {
+                IEnumerable<Tuple<PackageHeader, PackageVersion>> zipped = headers.Zip(
+                    version.full_dependency_versions,
+                    (header, v) => new Tuple<PackageHeader, string>(header, v))
+                    .Select(
+                        (pair) =>
+                            new Tuple<PackageHeader, PackageVersion>(
+                            pair.Item1,
+                            pair.Item1.versions.First(x => x.version == pair.Item2)));
+                return zipped;
+            }
+            catch 
+            {
+                return null;    
+            }
+            
         }
     }
 }

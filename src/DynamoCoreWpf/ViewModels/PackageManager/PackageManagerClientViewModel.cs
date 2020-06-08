@@ -524,6 +524,14 @@ namespace Dynamo.ViewModels
 
                 var allPackageVersions = PackageManagerSearchElement.ListRequiredPackageVersions(headers, version);
 
+                // if any package version download fails, abort
+                if (allPackageVersions == null)
+                {
+                    MessageBox.Show(String.Format(Resources.MessageFailedToDownloadPackageVersion),
+                        Resources.PackageDownloadErrorMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
                 // determine if any of the packages contain binaries or python scripts.  
                 var containsBinaries =
                     allPackageVersions.Any(
