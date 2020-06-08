@@ -366,6 +366,19 @@ b = c[w][x][y][z];";
            UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
                                            "{" +
                                            "return = Count(a) + Count(b);" +
+                                           "}" +
+                                           "a = [ 1, 2 ];");
+           Assert.IsNotNull(cbn);
+
+           Assert.AreEqual(2, cbn.CodeStatements.Count());
+
+           Assert.AreEqual(0, cbn.InPorts.Count);
+           Assert.AreEqual(1, cbn.OutPorts.Count);
+           Assert.AreEqual(0, cbn.AllConnectors.Count());
+
+           UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
+                                           "{" +
+                                           "return = Count(a) + Count(b);" +
                                            "}");
            Assert.IsNotNull(cbn);
 
