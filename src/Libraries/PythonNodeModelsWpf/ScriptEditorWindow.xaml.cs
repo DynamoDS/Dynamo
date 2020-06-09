@@ -19,21 +19,6 @@ using PythonNodeModels;
 
 namespace PythonNodeModelsWpf
 {
-    public class PythonEngineVersionToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if ((PythonEngineVersion)value == PythonEngineVersion.CPython3)
-                return Visibility.Visible;
-            return Visibility.Collapsed;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
     /// <summary>
     /// Interaction logic for ScriptEditorWindow.xaml
     /// </summary>
