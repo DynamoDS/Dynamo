@@ -170,27 +170,6 @@ namespace Dynamo.Python
         public static string basicImportRegex = @"(import)";
         public static string fromImportRegex = @"^(from)";
 
-        internal const string quotesStringRegex = "[\"']([^\"']*)[\"']";
-        internal const string equalsRegex = @"(=)";
-
-        internal static readonly Regex MATCH_LAST_NAMESPACE = new Regex(@"[\w.]+$", RegexOptions.Compiled);
-        internal static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
-        internal static readonly Regex MATCH_FIRST_QUOTED_NAME = new Regex(quotesStringRegex, RegexOptions.Compiled);
-        internal static readonly Regex MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY = new Regex(@"^\w+", RegexOptions.Compiled);
-        internal static readonly Regex TRIPPLE_QUOTE_STRINGS = new Regex(".*?\\\"{{3}}[\\s\\S]+?\\\"{{3}}", RegexOptions.Compiled);
-
-        internal static readonly Regex MATCH_IMPORT_STATEMENTS = new Regex(@"^import\s+?(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
-        internal static readonly Regex MATCH_FROM_IMPORT_STATEMENTS = new Regex(@"from\s+?([\w.]+)\s+?import\s+?([\w, *]+)", RegexOptions.Compiled | RegexOptions.Multiline);
-        internal static readonly Regex MATCH_VARIABLE_ASSIGNMENTS = new Regex(@"^[ \t]*?(\w+(\s*?,\s*?\w+)*)\s*?=\s*(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
-
-        internal static readonly Regex STRING_VARIABLE = new Regex("[\"']([^\"']*)[\"']", RegexOptions.Compiled);
-        internal static readonly Regex DOUBLE_VARIABLE = new Regex("^-?\\d+\\.\\d+", RegexOptions.Compiled);
-        internal static readonly Regex INT_VARIABLE = new Regex("^-?\\d+", RegexOptions.Compiled);
-        internal static readonly Regex LIST_VARIABLE = new Regex("\\[.*\\]", RegexOptions.Compiled);
-        internal static readonly Regex DICT_VARIABLE = new Regex("{.*}", RegexOptions.Compiled);
-
-        internal static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
-
         #endregion
 
         #region Constructors
@@ -487,7 +466,6 @@ namespace Dynamo.Python
 
         }
 
-        //TODO This method is only used from this tests...let's get rid of it or make it internal.
         /// <summary>
         /// Find all variable assignments in the source code and attempt to discover their type
         /// </summary>

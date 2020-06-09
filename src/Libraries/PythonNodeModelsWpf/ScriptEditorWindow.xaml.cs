@@ -101,8 +101,6 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    //TODO this should return some mono compatible format
-                    //we'll then convert it to PythonCompletionData
                     var completions = completionProvider.GetCompletionData(subString, false);
 
                     if (completions.Length == 0)

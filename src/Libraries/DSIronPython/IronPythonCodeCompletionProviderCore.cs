@@ -21,15 +21,9 @@ namespace DSIronPython
         #region internal constants
         internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
         internal static readonly string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
-        internal static readonly string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        internal static readonly string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        internal static readonly string arrayRegex = "(\\[.*\\])";
         internal static readonly string spacesOrNone = @"(\s*)";
         internal static readonly string atLeastOneSpaceRegex = @"(\s+)";
-        internal static readonly string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
         internal static readonly string dictRegex = "({.*})";
-        internal static readonly string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
-        internal static readonly string intRegex = @"([-+]?\d+)[\s\n]*$";
         internal static readonly string basicImportRegex = @"(import)";
         internal static readonly string fromImportRegex = @"^(from)";
 
@@ -40,7 +34,7 @@ namespace DSIronPython
         internal static readonly Regex MATCH_LAST_WORD = new Regex(@"\w+$", RegexOptions.Compiled);
         internal static readonly Regex MATCH_FIRST_QUOTED_NAME = new Regex(quotesStringRegex, RegexOptions.Compiled);
         internal static readonly Regex MATCH_VALID_TYPE_NAME_CHARACTERS_ONLY = new Regex(@"^\w+", RegexOptions.Compiled);
-        internal static readonly Regex TRIPPLE_QUOTE_STRINGS = new Regex(".*?\\\"{{3}}[\\s\\S]+?\\\"{{3}}", RegexOptions.Compiled);
+        internal static readonly Regex TRIPLE_QUOTE_STRINGS = new Regex(".*?\\\"{{3}}[\\s\\S]+?\\\"{{3}}", RegexOptions.Compiled);
 
         internal static readonly Regex MATCH_IMPORT_STATEMENTS = new Regex(@"^import\s+?(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
         internal static readonly Regex MATCH_FROM_IMPORT_STATEMENTS = new Regex(@"from\s+?([\w.]+)\s+?import\s+?([\w, *]+)", RegexOptions.Compiled | RegexOptions.Multiline);
@@ -121,7 +115,7 @@ namespace DSIronPython
         /// <returns></returns>
         private string StripDocStrings(string code)
         {
-            var matches = TRIPPLE_QUOTE_STRINGS.Split(code);
+            var matches = TRIPLE_QUOTE_STRINGS.Split(code);
             return String.Join("", matches);
         }
 
@@ -130,7 +124,7 @@ namespace DSIronPython
         /// </summary>
         /// <param name="code">Script code to search for CLR references</param>
         /// <returns></returns>
-        private List<string> findClrReferences(string code)
+        private List<string> FindClrReferences(string code)
         {
             var statements = new List<string>();
             foreach (var line in code.Split(new[] { '\n', ';' }))
@@ -332,10 +326,14 @@ namespace DSIronPython
             return statements;
         }
 
+        /// <summary>
+        /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
+        /// </summary>
+        /// <param name="code">The code to discover the import statements.</param>
         public void UpdateImportedTypes(string code)
         {
             // Detect all lib references prior to attempting to import anything
-            var refs = findClrReferences(code);
+            var refs = FindClrReferences(code);
             foreach (var statement in refs)
             {
                 var previousTries = 0;
@@ -444,12 +442,23 @@ namespace DSIronPython
             }
         }
 
+        /// <summary>
+        /// Traverse the given source code and define variable types based on
+        /// the current scope
+        /// </summary>
+        /// <param name="code">The source code to look through</param>
         public void UpdateVariableTypes(string code)
         {
             VariableTypes.Clear();
             VariableTypes = FindAllVariableAssignments(code);
         }
 
+        /// <summary>
+        /// Attempts to find all variable assignments in the code. Has basic variable unpacking support.
+        /// We don't need to check the line indices because regex matches are ordered as per the code.
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary of variable name and type pairs</returns>
         public Dictionary<string, Type> FindAllVariableAssignments(string code)
         {
 
@@ -522,7 +531,12 @@ namespace DSIronPython
             return assignments;
         }
 
-        //TODO - this method is ONLY used to support legacy IronPythonCompletionProvider remove it in 3.0.
+        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
+        /// <summary>
+        /// Find all variable assignments in the source code and attempt to discover their type
+        /// </summary>
+        /// <param name="code">The code from which to get the assignments</param>
+        /// <returns>A dictionary matching the name of the variable to a tuple of typeName, character at which the assignment was found, and the CLR type</returns>
         public Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code)
         {
             var variables = new Dictionary<string, Tuple<string, int, Type>>();
@@ -585,7 +599,13 @@ namespace DSIronPython
             return variables;
         }
 
-        //TODO - this method is ONLY used to support legacy IronPythonCompletionProvider remove it in 3.0.
+        [Obsolete("Only used to support legacy IronPythonCodeCompletionProvider - remove in 3.0")]
+        /// <summary>
+        /// Attempts to find import statements that look like
+        ///     import lib
+        /// </summary>
+        /// <param name="code">The code to search</param>
+        /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         private static Dictionary<string, string> FindBasicImportStatements(string code)
         {
             var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
@@ -640,6 +660,12 @@ namespace DSIronPython
             return foundType;
         }
 
+        /// <summary>
+        /// List all of the members in a PythonModule
+        /// </summary>
+        /// <param name="module">A reference to the module</param>
+        /// <param name="name">The name of the module</param>
+        /// <returns>A list of completion data for the module</returns>
         public IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name)
         {
             var items = new List<Tuple<string, string,bool, ExternalCodeCompletionType>>();
@@ -654,6 +680,12 @@ namespace DSIronPython
             return items;
         }
 
+        /// <summary>
+        /// List all of the members in a CLR Namespace
+        /// </summary>
+        /// <param name="ns">A reference to the module</param>
+        /// <param name="name">The name of the module</param>
+        /// <returns>A list of completion data for the namespace</returns>
         public IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nst, string name)
         {
             var items = new List<Tuple<string, string,bool, ExternalCodeCompletionType>>();
@@ -680,6 +712,13 @@ namespace DSIronPython
 
             return items;
         }
+
+        /// <summary>
+        /// List all of the members in a CLR type
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <param name="name">The name for the type</param>
+        /// <returns>A list of completion data for the type</returns>
         public IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name)
         {
             var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
@@ -738,6 +777,12 @@ namespace DSIronPython
             return items;
         }
 
+        /// <summary>
+        /// Recursively lookup a member in a given namespace.
+        /// </summary>
+        /// <param name="name">A name for a type, possibly delimited by periods.</param>
+        /// <param name="n">The namespace</param>
+        /// <returns>The type as an object</returns>
         public object LookupMember(string name, object n)
         {
             if(!(n is NamespaceTracker))
@@ -770,6 +815,11 @@ namespace DSIronPython
             return null;
         }
 
+        /// <summary>
+        /// Recursively lookup a variable in the _scope
+        /// </summary>
+        /// <param name="name">A name for a type, possibly delimited by periods.</param>
+        /// <returns>The type as an object</returns>
         public object LookupMember(string name)
         {
             object varOutput;
@@ -798,12 +848,22 @@ namespace DSIronPython
         }
 
         private ScriptEngine engine;
+        /// <summary>
+        /// The engine used for autocompletion.  This essentially keeps
+        /// track of the state of the editor, allowing access to variable types and
+        /// imported symbols.
+        /// </summary>
         public object Engine
         {
             get { return engine; }
             set { engine = (ScriptEngine)value; }
         }
         private ScriptScope scope;
+
+        /// <summary>
+        /// The scope used by the engine.  This is where all the loaded symbols
+        /// are stored.  It's essentially an environment dictionary.
+        /// </summary>
         public object Scope
         {
             get { return scope; }
@@ -813,18 +873,24 @@ namespace DSIronPython
         #endregion
 
         /// <summary>
-        /// Already discovered variable types
+        /// Already discovered variable types.
         /// </summary>
         public Dictionary<string, Type> VariableTypes { get; set; }
 
         #region IExternalCodeCompletionProviderCore implementation
 
         /// <summary>
-        /// Types that have already been imported into the scope
+        /// Types that have already been imported into the scope.
         /// </summary>
         public Dictionary<string, Type> ImportedTypes { get; set; }
 
-
+        /// <summary>
+        /// Generate completion data for the specified text, while import the given types into the
+        /// scope and discovering variable assignments.
+        /// </summary>
+        /// <param name="code">The code to parse</param>
+        /// <param name="expand">Determines if the entire namespace should be used</param>
+        /// <returns>Return a list of IExternalCodeCompletionData </returns>
         public IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false)
         {
             IEnumerable<IronPythonCodeCompletionData2> items = null;
@@ -906,6 +972,12 @@ namespace DSIronPython
             return items.ToArray();
         }
 
+        /// <summary>
+        /// Try to generate a description from a typename.
+        /// </summary>
+        /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
+        /// <param name="item">Everything after the stub</param>
+        /// <param name="isInstance">Whether it's an instance or not</param>
         public string GetDescription(string stub, string item, bool isInstance)
         {
             string description = "No description available"; // the default
@@ -944,7 +1016,7 @@ namespace DSIronPython
 
             return description;
         }
-
+        //TODO address these API issues and summaries.
         public bool MatchingEngine(string engineName)
         {
            if (engineName == "IronPython2")
