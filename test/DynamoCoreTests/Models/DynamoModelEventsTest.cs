@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CoreNodeModels;
 using Dynamo.Graph;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using NUnit.Framework;
@@ -45,6 +47,12 @@ namespace Dynamo.Tests.ModelsTest
 
             Assert.IsNotNull(cbn);
             return cbn;
+        }
+
+        private void UpdateCodeBlockNodeContent(CodeBlockNodeModel cbn, string value)
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, cbn.GUID, "Code", value);
+            CurrentDynamoModel.ExecuteCommand(command);
         }
 
         /// <summary>
@@ -178,27 +186,38 @@ namespace Dynamo.Tests.ModelsTest
             //Arrange
             //This will subscribe our local method to the DeletionStarted event
             CurrentDynamoModel.DeletionStarted += CurrentDynamoModel_DeletionStarted;
-            List<ModelBase> modelsToDelete = new List<ModelBase>();
-            Guid groupid = Guid.NewGuid();
-            CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", groupid);
 
-            var annotations = CurrentDynamoModel.Workspaces.SelectMany(ws => ws.Annotations);
+            //This create a new Code Block node and update the content
+            var codeBlockNode0 = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNode0, @"true;");
 
-            foreach (var annotation in annotations)
-            {
-                modelsToDelete.Insert(0, annotation);
-            }
+            // Create the watch node.
+            var watch = new Watch();
+            var command = new DynCmd.CreateNodeCommand(
+                watch, 0, 0, true, false);
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            // Connect the two nodes
+            ConnectorModel.Make(codeBlockNode0, watch, 0, 0);
+
+            // Run
+            Assert.DoesNotThrow(BeginRun);
+
+            // Check that we have two nodes in the current workspace, the Watch node and the CodeBlock
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // Delete the code block node, internally this will call the OnDeletionStarted() method
+            var nodeCodeBlock = new List<ModelBase> { codeBlockNode0 };
+            CurrentDynamoModel.DeleteModelInternal(nodeCodeBlock);
+
+            // Check that we have only the watch in the current workspace
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual("Watch", CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault().GetType().Name);
+
+            // Try to delete the Watch node
+            var nodeWatch = new List<ModelBase> { watch };
+            CurrentDynamoModel.DeleteModelInternal(nodeWatch);
             
-            //Act
-            var cancelEventArgs = new System.ComponentModel.CancelEventArgs();
-            CurrentDynamoModel.OnDeletionStarted(modelsToDelete, cancelEventArgs);
-
-            //Inside the OnDeletionStarted there is a condition checking the Cancel state, then we need to set the value to true
-            cancelEventArgs.Cancel = true;
-            CurrentDynamoModel.OnDeletionStarted(modelsToDelete, cancelEventArgs);
-
-            //Assert
-            //This will validate that the local handler was executed and set the flag in true
             CurrentDynamoModel.DeletionStarted -= CurrentDynamoModel_DeletionStarted;
             Assert.IsTrue(deletionStarted);
         }
