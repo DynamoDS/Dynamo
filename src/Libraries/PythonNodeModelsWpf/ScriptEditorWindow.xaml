@@ -12,7 +12,9 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}" 
     Height="500" 
-    Width="600">
+    Width="600"
+    MinWidth="500"
+    MinHeight="450">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -72,7 +74,7 @@
                           FontSize="14px"
                           Height="40"
                           Width="Auto"
-                          Margin="2"
+                          Margin="1"
                           Grid.Column="1"
                           Foreground="{StaticResource DynamoStandardLableTextBrush}" 
                           Visibility="Collapsed"/>
@@ -82,12 +84,12 @@
                         Click="OnSaveClicked" 
                         HorizontalAlignment="Right" 
                         VerticalAlignment="Bottom" 
-                        Margin="2" 
+                        Margin="1" 
                         Grid.Column="1">
                     <Button.Resources>
                         <fa:ImageAwesome x:Key ="Shape"
                                          Icon="Save"
-                                         Foreground="DarkSeaGreen"
+                                         Foreground="#bbbbbb"
                                          ToolTip="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}"
                                          Height="14"
                                          Margin="4,0,0,0"/>
@@ -99,12 +101,12 @@
                         Click="OnRevertClicked" 
                         VerticalAlignment="Bottom" 
                         HorizontalAlignment="Right" 
-                        Margin="2" 
+                        Margin="1" 
                         Grid.Column="1">
                     <Button.Resources>
                         <fa:ImageAwesome x:Key ="Shape"
                                          Icon="Undo"
-                                         Foreground="DarkSeaGreen"
+                                         Foreground="#bbbbbb"
                                          ToolTip="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}"
                                          Height="14"
                                          Margin="4,0,0,0"/>
@@ -116,12 +118,12 @@
                         Click="OnMoreInfoClicked" 
                         HorizontalAlignment="Right" 
                         VerticalAlignment="Bottom" 
-                        Margin="2" 
+                        Margin="1" 
                         Grid.Column="1">
                     <Button.Resources>
                         <fa:ImageAwesome x:Key ="Shape"
                                          Icon="ExclamationCircle"
-                                         Foreground="Red"
+                                         Foreground="#bbbbbb"
                                          ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}"
                                          Height="14"
                                          Margin="4,0,0,0"/>
