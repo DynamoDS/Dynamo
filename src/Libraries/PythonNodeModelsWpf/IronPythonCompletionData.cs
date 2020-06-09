@@ -27,10 +27,25 @@ namespace Dynamo.Python
             ENUM
         };
 
-        internal CompletionType ConvertCompletionType(ExternalCodeCompletionType completionType)
+        private static readonly Dictionary<ExternalCodeCompletionType, CompletionType> EnumMap =
+            new Dictionary<ExternalCodeCompletionType, CompletionType>()
+            {
+                {ExternalCodeCompletionType.Namespace, CompletionType.NAMESPACE },
+                {ExternalCodeCompletionType.Method, CompletionType.METHOD },
+                {ExternalCodeCompletionType.Field, CompletionType.FIELD },
+                {ExternalCodeCompletionType.Class, CompletionType.CLASS },
+                {ExternalCodeCompletionType.Property, CompletionType.PROPERTY },
+                {ExternalCodeCompletionType.Enum, CompletionType.ENUM },
+            };
+
+        internal static CompletionType ConvertCompletionType(ExternalCodeCompletionType completionType)
         {
-            return(IronPythonCompletionData.CompletionType)Enum.Parse(typeof(IronPythonCompletionData.CompletionType),
-                   Enum.GetName(typeof(ExternalCodeCompletionType),completionType));
+            if (EnumMap.ContainsKey(completionType))
+            {
+                return EnumMap[completionType];
+            }
+            //if the type can't be found return method by default.
+            return CompletionType.METHOD;
         }
 
         internal IronPythonCompletionData(IExternalCodeCompletionData data)

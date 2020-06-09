@@ -20,9 +20,10 @@ namespace Dynamo.Python
     //TODO move to own file
     internal class SharedCompletionProvider : LogSourceBase
     {
-        private IExternalCodeCompletionProviderCore providerImplementation;
 
         #region Properties and Fields
+        private IExternalCodeCompletionProviderCore providerImplementation;
+
         #endregion
 
         #region constructors
@@ -34,7 +35,11 @@ namespace Dynamo.Python
             if(matchingCore != null)
             {
                 this.providerImplementation = matchingCore;
-                this.providerImplementation.ImportStdLibrary(dynamoCoreDir);
+                this.providerImplementation.Initialize(dynamoCoreDir);
+                if(providerImplementation is ILogSource)
+                {
+                    (providerImplementation as ILogSource).MessageLogged += this.Log;
+                }
             }
         }
 
@@ -75,6 +80,8 @@ namespace Dynamo.Python
             return null;
 
         }
+
+       
         #endregion
 
         #region Methods
@@ -87,7 +94,7 @@ namespace Dynamo.Python
     }
 
 
-    //TODO this class needs to stay here with a reference to IronPython for now, its use will be
+    //This class needs to stay here with a reference to IronPython for now, its use will be
     //completely removed from Dynamo though - so the dependencey on Ironpython will ONLY be at compile time.
     [Obsolete("Do Not Use! This class will be removed in a future version of Dynamo," +
         "Instead Reference the completion providers for a specific scripting engine, which implement " +
@@ -152,7 +159,6 @@ namespace Dynamo.Python
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
 
 
-        //TODO moved to IronPythonCompletionProviderCore.
         /// <summary>
         /// Maps a basic variable regex to a basic python type.
         /// </summary>      
@@ -191,7 +197,7 @@ namespace Dynamo.Python
             if (matchingCore != null)
             {
                 this.providerImplementation = matchingCore;
-                this.providerImplementation.ImportStdLibrary(dynamoCoreDir);
+                this.providerImplementation.Initialize(dynamoCoreDir);
             }
         }
 
@@ -219,7 +225,6 @@ namespace Dynamo.Python
         /// <returns>Return a list of IronPythonCompletionData </returns>
         public ICompletionData[] GetCompletionData(string code, bool expand = false)
         {
-            //TODO do conversion
             return this.providerImplementation.GetCompletionData(code, expand).
                 Select(x => new IronPythonCompletionData(x)).ToArray();
         }
@@ -235,11 +240,7 @@ namespace Dynamo.Python
             var items = new List<IronPythonCompletionData>();
             foreach(var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
             {
-                //convert generalCompletiontype to legacy completionType
-                
-                //TODO try catch
-               var convertedCompletionType = (IronPythonCompletionData.CompletionType)Enum.Parse(typeof(IronPythonCompletionData.CompletionType), 
-                    Enum.GetName(typeof(ExternalCodeCompletionType), completion.Item4));
+                var convertedCompletionType = IronPythonCompletionData.ConvertCompletionType(completion.Item4);
 
                 items.Add(new IronPythonCompletionData(completion.Item1, completion.Item2, completion.Item3, convertedCompletionType, this));
 
@@ -259,11 +260,7 @@ namespace Dynamo.Python
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembersFromTracker(ns, name))
             {
-                //convert generalCompletiontype to legacy completionType
-
-                //TODO try catch
-                var convertedCompletionType = (IronPythonCompletionData.CompletionType)Enum.Parse(typeof(IronPythonCompletionData.CompletionType),
-                     Enum.GetName(typeof(ExternalCodeCompletionType), completion.Item4));
+                var convertedCompletionType = IronPythonCompletionData.ConvertCompletionType(completion.Item4);
 
                 items.Add(new IronPythonCompletionData(completion.Item1, completion.Item2, completion.Item3, convertedCompletionType, this));
 
@@ -285,11 +282,7 @@ namespace Dynamo.Python
             var items = new List<IronPythonCompletionData>();
             foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(type, name))
             {
-                //convert generalCompletiontype to legacy completionType
-
-                //TODO try catch
-                var convertedCompletionType = (IronPythonCompletionData.CompletionType)Enum.Parse(typeof(IronPythonCompletionData.CompletionType),
-                     Enum.GetName(typeof(ExternalCodeCompletionType), completion.Item4));
+                var convertedCompletionType = IronPythonCompletionData.ConvertCompletionType(completion.Item4);
 
                 items.Add(new IronPythonCompletionData(completion.Item1, completion.Item2, completion.Item3, convertedCompletionType, this));
 

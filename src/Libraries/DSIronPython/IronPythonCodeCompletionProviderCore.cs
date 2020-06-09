@@ -1,4 +1,5 @@
 ﻿using Autodesk.DesignScript.Interfaces;
+using Dynamo.Logging;
 using IronPython.Runtime;
 using IronPython.Runtime.Types;
 using Microsoft.Scripting;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 namespace DSIronPython
 {
 
-    internal class IronPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILegacyPythonCompletionCore
+    internal class IronPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILegacyPythonCompletionCore, ILogSource
     {
         #region internal constants
         internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
@@ -673,7 +674,7 @@ namespace DSIronPython
 
             foreach (var member in d)
             {
-                var completionType = member.Value is BuiltinFunction ? ExternalCodeCompletionType.METHOD : ExternalCodeCompletionType.FIELD;
+                var completionType = member.Value is BuiltinFunction ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
                 items.Add(Tuple.Create((string)member.Key, name, false, completionType));
             }
 
@@ -694,19 +695,19 @@ namespace DSIronPython
             {
                 if (member.Value is NamespaceTracker)
                 {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.NAMESPACE));
+                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Namespace));
                 }
                 else if (member.Value is FieldTracker)
                 {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.FIELD));
+                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Field));
                 }
                 else if (member.Value is PropertyTracker)
                 {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.PROPERTY));
+                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Property));
                 }
                 else if (member.Value is TypeTracker)
                 {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.CLASS));
+                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Class));
                 }
             }
 
@@ -737,7 +738,7 @@ namespace DSIronPython
                 {
                     if (!completionsList.ContainsKey(methodInfoItem.Name))
                     {
-                        completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.METHOD);
+                        completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.Method);
                     }
                 }
             }
@@ -746,7 +747,7 @@ namespace DSIronPython
             {
                 if (!completionsList.ContainsKey(propertyInfoItem.Name))
                 {
-                    completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.PROPERTY);
+                    completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.Property);
                 }
             }
 
@@ -754,7 +755,7 @@ namespace DSIronPython
             {
                 if (!completionsList.ContainsKey(fieldInfoItem.Name))
                 {
-                    completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.FIELD);
+                    completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.Field);
                 }
             }
 
@@ -764,7 +765,7 @@ namespace DSIronPython
                 {
                     if (!completionsList.ContainsKey(en))
                     {
-                        completionsList.Add(en, ExternalCodeCompletionType.FIELD);
+                        completionsList.Add(en, ExternalCodeCompletionType.Field);
                     }
                 }
             }
@@ -859,6 +860,7 @@ namespace DSIronPython
             set { engine = (ScriptEngine)value; }
         }
         private ScriptScope scope;
+
 
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
@@ -1016,7 +1018,12 @@ namespace DSIronPython
 
             return description;
         }
-        //TODO address these API issues and summaries.
+
+        /// <summary>
+        /// Used to determine if this IExternalCodeCompletionProviderCore can provide completions for the given engine.
+        /// </summary>
+        /// <param name="engineName"></param>
+        /// <returns></returns>
         public bool MatchingEngine(string engineName)
         {
            if (engineName == "IronPython2")
@@ -1026,7 +1033,11 @@ namespace DSIronPython
             return false;
         }
 
-        public void ImportStdLibrary(string dynamoCorePath)
+        /// <summary>
+        /// Used to load initialize libraries and types that should be available by default.
+        /// </summary>
+        /// <param name="dynamoCorePath"></param>
+        public void Initialize(string dynamoCorePath)
         {
             string pythonLibDir = string.Empty;
             // Determine if the Python Standard Library is available in the given context
@@ -1055,10 +1066,7 @@ namespace DSIronPython
             }
         }
 
-        public void Log(string message)
-        {
-           //TODO hookup to container logger.
-        }
+      
 
         #endregion
 
@@ -1133,8 +1141,18 @@ namespace DSIronPython
 
         #endregion
 
+        #region ILogSource Implementation
+        /// <summary>
+        /// Raise this event to request loggers log this message.
+        /// </summary>
+        public event Action<ILogMessage> MessageLogged;
 
-       
+        private void Log( string message)
+        {
+            MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+        #endregion
+
     }
 
     //TODO move to own file?
@@ -1167,7 +1185,7 @@ namespace DSIronPython
             get { return this.Text; }
         }
 
-        public object Description
+        public string Description
         {
             get
             {

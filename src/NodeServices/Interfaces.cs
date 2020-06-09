@@ -192,9 +192,7 @@ namespace Autodesk.DesignScript.Interfaces
         void PreloadAsmLibraries(string baseDirectory);
     }
 
-    //TODO should this live in DynamoServices?
-    //make these internal somehow?
-    public interface IExternalCodeCompletionProviderCore
+    internal interface IExternalCodeCompletionProviderCore
     {
 
         /// <summary>
@@ -217,19 +215,25 @@ namespace Autodesk.DesignScript.Interfaces
         IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false);
 
         /// <summary>
-        /// Try to generate a description from a typename
+        /// Try to generate a description from a typename.
         /// </summary>
         /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
         /// <param name="item">Everything after the stub</param>
         /// <param name="isInstance">Whether it's an instance or not</param>
         string GetDescription(string stub, string item, bool isInstance);
 
+        /// <summary>
+        /// Used to determine if this IExternalCodeCompletionProviderCore can provide completions for the given engine.
+        /// </summary>
+        /// <param name="engineName"></param>
+        /// <returns></returns>
         bool MatchingEngine(string engineName);
 
-        //TODO think about this, more general?
-        void ImportStdLibrary(string dynamoCorePath);
-
-        void Log(string message);
+        /// <summary>
+        /// Used to load initialize libraries and types that should be available by default.
+        /// </summary>
+        /// <param name="dynamoCorePath"></param>
+        void Initialize(string dynamoCorePath);
 
     }
 
@@ -238,10 +242,8 @@ namespace Autodesk.DesignScript.Interfaces
     /// This interface is essentially the same as ICompletionData from AvalonEdit 
     /// except it does not include any references to WPF.
     /// </summary>
-    public interface IExternalCodeCompletionData
-    {
-        //TODO hmmmmmm what about image path or image instead?
-      
+    internal interface IExternalCodeCompletionData
+    {      
         ExternalCodeCompletionType CompletionType  { get; }
         //
         // Summary:
@@ -255,7 +257,7 @@ namespace Autodesk.DesignScript.Interfaces
         //
         // Summary:
         //     Gets the description.
-        object Description { get; }
+        string Description { get; }
         //
         // Summary:
         //     Gets the priority. This property is used in the selection logic. You can use
@@ -263,15 +265,19 @@ namespace Autodesk.DesignScript.Interfaces
         double Priority { get; }
     }
 
-    public enum ExternalCodeCompletionType
+    /// <summary>
+    /// This Enum represents the current completion type that is found.
+    /// Currently this is used to decorate the returned completion with an image.
+    /// </summary>
+    internal enum ExternalCodeCompletionType
     {
-        NAMESPACE,
-        METHOD,
-        FIELD,
-        CLASS,
-        PROPERTY,
-        ENUM,
-        OTHER
+        Other,
+        Namespace,
+        Method,
+        Field,
+        Class,
+        Property,
+        Enum,
     };
 
     /// <summary>
