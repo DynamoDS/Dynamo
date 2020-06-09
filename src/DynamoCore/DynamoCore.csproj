@@ -205,7 +205,6 @@ limitations under the License.
     <Compile Include="Graph\Nodes\CodeBlockUtils.cs" />
     <Compile Include="Search\SearchElements\SearchElementGroup.cs" />
     <Compile Include="Core\NotificationObject.cs" />
-    <Compile Include="Scheduler\QueryMirrorDataAsyncTask.cs" />
     <Compile Include="Scheduler\PreviewGraphAsyncTask.cs" />
     <Compile Include="Scheduler\UpdateRenderPackageAsyncTask.cs" />
     <Compile Include="Engine\CodeCompletion\CodeCompletionServices.cs" />
