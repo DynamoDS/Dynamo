@@ -26,4 +26,4 @@ jobs:
       run: |
         cd "$GITHUB_WORKSPACE/bin/AnyCPU/Release"
         echo "***Locating DynamoCLI!***"
-        ./DynamoCLI.exe -h
+        mono ./DynamoCLI.exe -h
