@@ -98,6 +98,7 @@ namespace Dynamo.Python
     public class IronPythonCompletionProvider : LogSourceBase
     {
         private IExternalCodeCompletionProviderCore providerImplementation;
+        private const string providerTypeName = "DSIronPython.IronPythonCodeCompletionProviderCore, DSIronPython";
 
         #region Properties and fields
 
@@ -400,7 +401,7 @@ namespace Dynamo.Python
         /// <returns>A list of tuples that contain the namespace, the module, and the custom name</returns>
         private static List<Tuple<string, string, string>> FindAllImportStatements(string code)
         {
-            return Type.GetType("DSIronPython.IronPythonCodeCompletionProviderCore").GetMethod(nameof(FindAllImportStatements),
+            return Type.GetType(providerTypeName).GetMethod(nameof(FindAllImportStatements),
              BindingFlags.NonPublic | BindingFlags.Static)
             .Invoke(null, new[] { code }) as List<Tuple<string, string, string>>;
 
@@ -426,7 +427,7 @@ namespace Dynamo.Python
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
-            return Type.GetType("DSIronPython.IronPythonCodeCompletionProviderCore").GetMethod(nameof(FindAllTypeImportStatements),
+            return Type.GetType(providerTypeName).GetMethod(nameof(FindAllTypeImportStatements),
           BindingFlags.NonPublic | BindingFlags.Static)
         .Invoke(null, new[] { code }) as Dictionary<string, string>;
 
@@ -441,7 +442,7 @@ namespace Dynamo.Python
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
-            return Type.GetType("DSIronPython.IronPythonCodeCompletionProviderCore").GetMethod(nameof(FindTypeSpecificImportStatements),
+            return Type.GetType(providerTypeName).GetMethod(nameof(FindTypeSpecificImportStatements),
               BindingFlags.NonPublic | BindingFlags.Static)
             .Invoke(null, new[] { code }) as Dictionary<string, string>;
 
@@ -455,7 +456,7 @@ namespace Dynamo.Python
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
         public static Dictionary<string, string> FindBasicImportStatements(string code)
         {
-            return Type.GetType("DSIronPython.IronPythonCodeCompletionProviderCore").GetMethod(nameof(FindBasicImportStatements),
+            return Type.GetType(providerTypeName).GetMethod(nameof(FindBasicImportStatements),
                  BindingFlags.NonPublic | BindingFlags.Static)
                .Invoke(null, new[] { code }) as Dictionary<string, string>;
         }
@@ -469,7 +470,7 @@ namespace Dynamo.Python
         /// <returns>A dictionary of name to assignment line pairs</returns>
         public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
-            return Type.GetType("DSIronPython.IronPythonCodeCompletionProviderCore").GetMethod(nameof(FindVariableStatementWithRegex),
+            return Type.GetType(providerTypeName).GetMethod(nameof(FindVariableStatementWithRegex),
                 BindingFlags.NonPublic | BindingFlags.Static)
               .Invoke(null, new[] { code, valueRegex }) as Dictionary<string, string>;
         }

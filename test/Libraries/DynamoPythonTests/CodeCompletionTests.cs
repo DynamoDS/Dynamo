@@ -95,6 +95,9 @@ namespace DynamoPythonTests
                 // These tests need "DSIronPythonNode.dll" under "nodes" folder.
                 Path.Combine(moduleRootFolder, "nodes")
             };
+            //for some legacy tests we'll need the DSIronPython binary loaded manually
+            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
+            Assembly.LoadFrom(Path.Combine(moduleRootFolder, "DSIronPython.dll"));
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;

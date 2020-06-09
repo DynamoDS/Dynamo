@@ -865,7 +865,7 @@ namespace DSIronPython
                         // Namespace type
                         if (namespaceTracker != null)
                         {
-                            items = EnumerateMembers(namespaceTracker, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                            items = EnumerateMembersFromTracker(namespaceTracker, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
                         }
                         else
                         {
