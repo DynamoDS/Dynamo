@@ -25,5 +25,5 @@ jobs:
     - name: Navigate to Dynamo Folder
       run: |
         cd "$GITHUB_WORKSPACE/bin/AnyCPU/Release"
-        echo "***Locating DynamoSandbox!***"
-        test "./DynamoSandbox.exe" && echo "DynamoSandbox exists!"
+        echo "***Locating DynamoCLI!***"
+        mono ./DynamoCLI.exe -h
