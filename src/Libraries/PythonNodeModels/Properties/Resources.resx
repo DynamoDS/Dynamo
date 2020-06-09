@@ -177,6 +177,18 @@
     <value>IronPython2</value>
   </data>
   <data name="PythonScriptEditorMoreInfoButton" xml:space="preserve">
-    <value>More Information</value>
+    <value>Learn More</value>
+  </data>
+  <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
+    <value>Learn about Python3 updates.</value>
+  </data>
+  <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
+    <value>Revert the changes made to current Python node editor.</value>
+  </data>
+  <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
+    <value>Run Python node with current code in editor.</value>
+  </data>
+  <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
+    <value>Save the changes made to current Python node editor.</value>
   </data>
 </root>

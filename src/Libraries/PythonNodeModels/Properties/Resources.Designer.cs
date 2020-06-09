@@ -169,11 +169,20 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to More Information.
+        ///   Looks up a localized string similar to Learn More.
         /// </summary>
         public static string PythonScriptEditorMoreInfoButton {
             get {
                 return ResourceManager.GetString("PythonScriptEditorMoreInfoButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about Python3 updates..
+        /// </summary>
+        public static string PythonScriptEditorMoreInfoButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMoreInfoButtonTooltip", resourceCulture);
             }
         }
         
@@ -196,6 +205,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Revert the changes made to current Python node editor..
+        /// </summary>
+        public static string PythonScriptEditorRevertButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorRevertButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
         public static string PythonScriptEditorRunButton {
@@ -205,11 +223,29 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Run Python node with current code in editor..
+        /// </summary>
+        public static string PythonScriptEditorRunButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorRunButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string PythonScriptEditorSaveChangesButton {
             get {
                 return ResourceManager.GetString("PythonScriptEditorSaveChangesButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the changes made to current Python node editor..
+        /// </summary>
+        public static string PythonScriptEditorSaveChangesButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorSaveChangesButtonTooltip", resourceCulture);
             }
         }
         
