@@ -895,7 +895,7 @@ namespace DSIronPython
         /// <returns>Return a list of IExternalCodeCompletionData </returns>
         public IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false)
         {
-            IEnumerable<IronPythonCodeCompletionData2> items = null;
+            IEnumerable<IronPythonCodeCompletionDataCore> items = new List<IronPythonCodeCompletionDataCore>();
 
             if (code.Contains("\"\"\""))
             {
@@ -918,12 +918,12 @@ namespace DSIronPython
                     // CLR type
                     if (type != null)
                     {
-                        items = EnumerateMembers(type, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                        items = EnumerateMembers(type, name).Select(x => new IronPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                     }
                     // Variable type
                     else if (VariableTypes.TryGetValue(name, out type))
                     {
-                        items = EnumerateMembers(type, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                        items = EnumerateMembers(type, name).Select(x => new IronPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                     }
                     else
                     {
@@ -933,7 +933,7 @@ namespace DSIronPython
                         // Namespace type
                         if (namespaceTracker != null)
                         {
-                            items = EnumerateMembersFromTracker(namespaceTracker, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                            items = EnumerateMembersFromTracker(namespaceTracker, name).Select(x => new IronPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                         }
                         else
                         {
@@ -942,7 +942,7 @@ namespace DSIronPython
                             // Python Module type
                             if (pythonModule != null)
                             {
-                                items = EnumerateMembers(pythonModule, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                items = EnumerateMembers(pythonModule, name).Select(x => new IronPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
                             // Python type
                             else if (mem is PythonType)
@@ -952,7 +952,7 @@ namespace DSIronPython
 
                                 if (value != null)
                                 {
-                                    items = EnumerateMembers(value, name).Select(x => new IronPythonCodeCompletionData2(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                    items = EnumerateMembers(value, name).Select(x => new IronPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                                 }
                             }
                         }
@@ -966,7 +966,7 @@ namespace DSIronPython
 
             // If unable to find matching results and expand was set to false,
             // try again using the full namespace (set expand to true)
-            if (items == null && !expand)
+            if (!items.Any() && !expand)
             {
                 return GetCompletionData(code, true);
             }
@@ -1072,6 +1072,7 @@ namespace DSIronPython
 
 
         #region constructor
+
         public IronPythonCodeCompletionProviderCore()
         {
             engine = IronPython.Hosting.Python.CreateEngine();
@@ -1152,55 +1153,6 @@ namespace DSIronPython
             MessageLogged?.Invoke(LogMessage.Info(message));
         }
         #endregion
-
-    }
-
-    //TODO move to own file?
-    //TODO better name - this class does not have a dep on Avalonedit or WPF...
-    //This is the concrete type that gets returned and converted to avalonedit type on WPF side.
-    internal class IronPythonCodeCompletionData2 : IExternalCodeCompletionData
-    {
-        private IExternalCodeCompletionProviderCore provider;
-        private string description;
-
-        public IronPythonCodeCompletionData2(string text, string stub, bool isInstance,
-            ExternalCodeCompletionType completionType, IExternalCodeCompletionProviderCore providerCore)
-        {
-            this.Text = text;
-            this.Stub = stub;
-            this.IsInstance = isInstance;
-            this.provider = providerCore;
-            this.CompletionType = completionType;
-        }
-
-        public string Text { get; private set; }
-
-        public string Stub { get; private set; }
-
-        public bool IsInstance { get; private set; }
-
-        // Use this property if you want to show a fancy UIElement in the drop down list.
-        public object Content
-        {
-            get { return this.Text; }
-        }
-
-        public string Description
-        {
-            get
-            {
-                // lazily get the description
-                if (description == null)
-                {
-                    description = provider.GetDescription(this.Stub, this.Text, this.IsInstance).TrimEnd('\r', '\n');
-                }
-
-                return description;
-            }
-        }
-        public double Priority { get { return 0; } }
-
-        public ExternalCodeCompletionType CompletionType {get; private set;}
 
     }
 

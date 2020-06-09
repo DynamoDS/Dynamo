@@ -81,6 +81,7 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="IronPythonCodeCompletionDataCore.cs" />
     <Compile Include="IronPythonCodeCompletionProviderCore.cs" />
     <Compile Include="IronPythonEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

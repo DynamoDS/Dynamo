@@ -98,6 +98,7 @@
     <Compile Include="ScriptEditorWindow.xaml.cs">
       <DependentUpon>ScriptEditorWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SharedCompletionProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
