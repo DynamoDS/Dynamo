@@ -341,6 +341,56 @@ b = c[w][x][y][z];";
 
         [Test]
         [Category("UnitTests")]
+        public void TestOutputPortUpdateWithFunctionDef()
+        {
+            var cbn = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(cbn, 
+                "def foo ( a : double[], b :double[] )" +
+                "{" +
+                    "return = Count(a) + Count(b);" +
+                "}" + 
+                "a = [ 1, 2 ];" +
+                "b = [3, 4, 5];" +
+                "test = foo (a, b);"
+                );
+
+            Assert.IsNotNull(cbn);
+
+            Assert.IsTrue(cbn.CodeStatements.Any());
+
+            Assert.AreEqual(0, cbn.InPorts.Count);
+            Assert.AreEqual(3, cbn.OutPorts.Count);
+            Assert.AreEqual(0, cbn.AllConnectors.Count());
+            AssertPreviewValue(cbn.GUID.ToString(), 5);
+
+           UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
+                                           "{" +
+                                           "return = Count(a) + Count(b);" +
+                                           "}" +
+                                           "a = [ 1, 2 ];");
+           Assert.IsNotNull(cbn);
+
+           Assert.AreEqual(2, cbn.CodeStatements.Count());
+
+           Assert.AreEqual(0, cbn.InPorts.Count);
+           Assert.AreEqual(1, cbn.OutPorts.Count);
+           Assert.AreEqual(0, cbn.AllConnectors.Count());
+
+           UpdateCodeBlockNodeContent(cbn, "def foo ( a : double[], b :double[] )" +
+                                           "{" +
+                                           "return = Count(a) + Count(b);" +
+                                           "}");
+           Assert.IsNotNull(cbn);
+
+           Assert.AreEqual(1, cbn.CodeStatements.Count());
+
+           Assert.AreEqual(0, cbn.InPorts.Count);
+           Assert.AreEqual(0, cbn.OutPorts.Count);
+           Assert.AreEqual(0, cbn.AllConnectors.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestVarRecursiveDepInFunctionDef()
         {
             string openPath = Path.Combine(TestDirectory,
