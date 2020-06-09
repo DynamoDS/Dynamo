@@ -53,7 +53,7 @@ namespace Dynamo.Python
             this.Text = data.Text;
             this._description = data.Description as string;
 
-            buildCompletionTypeToIconMap();
+            BuildCompletionTypeToIconMap();
 
             this._image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
 
@@ -65,7 +65,7 @@ namespace Dynamo.Python
             this.IsInstance = isInstance;
             this.provider = provider;
 
-            buildCompletionTypeToIconMap();
+            BuildCompletionTypeToIconMap();
 
             this._image = TypeToIcon[type];
         }
@@ -128,7 +128,7 @@ namespace Dynamo.Python
             return bitmapImage;
         }
 
-        private void buildCompletionTypeToIconMap()
+        private void BuildCompletionTypeToIconMap()
         {
             if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
             {
