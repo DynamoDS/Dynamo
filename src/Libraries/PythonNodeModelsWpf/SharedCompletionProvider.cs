@@ -45,7 +45,7 @@ namespace Dynamo.Python
                 {
                     var inst = Activator.CreateInstance(type);
 
-                    if ((inst as IExternalCodeCompletionProviderCore).MatchingEngine(versionName))
+                    if ((inst as IExternalCodeCompletionProviderCore).IsSupportedEngine(versionName))
                     {
                         return inst as IExternalCodeCompletionProviderCore;
                     }

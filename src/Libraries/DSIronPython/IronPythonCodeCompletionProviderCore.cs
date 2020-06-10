@@ -1024,7 +1024,7 @@ namespace DSIronPython
         /// </summary>
         /// <param name="engineName"></param>
         /// <returns></returns>
-        public bool MatchingEngine(string engineName)
+        public bool IsSupportedEngine(string engineName)
         {
            if (engineName == "IronPython2")
             {

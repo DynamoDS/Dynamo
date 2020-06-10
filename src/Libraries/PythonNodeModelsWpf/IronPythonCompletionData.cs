@@ -13,7 +13,7 @@ namespace Dynamo.Python
     /// completion drop down.
     public class IronPythonCompletionData : ICompletionData
     {
-        
+
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
         private IronPythonCompletionProvider provider;
 
@@ -69,7 +69,7 @@ namespace Dynamo.Python
 
             this._image = TypeToIcon[type];
         }
-        
+
         // image
         private BitmapImage _image;
         public System.Windows.Media.ImageSource Image
@@ -89,16 +89,16 @@ namespace Dynamo.Python
         // Use this property if you want to show a fancy UIElement in the drop down list.
         public object Content
         {
-            get { return this.Text;  }
+            get { return this.Text; }
         }
 
         // description
         private string _description;
-        
-        //TODO this is unused - just don't implement it?
+
         public object Description
         {
-            get {
+            get
+            {
                 // lazily get the description
                 if (_description == null)
                 {
@@ -134,13 +134,15 @@ namespace Dynamo.Python
             {
                 var assembly = Assembly.GetExecutingAssembly();
 
-                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
-                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
-                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
+                TypeToIcon = new Dictionary<CompletionType, BitmapImage>
+                {
+                    {CompletionType.METHOD, GetBitmapImage(assembly, "method.png")},
+                    {CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png")},
+                    {CompletionType.FIELD, GetBitmapImage(assembly, @"field.png")},
+                    {CompletionType.CLASS, GetBitmapImage(assembly, @"class.png")},
+                    {CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png")},
+                    {CompletionType.ENUM, GetBitmapImage(assembly, @"property.png")}
+                };
             }
         }
     }

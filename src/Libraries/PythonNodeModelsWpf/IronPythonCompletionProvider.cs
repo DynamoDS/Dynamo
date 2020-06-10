@@ -115,7 +115,7 @@ namespace Dynamo.Python
         public IronPythonCompletionProvider(string dynamoCoreDir)
         {
             var versionName = Enum.GetName(typeof(PythonEngineVersion), PythonEngineVersion.IronPython2);
-            var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName,this.AsLogger());
+            var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName, this.AsLogger());
             if (matchingCore != null)
             {
                 this.providerImplementation = matchingCore;
@@ -159,15 +159,13 @@ namespace Dynamo.Python
         public List<IronPythonCompletionData> EnumerateMembers(PythonModule module, string name)
         {
             var items = new List<IronPythonCompletionData>();
-            foreach(var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
+            foreach (var completion in (providerImplementation as ILegacyPythonCompletionCore).EnumerateMembers(module, name))
             {
                 var convertedCompletionType = IronPythonCompletionData.ConvertCompletionType(completion.Item4);
 
                 items.Add(new IronPythonCompletionData(completion.Item1, completion.Item2, completion.Item3, convertedCompletionType, this));
-
             }
             return items;
-
         }
 
         /// <summary>
@@ -187,9 +185,6 @@ namespace Dynamo.Python
 
             }
             return items;
-
-
-
         }
 
         /// <summary>

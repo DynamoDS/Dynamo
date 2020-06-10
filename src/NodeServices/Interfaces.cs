@@ -227,7 +227,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         /// <param name="engineName"></param>
         /// <returns></returns>
-        bool MatchingEngine(string engineName);
+        bool IsSupportedEngine(string engineName);
 
         /// <summary>
         /// Used to load initialize libraries and types that should be available by default.
@@ -243,25 +243,28 @@ namespace Autodesk.DesignScript.Interfaces
     /// except it does not include any references to WPF.
     /// </summary>
     internal interface IExternalCodeCompletionData
-    {      
-        ExternalCodeCompletionType CompletionType  { get; }
-        //
-        // Summary:
-        //     Gets the text. This property is used to filter the list of visible elements.
+    {
+        /// <summary>
+        /// The CompletionType this completionData represents.
+        /// </summary>
+        ExternalCodeCompletionType CompletionType { get; }
+        /// <summary>
+        ///  Gets the text. This property is used to filter the list of visible elements.
+        /// </summary>
         string Text { get; }
-        //
-        // Summary:
-        //     The displayed content. This can be the same as 'Text', or a WPF UIElement if
-        //     you want to display rich content.
+        /// <summary>
+        ///    The displayed content. This can be the same as 'Text', or a WPF UIElement if
+        ///     you want to display rich content.
+        /// </summary>
         object Content { get; }
-        //
-        // Summary:
-        //     Gets the description.
+        /// <summary>
+        ///   Gets the description.
+        /// </summary>
         string Description { get; }
-        //
-        // Summary:
-        //     Gets the priority. This property is used in the selection logic. You can use
-        //     it to prefer selecting those items which the user is accessing most frequently.
+        /// <summary>
+        ///  Gets the priority. This property is used in the selection logic. You can use
+        ///   it to prefer selecting those items which the user is accessing most frequently.
+        /// </summary>
         double Priority { get; }
     }
 
@@ -292,9 +295,9 @@ namespace Autodesk.DesignScript.Interfaces
         Dictionary<string, Type> FindAllVariableAssignments(string code);
         Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code);
         Type TryGetType(string name);
-        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
-        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
-        IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
         object LookupMember(string name, object namesSaceTracker);
         object LookupMember(string name);
         object Engine { get; set; }

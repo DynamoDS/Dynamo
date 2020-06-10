@@ -2,7 +2,10 @@
 
 namespace DSIronPython
 {
-    //This is the concrete type that gets returned and converted to avalonedit type on WPF side.
+    /// <summary>
+    /// Concrete type that gets returned and converted to an Avalonedit type implementing
+    /// ICompletionData when used from WPF ScriptEditorContorl.
+    /// </summary>
     internal class IronPythonCodeCompletionDataCore : IExternalCodeCompletionData
     {
         private IExternalCodeCompletionProviderCore provider;
@@ -11,11 +14,11 @@ namespace DSIronPython
         public IronPythonCodeCompletionDataCore(string text, string stub, bool isInstance,
             ExternalCodeCompletionType completionType, IExternalCodeCompletionProviderCore providerCore)
         {
-            this.Text = text;
-            this.Stub = stub;
-            this.IsInstance = isInstance;
-            this.provider = providerCore;
-            this.CompletionType = completionType;
+            Text = text;
+            Stub = stub;
+            IsInstance = isInstance;
+            provider = providerCore;
+            CompletionType = completionType;
         }
 
         public string Text { get; private set; }
@@ -45,7 +48,7 @@ namespace DSIronPython
         }
         public double Priority { get { return 0; } }
 
-        public ExternalCodeCompletionType CompletionType {get; private set;}
+        public ExternalCodeCompletionType CompletionType { get; private set; }
 
     }
 
