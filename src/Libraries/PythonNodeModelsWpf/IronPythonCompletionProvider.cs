@@ -79,7 +79,6 @@ namespace Dynamo.Python
         /// Maps a regex to a particular python type.  Useful for matching things like dicts,
         /// floats, strings, etc.  Initialized by
         /// </summary>
-        [Obsolete("This property has been replaced with BasicVariableTypes and will be removed in Dynamo 3.0")]
         public Dictionary<string, Type> RegexToType = new Dictionary<string, Type>();
 
 
@@ -106,7 +105,6 @@ namespace Dynamo.Python
         /// <summary>
         /// Class constructor
         /// </summary>
-        [Obsolete("Use additional constructor passing the Dynamo Core Directory to enable Python Std Lib autocomplete.")]
         public IronPythonCompletionProvider() : this("")
         {
         }
@@ -134,7 +132,6 @@ namespace Dynamo.Python
         /// </summary>
         /// <param name="line">The code to parse</param>
         /// <returns>Return a list of IronPythonCompletionData </returns>
-        [Obsolete("Please use GetCompletionData with additional parameters, this method will be removed in Dynamo 3.0.")]
         public ICompletionData[] GetCompletionData(string line)
         {
             return GetCompletionData(line, false);
@@ -212,9 +209,6 @@ namespace Dynamo.Python
 
             }
             return items;
-
-
-
         }
 
         /// <summary>
@@ -243,7 +237,6 @@ namespace Dynamo.Python
         /// the dot character that triggered the completion. The text can contain the command line prompt
         /// '>>>' as this will be ignored.
         /// </summary>
-        [Obsolete("Please use additional GetDescription method as this one will be removed in Dynamo 3.0.")]
         public void GetDescription(string stub, string item, DescriptionUpdateDelegate updateDescription, bool isInstance)
         {
             string description = this.GetDescription(stub, item, isInstance);
@@ -275,10 +268,7 @@ namespace Dynamo.Python
         public void UpdateVariableTypes(string code)
         {
             (providerImplementation as ILegacyPythonCompletionCore).UpdateVariableTypes(code);
-
         }
-
-
 
         /// <summary>
         /// Returns a type from a name.  For example: System.Collections or System.Collections.ArrayList
@@ -300,8 +290,6 @@ namespace Dynamo.Python
             return Type.GetType(providerTypeName).GetMethod(nameof(FindAllImportStatements),
              BindingFlags.NonPublic | BindingFlags.Static)
             .Invoke(null, new[] { code }) as List<Tuple<string, string, string>>;
-
-        
         }
 
         /// <summary>
@@ -341,7 +329,6 @@ namespace Dynamo.Python
             return Type.GetType(providerTypeName).GetMethod(nameof(FindTypeSpecificImportStatements),
               BindingFlags.NonPublic | BindingFlags.Static)
             .Invoke(null, new[] { code }) as Dictionary<string, string>;
-
         }
 
         /// <summary>
@@ -370,8 +357,6 @@ namespace Dynamo.Python
                 BindingFlags.NonPublic | BindingFlags.Static)
               .Invoke(null, new[] { code, valueRegex }) as Dictionary<string, string>;
         }
-
-
 
         /// <summary>
         /// Find all import statements and import into scope.  If the type is already in the scope, this will be skipped.
