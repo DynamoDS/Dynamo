@@ -41,5 +41,3 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
-// This is added so the following assembly can assess WpfUtilites function and ViewExtensionManager
-[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]

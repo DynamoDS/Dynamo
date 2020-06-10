@@ -177,8 +177,7 @@ namespace PythonNodeModelsWpf
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            var viewEx = (WpfUtilities.FindUpVisualTree<DynamoView>(nodeView) as DynamoView).viewExtensionManager.ViewExtensions.FirstOrDefault(x => x.UniqueId == "1f8146d0-58b1-4b3c-82b7-34a3fab5ac5d");
-            (viewEx as PythonMigrationViewExtension).OpenPythonMigrationWarningDocumentation();
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(PythonMigrationViewExtension.Python3HelpLink));
         }
     }
 }
