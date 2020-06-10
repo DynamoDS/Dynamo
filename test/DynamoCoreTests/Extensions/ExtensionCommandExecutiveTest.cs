@@ -11,11 +11,11 @@ namespace Dynamo.Tests.Extensions
     [TestFixture]
     class ExtensionCommandExecutiveTest
     {
-        int cmdExecutionState = -1;
-        ICommandExecutive executive;
-        Mock<IExtension> extMock;
+        private int cmdExecutionState = -1;
+        private ICommandExecutive executive;
+        private Mock<IExtension> extMock;
         private Logging.NotificationMessage message;
-        DynamoModel model;
+        private DynamoModel model;
 
         //This callback method will be used in the Mocked Extension
         private void ExtensionReadyCallback(ReadyParams ready)
@@ -40,11 +40,12 @@ namespace Dynamo.Tests.Extensions
                     Extensions = new List<IExtension> { extMock.Object },
                     ProcessMode = TaskProcessMode.Synchronous,
                 });
-            model.DebugSettings.VerboseLogging = true;//Setting this flag to true will enable to execute a specific section in the ExecuteCommand() method
+            //Setting this flag to true will enable to execute a specific section in the ExecuteCommand() method
+            model.DebugSettings.VerboseLogging = true;
         }
 
         /// <summary>
-        /// This test method will execute the ublic void ExecuteCommand() method from the ExtensionCommandExecutive class
+        /// This test method will execute the public void ExecuteCommand() method from the ExtensionCommandExecutive class
         /// </summary>
         [Test]
         [Category("UnitTests")]
