@@ -84,6 +84,9 @@
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
+    <Compile Include="Engine\CodeCompletion\CodeCompletionServicesTest.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilingEventArgsTest.cs" />
+    <Compile Include="Engine\Profiling\ProfilingDataTest.cs" />
     <Compile Include="Engine\EngineControllerTest.cs" />
     <Compile Include="Engine\LinkedListOfListTest.cs" />
     <Compile Include="Engine\LiveRunnerServicesTest.cs" />

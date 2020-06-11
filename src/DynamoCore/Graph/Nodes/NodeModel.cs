@@ -2344,15 +2344,6 @@ namespace Dynamo.Graph.Nodes
         ///
         internal void RequestValueUpdate(EngineController engine)
         {
-            // A NodeModel should have its cachedMirrorData reset when it is
-            // requested to update its value. When the QueryMirrorDataAsyncTask
-            // returns, it will update cachedMirrorData with the latest value.
-            //
-            lock (cachedValueMutex)
-            {
-                cachedValue = null;
-            }
-
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
             var variableName = AstIdentifierForPreview.Value;
@@ -2360,10 +2351,7 @@ namespace Dynamo.Graph.Nodes
                 return;
 
             var runtimeMirror = engine.GetMirror(variableName);
-            if (runtimeMirror != null)
-            {
-                CachedValue = runtimeMirror.GetData();
-            }
+            CachedValue = runtimeMirror?.GetData();
         }
 
         /// <summary>

@@ -34,7 +34,7 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Unloaded += InCanvasSearchControl_Unloaded; ;
+            Unloaded += InCanvasSearchControl_Unloaded;
 
         }
 
@@ -44,7 +44,6 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated -= currentApplicationDeactivated;
             }
-            MembersListBox.ItemsSource = null;
         }
 
         private void currentApplicationDeactivated(object sender, EventArgs e)
