@@ -37,7 +37,7 @@ namespace Dynamo.Tests.Extensions
         {
             //Arrange
             //The xml inside the wrong_extra is malformed.
-            string extensionsPath = Path.Combine(TestDirectory, "pkgs\\sampleExtension\\wrong_extra");
+            string extensionsPath = Path.Combine(TestDirectory, "pkgs\\sampleExtension_wrong\\extra");
             var extensionManager = new ExtensionManager();
 
             //Act
