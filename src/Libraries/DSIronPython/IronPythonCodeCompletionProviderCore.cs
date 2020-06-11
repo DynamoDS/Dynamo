@@ -165,7 +165,7 @@ namespace DSIronPython
         //time references between PythonNodeModels and DSIronPython to support dynamically loading
         //python versions.
 
-        //TODO note that the public members below are not really public (this is an internal class)
+        //note that the public members below are not really public (this is an internal class)
         //but must be marked that way to satisfy the legacy interface
         #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
 
