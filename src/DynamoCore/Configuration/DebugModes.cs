@@ -47,7 +47,7 @@ namespace Dynamo.Configuration
         private static void RegisterDebugModes()
         {
             // Register app wide new debug modes here.
-            AddDebugMode("Python3DebugMode", "Enable/disable Python3 Engine.", true);
+            AddDebugMode("PythonEngineSelectionUIDebugMode", "Enable/disable PythonEngineSelectionUI.", true);
             AddDebugMode("Python2ObsoleteMode", "Enable/disable warnings regarding Python 2 obsoletion.");
         }
 
