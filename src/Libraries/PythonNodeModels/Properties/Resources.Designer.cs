@@ -88,6 +88,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PythonNodeModels;PythonMigrationWarning.html.
+        /// </summary>
+        public static string PythonMigrationWarningUriString {
+            get {
+                return ResourceManager.GetString("PythonMigrationWarningUriString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python Engine Version.
         /// </summary>
         public static string PythonNodeContextMenuEngineSwitcher {

@@ -191,4 +191,7 @@
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
     <value>Save the changes made to current Python node editor.</value>
   </data>
+  <data name="PythonMigrationWarningUriString" xml:space="preserve">
+    <value>PythonNodeModels;PythonMigrationWarning.html</value>
+  </data>
 </root>
