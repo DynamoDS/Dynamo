@@ -9,7 +9,6 @@
     Dynamo: https://github.com/DynamoDS/Dynamo
     Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
 -->
-
 <!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
 
 <head>
@@ -85,7 +84,7 @@
         color: #43c9b0;
     }
 
-    code>.nl .nl {
+    code > .nl .nl {
         padding-left: 10px;
     }
 
@@ -140,6 +139,18 @@
         tbody tr:first-of-type {
             border-bottom: none;
         }
+
+        .button {
+            background-color: transparent;
+            border-color: #3c3c3c;
+            color: #bbbbbb;
+        }
+
+        .button:hover {
+            border-color: #656565;
+            background-color: #373737;
+            opacity: 1.0;
+        }
     }
 </style>
 
@@ -147,8 +158,9 @@
 <!-- and custom styling in Dynamo sidepanel. -->
 
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
-
-    <h2>Updating your Python nodes for Python 3</h2>
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649">
+        <input type="submit" class="button" value="Report Python 3 node issue" style="font-size:medium;" />
+    </form>
     <p>
         Since the introduction of Python 3 in 2008, Python 2 and 3 have been supported side-by-side by the Python
         Software Foundation (PSF) and the broader Python Community.
@@ -207,18 +219,14 @@
     <p>
         If you are curious about diving deeper into the differences between the two Python versions, here are two
         external links to get you started:
-    <ul>
-        <li>
-            <a href="https://docs.python.org/3/howto/pyporting.html">
-                The official "Porting Python 2 Code to Python
-                3"
-                guide
-            </a>
-        </li>
-        <li>
-            <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
-        </li>
-    </ul>
+        <ul>
+            <li>
+                <a href="https://docs.python.org/3/howto/pyporting.html">The official "Porting Python 2 Code to Python 3" guide</a>
+            </li>
+            <li>
+                <a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a>
+            </li>
+        </ul>
     </p>
 
     <h3>Key syntax changes in Python 3</h3>

@@ -167,8 +167,12 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
-
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
     }
 }
