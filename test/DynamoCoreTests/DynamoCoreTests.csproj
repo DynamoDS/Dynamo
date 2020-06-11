@@ -91,6 +91,9 @@
     <Compile Include="Engine\LinkedListOfListTest.cs" />
     <Compile Include="Engine\LiveRunnerServicesTest.cs" />
     <Compile Include="Engine\ShortestQualifiedNameReplacerTest.cs" />
+    <Compile Include="Extensions\ExtensionCommandExecutiveTest.cs" />
+    <Compile Include="Extensions\ExtensionLoaderTest.cs" />
+    <Compile Include="Extensions\ExtensionManagerTest.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
