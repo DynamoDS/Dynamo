@@ -14,7 +14,6 @@ namespace Dynamo.Tests.Extensions
         private int cmdExecutionState = -1;
         private ICommandExecutive executive;
         private Mock<IExtension> extMock;
-        private Logging.NotificationMessage message;
         private DynamoModel model;
 
         //This callback method will be used in the Mocked Extension
@@ -23,7 +22,6 @@ namespace Dynamo.Tests.Extensions
             executive = ready.CommandExecutive;
             Assert.IsTrue(ready.WorkspaceModels.Any());
             Assert.IsNotNull(ready.CurrentWorkspaceModel);
-            ready.NotificationRecieved += (Logging.NotificationMessage obj) => message = obj;
         }
 
         [SetUp]
