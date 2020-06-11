@@ -1,0 +1,29 @@
+#Builds Dynamo on linux using mono.
+name: mono_build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    - name: Setup Nuget.exe to use on VM
+      uses: nuget/setup-nuget@v1
+      
+    - name: Nuget Restore on DynamoMono solution
+      run: nuget restore $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
+      
+    - name: Build Dynamo with mono xbuild
+      run: |
+        echo "***Continue with the build, Good luck mono developer!***"
+           xbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
+    # look for Dynamo
+    - name: Navigate to Dynamo Folder
+      run: |
+        cd "$GITHUB_WORKSPACE/bin/AnyCPU/Release"
+        echo "***Locating DynamoCLI!***"
+        mono ./DynamoCLI.exe -h

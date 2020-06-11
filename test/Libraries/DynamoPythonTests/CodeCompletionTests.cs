@@ -11,6 +11,54 @@ using NUnit.Framework;
 namespace DynamoPythonTests
 {
     [TestFixture]
+    internal class SharedCodeCompletionProviderTests: CodeCompletionTests
+    {
+        [Test]
+        public void SharedCoreCanFindLoadedProviders()
+        {
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, "");
+            Assert.IsNotNull(provider);
+        }
+
+        [Test]
+        public void SharedCoreCanFindFirstLoadedIfNotMatch()
+        {
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, "");
+            Assert.IsNotNull(provider);
+        }
+
+        [Test]
+        public void SharedCoreCanReturnCLRCompletionData()
+        {
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, "");
+            Assert.IsNotNull(provider);
+            var str = "\nimport System.Collections\nSystem.Collections.";
+
+            var completionData = provider.GetCompletionData(str);
+            var completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
+            Assert.AreEqual(29, completionData.Length);
+        }
+
+        [Test]
+        public void SharedCoreCanReturnPythonCompletionData()
+        {
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            Assert.IsNotNull(provider);
+            var str = "import math\n math.";
+
+            var completionData = provider.GetCompletionData(str);
+            var completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "degrees", "radians", "fmod" }).Count() == 3);
+            Assert.AreEqual(45, completionData.Length);
+        }
+
+    }
+
+    [TestFixture]
     internal class CodeCompletionTests
     {
         private AssemblyHelper assemblyHelper;
@@ -95,6 +143,9 @@ namespace DynamoPythonTests
                 // These tests need "DSIronPythonNode.dll" under "nodes" folder.
                 Path.Combine(moduleRootFolder, "nodes")
             };
+            //for some legacy tests we'll need the DSIronPython binary loaded manually
+            //as the types are found using reflection - during normal dynamo use these types are already loaded. 
+            Assembly.LoadFrom(Path.Combine(moduleRootFolder, "DSIronPython.dll"));
 
             assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;

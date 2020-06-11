@@ -20,3 +20,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoWPFCLI")]
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("IntegrationTests")]
+[assembly: InternalsVisibleTo("DSIronPython")]
+[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]

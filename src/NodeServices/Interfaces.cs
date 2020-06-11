@@ -1,4 +1,7 @@
-﻿namespace Autodesk.DesignScript.Interfaces
+﻿using System;
+using System.Collections.Generic;
+
+namespace Autodesk.DesignScript.Interfaces
 {
     /// <summary>
     /// Provides application configuration
@@ -188,4 +191,117 @@
         /// <param name="baseDirectory"></param>
         void PreloadAsmLibraries(string baseDirectory);
     }
+
+    internal interface IExternalCodeCompletionProviderCore
+    {
+
+        /// <summary>
+        /// Already discovered variable types
+        /// </summary>
+        Dictionary<string, Type> VariableTypes { get; set; }
+
+        /// <summary>
+        /// Types that have already been imported into the scope
+        /// </summary>
+        Dictionary<string, Type> ImportedTypes { get; set; }
+
+        /// <summary>
+        /// Generate completion data for the specified text, while import the given types into the
+        /// scope and discovering variable assignments.
+        /// </summary>
+        /// <param name="code">The code to parse</param>
+        /// <param name="expand">Determines if the entire namespace should be used</param>
+        /// <returns>Return a list of IronPythonCompletionData </returns>
+        IExternalCodeCompletionData[] GetCompletionData(string code, bool expand = false);
+
+        /// <summary>
+        /// Try to generate a description from a typename.
+        /// </summary>
+        /// <param name="stub">Everything before the last namespace or type name e.g. System.Collections in System.Collections.ArrayList</param>
+        /// <param name="item">Everything after the stub</param>
+        /// <param name="isInstance">Whether it's an instance or not</param>
+        string GetDescription(string stub, string item, bool isInstance);
+
+        /// <summary>
+        /// Used to determine if this IExternalCodeCompletionProviderCore can provide completions for the given engine.
+        /// </summary>
+        /// <param name="engineName"></param>
+        /// <returns></returns>
+        bool IsSupportedEngine(string engineName);
+
+        /// <summary>
+        /// Used to load initialize libraries and types that should be available by default.
+        /// </summary>
+        /// <param name="dynamoCorePath"></param>
+        void Initialize(string dynamoCorePath);
+
+    }
+
+
+    /// <summary>
+    /// This interface is essentially the same as ICompletionData from AvalonEdit 
+    /// except it does not include any references to WPF.
+    /// </summary>
+    internal interface IExternalCodeCompletionData
+    {
+        /// <summary>
+        /// The CompletionType this completionData represents.
+        /// </summary>
+        ExternalCodeCompletionType CompletionType { get; }
+        /// <summary>
+        ///  Gets the text. This property is used to filter the list of visible elements.
+        /// </summary>
+        string Text { get; }
+        /// <summary>
+        ///    The displayed content. This can be the same as 'Text', or a WPF UIElement if
+        ///     you want to display rich content.
+        /// </summary>
+        object Content { get; }
+        /// <summary>
+        ///   Gets the description.
+        /// </summary>
+        string Description { get; }
+        /// <summary>
+        ///  Gets the priority. This property is used in the selection logic. You can use
+        ///   it to prefer selecting those items which the user is accessing most frequently.
+        /// </summary>
+        double Priority { get; }
+    }
+
+    /// <summary>
+    /// This Enum represents the current completion type that is found.
+    /// Currently this is used to decorate the returned completion with an image.
+    /// </summary>
+    internal enum ExternalCodeCompletionType
+    {
+        Other,
+        Namespace,
+        Method,
+        Field,
+        Class,
+        Property,
+        Enum,
+    };
+
+    /// <summary>
+    /// This internal interface exists to support the legacy IronPythonCompletionProvider 
+    /// without having a compile time reference from PythonNodeModel/WPF on DSIronPython.
+    /// This interface should be removed when the legacy class is removed in 3.0.
+    /// </summary>
+    internal interface ILegacyPythonCompletionCore
+    {
+        void UpdateImportedTypes(string code);
+        void UpdateVariableTypes(string code);
+        Dictionary<string, Type> FindAllVariableAssignments(string code);
+        Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code);
+        Type TryGetType(string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
+        object LookupMember(string name, object namesSaceTracker);
+        object LookupMember(string name);
+        object Engine { get; set; }
+        object Scope { get; set; }
+    }
+
 }
