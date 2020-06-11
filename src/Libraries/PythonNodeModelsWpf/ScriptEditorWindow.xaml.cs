@@ -45,7 +45,7 @@ namespace PythonNodeModelsWpf
 
             InitializeComponent();
 
-            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
             {
                 EngineSelectorComboBox.Visibility = Visibility.Visible;
             }

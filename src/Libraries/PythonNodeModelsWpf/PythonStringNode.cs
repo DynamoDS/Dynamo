@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
             pythonStringNodeView = nodeView;
 
             // If it is a Debug build, display a python engine switcher
-            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
             {
                 var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
                 nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
