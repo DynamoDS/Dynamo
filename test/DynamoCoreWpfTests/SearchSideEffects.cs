@@ -15,10 +15,10 @@ namespace Dynamo.Tests
 
             // search and results are correct
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Input"));
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Output"));
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]
@@ -39,10 +39,10 @@ namespace Dynamo.Tests
 
             // search and results are correct
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Input"));
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Output"));
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
         [Test]
@@ -58,12 +58,12 @@ namespace Dynamo.Tests
 
             // search and results are correct
             ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Input"));
-            Assert.AreEqual("Input", ViewModel.SearchViewModel.FilteredSearchResults.ElementAt(0).Model.Name);
+            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
+            Assert.AreEqual("Input", ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model.Name);
 
             ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
-            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredSearchResults.Count(x => x.Model.Name == "Output"));
-            Assert.AreEqual("Output", ViewModel.SearchViewModel.FilteredSearchResults.ElementAt(0).Model.Name);
+            Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
+            Assert.AreEqual("Output", ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model.Name);
 
         }
     }

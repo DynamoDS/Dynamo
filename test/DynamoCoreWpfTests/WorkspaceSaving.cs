@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Dynamo.Graph.Connectors;
-using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
 using Dynamo.Wpf.ViewModels;
+
 using NUnit.Framework;
+using Dynamo.ViewModels;
+using Dynamo.Utilities;
+using CoreNodeModels.Input;
+using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes;
+using Dynamo.Wpf;
+using Dynamo.PackageManager;
 
 namespace Dynamo.Tests
 {
@@ -853,7 +855,7 @@ namespace Dynamo.Tests
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.Visible = true;
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Cool");
             // results are correct
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
             var newCustNodeInstance = dynamoModel.CustomNodeManager.CreateCustomNodeInstance(initialId);
             dynamoModel.CurrentWorkspace.AddAndRegisterNode(newCustNodeInstance, false);
@@ -1010,10 +1012,10 @@ namespace Dynamo.Tests
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
             Assert.AreEqual(originalNumElements + 1, ViewModel.Model.SearchModel.NumElements);
 
-            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
+            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
-            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(0);
-            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(1);
+            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0);
+            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(1);
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
@@ -1112,16 +1114,16 @@ namespace Dynamo.Tests
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("TheNoodle");
 
             // results are correct
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
-            var node3 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(0).Model;
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
+            var node3 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0).Model;
             Assert.AreEqual(newId, node3.ID);
 
             // search for un-refactored node
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
-            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
-            var node4 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(0).Model;
+            Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
+            var node4 = (CustomNodeSearchElement)ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0).Model;
             Assert.AreEqual(oldId, node4.ID);
 
         }
@@ -1167,10 +1169,10 @@ namespace Dynamo.Tests
             ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Constant2");
 
             // results are correct
-            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
+            Assert.AreEqual(2, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
-            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(0);
-            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.ElementAt(1);
+            var res1 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(0);
+            var res2 = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.ElementAt(1);
 
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res1);
             Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res2);
@@ -1256,10 +1258,10 @@ namespace Dynamo.Tests
 
                 // Verify new name is searchable
                 ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults(newName);
-                Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.Count());
+                Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count());
 
                 // Verify search element's name is new name
-                var res = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredSearchResults.First();
+                var res = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.First();
                 Assert.IsAssignableFrom(typeof(CustomNodeSearchElementViewModel), res);
                 Assert.AreEqual(res.Name, newName);
 

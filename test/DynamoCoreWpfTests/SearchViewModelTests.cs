@@ -662,9 +662,9 @@ namespace Dynamo.Tests
             viewModel.Visible = true;
             viewModel.SearchAndUpdateResults("member");
 
-            Assert.AreEqual(2, viewModel.FilteredSearchResults.Count());
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(0).IsSelected);
-            Assert.IsFalse(viewModel.FilteredSearchResults.ElementAt(1).IsSelected);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
+            Assert.IsFalse(viewModel.FilteredResults.ElementAt(1).IsSelected);
         }
 
         [Test, Category("UnitTests")]
@@ -674,7 +674,7 @@ namespace Dynamo.Tests
             viewModel.SearchAndUpdateResults("member");
 
             Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
-            Assert.IsFalse(viewModel.FilteredSearchResults.Any());
+            Assert.IsFalse(viewModel.FilteredResults.Any());
         }
 
         [Test]
@@ -690,14 +690,14 @@ namespace Dynamo.Tests
             viewModel.Visible = true;
             viewModel.SearchAndUpdateResults("member");
 
-            Assert.AreEqual(2, viewModel.FilteredSearchResults.Count());
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(0).IsSelected);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
 
             viewModel.MoveSelection(SearchViewModel.Direction.Down);
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(1).IsSelected);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
 
             viewModel.MoveSelection(SearchViewModel.Direction.Down);
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(1).IsSelected);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
         }
 
         [Test]
@@ -713,17 +713,17 @@ namespace Dynamo.Tests
             viewModel.Visible = true;
             viewModel.SearchAndUpdateResults("member");
 
-            Assert.AreEqual(2, viewModel.FilteredSearchResults.Count());
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(0).IsSelected);
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
 
             viewModel.MoveSelection(SearchViewModel.Direction.Up);
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(0).IsSelected);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
 
             viewModel.MoveSelection(SearchViewModel.Direction.Down);
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(1).IsSelected);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(1).IsSelected);
 
             viewModel.MoveSelection(SearchViewModel.Direction.Up);
-            Assert.IsTrue(viewModel.FilteredSearchResults.ElementAt(0).IsSelected);
+            Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
         }
 
         #endregion
@@ -742,7 +742,7 @@ namespace Dynamo.Tests
 
             viewModel.Visible = true;
             viewModel.SearchAndUpdateResults("member");
-            Assert.AreEqual(2, viewModel.FilteredSearchResults.Count());
+            Assert.AreEqual(2, viewModel.FilteredResults.Count());
 
             Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected));
 
