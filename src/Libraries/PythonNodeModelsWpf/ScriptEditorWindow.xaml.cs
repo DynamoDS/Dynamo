@@ -29,7 +29,6 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
-        internal NodeView nodeView;
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel, 
@@ -40,7 +39,6 @@ namespace PythonNodeModelsWpf
         {
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
-            this.nodeView = nodeView;
 
             completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
