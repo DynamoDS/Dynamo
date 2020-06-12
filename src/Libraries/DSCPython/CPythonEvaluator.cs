@@ -23,8 +23,6 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
-        /// <summary> stores a copy of the previously executed code</summary>
-        private static string prev_code { get; set; }
 
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
@@ -40,8 +38,7 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
-            if (code != prev_code)
-            {
+           
                 Python.Included.Installer.SetupPython().Wait();
 
                 if (!PythonEngine.IsInitialized)
@@ -50,8 +47,6 @@ namespace DSCPython
                     PythonEngine.BeginAllowThreads();
                 }
                 
-                prev_code = code;
-
                 IntPtr gs = PythonEngine.AcquireLock();
                 try
                 {
@@ -92,8 +87,6 @@ namespace DSCPython
                 {
                     PythonEngine.ReleaseLock(gs);
                 }
-            }
-            return null;  
         }
 
         #region Marshalling
