@@ -1,7 +1,7 @@
 #Builds Dynamo on linux using mono.
 name: mono_build
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   mono_build:
