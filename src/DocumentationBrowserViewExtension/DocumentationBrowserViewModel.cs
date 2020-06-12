@@ -277,28 +277,7 @@ namespace Dynamo.DocumentationBrowser
                 assembly = GetType().Assembly;
             }
 
-            // Resolve satellite assembly matching UI culture
-            var culture = CultureInfo.CurrentUICulture;
-            var resourceAssembly = assembly.GetSatelliteAssembly(culture);
-            if (resourceAssembly == null)
-            {
-                if (culture.IsNeutralCulture)
-                {
-                    var specificCulture = CultureInfo.CreateSpecificCulture(culture.Name);
-                    resourceAssembly = assembly.GetSatelliteAssembly(specificCulture);
-                }
-                else
-                {
-                    while (resourceAssembly == null && culture.Parent != CultureInfo.InvariantCulture)
-                    {
-                        resourceAssembly = assembly.GetSatelliteAssembly(culture.Parent);
-                    }
-                }
-            }
-            if (resourceAssembly == null)
-            {
-                resourceAssembly = assembly;
-            }
+            Assembly resourceAssembly = GetResourceAssembly(assembly);
 
             var availableResources = resourceAssembly.GetManifestResourceNames();
 
@@ -333,6 +312,60 @@ namespace Dynamo.DocumentationBrowser
             result = result + DPISCRIPT;
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets a satellite assembly for the specified culture of returns null if not found.
+        /// </summary>
+        /// <param name="assembly">The main assembly</param>
+        /// <param name="cultureInfo">The culture to search a satellite for</param>
+        /// <returns>Satellite assembly for requested culture or null</returns>
+        private static Assembly GetSatelliteAssembly(Assembly assembly, CultureInfo cultureInfo)
+        {
+            try
+            {
+                return assembly.GetSatelliteAssembly(cultureInfo);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Resolves the assembly where to look for embedded resources. If no satellite compatible
+        /// with the UI culture is found, it returns the provided main/invariant assembly.
+        /// </summary>
+        /// <param name="assembly">The main assembly</param>
+        /// <returns>The resource assembly</returns>
+        private static Assembly GetResourceAssembly(Assembly assembly)
+        {
+            var culture = CultureInfo.CurrentUICulture;
+            var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
+            // If there is no satellite for the exact culture, try a more specific/neutral one
+            // following .NET rules for culture matching.
+            if (satelliteAssembly == null)
+            {
+                if (culture.IsNeutralCulture)
+                {
+                    var specificCulture = CultureInfo.CreateSpecificCulture(culture.Name);
+                    satelliteAssembly = GetSatelliteAssembly(assembly, specificCulture);
+                }
+                else if (culture.Parent != CultureInfo.InvariantCulture)
+                {
+                    satelliteAssembly = GetSatelliteAssembly(assembly, culture.Parent);
+                }
+            }
+
+            if (satelliteAssembly == null)
+            {
+                // Default to main assembly when no compatible satellite assembly was found
+                return assembly;
+            }
+            else
+            {
+                return satelliteAssembly;
+            }
         }
 
         private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));
