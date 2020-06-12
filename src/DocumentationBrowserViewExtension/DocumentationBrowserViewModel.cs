@@ -3,6 +3,7 @@ using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -276,7 +277,30 @@ namespace Dynamo.DocumentationBrowser
                 assembly = GetType().Assembly;
             }
 
-            var availableResources = assembly.GetManifestResourceNames();
+            // Resolve satellite assembly matching UI culture
+            var culture = CultureInfo.CurrentUICulture;
+            var resourceAssembly = assembly.GetSatelliteAssembly(culture);
+            if (resourceAssembly == null)
+            {
+                if (culture.IsNeutralCulture)
+                {
+                    var specificCulture = CultureInfo.CreateSpecificCulture(culture.Name);
+                    resourceAssembly = assembly.GetSatelliteAssembly(specificCulture);
+                }
+                else
+                {
+                    while (resourceAssembly == null && culture.Parent != CultureInfo.InvariantCulture)
+                    {
+                        resourceAssembly = assembly.GetSatelliteAssembly(culture.Parent);
+                    }
+                }
+            }
+            if (resourceAssembly == null)
+            {
+                resourceAssembly = assembly;
+            }
+
+            var availableResources = resourceAssembly.GetManifestResourceNames();
 
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
@@ -286,7 +310,7 @@ namespace Dynamo.DocumentationBrowser
             Stream stream = null;
             try
             {
-                stream = assembly.GetManifestResourceStream(matchingResource);
+                stream = resourceAssembly.GetManifestResourceStream(matchingResource);
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     result = reader.ReadToEnd();
