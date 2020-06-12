@@ -4,7 +4,7 @@ name: mono_build
 on: [push]
 
 jobs:
-  build:
+  mono_build:
     runs-on: ubuntu-latest
 
     steps:
