@@ -128,9 +128,9 @@ namespace Dynamo.Manipulation
             manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public void Loaded(ViewLoadedParams loadedParams)
         {
-            this.viewLoadedParams = viewLoadedParams;
+            viewLoadedParams = loadedParams;
 
             WorkspaceModel = viewLoadedParams.CurrentWorkspaceModel;
             BackgroundPreviewViewModel = viewLoadedParams.BackgroundPreviewViewModel;
