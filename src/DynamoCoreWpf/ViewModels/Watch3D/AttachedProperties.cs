@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using SharpDX;
-using Point = SharpDX.Point;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
