@@ -15,7 +15,7 @@ namespace Dynamo.Python
     {
 
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
-        private IronPythonCompletionProvider provider;
+        private readonly IronPythonCompletionProvider provider;
 
         public enum CompletionType
         {
@@ -51,7 +51,7 @@ namespace Dynamo.Python
         internal IronPythonCompletionData(IExternalCodeCompletionData data)
         {
             this.Text = data.Text;
-            this._description = data.Description as string;
+            this._description = data.Description;
 
             BuildCompletionTypeToIconMap();
 
@@ -71,7 +71,7 @@ namespace Dynamo.Python
         }
 
         // image
-        private BitmapImage _image;
+        private readonly BitmapImage _image;
         public System.Windows.Media.ImageSource Image
         {
             get
@@ -116,7 +116,7 @@ namespace Dynamo.Python
             textArea.Document.Replace(completionSegment, this.Text);
         }
 
-        private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
+        private static BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
             var name = string.Format(@"PythonNodeModelsWpf.Resources.{0}", resourceFileName);
 
@@ -128,7 +128,7 @@ namespace Dynamo.Python
             return bitmapImage;
         }
 
-        private void BuildCompletionTypeToIconMap()
+        private static void BuildCompletionTypeToIconMap()
         {
             if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
             {

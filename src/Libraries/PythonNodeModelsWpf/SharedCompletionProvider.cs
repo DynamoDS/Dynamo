@@ -11,7 +11,7 @@ namespace Dynamo.Python
     {
 
         #region Properties and Fields
-        private IExternalCodeCompletionProviderCore providerImplementation;
+        private readonly IExternalCodeCompletionProviderCore providerImplementation;
 
         #endregion
 

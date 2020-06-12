@@ -296,9 +296,10 @@ namespace Autodesk.DesignScript.Interfaces
         Dictionary<string, Tuple<string, int, Type>> FindAllVariables(string code);
         Type TryGetType(string name);
         IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(object module, string name);
-        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
         IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembers(Type type, string name);
-        object LookupMember(string name, object namesSaceTracker);
+        IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name);
+
+        object LookupMember(string name, object nameSpaceTracker);
         object LookupMember(string name);
         object Engine { get; set; }
         object Scope { get; set; }

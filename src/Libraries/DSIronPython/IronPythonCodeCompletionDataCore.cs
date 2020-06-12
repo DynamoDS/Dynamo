@@ -8,7 +8,7 @@ namespace DSIronPython
     /// </summary>
     internal class IronPythonCodeCompletionDataCore : IExternalCodeCompletionData
     {
-        private IExternalCodeCompletionProviderCore provider;
+        private readonly IExternalCodeCompletionProviderCore provider;
         private string description;
 
         public IronPythonCodeCompletionDataCore(string text, string stub, bool isInstance,

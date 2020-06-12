@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using IronPython.Runtime;
-using IronPython.Runtime.Types;
-using Microsoft.Scripting;
 using Microsoft.Scripting.Actions;
 using Microsoft.Scripting.Hosting;
 using PythonNodeModels;
@@ -28,7 +24,7 @@ namespace Dynamo.Python
     /// </summary>
     public class IronPythonCompletionProvider : LogSourceBase
     {
-        private IExternalCodeCompletionProviderCore providerImplementation;
+        private readonly IExternalCodeCompletionProviderCore providerImplementation;
         private const string providerTypeName = "DSIronPython.IronPythonCodeCompletionProviderCore, DSIronPython";
 
         #region Properties and fields
@@ -38,7 +34,6 @@ namespace Dynamo.Python
         /// track of the state of the editor, allowing access to variable types and
         /// imported symbols.
         /// </summary>
-        private ScriptEngine engine;
         public ScriptEngine Engine
         {
             get { return (ScriptEngine)(providerImplementation as ILegacyPythonCompletionCore).Engine; }
@@ -49,7 +44,6 @@ namespace Dynamo.Python
         /// The scope used by the engine.  This is where all the loaded symbols
         /// are stored.  It's essentially an environment dictionary.
         /// </summary>
-        private ScriptScope scope;
         public ScriptScope Scope
         {
             get { return (ScriptScope)(providerImplementation as ILegacyPythonCompletionCore).Scope; }

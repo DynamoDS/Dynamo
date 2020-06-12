@@ -49,6 +49,8 @@ namespace DSCPython
                     PythonEngine.Initialize();
                     PythonEngine.BeginAllowThreads();
                 }
+                
+                prev_code = code;
 
                 IntPtr gs = PythonEngine.AcquireLock();
                 try
@@ -77,14 +79,14 @@ namespace DSCPython
                             catch (Exception e)
                             {
                                 OnEvaluationEnd(false, scope, code, bindingValues);
-                                throw e;
+                                throw;
                             }
                         }
                     }
                 }
                 catch (PythonException pe)
                 {
-                    throw pe;
+                    throw;
                 }
                 finally
                 {
