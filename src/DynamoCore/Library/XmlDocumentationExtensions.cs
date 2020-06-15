@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Dynamo.Interfaces;
 using Dynamo.Library;
-using Dynamo.Logging;
 
 namespace Dynamo.Engine
 {
@@ -21,6 +18,9 @@ namespace Dynamo.Engine
 
         #region Public methods
 
+        /// <summary>
+        /// Raise event to log messages to the Dynamo Console.
+        /// </summary>
         public static event Action<string> LogToConsole;
 
         /// <summary>
