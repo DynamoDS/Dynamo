@@ -10,9 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DSIronPython
 {
@@ -219,7 +217,6 @@ namespace DSIronPython
             for (var i = 0; i < matches.Count; i++)
             {
                 var wholeLine = matches[i].Groups[0].Value.TrimEnd('\r', '\n');
-                var libName = matches[i].Groups[3].Value.Trim();
                 var joinedTypeNames = matches[i].Groups[8].Value.Trim();
 
                 var allTypes = joinedTypeNames.Replace(" ", "").Split(',');
@@ -662,6 +659,39 @@ namespace DSIronPython
         }
 
         /// <summary>
+        /// List all of the members in a CLR Namespace
+        /// </summary>
+        /// <param name="ns">A reference to the module</param>
+        /// <param name="name">The name of the module</param>
+        /// <returns>A list of completion data for the namespace</returns>
+        public IEnumerable<Tuple<string, string, bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nameSpaceTracker, string name)
+        {
+            var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
+            var ns = nameSpaceTracker as NamespaceTracker;
+            foreach (var member in ns)
+            {
+                if (member.Value is NamespaceTracker)
+                {
+                    items.Add(Tuple.Create(member.Key, name, false, ExternalCodeCompletionType.Namespace));
+                }
+                else if (member.Value is FieldTracker)
+                {
+                    items.Add(Tuple.Create(member.Key, name, false, ExternalCodeCompletionType.Field));
+                }
+                else if (member.Value is PropertyTracker)
+                {
+                    items.Add(Tuple.Create(member.Key, name, false, ExternalCodeCompletionType.Property));
+                }
+                else if (member.Value is TypeTracker)
+                {
+                    items.Add(Tuple.Create(member.Key, name, false, ExternalCodeCompletionType.Class));
+                }
+            }
+
+            return items;
+        }
+
+        /// <summary>
         /// List all of the members in a PythonModule
         /// </summary>
         /// <param name="module">A reference to the module</param>
@@ -681,38 +711,7 @@ namespace DSIronPython
             return items;
         }
 
-        /// <summary>
-        /// List all of the members in a CLR Namespace
-        /// </summary>
-        /// <param name="ns">A reference to the module</param>
-        /// <param name="name">The name of the module</param>
-        /// <returns>A list of completion data for the namespace</returns>
-        public IEnumerable<Tuple<string, string,bool, ExternalCodeCompletionType>> EnumerateMembersFromTracker(object nst, string name)
-        {
-            var items = new List<Tuple<string, string,bool, ExternalCodeCompletionType>>();
-            var ns = nst as NamespaceTracker;
-            foreach (var member in ns)
-            {
-                if (member.Value is NamespaceTracker)
-                {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Namespace));
-                }
-                else if (member.Value is FieldTracker)
-                {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Field));
-                }
-                else if (member.Value is PropertyTracker)
-                {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Property));
-                }
-                else if (member.Value is TypeTracker)
-                {
-                    items.Add(Tuple.Create((string)member.Key, name,false, ExternalCodeCompletionType.Class));
-                }
-            }
-
-            return items;
-        }
+       
 
         /// <summary>
         /// List all of the members in a CLR type
@@ -782,15 +781,15 @@ namespace DSIronPython
         /// Recursively lookup a member in a given namespace.
         /// </summary>
         /// <param name="name">A name for a type, possibly delimited by periods.</param>
-        /// <param name="n">The namespace</param>
+        /// <param name="nameSpaceTracker">The namespace</param>
         /// <returns>The type as an object</returns>
-        public object LookupMember(string name, object n)
+        public object LookupMember(string name, object nameSpaceTracker)
         {
-            if(!(n is NamespaceTracker))
+            if(!(nameSpaceTracker is NamespaceTracker))
             {
                 throw new ArgumentException("parameter n must be of type NameSpaceTracker");
             }
-            var nst = n as NamespaceTracker;
+            var nst = nameSpaceTracker as NamespaceTracker;
             object varOutput;
 
             var periodIndex = name.IndexOf('.');
@@ -987,10 +986,6 @@ namespace DSIronPython
             {
                 try
                 {
-                    // Is this a faster alternative?
-                    //object value = _engine.CreateScriptSourceFromString(stub + "." + item, SourceCodeKind.Expression).Execute(_scope);
-                    //var des = _engine.Operations.GetDocumentation(value);
-
                     string docCommand = "";
 
                     if (isInstance)
@@ -1012,7 +1007,10 @@ namespace DSIronPython
                 }
                 catch
                 {
-
+                    //This empty catch block is intentional- 
+                    //because we are using a python engine to evaluate the completions
+                    //but this engine has not actually loaded the types, it will throw lots of exceptions
+                    //we wish to suppress.
                 }
             }
 
