@@ -14,7 +14,8 @@ namespace Dynamo.Tests
             {
                 CustomPackageFolders = new List<string>()
                 {
-                    Path.Combine(TestDirectory, @"core\userdata\0.8")
+                    Path.Combine(TestDirectory, @"core\userdata\0.8"),
+                    Path.Combine(TestDirectory, @"core\userdata\2.7")
                 }
             };
         }
