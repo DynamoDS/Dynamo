@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -40,12 +40,12 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
 
-            if (Dynamo.Configuration.DebugModes.IsEnabled("Python3DebugMode"))
+            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
             {
                 EngineSelectorComboBox.Visibility = Visibility.Visible;
             }
@@ -167,8 +167,12 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
-
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
     }
 }

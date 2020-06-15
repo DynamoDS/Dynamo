@@ -20,7 +20,7 @@ namespace Dynamo.Manipulation
     {
         private IEnumerable<NodeModel> manipulatorNodes;
         private ManipulatorDaemon manipulatorDaemon;
-        private ViewLoadedParams viewLoadedParams;
+        private ViewLoadedParams viewParams;
         private IWorkspaceModel workspaceModel;
         //Keeps track of Node Guids for which event handler is attached.
         private HashSet<Guid> trackedNodeGuids = new HashSet<Guid>();
@@ -128,22 +128,22 @@ namespace Dynamo.Manipulation
             manipulatorDaemon = ManipulatorDaemon.Create(new NodeManipulatorFactoryLoader());
         }
 
-        public void Loaded(ViewLoadedParams viewStartupParams)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            viewLoadedParams = viewStartupParams;
+            viewParams = viewLoadedParams;
 
-            WorkspaceModel = viewStartupParams.CurrentWorkspaceModel;
-            BackgroundPreviewViewModel = viewStartupParams.BackgroundPreviewViewModel;
-            RenderPackageFactory = viewStartupParams.RenderPackageFactory;
-            CommandExecutive = viewStartupParams.CommandExecutive;
+            WorkspaceModel = viewParams.CurrentWorkspaceModel;
+            BackgroundPreviewViewModel = viewParams.BackgroundPreviewViewModel;
+            RenderPackageFactory = viewParams.RenderPackageFactory;
+            CommandExecutive = viewParams.CommandExecutive;
 
             RegisterEventHandlers();
         }
 
         private void RegisterEventHandlers()
         {
-            viewLoadedParams.SelectionCollectionChanged += UpdateManipulators;
-            viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+            viewParams.SelectionCollectionChanged += UpdateManipulators;
+            viewParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
 
             BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged += Watch3DViewModelNavigateBackgroundPropertyChanged;
             BackgroundPreviewViewModel.ViewMouseDown += Watch3DViewModelOnViewMouseDown;
@@ -151,8 +151,8 @@ namespace Dynamo.Manipulation
 
         private void UnregisterEventHandlers()
         {
-            viewLoadedParams.SelectionCollectionChanged -= UpdateManipulators;
-            viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            viewParams.SelectionCollectionChanged -= UpdateManipulators;
+            viewParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
 
             BackgroundPreviewViewModel.CanNavigateBackgroundPropertyChanged -= Watch3DViewModelNavigateBackgroundPropertyChanged;
             BackgroundPreviewViewModel.ViewMouseDown -= Watch3DViewModelOnViewMouseDown;

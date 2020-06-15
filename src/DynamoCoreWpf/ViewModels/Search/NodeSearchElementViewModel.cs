@@ -153,7 +153,7 @@ namespace Dynamo.Wpf.ViewModels
             FontAwesomeDict = new Dictionary<SearchElementGroup, FontAwesomeIcon>();
 
             FontAwesomeDict.Add(SearchElementGroup.Create, FontAwesomeIcon.Plus);
-            FontAwesomeDict.Add(SearchElementGroup.Action, FontAwesomeIcon.LightningBolt);
+            FontAwesomeDict.Add(SearchElementGroup.Action, FontAwesomeIcon.Bolt);
             FontAwesomeDict.Add(SearchElementGroup.Query, FontAwesomeIcon.Question);
         }
 

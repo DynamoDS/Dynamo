@@ -19,6 +19,7 @@ namespace Dynamo.PythonMigration
         internal DynamoViewModel DynamoViewModel { get; set; }
         internal WorkspaceModel CurrentWorkspace { get; set; }
         internal GraphPythonDependencies PythonDependencies { get; set; }
+        internal static Uri Python3HelpLink = new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
         private Dispatcher Dispatcher { get; set; }
         private DynamoView DynamoView { get; set; }
 
@@ -93,8 +94,7 @@ namespace Dynamo.PythonMigration
 
         internal void OpenPythonMigrationWarningDocumentation()
         {
-            var link = new Uri(Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
-            LoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(link);
+            LoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(Python3HelpLink);
         }
 
         #region Events
@@ -123,7 +123,8 @@ namespace Dynamo.PythonMigration
 
         private void OnNodeAdded(Graph.Nodes.NodeModel obj)
         {
-            if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
+            if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
+                && !NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
                 && GraphPythonDependencies.IsIronPythonNode(obj))
             {
                 LogIronPythonNotification();
@@ -134,7 +135,7 @@ namespace Dynamo.PythonMigration
         {
             NotificationTracker.Remove(CurrentWorkspace.Guid);
             CurrentWorkspace = workspace as WorkspaceModel;
-            if (Configuration.DebugModes.IsEnabled("Python3DebugMode")
+            if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                 && !Models.DynamoModel.IsTestMode
                 && PythonDependencies.ContainsIronPythonDependencies())
             {
