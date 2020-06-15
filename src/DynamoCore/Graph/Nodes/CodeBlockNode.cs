@@ -829,16 +829,24 @@ namespace Dynamo.Graph.Nodes
         {
             var allDefs = CodeBlockUtils.GetDefinitionLineIndexMap(codeStatements);
 
-            if (allDefs.Any() == false)
+            // If there are no assignments, there could be 2 possibilities:
+            // 1. the CBN could be in error state, in which case we wish to keep the output ports
+            // 2. the CBN has only function definitions, in which case we wish to clear the ports
+            if (!allDefs.Any())
+            {
+                if(codeStatements.Any(x => x.AstNode is FunctionDefinitionNode))
+                    OutPorts.RemoveAll((p) => true);
+                
                 return;
+            }
 
             // This extension method is used instead because 
             // observableCollection has very odd behavior when cleared - 
             // there is no way to reference the cleared items and so they 
             // cannot be cleaned up properly
-            
+
             // Clear out all the output port models
-            OutPorts.RemoveAll((p) => { return true; });
+            OutPorts.RemoveAll((p) => true);
 
             foreach (var def in allDefs)
             {

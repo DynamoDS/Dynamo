@@ -56,9 +56,9 @@ namespace Dynamo.PackageManager.UI
             Dispose();
         }
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-            var packageManager = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            var packageManager = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
             this.packageManager = packageManager;
 
             //when this extension is started up we should look for all packages,

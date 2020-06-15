@@ -141,7 +141,7 @@ namespace Dynamo.Views
             ViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
             ViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-            //TODO move to model method
+
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;

@@ -44,8 +44,7 @@
                 AcceptsTab="True"/>
 
         <StackPanel Grid.Row="1" Orientation="Horizontal" FlowDirection="RightToLeft">
-            <!--<Button Content="Cancel" Style="{DynamicResource ResourceKey=STextButton}"  Margin="10" Name="button1" VerticalAlignment="Bottom" Click="CancelClick" />-->
-            <Button Content="{x:Static p:Resources.EditWindowAcceptButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="10" Name="button2" VerticalAlignment="Bottom" Width="auto" MinWidth="75" Click="OkClick" />
+            <Button Content="{x:Static p:Resources.EditWindowAcceptButton}" Style="{DynamicResource ResourceKey=STextButton}" Margin="10" Name="AcceptButton" VerticalAlignment="Bottom" Width="auto" MinWidth="75" Click="OkClick" />
         </StackPanel>
 
     </Grid>

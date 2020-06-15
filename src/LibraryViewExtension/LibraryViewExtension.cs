@@ -7,8 +7,6 @@ namespace Dynamo.LibraryUI
 {
     public class ViewExtension : IViewExtension
     {
-        private ViewLoadedParams viewLoadedParams;
-        private ViewStartupParams viewStartupParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
 
@@ -26,16 +24,14 @@ namespace Dynamo.LibraryUI
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
-            this.viewStartupParams = viewStartupParams;
             viewStartupParams.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
         }
 
-        public void Loaded(ViewLoadedParams viewStartupParams)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (!DynamoModel.IsTestMode)
             {
-                viewLoadedParams = viewStartupParams;
-                controller = new LibraryViewController(viewStartupParams.DynamoWindow, viewStartupParams.CommandExecutive, customization);
+                controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 controller.AddLibraryView();
             }
         }

@@ -70,9 +70,9 @@ namespace Dynamo.WorkspaceDependency
             this.Dispose();
         }
 
-        public void Startup(ViewStartupParams viewLoadedParams)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-            pmExtension = viewLoadedParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
         public event Action<ILogMessage> MessageLogged;

@@ -1,0 +1,367 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MeshToolkit</name>
+    </assembly>
+    <members>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Display.MeshDisplay.ByMeshColor(Autodesk.Dynamo.MeshToolkit.Mesh,DSCore.Color[])">
+            <summary>
+            Display mesh by single color, triangle colors, or vertex colors
+            </summary>
+            <param name="mesh"></param>
+            <param name="meshColoring">single color, triangle colors, or vertex colors</param>
+            <returns></returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.ImportFile(System.String)">
+            <summary>
+            Imports a file, parsing it into a number of Meshes.
+            Currently supported formats are:
+            .mix -- Meshmixer
+            .obj -- Wavefront
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.ByGeometry(Autodesk.DesignScript.Geometry.Geometry,System.Double,System.Int32)">
+            <summary>
+            Convert a Geometry object such as a Solid or Surface into a Mesh.
+            The resolution of the mesh is determined by the Dynamo render precision
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.ByVerticesAndIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Create a new Mesh from supplied vertices and indices. Vertices should 
+            not overlap. Indices should be sets of three integers 
+            indicating the three locations in the virtices array
+            of the three points of a triangle
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
+            <summary>
+            Create a mesh plane based on the current settings.
+            </summary>
+            <param name="origin"></param>
+            <param name="xWidth"></param>
+            <param name="yWidth"></param>
+            <param name="xDivisions"></param>
+            <param name="yDivisions"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Cuboid(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create a mesh cuboid based on the current settings.
+            </summary>
+            <param name="origin"></param>
+            <param name="length"></param>
+            <param name="width"></param>
+            <param name="height"></param>
+            <param name="xDivisions"></param>
+            <param name="yDivisions"></param>
+            <param name="zDivisions"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Sphere(Autodesk.DesignScript.Geometry.Point,System.Double,System.Int32,System.Boolean)">
+            <summary>
+            Create a mesh sphere based on the current settings.
+            </summary>
+            <param name="origin"></param>
+            <param name="radius"></param>
+            <param name="divisions"></param>
+            <param name="icosphere"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Cone(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Double,System.Int32,System.Boolean)">
+            <summary>
+            Create a mesh cone based on the current settings.
+            </summary>
+            <param name="origin"></param>
+            <param name="baseRadius"></param>
+            <param name="topRadius"></param>
+            <param name="height"></param>
+            <param name="divisions"></param>
+            <param name="cap"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.ExtrudePolyCurve(Autodesk.DesignScript.Geometry.PolyCurve,System.Double,Autodesk.DesignScript.Geometry.Vector,System.Boolean)">
+            <summary>
+            Returns a mesh by extruding a 3D polyline.
+            </summary>
+            <param name="polycurve">PolyCurve to extrude</param>
+            <param name="height">Height of extrusion</param>
+            <param name="direction">Vector direction for extrusion</param>
+            <param name="cap">Cap mesh extrusion (only if PolyCurve is planar)</param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.VertexCount">
+            <summary>
+            Returns the number of vertices in the Mesh
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.EdgeCount">
+            <summary>
+            Returns the number of edges in the Mesh
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.TriangleCount">
+            <summary>
+            Returns the number of triangles in the Mesh
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.Volume">
+            <summary>
+            Returns the volume of the provided Mesh
+            </summary>
+            <returns name="volume">volume</returns>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.Area">
+            <summary>
+            Returns the area of the provided Mesh
+            </summary>
+            <returns name="area">area</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Vertices">
+            <summary>
+            Converts the Mesh vertices to Points, and returns them
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.VertexNormals">
+            <summary>
+            Returns each vertex normal.
+            </summary>
+            <returns name = "vertexNormals">List of vertex normals.</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.VertexIndicesByTri">
+            <summary>
+            Returns the vertex indices for each mesh triangle.
+            (as opposed to unique vertex indices)
+            </summary>
+            <returns name = "indices">List of vertex indices for each mesh triangle.</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Edges">
+            <summary>
+            Converts the Mesh edges to Lines, and returns them
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Triangles">
+            <summary>
+            Converts the Mesh faces to Surface patches, and returns them. Note:
+            this method can generate A LOT of heavy Surfaces, and may
+            slow down Dynamo with large meshes.
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Explode">
+            <summary>
+            Converts Mesh triangles to individual meshes and returns them.
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.TriangleNormals">
+            <summary>
+            Returns the normals for each triangle face in a given mesh.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.TriangleCentroids">
+            <summary>
+            Returns Triangle Centroids
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.StrengthAnalysis">
+            <summary>
+            Examine a mesh for inherent structural weaknesses. It can be used to 
+            provide an indication as to which parts of the model are most likely 
+            to break if fabricated as a physical object. The analysis assumes that
+            the physical object is to be made of solid material.
+            </summary>
+            <returns name="color">List of vertex color values</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Tessellate(Autodesk.DesignScript.Interfaces.IRenderPackage,Autodesk.DesignScript.Interfaces.TessellationParameters)">
+            <notranslation>true</notranslation>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.BooleanUnion(Autodesk.Dynamo.MeshToolkit.Mesh)">
+            <summary>
+            Returns a new mesh unifying the tool mesh and the original mesh.
+            </summary>
+            <param name="tool"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.BooleanDifference(Autodesk.Dynamo.MeshToolkit.Mesh)">
+            <summary>
+            Returns a new mesh subtracting the tool mesh from the original mesh.
+            </summary>
+            <param name="tool"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.BooleanIntersection(Autodesk.Dynamo.MeshToolkit.Mesh)">
+            <summary>
+            Returns a new mesh consistenting of the intersection between the tool
+            mesh and the original mesh.
+            </summary>
+            <param name="tool"></param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Repair">
+            <summary>
+            Returns a new Mesh with the following defects repaired:
+            Small components: if the Mesh contains a very small, disconnected
+                segments, relative to the overall Mesh size, they will be
+                discarded.
+            Holes: holes in the mesh are filled in
+            Non-manifold regions: if a vertex is connected to more than
+                two *boundary* edges, or an edge is connected to more than
+                two triangles then the vertex / edge is non-manifold. The
+                mesh toolkit will remove geometry until the mesh is manifold
+            
+            This method tries to preserve as much of the original mesh as 
+            possible, as opposed to MakeWatertight, which resamples the Mesh
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.CloseCracks">
+            <summary>
+            Removes internal boundaries of a Mesh. An internal boundary occurs
+            when there are coincident vertices, such as if Mesh had separate
+            triangle groups for the lid of a pot and the body of the pot.
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.MakeWatertight">
+            <summary>
+            Returns a new Mesh that is watertight and 3D printable. As a result of
+            making a Mesh watertight, self-intersections, overlaps, and non-manifold
+            geometry is removed from the mesh. The method computes a thin-band distance 
+            field and generates a new Mesh using marching cubes but doesn't project 
+            back onto the original Mesh.
+            
+            Basically the Mesh is filled with a bunch of tiny boxes, and a new 
+            mesh is created around this.
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Returns a new Mesh that has been hollowed out for 3D printing.
+            </summary>
+            <param name="holeCount">Number of escape holes</param>
+            <param name="holeRadius">Radius of escape holes</param>
+            <param name="wallThickness">Interior offset distance</param>
+            <param name="solidResolution">Resolution for making the solid that represents the interior surface of the hollowed mesh (8 - 4096)</param>
+            <param name="meshResolution">Resolution for mesh generation on the interior surface of the hollowed mesh (8 - 4096)</param>
+            <returns name="mesh">Hollow mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.GenerateSupport(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Returns a new Mesh with support structure. Default threshold settings are used if input is empty.
+            </summary>
+            <param name="baseHeight">Height of the base where the support posts meet the ground</param>
+            <param name="baseDiameter">Diameter of the base where the support posts meet the ground</param>
+            <param name="postDiameter">Diameter of the support posts</param>
+            <param name="tipHeight">Height of the tip where the support posts touch the mesh</param>
+            <param name="tipDiameter">Diameter of the tip where the support posts touch the mesh</param>
+            <returns name="mesh">Mesh with support structure</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Reduce(System.Double)">
+            <summary>
+            Returns a new Mesh with a reduced number of triangles.
+            </summary>
+            <param name="triangleCount">Goal triangle count for the reduction</param>
+            <returns name="mesh">Reduced mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Remesh">
+            <summary>
+            Returns a new Mesh distributing triangles more evenly over the whole of the selection 
+            regardless of any change in triangle normals across the given selection.
+            </summary>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Smooth(System.Double)">
+            <summary>
+            Returns a new smooth Mesh. Smoothing type by default is 
+            cotangent which smooths without spreading the vertices.
+            </summary>
+            <param name="scale">Sets the "spatial scale" of smoothing. Smaller values yield more
+            local smoothing, and typically result in a less "smooth" looking result (0.1 - 64.0)</param>
+            <returns name="mesh">Smooth mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.PlaneCut(Autodesk.DesignScript.Geometry.Plane,System.Boolean)">
+            <summary>
+            Create a precise geometric planar cut which removes portions of the mesh
+            that lie on the side of the plane in the direction of the plane normal.
+            </summary>
+            <param name="plane">Set plane to use for the cut</param>
+            <param name="makeSolid">Attempt to create a minimal fill using the fewest 
+            number of triangles.</param>
+            <returns name="mesh">mesh</returns>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.ExportMeshes(System.String,System.Collections.Generic.IEnumerable{Autodesk.Dynamo.MeshToolkit.Mesh})">
+            <summary>
+            Exports meshes to a format determined by file name:
+            .mix -- Meshmixer
+            .obj -- Wavefront
+            .stl -- STL format
+            .dae -- COLLADA
+            .ply -- Polygon File Format
+            This function returns the filename of the output file, which may
+            need to be changed if it contains non-ascii characters
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Intersect(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Intersects input Plane with the Mesh, producing a PolyCurve
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Mirror(Autodesk.DesignScript.Geometry.Plane)">
+            <summary>
+            Reflect the Mesh across the input Plane
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>
+            Rotate the Mesh around the input axis by input degrees. Rotation
+            is centered at the origin 
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Scale(System.Double)">
+            <summary>
+            Scale the Mesh by the input amount
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Scale(System.Double,System.Double,System.Double)">
+            <summary>
+            Scale Mesh non-uniformally by scale factors
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector)">
+            <summary>
+            Translate a Mesh in the direction of input Vector by the length of the Vector
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Translate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
+            <summary>
+            Translate the Mesh in the direction of the input Vector by the input distance
+            </summary>
+        </member>
+        <member name="M:Autodesk.Dynamo.MeshToolkit.Mesh.Translate(System.Double,System.Double,System.Double)">
+            <summary>
+            Translates the Mesh by the input distances
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.VerticesAsThreeNumbers">
+            <summary>
+            Returns raw vertices of this mesh as a list of numbers. Each set of
+            three consecutive numbers represents a point.
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.EdgesAsSixNumbers">
+            <summary>
+            Returns raw vertices of this mesh as a list of numbers. Each set of
+            six consecutive numbers represents two points
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.Mesh.TrianglesAsNineNumbers">
+            <summary>
+            Returns raw vertices of this mesh as a list of numbers. Each set of
+            nine consecutive numbers represents three points of a triangle
+            </summary>
+        </member>
+        <member name="P:Autodesk.Dynamo.MeshToolkit.RenderPackage.ItemsCount">
+            <summary>
+            Store the number of items stored in the RenderPackage
+            </summary>
+        </member>
+    </members>
+</doc>

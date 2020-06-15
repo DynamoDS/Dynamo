@@ -94,9 +94,9 @@ namespace DynamoCoreWpfTests
             get { return "DummyViewExtension"; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-
+            // Do nothing for now
         }
 
         public void Loaded(ViewLoadedParams p)
@@ -147,9 +147,9 @@ namespace DynamoCoreWpfTests
             get { return "ExtensionsSideBarViewExtension"; }
         }
 
-        public void Startup(ViewStartupParams p)
+        public void Startup(ViewStartupParams viewStartupParams)
         {
-
+            // Do nothing for now
         }
 
         public void Loaded(ViewLoadedParams p)

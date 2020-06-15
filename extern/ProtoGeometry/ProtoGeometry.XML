@@ -5165,7 +5165,12 @@
             <search>tspline,import,serialize</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM(System.String,System.Boolean)">
-            Newly loaded T-Spline surface in list
+            <summary>
+            Create a T-Spline Surface from the string in T-Spline Mesh format.
+            </summary>
+            <param name="content">String representation of T-Spline Mesh file</param>
+            <param name="inSmoothMode">Show T-Spline Surface in box or smooth visualization</param>
+            <returns>Newly loaded T-Spline surface in list</returns>
             <search>tspline,import,serialize</search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM(System.String,System.Boolean)">
@@ -6089,6 +6094,7 @@
             </summary>
             <param name="geometry"></param>
             <param name="filePath"></param>
+            <param name="unitsMM"></param>
             <returns></returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Geometry.FromNativePointer(System.IntPtr)">

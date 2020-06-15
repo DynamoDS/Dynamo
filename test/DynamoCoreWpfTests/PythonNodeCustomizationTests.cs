@@ -30,9 +30,8 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanChangeEngineFromScriptEditorDropDown()
         {
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             // Arrange
-            var expectedAvailableEnignes = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
+            var expectedAvailableEngines = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
             var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
             var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
 
@@ -46,9 +45,7 @@ namespace DynamoCoreWpfTests
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .Cast<MenuItem>()
-                .Where(x => x.Header.ToString() == "Edit...")
-                .Select(x => x)
-                .First();
+                .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
@@ -58,9 +55,7 @@ namespace DynamoCoreWpfTests
             var windowGrid = scriptEditorWindow.Content as Grid;
             var engineSelectorComboBox = windowGrid
                 .ChildrenOfType<ComboBox>()
-                .Where(x=>x.Name == "EngineSelectorComboBox")
-                .Select(x=>x)
-                .First();
+                .First(x=>x.Name == "EngineSelectorComboBox");
 
             // Act
             var engineBeforeChange = engineSelectorComboBox.SelectedItem;
@@ -69,10 +64,22 @@ namespace DynamoCoreWpfTests
 
             // Assert
             Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
-            CollectionAssert.AreEqual(expectedAvailableEnignes, comboBoxEngines);
+            CollectionAssert.AreEqual(expectedAvailableEngines, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
             Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonNodeModels.PythonEngineVersion.CPython3);
             Assert.AreEqual(nodeModel.Engine, engineAfterChange);
+            var engineMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Python Engine Version");
+            var ironPython2MenuItem = engineMenuItem.Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
+            var cPython3MenuItem = engineMenuItem.Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
+            Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
+            Assert.AreEqual(true, cPython3MenuItem.IsChecked);
         }
 
         /// <summary>
@@ -85,7 +92,6 @@ namespace DynamoCoreWpfTests
             // Arrange
             // Setup the python3 debug mode, otherwise we wont be able to get the engine version selector 
             // from the nodes context menu
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python3DebugMode.config"));
             var expectedEngineVersionOnOpen = PythonNodeModels.PythonEngineVersion.CPython3;
             var expectedEngineVersionAfterChange = PythonNodeModels.PythonEngineVersion.IronPython2;
 
@@ -100,16 +106,15 @@ namespace DynamoCoreWpfTests
             var editMenuItem = nodeView.MainContextMenu
                 .Items
                 .Cast<MenuItem>()
-                .Where(x => x.Header.ToString() == "Python Engine Version")
-                .Select(x => x)
-                .First();
+                .First(x => x.Header.ToString() == "Python Engine Version");
 
             var engineMenuItems = editMenuItem.Items;
             var ironPython2MenuItem = engineMenuItems
                 .Cast<MenuItem>()
-                .Where(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo)
-                .Select(x => x)
-                .First();
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo);
+            var cPython3MenuItem = engineMenuItems
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
 
             // Act
             ironPython2MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -119,6 +124,15 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedEngineVersionOnOpen, engineVersionOnOpen);
             CollectionAssert.AreEqual(expectedEngineMenuItems, engineMenuItems.Cast<MenuItem>().Select(x => x.Header));
             Assert.AreEqual(expectedEngineVersionAfterChange, engineVersionAfterChange);
+            Assert.AreEqual(true, ironPython2MenuItem.IsChecked);
+            Assert.AreEqual(false, cPython3MenuItem.IsChecked);
+
+            // Act
+            nodeModel.Engine = PythonNodeModels.PythonEngineVersion.CPython3;
+
+            // Assert
+            Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
+            Assert.AreEqual(true, cPython3MenuItem.IsChecked);
         }
 
         /// <summary>
