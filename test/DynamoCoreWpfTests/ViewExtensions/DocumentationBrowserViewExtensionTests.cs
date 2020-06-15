@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
 
-        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
+        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -228,7 +228,7 @@ namespace DynamoCoreWpfTests
                 var viewExtension = SetupNewViewExtension(true);
 
                 // Reference an embedded HTML file in a loaded assembly
-                var assemblyName = "LocalizedDocs";
+                var assemblyName = "SpecificCultureDocs";
                 var fileName = "DivisionByZero.html";
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
@@ -262,7 +262,7 @@ namespace DynamoCoreWpfTests
                 var viewExtension = SetupNewViewExtension(true);
 
                 // Reference an embedded HTML file in a loaded assembly
-                var assemblyName = "LocalizedDocs";
+                var assemblyName = "NeutralCultureDocs";
                 var fileName = "DivisionByZero.html";
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
@@ -296,7 +296,7 @@ namespace DynamoCoreWpfTests
                 var viewExtension = SetupNewViewExtension(true);
 
                 // Reference an embedded HTML file in a loaded assembly
-                var assemblyName = "LocalizedDocs";
+                var assemblyName = "SpecificCultureDocs";
                 var fileName = "DivisionByZero.html";
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
@@ -331,7 +331,7 @@ namespace DynamoCoreWpfTests
                 var viewExtension = SetupNewViewExtension(true);
 
                 // Reference an embedded HTML file in a loaded assembly
-                var assemblyName = "LocalizedDocs";
+                var assemblyName = "InvariantCultureDocs";
                 var fileName = "DivisionByZero.html";
                 var uri = $"{assemblyName};{fileName}";
                 var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
