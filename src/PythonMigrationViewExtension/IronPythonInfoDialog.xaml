@@ -33,7 +33,7 @@
                Margin="25"
                VerticalAlignment="Center"
                HorizontalAlignment="Center"
-               Source="/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png">
+               Source="/DynamoCoreWpf;component/UI/Images/python-logo.png">
         </Image>
 
         <StackPanel Grid.Row="0"
@@ -42,7 +42,7 @@
 
             <TextBlock Name="SummaryText"
                        Text="{x:Static w:Resources.IronPythonDialogSummary}"
-                       FontSize="13"
+                       FontSize="15"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap"
@@ -51,7 +51,7 @@
 
             <TextBlock Name="DescriptionText"
                        Text="{x:Static w:Resources.IronPythonDialogDescription}"
-                       FontSize="16"
+                       FontSize="12"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap">

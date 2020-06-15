@@ -942,6 +942,9 @@
     <Resource Include="UI\Images\task_dialog_future_file.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\python-logo.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\task_dialog_obsolete_file.png" />
   </ItemGroup>
   <ItemGroup>
