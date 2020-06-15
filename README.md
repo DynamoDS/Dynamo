@@ -25,10 +25,10 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 ### Build Dynamo from Source ###
 You will need the following to build Dynamo `master` branch:
 
-- Microsoft Visual Studio 2017
-- Microsoft .NET Framework 4.7.
+- Microsoft Visual Studio 2019
+- Microsoft .NET Framework 4.8
 - [GitHub for Windows](https://windows.github.com/)
-- Microsoft DirectX (install from %GitHub%\Dynamo\tools\install\Extra\DirectX\DXSETUP.exe)
+- Windows 10
 
 If you are working on legacy branches, you need to install legacy .Net Framework archives [here](https://www.microsoft.com/net/download/archives).
 
