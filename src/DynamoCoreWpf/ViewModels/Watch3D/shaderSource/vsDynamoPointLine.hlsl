@@ -13,8 +13,6 @@ GSInputPS main(VSInputPS input)
 
 	//set position into clip space	
 	output.p = mul(output.p, mWorld);
-	//geometryShader uses this field, so it must be set.
-	output.wp = output.p;
 	output.p = mul(output.p, mView);
 	output.p = mul(output.p, mProjection);
 
