@@ -620,11 +620,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        protected override void OnShutdown()
-        {
- 
-        }
-
         protected override void OnClear()
         {
             lock (element3DDictionaryMutex)
@@ -1076,7 +1071,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             lock (element3DDictionaryMutex)
             {
                 geometryModels = Element3DDictionary
-                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value is Element3D).ToArray();
+                        .Where(x => x.Key.Contains(node.AstIdentifierGuid) && x.Value != null).ToArray();
             }
 
             return geometryModels;
