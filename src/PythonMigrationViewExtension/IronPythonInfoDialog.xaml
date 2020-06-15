@@ -42,7 +42,7 @@
 
             <TextBlock Name="SummaryText"
                        Text="{x:Static w:Resources.IronPythonDialogSummary}"
-                       FontSize="13"
+                       FontSize="15"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap"
@@ -51,7 +51,7 @@
 
             <TextBlock Name="DescriptionText"
                        Text="{x:Static w:Resources.IronPythonDialogDescription}"
-                       FontSize="16"
+                       FontSize="12"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap">
