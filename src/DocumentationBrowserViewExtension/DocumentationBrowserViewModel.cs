@@ -277,7 +277,7 @@ namespace Dynamo.DocumentationBrowser
                 assembly = GetType().Assembly;
             }
 
-            Assembly resourceAssembly = GetResourceAssembly(assembly);
+            Assembly resourceAssembly = GetResourceAssembly(assembly, name);
 
             var availableResources = resourceAssembly.GetManifestResourceNames();
 
@@ -333,18 +333,33 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
+        /// Checks if the assembly contains a manifest resource that ends with the specified name.
+        /// </summary>
+        /// <param name="assembly">Assembly to search for resources</param>
+        /// <param name="name">Suffix to search</param>
+        /// <returns>If such a resource exists or not</returns>
+        private static bool ContainsResource(Assembly assembly, string name)
+        {
+            if (assembly != null)
+            {
+                return assembly.GetManifestResourceNames().Any(resName => resName.EndsWith(name));
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Resolves the assembly where to look for embedded resources. If no satellite compatible
         /// with the UI culture is found, it returns the provided main/invariant assembly.
         /// </summary>
         /// <param name="assembly">The main assembly</param>
         /// <returns>The resource assembly</returns>
-        private static Assembly GetResourceAssembly(Assembly assembly)
+        private static Assembly GetResourceAssembly(Assembly assembly, string name)
         {
             var culture = CultureInfo.CurrentUICulture;
             var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
             // If there is no satellite for the exact culture, try a more specific/neutral one
             // following .NET rules for culture matching.
-            if (satelliteAssembly == null)
+            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
             {
                 if (culture.IsNeutralCulture)
                 {
@@ -357,7 +372,7 @@ namespace Dynamo.DocumentationBrowser
                 }
             }
 
-            if (satelliteAssembly == null)
+            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
             {
                 // Default to main assembly when no compatible satellite assembly was found
                 return assembly;
