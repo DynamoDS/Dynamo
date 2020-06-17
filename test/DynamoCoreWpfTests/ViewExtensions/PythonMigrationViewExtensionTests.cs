@@ -263,7 +263,7 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// This test checks that the IronPython dialog is shown to the user,
-        /// when the workspace has custom nodes that contain python nodes in it. 
+        /// when the workspace has custom nodes that contain a python node in it. 
         /// </summary>
         [Test]
         public void WillDisplayDialogWhenCustomNodeInsideWorkspaceHasIronPythonNode()
@@ -285,6 +285,5 @@ namespace DynamoCoreWpfTests
             DynamoModel.IsTestMode = true;
             DispatcherUtil.DoEvents();
         }
-
     }
 }
