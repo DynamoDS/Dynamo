@@ -72,7 +72,7 @@ namespace ProtoCore
         /// <param name="stackFrame"></param>
         /// <param name="core"></param>
         /// <param name="unresolvable">The number of argument sets that couldn't be resolved</param>
-        /// <returns></returns>
+        /// <returns>Returns true, if it can find a matching FEP for all the reduced params. Returns False otherwise.</returns>
         public bool CanGetExactMatchStatics(
             Runtime.Context context,
             List<List<StackValue>> reducedFormalParams,
@@ -81,6 +81,10 @@ namespace ProtoCore
             out HashSet<FunctionEndPoint> lookup)
         {
             lookup = new HashSet<FunctionEndPoint>();
+
+            if (reducedFormalParams.Count == 0)
+                return false;
+
             foreach (List<StackValue> formalParamSet in reducedFormalParams)
             {
                 List<FunctionEndPoint> feps = GetExactTypeMatches(context, formalParamSet, new List<ReplicationInstruction>(), stackFrame, runtimeCore);
@@ -191,7 +195,7 @@ namespace ProtoCore
             RuntimeCore runtimeCore)
         {
             Dictionary<FunctionEndPoint, int> ret = new Dictionary<FunctionEndPoint, int>();
-            var reducedParams = Replicator.ComputeAllReducedParams(formalParams, replicationInstructions, runtimeCore);
+            var reducedParams = Replicator.ComputeAllReducedParamsWithoutArraySampling(formalParams, replicationInstructions, runtimeCore);
 
             foreach (FunctionEndPoint fep in FunctionEndPoints)
             {

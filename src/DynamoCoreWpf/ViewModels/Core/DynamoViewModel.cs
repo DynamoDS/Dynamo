@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -23,6 +22,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
@@ -67,7 +67,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         
-        private List<DefaultWatch3DViewModel> watch3DViewModels = new List<DefaultWatch3DViewModel>();
+        private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -532,22 +532,6 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
-
-            // This can be removed after this bug is fixed in .net 4.7
-            // https://developercommunity.visualstudio.com/content/problem/244615/setfinalsizemaxdiscrepancy-getting-stuck-in-an-inf.html
-            // if the key "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace" has a value true in the 
-            // dynamoCoreWpf.config file we will set the switch here before the view is created.
-            var path = this.GetType().Assembly.Location;
-            var config = ConfigurationManager.OpenExeConfiguration(path);
-            var gridSwitchKey = "Switch.System.Windows.Controls.Grid.StarDefinitionsCanExceedAvailableSpace";
-            var gridSwitchKeyValue = config.AppSettings.Settings[gridSwitchKey];
-            bool gridSwitch = false;
-            if(gridSwitchKeyValue != null)
-            {
-                bool.TryParse(gridSwitchKeyValue.Value, out gridSwitch);
-                AppContext.SetSwitch(gridSwitchKey, gridSwitch);
-            }
-
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
@@ -1899,7 +1883,12 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-                this.ShowStartPage = false; // Hide start page if there's one.
+            {
+                var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
+                model.Scheduler.ScheduleForExecution(t);
+
+                ShowStartPage = false; // Hide start page if there's one.
+            }
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
@@ -2523,7 +2512,10 @@ namespace Dynamo.ViewModels
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
+            {
                 OnRequestClose(this, EventArgs.Empty);
+            }
+
 
             BackgroundPreviewViewModel.Dispose();
 
@@ -2534,6 +2526,11 @@ namespace Dynamo.ViewModels
             }
 
             UsageReportingManager.DestroyInstance();
+            this.model.CommandStarting -= OnModelCommandStarting;
+            this.model.CommandCompleted -= OnModelCommandCompleted;
+            BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
+            WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
+            model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
 
             return true;
         }

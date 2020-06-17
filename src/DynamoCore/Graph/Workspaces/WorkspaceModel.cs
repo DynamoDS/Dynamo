@@ -1053,8 +1053,6 @@ namespace Dynamo.Graph.Workspaces
             var handler = Disposed;
             if (handler != null) handler();
             Disposed = null;
-
-            WorkspaceEvents.WorkspaceAdded -= computeUpstreamNodesWhenWorkspaceAdded;
         }
 
         #endregion

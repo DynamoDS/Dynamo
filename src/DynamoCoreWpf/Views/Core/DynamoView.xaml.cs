@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
@@ -73,7 +74,7 @@ namespace Dynamo.Controls
         // called on the view model and the process is not cancelled
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
-
+        private ViewLoadedParams sharedViewExtensionLoadedParams;
         /// <summary>
         /// This event is raised on the dynamo view when an extension tab is closed.
         /// </summary>
@@ -627,13 +628,11 @@ namespace Dynamo.Controls
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomIn:
-                    var camera1 = BackgroundPreview.View.CameraController;
-                    camera1.Zoom(-0.5 * BackgroundPreview.View.ZoomSensitivity);
+                    BackgroundPreview.View.AddZoomForce(-0.5);
                     break;
 
                 case ViewOperationEventArgs.Operation.ZoomOut:
-                    var camera2 = BackgroundPreview.View.CameraController;
-                    camera2.Zoom(0.5 * BackgroundPreview.View.ZoomSensitivity);
+                    BackgroundPreview.View.AddZoomForce(0.5);
                     break;
             }
         }
@@ -735,9 +734,8 @@ namespace Dynamo.Controls
             // Kick start the automation run, if possible.
             dynamoViewModel.BeginCommandPlayback(this);
 
-            var loadedParams = new ViewLoadedParams(this, dynamoViewModel);
-
-            this.DynamoLoadedViewExtensionHandler(loadedParams, viewExtensionManager.ViewExtensions);
+            sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
+            this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);
@@ -1054,13 +1052,12 @@ namespace Dynamo.Controls
 
         private void DynamoViewModelRequestSave3DImage(object sender, ImageSaveEventArgs e)
         {
-            var canvas = (DPFCanvas)BackgroundPreview.View.RenderHost;
-
+            var bitmapSource =BackgroundPreview.View.RenderBitmap();
+            //this image only really needs 24bits per pixel but to match previous implementation we'll use 32bit images.
+            var rtBitmap = new RenderTargetBitmap(bitmapSource.PixelWidth, bitmapSource.PixelHeight, 96, 96,
+     PixelFormats.Pbgra32);
+            rtBitmap.Render(BackgroundPreview.View);
             var encoder = new PngBitmapEncoder();
-            var rtBitmap = new RenderTargetBitmap((int)canvas.ActualWidth, (int)canvas.ActualHeight, 96, 96,
-                PixelFormats.Pbgra32);
-            rtBitmap.Render(canvas);
-
             encoder.Frames.Add(BitmapFrame.Create(rtBitmap));
 
             if (File.Exists(e.Path))
@@ -1325,6 +1322,8 @@ namespace Dynamo.Controls
 
             dynamoViewModel.RequestClose -= DynamoViewModelRequestClose;
             dynamoViewModel.RequestSaveImage -= DynamoViewModelRequestSaveImage;
+            dynamoViewModel.RequestSave3DImage -= DynamoViewModelRequestSave3DImage;
+
             dynamoViewModel.SidebarClosed -= DynamoViewModelSidebarClosed;
 
             DynamoSelection.Instance.Selection.CollectionChanged -= Selection_CollectionChanged;
@@ -1344,6 +1343,8 @@ namespace Dynamo.Controls
             //SHOW or HIDE GALLERY
             dynamoViewModel.RequestShowHideGallery -= DynamoViewModelRequestShowHideGallery;
 
+            //first all view extensions have their shutdown methods called
+            //when this view is finally disposed, dispose will be called on them.
             foreach (var ext in viewExtensionManager.ViewExtensions)
             {
                 try
@@ -1352,11 +1353,22 @@ namespace Dynamo.Controls
                 }
                 catch (Exception exc)
                 {
-                    Log(ext.Name + ": " + exc.Message);
+                    Log($"{ext.Name} :  {exc.Message} during shutdown" );
                 }
             }
+          
 
             viewExtensionManager.MessageLogged -= Log;
+            BackgroundPreview = null;
+            background_grid.Children.Clear();
+
+            //COMMANDS
+            this.dynamoViewModel.RequestPaste -= OnRequestPaste;
+            this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
+            dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
+            
+            this.Dispose();
+            sharedViewExtensionLoadedParams?.Dispose();
         }
 
         // the key press event is being intercepted before it can get to
@@ -2041,17 +2053,7 @@ namespace Dynamo.Controls
 
         public void Dispose()
         {
-            foreach (var ext in viewExtensionManager.ViewExtensions)
-            {
-                try
-                {
-                    ext.Dispose();
-                }
-                catch (Exception exc)
-                {
-                    Log(ext.Name + ": " + exc.Message);
-                }
-            }
+            viewExtensionManager.Dispose();
             if (dynamoViewModel.Model.AuthenticationManager.HasAuthProvider && loginService != null)
             {
                 dynamoViewModel.Model.AuthenticationManager.AuthProvider.RequestLogin -= loginService.ShowLogin;

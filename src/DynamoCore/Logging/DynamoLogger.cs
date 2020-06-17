@@ -4,8 +4,8 @@ using System.IO;
 using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Exceptions;
-using Dynamo.Interfaces;
 
 namespace Dynamo.Logging
 {
@@ -75,6 +75,7 @@ namespace Dynamo.Logging
         private string _warning;
         private WarningLevel _warningLevel;
         private bool _isDisposed;
+        private readonly bool testMode;
 
         private TextWriter FileWriter { get; set; }
         private StringBuilder ConsoleWriter { get; set; }
@@ -157,7 +158,20 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="debugSettings">Debug settings</param>
         /// <param name="logDirectory">Directory path where log file will be written</param>
-        public DynamoLogger(DebugSettings debugSettings, string logDirectory)
+        [Obsolete("This will be removed in 3.0, please use DynamoLogger(debugSettings, logDirectory, isTestMode) instead.")]
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory) : this(debugSettings, logDirectory, false)
+        {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="DynamoLogger"/> class
+        /// with specified debug settings and directory where to write logs
+        /// </summary>
+        /// <param name="debugSettings">Debug settings</param>
+        /// <param name="logDirectory">Directory path where log file will be written</param>
+        /// <param name="isTestMode">Test mode is true or false.</param>
+        public DynamoLogger(DebugSettings debugSettings, string logDirectory, Boolean isTestMode)
         {
             lock (guardMutex)
             {
@@ -169,7 +183,14 @@ namespace Dynamo.Logging
 
                 notifications = new List<NotificationMessage>();
 
-                StartLogging(logDirectory);
+                testMode = isTestMode;
+
+                if (!testMode)
+                {
+                    StartLoggingToConsoleAndFile(logDirectory);
+                }
+
+                XmlDocumentationExtensions.LogToConsole += Log;
             }
         }
 
@@ -196,6 +217,13 @@ namespace Dynamo.Logging
                 //Don't overwhelm the logging system
                 if (debugSettings.VerboseLogging)
                     Analytics.LogPiiInfo("LogMessage-" + level.ToString(), message);
+
+                // In test mode, write the logs only to std out. 
+                if (testMode)
+                {
+                    Console.WriteLine(string.Format("{0} : {1}", DateTime.UtcNow.ToString("u"), message));
+                    return;
+                }
 
                 switch (level)
                 {
@@ -377,7 +405,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Begin logging.
         /// </summary>
-        private void StartLogging(string logDirectory)
+        private void StartLoggingToConsoleAndFile(string logDirectory)
         {
             lock (this.guardMutex)
             {
@@ -423,6 +451,8 @@ namespace Dynamo.Logging
 
             if (ConsoleWriter != null)
                 ConsoleWriter = null;
+
+            XmlDocumentationExtensions.LogToConsole -= Log;
         }
 
         /// <summary>

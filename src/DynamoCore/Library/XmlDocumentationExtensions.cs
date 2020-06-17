@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using Dynamo.Interfaces;
 using Dynamo.Library;
 
 namespace Dynamo.Engine
@@ -19,6 +17,11 @@ namespace Dynamo.Engine
                    new Dictionary<string, MemberDocumentNode>();
 
         #region Public methods
+
+        /// <summary>
+        /// Raise event to log messages to the Dynamo Console.
+        /// </summary>
+        public static event Action<string> LogToConsole;
 
         /// <summary>
         /// Returns a description of a parameter from the its documentation xml,
@@ -297,6 +300,11 @@ namespace Dynamo.Engine
             SearchTagWeights
         }
 
+        private static void OnMissingXmlTags(string warning)
+        {
+            LogToConsole?.Invoke(warning);
+        }
+
         private static void LoadDataFromXml(XmlReader reader, string assemblyName)
         {
             if (reader == null)
@@ -369,8 +377,19 @@ namespace Dynamo.Engine
                             case XmlTagType.Summary:
                                 currentDocNode.Summary = reader.Value.CleanUpDocString();
                                 break;
-                            case XmlTagType.Parameter:
-                                currentDocNode.Parameters.Add(currentParamName, reader.Value.CleanUpDocString());
+                            case XmlTagType.Parameter: 
+                                // If a tag is missing around text after <params> tag, the text can be added as a new parameter
+                                // under the previous parameter name. This check avoids the resulting ArgumentException with the dictionary.
+                                if (!currentDocNode.Parameters.ContainsKey(currentParamName))
+                                {
+                                    currentDocNode.Parameters.Add(currentParamName, reader.Value.CleanUpDocString());
+                                }
+                                else
+                                {
+                                    OnMissingXmlTags(
+                                        $"{currentDocNode.FullyQualifiedName} {Properties.Resources.MissingXmlTagConsoleMessage}");
+                                }
+
                                 break;
                             case XmlTagType.Returns:
                                 currentDocNode.Returns.Add(new Tuple<string,string>(currentParamName, reader.Value.CleanUpDocString()));

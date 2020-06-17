@@ -117,22 +117,27 @@ namespace ProtoCore.Utils
             return runtimeCore.DSExecutable.classTable.ClassNodes[orderedTypes.First()];
         }
 
-        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue array, RuntimeCore runtimeCore)
+        /// <summary>
+        /// This method returns the distinct(by metadata type) reduced params for all the elements inside the
+        /// paramStackValue, if it is an array. If it is not an array, it just returns the paramStackValue.
+        /// </summary>
+        /// <param name="paramStackValue"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns> A dictionary where the value is the current ReducedParam and the key is its metaData type</returns>
+        public static Dictionary<int, StackValue> GetTypeExamplesForLayer(StackValue paramStackValue, RuntimeCore runtimeCore)
         {
             Dictionary<int, StackValue> usageFreq = new Dictionary<int, StackValue>();
 
-            if (!array.IsArray)
+            if (!paramStackValue.IsArray)
             {
-                usageFreq.Add(array.metaData.type, array);
+                usageFreq.Add(paramStackValue.metaData.type, paramStackValue);
                 return usageFreq;
             }
 
             //This is the element on the heap that manages the data structure
-            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(paramStackValue);
             foreach (var sv in dsArray.Values)
             {
-                if(IsEmpty(sv, runtimeCore)) continue;
-
                 if (!usageFreq.ContainsKey(sv.metaData.type))
                 {
                     usageFreq.Add(sv.metaData.type, sv);
@@ -140,6 +145,47 @@ namespace ProtoCore.Utils
             }
 
             return usageFreq;
+        }
+
+        /// <summary>
+        /// Similar to GetTypeExamplesForLayer but it returns all non-empty arrays.
+        /// Its purpose is to support inspecting heterogeneous arrays in replication scenarios.
+        /// </summary>
+        /// <param name="array"></param>
+        /// <param name="runtimeCore"></param>
+        /// <returns></returns>
+        internal static List<StackValue> GetTypeExamplesForLayerWithoutArraySampling(StackValue array, RuntimeCore runtimeCore)
+        {
+            var result = new List<StackValue>();
+            var alreadyFoundTypes = new HashSet<int>();
+
+            if (!array.IsArray)
+            {
+                result.Add(array);
+                return result;
+            }
+
+            var dsArray = runtimeCore.Heap.ToHeapObject<DSArray>(array);
+            foreach (var sv in dsArray.Values)
+            {
+                if (sv.IsArray)
+                {
+                    if (!IsEmpty(sv, runtimeCore))
+                    {
+                        result.Add(sv);
+                    }
+                }
+                else
+                {
+                    if (!alreadyFoundTypes.Contains(sv.metaData.type))
+                    {
+                        alreadyFoundTypes.Add(sv.metaData.type);
+                        result.Add(sv);
+                    }
+                }
+            }
+
+            return result;
         }
 
 
@@ -296,7 +342,6 @@ namespace ProtoCore.Utils
         /// <returns> true if the element was found </returns>
         public static bool GetFirstNonArrayStackValue(StackValue svArray, ref StackValue sv, RuntimeCore runtimeCore)
         {
-            RuntimeMemory rmem = runtimeCore.RuntimeMemory;
             if (!svArray.IsArray)
             {
                 return false;

@@ -32,17 +32,17 @@ namespace Dynamo.Wpf.Views.Debug
             var listItem = (System.Windows.Controls.ListBoxItem)sender;
             if (null == listItem)
             {
-                throw new Exception("Invalid Control type found. Expected ListBoxItem");
+                throw new InvalidOperationException("Invalid Control type found. Expected ListBoxItem");
             }
             var dataContext = (DebugModeListItem)listItem.DataContext;
             if (null == dataContext)
             {
-                throw new Exception("Invalid data context type found. Expected DebugModeItem");
+                throw new InvalidOperationException("Invalid data context type found. Expected DebugModeItem");
             }
             var debugMode = DebugModes.GetDebugMode(dataContext.Name);
             if (null == debugMode)
             {
-                throw new Exception("Invalid debug mode found");      
+                throw new InvalidOperationException("Invalid debug mode found");      
             }
             SelectedDbgMode.Text = debugMode.Description;
         }
@@ -55,7 +55,10 @@ namespace Dynamo.Wpf.Views.Debug
             Close();
         }
 
-        private void OnCancelClick(object sender, RoutedEventArgs e) {}
+        private void OnCancelClick(object sender, RoutedEventArgs e) 
+        {
+            // Do nothing for now
+        }
 
         private class DebugModeListItem
         {

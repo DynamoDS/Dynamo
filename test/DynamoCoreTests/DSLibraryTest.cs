@@ -105,7 +105,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void TestLoadDllFileSuccess()
+        public void TestLoadDllFileSuccessWithLibrarySearchPathsResultionToFindDLL()
         {
             LibraryLoaded = false;
 
@@ -118,6 +118,32 @@ namespace Dynamo.Tests
             {
                 Assert.IsTrue(ex is LibraryLoadFailedException);
             }
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileAtPathSuccess()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = Path.Combine(TestDirectory, "pkgs", "Package", "bin", @"Package.dll");
+        
+            libraryServices.ImportLibrary(libraryPath);
+   
+            Assert.IsTrue(LibraryLoaded);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestLoadDllFileWithApostropheInPathSuccess()
+        {
+            LibraryLoaded = false;
+
+            string libraryPath = Path.Combine(TestDirectory, "pkgs", "Pack'age", "bin", @"Package.dll");
+      
+            libraryServices.ImportLibrary(libraryPath);
+
             Assert.IsTrue(LibraryLoaded);
         }
 

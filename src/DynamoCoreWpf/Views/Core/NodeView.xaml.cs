@@ -146,6 +146,7 @@ namespace Dynamo.Controls
                 expansionBay.Children.Remove(previewControl);
                 previewControl = null;
             }
+            nodeBorder.SizeChanged -= OnSizeChanged;
         }
 
         #endregion

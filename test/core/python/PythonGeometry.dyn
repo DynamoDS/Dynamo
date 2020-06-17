@@ -1,0 +1,358 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "PythonGeometry",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.CoordinateSystem": {
+        "Key": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point.ByCoordinates": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\n\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\npointA = IN[0]\r\n\r\npointB = Point.ByCoordinates(5.0, 0.0, 0.0);\r\n\r\nline = Line.ByStartPointEndPoint(pointA, pointB);\r\n\r\ncircle = Circle.ByCenterPointRadius(pointA, 5)\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = [circle, line]",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "3bcad14ed08642789e08ed2759ef92f3",
+      "Inputs": [
+        {
+          "Id": "de541643d8554cfba1f37dc3e5edefd8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "67669ab3e7424287bfc351971564d081",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "53e9e296c35a420288e187aef157007c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
+      "Id": "34d76a2e6be1454295890e9657b31918",
+      "Inputs": [
+        {
+          "Id": "dd6e70e7e57e42f8b093b76d9fa653f8",
+          "Name": "x",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "02ed7c5e00e5447b8ebd1bb25b68dc68",
+          "Name": "y",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1a4e3f5189d648978d7d7311d2531ae6",
+          "Name": "z",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "38ef92f6fd594f09a8189d5b7aaec8b5",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0;",
+      "Id": "7f791ba7d2004c61a659176029d2918f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9b9c595559f141f28dbc93281ceb89d6",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.CenterPoint",
+      "Id": "6bb5d21d7815467db1d2ccfc77713337",
+      "Inputs": [
+        {
+          "Id": "51ab7839f7894dca903aeae1a44843f0",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0185b64e06e247d78b7a08f29b88104c",
+          "Name": "Point",
+          "Description": "Point",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The center of the circle\n\nCircle.CenterPoint: Point"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.Radius",
+      "Id": "88746807ba6d4c81a37dbfb187acca81",
+      "Inputs": [
+        {
+          "Id": "0e5d0f9e265346c2a09c8ab0705f93e6",
+          "Name": "circle",
+          "Description": "Autodesk.DesignScript.Geometry.Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "de01bf6526674c3990fd670839d46202",
+          "Name": "double",
+          "Description": "double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "The radius of the circle\n\nCircle.Radius: double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "out[0];\nout[1];",
+      "Id": "cac9ff74bed14ff285294878fa849cd0",
+      "Inputs": [
+        {
+          "Id": "c025284026284046af8a810b87c6042d",
+          "Name": "out",
+          "Description": "out",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "103b5fefbbf746e8865cdd13ea1e3984",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1945407a9eaf46babce5df79c85dfeec",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "53e9e296c35a420288e187aef157007c",
+      "End": "c025284026284046af8a810b87c6042d",
+      "Id": "b795db53470d48108ea991f236fbb921"
+    },
+    {
+      "Start": "38ef92f6fd594f09a8189d5b7aaec8b5",
+      "End": "de541643d8554cfba1f37dc3e5edefd8",
+      "Id": "a95e33afff744be1a9718d7ab2613b25"
+    },
+    {
+      "Start": "9b9c595559f141f28dbc93281ceb89d6",
+      "End": "02ed7c5e00e5447b8ebd1bb25b68dc68",
+      "Id": "2247fb13cf9943928edb09985b16df16"
+    },
+    {
+      "Start": "9b9c595559f141f28dbc93281ceb89d6",
+      "End": "dd6e70e7e57e42f8b093b76d9fa653f8",
+      "Id": "abba5287505245cd8789d91bd2fbe98d"
+    },
+    {
+      "Start": "9b9c595559f141f28dbc93281ceb89d6",
+      "End": "1a4e3f5189d648978d7d7311d2531ae6",
+      "Id": "47eeee1616ac482e97f24794fe5bb0b8"
+    },
+    {
+      "Start": "103b5fefbbf746e8865cdd13ea1e3984",
+      "End": "51ab7839f7894dca903aeae1a44843f0",
+      "Id": "eba285d9e72949e8a8d7c290ca2748fd"
+    },
+    {
+      "Start": "103b5fefbbf746e8865cdd13ea1e3984",
+      "End": "0e5d0f9e265346c2a09c8ab0705f93e6",
+      "Id": "8771177ff7b74084ac546ce71e064363"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.7.0.8546",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "3bcad14ed08642789e08ed2759ef92f3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 492.0,
+        "Y": 134.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Point.ByCoordinates",
+        "Id": "34d76a2e6be1454295890e9657b31918",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 275.0,
+        "Y": 107.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7f791ba7d2004c61a659176029d2918f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 126.0,
+        "Y": 130.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.CenterPoint",
+        "Id": "6bb5d21d7815467db1d2ccfc77713337",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 854.0,
+        "Y": 72.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Circle.Radius",
+        "Id": "88746807ba6d4c81a37dbfb187acca81",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 853.0,
+        "Y": 201.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "cac9ff74bed14ff285294878fa849cd0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 654.0,
+        "Y": 154.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
