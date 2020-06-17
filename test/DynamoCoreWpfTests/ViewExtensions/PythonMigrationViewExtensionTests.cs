@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Configuration;
-using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PythonMigration;
-using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -260,6 +257,31 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(viewExtensionTabsBeforeBtnClick + 1, this.View.ExtensionTabItems.Count);
             Assert.IsTrue(hasDocumentationBrowserTab);
+            DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
+        }
+
+        /// <summary>
+        /// This test checks that the IronPython dialog is shown to the user,
+        /// when the workspace has custom nodes that contain python nodes in it. 
+        /// </summary>
+        [Test]
+        public void WillDisplayDialogWhenCustomNodeInsideWorkspaceHasIronPythonNode()
+        {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
+
+            // open file
+            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
+            Open(examplePath);
+            DispatcherUtil.DoEvents();
+
+            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
+
+            // Assert that the IronPython dialog is shown. 
+            Assert.IsNotNull(ironPythonDialog);
+            Assert.IsTrue(ironPythonDialog.IsLoaded);
+
             DynamoModel.IsTestMode = true;
             DispatcherUtil.DoEvents();
         }
