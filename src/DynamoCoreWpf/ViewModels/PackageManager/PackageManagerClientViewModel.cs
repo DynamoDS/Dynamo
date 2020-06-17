@@ -727,7 +727,17 @@ namespace Dynamo.ViewModels
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
-                        SetPackageState(packageDownloadHandle, downloadPath);
+
+                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out Package dynPkg))
+                        {
+                            pmExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                        }
+                        else
+                        {
+                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+                            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -735,26 +745,6 @@ namespace Dynamo.ViewModels
                     }
                 }));
             });
-        }
-
-        /// <summary>
-        /// Check Dynamo package install state
-        /// </summary>
-        /// <param name="packageDownloadHandle">package download handle</param>
-        /// <param name="downloadPath">package download path</param>
-        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
-        {
-            Package dynPkg;
-            if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
-            {
-                pmExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-            }
-            else
-            {
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
-            }
         }
 
         public void ClearCompletedDownloads()
