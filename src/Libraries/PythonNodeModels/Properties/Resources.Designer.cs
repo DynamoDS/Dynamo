@@ -124,6 +124,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn more about Python.
+        /// </summary>
+        public static string PythonNodeContextMenuLearnMoreButton {
+            get {
+                return ResourceManager.GetString("PythonNodeContextMenuLearnMoreButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
         public static string PythonNodePortDataOutputToolTip {

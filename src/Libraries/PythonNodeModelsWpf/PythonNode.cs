@@ -24,6 +24,7 @@ namespace PythonNodeModelsWpf
         private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
         private readonly MenuItem pythonEngine2Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionTwo, IsCheckable = false };
         private readonly MenuItem pythonEngine3Item = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree, IsCheckable = false };
+        private readonly MenuItem learnMoreItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuLearnMoreButton };
 
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
@@ -60,8 +61,10 @@ namespace PythonNodeModelsWpf
                     Converter = new EnumToBooleanConverter(),
                     ConverterParameter = PythonEngineVersion.CPython3.ToString()
                 });
+                learnMoreItem.Click += OpenPythonLearningMaterial;
                 pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
-                pythonEngineVersionMenu.Items.Add(pythonEngine3Item); 
+                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+                nodeView.MainContextMenu.Items.Add(learnMoreItem);
             }
 
             nodeView.UpdateLayout();
@@ -74,6 +77,16 @@ namespace PythonNodeModelsWpf
             nodeView.PresentationGrid.Children.Add(new EngineLabel(nodeModel));
         }
 
+        /// <summary>
+        /// Learn More button handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OpenPythonLearningMaterial(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
+
         private void NodeModel_Disposed(Dynamo.Graph.ModelBase obj)
         {
             if (editWindow != null)
@@ -83,6 +96,7 @@ namespace PythonNodeModelsWpf
             editWindowItem.Click -= EditScriptContent;
             pythonEngine2Item.Click -= UpdateToPython2Engine;
             pythonEngine3Item.Click -= UpdateToPython3Engine;
+            learnMoreItem.Click -= OpenPythonLearningMaterial;
         }
 
         private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
