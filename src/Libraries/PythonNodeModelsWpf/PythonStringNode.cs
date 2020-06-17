@@ -80,7 +80,8 @@ namespace PythonNodeModelsWpf
         /// <param name="e"></param>
         private void OpenPythonLearningMaterial(object sender, RoutedEventArgs e)
         {
-            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(
+                new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
         }
 
         /// <summary>
