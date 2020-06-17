@@ -16,8 +16,8 @@ namespace Dynamo.DocumentationBrowser
         #region Constants
 
         private const string HTML_TEMPLATE_IDENTIFIER = "%TEMPLATE%";
-        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = nameof(Resources.InternalError) + ".html";
-        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
+        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
+        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
         private const string DPISCRIPT = @"<script> function getDPIScale()
