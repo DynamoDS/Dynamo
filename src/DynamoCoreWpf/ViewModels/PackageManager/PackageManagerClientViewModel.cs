@@ -709,14 +709,13 @@ namespace Dynamo.ViewModels
                     try
                     {
                         packageDownloadHandle.Done(pathDl);
-                        var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
-                        var firstOrDefault = pmExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
+                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
                         if (firstOrDefault != null)
                         {
                             var dynModel = DynamoViewModel.Model;
                             try
                             {
-                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
+                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
                             }
                             catch
                             {
@@ -727,17 +726,7 @@ namespace Dynamo.ViewModels
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
-
-                        if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out Package dynPkg))
-                        {
-                            pmExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-                        }
-                        else
-                        {
-                            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
-                        }
+                        SetPackageState(packageDownloadHandle, downloadPath);
                     }
                     catch (Exception e)
                     {
@@ -745,6 +734,26 @@ namespace Dynamo.ViewModels
                     }
                 }));
             });
+        }
+
+        /// <summary>
+        /// Check Dynamo package install state
+        /// </summary>
+        /// <param name="packageDownloadHandle">package download handle</param>
+        /// <param name="downloadPath">package download path</param>
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        {
+            Package dynPkg;
+            if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
+            {
+                PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+            }
+            else
+            {
+                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+            }
         }
 
         public void ClearCompletedDownloads()
