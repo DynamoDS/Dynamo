@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\PythonExtension.dll</AssemblyPath>
+  <TypeName>PythonExtension.PythonViewExtension</TypeName>
+</ViewExtensionDefinition>

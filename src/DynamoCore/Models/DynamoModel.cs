@@ -811,12 +811,12 @@ namespace Dynamo.Models
                         if(ext is IExtensionSource)
                         {
                            foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions))
-                            {
-                                if(loadedExtension is IExtension)
-                                {
-                                    (loadedExtension as IExtension).Startup(startupParams);
-                                }
-                            }
+                           {
+                               if(loadedExtension is IExtension)
+                               {
+                                   (loadedExtension as IExtension).Startup(startupParams);
+                               }
+                           }
                         }
                     }
                     catch (Exception ex)
@@ -1228,21 +1228,7 @@ namespace Dynamo.Models
             Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
                 Context, out modelTypes, out migrationTypes);
 
-            // Load NodeModels
-            foreach (var type in modelTypes)
-            {
-                // Protect ourselves from exceptions thrown by malformed third party nodes.
-                try
-                {
-                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
-                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
-                    AddNodeTypeToSearch(type);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e);
-                }
-            }
+            LoadNodeModels(modelTypes, false);
 
             // Load migrations
             foreach (var type in migrationTypes)
@@ -1315,6 +1301,11 @@ namespace Dynamo.Models
             var nodes = new List<TypeLoadData>();
             Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
 
+            LoadNodeModels(nodes, true);
+        }
+
+        private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
+        {
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1322,7 +1313,7 @@ namespace Dynamo.Models
                 {
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
-                    type.IsPackageMember = true;
+                    type.IsPackageMember = isPackageMember;
                     AddNodeTypeToSearch(type);
                 }
                 catch (Exception e)
