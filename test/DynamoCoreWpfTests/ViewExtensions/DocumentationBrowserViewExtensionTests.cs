@@ -9,6 +9,7 @@ using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -25,7 +26,7 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
 
-        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
+        private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -210,6 +211,142 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(1, tabsAfterExternalEventTrigger);
             Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+        }
+
+        /// <summary>
+        /// Test with Dynamo running in "en-us" culture and help content requested
+        /// for a package that contains localized help content for "en-us".
+        /// </summary>
+        [Test]
+        public void DisplaysLocalizedContentWhenAvailable()
+        {
+            // Arrange
+            var originalCulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-us");
+            try
+            {
+                var viewExtension = SetupNewViewExtension(true);
+
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "SpecificCultureDocs";
+                var fileName = "DivisionByZero.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+                // Act
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = GetSidebarDocsBrowserContents();
+
+                // Assert
+                StringAssert.Contains("<h3>Division by zero - en-us</h3>", htmlContent);
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = originalCulture;
+            }
+        }
+
+        /// <summary>
+        /// Test with Dynamo running in "es-uy" culture and help content requested
+        /// for a package that doesn't contain localized help content for "es-uy",
+        /// but does contain help content for neutral culture "es".
+        /// </summary>
+        [Test]
+        public void DisplayNeutralCultureContentWhenSpecificCultureContentIsNotAvailable()
+        {
+            // Arrange
+            var originalCulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("es-uy");
+            try
+            {
+                var viewExtension = SetupNewViewExtension(true);
+
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "NeutralCultureDocs";
+                var fileName = "DivisionByZero.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+                // Act
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = GetSidebarDocsBrowserContents();
+
+                // Assert
+                StringAssert.Contains("<h3>Division entre cero - es</h3>", htmlContent);
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = originalCulture;
+            }
+        }
+
+        /// <summary>
+        /// Test with Dynamo running in "en" culture and help content requested
+        /// for a package that doesn't contain localized help content for "en",
+        /// but does contain help content for specific culture "en-us".
+        /// </summary>
+        [Test]
+        public void DisplaySpecificCultureContentWhenNeutralCultureContentIsNotAvailable()
+        {
+            // Arrange
+            var originalCulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+            try
+            {
+                var viewExtension = SetupNewViewExtension(true);
+
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "SpecificCultureDocs";
+                var fileName = "DivisionByZero.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+                // Act
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = GetSidebarDocsBrowserContents();
+
+                // Assert
+                StringAssert.Contains("<h3>Division by zero - en-us</h3>", htmlContent);
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = originalCulture;
+            }
+        }
+
+        /// <summary>
+        /// Test with Dynamo running in "fr-ca" culture and help content requested
+        /// for a package that doesn't contain localized help content for "fr-ca"
+        /// nor the neutral culture "fr", so it falls back to invariant culture
+        /// help content.
+        /// </summary>
+        [Test]
+        public void DisplaysInvariantContentWhenNoCompatibleLocalizedContentIsAvailable()
+        {
+            // Arrange
+            var originalCulture = CultureInfo.CurrentUICulture;
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("fr-ca");
+            try
+            {
+                var viewExtension = SetupNewViewExtension(true);
+
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "InvariantCultureDocs";
+                var fileName = "DivisionByZero.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+
+                // Act
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var htmlContent = GetSidebarDocsBrowserContents();
+
+                // Assert
+                StringAssert.Contains("<h3>Division by zero - invariant</h3>", htmlContent);
+            }
+            finally
+            {
+                CultureInfo.CurrentUICulture = originalCulture;
+            }
         }
 
         [Test]

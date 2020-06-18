@@ -39,7 +39,7 @@
                         Margin="0,25,25,25">
 
             <TextBlock Name="SummaryText"
-                           FontSize="13"
+                           FontSize="15"
                            Foreground="#bbbbbb"
                            HorizontalAlignment="Stretch"
                            TextWrapping="Wrap"
@@ -47,7 +47,7 @@
             </TextBlock>
 
             <TextBlock Name="DescriptionText"
-                           FontSize="16"
+                           FontSize="12"
                            Foreground="#bbbbbb"
                            HorizontalAlignment="Stretch"
                            TextWrapping="Wrap">
@@ -81,6 +81,7 @@
 
         <TextBox Name="DetailedContent"
                      x:FieldModifier="public"
+                     FontSize="12"
                      Grid.Row="3" Grid.ColumnSpan="2"
                      Style="{DynamicResource ResourceKey=SDarkTextBox}"
                      HorizontalAlignment="Stretch"

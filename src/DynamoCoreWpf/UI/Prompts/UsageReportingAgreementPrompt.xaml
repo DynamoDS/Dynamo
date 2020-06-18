@@ -69,11 +69,11 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <CheckBox x:Name="AcceptAnalyticsReportingCheck"
+        <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
                   Grid.Row="3"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
-                  Click="ToggleIsAnalyticsReportingChecked"
+                  Click="ToggleIsGoogleAnalyticsChecked"
                   Margin="15,16,15,0"
                   VerticalAlignment="Center"
                   Foreground="#4790cd"
@@ -83,11 +83,28 @@
             <TextBlock FontWeight="SemiBold"
                        Foreground="#4790cd"
                        TextWrapping="Wrap"
-                       Name="AcceptAnalyticsReportingTextBlock"
+                       Name="AcceptGoogleAnalyticsTextBlock"
                        Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
         </CheckBox>
-        
-        <!--The instrumentation checkbox will be hidden and unchecked by default-->
+
+        <CheckBox x:Name="AcceptADPAnalyticsCheck"
+                  Grid.Row="4"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Click="ToggleIsADPAnalyticsChecked"
+                  Visibility="Hidden"
+                  Margin="15,16,15,14"
+                  VerticalAlignment="Center"
+                  Foreground="#4790cd"
+                  FontSize="13.333"
+                  Background="White">
+            <TextBlock FontWeight="SemiBold"
+                       Foreground="#4790cd"
+                       TextWrapping="Wrap"
+                       Name="AcceptADPAnalyticsTextBlock"/>
+        </CheckBox>
+
+      <!--The instrumentation checkbox will be hidden and unchecked by default-->
         <CheckBox x:Name="AcceptUsageReportingCheck"
                   Grid.Row="4"
                   Grid.Column="0"

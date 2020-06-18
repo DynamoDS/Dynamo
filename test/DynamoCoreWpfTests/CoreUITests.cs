@@ -521,7 +521,7 @@ namespace DynamoCoreWpfTests
             var filePath = Path.Combine(GetTestDirectory(ExecutingDirectory), @"settings\DynamoSettings-AnalyticsTurnedOn.xml");
             var resultSetting = PreferenceSettings.Load(filePath);
             Assert.AreEqual(true, resultSetting.IsAnalyticsReportingApproved);
-            Assert.AreEqual(true, resultSetting.IsUsageReportingApproved);
+            Assert.AreEqual(false, resultSetting.IsUsageReportingApproved);
             Assert.DoesNotThrow(() => Dynamo.Logging.AnalyticsService.ShutDown());
         }
 
@@ -701,7 +701,6 @@ namespace DynamoCoreWpfTests
 
             //create the view
             View = new DynamoView(ViewModel);
-
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
         }
         #endregion

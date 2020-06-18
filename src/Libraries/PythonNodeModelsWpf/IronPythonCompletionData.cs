@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Windows.Media.Imaging;
+using Autodesk.DesignScript.Interfaces;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
@@ -12,9 +13,9 @@ namespace Dynamo.Python
     /// completion drop down.
     public class IronPythonCompletionData : ICompletionData
     {
-        
+
         private static Dictionary<CompletionType, BitmapImage> TypeToIcon;
-        private IronPythonCompletionProvider provider;
+        private readonly IronPythonCompletionProvider provider;
 
         public enum CompletionType
         {
@@ -26,6 +27,37 @@ namespace Dynamo.Python
             ENUM
         };
 
+        private static readonly Dictionary<ExternalCodeCompletionType, CompletionType> EnumMap =
+            new Dictionary<ExternalCodeCompletionType, CompletionType>()
+            {
+                {ExternalCodeCompletionType.Namespace, CompletionType.NAMESPACE },
+                {ExternalCodeCompletionType.Method, CompletionType.METHOD },
+                {ExternalCodeCompletionType.Field, CompletionType.FIELD },
+                {ExternalCodeCompletionType.Class, CompletionType.CLASS },
+                {ExternalCodeCompletionType.Property, CompletionType.PROPERTY },
+                {ExternalCodeCompletionType.Enum, CompletionType.ENUM },
+            };
+
+        internal static CompletionType ConvertCompletionType(ExternalCodeCompletionType completionType)
+        {
+            if (EnumMap.ContainsKey(completionType))
+            {
+                return EnumMap[completionType];
+            }
+            //if the type can't be found return method by default.
+            return CompletionType.METHOD;
+        }
+
+        internal IronPythonCompletionData(IExternalCodeCompletionData data)
+        {
+            this.Text = data.Text;
+            this._description = data.Description;
+
+            BuildCompletionTypeToIconMap();
+
+            this._image = TypeToIcon[ConvertCompletionType(data.CompletionType)];
+
+        }
         public IronPythonCompletionData(string text, string stub, bool isInstance, CompletionType type, IronPythonCompletionProvider provider)
         {
             this.Text = text;
@@ -33,24 +65,13 @@ namespace Dynamo.Python
             this.IsInstance = isInstance;
             this.provider = provider;
 
-            if (IronPythonCompletionData.TypeToIcon == null)
-            {
-                var assembly = Assembly.GetExecutingAssembly();
-
-                TypeToIcon = new Dictionary<CompletionType, BitmapImage>();
-                TypeToIcon.Add(CompletionType.METHOD, GetBitmapImage(assembly, "method.png"));
-                TypeToIcon.Add(CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png"));
-                TypeToIcon.Add(CompletionType.FIELD, GetBitmapImage(assembly, @"field.png"));
-                TypeToIcon.Add(CompletionType.CLASS, GetBitmapImage(assembly, @"class.png"));
-                TypeToIcon.Add(CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png"));
-                TypeToIcon.Add(CompletionType.ENUM, GetBitmapImage(assembly, @"property.png"));
-            }
+            BuildCompletionTypeToIconMap();
 
             this._image = TypeToIcon[type];
         }
-        
+
         // image
-        private BitmapImage _image;
+        private readonly BitmapImage _image;
         public System.Windows.Media.ImageSource Image
         {
             get
@@ -68,15 +89,16 @@ namespace Dynamo.Python
         // Use this property if you want to show a fancy UIElement in the drop down list.
         public object Content
         {
-            get { return this.Text;  }
+            get { return this.Text; }
         }
 
         // description
         private string _description;
-        
+
         public object Description
         {
-            get {
+            get
+            {
                 // lazily get the description
                 if (_description == null)
                 {
@@ -94,7 +116,7 @@ namespace Dynamo.Python
             textArea.Document.Replace(completionSegment, this.Text);
         }
 
-        private BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
+        private static BitmapImage GetBitmapImage(Assembly assembly, string resourceFileName)
         {
             var name = string.Format(@"PythonNodeModelsWpf.Resources.{0}", resourceFileName);
 
@@ -104,6 +126,24 @@ namespace Dynamo.Python
             bitmapImage.StreamSource = assembly.GetManifestResourceStream(name);
             bitmapImage.EndInit();
             return bitmapImage;
+        }
+
+        private static void BuildCompletionTypeToIconMap()
+        {
+            if (IronPythonCompletionData.TypeToIcon == null || IronPythonCompletionData.TypeToIcon.Count == 0)
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+
+                TypeToIcon = new Dictionary<CompletionType, BitmapImage>
+                {
+                    {CompletionType.METHOD, GetBitmapImage(assembly, "method.png")},
+                    {CompletionType.NAMESPACE, GetBitmapImage(assembly, @"namespace.png")},
+                    {CompletionType.FIELD, GetBitmapImage(assembly, @"field.png")},
+                    {CompletionType.CLASS, GetBitmapImage(assembly, @"class.png")},
+                    {CompletionType.PROPERTY, GetBitmapImage(assembly, @"property.png")},
+                    {CompletionType.ENUM, GetBitmapImage(assembly, @"property.png")}
+                };
+            }
         }
     }
 

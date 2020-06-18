@@ -10,7 +10,7 @@ namespace Dynamo.Extensions
     /// Application-level handles provided to an extension when 
     /// Dynamo has started and is ready for interaction
     /// </summary>
-    public class ReadyParams
+    public class ReadyParams : IDisposable
     {
         private readonly DynamoModel dynamoModel;
         private readonly StartupParams startupParams;
@@ -108,6 +108,17 @@ namespace Dynamo.Extensions
         {
             if (e.PropertyName == "CurrentWorkspace")
                 OnCurrentWorkspaceModelChanged((sender as DynamoModel).CurrentWorkspace);
+        }
+
+        /// <summary>
+        /// This method clears event handlers from the DynamoModel that the extension framework setup 
+        /// when the model was first loaded.
+        /// </summary>
+        public void Dispose()
+        {
+            dynamoModel.PropertyChanged -= OnDynamoModelPropertyChanged;
+            dynamoModel.WorkspaceCleared -= OnCurrentWorkspaceModelCleared;
+            dynamoModel.Logger.NotificationLogged -= OnNotificationRecieved;
         }
     }
 }

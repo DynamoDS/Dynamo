@@ -60,12 +60,22 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
         /// </summary>
-        public bool IsUsageReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsUsageReportingApproved { get { return false; } set { } }
 
         /// <summary>
-        /// Indicates whether analytics reporting is approved or not.
+        /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
+
+        /// <summary>
+        /// Indicates whether ADP analytics reporting is approved or not.
+        /// </summary>
+        [XmlIgnore]
+        public bool IsADPAnalyticsReportingApproved { 
+            get { return Logging.AnalyticsService.IsADPOptedIn; }
+            set { Logging.AnalyticsService.IsADPOptedIn = value; } 
+        }
         #endregion
 
         #region UI & Graphics settings
@@ -326,7 +336,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsUsageReportingApproved = false;
             IsAnalyticsReportingApproved = true;
             LibraryWidth = 304;
             ConsoleHeight = 0;

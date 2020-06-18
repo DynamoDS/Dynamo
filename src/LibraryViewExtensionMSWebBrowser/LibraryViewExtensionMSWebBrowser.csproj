@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Dynamo.LibraryViewExtensionMSWebBrowser</RootNamespace>
     <AssemblyName>LibraryViewExtensionMSWebBrowser</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <!-- this is done for now so visual studio can auto increment the revision version number.
     Alternatives include using DynamoCore's shared assemblyVersion script, a seperate assembly version script,
     or setting the version manually or via the build system.-->

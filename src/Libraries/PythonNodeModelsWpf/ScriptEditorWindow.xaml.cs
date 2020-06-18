@@ -3,15 +3,15 @@ using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using Dynamo.Controls;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Python;
 using Dynamo.ViewModels;
-using Dynamo.Logging;
+using Dynamo.Wpf.Windows;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using PythonNodeModels;
-using Dynamo.Wpf.Windows;
 
 namespace PythonNodeModelsWpf
 {
@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -40,10 +40,15 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
 
             InitializeComponent();
+
+            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
+            {
+                EngineSelectorComboBox.Visibility = Visibility.Visible;
+            }
 
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
@@ -162,8 +167,12 @@ namespace PythonNodeModelsWpf
             }
         }
 
+
         #endregion
 
-
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
     }
 }

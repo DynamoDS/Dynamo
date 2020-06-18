@@ -12,7 +12,6 @@ namespace Dynamo.Configuration
     internal static class DebugModes
     {
         static private readonly Dictionary<string, DebugMode> debugModes = new Dictionary<string, DebugMode>();
-        private static bool debugModesEnabled;
 
         /// <summary>
         /// Represents an instance of a debug mode
@@ -35,34 +34,31 @@ namespace Dynamo.Configuration
             public bool IsEnabled;
         }
 
-        private static void AddDebugMode(string name, string description)
+        internal static void AddDebugMode(string name, string description, bool isEnabled = false)
         {
             debugModes[name] = new DebugMode()
             {
                 Name = name,
                 Description = description,
-                IsEnabled = false
+                IsEnabled = isEnabled
             };
         }
+
         private static void RegisterDebugModes()
         {
             // Register app wide new debug modes here.
-            AddDebugMode("Python3DebugMode", "Enable/disable Python3 Engine.");
-            AddDebugMode("ADPAnalyticsTracker", "Enable/disable ADP analytics tracking. " + 
-                "Consenting for Google analytics will opt-in to ADP as well. This debugMode should be enabled/disabled at startup.");
+            AddDebugMode("PythonEngineSelectionUIDebugMode", "Enable/disable PythonEngineSelectionUI.", true);
+            AddDebugMode("Python2ObsoleteMode", "Enable/disable warnings regarding Python 2 obsoletion.");
         }
 
-        private static void LoadDebugModesStatusFromConfig(string configPath)
+        internal static void LoadDebugModesStatusFromConfig(string configPath)
         {
             try
             {
-                debugModesEnabled = false;
                 XmlDocument xmlDoc;
                 Exception ex;
                 if (DynamoUtilities.PathHelper.isValidXML(configPath, out xmlDoc, out ex))
                 {
-                    debugModesEnabled = true;
-
                     var debugItems = xmlDoc.DocumentElement.SelectNodes("DebugMode");
                     foreach (XmlNode item in debugItems)
                     {
@@ -133,7 +129,7 @@ namespace Dynamo.Configuration
         public static bool IsEnabled(string name)
         {
             DebugMode dbgMode;
-            return debugModesEnabled && debugModes.TryGetValue(name, out dbgMode) && dbgMode.IsEnabled;
+            return debugModes.TryGetValue(name, out dbgMode) && dbgMode.IsEnabled;
         }
     }
 }

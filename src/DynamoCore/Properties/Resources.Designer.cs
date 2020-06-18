@@ -893,6 +893,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is missing some XML documentation tags..
+        /// </summary>
+        public static string MissingXmlTagConsoleMessage {
+            get {
+                return ResourceManager.GetString("MissingXmlTagConsoleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SHOW MORE ({0}).
         /// </summary>
         public static string MoreButtonTextFormat {

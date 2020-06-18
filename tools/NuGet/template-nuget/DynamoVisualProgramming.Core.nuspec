@@ -1,43 +1,47 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
-  <metadata>
-    <id>DynamoVisualProgramming.Core</id>
-    <version>$Version$</version>
-    <authors>Autodesk</authors>
-    <owners>Autodesk</owners>
-    <licenseUrl>https://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-    <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/DynamoDS/Dynamo/master/doc/distrib/Images/logo_square_32x32.png</iconUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Assemblies required to start a DynamoModel and execute DesignScript code. Contains the following files:
-1) DSIronPython.dll
-2) DynamoApplications.dll
-3) DynamoCore.dll
-4) DynamoInstallDetective.dll
-5) DynamoShapeManager.dll 
-6) DynamoUtilities.dll
-7) ProtoCore.dll
-8) DesignScriptBuiltin.dll
-9) VMDataBridge.dll</description>
-    <summary>This package contains the core assemblies for Dynamo.</summary>
-    <copyright>Copyright Autodesk 2019</copyright>
-    <dependencies>
-      <dependency id="Prism" version="4.1"/>
-      <dependency id="NUnit" version="2.6.3"/>
-      <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
-      <dependency id="Newtonsoft.Json" version="8.0.3"/>
-    </dependencies>
-  </metadata>
-  <files>
-    <file src="DSIronPython.dll" target="lib\net47" />
-    <file src="DynamoApplications.dll" target="lib\net47" />
-    <file src="DynamoCore.dll" target="lib\net47" />
-    <file src="DynamoCore.xml" target="build\net47" />
-    <file src="DynamoInstallDetective.dll" target="lib\net47" />
-    <file src="DynamoShapeManager.dll" target="lib\net47" />
-    <file src="DynamoUtilities.dll" target="lib\net47" />
-    <file src="ProtoCore.dll" target="lib\net47" />
-    <file src="DesignScriptBuiltin.dll" target="lib\net47" />
-    <file src="VMDataBridge.dll" target="lib\net47" />
-  </files>
+    <metadata>
+        <id>DynamoVisualProgramming.Core</id>
+        <version>$Version$</version>
+        <authors>Autodesk</authors>
+        <owners>Autodesk</owners>
+        <license type="expression">Apache-2.0</license>
+        <projectUrl>https://github.com/DynamoDS/Dynamo</projectUrl>
+        <icon>content\images\logo.png</icon>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Assemblies required to start a DynamoModel and execute DesignScript code. Contains the following files:
+        1) DSIronPython.dll
+        2) DynamoApplications.dll
+        3) DynamoCore.dll
+        4) DynamoInstallDetective.dll
+        5) DynamoShapeManager.dll 
+        6) DynamoUtilities.dll
+        7) ProtoCore.dll
+        8) DesignScriptBuiltin.dll
+        9) VMDataBridge.dll</description>
+        <summary>This package contains the core assemblies for Dynamo.</summary>
+        <copyright>Copyright Autodesk 2020</copyright>
+        <dependencies>
+            <group targetFramework=".NETFramework4.8">
+                <dependency id="Prism" version="4.1"/>
+                <dependency id="NUnit" version="2.6.3"/>
+                <dependency id="DynamoVisualProgramming.ZeroTouchLibrary" version="$Version$"/>
+                <dependency id="Newtonsoft.Json" version="8.0.3"/>
+                <dependency id="System.Collections.Immutable" version="1.7.1"/>
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="DSIronPython.dll" target="lib\net48" />
+        <file src="DynamoApplications.dll" target="lib\net48" />
+        <file src="DynamoCore.dll" target="lib\net48" />
+        <file src="DynamoCore.xml" target="build\net48" />
+        <file src="DynamoInstallDetective.dll" target="lib\net48" />
+        <file src="DynamoShapeManager.dll" target="lib\net48" />
+        <file src="DynamoUtilities.dll" target="lib\net48" />
+        <file src="ProtoCore.dll" target="lib\net48" />
+        <file src="DesignScriptBuiltin.dll" target="lib\net48" />
+        <file src="VMDataBridge.dll" target="lib\net48" />
+        <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
+    </files>
 </package>
