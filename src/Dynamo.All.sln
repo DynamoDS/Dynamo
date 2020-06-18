@@ -231,7 +231,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonExtension", "PythonExtension\PythonExtension.csproj", "{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonExtension", "IronPythonExtension\IronPythonExtension.csproj", "{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonMigrationViewExtension", "PythonMigrationViewExtension\PythonMigrationViewExtension.csproj", "{10AF430D-0D3A-49CE-A63D-848912959745}"
 EndProject
