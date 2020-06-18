@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -89,7 +90,7 @@ namespace DynamoCoreWpfTests
             var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
-
+            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
             var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
@@ -108,7 +109,6 @@ namespace DynamoCoreWpfTests
             //assert model code is updated.
             Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
             DispatcherUtil.DoEvents();
-            Run();
             Assert.AreEqual(100, nodeModel.CachedValue.Data);
 
         }
