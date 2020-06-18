@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DynamoUtilities
+namespace Dynamo.Utilities.Exceptions
 {
     /// <summary>
     /// Represents an error raised by Dynamo
@@ -13,6 +9,11 @@ namespace DynamoUtilities
     public class DynamoException : Exception
     {
         public DynamoException() { }
+
+        public DynamoException(string message) : base(message)
+        {
+        }
+
         public DynamoException(string message, Exception innerException) : base(message, innerException)
         {
         }
