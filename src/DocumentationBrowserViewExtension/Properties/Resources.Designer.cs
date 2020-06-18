@@ -70,64 +70,6 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///    &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///    &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  *{
-        ///      transition: all 0.6s;
-        ///  }
-        ///
-        ///  html {
-        ///      height: 100%;
-        ///  }
-        ///
-        ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 14px;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format( [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string FileNotFound {
-            get {
-                return ResourceManager.GetString("FileNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  *{
-        ///      transition: all 0.6s;
-        ///  }
-        ///
-        ///  html {
-        ///      height: 100%;
-        ///  }
-        ///
-        ///  body{
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      font-size: 14px;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;wof [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string InternalError {
-            get {
-                return ResourceManager.GetString("InternalError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to No further details available for this error..
         /// </summary>
         public static string InternalErrorNoDetailsAvailable {
@@ -151,30 +93,6 @@ namespace Dynamo.DocumentationBrowser.Properties {
         public static string MenuItemText {
             get {
                 return ResourceManager.GetString("MenuItemText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///
-        ///&lt;!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. --&gt;
-        ///&lt;head&gt;
-        ///  &lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge&quot; /&gt;
-        ///  &lt;meta charset=&quot;UTF-8&quot; /&gt;
-        ///&lt;/head&gt;
-        ///
-        ///&lt;style&gt;
-        ///  body {
-        ///      color: white;
-        ///      font-size: 14px;
-        ///      font-family: &quot;Artifakt Element&quot;, &quot;Open Sans&quot;, sans-serif;
-        ///      src: url(&quot;fonts/ArtifaktElement-Regular.woff&quot;) format(&quot;woff&quot;);
-        ///      background-color: #353535;
-        ///      padding: 1%; [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string NoContent {
-            get {
-                return ResourceManager.GetString("NoContent", resourceCulture);
             }
         }
         

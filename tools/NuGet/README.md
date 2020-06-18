@@ -29,6 +29,7 @@ Alternatively, you can provide the second parameter as the path to your Dynamo b
 ```bash
 .\BuildPackages.bat "template-artifactory" "...\GitHub\Dynamo\bin\AnyCPU\Release"
 ```
+The version is parameterized in the nuspec file and the parameter is set to the version number obtained in the `BuildPackages.bat` file. This is done using a `-properties` option while using the `nuget pack` command. The nuspecs from the original folders namely, `template-nuget` and `template-artifactory`. These are passed as command line arguments (which is what the %1 is) while invoking the `BuildPackages.bat` script from the `PostNuGetPackages.bat` and the `PostArtifactoryPackages.bat` files respectively.
 
 To post them as pre-release packages into NuGet Gallery and Artifactory, skip the above step and run PostNugetPackages.bat or PostArtifactoryPackages.bat.
 Supply the NuGet Gallery API Key as the first parameter and the Artifactory API Key as the second parameter for this batch file.
