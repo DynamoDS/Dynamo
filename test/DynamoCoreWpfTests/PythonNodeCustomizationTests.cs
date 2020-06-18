@@ -5,9 +5,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using PythonNodeModels;
 using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
@@ -41,21 +43,9 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
-            var editMenuItem = nodeView.MainContextMenu
-                .Items
-                .Cast<MenuItem>()
-                .First(x => x.Header.ToString() == "Edit...");
+            var scriptWindow = EditPythonCode(nodeView,View);
 
-            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-
-            // after simulating the click event get the opened Script editor window
-            // and fetch the EngineSelector dropdown
-            var scriptEditorWindow = this.View.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
-            var windowGrid = scriptEditorWindow.Content as Grid;
-            var engineSelectorComboBox = windowGrid
-                .ChildrenOfType<ComboBox>()
-                .First(x=>x.Name == "EngineSelectorComboBox");
+            var engineSelectorComboBox = FindEditorDropDown(scriptWindow);
 
             // Act
             var engineBeforeChange = engineSelectorComboBox.SelectedItem;
@@ -81,6 +71,69 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
         }
+
+        /// <summary>
+        /// This test checks if its changing the engine via 
+        /// dropdown selector inside the script editor executes the most up to date code.
+        /// </summary>
+        [Test]
+        public void ChangingDropdownEngineSavesCode()
+        {
+            // Arrange
+            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+
+            Open(@"core\python\python.dyn");
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
+            Assert.NotNull(nodeModel);
+            var scriptWindow = EditPythonCode(nodeView,View);
+
+            var engineSelectorComboBox = FindEditorDropDown(scriptWindow);
+
+            // Act
+
+            //modify code in editor
+            Assert.AreEqual("ok",(nodeModel as PythonNode).Script);
+            SetTextEditorText(scriptWindow, "OUT = 100");
+            //modify engine
+            engineSelectorComboBox.SelectedItem = engineChange;
+
+            //assert model code is updated.
+            Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
+
+        }
+
+        private static ComboBox FindEditorDropDown(ScriptEditorWindow view)
+        {
+            // after simulating the click event get the opened Script editor window
+            // and fetch the EngineSelector dropdown
+            var windowGrid = view.Content as Grid;
+            var engineSelectorComboBox = windowGrid
+                .ChildrenOfType<ComboBox>()
+                .First(x => x.Name == "EngineSelectorComboBox");
+            return engineSelectorComboBox;
+        }
+
+        private static ScriptEditorWindow EditPythonCode(NodeView nodeView, DynamoView window)
+        {
+
+            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
+            var editMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Edit...");
+
+            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            return window.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
+        }
+
+        private static void SetTextEditorText(ScriptEditorWindow view,string code)
+        {
+            var editor = view.ChildrenOfType<ICSharpCode.AvalonEdit.TextEditor>();
+            editor.FirstOrDefault().Text = code;
+        }
+
 
         /// <summary>
         /// This test checks if its possible to change the Python nodemodels Engine property

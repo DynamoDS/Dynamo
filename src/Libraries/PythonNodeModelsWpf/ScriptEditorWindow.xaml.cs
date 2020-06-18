@@ -174,5 +174,10 @@ namespace PythonNodeModelsWpf
         {
             dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
         }
+
+        private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            UpdateScript(editText.Text);
+        }
     }
 }
