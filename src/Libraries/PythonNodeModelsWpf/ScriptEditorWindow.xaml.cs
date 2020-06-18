@@ -177,7 +177,13 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            UpdateScript(editText.Text);
+            //removedItems will be empty during the first binding
+            //as the window is constructed, we don't want to execute the node just
+            //as a consequence of opening the editor.
+            if (e.RemovedItems.Count > 0)
+            {
+                UpdateScript(editText.Text);
+            }
         }
     }
 }

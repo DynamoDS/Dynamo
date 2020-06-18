@@ -91,6 +91,7 @@ namespace DynamoCoreWpfTests
 
             Open(@"core\python\python.dyn");
             (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
+            Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
             var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
@@ -103,14 +104,19 @@ namespace DynamoCoreWpfTests
             //modify code in editor
             Assert.AreEqual("ok",(nodeModel as PythonNode).Script);
             SetTextEditorText(scriptWindow, "OUT = 100");
+            //theres one execution from opening the graph.
+            Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
             //modify engine
             engineSelectorComboBox.SelectedItem = engineChange;
+            //theres two executions from modifying the engine.
+            Assert.AreEqual(2, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
             //assert model code is updated.
             Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
             DispatcherUtil.DoEvents();
             Assert.AreEqual(100, nodeModel.CachedValue.Data);
-
+            //still only 2 executions.
+            Assert.AreEqual(2,(Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
         }
 
         private static ComboBox FindEditorDropDown(ScriptEditorWindow view)
