@@ -25,6 +25,12 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
         /// <summary>
         /// This test checks if its possible to change the Python nodemodels Engine property
         /// from the dropdown selector inside the script editor.
@@ -77,7 +83,7 @@ namespace DynamoCoreWpfTests
         /// dropdown selector inside the script editor executes the most up to date code.
         /// </summary>
         [Test]
-        public void ChangingDropdownEngineSavesCode()
+        public void ChangingDropdownEngineSavesCodeBeforeRunning()
         {
             // Arrange
             var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
@@ -101,6 +107,9 @@ namespace DynamoCoreWpfTests
 
             //assert model code is updated.
             Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
+            DispatcherUtil.DoEvents();
+            Run();
+            Assert.AreEqual(100, nodeModel.CachedValue.Data);
 
         }
 
