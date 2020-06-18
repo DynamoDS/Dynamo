@@ -56,8 +56,8 @@ namespace Dynamo.PythonMigration
                 }
 
                 // Recursively check for IronPython dependencies in the nested custom nodes. 
-                var nestedCumtomNodes = customNodeWS.Nodes.OfType<Function>();
-                if (CustomNodesContainIronPythonDependencies(nestedCumtomNodes, customNodeManager))
+                var nestedCustomNodes = customNodeWS.Nodes.OfType<Function>();
+                if (CustomNodesContainIronPythonDependencies(nestedCustomNodes, customNodeManager))
                 {
                     return true;
                 }
