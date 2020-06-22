@@ -1,16 +1,15 @@
 <?xml version="1.0"?>
-<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<PreferenceSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <IsFirstRun>true</IsFirstRun>
-  <IsAnalyticsReportingApproved>true</IsAnalyticsReportingApproved>
+  <IsUsageReportingApproved>false</IsUsageReportingApproved>
+  <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
   <LibraryWidth>304</LibraryWidth>
   <ConsoleHeight>0</ConsoleHeight>
   <ShowPreviewBubbles>true</ShowPreviewBubbles>
-  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
   <ShowConnector>true</ShowConnector>
   <ConnectorType>BEZIER</ConnectorType>
   <BackgroundPreviews />
   <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
-  <RenderPrecision>128</RenderPrecision>
   <ShowEdges>false</ShowEdges>
   <ShowDetailedLayout>true</ShowDetailedLayout>
   <WindowX>0</WindowX>
@@ -23,11 +22,10 @@
   <RecentFiles />
   <BackupFiles />
   <CustomPackageFolders>
-    <string>C:\Users\Bruno\AppData\Roaming\Dynamo\Dynamo Core\2.8</string>
-    <string>C:\ProgramData\Dynamo\Dynamo Core\2.8\packages</string>
+    <string>C:\Users\radug\AppData\Roaming\Dynamo\Dynamo Core\2.0</string>
   </CustomPackageFolders>
   <PackageDirectoriesToUninstall />
-  <PythonTemplateFilePath>C:\Users\Bruno\source\repos\Dynamo(github-fork)\test\settings\PythonTemplate-changed.py</PythonTemplateFilePath>
+  <PythonTemplateFilePath>C:\Users\radug\Documents\GitHub\Dynamo\test\settings\PythonTemplate-changed.py</PythonTemplateFilePath>
   <BackupInterval>60000</BackupInterval>
   <BackupFilesCount>1</BackupFilesCount>
   <PackageDownloadTouAccepted>false</PackageDownloadTouAccepted>
