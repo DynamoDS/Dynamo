@@ -336,7 +336,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsUsageReportingApproved = false;
             IsAnalyticsReportingApproved = true;
             LibraryWidth = 304;
             ConsoleHeight = 0;
