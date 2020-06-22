@@ -5,12 +5,9 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
-using PythonNodeModels;
 using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
@@ -24,13 +21,6 @@ namespace DynamoCoreWpfTests
             base.Open(path);
 
             DispatcherUtil.DoEvents();
-        }
-
-        protected override void GetLibrariesToPreload(List<string> libraries)
-        {
-            libraries.Add("DSCPython.dll");
-            libraries.Add("DSIronPython.dll");
-            base.GetLibrariesToPreload(libraries);
         }
 
         /// <summary>
@@ -51,9 +41,21 @@ namespace DynamoCoreWpfTests
             var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
             Assert.NotNull(nodeModel);
 
-            var scriptWindow = EditPythonCode(nodeView,View);
+            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
+            var editMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Edit...");
 
-            var engineSelectorComboBox = FindEditorDropDown(scriptWindow);
+            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+            // after simulating the click event get the opened Script editor window
+            // and fetch the EngineSelector dropdown
+            var scriptEditorWindow = this.View.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
+            var windowGrid = scriptEditorWindow.Content as Grid;
+            var engineSelectorComboBox = windowGrid
+                .ChildrenOfType<ComboBox>()
+                .First(x=>x.Name == "EngineSelectorComboBox");
 
             // Act
             var engineBeforeChange = engineSelectorComboBox.SelectedItem;
@@ -79,93 +81,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
         }
-
-        /// <summary>
-        /// This test checks if its changing the engine via 
-        /// dropdown selector inside the script editor executes the most up to date code.
-        /// </summary>
-        [Test]
-        public void ChangingDropdownEngineSavesCodeBeforeRunning()
-        {
-            // Arrange
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
-
-            Open(@"core\python\python.dyn");
-            (Model.CurrentWorkspace as HomeWorkspaceModel).RunSettings.RunType = Dynamo.Models.RunType.Automatic;
-            Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
-            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
-            Assert.NotNull(nodeModel);
-            var scriptWindow = EditPythonCode(nodeView,View);
-
-            var engineSelectorComboBox = FindEditorDropDown(scriptWindow);
-
-            // Act
-
-            //modify code in editor
-            Assert.AreEqual("ok",(nodeModel as PythonNode).Script);
-            SetTextEditorText(scriptWindow, "OUT = 100");
-            //theres one execution from opening the graph.
-            Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
-            //modify engine
-            engineSelectorComboBox.SelectedItem = engineChange;
-            //theres two executions from modifying the engine.
-            Assert.AreEqual(2, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
-
-            //assert model code is updated.
-            Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
-            DispatcherUtil.DoEvents();
-            Assert.AreEqual(100, nodeModel.CachedValue.Data);
-            //still only 2 executions.
-            Assert.AreEqual(2,(Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
-        }
-
-        private static ComboBox FindEditorDropDown(ScriptEditorWindow view)
-        {
-            // after simulating the click event get the opened Script editor window
-            // and fetch the EngineSelector dropdown
-            var windowGrid = view.Content as Grid;
-            var engineSelectorComboBox = windowGrid
-                .ChildrenOfType<ComboBox>()
-                .First(x => x.Name == "EngineSelectorComboBox");
-            return engineSelectorComboBox;
-        }
-
-        private static ScriptEditorWindow EditPythonCode(NodeView nodeView, DynamoView window)
-        {
-
-            // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
-            var editMenuItem = nodeView.MainContextMenu
-                .Items
-                .Cast<MenuItem>()
-                .First(x => x.Header.ToString() == "Edit...");
-
-            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            return window.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
-        }
-
-        private static void SetTextEditorText(ScriptEditorWindow view,string code)
-        {
-            var editor = view.ChildrenOfType<ICSharpCode.AvalonEdit.TextEditor>();
-            editor.FirstOrDefault().Text = code;
-        }
-
-        private static void SetEngineViaContextMenu(NodeView nodeView, PythonEngineVersion engine)
-        {
-            var engineSelection = nodeView.MainContextMenu.Items
-                      .Cast<MenuItem>()
-                      .Where(item => (item.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher).FirstOrDefault();
-            switch (engine)
-            {
-                case PythonEngineVersion.IronPython2:
-                    (engineSelection.Items[0] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-                    break;
-                case PythonEngineVersion.CPython3:
-                    (engineSelection.Items[1] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-                    break;
-            }
-        } 
-
 
         /// <summary>
         /// This test checks if its possible to change the Python nodemodels Engine property
@@ -260,42 +175,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
 
-        }
-
-        [Test]
-        public void WorkspaceWithMultiplePythonEnginesUpdatesCorrectlyViaContextHandler()
-        {
-            // open test graph
-            Open(@"core\python\WorkspaceWithMultiplePythonEngines.dyn");
-
-            var pythonNode1GUID = "d060e68f510f43fe8990c2c1ba7e0f80";
-            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
-
-            var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
-            List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
-            var pynode1 = pythonNodes.ElementAt(0);
-            var pynode2 = pythonNodes.ElementAt(1);
-            var pynode1view = NodeViewWithGuid("d060e68f-510f-43fe-8990-c2c1ba7e0f80");
-            var pynode2view = NodeViewWithGuid("4050d23e-529c-43e9-b614-0506d8adb06b");
-
-
-            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
-
-            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.CPython3);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "3.7.3", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-
-            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.CPython3);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "3.7.3", "3.7.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
-
-            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.IronPython2);
-            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.IronPython2);
-
-            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
         }
     }
 }
