@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Linq;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using Dynamo.Extensions;
 
@@ -19,37 +19,31 @@ namespace IronPythonExtension
 
         public void Startup(StartupParams sp)
         {
-            // Searches for python node libraries in package paths
-            var packagePaths = sp.Preferences.CustomPackageFolders;
-            string pythonFile = string.Empty;
-            foreach (var path in packagePaths)
-            {
-                //var pkgDir = Path.GetDirectoryName(path);
-                pythonFile = Directory.EnumerateFiles(path, "" + ".dll",
-                    SearchOption.AllDirectories).FirstOrDefault();
-
-                if (!string.IsNullOrEmpty(pythonFile))
-                    break;
-            }
-            if (string.IsNullOrEmpty(pythonFile))
-                return;
-
-            var pythonDir = Path.GetDirectoryName(pythonFile);
+            // Searches for IronPython engine binary in Dynamo folder
+            var dynamoDir = Environment.CurrentDirectory;
             var libraryLoader = sp.LibraryLoader;
-
-            // Import Python Engine into VM
-            var pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(pythonDir, PythonEvaluatorAssembly + ".dll"));
+            Assembly pythonEvaluatorLib = null;
+            try
+            {
+                pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(dynamoDir, PythonEvaluatorAssembly + ".dll"));
+            }
+            catch (Exception)
+            {
+                // Most likely the IronPython engine is excluded in this case
+                return;
+            }
+            // Import IronPython Engine into VM, so Python node using IronPython engine could evaluate correctly
             libraryLoader.LoadNodeLibrary(pythonEvaluatorLib);
         }
 
         public void Ready(ReadyParams sp)
         {
-            throw new System.NotImplementedException();
+            // Do nothing for now
         }
 
         public void Shutdown()
         {
-            throw new System.NotImplementedException();
+            // Do nothing for now
         }
     }
 }

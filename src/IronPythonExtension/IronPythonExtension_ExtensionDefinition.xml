@@ -1,4 +1,4 @@
-<ViewExtensionDefinition>
+<ExtensionDefinition>
   <AssemblyPath>..\IronPythonExtension.dll</AssemblyPath>
   <TypeName>IronPythonExtension.IronPythonExtension</TypeName>
-</ViewExtensionDefinition>
+</ExtensionDefinition>

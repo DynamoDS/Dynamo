@@ -58,4 +58,10 @@
     <Content Include="IronPythonExtension_ExtensionDefinition.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="AfterBuild">
+    <ItemGroup>
+        <ExtensionDefinition Include="IronPythonExtension_ExtensionDefinition.xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
+  </Target>
 </Project>
