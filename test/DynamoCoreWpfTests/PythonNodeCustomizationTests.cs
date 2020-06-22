@@ -29,6 +29,7 @@ namespace DynamoCoreWpfTests
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("DSCPython.dll");
+            libraries.Add("DSIronPython.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -149,6 +150,22 @@ namespace DynamoCoreWpfTests
             editor.FirstOrDefault().Text = code;
         }
 
+        private static void SetEngineViaContextMenu(NodeView nodeView, PythonEngineVersion engine)
+        {
+            var engineSelection = nodeView.MainContextMenu.Items
+                      .Cast<MenuItem>()
+                      .Where(item => (item.Header as string) == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher).FirstOrDefault();
+            switch (engine)
+            {
+                case PythonEngineVersion.IronPython2:
+                    (engineSelection.Items[0] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    break;
+                case PythonEngineVersion.CPython3:
+                    (engineSelection.Items[1] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                    break;
+            }
+        } 
+
 
         /// <summary>
         /// This test checks if its possible to change the Python nodemodels Engine property
@@ -243,6 +260,42 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
 
+        }
+
+        [Test]
+        public void WorkspaceWithMultiplePythonEnginesUpdatesCorrectlyViaContextHandler()
+        {
+            // open test graph
+            Open(@"core\python\WorkspaceWithMultiplePythonEngines.dyn");
+
+            var pythonNode1GUID = "d060e68f510f43fe8990c2c1ba7e0f80";
+            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
+
+            var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
+            List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
+            var pynode1 = pythonNodes.ElementAt(0);
+            var pynode2 = pythonNodes.ElementAt(1);
+            var pynode1view = NodeViewWithGuid("d060e68f-510f-43fe-8990-c2c1ba7e0f80");
+            var pynode2view = NodeViewWithGuid("4050d23e-529c-43e9-b614-0506d8adb06b");
+
+
+            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
+
+            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.CPython3);
+
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            Assert.AreEqual(new List<String> { "3.7.3", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+
+            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.CPython3);
+
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            Assert.AreEqual(new List<String> { "3.7.3", "3.7.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+
+            SetEngineViaContextMenu(pynode1view, PythonEngineVersion.IronPython2);
+            SetEngineViaContextMenu(pynode2view, PythonEngineVersion.IronPython2);
+
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
         }
     }
 }

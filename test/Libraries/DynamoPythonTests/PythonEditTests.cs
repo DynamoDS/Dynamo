@@ -38,19 +38,22 @@ namespace Dynamo.Tests
         /// <summary>
         ///    Updates Engine property for a single python node. 
         /// </summary>
-        private void UpdateEnginePropertyForPythonNode(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
+        private void UpdatePythonEngineAndRun(PythonNode pythonNode, PythonEngineVersion pythonEngineVersion)
         {
             pythonNode.Engine = pythonEngineVersion;
+            //to kick off a run node modified must be called
+            pythonNode.OnNodeModified();
         }
 
         /// <summary>
         ///    Updates Engine property for a list of python nodes. 
         /// </summary>
-        private void UpdateEnginePropertyForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
+        private void UpdateEngineAndRunForAllPythonNodes(List<PythonNode> list, PythonEngineVersion pythonEngineVersion)
         {
             foreach (var pyNode in list)
             { 
                 pyNode.Engine = pythonEngineVersion;
+                pyNode.OnNodeModified();
             }
         }
 
@@ -304,7 +307,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
 
@@ -326,7 +329,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
 
@@ -352,7 +355,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
 
@@ -377,8 +380,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
-
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
                 ViewModel.HomeSpace.Run();
 
                 var nodeValue = GetPreviewValue(pythonGUID);
@@ -406,7 +408,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
 
@@ -432,7 +434,7 @@ namespace Dynamo.Tests
 
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdateEnginePropertyForPythonNode(pynode, pythonEngine);
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
                  
                 ViewModel.HomeSpace.Run();
 
@@ -459,15 +461,15 @@ namespace Dynamo.Tests
 
             AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9"});
 
-            UpdateEnginePropertyForPythonNode(pynode1, PythonEngineVersion.CPython3);
+            UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "2.7.9" });
 
-            UpdateEnginePropertyForPythonNode(pynode2, PythonEngineVersion.CPython3);
+            UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "3.7.3" });
 
-            UpdateEnginePropertyForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
+            UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9" });
         }
