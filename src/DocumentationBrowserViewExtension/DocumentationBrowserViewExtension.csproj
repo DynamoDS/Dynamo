@@ -105,13 +105,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\NoContent.html" />
+    <EmbeddedResource Include="Docs\NoContent.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\InternalError.html" />
+    <EmbeddedResource Include="Docs\InternalError.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\FileNotFound.html" />
+    <EmbeddedResource Include="Docs\FileNotFound.html" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Docs\ArgumentNullException.html" />
@@ -147,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

@@ -120,13 +120,6 @@
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
     <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="FileNotFound" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\FileNotFound.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;iso-8859-1</value>
-  </data>
-  <data name="InternalError" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\InternalError.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
-  </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
     <value>No further details available for this error.</value>
   </data>
@@ -135,9 +128,6 @@
   </data>
   <data name="MenuItemText" xml:space="preserve">
     <value>Show Documentation Browser</value>
-  </data>
-  <data name="NoContent" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\resources\nocontent.html;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
