@@ -157,7 +157,6 @@ namespace PythonNodeModelsWpf
         private void UpdateToPython2Engine(object sender, EventArgs e)
         {
             pythonNodeModel.Engine = PythonEngineVersion.IronPython2;
-            pythonNodeModel.OnNodeModified();
         }
 
         /// <summary>
@@ -166,7 +165,6 @@ namespace PythonNodeModelsWpf
         private void UpdateToPython3Engine(object sender, EventArgs e)
         {
             pythonNodeModel.Engine = PythonEngineVersion.CPython3;
-            pythonNodeModel.OnNodeModified();
         }
     }
 }
