@@ -1,0 +1,7 @@
+<MigrationReport>
+  <NodeMappings>
+    <Node OldName="CoreNodeModels.CreateList">
+      <MigratedNode>Create List</MigratedNode>
+    </Node>
+  </NodeMappings>
+</MigrationReport>
