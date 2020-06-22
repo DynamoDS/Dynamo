@@ -400,6 +400,30 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(@"function adaptDPI()"));
         }
 
+        [Test]
+        public void GetResourceNameWithCultureNameReturnsSameAsInputWhenCultureIsNull()
+        {
+            var name = "MyPage.html";
+            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, null);
+            Assert.AreEqual(name, result);
+        }
+
+        [Test]
+        public void GetResourceNameWithCultureNameReturnsSameAsInputWhenItDoesNotHaveAnExtension()
+        {
+            var name = "NotAPage";
+            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            Assert.AreEqual(name, result);
+        }
+
+        [Test]
+        public void GetResourceNameWithCultureNameWorksWithValidCultureAndInputName()
+        {
+            var name = "MyPage.html";
+            var result = DocumentationBrowserViewModel.GetResourceNameWithCultureName(name, CultureInfo.GetCultureInfo("en-US"));
+            Assert.AreEqual("MyPage.en-US.html", result);
+        }
+
         #region Helpers
 
         private DocumentationBrowserViewExtension SetupNewViewExtension(bool runLoadedMethod = false)

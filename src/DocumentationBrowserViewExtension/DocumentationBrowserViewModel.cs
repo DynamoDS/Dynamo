@@ -345,7 +345,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="name">Resource name</param>
         /// <returns>Resource name with the culture name appended before the extension</returns>
-        private static string GetResourceNameWithCultureName(string name, CultureInfo culture)
+        internal static string GetResourceNameWithCultureName(string name, CultureInfo culture)
         {
             var extension = Path.GetExtension(name);
             if (string.IsNullOrEmpty(extension) || culture == null)
