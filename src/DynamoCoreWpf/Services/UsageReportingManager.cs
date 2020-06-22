@@ -198,6 +198,7 @@ namespace Dynamo.Services
         /// IsAnalyticsReportingApproved.
         /// </summary>
         /// <param name="approved"></param>
+        [Obsolete("Function will be deprecated in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void SetUsageReportingAgreement(bool approved)
         {
             IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;

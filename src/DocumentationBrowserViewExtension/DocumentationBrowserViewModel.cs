@@ -3,6 +3,7 @@ using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,8 +16,8 @@ namespace Dynamo.DocumentationBrowser
         #region Constants
 
         private const string HTML_TEMPLATE_IDENTIFIER = "%TEMPLATE%";
-        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = nameof(Resources.InternalError) + ".html";
-        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = nameof(Resources.FileNotFound) + ".html";
+        private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
+        private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
         private const string DPISCRIPT = @"<script> function getDPIScale()
@@ -276,7 +277,9 @@ namespace Dynamo.DocumentationBrowser
                 assembly = GetType().Assembly;
             }
 
-            var availableResources = assembly.GetManifestResourceNames();
+            Assembly resourceAssembly = GetResourceAssembly(assembly, name);
+
+            var availableResources = resourceAssembly.GetManifestResourceNames();
 
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
@@ -286,7 +289,7 @@ namespace Dynamo.DocumentationBrowser
             Stream stream = null;
             try
             {
-                stream = assembly.GetManifestResourceStream(matchingResource);
+                stream = resourceAssembly.GetManifestResourceStream(matchingResource);
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     result = reader.ReadToEnd();
@@ -309,6 +312,75 @@ namespace Dynamo.DocumentationBrowser
             result = result + DPISCRIPT;
 
             return result;
+        }
+
+        /// <summary>
+        /// Gets a satellite assembly for the specified culture of returns null if not found.
+        /// </summary>
+        /// <param name="assembly">The main assembly</param>
+        /// <param name="cultureInfo">The culture to search a satellite for</param>
+        /// <returns>Satellite assembly for requested culture or null</returns>
+        private static Assembly GetSatelliteAssembly(Assembly assembly, CultureInfo cultureInfo)
+        {
+            try
+            {
+                return assembly.GetSatelliteAssembly(cultureInfo);
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the assembly contains a manifest resource that ends with the specified name.
+        /// </summary>
+        /// <param name="assembly">Assembly to search for resources</param>
+        /// <param name="name">Suffix to search</param>
+        /// <returns>If such a resource exists or not</returns>
+        private static bool ContainsResource(Assembly assembly, string name)
+        {
+            if (assembly != null)
+            {
+                return assembly.GetManifestResourceNames().Any(resName => resName.EndsWith(name));
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Resolves the assembly where to look for embedded resources. If no satellite compatible
+        /// with the UI culture is found, it returns the provided main/invariant assembly.
+        /// </summary>
+        /// <param name="assembly">The main assembly</param>
+        /// <returns>The resource assembly</returns>
+        private static Assembly GetResourceAssembly(Assembly assembly, string name)
+        {
+            var culture = CultureInfo.CurrentUICulture;
+            var satelliteAssembly = GetSatelliteAssembly(assembly, culture);
+            // If there is no satellite for the exact culture, try a more specific/neutral one
+            // following .NET rules for culture matching.
+            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
+            {
+                if (culture.IsNeutralCulture)
+                {
+                    var specificCulture = CultureInfo.CreateSpecificCulture(culture.Name);
+                    satelliteAssembly = GetSatelliteAssembly(assembly, specificCulture);
+                }
+                else if (culture.Parent != CultureInfo.InvariantCulture)
+                {
+                    satelliteAssembly = GetSatelliteAssembly(assembly, culture.Parent);
+                }
+            }
+
+            if (satelliteAssembly == null || !ContainsResource(satelliteAssembly, name))
+            {
+                // Default to main assembly when no compatible satellite assembly was found
+                return assembly;
+            }
+            else
+            {
+                return satelliteAssembly;
+            }
         }
 
         private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));
