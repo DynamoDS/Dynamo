@@ -11,6 +11,7 @@ using NUnit.Framework;
 using PythonNodeModels;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Newtonsoft.Json.Linq;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Tests
 {
@@ -305,12 +306,14 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
-
+                count++;
+                Assert.AreEqual(count,(GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
                 AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 345 } });
             }
         }
@@ -327,11 +330,14 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdatePythonEngineAndRun(pynode, pythonEngine);
 
                 ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 AssertPreviewValue(guid,
                       new List<object> { new Dictionary<string, int> { { "abcd", 123 } }, new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 } });
@@ -353,11 +359,13 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
-                UpdatePythonEngineAndRun(pynode, pythonEngine);
-
+                UpdatePythonEngineAndRun(pynode, pythonEngine);            
                 ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 var line = GetPreviewValue(lineGUID) as Line;
                 Assert.AreEqual(line.Length, 5);
@@ -378,10 +386,13 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
 
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdatePythonEngineAndRun(pynode, pythonEngine);
                 ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 var nodeValue = GetPreviewValue(pythonGUID);
 
@@ -406,11 +417,13 @@ namespace Dynamo.Tests
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
             var pynode = nodeModel as PythonNode;
 
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdatePythonEngineAndRun(pynode, pythonEngine);
-
                 ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 AssertPreviewValue(guid, new Dictionary<string, int> { { "abc", 123 }, { "def", 10 } });
             }
@@ -431,12 +444,14 @@ namespace Dynamo.Tests
 
             var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(pythonGUID);
             var pynode = nodeModel as PythonNode;
-
+            var count = 0;
             foreach (var pythonEngine in GetPythonEnginesList())
             {
                 UpdatePythonEngineAndRun(pynode, pythonEngine);
                  
                 ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
                 AssertPreviewValue(guid,
                          new[] { "System.Int64", "System.Double", "System.Int64", "System.Int64", "System.Numerics.BigInteger" });
