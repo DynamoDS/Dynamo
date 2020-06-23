@@ -64,7 +64,6 @@
     <Compile Include="AssemblyHelper.cs" />
     <Compile Include="CertificateVerification.cs" />
     <Compile Include="DataMarshaler.cs" />
-    <Compile Include="Exceptions\DynamoException.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Guid.cs" />
     <Compile Include="ModifierKeys.cs" />

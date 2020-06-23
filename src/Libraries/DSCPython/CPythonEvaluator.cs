@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
-using Dynamo.Utilities.Exceptions;
 using Python.Runtime;
 
 namespace DSCPython
@@ -77,7 +76,7 @@ namespace DSCPython
                             if (!string.IsNullOrEmpty(traceBack))
                             {
                                 // Throw a new error including trace back info added to the message
-                                throw new DynamoException($"{e.Message} {traceBack}", e);
+                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                             }
                             else
                             {
@@ -114,7 +113,7 @@ namespace DSCPython
             var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
             if (field == null)
             {
-                throw new DynamoException(Properties.Resources.InternalErrorTraceBackInfo);
+                throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
             }
             return field.GetValue(pythonExc).ToString();
         }
