@@ -38,55 +38,59 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
-           
-                Python.Included.Installer.SetupPython().Wait();
+            if (code == null)
+            {
+                return null;
+            }
 
-                if (!PythonEngine.IsInitialized)
+            Python.Included.Installer.SetupPython().Wait();
+
+            if (!PythonEngine.IsInitialized)
+            {
+                PythonEngine.Initialize();
+                PythonEngine.BeginAllowThreads();
+            }
+
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
                 {
-                    PythonEngine.Initialize();
-                    PythonEngine.BeginAllowThreads();
-                }
-                
-                IntPtr gs = PythonEngine.AcquireLock();
-                try
-                {
-                    using (Py.GIL())
+                    using (PyScope scope = Py.CreateScope())
                     {
-                        using (PyScope scope = Py.CreateScope())
+                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                        for (int i = 0; i < amt; i++)
                         {
-                            int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                        }
 
-                            for (int i = 0; i < amt; i++)
-                            {
-                                scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
-                            }
+                        try
+                        {
+                            OnEvaluationBegin(scope, code, bindingValues);
+                            scope.Exec(code);
+                            OnEvaluationEnd(false, scope, code, bindingValues);
 
-                            try
-                            {
-                                OnEvaluationBegin(scope, code, bindingValues);
-                                scope.Exec(code);
-                                OnEvaluationEnd(false, scope, code, bindingValues);
+                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
-                                var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                                return OutputMarshaler.Marshal(result);
-                            }
-                            catch (Exception e)
-                            {
-                                OnEvaluationEnd(false, scope, code, bindingValues);
-                                throw;
-                            }
+                            return OutputMarshaler.Marshal(result);
+                        }
+                        catch (Exception e)
+                        {
+                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            throw;
                         }
                     }
                 }
-                catch (PythonException pe)
-                {
-                    throw;
-                }
-                finally
-                {
-                    PythonEngine.ReleaseLock(gs);
-                }
+            }
+            catch (PythonException pe)
+            {
+                throw;
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
         }
 
         #region Marshalling
@@ -103,7 +107,7 @@ namespace DSCPython
                 {
                     inputMarshaler = new DataMarshaler();
                     inputMarshaler.RegisterMarshaler(
-                        delegate(IList lst)
+                        delegate (IList lst)
                         {
                             var pyList = new PyList();
                             foreach (var item in lst.Cast<object>().Select(inputMarshaler.Marshal))
@@ -164,7 +168,7 @@ namespace DSCPython
                                 }
                                 return dict;
                             }
-                            else if(PyLong.IsLongType(pyObj))
+                            else if (PyLong.IsLongType(pyObj))
                             {
                                 return PyLong.AsLong(pyObj).ToInt64();
                             }
@@ -176,7 +180,7 @@ namespace DSCPython
                 }
                 return outputMarshaler;
             }
-            
+
         }
 
         private static DataMarshaler inputMarshaler;
@@ -204,9 +208,9 @@ namespace DSCPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  PyScope scope, 
-                                                string code, 
-                                                IList bindingValues )
+        private static void OnEvaluationBegin(PyScope scope,
+                                                string code,
+                                                IList bindingValues)
         {
             if (EvaluationBegin != null)
             {
@@ -221,14 +225,14 @@ namespace DSCPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd( bool isSuccessful,
+        private static void OnEvaluationEnd(bool isSuccessful,
                                             PyScope scope,
                                             string code,
                                             IList bindingValues)
         {
             if (EvaluationEnd != null)
             {
-                EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
+                EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
                     scope, code, bindingValues);
             }
         }
