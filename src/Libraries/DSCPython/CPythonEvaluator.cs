@@ -39,6 +39,11 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
+            if (code == null)
+            {
+                return null;
+            }
+
             Python.Included.Installer.SetupPython().Wait();
 
             if (!PythonEngine.IsInitialized)
@@ -205,7 +210,6 @@ namespace DSCPython
                 }
                 return outputMarshaler;
             }
-
         }
 
         private static DataMarshaler inputMarshaler;
@@ -234,8 +238,8 @@ namespace DSCPython
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private static void OnEvaluationBegin(PyScope scope,
-                                                string code,
-                                                IList bindingValues)
+                                              string code,
+                                              IList bindingValues)
         {
             if (EvaluationBegin != null)
             {
