@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -50,7 +51,7 @@ namespace DSCPython
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
             }
-
+                
             IntPtr gs = PythonEngine.AcquireLock();
             try
             {
@@ -69,7 +70,6 @@ namespace DSCPython
                         {
                             OnEvaluationBegin(scope, code, bindingValues);
                             scope.Exec(code);
-                            OnEvaluationEnd(false, scope, code, bindingValues);
 
                             var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
@@ -77,20 +77,50 @@ namespace DSCPython
                         }
                         catch (Exception e)
                         {
+                            var traceBack = GetTraceBack(e);
+                            if (!string.IsNullOrEmpty(traceBack))
+                            {
+                                // Throw a new error including trace back info added to the message
+                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
+                            }
+                            else
+                            {
+                                throw e;
+                            }
+                        }
+                        finally
+                        {
                             OnEvaluationEnd(false, scope, code, bindingValues);
-                            throw;
                         }
                     }
                 }
-            }
-            catch (PythonException pe)
-            {
-                throw;
             }
             finally
             {
                 PythonEngine.ReleaseLock(gs);
             }
+        }
+
+        /// <summary>
+        /// Gets the trace back message from the exception, if it is a PythonException.
+        /// </summary>
+        /// <param name="e">Exception to inspect</param>
+        /// <returns>Trace back message</returns>
+        private static string GetTraceBack(Exception e)
+        {
+            var pythonExc = e as PythonException;
+            if (!(e is PythonException))
+            {
+                return null;
+            }
+
+            // Return the value of the trace back field (private)
+            var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null)
+            {
+                throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
+            }
+            return field.GetValue(pythonExc).ToString();
         }
 
         #region Marshalling
@@ -180,7 +210,6 @@ namespace DSCPython
                 }
                 return outputMarshaler;
             }
-
         }
 
         private static DataMarshaler inputMarshaler;
@@ -209,8 +238,8 @@ namespace DSCPython
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
         private static void OnEvaluationBegin(PyScope scope,
-                                                string code,
-                                                IList bindingValues)
+                                              string code,
+                                              IList bindingValues)
         {
             if (EvaluationBegin != null)
             {
