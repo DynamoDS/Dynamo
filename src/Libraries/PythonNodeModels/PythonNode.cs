@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DSCPython;
-using DSIronPython;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -85,15 +82,24 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> pythonEvaluatorMethod;
+            // Here we switched to use the AstFactory.BuildFunctionCall version that accept
+            // class name and function name. We are hardcoding the class name and function name for now. 
+            var pythonEngineClass = string.Empty;
+            var pythonEvaluatorMethod = string.Empty;
 
             if (Engine == PythonEngineVersion.IronPython2)
             {
-                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
+                // TODO: Determine the class name and function name with the dynamic loading Python engine task
+                pythonEngineClass = "IronPythonEvaluator";
+                pythonEvaluatorMethod = "EvaluateIronPythonScript";
+                // TODO: Throw InvalidOperationException indicating IronPython engine missing when not loaded
             }
             else if (Engine == PythonEngineVersion.CPython3)
             {
-                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
+                // TODO: Determine the class name and function name with the dynamic loading Python engine task
+                pythonEngineClass = "CPythonEvaluator";
+                pythonEvaluatorMethod = "EvaluatePythonScript";
+                // TODO: Throw InvalidOperationException indicating CPython engine missing when not loaded
             }
             else
             {
@@ -103,6 +109,7 @@ namespace PythonNodeModels
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
+                    pythonEngineClass,
                     pythonEvaluatorMethod,
                     new List<AssociativeNode>
                     {

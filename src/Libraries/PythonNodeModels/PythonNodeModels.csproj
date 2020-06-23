@@ -39,14 +39,6 @@
       <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Python.Included, Version=3.7.3.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Python.Included.3.7.3.4\lib\netstandard2.0\Python.Included.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Python.Runtime.NETStandard, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Python.Runtime.NETStandard.3.7.0\lib\netstandard2.0\Python.Runtime.NETStandard.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -98,16 +90,6 @@
     <ProjectReference Include="..\..\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DSCPython\DSCPython.csproj">
-      <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
-      <Name>DSCPython</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DSIronPython\DSIronPython.csproj">
-      <Project>{9eef4f42-6b3b-4358-9a8a-c2701539a822}</Project>
-      <Name>DSIronPython</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
