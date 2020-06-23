@@ -78,6 +78,7 @@ namespace DynamoCoreWpfTests
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+            DispatcherUtil.DoEvents();
         }
 
         /// <summary>
@@ -118,10 +119,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(100, nodeModel.CachedValue.Data);
             //still only 2 executions.
             Assert.AreEqual(2,(Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
+            DispatcherUtil.DoEvents();
         }
 
         private static ComboBox FindEditorDropDown(ScriptEditorWindow view)
         {
+            DispatcherUtil.DoEvents();
             // after simulating the click event get the opened Script editor window
             // and fetch the EngineSelector dropdown
             var windowGrid = view.Content as Grid;
@@ -133,7 +136,7 @@ namespace DynamoCoreWpfTests
 
         private static ScriptEditorWindow EditPythonCode(NodeView nodeView, DynamoView window)
         {
-
+            DispatcherUtil.DoEvents();
             // get the `Edit...` menu item from the nodes context menu so we can simulate the click event.
             var editMenuItem = nodeView.MainContextMenu
                 .Items
@@ -141,6 +144,7 @@ namespace DynamoCoreWpfTests
                 .First(x => x.Header.ToString() == "Edit...");
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
             return window.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
         }
 
@@ -148,6 +152,7 @@ namespace DynamoCoreWpfTests
         {
             var editor = view.ChildrenOfType<ICSharpCode.AvalonEdit.TextEditor>();
             editor.FirstOrDefault().Text = code;
+            DispatcherUtil.DoEvents();
         }
 
         private static void SetEngineViaContextMenu(NodeView nodeView, PythonEngineVersion engine)
@@ -164,6 +169,7 @@ namespace DynamoCoreWpfTests
                     (engineSelection.Items[1] as MenuItem).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
                     break;
             }
+            DispatcherUtil.DoEvents();
         } 
 
 
@@ -218,6 +224,7 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.AreEqual(false, ironPython2MenuItem.IsChecked);
             Assert.AreEqual(true, cPython3MenuItem.IsChecked);
+            DispatcherUtil.DoEvents();
         }
 
         /// <summary>
@@ -259,7 +266,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PresentationGrid.IsVisible);
             Assert.AreEqual(expectedDefaultEngineLabelText, defaultEngineLabelText);
             Assert.AreEqual(engineChange.ToString(), engineLabelTextAfterChange);
-
+            DispatcherUtil.DoEvents();
         }
 
         [Test]
@@ -296,6 +303,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            DispatcherUtil.DoEvents();
         }
     }
 }
