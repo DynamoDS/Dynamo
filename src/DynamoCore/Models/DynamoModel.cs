@@ -200,11 +200,11 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
-         /// <summary>
-         /// This event is raised when Dynamo is ready for user interaction.
-         /// </summary>
-         public event Action<ReadyParams> DynamoReady;
-         private bool dynamoReady;
+        /// <summary>
+        /// This event is raised when Dynamo is ready for user interaction.
+        /// </summary>
+        public event Action<ReadyParams> DynamoReady;
+        private bool dynamoReady;
 
         #endregion
 
@@ -808,15 +808,15 @@ namespace Dynamo.Models
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
                         // then we can start the extension(s) (B) that it requested be loaded.
-                        if(ext is IExtensionSource)
+                        if (ext is IExtensionSource)
                         {
-                           foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions))
-                           {
-                               if(loadedExtension is IExtension)
-                               {
-                                   (loadedExtension as IExtension).Startup(startupParams);
-                               }
-                           }
+                            foreach (var loadedExtension in (ext as IExtensionSource).RequestedExtensions)
+                            {
+                                if (loadedExtension is IExtension)
+                                {
+                                    (loadedExtension as IExtension).Startup(startupParams);
+                                }
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -835,7 +835,7 @@ namespace Dynamo.Models
 
             TraceReconciliationProcessor = this;
             // This event should only be raised at the end of this method.
-             DynamoReady(new ReadyParams(this));
+            DynamoReady(new ReadyParams(this));
         }
 
         private void SetDefaultPythonTemplate()
@@ -855,7 +855,8 @@ namespace Dynamo.Models
             }
         }
 
-        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
+        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions)
+        {
 
             foreach (var ext in extensions)
             {
@@ -1288,13 +1289,13 @@ namespace Dynamo.Models
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
-                    LibraryServices.LoadNodeLibrary(assem.Location,false);
+                    LibraryServices.LoadNodeLibrary(assem.Location, false);
                 }
                 else
                 {
                     LibraryServices.ImportLibrary(assem.Location);
                 }
-               
+
                 return;
             }
 

@@ -26,7 +26,7 @@ namespace Dynamo.Tests.Extensions
             CurrentDynamoModel.ExtensionManager.Remove(mockExtension.Object);
 
             //Assert
-            //Just checking that the PackageManager extension remains in the extensions list.
+            //Checking that the PackageManager and IronPython extension remains in the extensions list.
             Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
         }
 
