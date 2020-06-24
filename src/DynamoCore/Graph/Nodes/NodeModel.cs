@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -369,10 +370,10 @@ namespace Dynamo.Graph.Nodes
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
         [JsonProperty("Inputs")]
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
+            [IsObsolete("Property will be deprecated in Dynamo 3.0")]
             set
             {
                 inPorts = value;
@@ -384,10 +385,10 @@ namespace Dynamo.Graph.Nodes
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
         [JsonProperty("Outputs")]
-        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
+            [IsObsolete("Property will be deprecated in Dynamo 3.0")]
             set
             {
                 outPorts = value;
