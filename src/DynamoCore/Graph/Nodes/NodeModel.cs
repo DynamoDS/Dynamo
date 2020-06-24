@@ -373,7 +373,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
-            [IsObsolete("Property will be deprecated in Dynamo 3.0")]
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 inPorts = value;
@@ -388,7 +388,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
-            [IsObsolete("Property will be deprecated in Dynamo 3.0")]
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 outPorts = value;
