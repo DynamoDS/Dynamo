@@ -32,23 +32,6 @@ namespace Dynamo.Tests
         
         [Test]
         [Category("UnitTests")]
-        public void InPortsOutPortsTest()
-        {
-            var input = new PortModel(PortType.Input, testNodeModel, new PortData("input A", "This is input A."));
-            var inPorts = new ObservableCollection<PortModel>() { input };
-            testNodeModel.InPorts = inPorts;
-
-            Assert.Contains(input, testNodeModel.InPorts);
-
-            var output = new PortModel(PortType.Output, testNodeModel, new PortData("output A", "This is output A."));
-            var outPorts = new ObservableCollection<PortModel>() { output };
-            testNodeModel.OutPorts = outPorts;
-
-            Assert.Contains(output, testNodeModel.OutPorts);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void CategoryTest()
         {
             testNodeModel.Category = null; //Set Category to null so that GetCategoryStringFromAttributes() gets called in the property getter

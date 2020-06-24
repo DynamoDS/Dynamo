@@ -369,6 +369,7 @@ namespace Dynamo.Graph.Nodes
         ///     Collection of PortModels representing all Input ports.
         /// </summary>
         [JsonProperty("Inputs")]
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
@@ -383,6 +384,7 @@ namespace Dynamo.Graph.Nodes
         ///     Collection of PortModels representing all Output ports.
         /// </summary>
         [JsonProperty("Outputs")]
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
