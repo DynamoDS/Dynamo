@@ -37,15 +37,15 @@ namespace IronPythonExtension
         /// <param name="sp"></param>
         public void Startup(StartupParams sp)
         {
-            // Searches for IronPython engine binary in Dynamo folder
-            var dynamoDir = Environment.CurrentDirectory;
+            // Searches for DSIronPython engine binary in same folder with extension itself
+            var targetDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(IronPythonExtension)).Location);
             var libraryLoader = sp.LibraryLoader;
             Assembly pythonEvaluatorLib = null;
             try
             {
-                pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(dynamoDir, PythonEvaluatorAssembly + ".dll"));
+                pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(targetDir, PythonEvaluatorAssembly + ".dll"));
             }
-            catch (Exception)
+            catch
             {
                 // Most likely the IronPython engine is excluded in this case
                 return;
