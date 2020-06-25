@@ -709,14 +709,13 @@ namespace Dynamo.ViewModels
                     try
                     {
                         packageDownloadHandle.Done(pathDl);
-                        var pmExtension = DynamoViewModel.Model.GetPackageManagerExtension();
-                        var firstOrDefault = pmExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
+                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
                         if (firstOrDefault != null)
                         {
                             var dynModel = DynamoViewModel.Model;
                             try
                             {
-                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
+                                firstOrDefault.UninstallCore(dynModel.CustomNodeManager, PackageManagerExtension.PackageLoader, dynModel.PreferenceSettings);
                             }
                             catch
                             {
@@ -747,7 +746,7 @@ namespace Dynamo.ViewModels
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
-                pmExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
             }
             else

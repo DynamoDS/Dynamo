@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCore", "DynamoCore\DynamoCore.csproj", "{7858FA8C-475F-4B8E-B468-1F8200778CF8}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -230,6 +230,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSCPython", "Libraries\DSCPython\DSCPython.csproj", "{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryViewExtensionMSWebBrowser", "LibraryViewExtensionMSWebBrowser\LibraryViewExtensionMSWebBrowser.csproj", "{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonExtension", "IronPythonExtension\IronPythonExtension.csproj", "{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonMigrationViewExtension", "PythonMigrationViewExtension\PythonMigrationViewExtension.csproj", "{10AF430D-0D3A-49CE-A63D-848912959745}"
 EndProject
@@ -841,6 +843,14 @@ Global
 		{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}.Release|x64.ActiveCfg = Release|Any CPU
 		{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE}.Release|x64.Build.0 = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Debug|x64.Build.0 = Debug|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|x64.ActiveCfg = Release|Any CPU
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7}.Release|x64.Build.0 = Release|Any CPU
 		{10AF430D-0D3A-49CE-A63D-848912959745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{10AF430D-0D3A-49CE-A63D-848912959745}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10AF430D-0D3A-49CE-A63D-848912959745}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -922,6 +932,7 @@ Global
 		{BE6D0644-05AF-4580-8597-B95920CE923F} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{F1541C2D-80A9-4FE7-8D9E-75A8B9FF3479} = {FA7BE306-A3B0-45FA-9D87-0C69E6932C13}
 		{1A5DC90A-477E-4D4A-87BD-0BFB01F056CE} = {88D45B00-E564-41DB-B57C-9509646CAA49}
+		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{10AF430D-0D3A-49CE-A63D-848912959745} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

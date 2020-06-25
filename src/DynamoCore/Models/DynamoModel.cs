@@ -200,11 +200,11 @@ namespace Dynamo.Models
                 ShutdownCompleted(this);
         }
 
-         /// <summary>
-         /// This event is raised when Dynamo is ready for user interaction.
-         /// </summary>
-         public event Action<ReadyParams> DynamoReady;
-         private bool dynamoReady;
+        /// <summary>
+        /// This event is raised when Dynamo is ready for user interaction.
+        /// </summary>
+        public event Action<ReadyParams> DynamoReady;
+        private bool dynamoReady;
 
         #endregion
 
@@ -808,11 +808,11 @@ namespace Dynamo.Models
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
                         // then we can start the extension(s) (B) that it requested be loaded.
-                        if(ext is IExtensionSource)
+                        if (ext is IExtensionSource)
                         {
-                           foreach(var loadedExtension in((ext as IExtensionSource).RequestedExtensions))
+                            foreach (var loadedExtension in (ext as IExtensionSource).RequestedExtensions)
                             {
-                                if(loadedExtension is IExtension)
+                                if (loadedExtension is IExtension)
                                 {
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
@@ -835,7 +835,7 @@ namespace Dynamo.Models
 
             TraceReconciliationProcessor = this;
             // This event should only be raised at the end of this method.
-             DynamoReady(new ReadyParams(this));
+            DynamoReady(new ReadyParams(this));
         }
 
         private void SetDefaultPythonTemplate()
@@ -855,7 +855,8 @@ namespace Dynamo.Models
             }
         }
 
-        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions) {
+        private void DynamoReadyExtensionHandler(ReadyParams readyParams, IEnumerable<IExtension> extensions)
+        {
 
             foreach (var ext in extensions)
             {
@@ -1228,21 +1229,7 @@ namespace Dynamo.Models
             Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
                 Context, out modelTypes, out migrationTypes);
 
-            // Load NodeModels
-            foreach (var type in modelTypes)
-            {
-                // Protect ourselves from exceptions thrown by malformed third party nodes.
-                try
-                {
-                    NodeFactory.AddTypeFactoryAndLoader(type.Type);
-                    NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
-                    AddNodeTypeToSearch(type);
-                }
-                catch (Exception e)
-                {
-                    Logger.Log(e);
-                }
-            }
+            LoadNodeModels(modelTypes, false);
 
             // Load migrations
             foreach (var type in migrationTypes)
@@ -1302,19 +1289,24 @@ namespace Dynamo.Models
             {
                 if (suppressZeroTouchLibraryLoad)
                 {
-                    LibraryServices.LoadNodeLibrary(assem.Location,false);
+                    LibraryServices.LoadNodeLibrary(assem.Location, false);
                 }
                 else
                 {
                     LibraryServices.ImportLibrary(assem.Location);
                 }
-               
+
                 return;
             }
 
             var nodes = new List<TypeLoadData>();
             Loader.LoadNodesFromAssembly(assem, Context, nodes, new List<TypeLoadData>());
 
+            LoadNodeModels(nodes, true);
+        }
+
+        private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
+        {
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1322,7 +1314,7 @@ namespace Dynamo.Models
                 {
                     NodeFactory.AddTypeFactoryAndLoader(type.Type);
                     NodeFactory.AddAlsoKnownAs(type.Type, type.AlsoKnownAs);
-                    type.IsPackageMember = true;
+                    type.IsPackageMember = isPackageMember;
                     AddNodeTypeToSearch(type);
                 }
                 catch (Exception e)
