@@ -165,7 +165,7 @@ print 'hello'
             catch (Exception exc)
             {
                 // Trace back is not available for this call, but we still get a reasonable message back
-                Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 13, ""print 'hello'\n""))", exc.Message);
+                Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
             }
         }
     }

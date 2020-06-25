@@ -402,7 +402,7 @@ namespace Dynamo.Tests
                 }
                 else if (pythonEngine == PythonEngineVersion.CPython3)
                 {
-                    Assert.AreEqual(nodeValue, "3.7.3");
+                    Assert.AreEqual(nodeValue, "3.8.3");
                 }
             }
         }
@@ -467,7 +467,6 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\python", "WorkspaceWithMultiplePythonEngines.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
-            var pythonNode1GUID = "d060e68f510f43fe8990c2c1ba7e0f80";
             var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
 
             var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
@@ -476,19 +475,19 @@ namespace Dynamo.Tests
             var pynode1 = pythonNodes.ElementAt(0);
             var pynode2 = pythonNodes.ElementAt(1);
 
-            AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode1, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.3", "2.7.9" });
 
             UpdatePythonEngineAndRun(pynode2, PythonEngineVersion.CPython3);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<String> { "3.7.3", "3.7.3" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "3.8.3", "3.8.3" });
 
             UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            AssertPreviewValue(pythonNode2GUID, new List<String> { "2.7.9", "2.7.9" });
+            AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
         }
     }
 }

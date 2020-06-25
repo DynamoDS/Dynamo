@@ -40,11 +40,13 @@
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.CodeCoverage.16.2.0\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Included, Version=3.7.3.4, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Python.Included.3.7.3.4\lib\netstandard2.0\Python.Included.dll</HintPath>
+    <Reference Include="Python.Included, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\Python\Python.Included.dll</HintPath>
     </Reference>
-    <Reference Include="Python.Runtime.NETStandard, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Python.Runtime.NETStandard.3.7.0\lib\netstandard2.0\Python.Runtime.NETStandard.dll</HintPath>
+    <Reference Include="Python.Runtime, Version=2.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\extern\Python\Python.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

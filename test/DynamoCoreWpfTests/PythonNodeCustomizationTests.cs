@@ -275,9 +275,6 @@ namespace DynamoCoreWpfTests
             // open test graph
             Open(@"core\python\WorkspaceWithMultiplePythonEngines.dyn");
 
-            var pythonNode1GUID = "d060e68f510f43fe8990c2c1ba7e0f80";
-            var pythonNode2GUID = "4050d23e529c43e9b6140506d8adb06b";
-
             var nodeModels = ViewModel.Model.CurrentWorkspace.Nodes.Where(n => n.NodeType == "PythonScriptNode");
             List<PythonNode> pythonNodes = nodeModels.Cast<PythonNode>().ToList();
             var pynode1 = pythonNodes.ElementAt(0);
@@ -286,23 +283,23 @@ namespace DynamoCoreWpfTests
             var pynode2view = NodeViewWithGuid("4050d23e-529c-43e9-b614-0506d8adb06b");
 
 
-            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
+            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x=>x.Data));
 
             SetEngineViaContextMenu(pynode1view, PythonEngineVersion.CPython3);
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "3.7.3", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "3.8.3", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
 
             SetEngineViaContextMenu(pynode2view, PythonEngineVersion.CPython3);
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "3.7.3", "3.7.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "3.8.3", "3.8.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
 
             SetEngineViaContextMenu(pynode1view, PythonEngineVersion.IronPython2);
             SetEngineViaContextMenu(pynode2view, PythonEngineVersion.IronPython2);
 
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
-            Assert.AreEqual(new List<String> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
             DispatcherUtil.DoEvents();
         }
     }
