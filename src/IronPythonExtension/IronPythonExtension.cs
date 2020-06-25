@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Dynamo.Extensions;
+using Dynamo.Logging;
 
 namespace IronPythonExtension
 {
@@ -9,7 +10,7 @@ namespace IronPythonExtension
     /// This extension does nothing but loading DSIronPython to make IronPython engine 
     /// available as one alternative Python evaluation option
     /// </summary>
-    public class IronPythonExtension : IExtension
+    public class IronPythonExtension : IExtension, ILogSource
     {
         private const string PythonEvaluatorAssembly = "DSIronPython";
 
@@ -31,23 +32,37 @@ namespace IronPythonExtension
         /// </summary>
         public string Name => "IronPythonExtension";
 
+        #region ILogSource
+
+        public event Action<ILogMessage> MessageLogged;
+        internal void OnMessageLogged(ILogMessage msg)
+        {
+            if (this.MessageLogged != null)
+            {
+                MessageLogged?.Invoke(msg);
+            }
+        }
+        #endregion
+
         /// <summary>
         /// Action to be invoked when Dynamo begins to start up. 
         /// </summary>
         /// <param name="sp"></param>
         public void Startup(StartupParams sp)
         {
-            // Searches for IronPython engine binary in Dynamo folder
-            var dynamoDir = Environment.CurrentDirectory;
+            // Searches for DSIronPython engine binary in same folder with extension itself
+            var targetDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(IronPythonExtension)).Location);
             var libraryLoader = sp.LibraryLoader;
             Assembly pythonEvaluatorLib = null;
             try
             {
-                pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(dynamoDir, PythonEvaluatorAssembly + ".dll"));
+                pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(targetDir, PythonEvaluatorAssembly + ".dll"));
             }
-            catch (Exception)
+            catch(Exception ex)
             {
                 // Most likely the IronPython engine is excluded in this case
+                // but logging the exception message in case for diagnose
+                OnMessageLogged(LogMessage.Info(ex.Message));
                 return;
             }
             // Import IronPython Engine into VM, so Python node using IronPython engine could evaluate correctly
