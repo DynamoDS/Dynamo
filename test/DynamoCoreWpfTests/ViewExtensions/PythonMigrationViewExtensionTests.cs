@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Configuration;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Models;
 using Dynamo.PythonMigration;
 using Dynamo.Utilities;
@@ -283,6 +284,22 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ironPythonDialog.IsLoaded);
 
             DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        public void CustomNodeContainsIronPythonDependencyTest()
+        {
+            // open file
+            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
+            Open(examplePath);
+
+            var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
+            var customNodeManager = ViewModel.Model.CustomNodeManager;
+
+            var result = GraphPythonDependencies.CustomNodeContainsIronPythonDependency(customNodes, customNodeManager);
+
+            Assert.IsTrue(result);
             DispatcherUtil.DoEvents();
         }
     }

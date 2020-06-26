@@ -13,7 +13,7 @@ namespace Dynamo.PythonMigration
     {
         private ViewLoadedParams ViewLoaded { get; set; }
 
-        private Dictionary<Guid, bool> CustomNodePythonDependency = new Dictionary<Guid, bool>();
+        private static Dictionary<Guid, bool> CustomNodePythonDependency = new Dictionary<Guid, bool>();
 
         internal GraphPythonDependencies(ViewLoadedParams viewLoadedParams)
         {
@@ -39,7 +39,10 @@ namespace Dynamo.PythonMigration
             return CustomNodeContainsIronPythonDependency(customNodes, customNodeManager);           
         }
 
-        internal bool CustomNodeContainsIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
+        // This function returns true, if any of the custom nodes in the input list has a IronPython dependency. 
+        // It traverses all CN's in the given list of customNodes and their subtrees until the first CN with an IronPython dependency is found. 
+        // It marks them as containing ironPython dependencies if any of their child custom nodes contain IronPython.
+        internal static bool CustomNodeContainsIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
         {
             ICustomNodeWorkspaceModel customNodeWS;
 
