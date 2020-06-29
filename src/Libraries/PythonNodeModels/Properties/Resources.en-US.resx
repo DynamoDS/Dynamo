@@ -182,13 +182,13 @@
     <value>Learn about Python3 updates.</value>
   </data>
   <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
-    <value>Revert the changes made to current Python node editor.</value>
+    <value>Revert the changes made to current Python node editor and close it.</value>
   </data>
   <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Run Python node with current code in editor.</value>
+    <value>Save current code in Python node editor and run graph with it.</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save the changes made to current Python node editor.</value>
+    <value>Save the changes made to current Python node editor and close it.</value>
   </data>
   <data name="PythonMigrationWarningUriString" xml:space="preserve">
     <value>PythonNodeModels;PythonMigrationWarning.html</value>
