@@ -241,7 +241,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run Python node with current code in editor and save it..
+        ///   Looks up a localized string similar to Save current code in Python node editor and run graph with it..
         /// </summary>
         public static string PythonScriptEditorRunButtonTooltip {
             get {

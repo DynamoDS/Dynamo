@@ -185,7 +185,7 @@
     <value>Revert the changes made to current Python node editor and close it.</value>
   </data>
   <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Run Python node with current code in editor and save it.</value>
+    <value>Save current code in Python node editor and run graph with it.</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
     <value>Save the changes made to current Python node editor and close it.</value>
