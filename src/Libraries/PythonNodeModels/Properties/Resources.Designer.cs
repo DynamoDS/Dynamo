@@ -223,7 +223,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revert the changes made to current Python node editor and close it..
+        ///   Looks up a localized string similar to Revert the changes made to current Python node editor..
         /// </summary>
         public static string PythonScriptEditorRevertButtonTooltip {
             get {
@@ -241,7 +241,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run Python node with current code in editor and save it..
+        ///   Looks up a localized string similar to Run Python node with current code in editor..
         /// </summary>
         public static string PythonScriptEditorRunButtonTooltip {
             get {
@@ -259,7 +259,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save the changes made to current Python node editor and close it..
+        ///   Looks up a localized string similar to Save the changes made to current Python node editor..
         /// </summary>
         public static string PythonScriptEditorSaveChangesButtonTooltip {
             get {
