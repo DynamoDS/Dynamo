@@ -284,7 +284,14 @@ namespace Dynamo.DocumentationBrowser
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
 
-            if (string.IsNullOrEmpty(matchingResource)) return null;
+            if (string.IsNullOrEmpty(matchingResource))
+            {
+                // The resource might exist by a name that includes the culture name in it
+                var nameWithCulture = GetResourceNameWithCultureName(name, resourceAssembly.GetName().CultureInfo);
+                matchingResource = availableResources.FirstOrDefault(n => n.EndsWith(nameWithCulture));
+
+                if (string.IsNullOrEmpty(matchingResource)) return null;
+            }
 
             Stream stream = null;
             try
@@ -333,6 +340,23 @@ namespace Dynamo.DocumentationBrowser
         }
 
         /// <summary>
+        /// Given a file resource name and a culture, it returns an alternate resource name that includes
+        /// the culture name before the file extension. Example: NoContent.html => NoContent.de-DE.html
+        /// </summary>
+        /// <param name="name">Resource name</param>
+        /// <returns>Resource name with the culture name appended before the extension</returns>
+        internal static string GetResourceNameWithCultureName(string name, CultureInfo culture)
+        {
+            var extension = Path.GetExtension(name);
+            if (string.IsNullOrEmpty(extension) || culture == null)
+            {
+                return name;
+            }
+
+            return $"{name.Substring(0, name.LastIndexOf(extension))}.{culture.Name}{extension}";
+        }
+
+        /// <summary>
         /// Checks if the assembly contains a manifest resource that ends with the specified name.
         /// </summary>
         /// <param name="assembly">Assembly to search for resources</param>
@@ -342,7 +366,8 @@ namespace Dynamo.DocumentationBrowser
         {
             if (assembly != null)
             {
-                return assembly.GetManifestResourceNames().Any(resName => resName.EndsWith(name));
+                var nameWithCulture = GetResourceNameWithCultureName(name, assembly.GetName().CultureInfo);
+                return assembly.GetManifestResourceNames().Any(resName => resName.EndsWith(name) || resName.EndsWith(nameWithCulture));
             }
             return false;
         }

@@ -1037,14 +1037,23 @@ namespace DSIronPython
         /// <param name="dynamoCorePath"></param>
         public void Initialize(string dynamoCorePath)
         {
-            string pythonLibDir = string.Empty;
-            // Determine if the Python Standard Library is available in the given context
+            var pythonLibDir = string.Empty;
+            var executionPath = Assembly.GetExecutingAssembly().Location;
+            // Determine if the Python Standard Library is available in the DynamoCore path
             if (!String.IsNullOrEmpty(dynamoCorePath))
             {
-                pythonLibDir = Path.Combine(dynamoCorePath, @"IronPython.StdLib.2.7.9");
+                pythonLibDir = Path.Combine(dynamoCorePath, IronPythonEvaluator.PythonLibName);
             }
 
-            if (!String.IsNullOrEmpty(pythonLibDir) && Directory.Exists(pythonLibDir))
+            // If IronPython.Std folder is excluded from DynamoCore (which could be user mistake or integrator exclusion)
+            // Or if the execution path is different than Dynamo root folder
+            if (!Directory.Exists(pythonLibDir) || pythonLibDir != executionPath)
+            {
+                // Try to load IronPython from extension package
+                pythonLibDir = Path.Combine((new DirectoryInfo(Path.GetDirectoryName(executionPath))).Parent.FullName, IronPythonEvaluator.packageExtraFolderName, IronPythonEvaluator.PythonLibName);
+            }
+
+            if (!String.IsNullOrEmpty(pythonLibDir))
             {
                 // Try to load Python Standard Library Type for autocomplete
                 try
