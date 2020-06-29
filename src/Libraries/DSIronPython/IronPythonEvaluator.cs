@@ -51,7 +51,7 @@ namespace DSIronPython
                 var executionPath = Assembly.GetExecutingAssembly().Location;
 
                 // Assume the Python Standard Library is available in the DynamoCore path
-                pythonLibDir = Path.Combine(executionPath, @"IronPython.StdLib.2.7.9");
+                pythonLibDir = Path.Combine(Path.GetDirectoryName(executionPath), @"IronPython.StdLib.2.7.9");
 
                 // If IronPython.Std folder is excluded from DynamoCore (which could be user mistake or integrator exclusion)
                 // Or if the execution path is different than Dynamo root folder
