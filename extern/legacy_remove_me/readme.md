@@ -15,7 +15,3 @@ These files are actually empty .txt files renamed .dll to avoid including any du
 * \bin\stdole.dll
 * \bin\en-US\DynamoPython.resources.dll
 * \bin\nodes\DSIronPython.dll
-
-TODO 
-
-[ ] - what are all the missing member exceptions from microsoft scripting and ironPython?
