@@ -200,7 +200,15 @@ namespace DSCPython
                             }
                             else if (PyLong.IsLongType(pyObj))
                             {
-                                return PyLong.AsLong(pyObj).ToInt64();
+                                var pyLong = PyLong.AsLong(pyObj);
+                                try
+                                {
+                                    return pyLong.ToInt64();
+                                }
+                                catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
+                                {
+                                    return pyLong.ToBigInteger();
+                                }
                             }
                             else
                             {
