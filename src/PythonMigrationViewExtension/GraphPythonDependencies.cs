@@ -19,7 +19,7 @@ namespace Dynamo.PythonMigration
         private enum CNPythonDependency
         {
             NoDependency,
-            SubtreeDependency,
+            NestedDependency,
             DirectDependency
         }
 
@@ -62,7 +62,7 @@ namespace Dynamo.PythonMigration
                 // check the CustomNodePythonDependency dictionary instead of processing it again. 
                 if (CustomNodePythonDependency.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependency dependency))
                 {
-                    if (dependency == CNPythonDependency.DirectDependency || dependency == CNPythonDependency.SubtreeDependency)
+                    if (dependency == CNPythonDependency.DirectDependency || dependency == CNPythonDependency.NestedDependency)
                     {
                         currentCNContainsPythonDependency = true;
                     }
@@ -93,11 +93,7 @@ namespace Dynamo.PythonMigration
                     CustomNodePythonDependency.TryGetValue(customNodeWS.CustomNodeId, out dependency);
                     if (hasPythonNodesInCustomNodeWorkspace)
                     {
-                        CustomNodePythonDependency[customNodeWS.CustomNodeId] = CNPythonDependency.SubtreeDependency;
-                    }
-
-                    if (hasPythonNodesInCustomNodeWorkspace)
-                    {
+                        CustomNodePythonDependency[customNodeWS.CustomNodeId] = CNPythonDependency.NestedDependency;
                         currentCNContainsPythonDependency = true;
                     }
                 }
