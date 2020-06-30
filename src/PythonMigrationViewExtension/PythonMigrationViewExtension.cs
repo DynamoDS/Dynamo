@@ -102,14 +102,12 @@ namespace Dynamo.PythonMigration
         private void SubscribeToDynamoEvents()
         {
             LoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
-            DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded += OnNodeAdded;
             DynamoViewModel.Model.Logger.NotificationLogged += OnNotificationLogged;
         }
 
         private void UnsubscribeFromDynamoEvents()
         {
             LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
-            DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
             DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
         }
 
