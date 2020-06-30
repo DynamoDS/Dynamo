@@ -14,11 +14,6 @@ namespace DynamoPythonTests
 {
     public class PythonEvalTestsWithLibraries : DynamoModelTestBase
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
-        {
-            libraries.Add("ProtoGeometry.dll");
-        }
-
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
             return new DynamoModel.DefaultStartConfiguration()
