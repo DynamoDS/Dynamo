@@ -866,7 +866,7 @@ namespace Dynamo.Models
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(ex.Message);
+                    Logger.Log("Failed to call Ready() in extension: " + ext.Name + " " + ex.Message);
                 }
             }
         }
