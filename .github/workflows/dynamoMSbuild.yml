@@ -1,6 +1,6 @@
 # Build Dynamo using latest VS and DotNET
 name: Dynamo-VS2019Build
-on: [push]
+on: [push,pull_request]
 jobs:
  build:
   runs-on: windows-latest
