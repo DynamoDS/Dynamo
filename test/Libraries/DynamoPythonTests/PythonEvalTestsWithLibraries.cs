@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Numerics;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.Scheduler;
 using NUnit.Framework;
 using static DSIronPythonTests.IronPythonTests;
 
@@ -19,9 +21,14 @@ namespace DynamoPythonTests
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
         {
-            var config = base.CreateStartConfiguration(settings);
-            config.Preferences.CustomPackageFolders.Add(Path.Combine(TestDirectory, @"core\python\pkgs"));
-            return config;
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = new PreferenceSettings() { CustomPackageFolders = new List<string>() { Path.Combine(TestDirectory, @"core\python\pkgs") } }
+            };
         }
 
         public IEnumerable<PythonEvaluatorDelegate> Evaluators = new List<PythonEvaluatorDelegate> {
@@ -47,7 +54,7 @@ sum = sum + 1
 OUT = sum
 ";
             var empty = new ArrayList();
-            var expected = BigInteger.Parse("222222222222222222223");
+            var expected = BigInteger.Parse("22222222222222222223");
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);
