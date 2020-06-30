@@ -486,6 +486,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to call Ready() in extension: .
+        /// </summary>
+        public static string FailedToHandleReadyEvent {
+            get {
+                return ResourceManager.GetString("FailedToHandleReadyEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load {0}\n, Exception: {1}.
         /// </summary>
         public static string FailedToLoad {
