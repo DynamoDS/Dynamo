@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
+using DSCPython.Encoders;
 using Dynamo.Utilities;
 using Python.Runtime;
 
@@ -24,6 +25,10 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        static CPythonEvaluator()
+        {
+            InitializeEncoders();
+        }
 
         /// <summary>
         ///     Executes a Python script with custom variable names. Script may be a string
@@ -102,6 +107,17 @@ namespace DSCPython
         }
 
         /// <summary>
+        /// Registers custom encoders and decoders with the Python.NET runtime
+        /// </summary>
+        private static void InitializeEncoders()
+        {
+            var encoders = new IPyObjectEncoder[] { new BigIntegerEncoder() };
+            var decoders = encoders.Cast<IPyObjectDecoder>().ToArray();
+            Array.ForEach(encoders, e => PyObjectConversions.RegisterEncoder(e));
+            Array.ForEach(decoders, d => PyObjectConversions.RegisterDecoder(d));
+        }
+
+        /// <summary>
         /// Gets the trace back message from the exception, if it is a PythonException.
         /// </summary>
         /// <param name="e">Exception to inspect</param>
@@ -177,37 +193,43 @@ namespace DSCPython
                         {
                             if (PyList.IsListType(pyObj))
                             {
-                                var pyList = new PyList(pyObj);
-                                var list = new List<object>();
-                                foreach (PyObject item in pyList)
+                                using (var pyList = new PyList(pyObj))
                                 {
-                                    list.Add(outputMarshaler.Marshal(item));
+                                    var list = new List<object>();
+                                    foreach (PyObject item in pyList)
+                                    {
+                                        list.Add(outputMarshaler.Marshal(item));
+                                    }
+                                    return list;
                                 }
-                                return list;
                             }
                             else if (PyDict.IsDictType(pyObj))
                             {
-                                var pyDict = new PyDict(pyObj);
-                                var dict = new Dictionary<object, object>();
-                                foreach (PyObject item in pyDict.Items())
+                                using (var pyDict = new PyDict(pyObj))
                                 {
-                                    dict.Add(
-                                        outputMarshaler.Marshal(item.GetItem(0)),
-                                        outputMarshaler.Marshal(item.GetItem(1))
-                                    );
+                                    var dict = new Dictionary<object, object>();
+                                    foreach (PyObject item in pyDict.Items())
+                                    {
+                                        dict.Add(
+                                            outputMarshaler.Marshal(item.GetItem(0)),
+                                            outputMarshaler.Marshal(item.GetItem(1))
+                                        );
+                                    }
+                                    return dict;
                                 }
-                                return dict;
                             }
                             else if (PyLong.IsLongType(pyObj))
                             {
-                                var pyLong = PyLong.AsLong(pyObj);
-                                try
+                                using (var pyLong = PyLong.AsLong(pyObj))
                                 {
-                                    return pyLong.ToInt64();
-                                }
-                                catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
-                                {
-                                    return pyLong.ToBigInteger();
+                                    try
+                                    {
+                                        return pyLong.ToInt64();
+                                    }
+                                    catch (PythonException exc) when (exc.Message.StartsWith("OverflowError"))
+                                    {
+                                        return pyLong.ToBigInteger();
+                                    }
                                 }
                             }
                             else
