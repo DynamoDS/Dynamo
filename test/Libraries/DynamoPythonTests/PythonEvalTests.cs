@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 
@@ -129,6 +130,42 @@ namespace DSIronPythonTests
                 var expected = new ArrayList { 4, 5 };
 
                 Assert.AreEqual(expected, output);
+            }
+        }
+
+        [Test]
+        public void CPythonEngineIncludesTraceBack()
+        {
+            var code = @"
+# extra line
+1/0
+# extra line
+";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
+                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
+            }
+
+            code = @"
+# extra line
+print 'hello'
+# extra line
+";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                // Trace back is not available for this call, but we still get a reasonable message back
+                Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
             }
         }
     }

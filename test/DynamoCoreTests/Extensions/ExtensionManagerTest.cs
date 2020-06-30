@@ -21,12 +21,13 @@ namespace Dynamo.Tests.Extensions
             var mockExtension = new Mock<IExtension>();
 
             //Act
-            //The Base class only loads the PackageManager extension then we will try to remove a not existing extension and  will execute the Log section in the Remove method
+            //The Base class only loads the PackageManager extension and IronPython extension
+            //then we will try to remove a not existing extension and  will execute the Log section in the Remove method
             CurrentDynamoModel.ExtensionManager.Remove(mockExtension.Object);
 
             //Assert
-            //Just checking that the PackageManager extension remains in the extensions list.
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 1);
+            //Checking that the PackageManager and IronPython extension remains in the extensions list.
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
         }
 
         /// <summary>
@@ -45,8 +46,9 @@ namespace Dynamo.Tests.Extensions
             CurrentDynamoModel.ExtensionManager.Add(mockExtension.Object);
 
             //Assert
-            //Checking that now we have two extensions PackageManager (added by the base class) and the EmptyExtension
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
+            //Checking that now we have three extensions
+            //PackageManager (added by the base class), IronPython extension and the Mock extension
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 3);
 
             //Act
             //This will execute the exception section from the Remove() method (but the extension is removed) since in this way was setup in the Mocked Extension
@@ -54,7 +56,7 @@ namespace Dynamo.Tests.Extensions
 
             //Assert
             //Checking that the extension was removed from the list even when an exception was raised
-            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 1);
+            Assert.AreEqual(CurrentDynamoModel.ExtensionManager.Extensions.Count(), 2);
         }
     }
 }

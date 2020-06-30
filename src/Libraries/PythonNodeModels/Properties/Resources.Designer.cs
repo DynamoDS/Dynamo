@@ -124,6 +124,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn more about Python.
+        /// </summary>
+        public static string PythonNodeContextMenuLearnMoreButton {
+            get {
+                return ResourceManager.GetString("PythonNodeContextMenuLearnMoreButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
         public static string PythonNodePortDataOutputToolTip {
@@ -214,7 +223,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revert the changes made to current Python node editor..
+        ///   Looks up a localized string similar to Revert the changes made to current Python node editor and close it..
         /// </summary>
         public static string PythonScriptEditorRevertButtonTooltip {
             get {
@@ -232,7 +241,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Run Python node with current code in editor..
+        ///   Looks up a localized string similar to Save current code in Python node editor and run graph with it..
         /// </summary>
         public static string PythonScriptEditorRunButtonTooltip {
             get {
@@ -250,7 +259,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save the changes made to current Python node editor..
+        ///   Looks up a localized string similar to Save the changes made to current Python node editor and close it..
         /// </summary>
         public static string PythonScriptEditorSaveChangesButtonTooltip {
             get {

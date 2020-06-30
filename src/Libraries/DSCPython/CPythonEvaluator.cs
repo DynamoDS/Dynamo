@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -38,55 +39,88 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
-           
-                Python.Included.Installer.SetupPython().Wait();
+            if (code == null)
+            {
+                return null;
+            }
 
-                if (!PythonEngine.IsInitialized)
-                {
-                    PythonEngine.Initialize();
-                    PythonEngine.BeginAllowThreads();
-                }
+            Python.Included.Installer.SetupPython().Wait();
+
+            if (!PythonEngine.IsInitialized)
+            {
+                PythonEngine.Initialize();
+                PythonEngine.BeginAllowThreads();
+            }
                 
-                IntPtr gs = PythonEngine.AcquireLock();
-                try
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
                 {
-                    using (Py.GIL())
+                    using (PyScope scope = Py.CreateScope())
                     {
-                        using (PyScope scope = Py.CreateScope())
+                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                        for (int i = 0; i < amt; i++)
                         {
-                            int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                        }
 
-                            for (int i = 0; i < amt; i++)
+                        try
+                        {
+                            OnEvaluationBegin(scope, code, bindingValues);
+                            scope.Exec(code);
+
+                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
+
+                            return OutputMarshaler.Marshal(result);
+                        }
+                        catch (Exception e)
+                        {
+                            var traceBack = GetTraceBack(e);
+                            if (!string.IsNullOrEmpty(traceBack))
                             {
-                                scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                                // Throw a new error including trace back info added to the message
+                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                             }
-
-                            try
+                            else
                             {
-                                OnEvaluationBegin(scope, code, bindingValues);
-                                scope.Exec(code);
-                                OnEvaluationEnd(false, scope, code, bindingValues);
-
-                                var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                                return OutputMarshaler.Marshal(result);
+                                throw e;
                             }
-                            catch (Exception e)
-                            {
-                                OnEvaluationEnd(false, scope, code, bindingValues);
-                                throw;
-                            }
+                        }
+                        finally
+                        {
+                            OnEvaluationEnd(false, scope, code, bindingValues);
                         }
                     }
                 }
-                catch (PythonException pe)
-                {
-                    throw;
-                }
-                finally
-                {
-                    PythonEngine.ReleaseLock(gs);
-                }
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        /// <summary>
+        /// Gets the trace back message from the exception, if it is a PythonException.
+        /// </summary>
+        /// <param name="e">Exception to inspect</param>
+        /// <returns>Trace back message</returns>
+        private static string GetTraceBack(Exception e)
+        {
+            var pythonExc = e as PythonException;
+            if (!(e is PythonException))
+            {
+                return null;
+            }
+
+            // Return the value of the trace back field (private)
+            var field = typeof(PythonException).GetField("_tb", BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null)
+            {
+                throw new NotSupportedException(Properties.Resources.InternalErrorTraceBackInfo);
+            }
+            return field.GetValue(pythonExc).ToString();
         }
 
         #region Marshalling
@@ -103,7 +137,7 @@ namespace DSCPython
                 {
                     inputMarshaler = new DataMarshaler();
                     inputMarshaler.RegisterMarshaler(
-                        delegate(IList lst)
+                        delegate (IList lst)
                         {
                             var pyList = new PyList();
                             foreach (var item in lst.Cast<object>().Select(inputMarshaler.Marshal))
@@ -164,7 +198,7 @@ namespace DSCPython
                                 }
                                 return dict;
                             }
-                            else if(PyLong.IsLongType(pyObj))
+                            else if (PyLong.IsLongType(pyObj))
                             {
                                 return PyLong.AsLong(pyObj).ToInt64();
                             }
@@ -176,7 +210,6 @@ namespace DSCPython
                 }
                 return outputMarshaler;
             }
-            
         }
 
         private static DataMarshaler inputMarshaler;
@@ -204,9 +237,9 @@ namespace DSCPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to be evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationBegin(  PyScope scope, 
-                                                string code, 
-                                                IList bindingValues )
+        private static void OnEvaluationBegin(PyScope scope,
+                                              string code,
+                                              IList bindingValues)
         {
             if (EvaluationBegin != null)
             {
@@ -221,14 +254,14 @@ namespace DSCPython
         /// <param name="scope">The scope in which the code is executed</param>
         /// <param name="code">The code to that was evaluated</param>
         /// <param name="bindingValues">The binding values - these are already added to the scope when called</param>
-        private static void OnEvaluationEnd( bool isSuccessful,
+        private static void OnEvaluationEnd(bool isSuccessful,
                                             PyScope scope,
                                             string code,
                                             IList bindingValues)
         {
             if (EvaluationEnd != null)
             {
-                EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
+                EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
                     scope, code, bindingValues);
             }
         }

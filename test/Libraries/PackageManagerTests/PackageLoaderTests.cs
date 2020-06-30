@@ -153,6 +153,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(16, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
+            // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
             var libs = CurrentDynamoModel.LibraryServices.ImportedLibraries.ToList();
             Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "AnotherPackage", "bin", "AnotherPackage.dll"))));
             Assert.IsTrue(libs.Any(x => File.Exists(Path.Combine(PackagesDirectory, "Dependent Package", "bin", "DependentPackage.dll"))));
