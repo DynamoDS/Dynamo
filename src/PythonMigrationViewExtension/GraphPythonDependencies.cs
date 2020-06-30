@@ -89,8 +89,7 @@ namespace Dynamo.PythonMigration
                     hasPythonNodesInCustomNodeWorkspace = CustomNodeContainsIronPythonDependency(nestedCustomNodes, customNodeManager);
 
                     // If a custom node contains an IronPython dependency in its sub-tree,
-                    // update its corresponding value in CustomNodePythonDependency.
-                    CustomNodePythonDependency.TryGetValue(customNodeWS.CustomNodeId, out dependency);
+                    // update its corresponding value to 'NestedDependency' in CustomNodePythonDependency.
                     if (hasPythonNodesInCustomNodeWorkspace)
                     {
                         CustomNodePythonDependency[customNodeWS.CustomNodeId] = CNPythonDependency.NestedDependency;
