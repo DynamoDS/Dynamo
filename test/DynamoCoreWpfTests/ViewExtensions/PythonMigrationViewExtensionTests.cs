@@ -297,7 +297,7 @@ namespace DynamoCoreWpfTests
             var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
             var customNodeManager = ViewModel.Model.CustomNodeManager;
 
-            var result = GraphPythonDependencies.CustomNodeContainsIronPythonDependency(customNodes, customNodeManager);
+            var result = GraphPythonDependencies.CustomNodesContainIronPythonDependency(customNodes, customNodeManager);
 
             Assert.IsTrue(result);
             DispatcherUtil.DoEvents();
