@@ -4,6 +4,7 @@
     DefaultTargets="Build">
 <PropertyGroup>
     <Solution>Dynamo.All.sln</Solution>
+    <NuGetPath>$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe</NuGetPath>
  </PropertyGroup>
 	
 <ItemGroup>
@@ -17,8 +18,8 @@
 </Target>
 
 <Target Name="RestorePackages">
-  <Exec Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe" />
-  <Exec Command="$(MSBuildProjectDirectory)\..\tools\Nuget\NuGet.exe restore $(Solution)"/>
+  <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
+  <Exec Command="$(NuGetPath) restore $(Solution)"/>
 </Target>
 
 </Project>
