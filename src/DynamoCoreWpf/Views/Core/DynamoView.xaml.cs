@@ -17,7 +17,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
-using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
@@ -735,7 +734,7 @@ namespace Dynamo.Controls
             dynamoViewModel.BeginCommandPlayback(this);
 
             sharedViewExtensionLoadedParams = new ViewLoadedParams(this, dynamoViewModel);
-            this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams as ViewLoadedParams, viewExtensionManager.ViewExtensions);
+            this.DynamoLoadedViewExtensionHandler(sharedViewExtensionLoadedParams, viewExtensionManager.ViewExtensions);
 
             BackgroundPreview = new Watch3DView { Name = BackgroundPreviewName };
             background_grid.Children.Add(BackgroundPreview);

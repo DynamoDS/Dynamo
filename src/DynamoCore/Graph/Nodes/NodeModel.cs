@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -372,6 +373,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 inPorts = value;
@@ -386,6 +388,7 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
+            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
             set
             {
                 outPorts = value;
@@ -2344,15 +2347,6 @@ namespace Dynamo.Graph.Nodes
         ///
         internal void RequestValueUpdate(EngineController engine)
         {
-            // A NodeModel should have its cachedMirrorData reset when it is
-            // requested to update its value. When the QueryMirrorDataAsyncTask
-            // returns, it will update cachedMirrorData with the latest value.
-            //
-            lock (cachedValueMutex)
-            {
-                cachedValue = null;
-            }
-
             // Do not have an identifier for preview right now. For an example,
             // this can be happening at the beginning of a code block node creation.
             var variableName = AstIdentifierForPreview.Value;
@@ -2360,10 +2354,7 @@ namespace Dynamo.Graph.Nodes
                 return;
 
             var runtimeMirror = engine.GetMirror(variableName);
-            if (runtimeMirror != null)
-            {
-                CachedValue = runtimeMirror.GetData();
-            }
+            CachedValue = runtimeMirror?.GetData();
         }
 
         /// <summary>

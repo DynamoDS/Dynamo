@@ -134,7 +134,7 @@
     <comment>Description for Python Script</comment>
   </data>
   <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
-    <value>Save Changes</value>
+    <value>Save</value>
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
     <value>Run</value>
@@ -174,5 +174,26 @@
   </data>
   <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
     <value>IronPython2</value>
+  </data>
+  <data name="PythonScriptEditorMoreInfoButton" xml:space="preserve">
+    <value>Learn More</value>
+  </data>
+  <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
+    <value>Learn about Python3 updates.</value>
+  </data>
+  <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
+    <value>Revert the changes made to current Python node editor and close it.</value>
+  </data>
+  <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
+    <value>Save current code in Python node editor and run graph with it.</value>
+  </data>
+  <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
+    <value>Save the changes made to current Python node editor and close it.</value>
+  </data>
+  <data name="PythonMigrationWarningUriString" xml:space="preserve">
+    <value>PythonNodeModels;PythonMigrationWarning.html</value>
+  </data>
+  <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
+    <value>Learn more about Python</value>
   </data>
 </root>

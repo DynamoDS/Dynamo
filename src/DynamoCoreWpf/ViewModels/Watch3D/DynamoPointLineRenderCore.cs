@@ -6,7 +6,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 {
     internal class DynamoPointLineRenderCore : PointLineRenderCore
     {
-        private DynamoRenderCoreDataStore dataCore;
+        private readonly DynamoRenderCoreDataStore dataCore;
         public DynamoPointLineRenderCore()
         {
             dataCore = new DynamoRenderCoreDataStore(SetAffectsRender<bool>);
@@ -20,11 +20,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 if (geo is DynamoPointGeometryModel3D)
                 {
-                    ((DynamoPointGeometryModel3D) geo).SetState(dataCore.GenerateEnumFromState());
+                    (geo as DynamoPointGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
                 }
                 else
                 {
-                    ((DynamoLineGeometryModel3D) geo).SetState(dataCore.GenerateEnumFromState());
+                    (geo as DynamoLineGeometryModel3D).SetState(dataCore.GenerateEnumFromState());
                 }
             }
 

@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows;
-using HelixToolkit.Wpf.SharpDX;
-using HelixToolkit.Wpf.SharpDX.Core;
-using HelixToolkit.Wpf.SharpDX.Model;
-using HelixToolkit.Wpf.SharpDX.Render;
-using HelixToolkit.Wpf.SharpDX.Shaders;
-using SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -46,7 +39,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     internal class DynamoRenderCoreDataStore {
     
         public delegate bool FuncRef<T>(ref T item, T val);
-        FuncRef<bool> updateAction;
+        readonly FuncRef<bool> updateAction;
         public DynamoRenderCoreDataStore(FuncRef<bool> onUpdateDataAction)
         {
             updateAction = onUpdateDataAction;
