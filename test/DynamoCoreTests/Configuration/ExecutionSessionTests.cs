@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Dynamo.Events;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Dynamo.Tests.Configuration
 {
