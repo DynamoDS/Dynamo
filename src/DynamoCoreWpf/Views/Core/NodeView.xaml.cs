@@ -376,6 +376,15 @@ namespace Dynamo.Controls
         {
             nodeWasClicked = true;
             BringToFront();
+            if (e.ClickCount == 2)
+            {
+                Debug.WriteLine("Name double clicked!");
+                if (ViewModel != null && ViewModel.RenameCommand.CanExecute(null))
+                {
+                    ViewModel.RenameCommand.Execute(null);
+                }
+                e.Handled = true;
+            }
         }
 
         /// <summary>
