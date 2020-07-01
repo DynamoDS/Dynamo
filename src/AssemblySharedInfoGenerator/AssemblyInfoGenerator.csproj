@@ -62,7 +62,7 @@
   <!--Checking if the Text Template transform is installed with VS IDE so it is only for Dev machines-->  
   <Import Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets')" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />
   <!--Checking if the Text Template transform is installed from ADSK artifactory for build hosts-->
-  <Import Condition="Exists('..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets')" Project="..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets" />
+  <Import Condition="Exists('..\..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets')" Project="..\..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets" />
   <PropertyGroup>
     <TransformOnBuild>true</TransformOnBuild>
   </PropertyGroup>
