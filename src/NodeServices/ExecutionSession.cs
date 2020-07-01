@@ -69,5 +69,11 @@ namespace Dynamo.Session
         /// The duration of an execution covered by an <see cref="IExecutionSession"/>
         /// </summary>
         public static readonly string LastExecutionDuration = "LastExecutionDuration";
+
+        /// <summary>
+        /// The current collection of packagepaths that Dynamo is loading packages from.
+        /// The Return value is IEnumerable
+        /// </summary>
+        public static readonly string PackagePaths = nameof(PackagePaths);
     }
 }
