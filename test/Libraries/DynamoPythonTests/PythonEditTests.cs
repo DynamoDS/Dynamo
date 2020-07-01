@@ -489,5 +489,30 @@ namespace Dynamo.Tests
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
         }
+
+        [Test]
+
+        public void Python_CanReferenceDynamoServicesExecutionSession()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python_refDynamoServices.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "296e339254e845b695caa1a116500be0";
+
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
+            var pynode = nodeModel as PythonNode;
+            var count = 0;
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
+
+                AssertPreviewCount(guid, 2);
+            }
+        }
     }
 }
