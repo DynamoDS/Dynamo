@@ -1917,6 +1917,7 @@ namespace Dynamo.Graph.Nodes
         ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
         /// </summary>
         /// <returns>S-Expression</returns>
+        [Obsolete("PrintExpression is deprecated and will be removed, please refer to the Node2Code functionality instead for conversion to DesignScript code.")]
         public virtual string PrintExpression()
         {
             string nick = Name.Replace(' ', '_');
