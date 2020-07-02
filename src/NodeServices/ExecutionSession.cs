@@ -35,7 +35,7 @@ namespace Dynamo.Session
         /// <returns>True if the file is found</returns>
         bool ResolveFilePath(ref string filepath);
     }
-
+    //TODO(DYN-2879) make this class static for Dynamo 3.
     /// <summary>
     /// List of possible session parameter keys to obtain the session parameters.
     /// </summary>
