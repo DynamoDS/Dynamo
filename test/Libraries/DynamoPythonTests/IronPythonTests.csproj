@@ -119,10 +119,6 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
-      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
-      <Name>DynamoShapeManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\DynamoCoreTests\DynamoCoreTests.csproj">
       <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
       <Name>DynamoCoreTests</Name>
@@ -140,10 +136,6 @@
     <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TestServices\TestServices.csproj">
-      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
-      <Name>TestServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
