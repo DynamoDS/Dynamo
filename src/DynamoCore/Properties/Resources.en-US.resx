@@ -715,4 +715,7 @@ Restart Dynamo to complete the uninstall.</value>
   <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
     <value>{0} is missing some XML documentation tags.</value>
   </data>
+  <data name="FailedToHandleReadyEvent" xml:space="preserve">
+    <value>Failed to call Ready() in extension: </value>
+  </data>
 </root>
