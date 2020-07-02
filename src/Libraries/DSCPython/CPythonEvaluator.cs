@@ -203,7 +203,7 @@ namespace DSCPython
                                     return list;
                                 }
                             }
-                            else if (PyDict.IsDictType(pyObj))
+                            if (PyDict.IsDictType(pyObj))
                             {
                                 using (var pyDict = new PyDict(pyObj))
                                 {
@@ -218,7 +218,7 @@ namespace DSCPython
                                     return dict;
                                 }
                             }
-                            else if (PyLong.IsLongType(pyObj))
+                            if (PyLong.IsLongType(pyObj))
                             {
                                 using (var pyLong = PyLong.AsLong(pyObj))
                                 {
@@ -232,10 +232,8 @@ namespace DSCPython
                                     }
                                 }
                             }
-                            else
-                            {
-                                return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
-                            }
+
+                            return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
                         });
                 }
                 return outputMarshaler;
