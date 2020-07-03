@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -17,7 +18,6 @@ namespace Dynamo.Tests
     public class AnnotationModelTests : DynamoModelTestBase
     {
         private AnnotationModel annotationModel;
-        private NodeModel nodeModel;
 
         [SetUp]
         public void Init()
@@ -83,5 +83,19 @@ namespace Dynamo.Tests
 
             Assert.AreEqual(expectedCase3, resultCase3);
         }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void AddToSelectedModels_NotInAnnotationArea_ShouldNotAddTheNodeToTheAnnotation()
+        {
+            NodeModel nodeModel;
+            CurrentDynamoModel.NodeFactory.CreateNodeFromTypeName("CoreNodeModels.Input.DoubleInput", out nodeModel);
+
+            annotationModel.AddToSelectedModels(nodeModel, true);
+
+            Assert.IsFalse(annotationModel.Nodes.Contains(nodeModel));
+        }
+
     }
 }
