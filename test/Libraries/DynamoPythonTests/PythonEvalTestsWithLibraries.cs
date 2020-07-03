@@ -92,7 +92,7 @@ from array import array
 # native = array('l', [1,2])
 # native = List.AddItemToEnd(3, native) 
 
-# .NET array => Python list - Works in both engines
+# .NET array => Python list
 a = DummyCollection.MakeArray(1,2)
 a[0] = a[1] + 1
 b = len(a)
@@ -112,8 +112,7 @@ OUT = a
         }
 
         [Test]
-        [Category("Failure")]
-        public void TestTupleEncoding()
+        public void TestTupleDecoding()
         {
             string code = @"
 import sys
@@ -124,9 +123,9 @@ from FFITarget import DummyCollection
 from DSCore import List
 
 t = (1,2,3)
-# Python tuple => .NET array - Works in both
+# Python tuple => .NET array
 a = DummyCollection.MakeArray(t)
-# Python tuple => .NET IList - Does not work in CPython
+# Python tuple => .NET IList
 l = List.AddItemToEnd(4, t)
 
 OUT = a, l
@@ -142,8 +141,7 @@ OUT = a, l
         }
 
         [Test]
-        [Category("Failure")]
-        public void TestRangeEncoding()
+        public void TestRangeDecodingCPython()
         {
             string code = @"
 import sys
@@ -156,19 +154,17 @@ from DSCore import List
 r = range(0, 10, 2)
 # Python range => .NET array - Works in both
 a = DummyCollection.MakeArray(r)
-# Python range => .NET IList - Does not work in CPython
-l = List.AddItemToEnd(10, r)
+# Python range => .NET IList - Does not work in IronPython
+l = List.AddItemToEnd(10, range(0, 10, 2))
 
 OUT = a, l
 ";
             var empty = new ArrayList();
             var expected = new ArrayList { new ArrayList { 0, 2, 4, 6, 8 }, new ArrayList { 0, 2, 4, 6, 8, 10 } };
-            foreach (var pythonEvaluator in Evaluators)
-            {
-                var result = pythonEvaluator(code, empty, empty);
-                Assert.IsTrue(result is IEnumerable);
-                CollectionAssert.AreEqual(expected, result as IEnumerable);
-            }
+            PythonEvaluatorDelegate pythonEvaluator = DSCPython.CPythonEvaluator.EvaluatePythonScript;
+            var result = pythonEvaluator(code, empty, empty);
+            Assert.IsTrue(result is IEnumerable);
+            CollectionAssert.AreEqual(expected, result as IEnumerable);
         }
 
         [Test]

@@ -8,7 +8,7 @@ namespace DSCPython.Encoders
 {
     internal class ListEncoder : IPyObjectEncoder, IPyObjectDecoder
     {
-        private static readonly Type[] supportedTypes = new Type[]
+        private static readonly Type[] decodableTypes = new Type[]
         {
             typeof(IList), typeof(ArrayList),
             typeof(IList<>), typeof(List<>)
@@ -20,7 +20,7 @@ namespace DSCPython.Encoders
             {
                 targetType = targetType.GetGenericTypeDefinition();
             }
-            return supportedTypes.IndexOf(targetType) >= 0;
+            return decodableTypes.IndexOf(targetType) >= 0;
         }
 
         public bool CanEncode(Type type)
