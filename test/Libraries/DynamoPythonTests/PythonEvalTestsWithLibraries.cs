@@ -21,7 +21,7 @@ namespace DynamoPythonTests
         };
 
         [Test]
-        public void TestBigIntegerEncoding()
+        public void TestBigIntegerEncodingDecoding()
         {
             string code = @"
 import sys
@@ -46,7 +46,7 @@ OUT = sum
         }
 
         [Test]
-        public void TestListEncoding()
+        public void TestListDecoding()
         {
             string code = @"
 import sys
@@ -55,14 +55,19 @@ clr.AddReference('DSCoreNodes')
 from DSCore import List
 
 l = ['a']
-# Python list => .NET IList - Does not work in CPython
-l = List.AddItemToEnd('b',l)
-l.Add('c')
+# Python list => .NET IList
+untypedList = List.AddItemToEnd('b', l)
+untypedList.Add('c')
 
-OUT = l
+l2 = ['a','b']
+# Python list => .NET IList<>
+typedList = List.SetDifference(l2, l)
+typedList.Add('b')
+
+OUT = untypedList, typedList
 ";
             var empty = new ArrayList();
-            var expected = new ArrayList { "a", "b", "c" };
+            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" } } ;
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);

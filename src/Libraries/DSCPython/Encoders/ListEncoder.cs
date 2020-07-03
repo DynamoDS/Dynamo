@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Dynamo.Utilities;
 using Python.Runtime;
 
@@ -17,12 +16,16 @@ namespace DSCPython.Encoders
 
         public bool CanDecode(PyObject objectType, Type targetType)
         {
+            if (targetType.IsGenericType)
+            {
+                targetType = targetType.GetGenericTypeDefinition();
+            }
             return supportedTypes.IndexOf(targetType) >= 0;
         }
 
         public bool CanEncode(Type type)
         {
-            return false;
+            return typeof(IList).IsAssignableFrom(type);
         }
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
@@ -49,7 +52,9 @@ namespace DSCPython.Encoders
 
         public PyObject TryEncode(object value)
         {
-            throw new NotImplementedException();
+            // This is a no-op to prevent Python.NET from encoding generic lists
+            // https://github.com/pythonnet/pythonnet/pull/963#issuecomment-642938541
+            return PyObject.FromManagedObject(value);
         }
     }
 }
