@@ -46,7 +46,6 @@ OUT = sum
         }
 
         [Test]
-        [Category("Failure")]
         public void TestListEncoding()
         {
             string code = @"
