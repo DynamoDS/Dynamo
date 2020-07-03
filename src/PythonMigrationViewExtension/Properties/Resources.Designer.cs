@@ -61,6 +61,24 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept the current code changes..
+        /// </summary>
+        public static string AcceptButtonTooltip {
+            get {
+                return ResourceManager.GetString("AcceptButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change between Side-by-Side and Inline view..
+        /// </summary>
+        public static string DiffButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiffButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
         ///There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default..
         /// </summary>
@@ -103,6 +121,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string IronPythonNotificationShortMessage {
             get {
                 return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reject the current code changes..
+        /// </summary>
+        public static string RejectButtonTooltip {
+            get {
+                return ResourceManager.GetString("RejectButtonTooltip", resourceCulture);
             }
         }
     }

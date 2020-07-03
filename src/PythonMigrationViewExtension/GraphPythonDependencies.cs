@@ -1,52 +1,80 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
 
 namespace Dynamo.PythonMigration
 {
-    public class GraphPythonDependencies
+    internal class GraphPythonDependencies
     {
-        private ViewLoadedParams ViewLoaded { get; set; }
+        private readonly List<PythonNodeBase> graphPythonNodes;
 
-        internal GraphPythonDependencies(ViewLoadedParams viewLoadedParams)
+        internal GraphPythonDependencies(IWorkspaceModel workspace)
         {
-            this.ViewLoaded = viewLoadedParams;
+            if (workspace is null)
+                throw new ArgumentNullException(nameof(workspace));
+
+            graphPythonNodes = workspace.Nodes
+                .Where(n => n.GetType().IsSubclassOf(typeof(PythonNodeBase)))
+                .Select(n => n as PythonNodeBase)
+                .ToList();
+        }
+
+        internal bool ContainsPythonDependencies()
+        {
+            return graphPythonNodes.Any();
+        }
+
+        internal IEnumerable<PythonNodeBase> GetPythonNodes()
+        {
+            return graphPythonNodes.ToList();
         }
 
         internal bool ContainsIronPythonDependencies()
         {
-            var workspace = ViewLoaded.CurrentWorkspaceModel;
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
-
-            return workspace.Nodes.Any(n => IsIronPythonNode(n));
+            return graphPythonNodes.Any(n => IsIronPythonNode(n));
         }
 
         internal bool ContainsCPythonDependencies()
         {
-            var workspace = ViewLoaded.CurrentWorkspaceModel;
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
-
-            return workspace.Nodes.Any(n => IsCPythonNode(n));
+            return graphPythonNodes.Any(n => IsCPythonNode(n));
         }
 
-        internal static bool IsIronPythonNode(NodeModel obj)
+        internal bool IsIronPythonNode(NodeModel obj)
         {
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
+
+            if (!graphPythonNodes.Contains(pythonNode))
+                graphPythonNodes.Add(pythonNode);
 
             return pythonNode.Engine == PythonEngineVersion.IronPython2;
         }
 
-        internal static bool IsCPythonNode(NodeModel obj)
+        internal bool IsCPythonNode(NodeModel obj)
         {
             if (!(obj is PythonNodeBase pythonNode))
                 return false;
 
+            if (!graphPythonNodes.Contains(pythonNode))
+                graphPythonNodes.Add(pythonNode);
+
             return pythonNode.Engine == PythonEngineVersion.CPython3;
+        }
+
+        internal void RemovePythonNode(NodeModel obj)
+        {
+            if (!(obj is PythonNodeBase pythonNode))
+                return;
+
+            if (!graphPythonNodes.Contains(pythonNode))
+                return;
+
+            graphPythonNodes.Remove(pythonNode);
         }
     }
 }

@@ -117,6 +117,13 @@ namespace PythonNodeModels
                         AstFactory.BuildExprList(vals)
                     }));
         }
+
+        public event EventHandler MigrationAssistantRequested;
+        public void RequestCodeMigration(EventArgs e)
+        {
+            MigrationAssistantRequested?.Invoke(this, e);
+        }
+
     }
 
     [NodeName("Python Script")]

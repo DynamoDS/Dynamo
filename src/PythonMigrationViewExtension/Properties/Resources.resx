@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptButtonTooltip" xml:space="preserve">
+    <value>Accept the current code changes.</value>
+  </data>
+  <data name="DiffButtonTooltip" xml:space="preserve">
+    <value>Change between Side-by-Side and Inline view.</value>
+  </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
     <value>Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
 There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default.</value>
@@ -132,5 +138,8 @@ There will be a time of transition where both versions of Python node will work 
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
     <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
+  </data>
+  <data name="RejectButtonTooltip" xml:space="preserve">
+    <value>Reject the current code changes.</value>
   </data>
 </root>

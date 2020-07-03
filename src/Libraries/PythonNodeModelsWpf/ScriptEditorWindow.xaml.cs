@@ -167,6 +167,13 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
+        {
+            if (nodeModel == null)
+                throw new NullReferenceException(nameof(nodeModel));
+
+            nodeModel.RequestCodeMigration(e);
+        }
 
         #endregion
 

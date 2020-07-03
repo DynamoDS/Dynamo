@@ -196,4 +196,7 @@
   <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
     <value>Learn more about Python</value>
   </data>
+  <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
+    <value>Migration Assistant to update your Python 2 scripts to Python 3.</value>
+  </data>
 </root>
