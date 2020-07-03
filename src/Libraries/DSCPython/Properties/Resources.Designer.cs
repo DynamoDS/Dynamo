@@ -61,6 +61,15 @@ namespace DSCPython.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output could not be converted to a .NET value.
+        /// </summary>
+        internal static string FailedToUnmarshalOutput {
+            get {
+                return ResourceManager.GetString("FailedToUnmarshalOutput", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Internal error, please report: Trace back information could not be extracted.
         /// </summary>
         internal static string InternalErrorTraceBackInfo {

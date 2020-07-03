@@ -168,5 +168,32 @@ print 'hello'
                 Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
             }
         }
+
+        [Test]
+        public void UnsupportedOutputShouldFailGracefullyInCPython()
+        {
+            var code = @"
+import weakref
+
+class myobj:
+  pass
+
+o = myobj()
+wr = weakref.ref(o)
+
+OUT = wr
+";
+            var empty = new ArrayList();
+
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                Assert.AreEqual("Output could not be converted to a .NET value", exc.Message);
+            }
+        }
     }
 }
