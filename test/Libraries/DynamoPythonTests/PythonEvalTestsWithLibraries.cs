@@ -58,9 +58,7 @@ from DSCore import List
 l = ['a']
 # Python list => .NET IList - Does not work in CPython
 l = List.AddItemToEnd('b',l)
-# .NET IList => Python list - Does not work in IronPython. Couldn't test CPython because of previous bug
-# l.append('c')
-l.Add(c)
+l.Add('c')
 
 OUT = l
 ";
