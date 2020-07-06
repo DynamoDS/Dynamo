@@ -253,6 +253,9 @@ namespace PythonNodeModels
         {        
             var e = new PythonCodeMigrationEventArgs(Script, newCode); 
             Script = newCode;
+            if(Engine  != PythonEngineVersion.CPython3)
+                Engine = PythonEngineVersion.CPython3;
+
             OnCodeMigrated(e);
         }
 
