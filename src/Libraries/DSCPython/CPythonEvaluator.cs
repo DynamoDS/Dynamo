@@ -249,10 +249,8 @@ namespace DSCPython
                                     }
                                 }
                             }
-                            else
-                            {
-                                return outputMarshaler.Marshal(unmarshalled);
-                            }
+
+                            return outputMarshaler.Marshal(unmarshalled);
                         });
                 }
                 return outputMarshaler;
