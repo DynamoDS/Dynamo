@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace FFITarget
 {
@@ -8,6 +9,11 @@ namespace FFITarget
         public static double Sum(IEnumerable<double> values)
         {
             return values.Sum();
+        }
+
+        public static BigInteger Sum(BigInteger bigNumber1, BigInteger bigNumber2)
+        {
+            return bigNumber1 + bigNumber2;
         }
 
         public int a { get; set; }
