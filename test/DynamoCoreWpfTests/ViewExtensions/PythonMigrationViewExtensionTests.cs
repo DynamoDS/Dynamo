@@ -226,7 +226,7 @@ namespace DynamoCoreWpfTests
                 .First() as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
+            Assert.IsTrue(GraphPythonDependencies.ContainsIronPythonDependencies(pythonMigration.LoadedParams));
             DispatcherUtil.DoEvents();
         }
 
