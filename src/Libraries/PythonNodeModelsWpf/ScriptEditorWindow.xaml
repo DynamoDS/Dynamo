@@ -73,13 +73,18 @@
                           Margin="1"
                           Foreground="{StaticResource DynamoStandardLableTextBrush}"
                           Visibility="Collapsed" />
-                <Button Content="Migration Assistant"
-                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}"
+                <Button Style="{DynamicResource ResourceKey=SButtonWithShapeIcon}"
                         Name="MigrationAssistantBtn"
                         Click="OnMigrationAssistantClicked"
                         VerticalAlignment="Bottom"
                         Margin="1"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}" />
+                        ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}">
+                    <Button.Resources>
+                        <Image x:Key="Shape"
+                               Width="40"
+                               Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
+                    </Button.Resources>
+                </Button>
             </StackPanel>
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
