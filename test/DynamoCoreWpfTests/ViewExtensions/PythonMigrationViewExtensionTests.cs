@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Configuration;
-using Dynamo.Interfaces;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Models;
 using Dynamo.PythonMigration;
-using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -228,7 +226,7 @@ namespace DynamoCoreWpfTests
                 .First() as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
+            Assert.IsTrue(GraphPythonDependencies.ContainsIronPythonDependencies(pythonMigration.LoadedParams));
             DispatcherUtil.DoEvents();
         }
 
@@ -264,5 +262,45 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
+        /// <summary>
+        /// This test checks that the IronPython dialog is shown to the user,
+        /// when the workspace has custom nodes that contain a python node in it. 
+        /// </summary>
+        [Test]
+        public void WillDisplayDialogWhenCustomNodeInsideWorkspaceHasIronPythonNode()
+        {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
+
+            // open file
+            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
+            Open(examplePath);
+            DispatcherUtil.DoEvents();
+
+            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
+
+            // Assert that the IronPython dialog is shown. 
+            Assert.IsNotNull(ironPythonDialog);
+            Assert.IsTrue(ironPythonDialog.IsLoaded);
+
+            DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
+        }
+
+        [Test]
+        public void CustomNodeContainsIronPythonDependencyTest()
+        {
+            // open file
+            var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
+            Open(examplePath);
+
+            var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
+            var customNodeManager = ViewModel.Model.CustomNodeManager;
+
+            var result = GraphPythonDependencies.CustomNodesContainIronPythonDependency(customNodes, customNodeManager);
+
+            Assert.IsTrue(result);
+            DispatcherUtil.DoEvents();
+        }
     }
 }

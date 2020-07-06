@@ -1,7 +1,7 @@
-using System.Collections.ObjectModel;
+using System.IO;
 using Dynamo.Graph.Nodes;
+using Dynamo.Selection;
 using NUnit.Framework;
-using ProtoCore.AST;
 using Revit.Elements;
 
 namespace Dynamo.Tests
@@ -48,6 +48,26 @@ namespace Dynamo.Tests
             var dictLink = testNodeModel.DictionaryLink;
 
             Assert.AreEqual("http://dictionary.dynamobim.com/2/", dictLink);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectNeighborsTest()
+        {
+            string listTestFolder  = Path.Combine(TestDirectory, "core");
+            string testFilePath = Path.Combine(listTestFolder, "Angle.dyn");
+            
+            RunModel(testFilePath);
+
+            NodeModel node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("dcd9c6c6-6350-4292-a553-c57a764504b4");
+            
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            node.SelectNeighbors();
+
+            var countAfter = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(2, countAfter);
         }
     }
 }

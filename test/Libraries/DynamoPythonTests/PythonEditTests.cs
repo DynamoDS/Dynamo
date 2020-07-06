@@ -432,9 +432,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
-        // This test is failing for CPython3 Engine. 
-        // The BigIntegers which use more than int64 type, are currently not being marshalled. 
         public void BigInteger_CanBeMarshaledAsInt64()
         {
             // open test graph
