@@ -1,5 +1,3 @@
-﻿using Dynamo.Controls;
-using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PythonMigration.Controls;
@@ -110,7 +108,7 @@ namespace Dynamo.PythonMigration
             var parentWindow = Window.GetWindow(btn) as ScriptEditorWindow;
 
             var node = sender as PythonNode;
-            var viewModel = new PythonMigrationAssistantViewModel(node);
+            var viewModel = new PythonMigrationAssistantViewModel(node, DynamoViewModel);
             var assistantWindow = new VisualDifferenceViewer(viewModel)
             {
                 Owner = parentWindow

@@ -125,6 +125,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Python2.
+        /// </summary>
+        public static string PythonMigrationBackupExtension {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Reject the current code changes..
         /// </summary>
         public static string RejectButtonTooltip {
