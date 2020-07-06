@@ -40,7 +40,7 @@ namespace DSCPython.Encoders
             {
                 if (typeof(T).IsGenericType)
                 {
-                    value = (T)pyList.ToList<T>();
+                    value = pyList.ToList<T>();
                 }
                 else
                 {
