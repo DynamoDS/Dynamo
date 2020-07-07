@@ -182,19 +182,22 @@ from FFITarget import DummyCollection
 
 d = {'one': 1, 'two': 2, 'three': 3}
 
+# Python dict => DS Dictionary
+dsDictionary = Dictionary.SetValueAtKeys(d, ['four'], [4])
+
 # Python dict => .NET IDictionary
 untypedDictionary = DummyCollection.AcceptIDictionary(d)
-untypedDictionary['five'] = 5
+untypedDictionary['four'] = 4
 
 # Python dict => .NET IDictionary<> - Does not work in IronPython
 typedDictionary = DummyCollection.AcceptDictionary(d)
-typedDictionary['five'] = 5
+typedDictionary['four'] = 4
 
 OUT = untypedDictionary, typedDictionary
 ";
             var empty = new ArrayList();
             var expected = new Dictionary<string, int> {
-                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "five", 5 }
+                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "four", 4 }
             };
             var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
             Assert.IsTrue(result is IList);

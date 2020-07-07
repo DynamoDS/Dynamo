@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Utilities;
 using Python.Runtime;
+using DSDictionary = DesignScript.Builtin.Dictionary;
 
 namespace DSCPython.Encoders
 {
@@ -11,7 +13,8 @@ namespace DSCPython.Encoders
         private static readonly Type[] decodableTypes = new Type[]
         {
             typeof(IDictionary<,>), typeof(Dictionary<,>),
-            typeof(IDictionary), typeof(Hashtable)
+            typeof(IDictionary), typeof(Hashtable),
+            typeof(DSDictionary)
         };
 
         public bool CanDecode(PyObject objectType, Type targetType)
@@ -34,11 +37,21 @@ namespace DSCPython.Encoders
             {
                 if (typeof(T).IsGenericType)
                 {
-                    value = (T)pyDict.ToDictionary<T>();
+                    value = pyDict.ToDictionary<T>();
                 }
                 else
                 {
-                    value = (T)pyDict.ToDictionary();
+                    var dictionary = pyDict.ToDictionary();
+                    if (typeof(T) == typeof(DSDictionary))
+                    {
+                        value = (T)(object)DSDictionary.ByKeysValues(
+                            new List<string>(dictionary.Keys.Cast<string>()),
+                            new List<object>(dictionary.Values.Cast<object>()));
+                    }
+                    else
+                    {
+                        value = (T)dictionary;
+                    }
                 }
                 return true;
             }
