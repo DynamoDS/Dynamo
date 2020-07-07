@@ -296,14 +296,22 @@ namespace Dynamo.Graph.Annotations
                 // InitialTop is to store the Y value without the Textblock height
                 this.InitialTop = groupModels.Min(y => y.Y);
 
+
                 var region = new Rect2D
                 {
                     X = regionX,
                     Y = regionY,
                     Width = xDistance + ExtendSize,
-                    Height = yDistance + ExtendSize + ExtendYHeight
+                    Height = yDistance + ExtendSize
                 };
-             
+
+                //gets the elements that reaches the lowest point inside de annotation 
+                var lowestElement = groupModels.Aggregate((element1, element2) => (element1.Y + element1.Height) > (element2.Y + element2.Height) ? element1 : element2);
+
+                //If the last model is Node, then increase the height so that 
+                //node border does not overlap with the group
+                if (lowestElement is NodeModel) region.Height += ExtendYHeight;
+
                 this.X = region.X;              
                 this.Y = region.Y;
                 this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
