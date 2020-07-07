@@ -10,6 +10,12 @@ using Python.Runtime;
 
 namespace DSCPython
 {
+    //TODO fix
+    public class DynamoPythonHandle
+    {
+        public Guid pythonObjectid;
+    }
+
     [SupressImportIntoVM]
     internal enum EvaluationState { Begin, Success, Failed }
 
@@ -25,6 +31,9 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        //TODO a hack.
+        static string currentCode;
+        static PyScope globalScope;
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -55,6 +64,7 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
+                
             }
                 
             IntPtr gs = PythonEngine.AcquireLock();
@@ -62,6 +72,10 @@ namespace DSCPython
             {
                 using (Py.GIL())
                 {
+                    if (globalScope == null)
+                    {
+                        globalScope = Py.CreateScope("global");
+                    }
                     using (PyScope scope = Py.CreateScope())
                     {
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
@@ -75,7 +89,7 @@ namespace DSCPython
                         {
                             OnEvaluationBegin(scope, code, bindingValues);
                             scope.Exec(code);
-
+                            currentCode = code;
                             var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
                             return OutputMarshaler.Marshal(result);
@@ -172,6 +186,13 @@ namespace DSCPython
                             }
                             return pyDict;
                         });
+
+                    inputMarshaler.RegisterMarshaler(
+                       delegate (DynamoPythonHandle handle)
+                       {
+                           var scope = PyScopeManager.Global.Get("global");
+                           return scope.Get(handle.pythonObjectid.ToString());
+                       });
                 }
                 return inputMarshaler;
             }
@@ -240,6 +261,18 @@ namespace DSCPython
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
+                                        //create a module for the pickled code to reference.
+                                        //var mod = PythonEngine.ModuleFromString("global", currentCode);
+                                        var globalScope = PyScopeManager.Global.Get("global");
+                                        //try moving object to global scope
+                                        var guid = Guid.NewGuid();
+                                        globalScope.Set(guid.ToString(),pyObj);
+                                        return new DynamoPythonHandle() { pythonObjectid = guid };
+                                        //invoke pickle
+                                        //var pickle = Py.Import("pickle");
+                                        //var bytes = pickle.InvokeMethod("dumps", new PyObject[] { pyObj });
+                                        //var handle = new DynamoPythonHandle() { pythonPickele = outputMarshaler.Marshal(bytes) as byte[] };
+
                                         // Object can't be unmarshalled. Prevent a stack overflow.
                                         throw new InvalidOperationException(Properties.Resources.FailedToUnmarshalOutput);
                                     }
