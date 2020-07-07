@@ -47,19 +47,28 @@ namespace PythonNodeModels
         private PythonEvaluatorsHelper()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
-            var IronPythonAssem = assems.First(x => x.FullName.Contains("DSIronPython"));
-            var CPythonAssem = assems.First(x => x.FullName.Contains("DSCPython"));
-            // Currently we are validating evaluation method exists but to force dynamic loading we may want to force interface on evaluators
-            if (IronPythonAssem != null &&
-                IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
+            // Currently we are using try-catch to validate loaded assembly and evaluation method exist
+            // but we can optimize by checking all loaded types against evaluators interface later
+            try
             {
-                IsIronPythonEnabled = true;
+                var IronPythonAssem = assems.First(x => x.FullName.Contains("DSIronPython"));
+                if (IronPythonAssem != null &&
+                    IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
+                {
+                    IsIronPythonEnabled = true;
+                }
             }
-            if (CPythonAssem != null &&
-                CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
+            catch{ }
+            try
             {
-                IsCPythonEnabled = true;
+                var CPythonAssem = assems.First(x => x.FullName.Contains("DSCPython"));
+                if (CPythonAssem != null &&
+                    CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
+                {
+                    IsCPythonEnabled = true;
+                }
             }
+            catch { }
         }
 
         /// <summary>
