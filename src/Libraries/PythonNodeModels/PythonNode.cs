@@ -77,7 +77,7 @@ namespace PythonNodeModels
             var evaluatorClass = string.Empty;
             var evaluationMethod = string.Empty;
 
-            PythonEvaluatorsHelper.Instance.GetEvaluatorInfo(Engine, out evaluatorClass, out evaluationMethod);
+            PythonEvaluationHelper.Instance.GetEvaluatorInfo(Engine, out evaluatorClass, out evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
