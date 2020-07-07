@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Threading;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PythonMigration.Properties;
@@ -19,6 +22,7 @@ namespace Dynamo.PythonMigration
         internal DynamoViewModel DynamoViewModel { get; set; }
         internal WorkspaceModel CurrentWorkspace { get; set; }
         internal GraphPythonDependencies PythonDependencies { get; set; }
+        internal CustomNodeManager CustomNodeManager { get; set; }
         internal static Uri Python3HelpLink = new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative);
         private Dispatcher Dispatcher { get; set; }
         private DynamoView DynamoView { get; set; }
@@ -58,6 +62,7 @@ namespace Dynamo.PythonMigration
             PythonDependencies = new GraphPythonDependencies(LoadedParams);
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
+            CustomNodeManager = (CustomNodeManager) LoadedParams.StartupParams.CustomNodeManager;
             Dispatcher = Dispatcher.CurrentDispatcher;
             DynamoView = LoadedParams.DynamoWindow as DynamoView;
              
@@ -70,8 +75,11 @@ namespace Dynamo.PythonMigration
             if (DialogTracker.ContainsKey(CurrentWorkspace.Guid))
                 return;
 
-            var dialog = new IronPythonInfoDialog(this);
-            dialog.Owner = LoadedParams.DynamoWindow;
+            var dialog = new IronPythonInfoDialog(this)
+            {
+                Owner = LoadedParams.DynamoWindow
+            };
+
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 dialog.Show();
@@ -131,16 +139,36 @@ namespace Dynamo.PythonMigration
             }
         }
 
+        private bool IsIronPythonDialogOpen()
+        {
+            var view = LoadedParams.DynamoWindow.OwnedWindows
+               .Cast<Window>()
+               .Where(x => x.GetType() == typeof(IronPythonInfoDialog))
+               .Select(x => x as IronPythonInfoDialog);
+
+            if (view.Any())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void OnCurrentWorkspaceChanged(IWorkspaceModel workspace)
         {
-            NotificationTracker.Remove(CurrentWorkspace.Guid);
-            CurrentWorkspace = workspace as WorkspaceModel;
-            if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
-                && !Models.DynamoModel.IsTestMode
-                && PythonDependencies.ContainsIronPythonDependencies())
+            if (!IsIronPythonDialogOpen())
             {
-                LogIronPythonNotification();
-                DisplayIronPythonDialog();
+                NotificationTracker.Remove(CurrentWorkspace.Guid);
+                GraphPythonDependencies.CustomNodePythonDependency.Clear();
+                CurrentWorkspace = workspace as WorkspaceModel;
+
+                if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
+                    && !Models.DynamoModel.IsTestMode
+                    && PythonDependencies.ContainsIronPythonDependency())
+                {
+                    LogIronPythonNotification();
+                    DisplayIronPythonDialog();
+                }
             }
         }
         #endregion
