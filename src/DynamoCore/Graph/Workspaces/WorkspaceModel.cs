@@ -1499,6 +1499,7 @@ namespace Dynamo.Graph.Workspaces
             return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
         }
 
+        [Obsolete("Workspaces are no longer serialized using XML")]
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
@@ -1520,6 +1521,7 @@ namespace Dynamo.Graph.Workspaces
             root.AppendChild(mapElement);
         }
 
+        [Obsolete("Workspaces are no longer serialized using XML")]
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try

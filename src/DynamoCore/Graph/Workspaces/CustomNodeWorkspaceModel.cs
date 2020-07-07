@@ -316,6 +316,7 @@ namespace Dynamo.Graph.Workspaces
             base.Save(newPath, isBackup, engine);
         }
 
+        [Obsolete("Workspaces are no longer serialized using XML")]
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
             if (!base.PopulateXmlDocument(document))

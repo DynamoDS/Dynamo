@@ -460,6 +460,7 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
+        [Obsolete("Workspaces are no longer serialized using XML")]
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
             if (!base.PopulateXmlDocument(document))
