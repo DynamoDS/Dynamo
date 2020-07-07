@@ -22,7 +22,7 @@ namespace PythonNodeModels
         /// <summary>
         /// Use Lazy<![CDATA[PythonEvaluationHelper]]> to make sure the Singleton class is only initialized once
         /// </summary>
-        private static readonly Lazy<PythonEvaluationHelper>
+        internal static readonly Lazy<PythonEvaluationHelper>
             lazy =
             new Lazy<PythonEvaluationHelper>
             (() => new PythonEvaluationHelper());
@@ -94,7 +94,7 @@ namespace PythonNodeModels
             }
 
             // Throw exception here will be reflected as Python node error
-            throw new InvalidOperationException("Unknown Python engine " + engine);
+            throw new InvalidOperationException(Properties.Resources.PythonNodeErrorUnloadedEngineMsg + engine);
         }
     }
 }

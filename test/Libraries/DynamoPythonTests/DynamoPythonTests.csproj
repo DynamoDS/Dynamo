@@ -85,6 +85,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CodeCompletionTests.cs" />
+    <Compile Include="PythonEvalHelperTests.cs" />
     <Compile Include="PythonEvalTestsWithLibraries.cs" />
     <Compile Include="PythonEvalTests.cs" />
     <Compile Include="PythonEditTests.cs" />
