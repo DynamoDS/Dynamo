@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Logging;
 using ICSharpCode.AvalonEdit.CodeCompletion;
@@ -31,15 +32,22 @@ namespace Dynamo.Python
             }
         }
 
-        internal static IExternalCodeCompletionProviderCore FindMatchingCodeCompletionCore 
+        internal static IExternalCodeCompletionProviderCore FindMatchingCodeCompletionCore
             (string versionName, ILogger logger = null)
         {
             try
             {
                 var completionType = typeof(IExternalCodeCompletionProviderCore);
                 var loadedCodeCompletionTypes = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(s => s.GetTypes())
-                    .Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface);
+                    .SelectMany(s => {
+                        try {
+                            return s.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            return new Type[0];
+                        }
+                    }).Where(p => completionType.IsAssignableFrom(p) && !p.IsInterface);
                 //instantiate them - so we can check which is a match using their match method
                 foreach (var type in loadedCodeCompletionTypes)
                 {
