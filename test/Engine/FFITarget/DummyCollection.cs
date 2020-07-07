@@ -148,5 +148,10 @@ namespace FFITarget
         {
             return dictionary;
         }
+
+        public static int[] MakeArray(params int[] values)
+        {
+            return values;
+        }
     }
 }
