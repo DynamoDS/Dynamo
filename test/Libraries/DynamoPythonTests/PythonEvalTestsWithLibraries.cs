@@ -88,10 +88,6 @@ from FFITarget import DummyCollection
 from DSCore import List
 from array import array
 
-# Python array => .NET IList - array is in a builtin library. This does not work in either engine
-# native = array('l', [1,2])
-# native = List.AddItemToEnd(3, native) 
-
 # .NET array => Python list
 a = DummyCollection.MakeArray(1,2)
 a[0] = a[1] + 1
@@ -161,8 +157,7 @@ OUT = a, l
 ";
             var empty = new ArrayList();
             var expected = new ArrayList { new ArrayList { 0, 2, 4, 6, 8 }, new ArrayList { 0, 2, 4, 6, 8, 10 } };
-            PythonEvaluatorDelegate pythonEvaluator = DSCPython.CPythonEvaluator.EvaluatePythonScript;
-            var result = pythonEvaluator(code, empty, empty);
+            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
             Assert.IsTrue(result is IEnumerable);
             CollectionAssert.AreEqual(expected, result as IEnumerable);
         }
