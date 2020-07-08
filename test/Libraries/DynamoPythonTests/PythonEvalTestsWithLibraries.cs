@@ -72,10 +72,15 @@ l4 = []
 # Python list (empty) => .NET IList
 elementCount = List.Count(l4)
 
-OUT = untypedList, typedList, flatennedList, elementCount
+sum = 0
+# Python-wrapped .NET List can be iterated over
+for i in flatennedList:
+  sum = sum + i
+
+OUT = untypedList, typedList, flatennedList, elementCount, sum
 ";
             var empty = new ArrayList();
-            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" }, new ArrayList { 1, 2, 3, 4 }, 0 };
+            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" }, new ArrayList { 1, 2, 3, 4 }, 0, 10 };
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);
