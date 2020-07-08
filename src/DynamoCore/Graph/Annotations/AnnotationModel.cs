@@ -305,8 +305,15 @@ namespace Dynamo.Graph.Annotations
                     Height = yDistance + ExtendSize
                 };
 
+
+
                 //gets the element that reaches the lowest point inside the annotation 
-                var lowestElement = groupModels.Aggregate((element1, element2) => (element1.Y + element1.Height) > (element2.Y + element2.Height) ? element1 : element2);
+                var lowestElement = groupModels.First();
+                foreach (var node in groupModels)
+                {
+                    if (node.Y + node.Height > lowestElement.Y + lowestElement.Height)
+                        lowestElement = node;
+                }
 
                 //If the last model is Node, then increase the height so that 
                 //node border does not overlap with the group
