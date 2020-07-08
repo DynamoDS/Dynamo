@@ -6,7 +6,7 @@ using Python.Runtime;
 
 namespace DSCPython.Encoders
 {
-    internal class ListEncoder : IPyObjectEncoder, IPyObjectDecoder
+    internal class ListEncoderDecoder : IPyObjectEncoder, IPyObjectDecoder
     {
         private static readonly Type[] decodableTypes = new Type[]
         {

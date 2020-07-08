@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Utilities;
 using Python.Runtime;
-using DSDictionary = DesignScript.Builtin.Dictionary;
 
 namespace DSCPython.Encoders
 {
@@ -13,8 +12,7 @@ namespace DSCPython.Encoders
         private static readonly Type[] decodableTypes = new Type[]
         {
             typeof(IDictionary<,>), typeof(Dictionary<,>),
-            typeof(IDictionary), typeof(Hashtable),
-            typeof(DSDictionary)
+            typeof(IDictionary), typeof(Hashtable)
         };
 
         public bool CanDecode(PyObject objectType, Type targetType)
@@ -41,17 +39,7 @@ namespace DSCPython.Encoders
                 }
                 else
                 {
-                    var dictionary = pyDict.ToDictionary();
-                    if (typeof(T) == typeof(DSDictionary))
-                    {
-                        value = (T)(object)DSDictionary.ByKeysValues(
-                            new List<string>(dictionary.Keys.Cast<string>()),
-                            new List<object>(dictionary.Values.Cast<object>()));
-                    }
-                    else
-                    {
-                        value = (T)dictionary;
-                    }
+                    value = (T)pyDict.ToDictionary();
                 }
                 return true;
             }
