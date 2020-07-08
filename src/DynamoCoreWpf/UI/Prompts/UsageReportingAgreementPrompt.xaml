@@ -6,7 +6,7 @@
         xmlns:views="clr-namespace:Dynamo.UI.Views"
         WindowStyle="SingleBorderWindow"
         Width="544"
-        Height="625"
+        Height="auto"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner">
@@ -17,9 +17,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="100"></RowDefinition>
-            <RowDefinition Height="160"></RowDefinition>
-            <RowDefinition Height="160"></RowDefinition>
-            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="320"></RowDefinition>
             <RowDefinition Height="auto"></RowDefinition>
             <RowDefinition Height="60"></RowDefinition>
         </Grid.RowDefinitions>
@@ -35,25 +33,8 @@
                    VerticalAlignment="Top"
                    Name="ConsentFormImageRectangle" />
 
-        <ScrollViewer Background="#363636"
-                      Grid.Row="1"
-                      Grid.Column="0"
-                      Grid.ColumnSpan="2"
-                      HorizontalScrollBarVisibility="Disabled"
-                      Margin="8,8,8,0">
-            <views:RichTextFile x:Name="GoogleAnalyticsContent"
-                                IsReadOnly="True"
-                                IsEnabled="True"
-                                IsDocumentEnabled="True"
-                                FontSize="10"
-                                Foreground="#888888"
-                                Background="Transparent"
-                                OpenLinksInBrowser="True"
-                                BorderThickness="0" />
-        </ScrollViewer>
-
         <ScrollViewer Background="#363636" 
-                      Grid.Row="2"
+                      Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
@@ -69,26 +50,8 @@
                                 BorderThickness="0" />
         </ScrollViewer>
 
-        <CheckBox x:Name="AcceptGoogleAnalyticsCheck"
-                  Grid.Row="3"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsGoogleAnalyticsChecked"
-                  Margin="15,16,15,0"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White"
-                  IsChecked="True">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptGoogleAnalyticsTextBlock"
-                       Text="{x:Static p:Resources.ConsentFormGoogleAnalyticsCheckBoxContent}"/>
-        </CheckBox>
-
         <CheckBox x:Name="AcceptADPAnalyticsCheck"
-                  Grid.Row="4"
+                  Grid.Row="2"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Click="ToggleIsADPAnalyticsChecked"
@@ -104,26 +67,8 @@
                        Name="AcceptADPAnalyticsTextBlock"/>
         </CheckBox>
 
-      <!--The instrumentation checkbox will be hidden and unchecked by default-->
-        <CheckBox x:Name="AcceptUsageReportingCheck"
-                  Grid.Row="4"
-                  Grid.Column="0"
-                  Grid.ColumnSpan="2"
-                  Click="ToggleIsUsageReportingChecked"
-                  Visibility="Hidden"
-                  Margin="35,16,15,14"
-                  VerticalAlignment="Center"
-                  Foreground="#4790cd"
-                  FontSize="13.333"
-                  Background="White">
-            <TextBlock FontWeight="SemiBold"
-                       Foreground="#4790cd"
-                       TextWrapping="Wrap"
-                       Name="AcceptUsageReportingTextBlock"/>
-        </CheckBox>
-
         <!--Learn More Button-->
-        <TextBlock Grid.Row="5"
+        <TextBlock Grid.Row="3"
                    Grid.Column="0"
                    Margin="15,0,15,0"
                    VerticalAlignment="Center"
@@ -136,13 +81,13 @@
         </TextBlock>
         
         <!--Continue Button-->
-        <Button Grid.Row="5"
+        <Button Grid.Row="3"
                 Grid.Column="1"
                 x:Name="okButton"
                 Style="{DynamicResource ResourceKey=STextButton}"
                 IsDefault="True"
                 VerticalAlignment="Bottom"
-                Margin="5"
+                Margin="5,5,5,13"
                 Width="auto"
                 HorizontalAlignment="Right"
                 Content="{x:Static p:Resources.ContinueButton}"

@@ -86,39 +86,17 @@ namespace Dynamo.Services
         /// Analytics is the opt-out tracking system
         /// PII is prohibited from Analytics.
         /// </summary>
+        [Obsolete("No longer used. Will be deleted in 3.0")]
         public bool IsAnalyticsReportingApproved
         {
             get
             {
-                if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
-                    return false;
-
-                if (dynamoViewModel.Model != null)
-                    return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
-
-                return true;
+                return false;
             }
-
             private set
             {
-                dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved = value;
-                RaisePropertyChanged("IsAnalyticsReportingApproved");
-                var path = dynamoViewModel.Model.PathManager.PreferenceFilePath;
-
-                // Call PreferenceSettings to save
-                try
-                {
-                    dynamoViewModel.Model.PreferenceSettings.SaveInternal(path);
-                }
-                catch (Exception args)
-                {
-                    DynamoModel.IsCrashing = true;
-                    dynamoViewModel.Model.OnRequestsCrashPrompt(this, new CrashPromptArgs(
-                        args.Message, Properties.Resources.UsageReportingErrorMessage, path));
-                }
+                // Do nothing
             }
-
-
         }
 
         public bool FirstRun
@@ -181,6 +159,7 @@ namespace Dynamo.Services
             }
         }
 
+        [Obsolete("No longer used. Will be deleted in 3.0")]
         public void ToggleIsAnalyticsReportingApproved(object parameter)
         {
             var ownerWindow = parameter as Window;
@@ -208,9 +187,10 @@ namespace Dynamo.Services
         /// Setting AnalyticsReportingAgreement.
         /// </summary>
         /// <param name="approved"></param>
+        [Obsolete("No longer used. Will be deleted in 3.0")]
         public void SetAnalyticsReportingAgreement(bool approved)
         {
-            IsAnalyticsReportingApproved = approved;
+            // Does nothing
         }
 
         private void ShowUsageReportingPrompt(Window ownerWindow)

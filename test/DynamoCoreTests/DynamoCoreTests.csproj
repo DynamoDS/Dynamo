@@ -109,7 +109,6 @@
     <Compile Include="Logging\DynamoLoggerTest.cs" />
     <Compile Include="Logging\HeartBeatTest.cs" />
     <Compile Include="Logging\LogSourceTests.cs" />
-    <Compile Include="Logging\LogTest.cs" />
     <Compile Include="Logging\DynamoAnalyticsClientTest.cs" />
     <Compile Include="Logging\StabilityTrackingTest.cs" />
     <Compile Include="Migration\MigrationReportTests.cs" />

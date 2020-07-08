@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using Dynamo.Logging;
-using Dynamo.Services;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
 
@@ -29,13 +28,8 @@ namespace Dynamo.UI.Prompts
                     resourceProvider.GetImageSource(Wpf.Interfaces.ResourceNames.ConsentForm.Image));
             }
             viewModel = dynamoViewModel;
-            var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
-
-            if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
-                GoogleAnalyticsContent.File = googleAnalyticsFile;
 
             var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
-
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
                 InstrumentationContent.File = adpAnalyticsFile;
 
@@ -44,8 +38,6 @@ namespace Dynamo.UI.Prompts
                     dynamoViewModel.BrandingResourceProvider.ProductName);
             AcceptADPAnalyticsCheck.Visibility = System.Windows.Visibility.Visible;
             AcceptADPAnalyticsCheck.IsChecked = AnalyticsService.IsADPOptedIn;
-
-            AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
         }
 
         private void ToggleIsADPAnalyticsChecked(object sender, RoutedEventArgs e)
@@ -55,27 +47,10 @@ namespace Dynamo.UI.Prompts
                 AcceptADPAnalyticsCheck.IsChecked.Value);
         }
 
-        private void ToggleIsUsageReportingChecked(object sender, RoutedEventArgs e)
-        {
-            UsageReportingManager.Instance.SetUsageReportingAgreement(
-                AcceptUsageReportingCheck.IsChecked.HasValue &&
-                AcceptUsageReportingCheck.IsChecked.Value);
-            AcceptUsageReportingCheck.IsChecked = UsageReportingManager.Instance.IsUsageReportingApproved;
-        }
-
-        private void ToggleIsGoogleAnalyticsChecked(object sender, RoutedEventArgs e)
-        {
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(
-                AcceptGoogleAnalyticsCheck.IsChecked.HasValue &&
-                AcceptGoogleAnalyticsCheck.IsChecked.Value);
-        }
-
         private void OnContinueClick(object sender, RoutedEventArgs e)
         {
             // Update user agreement
             AnalyticsService.IsADPOptedIn = AcceptADPAnalyticsCheck.IsChecked.Value;
-
-            UsageReportingManager.Instance.SetAnalyticsReportingAgreement(AcceptGoogleAnalyticsCheck.IsChecked.Value);
             Close();
         }
 

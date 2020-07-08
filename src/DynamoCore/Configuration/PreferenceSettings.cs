@@ -66,7 +66,8 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
-        public bool IsAnalyticsReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsAnalyticsReportingApproved { get { return false; } set { } }
 
         /// <summary>
         /// Indicates whether ADP analytics reporting is approved or not.
@@ -336,7 +337,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsAnalyticsReportingApproved = true;
             LibraryWidth = 304;
             ConsoleHeight = 0;
             ShowPreviewBubbles = true;
