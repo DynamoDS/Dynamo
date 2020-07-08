@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
-using Dynamo;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PythonNodeModels;
 
 namespace DynamoPythonTests
 {
-    class PythonEvalHelperTests : DynamoModelTestBase
+    [TestFixture]
+    class PythonEvalHelperTests
     {
-        protected override void GetLibrariesToPreload(List<string> libraries)
-        {
-            libraries.Add("PythonNodeModels.dll");
-        }
-
         [Test]
         public void TestHelperInitialState()
         {
-            Assert.AreEqual( false, PythonEvaluationHelper.lazy.IsValueCreated);
+            Assert.AreEqual(false, PythonEvaluationHelper.lazy.IsValueCreated);
+            Assert.AreEqual(false, PythonEvaluationHelper.IsCPythonEnabled);
+            Assert.AreEqual(false, PythonEvaluationHelper.IsIronPythonEnabled);
         }
 
         [Test]
@@ -30,6 +26,13 @@ namespace DynamoPythonTests
             Assert.AreEqual(true, PythonEvaluationHelper.lazy.IsValueCreated);
             Assert.AreEqual(evaluatorClass, PythonEvaluationHelper.IronPythonEvaluatorClass);
             Assert.AreEqual(evaluationMethod, PythonEvaluationHelper.IronPythonEvaluationMethod);
+
+            PythonEvaluationHelper.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
+            Assert.AreEqual(evaluatorClass, PythonEvaluationHelper.CPythonEvaluatorClass);
+            Assert.AreEqual(evaluationMethod, PythonEvaluationHelper.CPythonEvaluationMethod);
+
+            Assert.AreEqual(true, PythonEvaluationHelper.IsCPythonEnabled);
+            Assert.AreEqual(true, PythonEvaluationHelper.IsIronPythonEnabled);
         }
     }
 }
