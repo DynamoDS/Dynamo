@@ -27,21 +27,21 @@
         </Grid.RowDefinitions>
 
         <Image Name="DialogIcon"
-               Width="96"
-               Height="96"
-               Margin="25"
-               VerticalAlignment="Center"
+               Width="100"
+               Height="35"
+               Margin="15,60,15,0"
+               VerticalAlignment="Top"
                HorizontalAlignment="Center"
                Source="/DynamoCoreWpf;component/UI/Images/python-logo.png">
         </Image>
 
         <StackPanel Grid.Row="0"
                     Grid.Column="1"
-                    Margin="0,25,25,25">
+                    Margin="0,25,15,25">
 
             <TextBlock Name="SummaryText"
                        Text="{x:Static w:Resources.IronPythonDialogSummary}"
-                       FontSize="15"
+                       FontSize="16"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap"
@@ -50,26 +50,26 @@
 
             <TextBlock Name="DescriptionText"
                        Text="{x:Static w:Resources.IronPythonDialogDescription}"
-                       FontSize="12"
+                       FontSize="13"
                        Foreground="#bbbbbb"
                        HorizontalAlignment="Stretch"
                        TextWrapping="Wrap"
                        Margin="0,0,0,10">
             </TextBlock>
-            
+
             <!-- CustomNodes that have IronPython2 Dependency -->
             <Expander x:Name="MainExpander" Header="{x:Static w:Resources.CustomNodesPythonDependencyHeader}" Foreground="#bbbbbb"
                       FontSize="15" Margin="-2,0,0,0" Visibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <StackPanel Height="Auto">
-                    <Expander x:Name="ExpanderForPackagedDependencies" Header="Packaged" Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Hidden">
-                        <ListBox x:Name="PackagedCustomNodesContainingPython" FontSize="12" Background="Black" Height="100"
+                    <Expander x:Name="ExpanderForPackagedDependencies" Header="Packaged" Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
+                        <ListBox x:Name="PackagedCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100"
                                  Margin="25,5,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionMode="Extended">
                             <ListBox.CommandBindings>
                                 <CommandBinding Command="ApplicationCommands.Copy" CanExecute="CanExecuteCtrlCCopyCommand" Executed="ExecuteCtrlCCopyCommand" />
                             </ListBox.CommandBindings>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,1" ToolTip="{x:Static w:Resources.PackagedCustomNodesTooltip}">
+                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.PackagedCustomNodesTooltip}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="100" />
                                             <ColumnDefinition Width="*" />
@@ -81,21 +81,21 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Expander>
-                    <Expander Grid.Row="1" x:Name="ExpanderForLooseDependencies" Header="Loose"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Hidden">
-                        <ListBox x:Name="LooseCustomNodesContainingPython" FontSize="12" Background="Black" Height="100" 
+                    <Expander Grid.Row="1" x:Name="ExpanderForLooseDependencies" Header="Loose"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
+                        <ListBox x:Name="LooseCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100" 
                                  Margin="25,5,0,0" MouseDoubleClick="OnCustomNodeClick" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionMode="Extended">
                             <ListBox.CommandBindings>
                                 <CommandBinding Command="ApplicationCommands.Copy" CanExecute="CanExecuteCtrlCCopyCommand" Executed="ExecuteCtrlCCopyCommand" />
                             </ListBox.CommandBindings>
                             <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,1" ToolTip="{x:Static w:Resources.LooseCustomNodesTooltip}">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Foreground="#bbbbbb" Text="{Binding Name}" />
-                                        </Grid>
-                                    </DataTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.LooseCustomNodesTooltip}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Foreground="#bbbbbb" Text="{Binding Name}" />
+                                    </Grid>
+                                </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Expander>
