@@ -1499,6 +1499,7 @@ namespace Dynamo.Graph.Workspaces
             return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
@@ -1520,6 +1521,7 @@ namespace Dynamo.Graph.Workspaces
             root.AppendChild(mapElement);
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try

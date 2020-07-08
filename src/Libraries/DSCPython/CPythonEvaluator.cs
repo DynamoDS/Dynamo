@@ -111,7 +111,7 @@ namespace DSCPython
         /// </summary>
         private static void InitializeEncoders()
         {
-            var shared = new object[] { new BigIntegerEncoderDecoder() };
+            var shared = new object[] { new BigIntegerEncoderDecoder(), new ListEncoderDecoder() };
             var encoders = shared.Cast<IPyObjectEncoder>().ToArray();
             var decoders = shared.Cast<IPyObjectDecoder>().Concat(new IPyObjectDecoder[]
             {
@@ -237,7 +237,24 @@ namespace DSCPython
                                 }
                             }
 
-                            return outputMarshaler.Marshal(pyObj.AsManagedObject(typeof(object)));
+                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
+                            if (unmarshalled is PyObject)
+                            {
+                                using (unmarshalled as PyObject)
+                                {
+                                    if (unmarshalled.Equals(pyObj))
+                                    {
+                                        // Object can't be unmarshalled. Prevent a stack overflow.
+                                        throw new InvalidOperationException(Properties.Resources.FailedToUnmarshalOutput);
+                                    }
+                                    else
+                                    {
+                                        return outputMarshaler.Marshal(unmarshalled);
+                                    }
+                                }
+                            }
+
+                            return outputMarshaler.Marshal(unmarshalled);
                         });
                 }
                 return outputMarshaler;
