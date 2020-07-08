@@ -64,10 +64,18 @@ l2 = ['a','b']
 typedList = List.SetDifference(l2, l)
 typedList.Add('b')
 
-OUT = untypedList, typedList
+l3 = [[1,2],[3,4]]
+# Python list (nested) => .NET IList<IList<>>
+flatennedList = List.Flatten(l3)
+
+l4 = []
+# Python list (empty) => .NET IList
+elementCount = List.Count(l4)
+
+OUT = untypedList, typedList, flatennedList, elementCount
 ";
             var empty = new ArrayList();
-            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" } } ;
+            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" }, new ArrayList { 1, 2, 3, 4 }, 0 };
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);
