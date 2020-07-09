@@ -295,7 +295,6 @@ namespace DynamoCoreWpfTests
             var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
             Open(examplePath);
 
-            //var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
             var customNodeManager = ViewModel.Model.CustomNodeManager;
 
             var result = GraphPythonDependencies.ContainsIronPythonDependencies(ViewModel.Model.CurrentWorkspace, customNodeManager);
