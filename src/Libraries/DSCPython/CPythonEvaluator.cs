@@ -10,10 +10,45 @@ using Python.Runtime;
 
 namespace DSCPython
 {
-    //TODO fix
+    [IsVisibleInDynamoLibrary(false)]
     public class DynamoPythonHandle
     {
-        public Guid pythonObjectid;
+        /// <summary>
+        /// A unique ID that identifies this python object. It's as a lookup
+        /// symbol within the global scope to find this python object instance.
+        /// </summary>
+        internal IntPtr PythonObjectID { get; set; }
+        /// <summary>
+        /// A string representation of this object.
+        /// </summary>
+        internal string StringRepresentation { get; set; }
+        public DynamoPythonHandle(IntPtr id,string strRep)
+        {
+            PythonObjectID = id;
+            StringRepresentation = strRep;
+        }
+
+        public override string ToString()
+        {
+            if (String.IsNullOrEmpty(StringRepresentation))
+            {
+                return $"CPython Object ID:{PythonObjectID.ToString()}";
+            }
+            else
+            {
+                return StringRepresentation;
+            }
+        }
+        
+        /// <summary>
+        /// When this handle goes out of scope
+        /// we should remove the pythonObject from the globalScope.
+        /// </summary>
+        ~DynamoPythonHandle()
+        {
+            PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
+        }
+
     }
 
     [SupressImportIntoVM]
@@ -31,9 +66,8 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
-        //TODO a hack.
-        static string currentCode;
         static PyScope globalScope;
+        internal static readonly string globalScopeName = "global";
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -74,7 +108,7 @@ namespace DSCPython
                 {
                     if (globalScope == null)
                     {
-                        globalScope = Py.CreateScope("global");
+                        globalScope = Py.CreateScope(globalScopeName);
                     }
                     using (PyScope scope = Py.CreateScope())
                     {
@@ -89,7 +123,6 @@ namespace DSCPython
                         {
                             OnEvaluationBegin(scope, code, bindingValues);
                             scope.Exec(code);
-                            currentCode = code;
                             var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
                             return OutputMarshaler.Marshal(result);
@@ -190,8 +223,8 @@ namespace DSCPython
                     inputMarshaler.RegisterMarshaler(
                        delegate (DynamoPythonHandle handle)
                        {
-                           var scope = PyScopeManager.Global.Get("global");
-                           return scope.Get(handle.pythonObjectid.ToString());
+                           var scope = PyScopeManager.Global.Get(globalScopeName);
+                           return scope.Get(handle.PythonObjectID.ToString());
                        });
                 }
                 return inputMarshaler;
@@ -267,14 +300,8 @@ namespace DSCPython
                                         //try moving object to global scope
                                         var guid = Guid.NewGuid();
                                         globalScope.Set(guid.ToString(),pyObj);
-                                        return new DynamoPythonHandle() { pythonObjectid = guid };
-                                        //invoke pickle
-                                        //var pickle = Py.Import("pickle");
-                                        //var bytes = pickle.InvokeMethod("dumps", new PyObject[] { pyObj });
-                                        //var handle = new DynamoPythonHandle() { pythonPickele = outputMarshaler.Marshal(bytes) as byte[] };
-
-                                        // Object can't be unmarshalled. Prevent a stack overflow.
-                                        throw new InvalidOperationException(Properties.Resources.FailedToUnmarshalOutput);
+                                        
+                                        return new DynamoPythonHandle(pyObj.Handle, pyObj.ToString());
                                     }
                                     else
                                     {
