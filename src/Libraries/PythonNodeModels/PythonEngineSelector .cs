@@ -20,7 +20,7 @@ namespace PythonNodeModels
     internal sealed class PythonEngineSelector
     {
         /// <summary>
-        /// Use Lazy<<![CDATA[PythonEngineSelector ]]>> to make sure the Singleton class is only initialized once
+        /// Use Lazy&lt;PythonEngineSelector&gt; to make sure the Singleton class is only initialized once
         /// </summary>
         internal static readonly Lazy<PythonEngineSelector>
             lazy =
