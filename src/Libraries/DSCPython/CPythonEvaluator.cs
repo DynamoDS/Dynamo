@@ -111,7 +111,7 @@ namespace DSCPython
         /// </summary>
         private static void InitializeEncoders()
         {
-            var encoders = new IPyObjectEncoder[] { new BigIntegerEncoder() };
+            var encoders = new IPyObjectEncoder[] { new BigIntegerEncoder(), new ListEncoder() };
             var decoders = encoders.Cast<IPyObjectDecoder>().ToArray();
             Array.ForEach(encoders, e => PyObjectConversions.RegisterEncoder(e));
             Array.ForEach(decoders, d => PyObjectConversions.RegisterDecoder(d));
