@@ -11,7 +11,7 @@ using Python.Runtime;
 namespace DSCPython
 {
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoPythonHandle
+    public class DynamoPythonHandle : IDisposable
     {
         /// <summary>
         /// A unique ID that identifies this python object. It's as a lookup
@@ -39,16 +39,32 @@ namespace DSCPython
                 return StringRepresentation;
             }
         }
-        
+
         /// <summary>
         /// When this handle goes out of scope
         /// we should remove the pythonObject from the globalScope.
+        /// In most cases the DSVM will call this.
         /// </summary>
-        ~DynamoPythonHandle()
+        public void Dispose()
         {
-            PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
-        }
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
+                {
 
+                    PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
+                } 
+            }
+            catch (Exception E)
+            {
+                System.Diagnostics.Debug.WriteLine("error removing python object from global scope");   
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
+        }
     }
 
     [SupressImportIntoVM]
@@ -298,8 +314,7 @@ namespace DSCPython
                                         //var mod = PythonEngine.ModuleFromString("global", currentCode);
                                         var globalScope = PyScopeManager.Global.Get("global");
                                         //try moving object to global scope
-                                        var guid = Guid.NewGuid();
-                                        globalScope.Set(guid.ToString(),pyObj);
+                                        globalScope.Set(pyObj.Handle.ToString(),pyObj);
                                         
                                         return new DynamoPythonHandle(pyObj.Handle, pyObj.ToString());
                                     }
