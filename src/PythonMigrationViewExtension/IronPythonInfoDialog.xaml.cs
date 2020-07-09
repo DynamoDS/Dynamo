@@ -35,7 +35,7 @@ namespace Dynamo.PythonMigration
                     {
                         Name = customNodeInfo.Name,
                         FunctionId = customNodeInfo.FunctionId,
-                        PackageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : "Loose",
+                        PackageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : "Definitions",
                     };
 
                     if (customNodeInfo.PackageInfo != null)
@@ -112,7 +112,7 @@ namespace Dynamo.PythonMigration
 
         public override string ToString()
         {
-            if (PackageName.Equals("Loose"))
+            if (PackageName.Equals("Definitions"))
             {
                 return Name;
             }
