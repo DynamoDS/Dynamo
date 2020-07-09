@@ -133,7 +133,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unloaded Python engine: .
+        ///   Looks up a localized string similar to Missing Python engine: .
         /// </summary>
         public static string PythonNodeErrorUnloadedEngineMsg {
             get {

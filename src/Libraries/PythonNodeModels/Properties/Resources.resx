@@ -198,6 +198,6 @@
     <value>Learn more about Python</value>
   </data>
   <data name="PythonNodeErrorUnloadedEngineMsg" xml:space="preserve">
-    <value>Unloaded Python engine: </value>
+    <value>Missing Python engine: </value>
   </data>
 </root>
