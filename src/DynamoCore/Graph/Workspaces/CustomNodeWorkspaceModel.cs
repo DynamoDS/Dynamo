@@ -316,6 +316,7 @@ namespace Dynamo.Graph.Workspaces
             base.Save(newPath, isBackup, engine);
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
             if (!base.PopulateXmlDocument(document))

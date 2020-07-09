@@ -9,6 +9,7 @@ namespace Dynamo.Tests.Configuration
     class ExecutionSessionTests : DynamoModelTestBase
     {
         private TimeSpan lastExecutionDuration = new TimeSpan();
+        private IEnumerable<string> packagePaths;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -35,6 +36,22 @@ namespace Dynamo.Tests.Configuration
             Assert.IsNotNull(lastExecutionDuration);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestExecutionSessionPackagePaths()
+        {
+            ExecutionEvents.GraphPreExecution += ExecutionEvents_GraphPreExecution;
+            RunModel(@"core\HomogeneousList\HomogeneousInputsValid.dyn");
+            Assert.IsNotEmpty(packagePaths, "packgePaths was empty");
+            ExecutionEvents.GraphPreExecution -= ExecutionEvents_GraphPreExecution;
+        }
+
+        private void ExecutionEvents_GraphPreExecution(Session.IExecutionSession session)
+        {
+            packagePaths = ExecutionEvents.ActiveSession.GetParameterValue(Session.ParameterKeys.PackagePaths) as IEnumerable<string>;
+
+        }
+
         [TestFixtureTearDown]
         public void TearDown()
         {
@@ -44,7 +61,6 @@ namespace Dynamo.Tests.Configuration
         private void ExecutionEvents_GraphPostExecution(Session.IExecutionSession session)
         {
             lastExecutionDuration = (TimeSpan)session.GetParameterValue(Session.ParameterKeys.LastExecutionDuration);
-
             Assert.IsNotNull(session.GetParameterKeys());
 
             var filepath = "ExecutionEvents.dyn";

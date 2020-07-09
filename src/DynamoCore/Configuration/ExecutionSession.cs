@@ -24,6 +24,7 @@ namespace Dynamo.Configuration
             parameters[ParameterKeys.MinorVersion] = pathManager.MinorFileVersion;
             parameters[ParameterKeys.NumberFormat] = model.PreferenceSettings.NumberFormat;
             parameters[ParameterKeys.LastExecutionDuration] = new TimeSpan(updateTask.ExecutionEndTime.TickCount - updateTask.ExecutionStartTime.TickCount);
+            parameters[ParameterKeys.PackagePaths] = pathManager.PackagesDirectories;
         }
 
         /// <summary>

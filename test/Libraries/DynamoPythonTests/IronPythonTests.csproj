@@ -78,12 +78,14 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CodeCompletionTests.cs" />
+    <Compile Include="PythonEvalTestsWithLibraries.cs" />
     <Compile Include="PythonEvalTests.cs" />
     <Compile Include="PythonEditTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

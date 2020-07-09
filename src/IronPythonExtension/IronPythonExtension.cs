@@ -50,15 +50,25 @@ namespace IronPythonExtension
         /// <param name="sp"></param>
         public void Startup(StartupParams sp)
         {
+            // Do nothing for now
+        }
+
+        /// <summary>
+        /// Action to be invoked when the Dynamo has started up and is ready
+        /// for user interaction. 
+        /// </summary>
+        /// <param name="sp"></param>
+        public void Ready(ReadyParams sp)
+        {
             // Searches for DSIronPython engine binary in same folder with extension itself
             var targetDir = Path.GetDirectoryName(Assembly.GetAssembly(typeof(IronPythonExtension)).Location);
-            var libraryLoader = sp.LibraryLoader;
+            var libraryLoader = sp.StartupParams.LibraryLoader;
             Assembly pythonEvaluatorLib = null;
             try
             {
                 pythonEvaluatorLib = Assembly.LoadFrom(Path.Combine(targetDir, PythonEvaluatorAssembly + ".dll"));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Most likely the IronPython engine is excluded in this case
                 // but logging the exception message in case for diagnose
@@ -70,16 +80,6 @@ namespace IronPythonExtension
             {
                 libraryLoader.LoadNodeLibrary(pythonEvaluatorLib);
             }
-        }
-
-        /// <summary>
-        /// Action to be invoked when the Dynamo has started up and is ready
-        /// for user interaction. 
-        /// </summary>
-        /// <param name="sp"></param>
-        public void Ready(ReadyParams sp)
-        {
-            // Do nothing for now
         }
 
         /// <summary>
