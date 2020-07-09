@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
@@ -207,6 +208,68 @@ OUT = d
                 var result = pythonEvaluator(code, empty, empty);
                 Assert.IsTrue(result is IDictionary);
                 CollectionAssert.AreEquivalent(expected, result as IDictionary);
+            }
+        }
+
+        [Test]
+        public void TestDictionaryViewsDecoding()
+        {
+            var code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+from DSCore import List
+
+d = {'one': 1, 'two': 2, 'three': 3}
+
+dk = List.AddItemToEnd('four', d.keys())
+dv = List.AddItemToEnd(4, d.values())
+di = List.AddItemToEnd(('four', 4), d.items())
+
+OUT = dk, dv, di
+";
+            var empty = new ArrayList();
+            var expected = new ArrayList[] {
+                new ArrayList { "one", "two", "three", "four" },
+                new ArrayList { 1, 2, 3, 4 },
+                new ArrayList { new ArrayList { "one", 1 }, new ArrayList { "two", 2 }, new ArrayList { "three", 3 }, new ArrayList { "four", 4 } }
+            };
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var result = pythonEvaluator(code, empty, empty);
+                Assert.IsTrue(result is IEnumerable);
+                var i = 0;
+                foreach (var item in result as IEnumerable)
+                {
+                    Assert.IsTrue(item is IEnumerable);
+                    CollectionAssert.AreEquivalent(expected[i], item as IEnumerable);
+                    i++;
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetDecodingCPython()
+        {
+            var code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+from DSCore import List
+
+s = { 'hello' }
+fs = frozenset(s)
+# Python set => .NET IList - Does not work in IronPython
+s2 = List.AddItemToEnd('world', s)
+fs2 = List.AddItemToEnd('world', fs)
+OUT = s2, fs2
+";
+            var empty = new ArrayList();
+            var expected = new string[] { "hello", "world" };
+            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            Assert.IsTrue(result is IEnumerable);
+            foreach (var item in result as IEnumerable)
+            {
+                Assert.IsTrue(item is IEnumerable);
+                CollectionAssert.AreEquivalent(expected, item as IEnumerable);
             }
         }
     }

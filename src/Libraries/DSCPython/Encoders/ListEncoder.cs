@@ -30,7 +30,7 @@ namespace DSCPython.Encoders
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
         {
-            if (!PySequence.IsSequenceType(pyObj))
+            if (!PyIter.IsIterable(pyObj))
             {
                 value = default;
                 return false;
