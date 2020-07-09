@@ -17,20 +17,20 @@ namespace PythonNodeModels
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// TODO: Make the Singleton class public when Dynamic loading is also ready.
     /// </summary>
-    internal sealed class PythonEvaluationHelper
+    internal sealed class PythonEngineSelector 
     {
         /// <summary>
-        /// Use Lazy<![CDATA[PythonEvaluationHelper]]> to make sure the Singleton class is only initialized once
+        /// Use Lazy<![CDATA[PythonEngineSelector ]]> to make sure the Singleton class is only initialized once
         /// </summary>
-        internal static readonly Lazy<PythonEvaluationHelper>
+        internal static readonly Lazy<PythonEngineSelector >
             lazy =
-            new Lazy<PythonEvaluationHelper>
-            (() => new PythonEvaluationHelper());
+            new Lazy<PythonEngineSelector >
+            (() => new PythonEngineSelector ());
 
         /// <summary>
         /// The actual instance stored in the Singleton class
         /// </summary>
-        internal static PythonEvaluationHelper Instance { get { return lazy.Value; } }
+        internal static PythonEngineSelector  Instance { get { return lazy.Value; } }
 
         // TODO: The following fields might be removed after dynamic loading applied
         internal static bool IsIronPythonEnabled = false;
@@ -44,14 +44,14 @@ namespace PythonNodeModels
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
         /// </summary>
-        private PythonEvaluationHelper()
+        private PythonEngineSelector ()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
             // Currently we are using try-catch to validate loaded assembly and evaluation method exist
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                var IronPythonAssem = assems.First(x => x.FullName.Contains("DSIronPython"));
+                var IronPythonAssem = assems.First(x => x.GetName().Name.Equals("DSIronPython"));
                 if (IronPythonAssem != null &&
                     IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
                 {
@@ -61,7 +61,7 @@ namespace PythonNodeModels
             catch{ }
             try
             {
-                var CPythonAssem = assems.First(x => x.FullName.Contains("DSCPython"));
+                var CPythonAssem = assems.First(x => x.GetName().Name.Equals("DSCPython"));
                 if (CPythonAssem != null &&
                     CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
                 {
@@ -80,16 +80,16 @@ namespace PythonNodeModels
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && PythonEvaluationHelper.IsIronPythonEnabled)
+            if (engine == PythonEngineVersion.IronPython2 && PythonEngineSelector .IsIronPythonEnabled)
             {
-                evaluatorClass = PythonEvaluationHelper.IronPythonEvaluatorClass;
-                evaluationMethod = PythonEvaluationHelper.IronPythonEvaluationMethod;
+                evaluatorClass = PythonEngineSelector .IronPythonEvaluatorClass;
+                evaluationMethod = PythonEngineSelector .IronPythonEvaluationMethod;
                 return;
             }
-            if (engine == PythonEngineVersion.CPython3 && PythonEvaluationHelper.IsCPythonEnabled)
+            if (engine == PythonEngineVersion.CPython3 && PythonEngineSelector .IsCPythonEnabled)
             {
-                evaluatorClass = PythonEvaluationHelper.CPythonEvaluatorClass;
-                evaluationMethod = PythonEvaluationHelper.CPythonEvaluationMethod;
+                evaluatorClass = PythonEngineSelector .CPythonEvaluatorClass;
+                evaluationMethod = PythonEngineSelector .CPythonEvaluationMethod;
                 return;
             }
 

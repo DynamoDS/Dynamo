@@ -61,7 +61,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="PythonEvaluationHelper.cs" />
+    <Compile Include="PythonEngineSelector .cs" />
     <Compile Include="PythonNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

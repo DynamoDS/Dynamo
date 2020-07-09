@@ -74,7 +74,7 @@ namespace PythonNodeModels
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
             // class name and function name. They will be set by PythonEngineSelector by the engine value. 
-            PythonEvaluationHelper.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
+            PythonEngineSelector .Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
