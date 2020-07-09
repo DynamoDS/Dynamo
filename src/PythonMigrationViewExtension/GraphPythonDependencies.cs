@@ -28,20 +28,21 @@ namespace Dynamo.PythonMigration
             this.ViewLoaded = viewLoadedParams;
         }
 
-        internal bool ContainsIronPythonDependencies()
+        internal static bool ContainsIronPythonDependencies(WorkspaceModel workspace, ICustomNodeManager customNodeManager)
         {
-            var workspace = ViewLoaded.CurrentWorkspaceModel;
-
             if (workspace == null)
                 throw new ArgumentNullException(nameof(workspace));
 
-            if (workspace.Nodes.Any(n => IsIronPythonNode(n)))
+            if (customNodeManager == null)
+                throw new ArgumentNullException(nameof(customNodeManager));
+
+            if (workspace.Nodes.Any(IsIronPythonNode))
             {
                 return true;
             }
 
             // Check if any of the custom nodes has IronPython dependencies in it. 
-            var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
+            //var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
             var customNodes = workspace.Nodes.OfType<Function>();
 
             return CustomNodesContainIronPythonDependency(customNodes, customNodeManager);           
@@ -50,7 +51,7 @@ namespace Dynamo.PythonMigration
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 
         // It traverses all CN's in the given list of customNodes and marks them as true in CustomNodePythonDependency, 
         // if the prarent custom node or any of its child custom nodes contain an IronPython dependency.
-        internal static bool CustomNodesContainIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
+        private static bool CustomNodesContainIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
         {
             var containIronPythonDependency = false;
 

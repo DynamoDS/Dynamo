@@ -137,7 +137,7 @@ namespace Dynamo.PythonMigration
             CurrentWorkspace = workspace as WorkspaceModel;
             if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                 && !Models.DynamoModel.IsTestMode
-                && PythonDependencies.ContainsIronPythonDependencies())
+                && GraphPythonDependencies.ContainsIronPythonDependencies(CurrentWorkspace, DynamoViewModel.Model.CustomNodeManager))
             {
                 LogIronPythonNotification();
                 DisplayIronPythonDialog();

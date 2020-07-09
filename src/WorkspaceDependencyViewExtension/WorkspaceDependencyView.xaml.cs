@@ -124,7 +124,15 @@ namespace Dynamo.WorkspaceDependency
         internal void DependencyRegen(WorkspaceModel ws)
         {
             this.RestartBanner.Visibility = Visibility.Hidden;
-            var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo);
+            var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
+
+            // This assumes it is a one-time addition to add the IronPython extension 
+            // as a package dependency. We might only want to give users the option to install
+            // the package on opening a workspace for the first-time. Even if any IronPython nodes are deleted
+            // from the workspace subsequently, it should not be necessary to uninstall/reinstall the package again later.
+            var pythonPackageDependency = dependencyViewExtension.AddPythonPackageDependency(ws);
+            if(pythonPackageDependency != null)
+                packageDependencies.Add(pythonPackageDependency);
 
             if (packageDependencies.Any(d => d.State != PackageDependencyState.Loaded))
             {
@@ -287,6 +295,8 @@ namespace Dynamo.WorkspaceDependency
         {
             DependencyRegen(currentWorkspace);
         }
+
+        
     }
 
     /// <summary>

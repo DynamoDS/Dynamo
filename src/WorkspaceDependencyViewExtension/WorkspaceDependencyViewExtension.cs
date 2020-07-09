@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.WorkspaceDependency.Properties;
 using Dynamo.Wpf.Extensions;
+using Dynamo.PythonMigration;
 
 namespace Dynamo.WorkspaceDependency
 {
@@ -18,7 +20,11 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private const String extensionName = "Workspace References";
+        private const string extensionName = "Workspace References";
+        private const string pythonPackage = "DSIronPython_Test";
+        private readonly Version pythonPackageVersion = new Version(1, 0, 7);
+
+        private ICustomNodeManager customNodeManager;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -90,8 +96,29 @@ namespace Dynamo.WorkspaceDependency
             }  
         }
 
+        internal INodeLibraryDependencyInfo AddPythonPackageDependency(WorkspaceModel workspace)
+        {
+            if (!GraphPythonDependencies.ContainsIronPythonDependencies(workspace, customNodeManager))
+                return null;
+
+            // Find if DSIronPython is loaded (cache result)
+            // Set pkg dep info state to loaded if so, otherwise set it to missing 
+            var packageInfo = new PackageInfo(pythonPackage, pythonPackageVersion);
+            var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
+
+            var installedPackages = pmExtension.PackageLoader.LocalPackages;
+            var isPackageLoaded = installedPackages.Any(x =>
+                x.Name == pythonPackage && x.VersionName == pythonPackageVersion.ToString());
+            
+            packageDependencyInfo.State = isPackageLoaded ? PackageDependencyState.Loaded : PackageDependencyState.Missing;
+
+            return packageDependencyInfo;
+        }
+
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
+            customNodeManager = viewLoadedParams.StartupParams.CustomNodeManager;
+            
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.

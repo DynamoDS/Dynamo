@@ -226,7 +226,8 @@ namespace DynamoCoreWpfTests
                 .First() as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
+            Assert.IsTrue(GraphPythonDependencies.ContainsIronPythonDependencies(viewExtension.CurrentWorkspace, 
+                viewExtension.DynamoViewModel.Model.CustomNodeManager));
             DispatcherUtil.DoEvents();
         }
 
@@ -294,10 +295,10 @@ namespace DynamoCoreWpfTests
             var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
             Open(examplePath);
 
-            var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
+            //var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
             var customNodeManager = ViewModel.Model.CustomNodeManager;
 
-            var result = GraphPythonDependencies.CustomNodesContainIronPythonDependency(customNodes, customNodeManager);
+            var result = GraphPythonDependencies.ContainsIronPythonDependencies(ViewModel.Model.CurrentWorkspace, customNodeManager);
 
             Assert.IsTrue(result);
             DispatcherUtil.DoEvents();
