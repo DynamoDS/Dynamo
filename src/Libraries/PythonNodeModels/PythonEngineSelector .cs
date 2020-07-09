@@ -20,7 +20,7 @@ namespace PythonNodeModels
     internal sealed class PythonEngineSelector
     {
         /// <summary>
-        /// Use Lazy<![CDATA[PythonEngineSelector ]]> to make sure the Singleton class is only initialized once
+        /// Use Lazy<<![CDATA[PythonEngineSelector ]]>> to make sure the Singleton class is only initialized once
         /// </summary>
         internal static readonly Lazy<PythonEngineSelector>
             lazy =
@@ -51,7 +51,7 @@ namespace PythonNodeModels
             // but we can optimize by checking all loaded types against evaluators interface later
             try
             {
-                var IronPythonAssem = assems.First(x => x.GetName().Name.Equals("DSIronPython"));
+                var IronPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSIronPython"));
                 if (IronPythonAssem != null &&
                     IronPythonAssem.GetType("DSIronPython.IronPythonEvaluator").GetMethod(IronPythonEvaluationMethod) != null)
                 {
@@ -63,7 +63,7 @@ namespace PythonNodeModels
             }
             try
             {
-                var CPythonAssem = assems.First(x => x.GetName().Name.Equals("DSCPython"));
+                var CPythonAssem = assems.FirstOrDefault(x => x.GetName().Name.Equals("DSCPython"));
                 if (CPythonAssem != null &&
                     CPythonAssem.GetType("DSCPython.CPythonEvaluator").GetMethod(CPythonEvaluationMethod) != null)
                 {

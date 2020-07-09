@@ -6,7 +6,7 @@ using PythonNodeModels;
 namespace DynamoPythonTests
 {
     [TestFixture]
-    class PythonEngineSelectorTests: DynamoModelTestBase
+    class PythonEngineSelectorTests : DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -22,9 +22,9 @@ namespace DynamoPythonTests
         [Test]
         public void TestEngineSelectorInitial_State()
         {
-            Assert.AreEqual(false, PythonEngineSelector .lazy.IsValueCreated);
-            Assert.AreEqual(false, PythonEngineSelector .IsCPythonEnabled);
-            Assert.AreEqual(false, PythonEngineSelector .IsIronPythonEnabled);
+            Assert.AreEqual(false, PythonEngineSelector.lazy.IsValueCreated);
+            Assert.AreEqual(false, PythonEngineSelector.IsCPythonEnabled);
+            Assert.AreEqual(false, PythonEngineSelector.IsIronPythonEnabled);
         }
 
         /// <summary>
@@ -33,18 +33,18 @@ namespace DynamoPythonTests
         [Test]
         public void TestEngineSelectorInitialization()
         {
-            Assert.AreEqual(false, PythonEngineSelector .lazy.IsValueCreated);
-            PythonEngineSelector .Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
-            Assert.AreEqual(true, PythonEngineSelector .lazy.IsValueCreated);
-            Assert.AreEqual(evaluatorClass, PythonEngineSelector .IronPythonEvaluatorClass);
-            Assert.AreEqual(evaluationMethod, PythonEngineSelector .IronPythonEvaluationMethod);
+            Assert.AreEqual(false, PythonEngineSelector.lazy.IsValueCreated);
+            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
+            Assert.AreEqual(true, PythonEngineSelector.lazy.IsValueCreated);
+            Assert.AreEqual(evaluatorClass, PythonEngineSelector.IronPythonEvaluatorClass);
+            Assert.AreEqual(evaluationMethod, PythonEngineSelector.IronPythonEvaluationMethod);
 
-            PythonEngineSelector .Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
-            Assert.AreEqual(evaluatorClass, PythonEngineSelector .CPythonEvaluatorClass);
-            Assert.AreEqual(evaluationMethod, PythonEngineSelector .CPythonEvaluationMethod);
+            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.CPython3, out evaluatorClass, out evaluationMethod);
+            Assert.AreEqual(evaluatorClass, PythonEngineSelector.CPythonEvaluatorClass);
+            Assert.AreEqual(evaluationMethod, PythonEngineSelector.CPythonEvaluationMethod);
 
-            Assert.AreEqual(true, PythonEngineSelector .IsCPythonEnabled);
-            Assert.AreEqual(true, PythonEngineSelector .IsIronPythonEnabled);
+            Assert.AreEqual(true, PythonEngineSelector.IsCPythonEnabled);
+            Assert.AreEqual(true, PythonEngineSelector.IsIronPythonEnabled);
         }
     }
 }
