@@ -32,8 +32,9 @@ namespace Dynamo.Tests
             //Changes the Name property so that the event is raised
             nodeWorkspace.Name = "NewNodeName";
 
-            var resultNode = homeWorkspace.Nodes.FirstOrDefault(x => x.Name == "NewNodeName");
+            var resultNode = homeWorkspace.Nodes.First(x => x.Name == "NewNodeName");
             Assert.IsNotNull(resultNode);
+            Assert.IsTrue(resultNode.Name == "NewNodeName");
         }
 
         [Test]
