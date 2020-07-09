@@ -6,7 +6,7 @@ using PythonNodeModels;
 namespace DynamoPythonTests
 {
     [TestFixture]
-    class PythonEvalHelperTests: DynamoModelTestBase
+    class PythonEngineSelectorTests: DynamoModelTestBase
     {
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -20,7 +20,7 @@ namespace DynamoPythonTests
         /// This test will cover the initial state of the Singleton
         /// </summary>
         [Test]
-        public void TestHelperInitial_State()
+        public void TestEngineSelectorInitial_State()
         {
             Assert.AreEqual(false, PythonEngineSelector .lazy.IsValueCreated);
             Assert.AreEqual(false, PythonEngineSelector .IsCPythonEnabled);
@@ -31,7 +31,7 @@ namespace DynamoPythonTests
         /// This test will cover the use case of the API to query certain Python engine ability for evaluation
         /// </summary>
         [Test]
-        public void TestHelperInitialization()
+        public void TestEngineSelectorInitialization()
         {
             Assert.AreEqual(false, PythonEngineSelector .lazy.IsValueCreated);
             PythonEngineSelector .Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
