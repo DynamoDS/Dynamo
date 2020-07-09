@@ -101,8 +101,6 @@ namespace Dynamo.WorkspaceDependency
             if (!GraphPythonDependencies.ContainsIronPythonDependencies(workspace, customNodeManager))
                 return null;
 
-            // Find if DSIronPython is loaded (cache result)
-            // Set pkg dep info state to loaded if so, otherwise set it to missing 
             var packageInfo = new PackageInfo(pythonPackage, pythonPackageVersion);
             var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
 
