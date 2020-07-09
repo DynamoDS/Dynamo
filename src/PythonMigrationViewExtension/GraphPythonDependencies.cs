@@ -42,7 +42,6 @@ namespace Dynamo.PythonMigration
             }
 
             // Check if any of the custom nodes has IronPython dependencies in it. 
-            //var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
             var customNodes = workspace.Nodes.OfType<Function>();
 
             return CustomNodesContainIronPythonDependency(customNodes, customNodeManager);           
