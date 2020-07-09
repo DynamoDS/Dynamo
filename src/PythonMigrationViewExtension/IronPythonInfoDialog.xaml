@@ -81,15 +81,15 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Expander>
-                    <Expander Grid.Row="1" x:Name="ExpanderForLooseDependencies" Header="Loose"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
-                        <ListBox x:Name="LooseCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100" 
+                    <Expander Grid.Row="1" x:Name="ExpanderForUserDefinitionDependencies" Header="Definitions"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
+                        <ListBox x:Name="UserDefinitionCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100" 
                                  Margin="25,5,0,0" MouseDoubleClick="OnCustomNodeClick" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionMode="Extended">
                             <ListBox.CommandBindings>
                                 <CommandBinding Command="ApplicationCommands.Copy" CanExecute="CanExecuteCtrlCCopyCommand" Executed="ExecuteCtrlCCopyCommand" />
                             </ListBox.CommandBindings>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.LooseCustomNodesTooltip}">
+                                    <Grid Margin="0,2" ToolTip="{x:Static w:Resources.UserDefinitionCustomNodesTooltip}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>

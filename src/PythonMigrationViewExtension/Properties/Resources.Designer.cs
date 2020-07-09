@@ -19,7 +19,7 @@ namespace Dynamo.PythonMigration.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -116,20 +116,20 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Double-click on the custom node to open its workspace.
-        /// </summary>
-        public static string LooseCustomNodesTooltip {
-            get {
-                return ResourceManager.GetString("LooseCustomNodesTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please notify the package author to update the package.
         /// </summary>
         public static string PackagedCustomNodesTooltip {
             get {
                 return ResourceManager.GetString("PackagedCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Double-click on the custom node to open its workspace.
+        /// </summary>
+        public static string UserDefinitionCustomNodesTooltip {
+            get {
+                return ResourceManager.GetString("UserDefinitionCustomNodesTooltip", resourceCulture);
             }
         }
     }

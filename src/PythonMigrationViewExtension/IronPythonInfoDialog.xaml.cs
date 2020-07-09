@@ -44,7 +44,7 @@ namespace Dynamo.PythonMigration
                     }
                     else
                     {
-                        LooseCustomNodesContainingPython.Items.Add(customNodeItem);
+                        UserDefinitionCustomNodesContainingPython.Items.Add(customNodeItem);
                     }
                 }
 
@@ -53,9 +53,9 @@ namespace Dynamo.PythonMigration
                     ExpanderForPackagedDependencies.Visibility = Visibility.Visible;
                 }
 
-                if (LooseCustomNodesContainingPython.Items.Count > 0)
+                if (UserDefinitionCustomNodesContainingPython.Items.Count > 0)
                 {
-                    ExpanderForLooseDependencies.Visibility = Visibility.Visible;
+                    ExpanderForUserDefinitionDependencies.Visibility = Visibility.Visible;
                 }
                 MainExpander.Visibility = Visibility.Visible;
             }
@@ -73,9 +73,9 @@ namespace Dynamo.PythonMigration
 
         private void OnCustomNodeClick(object sender, RoutedEventArgs e)
         {
-            if (LooseCustomNodesContainingPython.SelectedItems.Count == 1)
+            if (UserDefinitionCustomNodesContainingPython.SelectedItems.Count == 1)
             {
-                CustomNodeItem selectedCNItem = LooseCustomNodesContainingPython.SelectedItem as CustomNodeItem;
+                CustomNodeItem selectedCNItem = UserDefinitionCustomNodesContainingPython.SelectedItem as CustomNodeItem;
                 Guid functionId = selectedCNItem.FunctionId;
                 ViewModel.DynamoViewModel.Model.OpenCustomNodeWorkspace(functionId);
             }
