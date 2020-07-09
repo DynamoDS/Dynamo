@@ -59,8 +59,18 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!--Checking if the Text Template transform is installed with VS IDE so it is only for Dev machines-->  
+  <Import Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets')" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v16.0\TextTemplating\Microsoft.TextTemplating.targets" />
+  <!--Checking if the Text Template transform is installed from ADSK artifactory for build hosts-->
+  <Import Condition="Exists('..\..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets')" Project="..\..\extern\TextTemplating.BuildTasks\TextTemplating.BuildTasks.targets" />
   <PropertyGroup>
-    <PreBuildEvent Condition=" '$(OS)' != 'Unix' ">"$(SolutionDir)transform_all.bat" "$(ProjectDir)"</PreBuildEvent>
+    <TransformOnBuild>true</TransformOnBuild>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

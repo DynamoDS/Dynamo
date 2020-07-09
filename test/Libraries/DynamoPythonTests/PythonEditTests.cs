@@ -432,9 +432,6 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("Failure")]
-        // This test is failing for CPython3 Engine. 
-        // The BigIntegers which use more than int64 type, are currently not being marshalled. 
         public void BigInteger_CanBeMarshaledAsInt64()
         {
             // open test graph
@@ -488,6 +485,31 @@ namespace Dynamo.Tests
             UpdateEngineAndRunForAllPythonNodes(pythonNodes, PythonEngineVersion.IronPython2);
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             AssertPreviewValue(pythonNode2GUID, new List<string> { "2.7.9", "2.7.9" });
+        }
+
+        [Test]
+
+        public void Python_CanReferenceDynamoServicesExecutionSession()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "python_refDynamoServices.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var guid = "296e339254e845b695caa1a116500be0";
+
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(guid);
+            var pynode = nodeModel as PythonNode;
+            var count = 0;
+            foreach (var pythonEngine in GetPythonEnginesList())
+            {
+                UpdatePythonEngineAndRun(pynode, pythonEngine);
+
+                ViewModel.HomeSpace.Run();
+                count++;
+                Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
+
+                AssertPreviewCount(guid, 2);
+            }
         }
     }
 }
