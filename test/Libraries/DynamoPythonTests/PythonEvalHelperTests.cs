@@ -1,28 +1,40 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using Dynamo;
+using NUnit.Framework;
 using PythonNodeModels;
 
 namespace DynamoPythonTests
 {
     [TestFixture]
-    class PythonEvalHelperTests
+    class PythonEvalHelperTests: DynamoModelTestBase
     {
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            // Add multiple libraries to better simulate typical Dynamo application usage.
+            libraries.Add("DSCPython.dll");
+            libraries.Add("DSIronPython.dll");
+            base.GetLibrariesToPreload(libraries);
+        }
+
+        /// <summary>
+        /// This test will cover the initial state of the Singleton
+        /// </summary>
         [Test]
-        public void TestHelperInitialState()
+        public void TestHelperInitial_State()
         {
             Assert.AreEqual(false, PythonEvaluationHelper.lazy.IsValueCreated);
             Assert.AreEqual(false, PythonEvaluationHelper.IsCPythonEnabled);
             Assert.AreEqual(false, PythonEvaluationHelper.IsIronPythonEnabled);
         }
 
+        /// <summary>
+        /// This test will cover the use case of the API to query certain Python engine ability for evaluation
+        /// </summary>
         [Test]
         public void TestHelperInitialization()
         {
             Assert.AreEqual(false, PythonEvaluationHelper.lazy.IsValueCreated);
-
-            var evaluatorClass = string.Empty;
-            var evaluationMethod = string.Empty;
-
-            PythonEvaluationHelper.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out evaluatorClass, out evaluationMethod);
+            PythonEvaluationHelper.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
             Assert.AreEqual(true, PythonEvaluationHelper.lazy.IsValueCreated);
             Assert.AreEqual(evaluatorClass, PythonEvaluationHelper.IronPythonEvaluatorClass);
             Assert.AreEqual(evaluationMethod, PythonEvaluationHelper.IronPythonEvaluationMethod);

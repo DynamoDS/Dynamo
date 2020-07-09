@@ -73,11 +73,8 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
-            // class name and function name. We are hardcoding the class name and function name for now. 
-            var evaluatorClass = string.Empty;
-            var evaluationMethod = string.Empty;
-
-            PythonEvaluationHelper.Instance.GetEvaluatorInfo(Engine, out evaluatorClass, out evaluationMethod);
+            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
+            PythonEvaluationHelper.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
