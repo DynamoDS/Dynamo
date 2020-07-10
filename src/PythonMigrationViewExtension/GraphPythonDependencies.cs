@@ -14,9 +14,9 @@ namespace Dynamo.PythonMigration
         private ViewLoadedParams ViewLoaded { get; set; }
 
         // A dictionary to mark Custom Nodes if they have a IronPython dependency or not. 
-        private static Dictionary<Guid, CNPythonDependency> CustomNodePythonDependency = new Dictionary<Guid, CNPythonDependency>();
+        internal static Dictionary<Guid, CNPythonDependencyType> CustomNodePythonDependencyMap = new Dictionary<Guid, CNPythonDependencyType>();
 
-        private enum CNPythonDependency
+        internal enum CNPythonDependencyType
         {
             NoDependency,
             NestedDependency,
@@ -28,8 +28,9 @@ namespace Dynamo.PythonMigration
             this.ViewLoaded = viewLoadedParams;
         }
 
-        internal bool ContainsIronPythonDependencies()
+        internal bool ContainsIronPythonDependencyInCurrentWS()
         {
+            var containsIronPythonDependency = false;
             var workspace = ViewLoaded.CurrentWorkspaceModel;
 
             if (workspace == null)
@@ -37,14 +38,19 @@ namespace Dynamo.PythonMigration
 
             if (workspace.Nodes.Any(n => IsIronPythonNode(n)))
             {
-                return true;
+                containsIronPythonDependency = true;
             }
 
             // Check if any of the custom nodes has IronPython dependencies in it. 
             var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
             var customNodes = workspace.Nodes.OfType<Function>();
 
-            return CustomNodesContainIronPythonDependency(customNodes, customNodeManager);           
+            if (CustomNodesContainIronPythonDependency(customNodes, customNodeManager))
+            {
+                containsIronPythonDependency = true;
+            }
+
+            return containsIronPythonDependency;
         }
 
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 
@@ -60,9 +66,9 @@ namespace Dynamo.PythonMigration
 
                 // If a custom node workspace is already checked for IronPython dependencies, 
                 // check the CustomNodePythonDependency dictionary instead of processing it again. 
-                if (CustomNodePythonDependency.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependency dependency))
+                if (CustomNodePythonDependencyMap.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependencyType dependency))
                 {
-                    if (dependency == CNPythonDependency.DirectDependency || dependency == CNPythonDependency.NestedDependency)
+                    if (dependency == CNPythonDependencyType.DirectDependency || dependency == CNPythonDependencyType.NestedDependency)
                     {
                         containIronPythonDependency = true;
                     }
@@ -73,12 +79,12 @@ namespace Dynamo.PythonMigration
 
                 if (hasPythonNodesInCustomNodeWorkspace)
                 {
-                    CustomNodePythonDependency.Add(customNodeWS.CustomNodeId, CNPythonDependency.DirectDependency);
+                    CustomNodePythonDependencyMap.Add(customNodeWS.CustomNodeId, CNPythonDependencyType.DirectDependency);
                     containIronPythonDependency = true;
                 }
                 else
                 {
-                    CustomNodePythonDependency.Add(customNodeWS.CustomNodeId, CNPythonDependency.NoDependency);
+                    CustomNodePythonDependencyMap.Add(customNodeWS.CustomNodeId, CNPythonDependencyType.NoDependency);
                 }
 
                 // Recursively check for IronPython dependencies in the nested custom nodes.
@@ -90,9 +96,9 @@ namespace Dynamo.PythonMigration
 
                     // If a custom node contains an IronPython dependency in its sub-tree,
                     // update its corresponding value to 'NestedDependency' in CustomNodePythonDependency.
-                    if (hasPythonNodesInCustomNodeWorkspace)
+                    if (hasPythonNodesInCustomNodeWorkspace && CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] != CNPythonDependencyType.DirectDependency)
                     {
-                        CustomNodePythonDependency[customNodeWS.CustomNodeId] = CNPythonDependency.NestedDependency;
+                        CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] = CNPythonDependencyType.NestedDependency;
                         containIronPythonDependency = true;
                     }
                 }
