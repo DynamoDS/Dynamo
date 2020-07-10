@@ -25,7 +25,7 @@
             Padding="10">
         <Grid Width="325">
             <Grid.RowDefinitions>
-                <RowDefinition Height="96"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
