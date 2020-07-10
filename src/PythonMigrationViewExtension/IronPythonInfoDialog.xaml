@@ -61,7 +61,7 @@
             <Expander x:Name="MainExpander" Header="{x:Static w:Resources.CustomNodesPythonDependencyHeader}" Foreground="#bbbbbb"
                       FontSize="15" Margin="-2,0,0,0" Visibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Visible">
                 <StackPanel Height="Auto">
-                    <Expander x:Name="ExpanderForPackagedDependencies" Header="Packaged" Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
+                    <Expander x:Name="ExpanderForPackagedDependencies" Header="{x:Static w:Resources.PackagedCustomNodesHeader}" Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
                         <ListBox x:Name="PackagedCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100"
                                  Margin="25,5,0,0" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionMode="Extended">
                             <ListBox.CommandBindings>
@@ -81,7 +81,7 @@
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </Expander>
-                    <Expander Grid.Row="1" x:Name="ExpanderForUserDefinitionDependencies" Header="Definitions"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
+                    <Expander Grid.Row="1" x:Name="ExpanderForUserDefinitionDependencies" Header="{x:Static w:Resources.UserDefinitionsHeader}"  Foreground="#bbbbbb" FontSize="15" Margin="20,5,0,0" Visibility="Collapsed">
                         <ListBox x:Name="UserDefinitionCustomNodesContainingPython" FontSize="12" Background="Black" Height="Auto" MaxHeight="100" 
                                  Margin="25,5,0,0" MouseDoubleClick="OnCustomNodeClick" ScrollViewer.VerticalScrollBarVisibility="Visible" SelectionMode="Extended">
                             <ListBox.CommandBindings>

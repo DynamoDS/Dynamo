@@ -159,12 +159,12 @@ namespace Dynamo.PythonMigration
             if (!IsIronPythonDialogOpen())
             {
                 NotificationTracker.Remove(CurrentWorkspace.Guid);
-                GraphPythonDependencies.CustomNodePythonDependency.Clear();
+                GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
                 CurrentWorkspace = workspace as WorkspaceModel;
 
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
-                    && PythonDependencies.ContainsIronPythonDependency())
+                    && PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
                 {
                     LogIronPythonNotification();
                     DisplayIronPythonDialog();

@@ -142,4 +142,10 @@ There will be a time of transition where both versions of Python node will work 
   <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
     <value>Double-click on the custom node to open its workspace</value>
   </data>
+  <data name="PackagedCustomNodesHeader" xml:space="preserve">
+    <value>Packaged</value>
+  </data>
+  <data name="UserDefinitionsHeader" xml:space="preserve">
+    <value>Definitions</value>
+  </data>
 </root>

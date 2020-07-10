@@ -116,6 +116,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Packaged.
+        /// </summary>
+        public static string PackagedCustomNodesHeader {
+            get {
+                return ResourceManager.GetString("PackagedCustomNodesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please notify the package author to update the package.
         /// </summary>
         public static string PackagedCustomNodesTooltip {
@@ -130,6 +139,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string UserDefinitionCustomNodesTooltip {
             get {
                 return ResourceManager.GetString("UserDefinitionCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Definitions.
+        /// </summary>
+        public static string UserDefinitionsHeader {
+            get {
+                return ResourceManager.GetString("UserDefinitionsHeader", resourceCulture);
             }
         }
     }

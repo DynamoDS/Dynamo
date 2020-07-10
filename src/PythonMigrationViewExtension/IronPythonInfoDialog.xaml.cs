@@ -22,8 +22,8 @@ namespace Dynamo.PythonMigration
         private void SetPythonDepedenciesData()
         {
             // Filter the Custom Nodes that have a direct dependency on IronPython2. 
-            var customNodesWithPythonDependencies = GraphPythonDependencies.CustomNodePythonDependency
-                                                            .Where(x => x.Value.Equals(GraphPythonDependencies.CNPythonDependency.DirectDependency));
+            var customNodesWithPythonDependencies = GraphPythonDependencies.CustomNodePythonDependencyMap
+                                                            .Where(x => x.Value.Equals(GraphPythonDependencies.CNPythonDependencyType.DirectDependency));
 
             if (customNodesWithPythonDependencies.Any())
             {
@@ -35,7 +35,7 @@ namespace Dynamo.PythonMigration
                     {
                         Name = customNodeInfo.Name,
                         FunctionId = customNodeInfo.FunctionId,
-                        PackageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : "Definitions",
+                        PackageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : CustomNodeItem.UserDefinitions,
                     };
 
                     if (customNodeInfo.PackageInfo != null)
@@ -84,7 +84,7 @@ namespace Dynamo.PythonMigration
         private void ExecuteCtrlCCopyCommand(object sender, ExecutedRoutedEventArgs e)
         {
             string collectedText = "";
-            ListBox lb = (ListBox) sender; 
+            ListBox lb = (ListBox) sender;
             
             foreach (var item in lb.SelectedItems)
             {
@@ -110,9 +110,11 @@ namespace Dynamo.PythonMigration
         public string PackageName { get; set; }
         internal Guid FunctionId { get; set; }
 
+        internal const string UserDefinitions = "Definitions";
+
         public override string ToString()
         {
-            if (PackageName.Equals("Definitions"))
+            if (PackageName.Equals(UserDefinitions))
             {
                 return Name;
             }
