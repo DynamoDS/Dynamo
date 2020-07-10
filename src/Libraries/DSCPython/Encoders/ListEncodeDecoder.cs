@@ -11,7 +11,8 @@ namespace DSCPython.Encoders
         private static readonly Type[] decodableTypes = new Type[]
         {
             typeof(IList), typeof(ArrayList),
-            typeof(IList<>), typeof(List<>)
+            typeof(IList<>), typeof(List<>),
+            typeof(IEnumerable), typeof(IEnumerable<>)
         };
 
         public bool CanDecode(PyObject objectType, Type targetType)
