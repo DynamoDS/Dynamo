@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
-using ProtoCore.AST;
-using Revit.Elements;
 
 namespace Dynamo.Tests
 {
@@ -84,7 +80,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(expectedCase3, resultCase3);
         }
 
-
         [Test]
         [Category("UnitTests")]
         public void AddToSelectedModels_NotInAnnotationArea_ShouldNotAddTheNodeToTheAnnotation()
@@ -96,6 +91,5 @@ namespace Dynamo.Tests
 
             Assert.IsFalse(annotationModel.Nodes.Contains(nodeModel));
         }
-
     }
 }
