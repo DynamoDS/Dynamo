@@ -31,12 +31,9 @@ namespace Dynamo.PythonMigration
                 {
                     ViewModel.CustomNodeManager.TryGetNodeInfo(entry.Key, out CustomNodeInfo customNodeInfo);
 
-                    CustomNodeItem customNodeItem = new CustomNodeItem
-                    {
-                        Name = customNodeInfo.Name,
-                        FunctionId = customNodeInfo.FunctionId,
-                        PackageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : CustomNodeItem.UserDefinitions,
-                    };
+                    var packageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : CustomNodeItem.UserDefinitions;
+
+                    CustomNodeItem customNodeItem = new CustomNodeItem(customNodeInfo.Name, customNodeInfo.FunctionId, packageName);
 
                     if (customNodeInfo.PackageInfo != null)
                     {
@@ -106,9 +103,16 @@ namespace Dynamo.PythonMigration
     // Represents the data for each Custom Node item in the listbox. 
     internal class CustomNodeItem
     {
-        public string Name { get; set; }
-        public string PackageName { get; set; }
-        internal Guid FunctionId { get; set; }
+        internal CustomNodeItem(string name, Guid functionId, string packageName) 
+        {
+            Name = name;
+            FunctionId = functionId;
+            PackageName = packageName;
+        }
+
+        public string Name { get; private set; }
+        public string PackageName { get; private set; }
+        internal Guid FunctionId { get; private set; }
 
         internal const string UserDefinitions = "Definitions";
 
