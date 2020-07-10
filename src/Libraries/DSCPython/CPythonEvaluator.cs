@@ -10,8 +10,13 @@ using Python.Runtime;
 
 namespace DSCPython
 {
+    /// <summary>
+    /// This class wraps a PythonNet.PyObj and performs
+    /// disposal tasks to make sure the underlying object is removed from
+    /// the shared global scope between all CPython scopes.
+    /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoPythonHandle : IDisposable
+    public class DynamoCPythonHandle : IDisposable
     {
         /// <summary>
         /// A unique ID that identifies this python object. It's as a lookup
@@ -20,9 +25,11 @@ namespace DSCPython
         internal IntPtr PythonObjectID { get; set; }
         /// <summary>
         /// A string representation of this object.
+        /// TODO - it may be better to just call ToString - this was an attempt
+        /// to optimize needing to use locks and the GIL to get strings for preview bubbles.
         /// </summary>
         internal string StringRepresentation { get; set; }
-        public DynamoPythonHandle(IntPtr id,string strRep)
+        public DynamoCPythonHandle(IntPtr id,string strRep)
         {
             PythonObjectID = id;
             StringRepresentation = strRep;
@@ -237,7 +244,7 @@ namespace DSCPython
                         });
 
                     inputMarshaler.RegisterMarshaler(
-                       delegate (DynamoPythonHandle handle)
+                       delegate (DynamoCPythonHandle handle)
                        {
                            var scope = PyScopeManager.Global.Get(globalScopeName);
                            return scope.Get(handle.PythonObjectID.ToString());
@@ -310,13 +317,11 @@ namespace DSCPython
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
-                                        //create a module for the pickled code to reference.
-                                        //var mod = PythonEngine.ModuleFromString("global", currentCode);
-                                        var globalScope = PyScopeManager.Global.Get("global");
+                                        var globalScope = PyScopeManager.Global.Get(globalScopeName);
                                         //try moving object to global scope
                                         globalScope.Set(pyObj.Handle.ToString(),pyObj);
                                         
-                                        return new DynamoPythonHandle(pyObj.Handle, pyObj.ToString());
+                                        return new DynamoCPythonHandle(pyObj.Handle, pyObj.ToString());
                                     }
                                     else
                                     {
