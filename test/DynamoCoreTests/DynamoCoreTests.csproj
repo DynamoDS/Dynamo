@@ -96,6 +96,8 @@
     <Compile Include="Extensions\ExtensionManagerTest.cs" />
     <Compile Include="Graph\Connectors\ConnectorModelTests.cs" />
     <Compile Include="Graph\Nodes\NodeModelTests.cs" />
+    <Compile Include="Graph\Workspaces\CustomNodeWorkspaceModelTests.cs" />
+    <Compile Include="Graph\Workspaces\HomeWorkspaceModelTests.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
