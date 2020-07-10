@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
 using NUnit.Framework;
-using static DSIronPythonTests.IronPythonTests;
+using static DSPythonTests.PythonEvalTests;
 
 namespace DynamoPythonTests
 {
