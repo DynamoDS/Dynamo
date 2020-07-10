@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace DSIronPythonTests
+namespace DSPythonTests
 {
-    public class IronPythonTests
+    public class PythonEvalTests
     {
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
