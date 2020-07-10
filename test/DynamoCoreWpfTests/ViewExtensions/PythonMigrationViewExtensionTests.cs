@@ -18,8 +18,8 @@ namespace DynamoCoreWpfTests
     class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {
         private PythonMigrationViewExtension viewExtension = new PythonMigrationViewExtension();
-         
-       
+
+
         private List<string> raisedEvents = new List<string>();
 
 
@@ -39,8 +39,8 @@ namespace DynamoCoreWpfTests
 
             var isIronPythonDialogOpen = this.View.OwnedWindows
                 .Cast<Window>()
-                .Any(x=>x.GetType() == typeof(IronPythonInfoDialog));
-        
+                .Any(x => x.GetType() == typeof(IronPythonInfoDialog));
+
             // Assert
             Assert.IsTrue(isIronPythonDialogOpen);
             DynamoModel.IsTestMode = true;
@@ -54,6 +54,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillLogNotificationWhenAddingAnIronPythonNode()
         {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             // Arrange
             string pythonNodeName = "Python Script";
             raisedEvents = new List<string>();
@@ -69,7 +70,7 @@ namespace DynamoCoreWpfTests
             var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
             // Assert
-            Assert.AreEqual(nodesCountBeforeNodeAdded+1, nodesCountAfterNodeAdded);
+            Assert.AreEqual(nodesCountBeforeNodeAdded + 1, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
@@ -98,7 +99,7 @@ namespace DynamoCoreWpfTests
             // Act
             // open file
             this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
-          
+
 
             var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
@@ -106,19 +107,18 @@ namespace DynamoCoreWpfTests
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
             this.ViewModel.ExecuteCommand(new DynamoModel.
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
-            
+
             DispatcherUtil.DoEvents();
 
             var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
             // Assert
-            Assert.AreEqual(nodesCountBeforeNodeAdded+2, nodesCountAfterNodeAdded);
+            Assert.AreEqual(nodesCountBeforeNodeAdded + 2, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
             this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
             DispatcherUtil.DoEvents();
-
         }
 
         /// <summary>
@@ -221,9 +221,8 @@ namespace DynamoCoreWpfTests
             Open(@"core\python\python.dyn");
 
             var pythonMigration = extensionManager.ViewExtensions
-                .Where(x => x.Name == viewExtension.Name)
-                .Select(x=>x)
-                .First() as PythonMigrationViewExtension;
+                .FirstOrDefault(x => x.Name == viewExtension.Name)
+                as PythonMigrationViewExtension;
 
             // Assert
             Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
