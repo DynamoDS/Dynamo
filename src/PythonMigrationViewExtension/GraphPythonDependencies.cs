@@ -56,7 +56,9 @@ namespace Dynamo.PythonMigration
 
             foreach (var customNode in customNodes)
             {
-                customNodeManager.TryGetFunctionWorkspace(customNode.FunctionSignature, false, out ICustomNodeWorkspaceModel customNodeWS);
+                if (!customNodeManager.TryGetFunctionWorkspace(customNode.FunctionSignature, false,
+                    out ICustomNodeWorkspaceModel customNodeWS))
+                    return containIronPythonDependency;
 
                 // If a custom node workspace is already checked for IronPython dependencies, 
                 // check the CustomNodePythonDependency dictionary instead of processing it again. 

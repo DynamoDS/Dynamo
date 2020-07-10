@@ -226,14 +226,14 @@ namespace DynamoCoreWpfTests
                 .First() as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(GraphPythonDependencies.ContainsIronPythonDependencies(viewExtension.CurrentWorkspace, 
-                viewExtension.DynamoViewModel.Model.CustomNodeManager));
+            Assert.IsTrue(GraphPythonDependencies.ContainsIronPythonDependencies(pythonMigration.CurrentWorkspace,
+                pythonMigration.DynamoViewModel.Model.CustomNodeManager));
             DispatcherUtil.DoEvents();
         }
 
         /// <summary>
         /// Checks if pressing the `More Information` button on the IronPythonInfoDialog window
-        /// will open the DocumentaionBrowser ViewExtension.
+        /// will open the DocumentationBrowser ViewExtension.
         /// </summary>
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
