@@ -35,7 +35,7 @@ namespace Dynamo.Tests
             Type resourceType = typeof(Resources);
 
             var attr = new NodeDescriptionAttribute(descriptionResourceID, resourceType);
-            Assert.AreEqual("Visualize the output of node.", attr.ElementDescription);
+            Assert.AreEqual(Resources.WatchNodeDescription, attr.ElementDescription);
 
             //resourceType is valid but descriptionResourceID is not
             descriptionResourceID = "Nil";
@@ -74,7 +74,7 @@ namespace Dynamo.Tests
             Type resourceType = typeof(Resources);
 
             attr = new NodeObsoleteAttribute(descriptionResourceID, resourceType);
-            Assert.AreEqual("Visualize the output of node.", attr.Message);
+            Assert.AreEqual(Resources.WatchNodeDescription, attr.Message);
 
             //resourceType is valid but descriptionResourceID is not
             descriptionResourceID = "Nil";
