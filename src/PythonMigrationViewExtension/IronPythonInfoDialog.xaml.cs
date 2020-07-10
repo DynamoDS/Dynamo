@@ -85,7 +85,7 @@ namespace Dynamo.PythonMigration
             
             foreach (var item in lb.SelectedItems)
             {
-                collectedText += item.ToString() + "\r\n";
+                collectedText += item.ToString() + System.Environment.NewLine;
             }
 
             if (lb.SelectedItems != null)
