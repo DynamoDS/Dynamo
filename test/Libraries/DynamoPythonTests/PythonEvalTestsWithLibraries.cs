@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
 using NUnit.Framework;
-using static DSIronPythonTests.IronPythonTests;
+using static DSPythonTests.PythonEvalTests;
 
 namespace DynamoPythonTests
 {
@@ -176,8 +176,7 @@ OUT = a, l
         }
 
         [Test]
-        [Category("Failure")]
-        public void TestDictionaryEncoding()
+        public void TestDictionaryDecodingCPython()
         {
             string code = @"
 import sys
@@ -188,25 +187,35 @@ from DesignScript.Builtin import Dictionary
 from FFITarget import DummyCollection
 
 d = {'one': 1, 'two': 2, 'three': 3}
-# Python dict => DS Dictionary - Does not work in either engine
-# d2 = Dictionary.SetValueAtKeys(d, ['four'], [4])
 
-# Python dict => .NET IDictionary - Does not work in CPython
-d = DummyCollection.AcceptIDictionary(d)
-# .NET IDictionary => Python dict - Works in IronPython. Could not test in CPython due to previous bug
-d['five'] = 5
+# Python dict => .NET IDictionary
+untypedDictionary = DummyCollection.AcceptIDictionary(d)
+untypedDictionary['four'] = 4
 
-OUT = d
+# Python dict => .NET IDictionary<> - Does not work in IronPython
+typedDictionary = DummyCollection.AcceptDictionary(d)
+typedDictionary['four'] = 4
+
+OUT = untypedDictionary, typedDictionary
 ";
             var empty = new ArrayList();
             var expected = new Dictionary<string, int> {
-                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "five", 5 }
+                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "four", 4 }
             };
-            foreach (var pythonEvaluator in Evaluators)
+            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            Assert.IsTrue(result is IList);
+            foreach (var dict in result as IList)
             {
-                var result = pythonEvaluator(code, empty, empty);
-                Assert.IsTrue(result is IDictionary);
-                CollectionAssert.AreEquivalent(expected, result as IDictionary);
+                DictionaryAssert(expected, dict as IDictionary);
+            }
+        }
+
+        private void DictionaryAssert(IDictionary expected, IDictionary actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+            foreach (var key in expected.Keys)
+            {
+                Assert.AreEqual(expected[key], actual[key]);
             }
         }
     }
