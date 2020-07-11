@@ -104,9 +104,6 @@ namespace Dynamo.WorkspaceDependency
             var packageInfo = new PackageInfo(pythonPackage, pythonPackageVersion);
             var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
 
-            //var installedPackages = pmExtension.PackageLoader.LocalPackages;
-            //var isPackageLoaded = installedPackages.Any(x =>
-            //    x.Name == pythonPackage && x.VersionName == pythonPackageVersion.ToString());
             packageDependencyInfo.State = GraphPythonDependencies.IsIronPythonPackageLoaded ? 
                 PackageDependencyState.Loaded : PackageDependencyState.Missing;
 

@@ -127,7 +127,7 @@ namespace Dynamo.WorkspaceDependency
             var packageDependencies = ws.NodeLibraryDependencies.Where(d => d is PackageDependencyInfo).ToList();
 
             var pythonPackageDependency = dependencyViewExtension.AddPythonPackageDependency(ws);
-            if(pythonPackageDependency != null)
+            if (pythonPackageDependency != null)
                 packageDependencies.Add(pythonPackageDependency);
 
             if (packageDependencies.Any(d => d.State != PackageDependencyState.Loaded))
