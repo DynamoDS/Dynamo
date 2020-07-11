@@ -24,6 +24,7 @@ namespace DynamoCoreWpfTests
         private WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
+        private string CoreTestDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "core"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -71,7 +72,6 @@ namespace DynamoCoreWpfTests
             viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
-            var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
@@ -89,6 +89,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("2.0.1", newInfo.Version.ToString());
             Assert.AreEqual(1, newInfo.Nodes.Count);
             Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
+        }
+
+        [Test]
+        public void IronPythonPackageLoadedTest()
+        {
+            RaiseLoadedEvent(View);
+            
+            Open(Path.Combine(CoreTestDirectory, @"python\python.dyn"));
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.pmExtension = Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
+            viewExtension.Loaded(loadedParams);
+
+            var currentWorkspace = ViewModel.Model.CurrentWorkspace;
+
+            var pkgDependencyInfo = viewExtension.AddPythonPackageDependency(currentWorkspace);
+
+            Assert.IsTrue(pkgDependencyInfo != null);
+            Assert.AreEqual(PackageDependencyState.Loaded, pkgDependencyInfo.State);
+            Assert.AreEqual(viewExtension.pythonPackage, pkgDependencyInfo.Name);
+            Assert.AreEqual(viewExtension.pythonPackageVersion, pkgDependencyInfo.Version);
         }
 
         /// <summary>

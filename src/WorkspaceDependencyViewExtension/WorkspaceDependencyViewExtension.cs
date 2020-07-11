@@ -21,8 +21,8 @@ namespace Dynamo.WorkspaceDependency
     {
         internal MenuItem workspaceReferencesMenuItem;
         private const string extensionName = "Workspace References";
-        private const string pythonPackage = "DSIronPython_Test";
-        private readonly Version pythonPackageVersion = new Version(1, 0, 7);
+        internal readonly string pythonPackage = "DSIronPython_Test";
+        internal readonly Version pythonPackageVersion = new Version(1, 0, 7);
 
         private ICustomNodeManager customNodeManager;
 
@@ -98,17 +98,17 @@ namespace Dynamo.WorkspaceDependency
 
         internal INodeLibraryDependencyInfo AddPythonPackageDependency(WorkspaceModel workspace)
         {
-            if (!GraphPythonDependencies.ContainsIronPythonDependencies(workspace, customNodeManager))
+            if (!GraphPythonDependencies.ContainsIronPythonDependencyInCurrentWS(workspace, customNodeManager))
                 return null;
 
             var packageInfo = new PackageInfo(pythonPackage, pythonPackageVersion);
             var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
 
-            var installedPackages = pmExtension.PackageLoader.LocalPackages;
-            var isPackageLoaded = installedPackages.Any(x =>
-                x.Name == pythonPackage && x.VersionName == pythonPackageVersion.ToString());
-            
-            packageDependencyInfo.State = isPackageLoaded ? PackageDependencyState.Loaded : PackageDependencyState.Missing;
+            //var installedPackages = pmExtension.PackageLoader.LocalPackages;
+            //var isPackageLoaded = installedPackages.Any(x =>
+            //    x.Name == pythonPackage && x.VersionName == pythonPackageVersion.ToString());
+            packageDependencyInfo.State = GraphPythonDependencies.IsIronPythonPackageLoaded ? 
+                PackageDependencyState.Loaded : PackageDependencyState.Missing;
 
             return packageDependencyInfo;
         }

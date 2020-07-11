@@ -25,7 +25,6 @@ namespace DynamoPerformanceTests
                 "DesignScriptBuiltin.dll",
                 "DSCoreNodes.dll",
                 "DSOffice.dll",
-                "DSIronPython.dll",
                 "FunctionObject.ds",
                 "BuiltIn.ds",
                 "DynamoConversions.dll",
