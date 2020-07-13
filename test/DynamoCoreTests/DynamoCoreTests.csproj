@@ -94,6 +94,7 @@
     <Compile Include="Extensions\ExtensionCommandExecutiveTest.cs" />
     <Compile Include="Extensions\ExtensionLoaderTest.cs" />
     <Compile Include="Extensions\ExtensionManagerTest.cs" />
+    <Compile Include="Graph\Annotations\AnnotationModelTests.cs" />
     <Compile Include="Graph\Connectors\ConnectorModelTests.cs" />
     <Compile Include="Graph\Nodes\NodeAttributesTests.cs" />
     <Compile Include="Graph\Nodes\NodeModelTests.cs" />
