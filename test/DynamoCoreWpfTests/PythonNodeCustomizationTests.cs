@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
@@ -30,6 +28,9 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("DSCPython.dll");
             libraries.Add("DSIronPython.dll");
+            // Make sure Python Engine Selector Singleton has all the info up-to-date.
+            // This is not needed for Dynamo in normal use case but useful in unit test case.
+            PythonEngineSelector.Instance.ScanPythonEngines();
             base.GetLibrariesToPreload(libraries);
         }
 
