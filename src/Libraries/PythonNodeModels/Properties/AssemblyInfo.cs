@@ -13,3 +13,6 @@ using System.Runtime.InteropServices;
 
 // Visible for PythonNodeModelsWpf 
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+// Remove this when PythonEngineSelector become public
+[assembly: InternalsVisibleTo("DynamoPythonTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpfTests")]

@@ -13,15 +13,6 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
-    /// <summary>
-    /// Enum of possible values of python engine versions
-    /// </summary>
-    public enum PythonEngineVersion
-    {
-        IronPython2,
-        CPython3
-    }
-
     public abstract class PythonNodeBase : VariableInputNode
     {
         private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
@@ -82,34 +73,14 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
-            // class name and function name. We are hardcoding the class name and function name for now. 
-            var pythonEngineClass = string.Empty;
-            var pythonEvaluatorMethod = string.Empty;
-
-            if (Engine == PythonEngineVersion.IronPython2)
-            {
-                // TODO: Determine the class name and function name with the dynamic loading Python engine task
-                pythonEngineClass = "IronPythonEvaluator";
-                pythonEvaluatorMethod = "EvaluateIronPythonScript";
-                // TODO: Throw InvalidOperationException indicating IronPython engine missing when not loaded
-            }
-            else if (Engine == PythonEngineVersion.CPython3)
-            {
-                // TODO: Determine the class name and function name with the dynamic loading Python engine task
-                pythonEngineClass = "CPythonEvaluator";
-                pythonEvaluatorMethod = "EvaluatePythonScript";
-                // TODO: Throw InvalidOperationException indicating CPython engine missing when not loaded
-            }
-            else
-            {
-                throw new InvalidOperationException("Unknown Python engine " + Engine);
-            }
+            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
+            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    pythonEngineClass,
-                    pythonEvaluatorMethod,
+                    evaluatorClass,
+                    evaluationMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,

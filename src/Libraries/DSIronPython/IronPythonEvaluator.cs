@@ -64,7 +64,6 @@ namespace DSIronPython
                 pythonLibDir = Path.Combine(Path.GetDirectoryName(executionPath), PythonLibName);
 
                 // If IronPython.Std folder is excluded from DynamoCore (which could be user mistake or integrator exclusion)
-                // Or if the execution path is different than Dynamo root folder
                 if (!Directory.Exists(pythonLibDir))
                 {
                     // Try to load IronPython from extension package
