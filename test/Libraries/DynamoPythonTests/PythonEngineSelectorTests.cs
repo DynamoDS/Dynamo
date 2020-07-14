@@ -23,6 +23,7 @@ namespace DynamoPythonTests
         public void TestEngineSelectorInitialization()
         {
             PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2, out string evaluatorClass, out string evaluationMethod);
+            Assert.AreEqual(true, PythonEngineSelector.lazy.IsValueCreated);
             Assert.AreEqual(evaluatorClass, PythonEngineSelector.Instance.IronPythonEvaluatorClass);
             Assert.AreEqual(evaluationMethod, PythonEngineSelector.Instance.IronPythonEvaluationMethod);
 

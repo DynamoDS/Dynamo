@@ -17,7 +17,7 @@ namespace PythonNodeModels
     /// Singleton class that other class can access and use for query loaded Python Engine info.
     /// TODO: Make the Singleton class public when Dynamic loading is also ready.
     /// </summary>
-    public sealed class PythonEngineSelector
+    internal sealed class PythonEngineSelector
     {
         /// <summary>
         /// Use Lazy&lt;PythonEngineSelector&gt; to make sure the Singleton class is only initialized once
@@ -30,16 +30,16 @@ namespace PythonNodeModels
         /// <summary>
         /// The actual instance stored in the Singleton class
         /// </summary>
-        public static PythonEngineSelector Instance { get { return lazy.Value; } }
+        internal static PythonEngineSelector Instance { get { return lazy.Value; } }
 
         // TODO: The following fields might be removed after dynamic loading applied
-        public bool IsIronPythonEnabled { get; private set; }
-        public readonly string IronPythonEvaluatorClass = "IronPythonEvaluator";
-        public readonly string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
+        internal bool IsIronPythonEnabled = false;
+        internal string IronPythonEvaluatorClass = "IronPythonEvaluator";
+        internal string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
 
-        public bool IsCPythonEnabled { get; private set; }
-        public readonly string CPythonEvaluatorClass = "CPythonEvaluator";
-        public readonly string CPythonEvaluationMethod = "EvaluatePythonScript";
+        internal bool IsCPythonEnabled = false;
+        internal string CPythonEvaluatorClass = "CPythonEvaluator";
+        internal string CPythonEvaluationMethod = "EvaluatePythonScript";
 
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
@@ -52,7 +52,7 @@ namespace PythonNodeModels
         /// <summary>
         /// Scan loaded Python engines
         /// </summary>
-        public void ScanPythonEngines()
+        internal void ScanPythonEngines()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
             // Currently we are using try-catch to validate loaded assembly and evaluation method exist
@@ -91,7 +91,7 @@ namespace PythonNodeModels
         /// <param name="engine"></param>
         /// <param name="evaluatorClass"></param>
         /// <param name="evaluationMethod"></param>
-        public void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
+        internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
             if (engine == PythonEngineVersion.IronPython2 && Instance.IsIronPythonEnabled)
