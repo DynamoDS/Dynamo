@@ -13,3 +13,5 @@ using System.Runtime.InteropServices;
 // Remove this when PythonEngineSelector become public
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("IronPythonExtension")]
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]

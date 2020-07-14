@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="IronPythonExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+    <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
   </ItemGroup>
@@ -53,6 +53,11 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+      <Name>PythonNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="IronPythonExtension_ExtensionDefinition.xml" />
@@ -60,7 +65,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>
-        <ExtensionDefinition Include="IronPythonExtension_ExtensionDefinition.xml" />
+      <ExtensionDefinition Include="IronPythonExtension_ExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
   </Target>
