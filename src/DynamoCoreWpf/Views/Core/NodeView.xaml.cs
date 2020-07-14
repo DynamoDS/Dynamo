@@ -490,8 +490,6 @@ namespace Dynamo.Controls
         {
             ViewModel.ZIndex = oldZIndex;
 
-            Debug.WriteLine($"Mouse over preview: {PreviewControl.IsMouseOver}");
-
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
             if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
