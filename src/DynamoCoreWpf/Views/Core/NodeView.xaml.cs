@@ -493,8 +493,7 @@ namespace Dynamo.Controls
             Debug.WriteLine($"Mouse over preview: {PreviewControl.IsMouseOver}");
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            var insidePreview = IsMouseInsidePreview(e);
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || insidePreview ||
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
@@ -544,7 +543,7 @@ namespace Dynamo.Controls
                             preview.TransitionToState(PreviewControl.State.Expanded);
                         }
 
-                        if (!IsMouseOver && !PreviewControl.IsMouseOver)
+                        if (!IsMouseOver)
                         {
                             // If mouse is captured by DragCanvas and mouse is still over node, preview should stay open.
                             if (!(Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
@@ -659,24 +658,8 @@ namespace Dynamo.Controls
             if (previewControl != null)
             {
                 var bounds = new Rect(0, 0, previewControl.ActualWidth, previewControl.ActualHeight);
-                //var bounds = VisualTreeHelper.GetDescendantBounds(previewControl);
                 var mousePosition = e.GetPosition(previewControl);
-                //var bounds = previewControl.BoundsRelativeTo(this);
-                //var mousePosition = e.GetPosition(this);
                 isInside = bounds.Contains(mousePosition);
-                //var mousePosition = e.GetPosition(previewControl);
-                //VisualTreeHelper.HitTest(
-                //    previewControl,
-                //    d =>
-                //    {
-                //        if (d == previewControl)
-                //        {
-                //            isInside = true;
-                //        }
-                //        return HitTestFilterBehavior.Stop;
-                //    },
-                //    ht => HitTestResultBehavior.Stop,
-                //    new PointHitTestParameters(mousePosition));
             }
 
             return isInside;
