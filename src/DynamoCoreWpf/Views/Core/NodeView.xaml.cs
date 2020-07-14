@@ -88,6 +88,7 @@ namespace Dynamo.Controls
                 previewControl.StateChanged += OnPreviewControlStateChanged;
                 previewControl.bubbleTools.MouseEnter += OnPreviewControlMouseEnter;
                 previewControl.bubbleTools.MouseLeave += OnPreviewControlMouseLeave;
+                previewControl.MouseLeave += OnNodeViewMouseLeave;
                 expansionBay.Children.Add(previewControl);
             }
         }
@@ -489,8 +490,11 @@ namespace Dynamo.Controls
         {
             ViewModel.ZIndex = oldZIndex;
 
+            Debug.WriteLine($"Mouse over preview: {PreviewControl.IsMouseOver}");
+
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
+            var insidePreview = IsMouseInsidePreview(e);
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || insidePreview ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
@@ -540,7 +544,7 @@ namespace Dynamo.Controls
                             preview.TransitionToState(PreviewControl.State.Expanded);
                         }
 
-                        if (!IsMouseOver)
+                        if (!IsMouseOver && !PreviewControl.IsMouseOver)
                         {
                             // If mouse is captured by DragCanvas and mouse is still over node, preview should stay open.
                             if (!(Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(Mouse.GetPosition(this))))
@@ -633,11 +637,48 @@ namespace Dynamo.Controls
                     {
                         isInside = true;
                     }
-
                     return HitTestFilterBehavior.Stop;
                 },
                 ht => HitTestResultBehavior.Stop,
                 new PointHitTestParameters(mousePosition));
+            return isInside;
+        }
+
+        /// <summary>
+        /// Checks whether a mouse event occurred at a position matching the preview.
+        /// Alternatives attempted:
+        /// - PreviewControl.IsMouseOver => This is always false
+        /// - HitTest on NodeView => Anomalous region that skips right part of preview if larger than node
+        /// - HitTest on Preview => Bounds become irreversible larger than "mouse over area" after preview is expanded
+        /// </summary>
+        /// <param name="e">A mouse event</param>
+        /// <returns>Whether the mouse is over the preview or not</returns>
+        private bool IsMouseInsidePreview(MouseEventArgs e)
+        {
+            var isInside = false;
+            if (previewControl != null)
+            {
+                var bounds = new Rect(0, 0, previewControl.ActualWidth, previewControl.ActualHeight);
+                //var bounds = VisualTreeHelper.GetDescendantBounds(previewControl);
+                var mousePosition = e.GetPosition(previewControl);
+                //var bounds = previewControl.BoundsRelativeTo(this);
+                //var mousePosition = e.GetPosition(this);
+                isInside = bounds.Contains(mousePosition);
+                //var mousePosition = e.GetPosition(previewControl);
+                //VisualTreeHelper.HitTest(
+                //    previewControl,
+                //    d =>
+                //    {
+                //        if (d == previewControl)
+                //        {
+                //            isInside = true;
+                //        }
+                //        return HitTestFilterBehavior.Stop;
+                //    },
+                //    ht => HitTestResultBehavior.Stop,
+                //    new PointHitTestParameters(mousePosition));
+            }
+
             return isInside;
         }
 
