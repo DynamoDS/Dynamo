@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Documents;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -10,39 +9,48 @@ using PythonNodeModels;
 
 namespace Dynamo.PythonMigration
 {
-    internal static class GraphPythonDependencies
+    public class GraphPythonDependencies
     {
+        private ViewLoadedParams ViewLoaded { get; set; }
 
         // A dictionary to mark Custom Nodes if they have a IronPython dependency or not. 
-        private static Dictionary<Guid, CNPythonDependency> CustomNodePythonDependency = new Dictionary<Guid, CNPythonDependency>();
+        internal static Dictionary<Guid, CNPythonDependencyType> CustomNodePythonDependencyMap = new Dictionary<Guid, CNPythonDependencyType>();
 
-        private enum CNPythonDependency
+        internal enum CNPythonDependencyType
         {
             NoDependency,
             NestedDependency,
             DirectDependency
         }
 
-        internal static bool GraphContainsPythonDependencies(ViewLoadedParams viewLoaded, out List<PythonNodeBase> pythonNodes)
+        internal GraphPythonDependencies(ViewLoadedParams viewLoadedParams)
         {
-            pythonNodes = new List<PythonNodeBase>(); 
-            if (viewLoaded == null)
-                return false;
+            this.ViewLoaded = viewLoadedParams;
+        }
 
-            var workspaceNodes = viewLoaded.CurrentWorkspaceModel.Nodes;
+        internal bool ContainsIronPythonDependencyInCurrentWS()
+        {
+            var containsIronPythonDependency = false;
+            var workspace = ViewLoaded.CurrentWorkspaceModel;
 
-            if (!workspaceNodes.Any() || workspaceNodes.Count() == 0)
-                return false;
+            if (workspace == null)
+                throw new ArgumentNullException(nameof(workspace));
 
-            pythonNodes.AddRange(workspaceNodes.Where(x => x is PythonNodeBase).Select(x => x as PythonNodeBase));
-            if (pythonNodes.Any())
-                return true;
+            if (workspace.Nodes.Any(n => IsIronPythonNode(n)))
+            {
+                containsIronPythonDependency = true;
+            }
 
             // Check if any of the custom nodes has IronPython dependencies in it. 
-            var customNodeManager = viewLoaded.StartupParams.CustomNodeManager;
-            var customNodes = workspaceNodes.OfType<Function>();
+            var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
+            var customNodes = workspace.Nodes.OfType<Function>();
 
-            return CustomNodesContainIronPythonDependency(customNodes, customNodeManager);           
+            if (CustomNodesContainIronPythonDependency(customNodes, customNodeManager))
+            {
+                containsIronPythonDependency = true;
+            }
+
+            return containsIronPythonDependency;
         }
 
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 
@@ -58,9 +66,9 @@ namespace Dynamo.PythonMigration
 
                 // If a custom node workspace is already checked for IronPython dependencies, 
                 // check the CustomNodePythonDependency dictionary instead of processing it again. 
-                if (CustomNodePythonDependency.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependency dependency))
+                if (CustomNodePythonDependencyMap.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependencyType dependency))
                 {
-                    if (dependency == CNPythonDependency.DirectDependency || dependency == CNPythonDependency.NestedDependency)
+                    if (dependency == CNPythonDependencyType.DirectDependency || dependency == CNPythonDependencyType.NestedDependency)
                     {
                         containIronPythonDependency = true;
                     }
@@ -71,12 +79,12 @@ namespace Dynamo.PythonMigration
 
                 if (hasPythonNodesInCustomNodeWorkspace)
                 {
-                    CustomNodePythonDependency.Add(customNodeWS.CustomNodeId, CNPythonDependency.DirectDependency);
+                    CustomNodePythonDependencyMap.Add(customNodeWS.CustomNodeId, CNPythonDependencyType.DirectDependency);
                     containIronPythonDependency = true;
                 }
                 else
                 {
-                    CustomNodePythonDependency.Add(customNodeWS.CustomNodeId, CNPythonDependency.NoDependency);
+                    CustomNodePythonDependencyMap.Add(customNodeWS.CustomNodeId, CNPythonDependencyType.NoDependency);
                 }
 
                 // Recursively check for IronPython dependencies in the nested custom nodes.
@@ -88,9 +96,9 @@ namespace Dynamo.PythonMigration
 
                     // If a custom node contains an IronPython dependency in its sub-tree,
                     // update its corresponding value to 'NestedDependency' in CustomNodePythonDependency.
-                    if (hasPythonNodesInCustomNodeWorkspace)
+                    if (hasPythonNodesInCustomNodeWorkspace && CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] != CNPythonDependencyType.DirectDependency)
                     {
-                        CustomNodePythonDependency[customNodeWS.CustomNodeId] = CNPythonDependency.NestedDependency;
+                        CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] = CNPythonDependencyType.NestedDependency;
                         containIronPythonDependency = true;
                     }
                 }
@@ -99,24 +107,13 @@ namespace Dynamo.PythonMigration
             return containIronPythonDependency;
         }
 
-        internal static bool ContainsIronPythonDependencies(ViewLoadedParams viewLoaded)
+        internal bool ContainsCPythonDependencies()
         {
-            var workspaceNodes = viewLoaded.CurrentWorkspaceModel.Nodes;
+            var workspace = ViewLoaded.CurrentWorkspaceModel;
+            if (workspace == null)
+                throw new ArgumentNullException(nameof(workspace));
 
-            if (workspaceNodes.Where(x => x is PythonNodeBase).Any(n => IsIronPythonNode(n)))
-                return true;
-  
-            var customNodeManager = viewLoaded.StartupParams.CustomNodeManager;
-            var customNodes = workspaceNodes.OfType<Function>();
-
-            return CustomNodesContainIronPythonDependency(customNodes, customNodeManager);
-        }
-
-        internal static bool ContainsCPythonDependencies(IEnumerable<NodeModel> workspaceNodes)
-        {
-            return workspaceNodes
-                .Where(x => x is PythonNodeBase)
-                .Any(n => IsCPythonNode(n));
+            return workspace.Nodes.Any(n => IsCPythonNode(n));
         }
 
         internal static bool IsIronPythonNode(NodeModel obj)
