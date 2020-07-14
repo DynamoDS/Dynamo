@@ -88,7 +88,6 @@ namespace Dynamo.Controls
                 previewControl.StateChanged += OnPreviewControlStateChanged;
                 previewControl.bubbleTools.MouseEnter += OnPreviewControlMouseEnter;
                 previewControl.bubbleTools.MouseLeave += OnPreviewControlMouseLeave;
-                previewControl.MouseLeave += OnNodeViewMouseLeave;
                 expansionBay.Children.Add(previewControl);
             }
         }
