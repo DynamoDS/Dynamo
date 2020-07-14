@@ -139,6 +139,12 @@ There will be a time of transition where both versions of Python node will work 
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
     <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
   </data>
+  <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
+    <value>Before</value>
+  </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
     <value>Reject the current code changes.</value>
   </data>

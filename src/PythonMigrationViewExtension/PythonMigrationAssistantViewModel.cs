@@ -1,6 +1,5 @@
 ﻿using Dynamo.PythonMigration.MigrationAssistant;
 using PythonNodeModels;
-using System.Collections.Generic;
 
 namespace Dynamo.PythonMigration
 {

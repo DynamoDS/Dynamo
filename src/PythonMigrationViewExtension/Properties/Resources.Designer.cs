@@ -125,6 +125,24 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string PythonMigrationAssistantCodeAfter {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantCodeAfter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string PythonMigrationAssistantCodeBefore {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantCodeBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reject the current code changes..
         /// </summary>
         public static string RejectButtonTooltip {

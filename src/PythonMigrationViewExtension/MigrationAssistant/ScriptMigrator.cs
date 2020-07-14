@@ -1,8 +1,7 @@
-﻿using Python.Runtime;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Reflection;
+using Python.Runtime;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
@@ -44,10 +43,6 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 }
             }
 
-            catch (PythonException pe)
-            {
-                throw;
-            }
             finally
             {
                 PythonEngine.ReleaseLock(gs);
@@ -58,7 +53,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         {
             Assembly asm = Assembly.GetExecutingAssembly();
             string script;
-            using (var reader = 
+            using (var reader =
                 new StreamReader(asm.GetManifestResourceStream("Dynamo.PythonMigration.MigrationAssistant.migrate_2to3.py")))
             {
                 script = reader.ReadToEnd();
