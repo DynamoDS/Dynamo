@@ -11,8 +11,10 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("a0debf47-0cf2-46e8-90b9-0c3d9b808fd7")]
 
-// Visible for PythonNodeModelsWpf 
-[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 // Remove this when PythonEngineSelector become public
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+
+// Needed to use internal MigrationAssistantRequested event 
+[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
