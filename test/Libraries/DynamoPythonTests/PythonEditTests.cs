@@ -8,6 +8,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
@@ -582,16 +583,35 @@ namespace Dynamo.Tests
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
 
+            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
             var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
             var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "foo");
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
+            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
+
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream2.GUID.ToString(), "bar");
+
+            var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCmd);
+
+            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
+            var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCmd2);
+
+            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap);
 
         }
     }

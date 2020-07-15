@@ -11,17 +11,14 @@ using Python.Runtime;
 namespace DSCPython
 {
     /// <summary>
-    /// Used to comapre DynamoCPythonHandles by their PythonIDs
+    /// Used to compare DynamoCPythonHandles by their PythonIDs.
     /// </summary>
-    class DynamoCPythonHandleComparer : IEqualityComparer<DynamoCPythonHandle>
+    internal class DynamoCPythonHandleComparer : IEqualityComparer<DynamoCPythonHandle>
     {
 
         public bool Equals(DynamoCPythonHandle x, DynamoCPythonHandle y)
         {
-            if (x.PythonObjectID.Equals(y.PythonObjectID))
-            {
-                return true;
-            }
+            if (x.PythonObjectID.Equals(y.PythonObjectID)) return true;
             return false;
         }
 
@@ -67,7 +64,6 @@ namespace DSCPython
             {
                 HandleCountMap.Add(this, 1);
             }
-           
         }
 
         public override string ToString()
@@ -106,15 +102,14 @@ namespace DSCPython
             {
                 using (Py.GIL())
                 {
-
                     PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
                     HandleCountMap.Remove(this);
-                   
                 } 
             }
-            catch (Exception E)
+            catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine("error removing python object from global scope");   
+                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
+                System.Diagnostics.Debug.WriteLine($"error removing python object from global scope {e.Message}");
             }
             finally
             {
