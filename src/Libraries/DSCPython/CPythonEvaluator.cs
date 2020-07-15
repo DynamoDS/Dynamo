@@ -47,18 +47,13 @@ namespace DSCPython
         /// symbol within the global scope to find this python object instance.
         /// </summary>
         internal IntPtr PythonObjectID { get; set; }
-        /// <summary>
-        /// A string representation of this object.
-        /// TODO - it may be better to just call ToString - this was an attempt
-        /// to optimize needing to use locks and the GIL to get strings for preview bubbles.
-        /// </summary>
-        internal string StringRepresentation { get; set; }
-        public DynamoCPythonHandle(IntPtr id,string strRep)
+
+        public DynamoCPythonHandle(IntPtr id)
         {
             PythonObjectID = id;
-            StringRepresentation = strRep;
-            if (HandleCountMap.ContainsKey(this)) {
-                HandleCountMap[this] = HandleCountMap[this] +1;
+            if (HandleCountMap.ContainsKey(this))
+            {
+                HandleCountMap[this] = HandleCountMap[this] + 1;
             }
             else
             {
@@ -68,14 +63,7 @@ namespace DSCPython
 
         public override string ToString()
         {
-            if (String.IsNullOrEmpty(StringRepresentation))
-            {
-                return $"CPython Object ID:{PythonObjectID.ToString()}";
-            }
-            else
-            {
-                return StringRepresentation;
-            }
+            return $"CPython Object ID:{PythonObjectID.ToString()}";
         }
 
         /// <summary>
@@ -86,12 +74,13 @@ namespace DSCPython
         public void Dispose()
         {
             //key doesn't exist.
-            if (!HandleCountMap.ContainsKey(this)){
+            if (!HandleCountMap.ContainsKey(this))
+            {
                 return;
             }
             //there are more than 1 reference left, don't dispose.
             //decrement refs
-            if(HandleCountMap[this] > 1)
+            if (HandleCountMap[this] > 1)
             {
                 HandleCountMap[this] = HandleCountMap[this] - 1;
                 return;
@@ -104,7 +93,7 @@ namespace DSCPython
                 {
                     PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
                     HandleCountMap.Remove(this);
-                } 
+                }
             }
             catch (Exception e)
             {
@@ -165,9 +154,9 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-                
+
             }
-                
+
             IntPtr gs = PythonEngine.AcquireLock();
             try
             {
@@ -367,9 +356,9 @@ namespace DSCPython
                                     {
                                         var globalScope = PyScopeManager.Global.Get(globalScopeName);
                                         //try moving object to global scope
-                                        globalScope.Set(pyObj.Handle.ToString(),pyObj);
-                                        
-                                        return new DynamoCPythonHandle(pyObj.Handle, pyObj.ToString());
+                                        globalScope.Set(pyObj.Handle.ToString(), pyObj);
+
+                                        return new DynamoCPythonHandle(pyObj.Handle);
                                     }
                                     else
                                     {
