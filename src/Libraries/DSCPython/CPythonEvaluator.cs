@@ -11,6 +11,27 @@ using Python.Runtime;
 namespace DSCPython
 {
     /// <summary>
+    /// Used to comapre DynamoCPythonHandles by their PythonIDs
+    /// </summary>
+    class DynamoCPythonHandleComparer : IEqualityComparer<DynamoCPythonHandle>
+    {
+
+        public bool Equals(DynamoCPythonHandle x, DynamoCPythonHandle y)
+        {
+            if (x.PythonObjectID.Equals(y.PythonObjectID))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public int GetHashCode(DynamoCPythonHandle obj)
+        {
+            return obj.PythonObjectID.GetHashCode();
+        }
+    }
+
+    /// <summary>
     /// This class wraps a PythonNet.PyObj and performs
     /// disposal tasks to make sure the underlying object is removed from
     /// the shared global scope between all CPython scopes.
@@ -18,6 +39,12 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public class DynamoCPythonHandle : IDisposable
     {
+        /// <summary>
+        /// A static map of DynamoCPythonHandle counts, is used to avoid removing the underlying python objects from the 
+        /// global scope while there are still handles referencing them.
+        /// </summary>
+        internal static Dictionary<DynamoCPythonHandle, int> HandleCountMap = new Dictionary<DynamoCPythonHandle, int>(new DynamoCPythonHandleComparer());
+
         /// <summary>
         /// A unique ID that identifies this python object. It's as a lookup
         /// symbol within the global scope to find this python object instance.
@@ -33,6 +60,14 @@ namespace DSCPython
         {
             PythonObjectID = id;
             StringRepresentation = strRep;
+            if (HandleCountMap.ContainsKey(this)) {
+                HandleCountMap[this] = HandleCountMap[this] +1;
+            }
+            else
+            {
+                HandleCountMap.Add(this, 1);
+            }
+           
         }
 
         public override string ToString()
@@ -54,6 +89,18 @@ namespace DSCPython
         /// </summary>
         public void Dispose()
         {
+            //key doesn't exist.
+            if (!HandleCountMap.ContainsKey(this)){
+                return;
+            }
+            //there are more than 1 reference left, don't dispose.
+            //decrement refs
+            if(HandleCountMap[this] > 1)
+            {
+                HandleCountMap[this] = HandleCountMap[this] - 1;
+                return;
+            }
+
             IntPtr gs = PythonEngine.AcquireLock();
             try
             {
@@ -61,6 +108,8 @@ namespace DSCPython
                 {
 
                     PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
+                    HandleCountMap.Remove(this);
+                   
                 } 
             }
             catch (Exception E)
