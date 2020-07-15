@@ -47,15 +47,9 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 See the [Release Notes](https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
 
 ## Instrumentation ##
-Dynamo contains an instrumentation system that anonymously reports usage data to the Dynamo team. This data will be used to enhance the usability of the product. Aggregated summaries of the data will be shared back with the Dynamo community.
+Dynamo now leverage the same instrumentation component as other Autodesk products which share the opt-in option. Those data will be used to enhance the usability of the product.
 
-An example of the data communicated is:
 
-"DateTime: 2013-08-22 19:17:21, AppIdent: Dynamo, Tag: Heartbeat-Uptime-s, Data: MTMxMjQxLjY3MzAyMDg=, Priority: Info, SessionID: 3fd39f21-1c3f-4cf3-8cdd-f46ca5dde636, UserID: 2ac95f29-a912-49a8-8fb5-e2d287683d94"
-
-The Data is Base64 encoded. For example, the data field above ('MTMxMjQxLjY3MzAyMDg=') decodes to: '131241.6730208' This represents the number of seconds that the instance of Dynamo has been running.
-
-The UserID is randomly generated when the application is first run. The SessionID is randomly generated each time Dynamo is opened.
 
 ## License ##
 
