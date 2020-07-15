@@ -195,7 +195,44 @@ namespace DSCPython
                     outputMarshaler.RegisterMarshaler(
                         delegate (PyObject pyObj)
                         {
-                            // Special case: We want to return a long if possible, but fallback to BigInteger.
+                            // First, check if we are dealing with a wrapped .NET object.
+                            // This simplifies the cases that come afterwards, as wrapped
+                            // .NET collections pass some Python checks but not others. 
+                            var clrObj = pyObj.GetManagedObject();
+                            if (clrObj != null)
+                            {
+                                return outputMarshaler.Marshal(clrObj);
+                            }
+                            // Dictionaries are iterable, so they should come first
+                            if (PyDict.IsDictType(pyObj))
+                            {
+                                using (var pyDict = new PyDict(pyObj))
+                                {
+                                    var dict = new Dictionary<object, object>();
+                                    foreach (PyObject item in pyDict.Items())
+                                    {
+                                        dict.Add(
+                                            outputMarshaler.Marshal(item.GetItem(0)),
+                                            outputMarshaler.Marshal(item.GetItem(1))
+                                        );
+                                    }
+                                    return dict;
+                                }
+                            }
+                            // Other iterables should become lists, except for strings
+                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            {
+                                using (var pyList = PyList.AsList(pyObj))
+                                {
+                                    var list = new List<object>();
+                                    foreach (PyObject item in pyList)
+                                    {
+                                        list.Add(outputMarshaler.Marshal(item));
+                                    }
+                                    return list;
+                                }
+                            }
+                            // Special case for big long values: decode them as BigInteger
                             if (PyLong.IsLongType(pyObj))
                             {
                                 using (var pyLong = PyLong.AsLong(pyObj))
@@ -210,31 +247,8 @@ namespace DSCPython
                                     }
                                 }
                             }
-
-                            // Determine a target type to be caught by our decoders
-                            Type targetType;
-                            if (PyDict.IsDictType(pyObj))
-                            {
-                                // Dictionaries are also iterable, so we want to check this first
-                                targetType = typeof(IDictionary);
-                            }
-                            else if (PyString.IsStringType(pyObj))
-                            {
-                                // Strings are iterable, but we want them as strings instead of lists
-                                // Object should also work, but we can be more specific
-                                targetType = typeof(string);
-                            }
-                            else if (PyIter.IsIterable(pyObj))
-                            {
-                                targetType = typeof(IList);
-                            }
-                            else
-                            {
-                                // Give complete flexibility over the target type
-                                targetType = typeof(object);
-                            }
-
-                            var unmarshalled = pyObj.AsManagedObject(targetType);
+                            // Default handling for other Python objects
+                            var unmarshalled = pyObj.AsManagedObject(typeof(object));
                             if (unmarshalled is PyObject)
                             {
                                 using (unmarshalled as PyObject)
