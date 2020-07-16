@@ -12,5 +12,4 @@ using System.Runtime.InteropServices;
 [assembly: Guid("10af430d-0d3a-49ce-a63d-848912959745")]
 
 // Visible to DynamoCoreWpfTests dll for unit testing
-[assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]

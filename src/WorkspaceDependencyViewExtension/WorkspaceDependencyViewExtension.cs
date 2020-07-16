@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Windows.Controls;
 using Dynamo.Extensions;
-using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
@@ -19,9 +18,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private const string extensionName = "Workspace References";
-
-        private ICustomNodeManager customNodeManager;
+        private const String extensionName = "Workspace References";
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -93,11 +90,8 @@ namespace Dynamo.WorkspaceDependency
             }  
         }
 
-
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
-            customNodeManager = viewLoadedParams.StartupParams.CustomNodeManager;
-            
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
             // as we may have installed a missing package.
