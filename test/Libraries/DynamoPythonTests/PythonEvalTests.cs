@@ -14,7 +14,7 @@ namespace DSPythonTests
             DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
 
-      
+
         [Test]
         [Category("UnitTests")]
         public void EvaluatorWorks()
@@ -32,7 +32,7 @@ namespace DSPythonTests
         public void BindingsWork()
         {
             const string expected = "Hi!";
-            
+
             var names = new ArrayList { "test" };
             var vals = new ArrayList { expected };
 
@@ -47,7 +47,7 @@ namespace DSPythonTests
                 Assert.AreEqual(expected, output);
             }
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void DataMarshaling_Output()
@@ -112,7 +112,7 @@ namespace DSPythonTests
 
             marshaler.UnregisterMarshalerOfType<string>();
         }
-        
+
 
         [Test]
         public void SliceOperator_Output()
@@ -170,13 +170,14 @@ print 'hello'
         }
 
         [Test]
-        public void UnsupportedOutputShouldFailGracefullyInCPython()
+        public void OutputPythonObjectDoesNotThrow()
         {
             var code = @"
 import weakref
 
 class myobj:
-  pass
+    def __str__(self):
+        return 'I am a myobj'
 
 o = myobj()
 wr = weakref.ref(o)
@@ -184,16 +185,31 @@ wr = weakref.ref(o)
 OUT = wr
 ";
             var empty = new ArrayList();
+            Assert.DoesNotThrow(() =>
+            {
+                Assert.IsTrue(DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString().Contains("weakref at"));
 
-            try
+            });
+        }
+
+        [Test]
+        public void OutputPythonObjectHasProperToString()
+        {
+            var code = @"
+
+class myobj:
+    def __str__(self):
+        return 'I am a myobj'
+
+o = myobj()
+OUT = o
+";
+            var empty = new ArrayList();
+            Assert.DoesNotThrow(() =>
             {
-                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
-                Assert.Fail("An exception was expected");
-            }
-            catch (Exception exc)
-            {
-                Assert.AreEqual("Output could not be converted to a .NET value", exc.Message);
-            }
+                Assert.AreEqual("I am a myobj", DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString());
+
+            });
         }
     }
 }

@@ -63,7 +63,26 @@ namespace DSCPython
 
         public override string ToString()
         {
-            return $"CPython Object ID:{PythonObjectID.ToString()}";
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
+                {
+                    var scope = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    var pyobj = scope.Get(PythonObjectID.ToString());
+                    return pyobj.ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
+                System.Diagnostics.Debug.WriteLine($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
+                return this.PythonObjectID.ToString();
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
         }
 
         /// <summary>
