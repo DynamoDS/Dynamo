@@ -61,6 +61,7 @@
     <Compile Include="..\..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="DummyPythonEvaluator.cs" />
     <Compile Include="Encoders\BigIntegerEncoderDecoder.cs" />
     <Compile Include="CPythonEvaluator.cs" />
     <Compile Include="Encoders\DictionaryDecoder.cs" />
