@@ -205,7 +205,7 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The configured Python engine could not be found.
+        ///   Looks up a localized string similar to The selected Python engine could not be found.
         /// </summary>
         internal static string MissingPythonEngine {
             get {
