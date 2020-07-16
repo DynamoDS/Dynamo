@@ -110,13 +110,12 @@
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
-                    Margin="10,0,10,10">
+                    Margin="15,0,10,10">
             <CheckBox x:Name="DisableIronPythonDialogCheck"
                   Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
                   Click="ToggleIronPythonDialog"
-                  Margin="15,16,15,0"
                   VerticalAlignment="Center"
                   FontSize="12"
                   Background="White"
