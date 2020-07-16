@@ -12,6 +12,9 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         private ViewLoadedParams ViewLoaded { get; set; }
+        internal static readonly string PythonPackage = "DSIronPython_Test";
+        internal static readonly Version PythonPackageVersion = new Version(1, 0, 7);
+
 
         // A dictionary to mark Custom Nodes if they have a IronPython dependency or not. 
         internal static Dictionary<Guid, CNPythonDependencyType> CustomNodePythonDependencyMap = new Dictionary<Guid, CNPythonDependencyType>();
@@ -28,21 +31,39 @@ namespace Dynamo.PythonMigration
             this.ViewLoaded = viewLoadedParams;
         }
 
+        private static bool IsIronPythonPackageLoaded()
+        {
+            try
+            {
+                PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
+                    out string evaluatorClass, out string evaluationMethod);
+                if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
+                    evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
+                {
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            return false;
+        }
+
         internal bool ContainsIronPythonDependencyInCurrentWS()
         {
             var containsIronPythonDependency = false;
-            var workspace = ViewLoaded.CurrentWorkspaceModel;
 
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
+            var workspace = ViewLoaded.CurrentWorkspaceModel as WorkspaceModel;
 
-            if (workspace.Nodes.Any(n => IsIronPythonNode(n)))
+            var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
+
+            if (workspace.Nodes.Any(IsIronPythonNode))
             {
                 containsIronPythonDependency = true;
             }
 
             // Check if any of the custom nodes has IronPython dependencies in it. 
-            var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
             var customNodes = workspace.Nodes.OfType<Function>();
 
             if (CustomNodesContainIronPythonDependency(customNodes, customNodeManager))
@@ -53,16 +74,32 @@ namespace Dynamo.PythonMigration
             return containsIronPythonDependency;
         }
 
+        internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
+        {
+            if (!ContainsIronPythonDependencyInCurrentWS())
+                return null;
+
+            var packageInfo = new PackageInfo(PythonPackage, PythonPackageVersion);
+            var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
+            packageDependencyInfo.State = IsIronPythonPackageLoaded()
+                ? PackageDependencyState.Loaded
+                : PackageDependencyState.Missing;
+
+            return new[] {packageDependencyInfo};
+        }
+
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 
         // It traverses all CN's in the given list of customNodes and marks them as true in CustomNodePythonDependency, 
         // if the prarent custom node or any of its child custom nodes contain an IronPython dependency.
-        internal static bool CustomNodesContainIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
+        private static bool CustomNodesContainIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
         {
             var containIronPythonDependency = false;
 
             foreach (var customNode in customNodes)
             {
-                customNodeManager.TryGetFunctionWorkspace(customNode.FunctionSignature, false, out ICustomNodeWorkspaceModel customNodeWS);
+                if (!customNodeManager.TryGetFunctionWorkspace(customNode.FunctionSignature, false,
+                    out ICustomNodeWorkspaceModel customNodeWS))
+                    continue;
 
                 // If a custom node workspace is already checked for IronPython dependencies, 
                 // check the CustomNodePythonDependency dictionary instead of processing it again. 
