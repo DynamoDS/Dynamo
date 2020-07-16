@@ -173,7 +173,7 @@ namespace Dynamo.PythonMigration
 
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
-                    && PythonDependencies.ContainsIronPythonDependencyInCurrentWS(CurrentWorkspace))
+                    && PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
                 {
                     LogIronPythonNotification();
                     DisplayIronPythonDialog();

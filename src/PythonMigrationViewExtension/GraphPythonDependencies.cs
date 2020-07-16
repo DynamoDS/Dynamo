@@ -50,12 +50,11 @@ namespace Dynamo.PythonMigration
             return false;
         }
 
-        internal bool ContainsIronPythonDependencyInCurrentWS(WorkspaceModel workspace)
+        internal bool ContainsIronPythonDependencyInCurrentWS()
         {
             var containsIronPythonDependency = false;
 
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
+            var workspace = ViewLoaded.CurrentWorkspaceModel as WorkspaceModel;
 
             var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
 
@@ -75,9 +74,9 @@ namespace Dynamo.PythonMigration
             return containsIronPythonDependency;
         }
 
-        internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency(WorkspaceModel workspace)
+        internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
         {
-            if (!ContainsIronPythonDependencyInCurrentWS(workspace))
+            if (!ContainsIronPythonDependencyInCurrentWS())
                 return null;
 
             var packageInfo = new PackageInfo(PythonPackage, PythonPackageVersion);
