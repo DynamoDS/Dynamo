@@ -72,7 +72,7 @@ namespace Dynamo.PythonMigration
         private void DisplayIronPythonDialog()
         {
             // we only want to create the dialog ones for each graph per Dynamo session
-            if (DialogTracker.ContainsKey(CurrentWorkspace.Guid))
+            if (DialogTracker.ContainsKey(CurrentWorkspace.Guid) || DynamoViewModel.IsIronPythonDialogDisabled)
                 return;
 
             var dialog = new IronPythonInfoDialog(this)

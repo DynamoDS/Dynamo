@@ -114,7 +114,17 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show again..
+        /// </summary>
+        public static string IronPythonDisableAlertMessage { 
+            get
+            {
+                return ResourceManager.GetString("IronPythonDisableAlertMessage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>

@@ -716,6 +716,10 @@
                                   IsChecked="{Binding ShowCodeBlockLineNumber, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowCodeBlockNodeLineNumber}"/>
                         <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding IsIronPythonDialogDisabled, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuIsIronPythonDialogDisabled}"/>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />

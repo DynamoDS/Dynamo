@@ -1888,7 +1888,18 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowCodeBlockNodeLineNumber", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show Iron Python dialog box alert.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsIronPythonDialogDisabled
+        {
+            get
+            {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsIronPythonDialogDisabled", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Show Edges.
         /// </summary>
