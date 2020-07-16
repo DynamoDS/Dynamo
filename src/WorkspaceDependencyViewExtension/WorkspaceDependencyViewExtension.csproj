@@ -82,10 +82,6 @@
       <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
       <Name>DynamoPackages</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
-      <Project>{10af430d-0d3a-49ce-a63d-848912959745}</Project>
-      <Name>PythonMigrationViewExtension</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="WorkspaceDependencyView.xaml">

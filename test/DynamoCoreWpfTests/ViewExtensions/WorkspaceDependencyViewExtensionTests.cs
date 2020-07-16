@@ -24,7 +24,6 @@ namespace DynamoCoreWpfTests
         private WorkspaceDependencyViewExtension viewExtension = new WorkspaceDependencyViewExtension();
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "pkgs"); } }
-        private string CoreTestDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), "core"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -89,27 +88,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("2.0.1", newInfo.Version.ToString());
             Assert.AreEqual(1, newInfo.Nodes.Count);
             Assert.AreEqual(newInfo.State, PackageDependencyState.RequiresRestart);
-        }
-
-        [Test]
-        public void IronPythonPackageLoadedTest()
-        {
-            RaiseLoadedEvent(View);
-            
-            Open(Path.Combine(CoreTestDirectory, @"python\python.dyn"));
-
-            var loadedParams = new ViewLoadedParams(View, ViewModel);
-            viewExtension.pmExtension = Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.Loaded(loadedParams);
-
-            var currentWorkspace = ViewModel.Model.CurrentWorkspace;
-
-            var pkgDependencyInfo = viewExtension.AddPythonPackageDependency(currentWorkspace);
-
-            Assert.IsTrue(pkgDependencyInfo != null);
-            Assert.AreEqual(PackageDependencyState.Loaded, pkgDependencyInfo.State);
-            Assert.AreEqual(viewExtension.pythonPackage, pkgDependencyInfo.Name);
-            Assert.AreEqual(viewExtension.pythonPackageVersion, pkgDependencyInfo.Version);
         }
 
         /// <summary>
@@ -261,14 +239,6 @@ namespace DynamoCoreWpfTests
 
         }
 
-        public static void RaiseLoadedEvent(FrameworkElement element)
-        {
-            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
-
-            eventMethod.Invoke(element, new object[] { args });
-        }
+        
     }
 }

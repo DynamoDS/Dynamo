@@ -12,6 +12,9 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         private ViewLoadedParams ViewLoaded { get; set; }
+        internal static readonly string PythonPackage = "DSIronPython_Test";
+        internal static readonly Version PythonPackageVersion = new Version(1, 0, 7);
+
 
         // A dictionary to mark Custom Nodes if they have a IronPython dependency or not. 
         internal static Dictionary<Guid, CNPythonDependencyType> CustomNodePythonDependencyMap = new Dictionary<Guid, CNPythonDependencyType>();
@@ -28,37 +31,33 @@ namespace Dynamo.PythonMigration
             this.ViewLoaded = viewLoadedParams;
         }
 
-        internal static bool IsIronPythonPackageLoaded
+        private static bool IsIronPythonPackageLoaded()
         {
-            get
+            try
             {
-                try
+                PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
+                    out string evaluatorClass, out string evaluationMethod);
+                if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
+                    evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
                 {
-                    PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
-                        out string evaluatorClass, out string evaluationMethod);
-                    if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
-                        evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
-                catch (Exception)
-                {
-                    return false;
-                }
+            }
+            catch (Exception)
+            {
                 return false;
             }
+            return false;
         }
 
-        internal static bool ContainsIronPythonDependencyInCurrentWS(WorkspaceModel workspace, ICustomNodeManager customNodeManager)
+        internal bool ContainsIronPythonDependencyInCurrentWS(WorkspaceModel workspace)
         {
             var containsIronPythonDependency = false;
 
             if (workspace == null)
                 throw new ArgumentNullException(nameof(workspace));
 
-            if (customNodeManager == null)
-                throw new ArgumentNullException(nameof(customNodeManager));
+            var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
 
             if (workspace.Nodes.Any(IsIronPythonNode))
             {
@@ -74,6 +73,20 @@ namespace Dynamo.PythonMigration
             }
 
             return containsIronPythonDependency;
+        }
+
+        internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency(WorkspaceModel workspace)
+        {
+            if (!ContainsIronPythonDependencyInCurrentWS(workspace))
+                return null;
+
+            var packageInfo = new PackageInfo(PythonPackage, PythonPackageVersion);
+            var packageDependencyInfo = new PackageDependencyInfo(packageInfo);
+            packageDependencyInfo.State = IsIronPythonPackageLoaded()
+                ? PackageDependencyState.Loaded
+                : PackageDependencyState.Missing;
+
+            return new[] {packageDependencyInfo};
         }
 
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 

@@ -541,6 +541,12 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal Func<WorkspaceModel, IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+        internal IEnumerable<INodeLibraryDependencyInfo> OnRequestPackageDependencies()
+        {
+            return RequestPackageDependencies?.Invoke(this);
+        }
+
         /// <summary>
         /// NodeLibraries that the nodes in this graph depend on
         /// </summary>
