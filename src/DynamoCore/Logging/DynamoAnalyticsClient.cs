@@ -73,7 +73,7 @@ namespace Dynamo.Logging
 
             if (tryGetValue != null)
             {
-                Debug.WriteLine("User id found: " + tryGetValue);
+                Debug.WriteLine("Unique User id for Analytics found: " + tryGetValue);
                 return tryGetValue;
             }
 

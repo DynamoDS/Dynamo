@@ -1299,7 +1299,7 @@ namespace Dynamo.Graph.Nodes
                 // If any exception from BuildOutputAst(), we emit
                 // a function call "var_guid = %nodeAstFailed(full.node.name)"
                 // for this node, set the state of node to AstBuildBroken and
-                // disply the corresponding error message.
+                // display the corresponding error message.
                 //
                 // The return value of function %nodeAstFailed() is always
                 // null.
