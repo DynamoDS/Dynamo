@@ -18,8 +18,7 @@ namespace DSCPython
 
         public bool Equals(DynamoCPythonHandle x, DynamoCPythonHandle y)
         {
-            if (x.PythonObjectID.Equals(y.PythonObjectID)) return true;
-            return false;
+            return x.PythonObjectID.Equals(y.PythonObjectID);
         }
 
         public int GetHashCode(DynamoCPythonHandle obj)
