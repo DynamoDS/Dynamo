@@ -123,7 +123,4 @@
   <data name="InternalErrorTraceBackInfo" xml:space="preserve">
     <value>Internal error, please report: Trace back information could not be extracted</value>
   </data>
-  <data name="MissingPythonEngine" xml:space="preserve">
-    <value>The configured Python engine could not be found</value>
-  </data>
 </root>

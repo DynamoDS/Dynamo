@@ -205,6 +205,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The configured Python engine could not be found.
+        /// </summary>
+        internal static string MissingPythonEngine {
+            get {
+                return ResourceManager.GetString("MissingPythonEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Object cannot be null, please provide appropriate value..
         /// </summary>
         internal static string ObjectArgumentExceptionMessage {

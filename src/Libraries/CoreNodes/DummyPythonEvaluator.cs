@@ -2,7 +2,7 @@
 using System.Collections;
 using Autodesk.DesignScript.Runtime;
 
-namespace DSCPython
+namespace DSCore
 {
     /// <summary>
     /// Python evaluator that will only throw an error on evaluation.

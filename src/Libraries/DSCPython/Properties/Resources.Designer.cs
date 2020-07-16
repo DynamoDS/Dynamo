@@ -77,14 +77,5 @@ namespace DSCPython.Properties {
                 return ResourceManager.GetString("InternalErrorTraceBackInfo", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The configured Python engine could not be found.
-        /// </summary>
-        internal static string MissingPythonEngine {
-            get {
-                return ResourceManager.GetString("MissingPythonEngine", resourceCulture);
-            }
-        }
     }
 }
