@@ -195,18 +195,15 @@ namespace DSCPython
                     outputMarshaler.RegisterMarshaler(
                         delegate (PyObject pyObj)
                         {
-                            if (PyList.IsListType(pyObj))
+                            // First, check if we are dealing with a wrapped .NET object.
+                            // This simplifies the cases that come afterwards, as wrapped
+                            // .NET collections pass some Python checks but not others. 
+                            var clrObj = pyObj.GetManagedObject();
+                            if (clrObj != null)
                             {
-                                using (var pyList = new PyList(pyObj))
-                                {
-                                    var list = new List<object>();
-                                    foreach (PyObject item in pyList)
-                                    {
-                                        list.Add(outputMarshaler.Marshal(item));
-                                    }
-                                    return list;
-                                }
+                                return outputMarshaler.Marshal(clrObj);
                             }
+                            // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
                                 using (var pyDict = new PyDict(pyObj))
@@ -222,6 +219,20 @@ namespace DSCPython
                                     return dict;
                                 }
                             }
+                            // Other iterables should become lists, except for strings
+                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            {
+                                using (var pyList = PyList.AsList(pyObj))
+                                {
+                                    var list = new List<object>();
+                                    foreach (PyObject item in pyList)
+                                    {
+                                        list.Add(outputMarshaler.Marshal(item));
+                                    }
+                                    return list;
+                                }
+                            }
+                            // Special case for big long values: decode them as BigInteger
                             if (PyLong.IsLongType(pyObj))
                             {
                                 using (var pyLong = PyLong.AsLong(pyObj))
@@ -236,7 +247,7 @@ namespace DSCPython
                                     }
                                 }
                             }
-
+                            // Default handling for other Python objects
                             var unmarshalled = pyObj.AsManagedObject(typeof(object));
                             if (unmarshalled is PyObject)
                             {

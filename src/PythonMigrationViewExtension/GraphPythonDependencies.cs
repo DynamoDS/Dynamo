@@ -36,8 +36,8 @@ namespace Dynamo.PythonMigration
                 {
                     PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
                         out string evaluatorClass, out string evaluationMethod);
-                    if (evaluatorClass == PythonEngineSelector.IronPythonEvaluatorClass &&
-                        evaluationMethod == PythonEngineSelector.IronPythonEvaluationMethod)
+                    if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
+                        evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
                     {
                         return true;
                     }
