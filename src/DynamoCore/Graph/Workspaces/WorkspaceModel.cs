@@ -541,7 +541,18 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        internal Func<IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+        /// <summary>
+        /// Event requesting subscribers to return additional package dependencies for
+        /// current workspace.
+        /// </summary>
+        internal event Func<IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+
+        /// <summary>
+        /// Raised when the workspace needs to request for additional package dependencies
+        /// that can be returned from other subscribers such as view extensions.
+        /// E.g. The PythonMigrationViewExtension returns additional package dependencies required for Python engines.
+        /// </summary>
+        /// <returns></returns>
         internal IEnumerable<INodeLibraryDependencyInfo> OnRequestPackageDependencies()
         {
             return RequestPackageDependencies?.Invoke();

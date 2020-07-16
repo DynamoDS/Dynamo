@@ -120,7 +120,7 @@ namespace Dynamo.PythonMigration
             LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
             DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
-            //CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+            CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
         }
 
         private void OnNotificationLogged(NotificationMessage obj)
@@ -162,11 +162,9 @@ namespace Dynamo.PythonMigration
             {
                 NotificationTracker.Remove(CurrentWorkspace.Guid);
                 GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
-                //if (CurrentWorkspace.RequestPackageDependencies != null)
-                //{
-                //    CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
-                //    CurrentWorkspace.RequestPackageDependencies = null;
-                //}
+
+                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+
                 CurrentWorkspace = workspace as WorkspaceModel;
 
                 CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
