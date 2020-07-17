@@ -13,7 +13,7 @@ namespace Dynamo.PythonMigration
     {
         private ViewLoadedParams ViewLoaded { get; set; }
         internal static readonly string PythonPackage = "DSIronPython_Test";
-        internal static readonly Version PythonPackageVersion = new Version(1, 0, 7);
+        internal static readonly Version PythonPackageVersion = new Version(1, 0, 8);
 
 
         // A dictionary to mark Custom Nodes if they have a IronPython dependency or not. 
@@ -33,19 +33,12 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            try
+            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
+                out string evaluatorClass, out string evaluationMethod);
+            if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
+                evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
             {
-                PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
-                    out string evaluatorClass, out string evaluationMethod);
-                if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
-                    evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
-                {
-                    return true;
-                }
-            }
-            catch (Exception)
-            {
-                return false;
+                return true;
             }
             return false;
         }
