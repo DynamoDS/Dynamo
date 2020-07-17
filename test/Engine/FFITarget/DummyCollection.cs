@@ -12,6 +12,11 @@ namespace FFITarget
             return data.ToList();
         }
 
+        public static IEnumerable ReturnIEnumerable(IEnumerable data)
+        {
+            return data;
+        }
+
         public static IEnumerable<int> ReturnIEnumerableOfInt(IEnumerable<int> data)
         {
             return data;

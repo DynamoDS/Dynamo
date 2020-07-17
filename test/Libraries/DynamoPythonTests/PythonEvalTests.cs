@@ -211,5 +211,34 @@ OUT = o
 
             });
         }
+
+        [Test]
+        public void NonListIterablesCanBeOutput()
+        {
+            var code = @"
+s = { 'hello' }
+fs = frozenset({ 'world' })
+d = { 'one': 1 }
+dk = d.keys()
+dv = d.values()
+di = d.items()
+
+OUT = s,fs,dk,dv,di
+";
+            var expected = new ArrayList
+            {
+                new ArrayList { "hello" },
+                new ArrayList { "world" },
+                new ArrayList { "one" },
+                new ArrayList { 1 },
+                new ArrayList { new ArrayList { "one", 1 } }
+            };
+            var empty = new ArrayList();
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var output = pythonEvaluator(code, empty, empty);
+                Assert.AreEqual(expected, output);
+            }
+        }
     }
 }

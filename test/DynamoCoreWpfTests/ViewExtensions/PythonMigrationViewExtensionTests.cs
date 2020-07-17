@@ -7,10 +7,13 @@ using System.Windows.Controls;
 using Dynamo;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PythonMigration;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Extensions;
 using DynamoCoreWpfTests.Utility;
+using GraphLayout;
 using NUnit.Framework;
 
 namespace DynamoCoreWpfTests
@@ -18,10 +21,9 @@ namespace DynamoCoreWpfTests
     class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {
         private PythonMigrationViewExtension viewExtension = new PythonMigrationViewExtension();
-         
-       
-        private List<string> raisedEvents = new List<string>();
+        private string CoreTestDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "core"); } }
 
+        private List<string> raisedEvents = new List<string>();
 
         /// <summary>
         /// This test is created to check if the extension displays a dialog to the user
@@ -39,8 +41,8 @@ namespace DynamoCoreWpfTests
 
             var isIronPythonDialogOpen = this.View.OwnedWindows
                 .Cast<Window>()
-                .Any(x=>x.GetType() == typeof(IronPythonInfoDialog));
-        
+                .Any(x => x.GetType() == typeof(IronPythonInfoDialog));
+
             // Assert
             Assert.IsTrue(isIronPythonDialogOpen);
             DynamoModel.IsTestMode = true;
@@ -54,6 +56,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void WillLogNotificationWhenAddingAnIronPythonNode()
         {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             // Arrange
             string pythonNodeName = "Python Script";
             raisedEvents = new List<string>();
@@ -69,7 +72,7 @@ namespace DynamoCoreWpfTests
             var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
             // Assert
-            Assert.AreEqual(nodesCountBeforeNodeAdded+1, nodesCountAfterNodeAdded);
+            Assert.AreEqual(nodesCountBeforeNodeAdded + 1, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
@@ -98,7 +101,7 @@ namespace DynamoCoreWpfTests
             // Act
             // open file
             this.ViewModel.Model.Logger.NotificationLogged += Logger_NotificationLogged;
-          
+
 
             var nodesCountBeforeNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
@@ -106,19 +109,18 @@ namespace DynamoCoreWpfTests
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
             this.ViewModel.ExecuteCommand(new DynamoModel.
                 CreateNodeCommand(Guid.NewGuid().ToString(), pythonNodeName, 0, 0, false, false));
-            
+
             DispatcherUtil.DoEvents();
 
             var nodesCountAfterNodeAdded = this.ViewModel.CurrentSpace.Nodes.Count();
 
             // Assert
-            Assert.AreEqual(nodesCountBeforeNodeAdded+2, nodesCountAfterNodeAdded);
+            Assert.AreEqual(nodesCountBeforeNodeAdded + 2, nodesCountAfterNodeAdded);
             Assert.AreEqual(raisedEvents.Count, 1);
             Assert.IsTrue(raisedEvents.Any(x => x.Contains(nameof(PythonMigrationViewExtension))));
             raisedEvents.Clear();
             this.ViewModel.Model.Logger.NotificationLogged -= Logger_NotificationLogged;
             DispatcherUtil.DoEvents();
-
         }
 
         /// <summary>
@@ -221,18 +223,17 @@ namespace DynamoCoreWpfTests
             Open(@"core\python\python.dyn");
 
             var pythonMigration = extensionManager.ViewExtensions
-                .Where(x => x.Name == viewExtension.Name)
-                .Select(x=>x)
-                .First() as PythonMigrationViewExtension;
+                .FirstOrDefault(x => x.Name == viewExtension.Name)
+                as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencies());
+            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencyInCurrentWS());
             DispatcherUtil.DoEvents();
         }
 
         /// <summary>
         /// Checks if pressing the `More Information` button on the IronPythonInfoDialog window
-        /// will open the DocumentaionBrowser ViewExtension.
+        /// will open the DocumentationBrowser ViewExtension.
         /// </summary>
         [Test]
         public void CanOpenDocumentationBrowserWhenMoreInformationIsClicked()
@@ -294,13 +295,36 @@ namespace DynamoCoreWpfTests
             var examplePath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeHomeWorkspace.dyn");
             Open(examplePath);
 
-            var customNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Function>();
-            var customNodeManager = ViewModel.Model.CustomNodeManager;
+            var pythonMigration = View.viewExtensionManager.ViewExtensions
+                .Where(x => x.Name == viewExtension.Name)
+                .Select(x => x)
+                .First() as PythonMigrationViewExtension;
 
-            var result = GraphPythonDependencies.CustomNodesContainIronPythonDependency(customNodes, customNodeManager);
+            var result = pythonMigration.PythonDependencies.ContainsIronPythonDependencyInCurrentWS();
 
             Assert.IsTrue(result);
             DispatcherUtil.DoEvents();
         }
+
+        [Test]
+        public void IronPythonPackageLoadedTest()
+        {
+            RaiseLoadedEvent(View);
+
+            Open(Path.Combine(CoreTestDirectory, @"python\python.dyn"));
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+            viewExtension.Loaded(loadedParams);
+
+            var currentWorkspace = ViewModel.Model.CurrentWorkspace;
+
+            var pkgDependencyInfo = currentWorkspace.OnRequestPackageDependencies().FirstOrDefault();
+
+            Assert.IsTrue(pkgDependencyInfo != null);
+            Assert.AreEqual(PackageDependencyState.Loaded, pkgDependencyInfo.State);
+            Assert.AreEqual(GraphPythonDependencies.PythonPackage, pkgDependencyInfo.Name);
+            Assert.AreEqual(GraphPythonDependencies.PythonPackageVersion, pkgDependencyInfo.Version);
+        }
+
     }
 }
