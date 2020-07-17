@@ -579,6 +579,8 @@ namespace Dynamo.Tests
         [Test]
         public void CPythonClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
         {
+            //clear the handleCountMap so other tests don't effect the counts.
+            DynamoCPythonHandle.HandleCountMap.Clear();
             // open test graph
             var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
             ViewModel.OpenCommand.Execute(examplePath);
