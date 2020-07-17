@@ -366,7 +366,7 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
-                OnPropertyChanged("CurrentWorkspace");
+                OnPropertyChanged(nameof(CurrentWorkspace));
             }
         }
 

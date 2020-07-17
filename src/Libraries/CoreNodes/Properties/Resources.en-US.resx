@@ -165,6 +165,9 @@
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
     <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
   </data>
+  <data name="MissingPythonEngine" xml:space="preserve">
+    <value>The selected Python engine could not be found</value>
+  </data>
   <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
     <value>Object cannot be null, please provide appropriate value.</value>
   </data>
