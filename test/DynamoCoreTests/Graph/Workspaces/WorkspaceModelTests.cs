@@ -195,7 +195,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Clears previous selection
-            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.ClearSelection();
 
             //Selects new node
             DynamoSelection.Instance.Selection.Add(extraNode);
