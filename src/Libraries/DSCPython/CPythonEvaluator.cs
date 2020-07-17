@@ -10,6 +10,121 @@ using Python.Runtime;
 
 namespace DSCPython
 {
+    /// <summary>
+    /// Used to compare DynamoCPythonHandles by their PythonIDs.
+    /// </summary>
+    internal class DynamoCPythonHandleComparer : IEqualityComparer<DynamoCPythonHandle>
+    {
+
+        public bool Equals(DynamoCPythonHandle x, DynamoCPythonHandle y)
+        {
+            return x.PythonObjectID.Equals(y.PythonObjectID);
+        }
+
+        public int GetHashCode(DynamoCPythonHandle obj)
+        {
+            return obj.PythonObjectID.GetHashCode();
+        }
+    }
+
+    /// <summary>
+    /// This class wraps a PythonNet.PyObj and performs
+    /// disposal tasks to make sure the underlying object is removed from
+    /// the shared global scope between all CPython scopes.
+    /// </summary>
+    [IsVisibleInDynamoLibrary(false)]
+    public class DynamoCPythonHandle : IDisposable
+    {
+        /// <summary>
+        /// A static map of DynamoCPythonHandle counts, is used to avoid removing the underlying python objects from the 
+        /// global scope while there are still handles referencing them.
+        /// </summary>
+        internal static Dictionary<DynamoCPythonHandle, int> HandleCountMap = new Dictionary<DynamoCPythonHandle, int>(new DynamoCPythonHandleComparer());
+
+        /// <summary>
+        /// A unique ID that identifies this python object. It's as a lookup
+        /// symbol within the global scope to find this python object instance.
+        /// </summary>
+        internal IntPtr PythonObjectID { get; set; }
+
+        public DynamoCPythonHandle(IntPtr id)
+        {
+            PythonObjectID = id;
+            if (HandleCountMap.ContainsKey(this))
+            {
+                HandleCountMap[this] = HandleCountMap[this] + 1;
+            }
+            else
+            {
+                HandleCountMap.Add(this, 1);
+            }
+        }
+
+        public override string ToString()
+        {
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
+                {
+                    var scope = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    var pyobj = scope.Get(PythonObjectID.ToString());
+                    return pyobj.ToString();
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
+                System.Diagnostics.Debug.WriteLine($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
+                return this.PythonObjectID.ToString();
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        /// <summary>
+        /// When this handle goes out of scope
+        /// we should remove the pythonObject from the globalScope.
+        /// In most cases the DSVM will call this.
+        /// </summary>
+        public void Dispose()
+        {
+            //key doesn't exist.
+            if (!HandleCountMap.ContainsKey(this))
+            {
+                return;
+            }
+            //there are more than 1 reference left, don't dispose.
+            //decrement refs
+            if (HandleCountMap[this] > 1)
+            {
+                HandleCountMap[this] = HandleCountMap[this] - 1;
+                return;
+            }
+
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
+            {
+                using (Py.GIL())
+                {
+                    PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName).Remove(PythonObjectID.ToString());
+                    HandleCountMap.Remove(this);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
+                System.Diagnostics.Debug.WriteLine($"error removing python object from global scope {e.Message}");
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
+            }
+        }
+    }
+
     [SupressImportIntoVM]
     internal enum EvaluationState { Begin, Success, Failed }
 
@@ -25,6 +140,8 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        static PyScope globalScope;
+        internal static readonly string globalScopeName = "global";
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -55,13 +172,18 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
+
             }
-                
+
             IntPtr gs = PythonEngine.AcquireLock();
             try
             {
                 using (Py.GIL())
                 {
+                    if (globalScope == null)
+                    {
+                        globalScope = Py.CreateScope(globalScopeName);
+                    }
                     using (PyScope scope = Py.CreateScope())
                     {
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
@@ -75,7 +197,6 @@ namespace DSCPython
                         {
                             OnEvaluationBegin(scope, code, bindingValues);
                             scope.Exec(code);
-
                             var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
                             return OutputMarshaler.Marshal(result);
@@ -176,6 +297,13 @@ namespace DSCPython
                             }
                             return pyDict;
                         });
+
+                    inputMarshaler.RegisterMarshaler(
+                       delegate (DynamoCPythonHandle handle)
+                       {
+                           var scope = PyScopeManager.Global.Get(globalScopeName);
+                           return scope.Get(handle.PythonObjectID.ToString());
+                       });
                 }
                 return inputMarshaler;
             }
@@ -195,18 +323,15 @@ namespace DSCPython
                     outputMarshaler.RegisterMarshaler(
                         delegate (PyObject pyObj)
                         {
-                            if (PyList.IsListType(pyObj))
+                            // First, check if we are dealing with a wrapped .NET object.
+                            // This simplifies the cases that come afterwards, as wrapped
+                            // .NET collections pass some Python checks but not others. 
+                            var clrObj = pyObj.GetManagedObject();
+                            if (clrObj != null)
                             {
-                                using (var pyList = new PyList(pyObj))
-                                {
-                                    var list = new List<object>();
-                                    foreach (PyObject item in pyList)
-                                    {
-                                        list.Add(outputMarshaler.Marshal(item));
-                                    }
-                                    return list;
-                                }
+                                return outputMarshaler.Marshal(clrObj);
                             }
+                            // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
                                 using (var pyDict = new PyDict(pyObj))
@@ -222,6 +347,20 @@ namespace DSCPython
                                     return dict;
                                 }
                             }
+                            // Other iterables should become lists, except for strings
+                            if (PyIter.IsIterable(pyObj) && !PyString.IsStringType(pyObj))
+                            {
+                                using (var pyList = PyList.AsList(pyObj))
+                                {
+                                    var list = new List<object>();
+                                    foreach (PyObject item in pyList)
+                                    {
+                                        list.Add(outputMarshaler.Marshal(item));
+                                    }
+                                    return list;
+                                }
+                            }
+                            // Special case for big long values: decode them as BigInteger
                             if (PyLong.IsLongType(pyObj))
                             {
                                 using (var pyLong = PyLong.AsLong(pyObj))
@@ -236,7 +375,7 @@ namespace DSCPython
                                     }
                                 }
                             }
-
+                            // Default handling for other Python objects
                             var unmarshalled = pyObj.AsManagedObject(typeof(object));
                             if (unmarshalled is PyObject)
                             {
@@ -244,8 +383,11 @@ namespace DSCPython
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
-                                        // Object can't be unmarshalled. Prevent a stack overflow.
-                                        throw new InvalidOperationException(Properties.Resources.FailedToUnmarshalOutput);
+                                        var globalScope = PyScopeManager.Global.Get(globalScopeName);
+                                        //try moving object to global scope
+                                        globalScope.Set(pyObj.Handle.ToString(), pyObj);
+
+                                        return new DynamoCPythonHandle(pyObj.Handle);
                                     }
                                     else
                                     {

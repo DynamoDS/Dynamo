@@ -33,18 +33,29 @@ namespace PythonNodeModels
         internal static PythonEngineSelector Instance { get { return lazy.Value; } }
 
         // TODO: The following fields might be removed after dynamic loading applied
-        internal static bool IsIronPythonEnabled = false;
-        internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
-        internal static string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
+        internal bool IsIronPythonEnabled = false;
+        internal string IronPythonEvaluatorClass = "IronPythonEvaluator";
+        internal string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
 
-        internal static bool IsCPythonEnabled = false;
-        internal static string CPythonEvaluatorClass = "CPythonEvaluator";
-        internal static string CPythonEvaluationMethod = "EvaluatePythonScript";
+        internal bool IsCPythonEnabled = false;
+        internal string CPythonEvaluatorClass = "CPythonEvaluator";
+        internal string CPythonEvaluationMethod = "EvaluatePythonScript";
+
+        const string DummyEvaluatorClass = "DummyPythonEvaluator";
+        const string DummyEvaluatorMethod = "Evaluate";
 
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
         /// </summary>
         private PythonEngineSelector()
+        {
+            ScanPythonEngines();
+        }
+
+        /// <summary>
+        /// Scan loaded Python engines
+        /// </summary>
+        internal void ScanPythonEngines()
         {
             var assems = AppDomain.CurrentDomain.GetAssemblies();
             // Currently we are using try-catch to validate loaded assembly and evaluation method exist
@@ -58,7 +69,8 @@ namespace PythonNodeModels
                     IsIronPythonEnabled = true;
                 }
             }
-            catch { 
+            catch
+            {
                 //Do nothing for now
             }
             try
@@ -70,7 +82,8 @@ namespace PythonNodeModels
                     IsCPythonEnabled = true;
                 }
             }
-            catch {
+            catch
+            {
                 //Do nothing for now
             }
         }
@@ -84,21 +97,24 @@ namespace PythonNodeModels
         internal void GetEvaluatorInfo(PythonEngineVersion engine, out string evaluatorClass, out string evaluationMethod)
         {
             // Provide evaluator info when the selected engine is loaded
-            if (engine == PythonEngineVersion.IronPython2 && PythonEngineSelector.IsIronPythonEnabled)
+            if (engine == PythonEngineVersion.IronPython2 && Instance.IsIronPythonEnabled)
             {
-                evaluatorClass = PythonEngineSelector.IronPythonEvaluatorClass;
-                evaluationMethod = PythonEngineSelector.IronPythonEvaluationMethod;
+                evaluatorClass = Instance.IronPythonEvaluatorClass;
+                evaluationMethod = Instance.IronPythonEvaluationMethod;
                 return;
             }
-            if (engine == PythonEngineVersion.CPython3 && PythonEngineSelector.IsCPythonEnabled)
+            if (engine == PythonEngineVersion.CPython3 && Instance.IsCPythonEnabled)
             {
-                evaluatorClass = PythonEngineSelector.CPythonEvaluatorClass;
-                evaluationMethod = PythonEngineSelector.CPythonEvaluationMethod;
+                evaluatorClass = Instance.CPythonEvaluatorClass;
+                evaluationMethod = Instance.CPythonEvaluationMethod;
                 return;
             }
 
-            // Throw exception here will be reflected as Python node error
-            throw new InvalidOperationException(Properties.Resources.PythonNodeErrorUnloadedEngineMsg + engine);
+            // Throwing at the compilation stage is handled as a non-retryable error by the Dynamo engine.
+            // Instead, we want to produce an error at the evaluation stage, so we can eventually recover.
+            // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
+            evaluatorClass = DummyEvaluatorClass;
+            evaluationMethod = DummyEvaluatorMethod;
         }
     }
 }

@@ -61,6 +61,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom Nodes that have an IronPython2 dependency.
+        /// </summary>
+        public static string CustomNodesPythonDependencyHeader {
+            get {
+                return ResourceManager.GetString("CustomNodesPythonDependencyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
         ///There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default..
         /// </summary>
@@ -103,6 +112,42 @@ namespace Dynamo.PythonMigration.Properties {
         public static string IronPythonNotificationShortMessage {
             get {
                 return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Packaged.
+        /// </summary>
+        public static string PackagedCustomNodesHeader {
+            get {
+                return ResourceManager.GetString("PackagedCustomNodesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please notify the package author to update the package.
+        /// </summary>
+        public static string PackagedCustomNodesTooltip {
+            get {
+                return ResourceManager.GetString("PackagedCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Double-click on the custom node to open its workspace.
+        /// </summary>
+        public static string UserDefinitionCustomNodesTooltip {
+            get {
+                return ResourceManager.GetString("UserDefinitionCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Definitions.
+        /// </summary>
+        public static string UserDefinitionsHeader {
+            get {
+                return ResourceManager.GetString("UserDefinitionsHeader", resourceCulture);
             }
         }
     }

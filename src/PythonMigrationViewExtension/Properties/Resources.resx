@@ -133,4 +133,19 @@ There will be a time of transition where both versions of Python node will work 
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
     <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
   </data>
+  <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
+    <value>Custom Nodes that have an IronPython2 dependency</value>
+  </data>
+  <data name="PackagedCustomNodesTooltip" xml:space="preserve">
+    <value>Please notify the package author to update the package</value>
+  </data>
+  <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
+    <value>Double-click on the custom node to open its workspace</value>
+  </data>
+  <data name="PackagedCustomNodesHeader" xml:space="preserve">
+    <value>Packaged</value>
+  </data>
+  <data name="UserDefinitionsHeader" xml:space="preserve">
+    <value>Definitions</value>
+  </data>
 </root>
