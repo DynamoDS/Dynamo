@@ -2240,7 +2240,7 @@ Uninstall the following packages: {0}?</value>
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
   <data name="DynamoViewSettingsMenuIsIronPythonDialogDisabled" xml:space="preserve">
-    <value>Do not show Iron Python dialog box alert</value>
+    <value>Hide IronPython Alerts</value>
   </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
