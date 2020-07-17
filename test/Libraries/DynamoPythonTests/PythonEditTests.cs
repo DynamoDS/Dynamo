@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Autodesk.DesignScript.Geometry;
+using DSCPython;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using PythonNodeModels;
@@ -21,7 +23,6 @@ namespace Dynamo.Tests
         {
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("DSIronPython.dll");
             libraries.Add("ProtoGeometry.dll");
             libraries.Add("DSCPython.dll");
             base.GetLibrariesToPreload(libraries);
@@ -510,6 +511,108 @@ namespace Dynamo.Tests
 
                 AssertPreviewCount(guid, 2);
             }
+        }
+
+        [Test]
+        public void CPythonClassCanBeUsedInDownStreamNode()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
+            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
+            
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream1.GUID.ToString(), "firstName");
+            AssertPreviewValue(downstream2.GUID.ToString(), "firstNamelastname");
+
+        }
+        [Test]
+        public void CPythonClassCanBeModifiedInDownStreamNode()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
+            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
+
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream2.GUID.ToString(), "joe");
+        }
+
+        [Test]
+        public void TwoCPythonHandlesReturnedFromSameNodeHaveSameHandleID()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstances.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
+
+            ViewModel.HomeSpace.Run();
+            var handles = classdef.CachedValue.GetElements().Select(x=>x.Data).Cast<DynamoCPythonHandle>().ToList<DynamoCPythonHandle>();
+            var firstMemLoc = handles.First().PythonObjectID;
+            Assert.IsTrue(handles.All(x => x.PythonObjectID == firstMemLoc));
+        }
+
+        [Test]
+        public void TwoCPythonHandlesReturnedFromDifferentNodesHaveSameHandleID()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_returnManyInstancesFromManyNodes.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
+            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
+
+            ViewModel.HomeSpace.Run();
+            var handles = classdef.CachedValue.GetElements().Select(x => x.Data);
+            handles = handles.Concat(downstream1.CachedValue.GetElements().Select(x => x.Data));
+            var dynamoHandles = handles.Cast<DynamoCPythonHandle>().ToList();
+
+            var firstMemLoc = dynamoHandles.First().PythonObjectID;
+            Assert.IsTrue(dynamoHandles.All(x => x.PythonObjectID == firstMemLoc));
+        }
+
+        [Test]
+        public void CPythonClassCanBeReturnedAndSafelyDisposedInDownStreamNode()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "cpythoncustomclass_modified.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
+            var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
+            var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
+
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream2.GUID.ToString(), "joe");
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
+
+            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
+
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream2.GUID.ToString(), "foo");
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
+            ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
+
+            ViewModel.HomeSpace.Run();
+            AssertPreviewValue(downstream2.GUID.ToString(), "bar");
+
+            var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCmd);
+
+            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+
+            var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
+            ViewModel.Model.ExecuteCommand(deleteCmd2);
+
+            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap);
+
         }
     }
 }

@@ -103,6 +103,11 @@
       <Name>DynamoCore</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7A9E0314-966F-4584-BAA3-7339CBB849D1}</Project>
+      <Name>ProtoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\src\Libraries\DSCPython\DSCPython.csproj">
       <Project>{f1541c2d-80a9-4fe7-8d9e-75a8b9ff3479}</Project>
       <Name>DSCPython</Name>
