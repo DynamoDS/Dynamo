@@ -70,8 +70,10 @@ namespace Dynamo.PythonMigration
 
         private void ToggleIronPythonDialog(object sender, RoutedEventArgs e)
         {
-            if(DisableIronPythonDialogCheck.IsChecked.HasValue && DisableIronPythonDialogCheck.IsChecked.Value)
-                ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = DisableIronPythonDialogCheck.IsChecked.Value;
+            if (DisableIronPythonDialogCheck.IsChecked.HasValue && DisableIronPythonDialogCheck.IsChecked.Value)
+                ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = true;
+            else
+                ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = false;
         }
 
         private void OnCustomNodeClick(object sender, RoutedEventArgs e)
