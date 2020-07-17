@@ -31,6 +31,10 @@ namespace DSCPython
     /// This class wraps a PythonNet.PyObj and performs
     /// disposal tasks to make sure the underlying object is removed from
     /// the shared global scope between all CPython scopes.
+    /// If you construct an instance of this class manually or
+    /// as a consequence of using the CPythonEvaluator.Evaluate method, an instance
+    /// of this class is constructed, and is not returned to the DSVM (graph context)
+    /// then make sure to call Dispose when you are done with the instance.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
     public class DynamoCPythonHandle : IDisposable
