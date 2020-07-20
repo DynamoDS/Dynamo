@@ -64,6 +64,7 @@ namespace Dynamo.PythonMigration
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
             CustomNodeManager = (CustomNodeManager) LoadedParams.StartupParams.CustomNodeManager;
+            CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
             Dispatcher = Dispatcher.CurrentDispatcher;
 
             SubscribeToDynamoEvents();
@@ -71,8 +72,8 @@ namespace Dynamo.PythonMigration
 
         private void DisplayIronPythonDialog()
         {
-            // we only want to create the dialog ones for each graph per Dynamo session
-            if (DialogTracker.ContainsKey(CurrentWorkspace.Guid))
+            // we only want to create the dialog ones for each graph per Dynamo session, if the global setting is not disabled
+            if (DialogTracker.ContainsKey(CurrentWorkspace.Guid) || DynamoViewModel.IsIronPythonDialogDisabled)
                 return;
 
             var dialog = new IronPythonInfoDialog(this)
@@ -120,6 +121,7 @@ namespace Dynamo.PythonMigration
             var assistantWindow = new VisualDifferenceViewer(viewModel, parentWindow);
             // show modal window so user cant interact with dynamo while migration assistant is open
             assistantWindow.ShowDialog();
+
         }
 
         private void OnNotificationLogged(NotificationMessage obj)
@@ -178,6 +180,12 @@ namespace Dynamo.PythonMigration
                 NotificationTracker.Remove(CurrentWorkspace.Guid);
                 GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
+                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+
+                CurrentWorkspace = workspace as WorkspaceModel;
+
+                CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
+
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
                     && PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
@@ -233,7 +241,9 @@ namespace Dynamo.PythonMigration
         private void UnsubscribeEvents()
         {
             LoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            DynamoViewModel.CurrentSpaceViewModel.Model.NodeAdded -= OnNodeAdded;
             DynamoViewModel.Model.Logger.NotificationLogged -= OnNotificationLogged;
+            CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
             UnSubscribeWorkspaceEvents();
         }
         #endregion

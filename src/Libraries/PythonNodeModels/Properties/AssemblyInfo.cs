@@ -14,7 +14,10 @@ using System.Runtime.InteropServices;
 // Remove this when PythonEngineSelector become public
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("IronPythonExtension")]
 
 // Needed to use internal MigrationAssistantRequested event 
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
+
+

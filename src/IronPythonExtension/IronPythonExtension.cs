@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Logging;
+using PythonNodeModels;
 
 namespace IronPythonExtension
 {
@@ -79,6 +80,7 @@ namespace IronPythonExtension
             if (pythonEvaluatorLib != null)
             {
                 libraryLoader.LoadNodeLibrary(pythonEvaluatorLib);
+                PythonEngineSelector.Instance.ScanPythonEngines();
             }
         }
 
