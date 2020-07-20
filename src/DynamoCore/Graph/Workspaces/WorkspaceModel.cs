@@ -542,6 +542,23 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// Event requesting subscribers to return additional package dependencies for
+        /// current workspace.
+        /// </summary>
+        internal event Func<IEnumerable<INodeLibraryDependencyInfo>> RequestPackageDependencies;
+
+        /// <summary>
+        /// Raised when the workspace needs to request for additional package dependencies
+        /// that can be returned from other subscribers such as view extensions.
+        /// E.g. The PythonMigrationViewExtension returns additional package dependencies required for Python engines.
+        /// </summary>
+        /// <returns></returns>
+        internal IEnumerable<INodeLibraryDependencyInfo> OnRequestPackageDependencies()
+        {
+            return RequestPackageDependencies?.Invoke();
+        }
+
+        /// <summary>
         /// NodeLibraries that the nodes in this graph depend on
         /// </summary>
         internal List<INodeLibraryDependencyInfo> NodeLibraryDependencies
@@ -1499,6 +1516,7 @@ namespace Dynamo.Graph.Workspaces
             return this.Nodes.OfType<Nodes.CustomNodes.Symbol>().Any(node => !node.Parameter.NameIsValid);
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         private void SerializeElementResolver(XmlDocument xmlDoc)
         {
             Debug.Assert(xmlDoc != null);
@@ -1520,6 +1538,7 @@ namespace Dynamo.Graph.Workspaces
             root.AppendChild(mapElement);
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         protected virtual bool PopulateXmlDocument(XmlDocument xmlDoc)
         {
             try

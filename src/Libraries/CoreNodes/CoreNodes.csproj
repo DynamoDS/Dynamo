@@ -72,6 +72,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
+    <Compile Include="DummyPythonEvaluator.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="List.cs" />

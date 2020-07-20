@@ -134,4 +134,7 @@ https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
 https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
   (Microsoft Public License)
 
+### DiffPlex
+https://github.com/mmanela/diffplex/blob/master/License.txt
+  (Apache License)
 

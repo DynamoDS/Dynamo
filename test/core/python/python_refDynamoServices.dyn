@@ -1,0 +1,87 @@
+{
+  "Uuid": "99dd6664-b359-4d74-83aa-36bece79d03e",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "python_refDynamoServices",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\nclr.AddReference('DynamoServices')\r\nfrom Dynamo.Events import ExecutionEvents\r\n\r\n\r\npackagePathsKey = list(ExecutionEvents.ActiveSession.GetParameterKeys())[-1]\r\n##or packagePathsKey = \"PackagePaths\"\r\n\r\nOUT = ExecutionEvents.ActiveSession.GetParameterValue(packagePathsKey)",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "296e339254e845b695caa1a116500be0",
+      "Inputs": [
+        {
+          "Id": "22a658df633c48b19a35f49b26da7aec",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0b412a6ad87e4044aea3b7f03aca964f",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.8.0.1825",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "296e339254e845b695caa1a116500be0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 320.55123689610917,
+        "Y": 328.00161373373373
+      }
+    ],
+    "Annotations": [],
+    "X": -218.10250962766781,
+    "Y": -258.68527312857782,
+    "Zoom": 1.442589092933134
+  }
+}

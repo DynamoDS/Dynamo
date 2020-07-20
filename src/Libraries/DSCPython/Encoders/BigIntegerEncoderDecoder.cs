@@ -4,7 +4,7 @@ using Python.Runtime;
 
 namespace DSCPython.Encoders
 {
-    internal class BigIntegerEncoder : IPyObjectEncoder, IPyObjectDecoder
+    internal class BigIntegerEncoderDecoder : IPyObjectEncoder, IPyObjectDecoder
     {
         public bool CanDecode(PyObject objectType, Type targetType)
         {

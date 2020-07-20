@@ -48,7 +48,8 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
+
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
             // Restart banner should not display by default
@@ -67,10 +68,9 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
-            var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
@@ -160,7 +160,7 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var homeWorkspaceModel = ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
 
@@ -185,7 +185,7 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
@@ -239,14 +239,6 @@ namespace DynamoCoreWpfTests
 
         }
 
-        public static void RaiseLoadedEvent(FrameworkElement element)
-        {
-            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
-                BindingFlags.Instance | BindingFlags.NonPublic);
-
-            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
-
-            eventMethod.Invoke(element, new object[] { args });
-        }
+        
     }
 }
