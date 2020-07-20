@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo.Configuration;
 using Microsoft.Practices.Prism.ViewModel;
 using Newtonsoft.Json;
 
@@ -16,6 +17,15 @@ namespace Dynamo.ViewModels
 #else
                 return false;
 #endif
+            }
+        }
+
+        [JsonIgnore]
+        public bool IsPython2ObsoleteDebugModeEnabled
+        {
+            get
+            {
+                return DebugModes.IsEnabled("Python2ObsoleteMode"); 
             }
         }
 

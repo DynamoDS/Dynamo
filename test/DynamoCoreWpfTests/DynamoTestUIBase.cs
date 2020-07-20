@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Windows;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
@@ -76,6 +77,16 @@ namespace DynamoCoreWpfTests
             View.Show();
 
             SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        }
+
+        protected static void RaiseLoadedEvent(FrameworkElement element)
+        {
+            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
+
+            eventMethod.Invoke(element, new object[] { args });
         }
 
         /// <summary>

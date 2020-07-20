@@ -6,12 +6,13 @@ using Python.Runtime;
 
 namespace DSCPython.Encoders
 {
-    internal class ListEncoder : IPyObjectEncoder, IPyObjectDecoder
+    internal class ListEncoderDecoder : IPyObjectEncoder, IPyObjectDecoder
     {
         private static readonly Type[] decodableTypes = new Type[]
         {
             typeof(IList), typeof(ArrayList),
-            typeof(IList<>), typeof(List<>)
+            typeof(IList<>), typeof(List<>),
+            typeof(IEnumerable), typeof(IEnumerable<>)
         };
 
         public bool CanDecode(PyObject objectType, Type targetType)
@@ -30,7 +31,7 @@ namespace DSCPython.Encoders
 
         public bool TryDecode<T>(PyObject pyObj, out T value)
         {
-            if (!PySequence.IsSequenceType(pyObj))
+            if (!PyIter.IsIterable(pyObj))
             {
                 value = default;
                 return false;
