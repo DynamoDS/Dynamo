@@ -172,6 +172,7 @@ namespace PythonNodeModelsWpf
             if (nodeModel == null)
                 throw new NullReferenceException(nameof(nodeModel));
 
+            UpdateScript(editText.Text);
             nodeModel.RequestCodeMigration(e);
         }
 
