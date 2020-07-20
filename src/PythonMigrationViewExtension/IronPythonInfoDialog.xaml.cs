@@ -68,6 +68,11 @@ namespace Dynamo.PythonMigration
             this.Close();
         }
 
+        private void ToggleIronPythonDialog(object sender, RoutedEventArgs e)
+        {
+            ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = DisableIronPythonDialogCheck.IsChecked.Value;
+        }
+
         private void OnCustomNodeClick(object sender, RoutedEventArgs e)
         {
             if (UserDefinitionCustomNodesContainingPython.SelectedItems.Count == 1)

@@ -212,6 +212,34 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// This test verifies that the IronPython dialog won't show 
+        /// when the Do not show again property is enabled.
+        /// </summary>
+        [Test]
+        public void WillNotDisplayIronPythonDialogAgainWhenDoNotShowAgainSettingIsChecked()
+        {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
+            // Arrange
+            var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "python.dyn");
+
+            //Disable iron python alerts
+            ViewModel.IsIronPythonDialogDisabled = true;
+
+            // Act
+            // open file
+            Open(examplePathIronPython);
+            DispatcherUtil.DoEvents();
+
+            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
+            Assert.IsEmpty(ironPythonDialog);
+            Assert.AreEqual(0, ironPythonDialog.Count());
+
+            DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
+        }
+
+        /// <summary>
         /// This tests checks if the extension can detect IronPython nodes in the graph 
         /// </summary>
         [Test]
