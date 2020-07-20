@@ -16,7 +16,7 @@ namespace PythonNodeModels
     /// <summary>
     /// Event arguments used to send the original and migrated code to the ScriptEditor
     /// </summary>
-    public class PythonCodeMigrationEventArgs : EventArgs
+    internal class PythonCodeMigrationEventArgs : EventArgs
     {
         public string OldCode { get; private set; }
         public string NewCode { get; private set; }
@@ -235,7 +235,7 @@ namespace PythonNodeModels
         /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,
         /// it will be removed when the transistion period is over.
         /// </summary>
-        public event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
+        internal event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
         private void OnCodeMigrated(PythonCodeMigrationEventArgs e)
         {
             CodeMigrated?.Invoke(this, e);

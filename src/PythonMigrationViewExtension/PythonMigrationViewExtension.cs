@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
-using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -12,6 +11,7 @@ using Dynamo.PythonMigration.Properties;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
+using PythonNodeModelsWpf;
 
 namespace Dynamo.PythonMigration
 {
@@ -63,7 +63,7 @@ namespace Dynamo.PythonMigration
             PythonDependencies = new GraphPythonDependencies(LoadedParams);
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
-            CustomNodeManager = (CustomNodeManager) LoadedParams.StartupParams.CustomNodeManager;
+            CustomNodeManager = (CustomNodeManager)LoadedParams.StartupParams.CustomNodeManager;
             CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
             Dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -202,7 +202,7 @@ namespace Dynamo.PythonMigration
             if (PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
             {
                 CurrentWorkspace.Nodes
-                    .Where(x=>x is PythonNodeBase)
+                    .Where(x => x is PythonNodeBase)
                     .ToList()
                     .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
             }
