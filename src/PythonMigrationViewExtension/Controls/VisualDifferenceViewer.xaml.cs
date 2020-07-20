@@ -1,5 +1,5 @@
-﻿using DiffPlex.Wpf.Controls;
-using System.Windows;
+﻿using System.Windows;
+using DiffPlex.Wpf.Controls;
 
 namespace Dynamo.PythonMigration.Controls
 {
@@ -17,7 +17,7 @@ namespace Dynamo.PythonMigration.Controls
             LoadData();
             DiffView.ViewModeChanged += OnViewModeChanged;
             DiffView.Loaded += OnDiffViewLoaded;
-            this.Closed += OnVisualDifferenceViewerClosed;
+            Closed += OnVisualDifferenceViewerClosed;
         }
 
         private void OnDiffViewLoaded(object sender, RoutedEventArgs e)
@@ -70,7 +70,7 @@ namespace Dynamo.PythonMigration.Controls
         {
             DiffView.ViewModeChanged -= OnViewModeChanged;
             DiffView.Loaded -= OnDiffViewLoaded;
-            this.Closed -= OnVisualDifferenceViewerClosed;
+            Closed -= OnVisualDifferenceViewerClosed;
         }
     }
 }

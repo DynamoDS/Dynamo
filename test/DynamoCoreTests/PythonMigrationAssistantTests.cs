@@ -34,21 +34,5 @@ namespace Dynamo.Tests
             // Assert
             Assert.AreEqual(expectedPython3Code, migratedScript);
         }
-
-        [Test]
-        public void MigrationWillNotChangeCodeAfterBeingConverted()
-        {
-            // Arrange
-            var originalPython2Code = @"for x in xrange(100): continue";
-            var expectedPython3CodeAfterMigration = @"for x in range(100): continue";
-
-            // Act
-            var migratedScript = ScriptMigrator.MigrateCode(originalPython2Code);
-            var migratedScript2 = ScriptMigrator.MigrateCode(migratedScript);
-
-            // Assert
-            Assert.AreEqual(expectedPython3CodeAfterMigration, migratedScript);
-            Assert.AreEqual(expectedPython3CodeAfterMigration, migratedScript2);
-        }
     }
 }

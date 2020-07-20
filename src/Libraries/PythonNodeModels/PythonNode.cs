@@ -14,18 +14,9 @@ using ProtoCore.AST.AssociativeAST;
 namespace PythonNodeModels
 {
     /// <summary>
-    /// Enum of possible values of python engine versions
-    /// </summary>
-    public enum PythonEngineVersion
-    {
-        IronPython2,
-        CPython3
-    }
-
-    /// <summary>
     /// Event arguments used to send the original and migrated code to the ScriptEditor
     /// </summary>
-    public class PythonCodeMigrationEventArgs : EventArgs
+    internal class PythonCodeMigrationEventArgs : EventArgs
     {
         public string OldCode { get; private set; }
         public string NewCode { get; private set; }
@@ -96,34 +87,14 @@ namespace PythonNodeModels
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
-            // class name and function name. We are hardcoding the class name and function name for now. 
-            var pythonEngineClass = string.Empty;
-            var pythonEvaluatorMethod = string.Empty;
-
-            if (Engine == PythonEngineVersion.IronPython2)
-            {
-                // TODO: Determine the class name and function name with the dynamic loading Python engine task
-                pythonEngineClass = "IronPythonEvaluator";
-                pythonEvaluatorMethod = "EvaluateIronPythonScript";
-                // TODO: Throw InvalidOperationException indicating IronPython engine missing when not loaded
-            }
-            else if (Engine == PythonEngineVersion.CPython3)
-            {
-                // TODO: Determine the class name and function name with the dynamic loading Python engine task
-                pythonEngineClass = "CPythonEvaluator";
-                pythonEvaluatorMethod = "EvaluatePythonScript";
-                // TODO: Throw InvalidOperationException indicating CPython engine missing when not loaded
-            }
-            else
-            {
-                throw new InvalidOperationException("Unknown Python engine " + Engine);
-            }
+            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
+            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    pythonEngineClass,
-                    pythonEvaluatorMethod,
+                    evaluatorClass,
+                    evaluationMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -132,8 +103,8 @@ namespace PythonNodeModels
                     }));
         }
 
-        public event EventHandler MigrationAssistantRequested;
-        public void RequestCodeMigration(EventArgs e)
+        internal event EventHandler MigrationAssistantRequested;
+        internal void RequestCodeMigration(EventArgs e)
         {
             MigrationAssistantRequested?.Invoke(this, e);
         }
@@ -264,7 +235,7 @@ namespace PythonNodeModels
         /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,
         /// it will be removed when the transistion period is over.
         /// </summary>
-        public event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
+        internal event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
         private void OnCodeMigrated(PythonCodeMigrationEventArgs e)
         {
             CodeMigrated?.Invoke(this, e);

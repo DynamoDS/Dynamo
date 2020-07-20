@@ -11,6 +11,8 @@
         mc:Ignorable="d"
         d:DesignHeight="450"
         d:DesignWidth="800"
+        MinWidth="500"
+        MinHeight="450"
         Title="Migration Assistant"
         WindowStartupLocation="CenterOwner"
         Background="#272822">
@@ -37,12 +39,20 @@
                 <Setter Property="VerticalAlignment"
                         Value="Bottom" />
             </Style>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="TextWrapping"
+                        Value="Wrap" />
+            </Style>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="TextWrapping"
+                        Value="Wrap" />
+            </Style>
 
         </Grid.Resources>
 
         <diffplex:DiffViewer x:Name="DiffView"
-                             OldTextHeader="Old"
-                             NewTextHeader="New"
+                             OldTextHeader="{x:Static p:Resources.PythonMigrationAssistantCodeBefore}"
+                             NewTextHeader="{x:Static p:Resources.PythonMigrationAssistantCodeAfter}"
                              FontFamily="Consolas"
                              FontSize="10pt"
                              Background="#272822"
