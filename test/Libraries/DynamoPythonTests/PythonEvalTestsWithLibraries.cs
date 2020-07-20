@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Dynamo;
 using NUnit.Framework;
-using static DSIronPythonTests.IronPythonTests;
+using static DSPythonTests.PythonEvalTests;
 
 namespace DynamoPythonTests
 {
@@ -52,6 +52,8 @@ OUT = sum
 import sys
 import clr
 clr.AddReference('DSCoreNodes')
+clr.AddReference('FFITarget')
+from FFITarget import DummyCollection
 from DSCore import List
 
 l = ['a']
@@ -66,7 +68,7 @@ typedList.Add('b')
 
 l3 = [[1,2],[3,4]]
 # Python list (nested) => .NET IList<IList<>>
-flatennedList = List.Flatten(l3)
+flattenedList = List.Flatten(l3)
 
 l4 = []
 # Python list (empty) => .NET IList
@@ -74,13 +76,21 @@ elementCount = List.Count(l4)
 
 sum = 0
 # Python-wrapped .NET List can be iterated over
-for i in flatennedList:
+for i in flattenedList:
   sum = sum + i
 
-OUT = untypedList, typedList, flatennedList, elementCount, sum
+l5 = [1,2,3,4]
+# Python list => .NET IEnumerable<>
+max = List.MaximumItem(l5)
+
+# Python list => .NET IEnumerable
+enumerable = DummyCollection.ReturnIEnumerable(l2)
+
+OUT = untypedList, typedList, flattenedList, elementCount, sum, max, enumerable
 ";
             var empty = new ArrayList();
-            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" }, new ArrayList { 1, 2, 3, 4 }, 0, 10 };
+            var expected = new ArrayList { new ArrayList { "a", "b", "c" }, new ArrayList { "b", "b" }, new ArrayList { 1, 2, 3, 4 }, 0, 10, 4
+                , new ArrayList { "a", "b" } };
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);
@@ -176,37 +186,116 @@ OUT = a, l
         }
 
         [Test]
-        [Category("Failure")]
-        public void TestDictionaryEncoding()
+        public void TestDictionaryDecodingCPython()
         {
             string code = @"
 import sys
 import clr
 clr.AddReference('FFITarget')
-clr.AddReference('DesignScriptBuiltin')
-from DesignScript.Builtin import Dictionary
+clr.AddReference('DSCoreNodes')
+from DSCore import List
 from FFITarget import DummyCollection
 
 d = {'one': 1, 'two': 2, 'three': 3}
-# Python dict => DS Dictionary - Does not work in either engine
-# d2 = Dictionary.SetValueAtKeys(d, ['four'], [4])
 
-# Python dict => .NET IDictionary - Does not work in CPython
-d = DummyCollection.AcceptIDictionary(d)
-# .NET IDictionary => Python dict - Works in IronPython. Could not test in CPython due to previous bug
-d['five'] = 5
+# Python dict => .NET IDictionary
+untypedDictionary = DummyCollection.AcceptIDictionary(d)
+untypedDictionary['four'] = 4
 
-OUT = d
+# Python dict => .NET IDictionary<> - Does not work in IronPython
+typedDictionary = DummyCollection.AcceptDictionary(d)
+typedDictionary['four'] = 4
+
+# Python dict => .NET IEnumerable - Returns keys in both engines
+sortedKeys = List.Sort(d)
+
+OUT = untypedDictionary, typedDictionary, sortedKeys
 ";
             var empty = new ArrayList();
-            var expected = new Dictionary<string, int> {
-                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "five", 5 }
+            var expectedDictionary = new Dictionary<string, int> {
+                { "one", 1 }, { "two", 2 }, { "three", 3 }, { "four", 4 }
+            };
+            var expectedKeys = new List<string> { "one", "three", "two" };
+            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            Assert.IsTrue(result is IList);
+            var resultList = result as IList;
+            for (int i = 0; i < 2; i++)
+            {
+                Assert.IsTrue(resultList[i] is IDictionary);
+                DictionaryAssert(expectedDictionary, resultList[i] as IDictionary);
+            }
+            Assert.IsTrue(resultList[2] is IList);
+            CollectionAssert.AreEqual(expectedKeys, resultList[2] as IList);
+        }
+
+        [Test]
+        public void TestDictionaryViewsDecoding()
+        {
+            var code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+from DSCore import List
+
+d = {'one': 1, 'two': 2, 'three': 3}
+
+dk = List.AddItemToEnd('four', d.keys())
+dv = List.AddItemToEnd(4, d.values())
+di = List.AddItemToEnd(('four', 4), d.items())
+
+OUT = dk, dv, di
+";
+            var empty = new ArrayList();
+            var expected = new ArrayList[] {
+                new ArrayList { "one", "two", "three", "four" },
+                new ArrayList { 1, 2, 3, 4 },
+                new ArrayList { new ArrayList { "one", 1 }, new ArrayList { "two", 2 }, new ArrayList { "three", 3 }, new ArrayList { "four", 4 } }
             };
             foreach (var pythonEvaluator in Evaluators)
             {
                 var result = pythonEvaluator(code, empty, empty);
-                Assert.IsTrue(result is IDictionary);
-                CollectionAssert.AreEquivalent(expected, result as IDictionary);
+                Assert.IsTrue(result is IEnumerable);
+                var i = 0;
+                foreach (var item in result as IEnumerable)
+                {
+                    Assert.IsTrue(item is IEnumerable);
+                    CollectionAssert.AreEquivalent(expected[i], item as IEnumerable);
+                    i++;
+                }
+            }
+        }
+
+        [Test]
+        public void TestSetDecodingCPython()
+        {
+            var code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+from DSCore import List
+
+s = { 'hello' }
+fs = frozenset(s)
+# Python set => .NET IList - Does not work in IronPython
+s2 = List.AddItemToEnd('world', s)
+fs2 = List.AddItemToEnd('world', fs)
+OUT = s2, fs2
+";
+            var empty = new ArrayList();
+            var expected = new string[] { "hello", "world" };
+            var result = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            Assert.IsTrue(result is IEnumerable);
+            foreach (var item in result as IEnumerable)
+            {
+                Assert.IsTrue(item is IEnumerable);
+                CollectionAssert.AreEquivalent(expected, item as IEnumerable);
+            }
+        }
+
+        private void DictionaryAssert(IDictionary expected, IDictionary actual)
+        {
+            Assert.AreEqual(expected.Count, actual.Count);
+            foreach (var key in expected.Keys)
+            {
+                Assert.AreEqual(expected[key], actual[key]);
             }
         }
     }

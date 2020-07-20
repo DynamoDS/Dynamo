@@ -488,6 +488,22 @@ namespace Dynamo.ViewModels
 
         public bool HideReportOptions { get; }
 
+        /// <summary>
+        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled
+        {
+            get
+            {
+                return model.PreferenceSettings.IsIronPythonDialogDisabled;
+            }
+            set
+            {
+                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
+                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
