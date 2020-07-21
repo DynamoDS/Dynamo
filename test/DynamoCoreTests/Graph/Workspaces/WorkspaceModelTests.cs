@@ -126,9 +126,13 @@ namespace Dynamo.Tests
             Assert.AreEqual(firstNote.Text, this.CurrentDynamoModel.CurrentWorkspace.Notes.FirstOrDefault().Text);
         }
 
+        /// <summary>
+        /// Tests the method CheckIfModelExistsInSomeGroup
+        /// Case: One of the selected models belongs to an existing annotation
+        /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSameGroup_True_ShouldNotCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroup_True_ShouldNotCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -166,9 +170,13 @@ namespace Dynamo.Tests
             Assert.IsNull(result);
         }
 
+        /// <summary>
+        /// Tests the method CheckIfModelExistsInSomeGroup
+        /// Case: None of the selected models belong to an existing annotation
+        /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSameGroup_False_ShouldCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroup_False_ShouldCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
