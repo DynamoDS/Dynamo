@@ -163,6 +163,7 @@
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="ProfilingTest.cs" />
     <Compile Include="PropertiesTests\PropertiesTests.cs" />
+    <Compile Include="PythonMigrationAssistantTests.cs" />
     <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
     <Compile Include="Search\SearchDictionaryTest.cs" />
@@ -282,6 +283,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
+      <Project>{10AF430D-0D3A-49CE-A63D-848912959745}</Project>
+      <Name>PythonMigrationViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
+    <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,142 +59,142 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+        <xsd:element name="root" msdata:IsDataSet="true">
             <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="metadata">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" use="required" type="xsd:string"/>
+                            <xsd:attribute name="type" type="xsd:string"/>
+                            <xsd:attribute name="mimetype" type="xsd:string"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="assembly">
+                        <xsd:complexType>
+                            <xsd:attribute name="alias" type="xsd:string"/>
+                            <xsd:attribute name="name" type="xsd:string"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+                            <xsd:attribute ref="xml:space"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required"/>
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
             </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="EditHeader" xml:space="preserve">
-    <value>Edit...</value>
-  </data>
-  <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
-    <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
-  </data>
-  <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
-    <value>Script Editor Open</value>
-  </data>
-  <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
-    <value>Result of the python script</value>
-  </data>
-  <data name="PythonScriptDescription" xml:space="preserve">
-    <value>Runs an embedded IronPython script.</value>
-    <comment>Description for Python Script</comment>
-  </data>
-  <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="PythonScriptEditorRunButton" xml:space="preserve">
-    <value>Run</value>
-  </data>
-  <data name="PythonScriptEditorRevertButton" xml:space="preserve">
-    <value>Revert</value>
-  </data>
-  <data name="PythonScriptEditorCaption" xml:space="preserve">
-    <value>Edit Python Script...</value>
-  </data>
-  <data name="PythonScriptEditorCodeComment" xml:space="preserve">
-    <value>Place your code below this line</value>
-  </data>
-  <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Load the Python Standard and DesignScript Libraries</value>
-    <comment>Description for the common import statements that puzzle beginners.</comment>
-  </data>
-  <data name="PythonScriptEditorInputComment" xml:space="preserve">
-    <value>The inputs to this node will be stored as a list in the IN variables.</value>
-    <comment>It is comment in the code. IN shouldn't be translated.</comment>
-  </data>
-  <data name="PythonScriptEditorOutputComment" xml:space="preserve">
-    <value>Assign your output to the OUT variable.</value>
-    <comment>It is comment in the code. OUT shouldn't be translated.</comment>
-  </data>
-  <data name="PythonScriptFromStringDescription" xml:space="preserve">
-    <value>Runs a IronPython script from a string.</value>
-    <comment>Description for Python Script From String</comment>
-  </data>
-  <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
-    <value>Python script to run.</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
-    <value>Python Engine Version</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
-    <value>CPython3</value>
-  </data>
-  <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
-    <value>IronPython2</value>
-  </data>
-  <data name="PythonScriptEditorMoreInfoButton" xml:space="preserve">
-    <value>Learn More</value>
-  </data>
-  <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
-    <value>Learn about Python3 updates.</value>
-  </data>
-  <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
-    <value>Revert the changes made to current Python node editor and close it.</value>
-  </data>
-  <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Save current code in Python node editor and run graph with it.</value>
-  </data>
-  <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save the changes made to current Python node editor and close it.</value>
-  </data>
-  <data name="PythonMigrationWarningUriString" xml:space="preserve">
-    <value>PythonNodeModels;PythonMigrationWarning.html</value>
-  </data>
-  <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
-    <value>Learn more about Python</value>
-  </data>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>2.0</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
+        <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
+    </data>
+    <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
+        <value>Script Editor Open</value>
+    </data>
+    <data name="EditHeader" xml:space="preserve">
+        <value>Edit...</value>
+    </data>
+    <data name="PythonMigrationWarningUriString" xml:space="preserve">
+        <value>PythonNodeModels;PythonMigrationWarning.html</value>
+    </data>
+    <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
+        <value>Python Engine Version</value>
+    </data>
+    <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
+        <value>CPython3</value>
+    </data>
+    <data name="PythonNodeContextMenuEngineVersionTwo" xml:space="preserve">
+        <value>IronPython2</value>
+    </data>
+    <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
+        <value>Learn more about Python</value>
+    </data>
+    <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
+        <value>Result of the python script</value>
+    </data>
+    <data name="PythonScriptDescription" xml:space="preserve">
+        <value>Runs an embedded IronPython script.</value>
+        <comment>Description for Python Script</comment>
+    </data>
+    <data name="PythonScriptEditorCaption" xml:space="preserve">
+        <value>Edit Python Script...</value>
+    </data>
+    <data name="PythonScriptEditorCodeComment" xml:space="preserve">
+        <value>Place your code below this line</value>
+    </data>
+    <data name="PythonScriptEditorImports" xml:space="preserve">
+        <value>Load the Python Standard and DesignScript Libraries</value>
+        <comment>Description for the common import statements that puzzle beginners.</comment>
+    </data>
+    <data name="PythonScriptEditorInputComment" xml:space="preserve">
+        <value>The inputs to this node will be stored as a list in the IN variables.</value>
+        <comment>It is comment in the code. IN shouldn't be translated.</comment>
+    </data>
+    <data name="PythonScriptEditorMoreInfoButton" xml:space="preserve">
+        <value>Learn More</value>
+    </data>
+    <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
+        <value>Learn about Python3 updates.</value>
+    </data>
+    <data name="PythonScriptEditorOutputComment" xml:space="preserve">
+        <value>Assign your output to the OUT variable.</value>
+        <comment>It is comment in the code. OUT shouldn't be translated.</comment>
+    </data>
+    <data name="PythonScriptEditorRevertButton" xml:space="preserve">
+        <value>Revert</value>
+    </data>
+    <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
+        <value>Revert the changes made to current Python node editor and close it.</value>
+    </data>
+    <data name="PythonScriptEditorRunButton" xml:space="preserve">
+        <value>Run</value>
+    </data>
+    <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
+        <value>Save current code in Python node editor and run graph with it.</value>
+    </data>
+    <data name="PythonScriptEditorSaveChangesButton" xml:space="preserve">
+        <value>Save</value>
+    </data>
+    <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
+        <value>Save the changes made to current Python node editor and close it.</value>
+    </data>
+    <data name="PythonScriptFromStringDescription" xml:space="preserve">
+        <value>Runs a IronPython script from a string.</value>
+        <comment>Description for Python Script From String</comment>
+    </data>
+    <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
+        <value>Python script to run.</value>
+    </data>
 </root>

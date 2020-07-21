@@ -61,6 +61,24 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept the current code changes..
+        /// </summary>
+        public static string AcceptButtonTooltip {
+            get {
+                return ResourceManager.GetString("AcceptButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change between Side-by-Side and Inline view..
+        /// </summary>
+        public static string DiffButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiffButtonTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Custom Nodes that have an IronPython2 dependency.
         /// </summary>
         public static string CustomNodesPythonDependencyHeader {
@@ -126,6 +144,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string PythonMigrationAssistantCodeAfter {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantCodeAfter", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
@@ -135,6 +162,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Before.
+        /// </summary>
+        public static string PythonMigrationAssistantCodeBefore {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantCodeBefore", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Please notify the package author to update the package.
         /// </summary>
         public static string PackagedCustomNodesTooltip {
@@ -143,6 +179,15 @@ namespace Dynamo.PythonMigration.Properties {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Reject the current code changes..
+        /// </summary>
+        public static string RejectButtonTooltip {
+            get {
+                return ResourceManager.GetString("RejectButtonTooltip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Double-click on the custom node to open its workspace.
         /// </summary>

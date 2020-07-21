@@ -88,6 +88,13 @@ namespace PythonNodeModels
                         AstFactory.BuildExprList(vals)
                     }));
         }
+
+        internal event EventHandler MigrationAssistantRequested;
+        internal void RequestCodeMigration(EventArgs e)
+        {
+            MigrationAssistantRequested?.Invoke(this, e);
+        }
+
     }
 
     [NodeName("Python Script")]

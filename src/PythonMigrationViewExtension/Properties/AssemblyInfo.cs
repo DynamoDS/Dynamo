@@ -13,3 +13,4 @@ using System.Runtime.InteropServices;
 
 // Visible to DynamoCoreWpfTests dll for unit testing
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreTests")]
