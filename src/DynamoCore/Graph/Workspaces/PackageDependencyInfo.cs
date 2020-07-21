@@ -253,27 +253,6 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Add the Guids of a dependent nodes
-        /// </summary>
-        /// <param name="guids"></param>
-        internal void AddDependents(IEnumerable<Guid> guids)
-        {
-            foreach (var guid in guids)
-            {
-                Nodes.Add(guid);
-            }
-        }
-
-        /// <summary>
-        /// Remove a dependent node
-        /// </summary>
-        /// <param name="guid"></param>
-        internal void RemoveDependent(Guid guid)
-        {
-            Nodes.Remove(guid);
-        }
-
-        /// <summary>
         /// Checks whether two PackageDependencyInfo instances are equal
         /// They are equal if their Name and Versions are equal
         /// </summary>

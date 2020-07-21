@@ -41,6 +41,9 @@ namespace PythonNodeModels
         internal string CPythonEvaluatorClass = "CPythonEvaluator";
         internal string CPythonEvaluationMethod = "EvaluatePythonScript";
 
+        const string DummyEvaluatorClass = "DummyPythonEvaluator";
+        const string DummyEvaluatorMethod = "Evaluate";
+
         /// <summary>
         /// Singleton class initialization logic which will be run in a lazy way the first time Dynamo try to evaluate a Python node
         /// </summary>
@@ -107,8 +110,11 @@ namespace PythonNodeModels
                 return;
             }
 
-            // Throw exception here will be reflected as Python node error
-            throw new InvalidOperationException(Properties.Resources.PythonNodeErrorUnloadedEngineMsg + engine);
+            // Throwing at the compilation stage is handled as a non-retryable error by the Dynamo engine.
+            // Instead, we want to produce an error at the evaluation stage, so we can eventually recover.
+            // We handle this by providing a dummy Python evaluator that will evaluate to an error message.
+            evaluatorClass = DummyEvaluatorClass;
+            evaluationMethod = DummyEvaluatorMethod;
         }
     }
 }

@@ -133,15 +133,6 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing Python engine: .
-        /// </summary>
-        public static string PythonNodeErrorUnloadedEngineMsg {
-            get {
-                return ResourceManager.GetString("PythonNodeErrorUnloadedEngineMsg", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
         public static string PythonNodePortDataOutputToolTip {
@@ -192,6 +183,15 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorInputComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorInputComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant to update your Python 2 scripts to Python 3..
+        /// </summary>
+        public static string PythonScriptEditorMigrationAssistantButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
             }
         }
         

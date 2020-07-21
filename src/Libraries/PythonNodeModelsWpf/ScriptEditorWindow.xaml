@@ -37,7 +37,7 @@
         </Border>
         <Grid HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="0">
@@ -59,24 +59,53 @@
                         </Polygon>
                     </Button.Resources>
                 </Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1">
                 <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
                           SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           Style="{StaticResource ResourceKey=SComboBox}"
                           Name="EngineSelectorComboBox"
                           SelectionChanged="OnEngineChanged"
                           VerticalAlignment="Bottom"
-                          HorizontalAlignment="Right"
                           VerticalContentAlignment="Center"
                           HorizontalContentAlignment="Left"
                           FontSize="14px"
                           Height="40"
                           Width="Auto"
                           Margin="1"
-                          Grid.Column="1"
-                          Foreground="{StaticResource DynamoStandardLableTextBrush}" 
-                          Visibility="Collapsed"/>
+                          Foreground="{StaticResource DynamoStandardLableTextBrush}"
+                          Visibility="Collapsed" />
+                <Button Style="{DynamicResource ResourceKey=SButtonWithShapeIcon}"
+                        Name="MigrationAssistantBtn"
+                        Click="OnMigrationAssistantClicked"
+                        VerticalAlignment="Bottom"
+                        Margin="1"
+                        ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}">
+                    <Button.Resources>
+                        <Image x:Key="Shape"
+                               Width="40"
+                               Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
+                <Button Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButton}"
+                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}"
+                        Name="MoreInfoButton"
+                        Click="OnMoreInfoClicked"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Margin="1"
+                        Grid.Column="1"
+                        ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}">
+                    <Button.Resources>
+                        <fa:ImageAwesome x:Key="Shape"
+                                         Icon="ExclamationCircle"
+                                         Foreground="#bbbbbb"
+                                         Height="14"
+                                         Margin="4,0,0,0" />
+                    </Button.Resources>
+                </Button>
                 <Button Content="{x:Static p:Resources.PythonScriptEditorSaveChangesButton}" 
                         Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" 
                         Name="SaveScriptChangesButton" 
@@ -94,38 +123,21 @@
                                          Margin="4,0,0,0"/>
                     </Button.Resources>
                 </Button>
-                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}" 
-                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}" 
-                        Name="RevertScriptChangesButton" 
-                        Click="OnRevertClicked" 
-                        VerticalAlignment="Bottom" 
-                        HorizontalAlignment="Right" 
-                        Margin="1" 
+                <Button Content="{x:Static p:Resources.PythonScriptEditorRevertButton}"
+                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}"
+                        Name="RevertScriptChangesButton"
+                        Click="OnRevertClicked"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right"
+                        Margin="1"
                         Grid.Column="1"
                         ToolTip="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}">
                     <Button.Resources>
-                        <fa:ImageAwesome x:Key ="Shape"
+                        <fa:ImageAwesome x:Key="Shape"
                                          Icon="Undo"
                                          Foreground="#bbbbbb"
                                          Height="14"
-                                         Margin="4,0,0,0"/>
-                    </Button.Resources>
-                </Button>
-                <Button Content="{x:Static p:Resources.PythonScriptEditorMoreInfoButton}"
-                        Style="{DynamicResource ResourceKey=STextButtonWithShapeIcon}"
-                        Name="MoreInfoButton" 
-                        Click="OnMoreInfoClicked" 
-                        HorizontalAlignment="Right" 
-                        VerticalAlignment="Bottom" 
-                        Margin="1" 
-                        Grid.Column="1"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}">
-                    <Button.Resources>
-                        <fa:ImageAwesome x:Key ="Shape"
-                                         Icon="ExclamationCircle"
-                                         Foreground="#bbbbbb"
-                                         Height="14"
-                                         Margin="4,0,0,0"/>
+                                         Margin="4,0,0,0" />
                     </Button.Resources>
                 </Button>
             </StackPanel>
