@@ -167,7 +167,7 @@ namespace Dynamo.Configuration
                 if (value == isBackgroundGridVisible) return;
                 isBackgroundGridVisible = value;
 
-                RaisePropertyChanged("IsBackgroundGridVisible");
+                RaisePropertyChanged(nameof(IsBackgroundGridVisible));
             }
         }
 
