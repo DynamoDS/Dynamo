@@ -30,6 +30,10 @@ https://github.com/cyotek/Cyotek.Drawing.BitmapFont
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt 
   (MIT license)
 
+### DiffPlex
+https://github.com/mmanela/diffplex/blob/master/License.txt
+  (Apache License)
+
 ### DirectX
 https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
 https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
@@ -133,8 +137,4 @@ https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
 ### Xceed Extended WPF Toolkit
 https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
   (Microsoft Public License)
-
-### DiffPlex
-https://github.com/mmanela/diffplex/blob/master/License.txt
-  (Apache License)
 
