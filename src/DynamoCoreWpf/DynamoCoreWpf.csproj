@@ -49,7 +49,7 @@
     </Reference>
     <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net47\Greg.dll</HintPath>
+      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.11.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\packages\HelixToolkit.2.11.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>

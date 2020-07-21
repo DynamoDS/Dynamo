@@ -46,7 +46,7 @@
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
     <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.0.7507.22529\lib\net47\Greg.dll</HintPath>
+      <HintPath>..\..\src\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
