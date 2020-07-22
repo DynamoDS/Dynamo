@@ -12,7 +12,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
       "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "7fa1ef232e13484586b692c71d9e5c70",
@@ -40,9 +40,47 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "b518fc1118b745898bf5b840e3ea1c35",
+      "Inputs": [
+        {
+          "Id": "1b76bf9b56f943718514b62adb561e28",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e85535a49d2b4850ab95e6950405d015",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
     }
   ],
-  "Connectors": [],
+  "Connectors": [
+    {
+      "Start": "6138bc73890041e5837b37cbd69f47ea",
+      "End": "1b76bf9b56f943718514b62adb561e28",
+      "Id": "b938a0e52e4f4036b4c7f2a2d91debeb"
+    }
+  ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
   "Bindings": [],
@@ -51,7 +89,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.8.0.2026",
+      "Version": "2.8.0.2035",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -70,13 +108,23 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "Python Script",
+        "Name": "Greeting CPython node",
         "Id": "7fa1ef232e13484586b692c71d9e5c70",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 300.0,
-        "Y": 202.0
+        "X": 78.399999999999977,
+        "Y": 154.8
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Greeting IronPython node",
+        "Id": "b518fc1118b745898bf5b840e3ea1c35",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 383.2000000000001,
+        "Y": 154.80000000000007
       }
     ],
     "Annotations": [],

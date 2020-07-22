@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
+using Dynamo.Events;
+using Dynamo.Session;
 using Dynamo.Utilities;
 using IronPython.Hosting;
 
@@ -121,6 +123,8 @@ namespace DSIronPython
             ScriptEngine engine = prev_script.Engine;
             ScriptScope scope = engine.CreateScope();
 
+            ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
             int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
             for (int i = 0; i < amt; i++)
@@ -146,6 +150,31 @@ namespace DSIronPython
             var result = scope.ContainsVariable("OUT") ? scope.GetVariable("OUT") : null;
 
             return OutputMarshaler.Marshal(result);
+        }
+
+        /// <summary>
+        /// Processes additional bindings that are not actual inputs.
+        /// Currently, only the node name is received in this way.
+        /// </summary>
+        /// <param name="scope">Python scope where execution will occur</param>
+        /// <param name="bindingNames">List of binding names received for evaluation</param>
+        /// <param name="bindingValues">List of binding values received for evaluation</param>
+        private static void ProcessAdditionalBindings(ScriptScope scope, IList bindingNames, IList bindingValues)
+        {
+            string nodeName;
+            if (!bindingNames[0].Equals("Name"))
+            {
+                // Defensive code to fallback in case the additional binding is not there for some reason
+                nodeName = "USER";
+            }
+            else
+            {
+                bindingNames.RemoveAt(0);
+                nodeName = (string)bindingValues[0];
+            }
+            dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+            Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+            scope.SetVariable("DynamoPrint", logFunction);
         }
 
         #region Marshalling

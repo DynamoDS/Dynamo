@@ -192,16 +192,14 @@ namespace DSCPython
                     }
                     using (PyScope scope = Py.CreateScope())
                     {
+                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
                         for (int i = 0; i < amt; i++)
                         {
                             scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                         }
-
-                        dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                        Action<string> logFunction = msg => logger.Log($"USER: {msg}");
-                        scope.Set("DynamoPrint", logFunction.ToPython());
 
                         try
                         {
@@ -235,6 +233,31 @@ namespace DSCPython
             {
                 PythonEngine.ReleaseLock(gs);
             }
+        }
+
+        /// <summary>
+        /// Processes additional bindings that are not actual inputs.
+        /// Currently, only the node name is received in this way.
+        /// </summary>
+        /// <param name="scope">Python scope where execution will occur</param>
+        /// <param name="bindingNames">List of binding names received for evaluation</param>
+        /// <param name="bindingValues">List of binding values received for evaluation</param>
+        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        {
+            string nodeName;
+            if (!bindingNames[0].Equals("Name"))
+            {
+                // Defensive code to fallback in case the additional binding is not there for some reason
+                nodeName = "USER";
+            }
+            else
+            {
+                bindingNames.RemoveAt(0);
+                nodeName = (string)bindingValues[0];
+            }
+            dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+            Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+            scope.Set("DynamoPrint", logFunction.ToPython());
         }
 
         /// <summary>

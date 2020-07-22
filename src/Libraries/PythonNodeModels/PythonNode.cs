@@ -181,7 +181,10 @@ namespace PythonNodeModels
                 CreateOutputAST(
                     AstFactory.BuildStringNode(script),
                     inputAstNodes,
-                    new List<Tuple<string, AssociativeNode>>())
+                    new List<Tuple<string, AssociativeNode>>()
+                    {
+                        Tuple.Create<string, AssociativeNode>(nameof(Name), AstFactory.BuildStringNode(Name))
+                    })
             };
         }
 
@@ -270,7 +273,10 @@ namespace PythonNodeModels
                 CreateOutputAST(
                     inputAstNodes[0],
                     inputAstNodes.Skip(1).ToList(),
-                    new List<Tuple<string, AssociativeNode>>())
+                    new List<Tuple<string, AssociativeNode>>()
+                    {
+                        Tuple.Create<string, AssociativeNode>(nameof(Name), AstFactory.BuildStringNode(Name))
+                    })
             };
         }
     }
