@@ -37,6 +37,7 @@ namespace PythonNodeModelsWpf
             ref ModelessChildWindow.WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
+            this.Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
@@ -136,7 +137,8 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            UpdateScript(e.NewCode);
+            if (nodeModel.Engine != PythonEngineVersion.CPython3)
+                nodeModel.Engine = PythonEngineVersion.CPython3;
         }
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
@@ -200,6 +202,11 @@ namespace PythonNodeModelsWpf
             {
                 UpdateScript(editText.Text);
             }
+        }
+
+        private void OnScriptEditorWindowClosed(object sender, EventArgs e)
+        {
+            nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
         }
     }
 }

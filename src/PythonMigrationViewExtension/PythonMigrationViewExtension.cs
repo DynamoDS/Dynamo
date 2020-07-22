@@ -11,7 +11,6 @@ using Dynamo.PythonMigration.Properties;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using PythonNodeModels;
-using PythonNodeModelsWpf;
 
 namespace Dynamo.PythonMigration
 {
@@ -114,7 +113,7 @@ namespace Dynamo.PythonMigration
                 throw new NullReferenceException(nameof(e));
 
             var btn = routedEventArgs.OriginalSource as System.Windows.Controls.Button;
-            var parentWindow = Window.GetWindow(btn) as ScriptEditorWindow;
+            var parentWindow = Window.GetWindow(btn);
 
             var node = sender as PythonNode;
             var viewModel = new PythonMigrationAssistantViewModel(node);
@@ -125,7 +124,6 @@ namespace Dynamo.PythonMigration
 
             // show modal window so user cant interact with dynamo while migration assistant is open
             assistantWindow.ShowDialog();
-
         }
 
         private void OnNotificationLogged(NotificationMessage obj)
