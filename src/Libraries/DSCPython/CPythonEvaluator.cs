@@ -245,9 +245,10 @@ namespace DSCPython
         private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
         {
             string nodeName;
-            if (!bindingNames[0].Equals("Name"))
+            if (bindingNames.Count == 0 || !bindingNames[0].Equals("Name"))
             {
-                // Defensive code to fallback in case the additional binding is not there for some reason
+                // Defensive code to fallback in case the additional binding is not there, like
+                // when the evaluator is called directly in unit tests.
                 nodeName = "USER";
             }
             else
@@ -256,9 +257,14 @@ namespace DSCPython
                 nodeName = (string)bindingValues[0];
                 bindingValues.RemoveAt(0);
             }
-            dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-            Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
-            scope.Set("DynamoPrint", logFunction.ToPython());
+
+            // Session is null when running unit tests.
+            if (ExecutionEvents.ActiveSession != null)
+            {
+                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+                scope.Set("DynamoPrint", logFunction.ToPython());
+            }
         }
 
         /// <summary>
