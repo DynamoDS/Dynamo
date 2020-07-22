@@ -73,7 +73,7 @@ namespace Dynamo.PythonMigration
         private void DisplayIronPythonDialog()
         {
             // we only want to create the dialog ones for each graph per Dynamo session, if the global setting is not disabled
-            if (DialogTracker.ContainsKey(CurrentWorkspace.Guid) || DynamoViewModel.IsIronPythonDialogDisabled)
+            if (DynamoViewModel.IsIronPythonDialogDisabled || DialogTracker.ContainsKey(CurrentWorkspace.Guid) || DialogTracker.ContainsKey((CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeId))
                 return;
 
             var dialog = new IronPythonInfoDialog(this)
@@ -87,6 +87,9 @@ namespace Dynamo.PythonMigration
             }), DispatcherPriority.Background);
 
             DialogTracker[CurrentWorkspace.Guid] = dialog;
+            if (CurrentWorkspace.GetType() == typeof(CustomNodeWorkspaceModel)){
+                DialogTracker[(CurrentWorkspace as CustomNodeWorkspaceModel).CustomNodeId] = dialog;
+            }
         }
 
         private void LogIronPythonNotification()
