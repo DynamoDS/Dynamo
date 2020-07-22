@@ -254,6 +254,7 @@ namespace DSCPython
             {
                 bindingNames.RemoveAt(0);
                 nodeName = (string)bindingValues[0];
+                bindingValues.RemoveAt(0);
             }
             dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
             Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
