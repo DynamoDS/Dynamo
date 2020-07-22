@@ -244,8 +244,9 @@ namespace DSCPython
         /// <param name="bindingValues">List of binding values received for evaluation</param>
         private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
         {
+            const string NodeNameInput = "Name";
             string nodeName;
-            if (bindingNames.Count == 0 || !bindingNames[0].Equals("Name"))
+            if (bindingNames.Count == 0 || !bindingNames[0].Equals(NodeNameInput))
             {
                 // Defensive code to fallback in case the additional binding is not there, like
                 // when the evaluator is called directly in unit tests.
