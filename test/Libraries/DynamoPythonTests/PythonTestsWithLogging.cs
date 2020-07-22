@@ -30,7 +30,9 @@ namespace DynamoPythonTests
         public void DynamoPrintLogsToConsole()
         {
             var expectedOutput = "Greeting CPython node: Hello from Python3!!!" + Environment.NewLine
-                + "Greeting IronPython node: Hello from Python2!!!" + Environment.NewLine;
+                + "Greeting IronPython node: Hello from Python2!!!" + Environment.NewLine
+                + "Greeting CPython String node: Hello from Python3!!!" + Environment.NewLine
+                + "Greeting IronPython String node: Hello from Python2!!!" + Environment.NewLine;
 
             CurrentDynamoModel.OpenFileFromPath(Path.Combine(TestDirectory, "core", "python", "DynamoPrint.dyn"));
             StringAssert.EndsWith(expectedOutput, CurrentDynamoModel.Logger.LogText);
