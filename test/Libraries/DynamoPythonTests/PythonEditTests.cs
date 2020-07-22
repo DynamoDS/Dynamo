@@ -614,5 +614,15 @@ namespace Dynamo.Tests
             Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
 
         }
+
+        [Test]
+        public void DynamoPrintInCPython()
+        {
+            var examplePath = Path.Combine(TestDirectory, "core", "python", "DynamoPrint.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            var consoleOut = Console.Out;
+            Console.SetOut()
+            StringAssert.EndsWith("Hello from Python!!!", ViewModel.Model.Logger.LogText);
+        }
     }
 }

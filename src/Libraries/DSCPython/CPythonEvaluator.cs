@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
+using Dynamo.Events;
+using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
 
@@ -196,6 +198,10 @@ namespace DSCPython
                         {
                             scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                         }
+
+                        dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                        Action<string> logFunction = msg => logger.Log($"USER: {msg}");
+                        scope.Set("DynamoPrint", logFunction.ToPython());
 
                         try
                         {

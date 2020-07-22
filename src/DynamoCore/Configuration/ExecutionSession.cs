@@ -25,6 +25,7 @@ namespace Dynamo.Configuration
             parameters[ParameterKeys.NumberFormat] = model.PreferenceSettings.NumberFormat;
             parameters[ParameterKeys.LastExecutionDuration] = new TimeSpan(updateTask.ExecutionEndTime.TickCount - updateTask.ExecutionStartTime.TickCount);
             parameters[ParameterKeys.PackagePaths] = pathManager.PackagesDirectories;
+            parameters[ParameterKeys.Logger] = model.Logger;
         }
 
         /// <summary>
