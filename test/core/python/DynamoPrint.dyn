@@ -1,0 +1,285 @@
+{
+  "Uuid": "04e3a62a-e290-415b-89c7-0a9255901527",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "DynamoPrint",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "7fa1ef232e13484586b692c71d9e5c70",
+      "Inputs": [
+        {
+          "Id": "706e32b4ce344fea908d1c184e06722b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6138bc73890041e5837b37cbd69f47ea",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "b518fc1118b745898bf5b840e3ea1c35",
+      "Inputs": [
+        {
+          "Id": "1b76bf9b56f943718514b62adb561e28",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e85535a49d2b4850ab95e6950405d015",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "cb1179986e5a49b68b009fca1f5f1d5e",
+      "Inputs": [
+        {
+          "Id": "a5e1640b724f48d6b45f5fdc99685b80",
+          "Name": "script",
+          "Description": "Python script to run.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "885b416f700c45f3a1528e5d3ceb1c28",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8a5143690b1345f9a9a77057a4a60a0f",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs a IronPython script from a string."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "NodeType": "StringInputNode",
+      "InputValue": "import sys\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')",
+      "Id": "8dd9296336d04ca8850b267e86f04156",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "b9b37c561566490cb54e6ad8236b71be",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonStringNode, PythonNodeModels",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "f18a8dde5074415da6ac87614b7d53a3",
+      "Inputs": [
+        {
+          "Id": "be1ffa19bc9d4c53a84d8215f262361c",
+          "Name": "script",
+          "Description": "Python script to run.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "49a744a183dc4f0daf079c5dbb959849",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cf0b0de0487f440fb84ecda9e67bc7d7",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs a IronPython script from a string."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6138bc73890041e5837b37cbd69f47ea",
+      "End": "1b76bf9b56f943718514b62adb561e28",
+      "Id": "b938a0e52e4f4036b4c7f2a2d91debeb"
+    },
+    {
+      "Start": "e85535a49d2b4850ab95e6950405d015",
+      "End": "885b416f700c45f3a1528e5d3ceb1c28",
+      "Id": "094dc52bc61b487a9b4cd5eafda72120"
+    },
+    {
+      "Start": "8a5143690b1345f9a9a77057a4a60a0f",
+      "End": "49a744a183dc4f0daf079c5dbb959849",
+      "Id": "d67fd627a8c64f51a36a0eb819d533ae"
+    },
+    {
+      "Start": "b9b37c561566490cb54e6ad8236b71be",
+      "End": "a5e1640b724f48d6b45f5fdc99685b80",
+      "Id": "77aa15954970471fbf4083faa78db2d5"
+    },
+    {
+      "Start": "b9b37c561566490cb54e6ad8236b71be",
+      "End": "be1ffa19bc9d4c53a84d8215f262361c",
+      "Id": "f2bb060269f74f638b266f05b6cb5f98"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.8.0.2035",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Greeting CPython node",
+        "Id": "7fa1ef232e13484586b692c71d9e5c70",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 15.199999999999989,
+        "Y": 27.600000000000037
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Greeting IronPython node",
+        "Id": "b518fc1118b745898bf5b840e3ea1c35",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 279.6,
+        "Y": 28.400000000000077
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Greeting CPython String node",
+        "Id": "cb1179986e5a49b68b009fca1f5f1d5e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 26.0,
+        "Y": 283.2000000000001
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "String",
+        "Id": "8dd9296336d04ca8850b267e86f04156",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 13.999999999999943,
+        "Y": 151.59999999999991
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Greeting IronPython String node",
+        "Id": "f18a8dde5074415da6ac87614b7d53a3",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 315.2,
+        "Y": 284.40000000000009
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
