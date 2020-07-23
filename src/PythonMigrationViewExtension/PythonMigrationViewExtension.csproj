@@ -98,9 +98,19 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="Controls\VisualDifferenceViewer.xaml.cs">
-      <DependentUpon>VisualDifferenceViewer.xaml</DependentUpon>
+    <Compile Include="Controls\BaseDiffViewer.xaml.cs">
+      <DependentUpon>BaseDiffViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InLineControl.xaml.cs">
+      <DependentUpon>InLineControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SideBySideControl.xaml.cs">
+      <DependentUpon>SideBySideControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Differ\IDiffViewViewModel.cs" />
+    <Compile Include="Differ\InLineViewModel.cs" />
+    <Compile Include="Differ\RichTextBoxHandler.cs" />
+    <Compile Include="Differ\SideBySideViewModel.cs" />
     <Compile Include="GraphPythonDependencies.cs" />
     <Compile Include="MigrationAssistant\ScriptMigrator.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -138,9 +148,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\VisualDifferenceViewer.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Controls\BaseDiffViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InLineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SideBySideControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="IronPythonInfoDialog.xaml">
       <SubType>Designer</SubType>

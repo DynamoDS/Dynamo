@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Dynamo.PythonMigration.Controls.InLineControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
+             xmlns:viewModels="clr-namespace:Dynamo.PythonMigration.Differ"
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment"
+                    Value="Center" />
+            <Setter Property="FontSize"
+                    Value="10pt" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+            <Setter Property="Foreground"
+                    Value="#F8F8F2" />
+        </Style>
+        <Style TargetType="RichTextBox">
+            <Setter Property="FontSize"
+                    Value="10pt" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Foreground"
+                    Value="#F8F8F2" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+        </Style>
+        <Style TargetType="Table">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="CellSpacing"
+                    Value="0" />
+        </Style>
+        <Style TargetType="TableCell">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+        </Style>
+        <Style TargetType="Paragraph">
+            <Setter Property="Padding"
+                    Value="5,0,0,0" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Before -> After"
+                   Grid.Row="0"
+                   Foreground="#808080" />
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Grid.Row="1">
+            <RichTextBox IsReadOnly="True"
+                         x:Name="InlinePanel"                       
+                         viewModels:RichTextBoxHandler.Update="{Binding DiffModel}" />
+        </ScrollViewer>
+
+        </Grid>
+</UserControl>
