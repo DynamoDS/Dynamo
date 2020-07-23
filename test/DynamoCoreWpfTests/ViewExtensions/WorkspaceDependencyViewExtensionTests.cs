@@ -236,9 +236,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Workspace References", viewExtension.Name);
 
             Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
-
         }
 
-        
+        [Test]
+        public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
+        {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
+            var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
+            Open(examplePath);
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            var workspaceViewExtension = View.viewExtensionManager.ViewExtensions.Where(x => x.Name.Equals("Workspace References")).Count();
+            Assert.AreEqual(1, workspaceViewExtension);
+        }
     }
 }

@@ -353,6 +353,5 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(GraphPythonDependencies.PythonPackage, pkgDependencyInfo.Name);
             Assert.AreEqual(GraphPythonDependencies.PythonPackageVersion, pkgDependencyInfo.Version);
         }
-
     }
 }
