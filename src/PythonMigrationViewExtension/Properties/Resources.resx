@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <!-- 
+  <!-- 
     Microsoft ResX Schema 
     
     Version 2.0
@@ -59,111 +59,114 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-        <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
-        <xsd:element name="root" msdata:IsDataSet="true">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
             <xsd:complexType>
-                <xsd:choice maxOccurs="unbounded">
-                    <xsd:element name="metadata">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" use="required" type="xsd:string"/>
-                            <xsd:attribute name="type" type="xsd:string"/>
-                            <xsd:attribute name="mimetype" type="xsd:string"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="assembly">
-                        <xsd:complexType>
-                            <xsd:attribute name="alias" type="xsd:string"/>
-                            <xsd:attribute name="name" type="xsd:string"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="data">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-                            <xsd:attribute ref="xml:space"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                    <xsd:element name="resheader">
-                        <xsd:complexType>
-                            <xsd:sequence>
-                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                            </xsd:sequence>
-                            <xsd:attribute name="name" type="xsd:string" use="required"/>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:choice>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
-        </xsd:element>
-    </xsd:schema>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>2.0</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="AcceptButtonTooltip" xml:space="preserve">
-        <value>Accept the current code changes.</value>
-    </data>
-    <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
-        <value>Custom Nodes that have an IronPython2 dependency</value>
-    </data>
-    <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
-        <value>Custom Nodes that have an IronPython2 dependency</value>
-    </data>
-    <data name="DiffButtonTooltip" xml:space="preserve">
-        <value>Change between Side-by-Side and Inline view.</value>
-    </data>
-    <data name="IronPythonDialogDescription" xml:space="preserve">
-        <value>Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptButtonTooltip" xml:space="preserve">
+    <value>Accept the current code changes.</value>
+  </data>
+  <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
+    <value>Custom Nodes that have an IronPython2 dependency</value>
+  </data>
+  <data name="DiffButtonTooltip" xml:space="preserve">
+    <value>Change between Side-by-Side and Inline view.</value>
+  </data>
+  <data name="IronPythonDialogDescription" xml:space="preserve">
+    <value>Dynamo is moving away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
 There will be a time of transition where both versions of Python node will work inside of Dynamo, but eventually the CPython3 engine will be set as default.</value>
-    </data>
-    <data name="IronPythonDialogSummary" xml:space="preserve">
-        <value>This graph contains nodes that reference an outdated Python engine.</value>
-    </data>
-    <data name="IronPythonDialogTitle" xml:space="preserve">
-        <value>Graph contains outdated Python engine</value>
-    </data>
-    <data name="IronPythonDisableAlertMessage" xml:space="preserve">
-        <value>Do not show again.</value>
-    </data>
-    <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-        <value>This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine.</value>
-    </data>
-    <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-        <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
-    </data>
-    <data name="PackagedCustomNodesHeader" xml:space="preserve">
-        <value>Packaged</value>
-    </data>
-    <data name="PackagedCustomNodesTooltip" xml:space="preserve">
-        <value>Please notify the package author to update the package</value>
-    </data>
-    <data name="PythonMigrationBackupExtension" xml:space="preserve">
-        <value>Python2</value>
-    </data>
-    <data name="RejectButtonTooltip" xml:space="preserve">
-        <value>Reject the current code changes.</value>
-    </data>
-    <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
-        <value>Double-click on the custom node to open its workspace</value>
-    </data>
-    <data name="UserDefinitionsHeader" xml:space="preserve">
-        <value>Definitions</value>
-    </data>
+  </data>
+  <data name="IronPythonDialogSummary" xml:space="preserve">
+    <value>This graph contains nodes that reference an outdated Python engine.</value>
+  </data>
+  <data name="IronPythonDialogTitle" xml:space="preserve">
+    <value>Graph contains outdated Python engine</value>
+  </data>
+  <data name="IronPythonDisableAlertMessage" xml:space="preserve">
+    <value>Do not show again.</value>
+  </data>
+  <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
+    <value>This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine.</value>
+  </data>
+  <data name="IronPythonNotificationShortMessage" xml:space="preserve">
+    <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
+  </data>
+  <data name="PackagedCustomNodesHeader" xml:space="preserve">
+    <value>Packaged</value>
+  </data>
+  <data name="PackagedCustomNodesTooltip" xml:space="preserve">
+    <value>Please notify the package author to update the package</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="PythonMigrationBackupExtension" xml:space="preserve">
+    <value>Python2</value>
+  </data>
+  <data name="RejectButtonTooltip" xml:space="preserve">
+    <value>Reject the current code changes.</value>
+  </data>
+  <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
+    <value>Double-click on the custom node to open its workspace</value>
+  </data>
+  <data name="UserDefinitionsHeader" xml:space="preserve">
+    <value>Definitions</value>
+  </data>
 </root>
