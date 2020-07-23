@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
+using Dynamo.Events;
+using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
 
@@ -190,6 +192,8 @@ namespace DSCPython
                     }
                     using (PyScope scope = Py.CreateScope())
                     {
+                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
                         for (int i = 0; i < amt; i++)
@@ -228,6 +232,39 @@ namespace DSCPython
             finally
             {
                 PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        /// <summary>
+        /// Processes additional bindings that are not actual inputs.
+        /// Currently, only the node name is received in this way.
+        /// </summary>
+        /// <param name="scope">Python scope where execution will occur</param>
+        /// <param name="bindingNames">List of binding names received for evaluation</param>
+        /// <param name="bindingValues">List of binding values received for evaluation</param>
+        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        {
+            const string NodeNameInput = "Name";
+            string nodeName;
+            if (bindingNames.Count == 0 || !bindingNames[0].Equals(NodeNameInput))
+            {
+                // Defensive code to fallback in case the additional binding is not there, like
+                // when the evaluator is called directly in unit tests.
+                nodeName = "USER";
+            }
+            else
+            {
+                bindingNames.RemoveAt(0);
+                nodeName = (string)bindingValues[0];
+                bindingValues.RemoveAt(0);
+            }
+
+            // Session is null when running unit tests.
+            if (ExecutionEvents.ActiveSession != null)
+            {
+                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+                scope.Set("DynamoPrint", logFunction.ToPython());
             }
         }
 

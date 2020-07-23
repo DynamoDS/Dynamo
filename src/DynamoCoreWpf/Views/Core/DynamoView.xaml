@@ -583,8 +583,8 @@
                             </MenuItem>
 
                             <MenuItem Header="{x:Static p:Resources.DynamoViewViewMenuShowGrid}"
-                                      IsEnabled="{Binding BackgroundPreviewActive}"
-                                      IsChecked="{Binding BackgroundPreviewViewModel.IsGridVisible}"
+                                      IsEnabled="True"
+                                      IsChecked="{Binding PreferenceSettings.IsBackgroundGridVisible}"
                                       Focusable="False"
                                       Command="{Binding ToggleBackgroundGridVisibilityCommand}" />
 
