@@ -169,6 +169,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        /// </summary>
+        public static string PythonScriptEditorEngineDropdownTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load the Python Standard and DesignScript Libraries.
         /// </summary>
         public static string PythonScriptEditorImports {
@@ -194,26 +203,6 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
-        /// </summary>
-        public static string PythonScriptEditorEngineDropdownTooltip
-        {
-            get
-            {
-                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Learn More.
-        /// </summary>
-        public static string PythonScriptEditorMoreInfoButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorMoreInfoButton", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Learn about Python3 updates..
@@ -230,15 +219,6 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorOutputComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorOutputComment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Revert.
-        /// </summary>
-        public static string PythonScriptEditorRevertButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorRevertButton", resourceCulture);
             }
         }
         
@@ -266,15 +246,6 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorRunButtonTooltip {
             get {
                 return ResourceManager.GetString("PythonScriptEditorRunButtonTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save.
-        /// </summary>
-        public static string PythonScriptEditorSaveChangesButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorSaveChangesButton", resourceCulture);
             }
         }
         
