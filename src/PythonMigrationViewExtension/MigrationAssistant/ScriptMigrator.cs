@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Python.Included;
 using Python.Runtime;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
@@ -17,7 +18,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// <returns></returns>
         internal static string MigrateCode(string code)
         {
-            Python.Included.Installer.SetupPython().Wait();
+            Installer.SetupPython().Wait();
 
             if (!PythonEngine.IsInitialized)
             {

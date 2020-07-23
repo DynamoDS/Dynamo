@@ -7,9 +7,11 @@ namespace Dynamo.PythonMigration
     {
         public string OldCode { get; set; }
         public string NewCode { get; set; }
+        private PythonNode PythonNode { get; set; }
 
         public PythonMigrationAssistantViewModel(PythonNode pythonNode)
         {
+            PythonNode = pythonNode;
             OldCode = pythonNode.Script;
             MigrateCode();
         }
@@ -17,6 +19,11 @@ namespace Dynamo.PythonMigration
         private void MigrateCode()
         {
             NewCode = ScriptMigrator.MigrateCode(OldCode);
+        }
+
+        public void ChangeCode()
+        {
+            PythonNode.MigrateCode(NewCode);
         }
     }
 }

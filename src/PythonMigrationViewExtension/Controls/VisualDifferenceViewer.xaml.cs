@@ -9,10 +9,10 @@ namespace Dynamo.PythonMigration.Controls
     public partial class VisualDifferenceViewer : Window
     {
         private PythonMigrationAssistantViewModel ViewModel { get; set; }
-        internal VisualDifferenceViewer(PythonMigrationAssistantViewModel viewModel, Window ownerWindow)
+        
+        internal VisualDifferenceViewer(PythonMigrationAssistantViewModel viewModel)
         {
             ViewModel = viewModel;
-            Owner = ownerWindow;
             InitializeComponent();
             LoadData();
             DiffView.ViewModeChanged += OnViewModeChanged;
@@ -55,6 +55,17 @@ namespace Dynamo.PythonMigration.Controls
             SizeToContent = SizeToContent.Manual;
         }
 
+        private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.ChangeCode();
+            this.Close();
+        }
+
+        private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        
         private void OnVisualDifferenceViewerClosed(object sender, System.EventArgs e)
         {
             DiffView.ViewModeChanged -= OnViewModeChanged;
