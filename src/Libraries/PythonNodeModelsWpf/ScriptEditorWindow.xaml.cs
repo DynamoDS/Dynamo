@@ -207,6 +207,7 @@ namespace PythonNodeModelsWpf
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+            this.Closed -= OnScriptEditorWindowClosed;
         }
     }
 }
