@@ -117,7 +117,7 @@ namespace Dynamo.PythonMigration
 
             var node = sender as PythonNode;
             var viewModel = new PythonMigrationAssistantViewModel(node);
-            var assistantWindow = new VisualDifferenceViewer(viewModel)
+            var assistantWindow = new BaseDiffViewer(viewModel)
             {
                 Owner = parentWindow
             };
