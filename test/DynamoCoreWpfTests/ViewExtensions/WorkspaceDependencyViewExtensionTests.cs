@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -241,13 +242,22 @@ namespace DynamoCoreWpfTests
         [Test]
         public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
         {
+            List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
             DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
+
             var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
             Open(examplePath);
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
-            var workspaceViewExtension = View.viewExtensionManager.ViewExtensions.Where(x => x.Name.Equals("Workspace References")).Count();
-            Assert.AreEqual(1, workspaceViewExtension);
+
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension) View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            foreach (PackageDependencyRow packageDependencyRow in workspaceViewExtension.DependencyView.dataRows) 
+            {
+                var dependencyInfo = packageDependencyRow.DependencyInfo;
+                Assert.Contains(dependencyInfo.Name, dependenciesList);
+            }
         }
     }
 }
