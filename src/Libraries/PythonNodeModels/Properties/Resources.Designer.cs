@@ -194,7 +194,18 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        /// </summary>
+        public static string PythonScriptEditorEngineDropdownTooltip
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Learn More.
         /// </summary>

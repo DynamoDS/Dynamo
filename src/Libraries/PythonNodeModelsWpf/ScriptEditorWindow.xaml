@@ -72,7 +72,8 @@
                           Width="Auto"
                           Margin="1"
                           Foreground="{StaticResource DynamoStandardLableTextBrush}"
-                          Visibility="Collapsed" />
+                          Visibility="Collapsed" 
+                          ToolTip="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}"/>
                 <Button Style="{DynamicResource ResourceKey=SButtonWithShapeIcon}"
                         Name="MigrationAssistantBtn"
                         Click="OnMigrationAssistantClicked"
