@@ -122,6 +122,8 @@ namespace Dynamo.PythonMigration
                 Owner = parentWindow
             };
 
+            var assistantWarning = new MigrationAssistantWarning();
+            assistantWarning.ShowDialog();
             // show modal window so user cant interact with dynamo while migration assistant is open
             assistantWindow.ShowDialog();
         }

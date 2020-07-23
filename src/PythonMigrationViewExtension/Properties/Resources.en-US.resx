@@ -145,6 +145,19 @@ There will be a time of transition where both versions of Python node will work 
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
     <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
   </data>
+  <data name="MigrationAssistantWarningContinueButtonContent" xml:space="preserve">
+    <value>Continue</value>
+  </data>
+  <data name="MigrationAssistantWarningDisable" xml:space="preserve">
+    <value>Do not show again.</value>
+  </data>
+  <data name="MigrationAssistantWarningHeader" xml:space="preserve">
+    <value>You are about to make changes to your Python code</value>
+  </data>
+  <data name="MigrationAssistantWarningMessage" xml:space="preserve">
+    <value>The Migration Assistant helps users to update scripts from Python 2 to Python 3.
+By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
+  </data>
   <data name="PackagedCustomNodesHeader" xml:space="preserve">
     <value>Packaged</value>
   </data>

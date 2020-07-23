@@ -101,6 +101,9 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\MigrationAssistantWarning.xaml.cs">
+      <DependentUpon>MigrationAssistantWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\VisualDifferenceViewer.xaml.cs">
       <DependentUpon>VisualDifferenceViewer.xaml</DependentUpon>
     </Compile>
@@ -141,6 +144,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\MigrationAssistantWarning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\VisualDifferenceViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

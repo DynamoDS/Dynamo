@@ -143,6 +143,43 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string MigrationAssistantWarningContinueButtonContent {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningContinueButtonContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show again..
+        /// </summary>
+        public static string MigrationAssistantWarningDisable {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to make changes to your Python code.
+        /// </summary>
+        public static string MigrationAssistantWarningHeader {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Migration Assistant helps users to update scripts from Python 2 to Python 3.
+        ///By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string MigrationAssistantWarningMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
