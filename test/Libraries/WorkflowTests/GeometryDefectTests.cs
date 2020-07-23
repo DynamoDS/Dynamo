@@ -600,13 +600,15 @@ namespace Dynamo.Tests
             AssertNoDummyNodes();
 
             // check the number of nodes and connectors
-            Assert.AreEqual(74, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
-            Assert.AreEqual(54, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(75, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(55, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             // check Curve.SweepAsSolid
             var solid1 = "df601349-3c41-4223-8c4d-e9fa043d1663";
             var obj = GetPreviewValue(solid1);
             Assert.IsTrue(obj is Solid);
+
+            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.5531);
         }
 
         #region Test Node Changes
