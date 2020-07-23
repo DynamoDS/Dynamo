@@ -1357,7 +1357,7 @@ namespace Dynamo.Graph.Workspaces
             var selectedNodes = this.Nodes == null ? null:this.Nodes.Where(s => s.IsSelected);
             var selectedNotes = this.Notes == null ? null: this.Notes.Where(s => s.IsSelected);
 
-            if (!CheckIfModelExistsInSameGroup(selectedNodes, selectedNotes))
+            if (!CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
             {
                 var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
                 {
@@ -1407,24 +1407,27 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
-        /// Checks if model exists in same group.
+        /// Checks if model exists in some group.
         /// </summary>
         /// <param name="selectNodes">The select nodes.</param>
         /// <param name="selectNotes">The select notes.</param>
-        /// <returns>true if the models are already in the same group</returns>
-        private bool CheckIfModelExistsInSameGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
+        /// <returns>true if any of the models are already in a group</returns>
+        private bool CheckIfModelExistsInSomeGroup(IEnumerable<NodeModel> selectNodes, IEnumerable<NoteModel> selectNotes)
         {
             var selectedModels = selectNodes.Concat(selectNotes.Cast<ModelBase>()).ToList();
-            bool nodesInSameGroup = false;
+            bool nodesInSomeGroup = false;
             foreach (var group in this.Annotations)
             {
                 var groupModels = group.Nodes;
-                nodesInSameGroup = !selectedModels.Except(groupModels).Any();
-                if (nodesInSameGroup)
+                
+                //Selected models minus the ones in the current annotation
+                var modelsExceptGroup = selectedModels.Except(groupModels).ToList();
+
+                nodesInSomeGroup = modelsExceptGroup.Count() != selectedModels.Count();
+                if (nodesInSomeGroup)
                     break;
             }
-
-            return nodesInSameGroup;
+            return nodesInSomeGroup;
         }
 
         internal void ResetWorkspace()

@@ -219,14 +219,10 @@ namespace PythonNodeModels
         /// it will be removed when the transistion period is over.
         /// </summary>
         /// <param name="newCode">The new migrated code</param>
-        [Obsolete("Method will be deprecated after the Python 3 transition period")]
-        public void MigrateCode(string newCode)
+        internal void MigrateCode(string newCode)
         {        
             var e = new PythonCodeMigrationEventArgs(Script, newCode); 
             Script = newCode;
-            if(Engine  != PythonEngineVersion.CPython3)
-                Engine = PythonEngineVersion.CPython3;
-
             OnCodeMigrated(e);
         }
 
