@@ -13,6 +13,20 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace PythonNodeModels
 {
+    /// <summary>
+    /// Event arguments used to send the original and migrated code to the ScriptEditor
+    /// </summary>
+    internal class PythonCodeMigrationEventArgs : EventArgs
+    {
+        public string OldCode { get; private set; }
+        public string NewCode { get; private set; }
+        public PythonCodeMigrationEventArgs(string oldCode, string newCode)
+        {
+            OldCode = oldCode;
+            NewCode = newCode;
+        }
+    }
+
     public abstract class PythonNodeBase : VariableInputNode
     {
         private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
@@ -200,6 +214,30 @@ namespace PythonNodeModels
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        /// <summary>
+        /// Updates the Script property of the node.
+        /// NOTE: This is a temporary method used during the Python 2 to Python 3 transistion period,
+        /// it will be removed when the transistion period is over.
+        /// </summary>
+        /// <param name="newCode">The new migrated code</param>
+        internal void MigrateCode(string newCode)
+        {        
+            var e = new PythonCodeMigrationEventArgs(Script, newCode); 
+            Script = newCode;
+            OnCodeMigrated(e);
+        }
+
+        /// <summary>
+        /// Fires when the Script content is migrated to Python 3.
+        /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,
+        /// it will be removed when the transistion period is over.
+        /// </summary>
+        internal event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
+        private void OnCodeMigrated(PythonCodeMigrationEventArgs e)
+        {
+            CodeMigrated?.Invoke(this, e);
         }
 
         #region SerializeCore/DeserializeCore

@@ -37,11 +37,13 @@ namespace PythonNodeModelsWpf
             ref ModelessChildWindow.WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
+            this.Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
             completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
+            nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
 
@@ -131,6 +133,14 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
+        private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
+        {
+            originalScript = e.OldCode;
+            editText.Text = e.NewCode;
+            if (nodeModel.Engine != PythonEngineVersion.CPython3)
+                nodeModel.Engine = PythonEngineVersion.CPython3;
+        }
+
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
@@ -192,6 +202,12 @@ namespace PythonNodeModelsWpf
             {
                 UpdateScript(editText.Text);
             }
+        }
+
+        private void OnScriptEditorWindowClosed(object sender, EventArgs e)
+        {
+            nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+            this.Closed -= OnScriptEditorWindowClosed;
         }
     }
 }
