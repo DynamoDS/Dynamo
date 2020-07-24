@@ -28,7 +28,7 @@ namespace Dynamo.PythonMigration
 
         internal GraphPythonDependencies(ViewLoadedParams viewLoadedParams)
         {
-            this.ViewLoaded = viewLoadedParams;
+            ViewLoaded = viewLoadedParams;
         }
 
         private static bool IsIronPythonPackageLoaded()
@@ -78,7 +78,7 @@ namespace Dynamo.PythonMigration
                 ? PackageDependencyState.Loaded
                 : PackageDependencyState.Missing;
 
-            return new[] {packageDependencyInfo};
+            return new[] { packageDependencyInfo };
         }
 
         // This function returns true, if any of the custom nodes in the input list has an IronPython dependency. 

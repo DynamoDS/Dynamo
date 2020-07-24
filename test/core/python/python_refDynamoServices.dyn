@@ -12,7 +12,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\nclr.AddReference('DynamoServices')\r\nfrom Dynamo.Events import ExecutionEvents\r\n\r\n\r\npackagePathsKey = list(ExecutionEvents.ActiveSession.GetParameterKeys())[-1]\r\n##or packagePathsKey = \"PackagePaths\"\r\n\r\nOUT = ExecutionEvents.ActiveSession.GetParameterValue(packagePathsKey)",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\n\r\nclr.AddReference('DynamoServices')\r\nfrom Dynamo.Events import ExecutionEvents\r\nfrom Dynamo.Session import ParameterKeys\r\n\r\n\r\npackagePathsKey = ParameterKeys.PackagePaths\r\n\r\nOUT = ExecutionEvents.ActiveSession.GetParameterValue(packagePathsKey)",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "296e339254e845b695caa1a116500be0",
@@ -51,7 +51,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.8.0.1825",
+      "Version": "2.8.0.2036",
       "RunType": "Manual",
       "RunPeriod": "1000"
     },

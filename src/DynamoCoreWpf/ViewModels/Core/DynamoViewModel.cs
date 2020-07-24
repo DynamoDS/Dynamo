@@ -1816,9 +1816,15 @@ namespace Dynamo.ViewModels
 
         public void ToggleBackgroundGridVisibility(object parameter)
         {
-            if (BackgroundPreviewViewModel == null || !BackgroundPreviewViewModel.Active) return;
-
-            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+            if (BackgroundPreviewViewModel != null)
+            {
+                // This will change both the live object property and the PreferenceSettings for persistence
+                BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+            }
+            else
+            {
+                PreferenceSettings.IsBackgroundGridVisible = !PreferenceSettings.IsBackgroundGridVisible;
+            }
         }
 
         internal bool CanToggleBackgroundGridVisibility(object parameter)
