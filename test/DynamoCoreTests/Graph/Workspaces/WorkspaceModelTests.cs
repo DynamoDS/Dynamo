@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -211,6 +212,76 @@ namespace Dynamo.Tests
             //Create new annotation with selected nodes.
             var result = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", Guid.NewGuid());
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetHangingNodesTest_CaseHangingNodeExist()
+        {
+            //Loads workspace with hanging nodes
+            OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
+            var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(customWorkspace);
+
+            //Checks for hanging nodes
+            var hangingNodes = customWorkspace.GetHangingNodes();
+            Assert.AreEqual(1,hangingNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetHangingNodesTest_CaseNoHangingNodes()
+        {
+            //Checks for hanging nodes in empty workspace
+            var hangingNodes = CurrentDynamoModel.CurrentWorkspace.GetHangingNodes();
+            Assert.AreEqual(0, hangingNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSourceNodesTest_CaseSourceNodesExist()
+        {
+            //Loads workspace with hanging nodes
+            OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
+            var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(customWorkspace);
+
+            //Checks for source nodes
+            var sourceNodes = customWorkspace.GetSourceNodes();
+            Assert.AreEqual(2, sourceNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSourceNodesTest_CaseNoSourceNodes()
+        {
+            //Checks for source nodes in empty workspace
+            var sourceNodes = CurrentDynamoModel.CurrentWorkspace.GetSourceNodes();
+            Assert.AreEqual(0, sourceNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateModelValue_InvalidParameters()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            //Case: Empty Guid list
+            var ex1 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(new List<Guid>(), "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual("Value cannot be null.\r\nParameter name: modelGuids", ex1.Message);
+            
+            //Case: Null Guid list
+            var ex2 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(null, "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual("Value cannot be null.\r\nParameter name: modelGuids", ex2.Message);
+
+            //Case: No model found in workspace with given Guids
+            var guidList = new List<Guid>{ Guid.NewGuid() };
+            var ex3 = Assert.Throws<InvalidOperationException>(() => workspace.UpdateModelValue(guidList, "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual("UpdateModelValue: Model not found", ex3.Message);
+
         }
     }
 }
