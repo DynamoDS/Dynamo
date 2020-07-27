@@ -23,6 +23,7 @@ Check these if you believe they are true
 - [ ] All tests pass using the self-service CI.
 - [ ] Snapshot of UI changes, if any.
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
+- [ ] This PR modifies some build requirements and the readme is updated
 
 ### Reviewers
 
