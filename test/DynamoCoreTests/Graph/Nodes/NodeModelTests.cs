@@ -141,9 +141,9 @@ namespace Dynamo.Tests
             var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
             var function = result.MigratedNodes.First().Attributes["function"].Value;
 
-            Assert.That(assembly, Is.EqualTo(""));
-            Assert.That(nickname, Is.EqualTo("nickname"));
-            Assert.That(function, Is.EqualTo("function"));
+            Assert.AreEqual(assembly, "");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function");
         }
 
         [Test]
@@ -156,9 +156,9 @@ namespace Dynamo.Tests
             var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
             var function = result.MigratedNodes.First().Attributes["function"].Value;
 
-            Assert.That(assembly, Is.EqualTo("assembly"));
-            Assert.That(nickname, Is.EqualTo("nickname"));
-            Assert.That(function, Is.EqualTo("function"));
+            Assert.AreEqual(assembly, "assembly");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function");
         }
 
         [Test]
@@ -171,9 +171,9 @@ namespace Dynamo.Tests
             var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
             var function = result.MigratedNodes.First().Attributes["function"].Value;
 
-            Assert.That(assembly, Is.EqualTo("assembly"));
-            Assert.That(nickname, Is.EqualTo("nickname"));
-            Assert.That(function, Is.EqualTo("function"));
+            Assert.AreEqual(assembly, "assembly");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function"); 
         }
     }
 
