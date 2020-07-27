@@ -136,11 +136,22 @@
 
         <controls:InfiniteGridView x:Name="infiniteGridView"
                                    IsHitTestVisible="False">
-            <controls:InfiniteGridView.Visibility>
-                <Binding Path="DataContext.BackgroundPreviewActive"
-                         Converter="{StaticResource InverseBoolToVisibilityConverter}"
-                         RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
-            </controls:InfiniteGridView.Visibility>
+            <controls:InfiniteGridView.Style>
+                <Style TargetType="controls:InfiniteGridView">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="True" Binding="{Binding Path=DataContext.PreferenceSettings.IsBackgroundGridVisible,
+                                           RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                                <Condition Value="False" Binding="{Binding Path=DataContext.BackgroundPreviewViewModel.Active,
+                                           RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </controls:InfiniteGridView.Style>
         </controls:InfiniteGridView>
 
         <!-- Assigning a ZoomBorder.Background so that it can receive mouse input -->

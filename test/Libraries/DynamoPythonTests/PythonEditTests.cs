@@ -589,14 +589,14 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x=>x.ToString().Contains("myClass")).Value);
 
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "foo");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"bar\";"));
 
@@ -606,12 +606,12 @@ namespace Dynamo.Tests
             var deleteCmd = new DynamoModel.DeleteModelCommand(downstream1.GUID);
             ViewModel.Model.ExecuteCommand(deleteCmd);
 
-            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.FirstOrDefault().Value);
+            Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
 
             var deleteCmd2 = new DynamoModel.DeleteModelCommand(classdef.GUID);
             ViewModel.Model.ExecuteCommand(deleteCmd2);
 
-            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap);
+            Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
 
         }
     }
