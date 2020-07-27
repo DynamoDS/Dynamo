@@ -187,6 +187,26 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant to update your Python 2 scripts to Python 3..
+        /// </summary>
+        public static string PythonScriptEditorMigrationAssistantButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        /// </summary>
+        public static string PythonScriptEditorEngineDropdownTooltip
+        {
+            get
+            {
+                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Learn More.
         /// </summary>
         public static string PythonScriptEditorMoreInfoButton {

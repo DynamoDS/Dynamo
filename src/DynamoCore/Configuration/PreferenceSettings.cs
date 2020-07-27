@@ -20,6 +20,7 @@ namespace Dynamo.Configuration
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+        private bool isBackgroundGridVisible;
 
         #region Constants
         /// <summary>
@@ -155,7 +156,21 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Should the background grid be shown?
         /// </summary>
-        public bool IsBackgroundGridVisible { get; set; }
+        public bool IsBackgroundGridVisible
+        {
+            get
+            {
+                return isBackgroundGridVisible;
+            }
+            set
+            {
+                if (value == isBackgroundGridVisible) return;
+                isBackgroundGridVisible = value;
+
+                RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether background preview is active or not.
@@ -309,6 +324,11 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled { get; set; }
+
+        /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
         /// </summary>
@@ -361,6 +381,7 @@ namespace Dynamo.Configuration
 
             CustomPackageFolders = new List<string>();
             PythonTemplateFilePath = "";
+            IsIronPythonDialogDisabled = false;
         }
 
         /// <summary>
