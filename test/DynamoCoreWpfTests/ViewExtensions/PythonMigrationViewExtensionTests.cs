@@ -334,6 +334,47 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
+        /// <summary>
+        /// This test verifies that the IronPython dialog wont show the second time a custom node is opened
+        /// even if it contains IronPython nodes
+        /// </summary>
+        [Test]
+        public void WillNotDisplayDialogWhenOpeningCustomNodeWithIronPythonNodesSecondTimeInSameSession()
+        {
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
+            // Arrange
+            var examplePathIronPython = Path.Combine(UnitTestBase.TestDirectory, @"core\python", "PythonCustomNodeTest.dyf");
+            var examplePathEmptyFile = Path.Combine(UnitTestBase.TestDirectory, @"core\Home.dyn");
+
+            // Act
+            // open file
+            Open(examplePathIronPython);
+            var ironPythonCustomNodeId = (this.ViewModel.CurrentSpace as CustomNodeWorkspaceModel).CustomNodeId;
+            DispatcherUtil.DoEvents();
+
+            var ironPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>().First();
+            Assert.IsNotNull(ironPythonDialog);
+            Assert.IsTrue(ironPythonDialog.IsLoaded);
+            ironPythonDialog.OkBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            DispatcherUtil.DoEvents();
+            // Open empty file before open the the IronPython file again
+            Open(examplePathEmptyFile);
+            Assert.AreNotEqual(ironPythonCustomNodeId, this.ViewModel.CurrentSpace.Guid);
+            DispatcherUtil.DoEvents();
+
+            Open(examplePathIronPython);
+            Assert.AreEqual(ironPythonCustomNodeId, (this.ViewModel.CurrentSpace as CustomNodeWorkspaceModel).CustomNodeId);
+            var secondIronPythonDialog = this.View.GetChildrenWindowsOfType<IronPythonInfoDialog>();
+
+            DispatcherUtil.DoEvents();
+            // Assert
+            Assert.AreEqual(0, secondIronPythonDialog.Count());
+            DynamoModel.IsTestMode = true;
+            DispatcherUtil.DoEvents();
+        }
+
         [Test]
         public void IronPythonPackageLoadedTest()
         {
