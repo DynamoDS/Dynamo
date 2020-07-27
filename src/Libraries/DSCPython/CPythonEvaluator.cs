@@ -6,6 +6,7 @@ using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
+using Dynamo.Logging;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -263,7 +264,7 @@ namespace DSCPython
             if (ExecutionEvents.ActiveSession != null)
             {
                 dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set("DynamoPrint", logFunction.ToPython());
             }
         }
