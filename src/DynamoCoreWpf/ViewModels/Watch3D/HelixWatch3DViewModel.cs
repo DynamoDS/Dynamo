@@ -390,7 +390,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public override bool IsGridVisible
         {
-            get { return isGridVisible && Active; }
+            get { return isGridVisible; }
             set
             {
                 if (isGridVisible == value) return;

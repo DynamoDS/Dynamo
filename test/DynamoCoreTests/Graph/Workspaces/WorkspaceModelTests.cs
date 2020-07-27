@@ -126,9 +126,19 @@ namespace Dynamo.Tests
             Assert.AreEqual(firstNote.Text, this.CurrentDynamoModel.CurrentWorkspace.Notes.FirstOrDefault().Text);
         }
 
+<<<<<<< HEAD
         [Test]
         [Category("UnitTests")]
         public void CheckIfModelExistsInSameGroup_True_ShouldNotCreateNewAnnotation()
+=======
+        /// <summary>
+        /// Tests the method CheckIfModelExistsInSomeGroup
+        /// Case: One of the selected models belongs to an existing annotation
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void CheckIfModelExistsInSomeGroup_True_ShouldNotCreateNewAnnotation()
+>>>>>>> pr/11
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -166,9 +176,19 @@ namespace Dynamo.Tests
             Assert.IsNull(result);
         }
 
+<<<<<<< HEAD
         [Test]
         [Category("UnitTests")]
         public void CheckIfModelExistsInSameGroup_False_ShouldCreateNewAnnotation()
+=======
+        /// <summary>
+        /// Tests the method CheckIfModelExistsInSomeGroup
+        /// Case: None of the selected models belong to an existing annotation
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void CheckIfModelExistsInSomeGroup_False_ShouldCreateNewAnnotation()
+>>>>>>> pr/11
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -195,7 +215,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
 
             //Clears previous selection
+<<<<<<< HEAD
             DynamoSelection.Instance.Selection.Clear();
+=======
+            DynamoSelection.Instance.ClearSelection();
+>>>>>>> pr/11
 
             //Selects new node
             DynamoSelection.Instance.Selection.Add(extraNode);

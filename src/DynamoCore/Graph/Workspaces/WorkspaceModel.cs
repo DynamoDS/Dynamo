@@ -1421,7 +1421,7 @@ namespace Dynamo.Graph.Workspaces
                 var groupModels = group.Nodes;
                 
                 //Selected models minus the ones in the current annotation
-                var modelsExceptGroup = selectedModels.Except(groupModels);
+                var modelsExceptGroup = selectedModels.Except(groupModels).ToList();
 
                 nodesInSomeGroup = modelsExceptGroup.Count() != selectedModels.Count();
                 if (nodesInSomeGroup)
