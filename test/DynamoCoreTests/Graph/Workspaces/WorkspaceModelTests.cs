@@ -57,7 +57,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LoadLegacyNotes_AllNewNotesTest()
+        public void LoadLegacyNotesAllNewNotesTest()
         {
             //Generating tests data
             var mockViewBlock = new ExtraWorkspaceViewInfo();
@@ -86,7 +86,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LoadLegacyNotes_DuplicatedNoteIdTest()
+        public void LoadLegacyNotesDuplicatedNoteIdTest()
         {
             Guid toBeDuplicatedId = Guid.NewGuid();
 
@@ -133,7 +133,7 @@ namespace Dynamo.Tests
         /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSomeGroup_True_ShouldNotCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroupTrueShouldNotCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -177,7 +177,7 @@ namespace Dynamo.Tests
         /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSomeGroup_False_ShouldCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroupFalseShouldCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -216,7 +216,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void GetHangingNodesTest_CaseHangingNodeExist()
+        public void GetHangingNodesTestCaseHangingNodeExist()
         {
             //Loads workspace with hanging nodes
             OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
@@ -230,7 +230,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void GetHangingNodesTest_CaseNoHangingNodes()
+        public void GetHangingNodesTestCaseNoHangingNodes()
         {
             //Checks for hanging nodes in empty workspace
             var hangingNodes = CurrentDynamoModel.CurrentWorkspace.GetHangingNodes();
@@ -239,7 +239,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void GetSourceNodesTest_CaseSourceNodesExist()
+        public void GetSourceNodesTestCaseSourceNodesExist()
         {
             //Loads workspace with hanging nodes
             OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
@@ -253,7 +253,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void GetSourceNodesTest_CaseNoSourceNodes()
+        public void GetSourceNodesTestCaseNoSourceNodes()
         {
             //Checks for source nodes in empty workspace
             var sourceNodes = CurrentDynamoModel.CurrentWorkspace.GetSourceNodes();
@@ -262,7 +262,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void UpdateModelValue_InvalidParameters()
+        public void UpdateModelValueInvalidParameters()
         {
             var workspace = CurrentDynamoModel.CurrentWorkspace;
 

@@ -41,7 +41,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void AddReferenceFromMapTest_CaseDuplicatedGuid()
+        public void AddReferenceFromMapTestCaseDuplicatedGuid()
         {
             //Guid to use as reference
             Guid guid = Guid.NewGuid();
@@ -61,7 +61,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void ResolveReferenceFromMapTest_CaseInvalidGuid()
+        public void ResolveReferenceFromMapTestCaseInvalidGuid()
         {
             //Invalid Guid to use as reference
             string reference = "Invalid Guid";
@@ -95,7 +95,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void AddReference_CaseDuplicatedGuid()
+        public void AddReferenceCaseDuplicatedGuid()
         {
             //Guid to use as reference
             Guid guid = Guid.NewGuid();
@@ -115,7 +115,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void ResolveReferenceTest_CaseInvalidGuid()
+        public void ResolveReferenceTestCaseInvalidGuid()
         {
             //Invalid Guid to use as reference
             string reference = "Invalid Guid";
