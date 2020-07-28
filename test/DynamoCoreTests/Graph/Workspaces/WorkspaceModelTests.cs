@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using NUnit.Framework;
 
@@ -269,18 +270,18 @@ namespace Dynamo.Tests
             //Case: Empty Guid list
             var ex1 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(new List<Guid>(), "property name", "value"));
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: modelGuids", ex1.Message);
+            Assert.AreEqual(string.Format(Resources.ArgumentNullException,"modelGuids"), ex1.Message);
             
             //Case: Null Guid list
             var ex2 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(null, "property name", "value"));
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual("Value cannot be null.\r\nParameter name: modelGuids", ex2.Message);
+            Assert.AreEqual(string.Format(Resources.ArgumentNullException, "modelGuids"), ex2.Message);
 
             //Case: No model found in workspace with given Guids
             var guidList = new List<Guid>{ Guid.NewGuid() };
             var ex3 = Assert.Throws<InvalidOperationException>(() => workspace.UpdateModelValue(guidList, "property name", "value"));
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual("UpdateModelValue: Model not found", ex3.Message);
+            Assert.AreEqual(Resources.ModelNotFoundError, ex3.Message);
 
         }
     }

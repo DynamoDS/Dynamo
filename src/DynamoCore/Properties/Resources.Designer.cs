@@ -70,6 +70,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        ///Parameter name: {0}.
+        /// </summary>
+        public static string ArgumentNullException {
+            get {
+                return ResourceManager.GetString("ArgumentNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -428,6 +438,15 @@ namespace Dynamo.Properties {
         public static string DummyNodeDescription {
             get {
                 return ResourceManager.GetString("DummyNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}.
+        /// </summary>
+        public static string DuplicatedModelGuidError {
+            get {
+                return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
             }
         }
         
@@ -907,6 +926,15 @@ namespace Dynamo.Properties {
         public static string MissingXmlTagConsoleMessage {
             get {
                 return ResourceManager.GetString("MissingXmlTagConsoleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpdateModelValue: Model not found.
+        /// </summary>
+        public static string ModelNotFoundError {
+            get {
+                return ResourceManager.GetString("ModelNotFoundError", resourceCulture);
             }
         }
         

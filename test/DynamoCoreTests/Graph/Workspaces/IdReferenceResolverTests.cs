@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Resources;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -55,8 +57,7 @@ namespace Dynamo.Tests
             var ex = Assert.Throws<InvalidOperationException>(() => idRefResolver.AddToReferenceMap(guid, newObj));
 
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized: " + guid, ex.Message);
+            Assert.AreEqual(string.Format(Resources.DuplicatedModelGuidError, guid), ex.Message);
         }
 
         [Test]
@@ -109,8 +110,7 @@ namespace Dynamo.Tests
             var ex = Assert.Throws<InvalidOperationException>(() => idRefResolver.AddReference(null, reference, newObj));
 
             //Checks that not only the exception type is correct but also the message
-            Assert.AreEqual(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized :" + guid, ex.Message);
+            Assert.AreEqual(string.Format(Resources.DuplicatedModelGuidError, guid), ex.Message);
         }
 
         [Test]
