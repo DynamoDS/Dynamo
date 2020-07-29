@@ -183,14 +183,9 @@ namespace Dynamo.PythonMigration
                 UnSubscribeWorkspaceEvents();
                 CurrentWorkspace = workspace as WorkspaceModel;
                 SubscribeToWorkspaceEvents();
+
                 NotificationTracker.Remove(CurrentWorkspace.Guid);
                 GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
-
-                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
-
-                CurrentWorkspace = workspace as WorkspaceModel;
-
-                CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
 
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
@@ -201,13 +196,10 @@ namespace Dynamo.PythonMigration
                 }
             }
 
-            if (PythonDependencies.CurrentWorkspaceHasIronPythonDepency())
-            {
                 CurrentWorkspace.Nodes
                     .Where(x => x is PythonNodeBase)
                     .ToList()
                     .ForEach(x => SubscribeToPythonNodeEvents(x as PythonNodeBase));
-            }
         }
 
         private void SubscribeToDynamoEvents()
@@ -221,6 +213,7 @@ namespace Dynamo.PythonMigration
         {
             CurrentWorkspace.NodeAdded += OnNodeAdded;
             CurrentWorkspace.NodeRemoved += OnNodeRemoved;
+            CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
         }
 
         private void SubscribeToPythonNodeEvents(PythonNodeBase node)
@@ -235,6 +228,7 @@ namespace Dynamo.PythonMigration
 
         private void UnSubscribeWorkspaceEvents()
         {
+            CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
             CurrentWorkspace.NodeAdded -= OnNodeAdded;
             CurrentWorkspace.NodeRemoved -= OnNodeRemoved;
             CurrentWorkspace.Nodes

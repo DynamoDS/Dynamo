@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Dynamo.Graph.Workspaces;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.ViewModels;
 using PythonNodeModels;
@@ -45,7 +46,8 @@ namespace Dynamo.PythonMigration
         {
             var workspaceName = DynamoViewModel.CurrentSpace.Name;
             var backupDirectory = DynamoViewModel.Model.PathManager.BackupDirectory;
-            var extension = ".dyn";
+            var extension = DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel ? ".dyf" : "dyn";
+
             var fileName = Path.Combine(backupDirectory, workspaceName) + string.Concat(".", Properties.Resources.PythonMigrationBackupExtension, extension);
             return fileName;
         }
