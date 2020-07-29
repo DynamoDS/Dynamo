@@ -9,8 +9,9 @@ namespace Dynamo.PythonMigration
     {
         public string OldCode { get; set; }
         public string NewCode { get; set; }
-        private PythonNode PythonNode { get; set; }
-        public DynamoViewModel DynamoViewModel { get; set; }
+        public DynamoViewModel DynamoViewModel { get; private set; }
+
+        private PythonNode PythonNode;
 
         public PythonMigrationAssistantViewModel(PythonNode pythonNode, DynamoViewModel dynamoViewModel)
         {
@@ -44,7 +45,8 @@ namespace Dynamo.PythonMigration
         {
             var workspaceName = DynamoViewModel.CurrentSpace.Name;
             var backupDirectory = DynamoViewModel.Model.PathManager.BackupDirectory;
-            var fileName = Path.Combine(backupDirectory, workspaceName) + string.Concat(".", Properties.Resources.PythonMigrationBackupExtension, ".dyn");
+            var extension = ".dyn";
+            var fileName = Path.Combine(backupDirectory, workspaceName) + string.Concat(".", Properties.Resources.PythonMigrationBackupExtension, extension);
             return fileName;
         }
     }
