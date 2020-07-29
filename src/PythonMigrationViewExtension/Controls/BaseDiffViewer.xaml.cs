@@ -9,6 +9,11 @@ namespace Dynamo.PythonMigration.Controls
     {
         private PythonMigrationAssistantViewModel ViewModel { get; set; }
 
+        // we would like to match initial text wrapping of code inside diff view
+        // to that of the code inside the script editor window as much as possible
+        private const int scriptEditorWindowDefaultWidth = 600;
+        private const int differAdditionalWidthPerPanel = 20;
+
         internal BaseDiffViewer(PythonMigrationAssistantViewModel viewModel)
         {
             ViewModel = viewModel;
@@ -21,13 +26,13 @@ namespace Dynamo.PythonMigration.Controls
             if (ViewModel.CurrentViewModel.ViewMode == Differ.ViewMode.Inline)
             {
                 ViewModel.ChangeViewModel(Differ.ViewMode.SideBySide);
-                Width = 1200;
+                Width = scriptEditorWindowDefaultWidth * 2;
             }
 
             else
             {
                 ViewModel.ChangeViewModel(Differ.ViewMode.Inline);
-                Width = 600;
+                Width = scriptEditorWindowDefaultWidth;
             }
         }
 
