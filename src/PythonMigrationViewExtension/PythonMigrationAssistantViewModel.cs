@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Windows;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.ViewModels;
@@ -40,6 +41,10 @@ namespace Dynamo.PythonMigration
                 return;
 
             DynamoViewModel.SaveAs(path, true);
+
+            // notify user a backup file has been created
+            var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
+            MessageBox.Show(message);
         }
 
         private string GetPythonMigrationBackupPath()
