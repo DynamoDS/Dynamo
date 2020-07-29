@@ -180,7 +180,7 @@ namespace Dynamo.PythonMigration.Differ
         {
             return new SolidColorBrush
             {
-                Color = (Color)ColorConverter.ConvertFromString("#FF0008")
+                Color = (Color)ColorConverter.ConvertFromString("#C14C49") // bright red
             };
         }
 
@@ -188,7 +188,7 @@ namespace Dynamo.PythonMigration.Differ
         {
             return new SolidColorBrush
             {
-                Color = (Color)ColorConverter.ConvertFromString("#EE9597")
+                Color = (Color)ColorConverter.ConvertFromString("#634B4A") // dark red
             };
         }
 
@@ -196,7 +196,7 @@ namespace Dynamo.PythonMigration.Differ
         {
             return new SolidColorBrush
             {
-                Color = (Color)ColorConverter.ConvertFromString("#95CCA4")
+                Color = (Color)ColorConverter.ConvertFromString("#495B43") // dark green
             };
         }
 
@@ -204,7 +204,7 @@ namespace Dynamo.PythonMigration.Differ
         {
             return new SolidColorBrush
             {
-                Color = (Color)ColorConverter.ConvertFromString("#009F2C")
+                Color = (Color)ColorConverter.ConvertFromString("#419D29") // bright green
             };
         }
 
