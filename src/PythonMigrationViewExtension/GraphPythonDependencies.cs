@@ -46,7 +46,7 @@ namespace Dynamo.PythonMigration
         /// Determines if the current workspace has any dependencies on IronPython
         /// </summary>
         /// <returns>True if depencies are found, false otherwise.</returns>
-        internal bool ContainsIronPythonDependencyInCurrentWS()
+        internal bool CurrentWorkspaceHasIronPythonDepency()
         {
             var workspace = ViewLoaded.CurrentWorkspaceModel as WorkspaceModel;
             var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
@@ -65,7 +65,7 @@ namespace Dynamo.PythonMigration
 
         internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
         {
-            if (!ContainsIronPythonDependencyInCurrentWS())
+            if (!CurrentWorkspaceHasIronPythonDepency())
                 return null;
 
             var packageInfo = new PackageInfo(PythonPackage, PythonPackageVersion);

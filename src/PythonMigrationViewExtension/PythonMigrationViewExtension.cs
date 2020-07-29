@@ -190,14 +190,14 @@ namespace Dynamo.PythonMigration
 
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
-                    && PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
+                    && PythonDependencies.CurrentWorkspaceHasIronPythonDepency())
                 {
                     LogIronPythonNotification();
                     DisplayIronPythonDialog();
                 }
             }
 
-            if (PythonDependencies.ContainsIronPythonDependencyInCurrentWS())
+            if (PythonDependencies.CurrentWorkspaceHasIronPythonDepency())
             {
                 CurrentWorkspace.Nodes
                     .Where(x => x is PythonNodeBase)
