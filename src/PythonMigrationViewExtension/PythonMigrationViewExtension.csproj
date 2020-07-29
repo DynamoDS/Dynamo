@@ -113,7 +113,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.en-US.resx</DependentUpon>
     </Compile>
-    <Compile Include="PythonMigrationAssistantViewModel.cs" />
+    <Compile Include="MigrationAssistant\PythonMigrationAssistantViewModel.cs" />
     <Compile Include="PythonMigrationViewExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IronPythonInfoDialog.xaml.cs">

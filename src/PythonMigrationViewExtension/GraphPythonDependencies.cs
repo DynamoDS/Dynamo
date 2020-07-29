@@ -54,16 +54,18 @@ namespace Dynamo.PythonMigration
         /// <returns>True if depencies are found, false otherwise.</returns>
         internal bool CurrentWorkspaceHasIronPythonDependency()
         {
+            var hasIronPythonDependency = false;
+
             // Check if any Python nodes in graph are using the IronPython engine
             if (this.workspace.Nodes.Any(IsIronPythonNode))
-                return true;
+                hasIronPythonDependency = true;
 
             // Check if any of the custom nodes have IronPython dependencies 
             var customNodes = this.workspace.Nodes.OfType<Function>();
             if (CustomNodesHaveIronPythonDependency(customNodes, this.customNodeManager))
-                return true;
+                hasIronPythonDependency = true;
 
-            return false;
+            return hasIronPythonDependency;
         }
 
         /// <summary>
@@ -103,6 +105,8 @@ namespace Dynamo.PythonMigration
         /// <returns>True if any IronPython depencies are found, false otherwise.</returns>
         private static bool CustomNodesHaveIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
         {
+            var hasIronPythonDependency = false;
+
             foreach (var customNode in customNodes)
             {
                 if (!customNodeManager.TryGetFunctionWorkspace(customNode.FunctionSignature, false,
@@ -114,7 +118,8 @@ namespace Dynamo.PythonMigration
                 if (CustomNodePythonDependencyMap.TryGetValue(customNodeWS.CustomNodeId, out CNPythonDependencyType dependency))
                 {
                     if (dependency == CNPythonDependencyType.DirectDependency || dependency == CNPythonDependencyType.NestedDependency)
-                        return true;
+                        hasIronPythonDependency = true;
+                    continue;
                 }
 
                 var hasPythonNodesInCustomNodeWorkspace = customNodeWS.Nodes.Any(n => IsIronPythonNode(n));
@@ -122,7 +127,7 @@ namespace Dynamo.PythonMigration
                 if (hasPythonNodesInCustomNodeWorkspace)
                 {
                     CustomNodePythonDependencyMap.Add(customNodeWS.CustomNodeId, CNPythonDependencyType.DirectDependency);
-                    return true;
+                    hasIronPythonDependency = true;
                 }
                 else
                 {
@@ -141,12 +146,12 @@ namespace Dynamo.PythonMigration
                     if (hasPythonNodesInCustomNodeWorkspace && CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] != CNPythonDependencyType.DirectDependency)
                     {
                         CustomNodePythonDependencyMap[customNodeWS.CustomNodeId] = CNPythonDependencyType.NestedDependency;
-                        return true;
+                        hasIronPythonDependency = true;
                     }
                 }
             }
 
-            return false;
+            return hasIronPythonDependency;
         }
 
         internal static bool IsIronPythonNode(NodeModel obj)
