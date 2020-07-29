@@ -255,7 +255,7 @@ namespace DynamoCoreWpfTests
                 as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDepency());
+            Assert.IsTrue(pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDependency());
             DispatcherUtil.DoEvents();
         }
 
@@ -328,7 +328,7 @@ namespace DynamoCoreWpfTests
                 .Select(x => x)
                 .First() as PythonMigrationViewExtension;
 
-            var result = pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDepency();
+            var result = pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDependency();
 
             Assert.IsTrue(result);
             DispatcherUtil.DoEvents();

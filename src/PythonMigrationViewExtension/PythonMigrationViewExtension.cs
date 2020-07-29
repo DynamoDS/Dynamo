@@ -7,6 +7,7 @@ using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PythonMigration.Controls;
+using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.PythonMigration.Properties;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -59,7 +60,7 @@ namespace Dynamo.PythonMigration
         public void Loaded(ViewLoadedParams p)
         {
             LoadedParams = p;
-            PythonDependencies = new GraphPythonDependencies(LoadedParams);
+            PythonDependencies = new GraphPythonDependencies(LoadedParams.CurrentWorkspaceModel, LoadedParams.StartupParams.CustomNodeManager);
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
             CustomNodeManager = (CustomNodeManager)LoadedParams.StartupParams.CustomNodeManager;
@@ -189,7 +190,7 @@ namespace Dynamo.PythonMigration
 
                 if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
                     && !Models.DynamoModel.IsTestMode
-                    && PythonDependencies.CurrentWorkspaceHasIronPythonDepency())
+                    && PythonDependencies.CurrentWorkspaceHasIronPythonDependency())
                 {
                     LogIronPythonNotification();
                     DisplayIronPythonDialog();
