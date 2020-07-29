@@ -60,6 +60,7 @@
         <ContentControl Content="{Binding CurrentViewModel}"
                         Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
+        <!-- Buttons row -->
         <Grid HorizontalAlignment="Stretch"
               Grid.Row="1"
               Background="Black">

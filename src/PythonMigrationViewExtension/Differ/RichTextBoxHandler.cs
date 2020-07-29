@@ -80,9 +80,12 @@ namespace Dynamo.PythonMigration.Differ
 
         private static DiffParagraph ShowSubPieceDiffs(DiffPiece line, bool isBeforeText)
         {
-            var paragraph = CreateParagraph(string.Empty, line.Position.ToString() ?? " ",
+            var paragraph = CreateParagraph(
+                string.Empty,
+                line.Position.ToString() ?? " ",
                 isBeforeText ? REMOVED_SIGN : ADDED_SIGN,
-                isBeforeText ? GetBeforeModifiedBrush() : GetAfterModifiedBrush());
+                isBeforeText ? GetBeforeModifiedBrush() : GetAfterModifiedBrush()
+                );
 
             var subPieces = line.SubPieces;
             foreach (var piece in subPieces)
@@ -112,9 +115,11 @@ namespace Dynamo.PythonMigration.Differ
 
         private static void AppendParagraphsToPanelTable(RichTextBox textBox, List<DiffParagraph> paragraphs)
         {
+            const int lineNumbersWidth = 30;
+
             var table = new Table();
             AddTableColumn(table, 2);
-            table.Columns[0].Width = new GridLength(50);
+            table.Columns[0].Width = new GridLength(lineNumbersWidth);
             table.Columns[1].Width = GridLength.Auto;
             var group = new TableRowGroup();
             table.RowGroups.Add(group);
@@ -130,17 +135,18 @@ namespace Dynamo.PythonMigration.Differ
 
         private static DiffParagraph CreateParagraph(string text, string lineNum, string operationSign, Brush background = null)
         {
-            var opertaionParagraph = new Paragraph(new Run(string.Format("{0} {1}", lineNum, operationSign)))
+            var operationParagraph = new Paragraph(new Run(string.Format("{0} {1}", lineNum, operationSign)))
             {
                 LineHeight = 0.5,
                 TextAlignment = TextAlignment.Right
             };
-            var contetParagraph = new Paragraph(new Run(text))
+            var contentParagraph = new Paragraph(new Run(text))
             {
                 LineHeight = 0.5,
+                Padding = new Thickness(5, 0, 0, 0)
             };
 
-            return new DiffParagraph() { Operation = opertaionParagraph, Content = contetParagraph, ParagraphBackground = background ?? Brushes.Transparent };
+            return new DiffParagraph() { Operation = operationParagraph, Content = contentParagraph, ParagraphBackground = background ?? Brushes.Transparent };
         }
 
         private static void AddTableColumn(Table table, int amount)
@@ -172,30 +178,34 @@ namespace Dynamo.PythonMigration.Differ
 
         private static SolidColorBrush GetDeletedRunBrush()
         {
-            var brush = new SolidColorBrush();
-            brush.Color = (Color)ColorConverter.ConvertFromString("#FF0008");
-            return brush;
+            return new SolidColorBrush
+            {
+                Color = (Color)ColorConverter.ConvertFromString("#FF0008")
+            };
         }
 
         private static SolidColorBrush GetBeforeModifiedBrush()
         {
-            var brush = new SolidColorBrush();
-            brush.Color = (Color)ColorConverter.ConvertFromString("#EE9597");
-            return brush;
+            return new SolidColorBrush
+            {
+                Color = (Color)ColorConverter.ConvertFromString("#EE9597")
+            };
         }
 
         private static SolidColorBrush GetAfterModifiedBrush()
         {
-            var brush = new SolidColorBrush();
-            brush.Color = (Color)ColorConverter.ConvertFromString("#95CCA4");
-            return brush;
+            return new SolidColorBrush
+            {
+                Color = (Color)ColorConverter.ConvertFromString("#95CCA4")
+            };
         }
 
         private static SolidColorBrush GetModifiedRunBrush()
         {
-            var brush = new SolidColorBrush();
-            brush.Color = (Color)ColorConverter.ConvertFromString("#009F2C");
-            return brush;
+            return new SolidColorBrush
+            {
+                Color = (Color)ColorConverter.ConvertFromString("#009F2C")
+            };
         }
 
         private class DiffParagraph

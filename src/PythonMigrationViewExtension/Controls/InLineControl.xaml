@@ -44,18 +44,19 @@
         </Style>
         <Style TargetType="Paragraph">
             <Setter Property="Padding"
-                    Value="5,0,0,0" />
+                    Value="0,0,0,0" />
         </Style>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
+            <RowDefinition Height="40" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <TextBlock Text="Before -> After"
                    Grid.Row="0"
+                   VerticalAlignment="Center"
                    Foreground="#808080" />
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Grid.Row="1">
