@@ -65,6 +65,11 @@ namespace PythonNodeModelsWpf
             editText.TextArea.TextEntering += OnTextAreaTextEntering;
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
+            // Initialize editor with global settings for show/hide tabs and spaces
+            editText.Options = dynamoViewModel.TextOptions;
+            editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
+            editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
+
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(
                         "PythonNodeModelsWpf.Resources." + highlighting);
@@ -186,8 +191,6 @@ namespace PythonNodeModelsWpf
             nodeModel.RequestCodeMigration(e);
         }
 
-        #endregion
-
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
             dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
@@ -209,5 +212,7 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
         }
+
+        #endregion
     }
 }

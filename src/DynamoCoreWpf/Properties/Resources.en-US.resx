@@ -2267,4 +2267,7 @@ Uninstall the following packages: {0}?</value>
   <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor" xml:space="preserve">
+    <value>Show Python Editor Whitespace Characters</value>
+  </data>
 </root>

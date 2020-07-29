@@ -504,6 +504,48 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions();
+
+        /// <summary>
+        /// Gets the text editor options for python script editor.
+        /// </summary>
+        public ICSharpCode.AvalonEdit.TextEditorOptions TextOptions
+        {
+            get
+            {
+                return editTextOptions;
+            }
+
+            set
+            {
+                if (editTextOptions != value)
+                {
+                    editTextOptions = value;
+                    RaisePropertyChanged("TextOptions");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indicates if whether the whitespaces and tabs should be visible in the python script editor.
+        /// </summary>
+        public bool ShowTabsAndSpacesInScriptEditor
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor;
+            }
+            set
+            {
+                TextOptions.ShowSpaces = value;
+                TextOptions.ShowTabs = value;
+                model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
+                RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
+            }
+        }
+
+
+
         #endregion
 
         public struct StartConfiguration
