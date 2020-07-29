@@ -33,38 +33,34 @@ namespace Dynamo.PythonMigration
 
         private static bool IsIronPythonPackageLoaded()
         {
-            PythonEngineSelector.Instance.GetEvaluatorInfo(PythonEngineVersion.IronPython2,
-                out string evaluatorClass, out string evaluationMethod);
-            if (evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass &&
-                evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod)
-            {
-                return true;
-            }
-            return false;
+            PythonEngineSelector.Instance.GetEvaluatorInfo(
+                PythonEngineVersion.IronPython2,
+                out string evaluatorClass,
+                out string evaluationMethod);
+
+            return evaluatorClass == PythonEngineSelector.Instance.IronPythonEvaluatorClass
+                && evaluationMethod == PythonEngineSelector.Instance.IronPythonEvaluationMethod;
         }
 
+        /// <summary>
+        /// Determines if the current workspace has any dependencies on IronPython
+        /// </summary>
+        /// <returns>True if depencies are found, false otherwise.</returns>
         internal bool ContainsIronPythonDependencyInCurrentWS()
         {
-            var containsIronPythonDependency = false;
-
             var workspace = ViewLoaded.CurrentWorkspaceModel as WorkspaceModel;
-
             var customNodeManager = ViewLoaded.StartupParams.CustomNodeManager;
 
+            // Check if any Python nodes in graph are using the IronPython engine
             if (workspace.Nodes.Any(IsIronPythonNode))
-            {
-                containsIronPythonDependency = true;
-            }
+                return true;
 
-            // Check if any of the custom nodes has IronPython dependencies in it. 
+            // Check if any of the custom nodes have IronPython dependencies 
             var customNodes = workspace.Nodes.OfType<Function>();
-
             if (CustomNodesContainIronPythonDependency(customNodes, customNodeManager))
-            {
-                containsIronPythonDependency = true;
-            }
+                return true;
 
-            return containsIronPythonDependency;
+            return false;
         }
 
         internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
