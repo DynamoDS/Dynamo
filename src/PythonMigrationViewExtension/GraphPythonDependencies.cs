@@ -96,7 +96,6 @@ namespace Dynamo.PythonMigration
 
         /// <summary>
         /// This recursive function returns true if any of the custom nodes in the input list has an IronPython dependency.
-        /// Evaluation is short-circuited, so it returns true at the first encountered IronPython dependency.
         /// Any custom nodes in the input list traversed during evalution have their dependencies cached in <see cref="CustomNodePythonDependencyMap"/>.
         /// Custom odes are found to depend on IronPython if the parent custom node or any of its child custom nodes contain an IronPython dependency.
         /// </summary>
