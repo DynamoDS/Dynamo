@@ -39,7 +39,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                         scope.Exec(GetPythonMigrationScript());
 
                         var result = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME) : null;
-                        return result.ToString();
+                        return result?.ToString();
                     }
                 }
             }
