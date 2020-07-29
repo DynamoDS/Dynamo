@@ -1,12 +1,10 @@
 ﻿using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
-using Dynamo.PythonMigration.MigrationAssistant;
-using Dynamo.ViewModels;
 using PythonNodeModels;
 using System.IO;
 using System.Windows;
 
-namespace Dynamo.PythonMigration
+namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel
     {

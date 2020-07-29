@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using DiffPlex.Wpf.Controls;
+using Dynamo.PythonMigration.MigrationAssistant;
 
 namespace Dynamo.PythonMigration.Controls
 {
