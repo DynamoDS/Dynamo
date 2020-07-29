@@ -12,7 +12,7 @@ namespace Dynamo.Logging
     /// <summary>
     /// Specifies the level for log messages. A log message could be a console or file or warning.
     /// </summary>
-    public enum LogLevel{Console, File, Warning}
+    public enum LogLevel{Console, File, Warning, ConsoleOnly}
 
     /// <summary>
     /// Specifies the warning level for log messages.
@@ -199,7 +199,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="message">The message.</param>
         /// <param name="level">The level.</param>
-        internal void Log(string message, LogLevel level)
+        public void Log(string message, LogLevel level)
         {
             Log(message, level, true);
         }
@@ -227,9 +227,25 @@ namespace Dynamo.Logging
 
                 switch (level)
                 {
-                        //write to the console
-                    case LogLevel.Console:
+                    //write to the console only
+                    case LogLevel.ConsoleOnly:
                         if (ConsoleWriter != null)
+                        {
+                            try
+                            {
+                                ConsoleWriter.AppendLine(string.Format("{0}", message));
+                                RaisePropertyChanged("ConsoleWriter");
+                            }
+                            catch
+                            {
+                                // likely caught if the writer is closed
+                            }
+                        }
+                        break;
+
+                    //write to both console and file
+                    case LogLevel.Console:
+                        if (ConsoleWriter != null && FileWriter != null)
                         {
                             try
                             {
@@ -245,7 +261,7 @@ namespace Dynamo.Logging
                         }
                         break;
 
-                        //write to the file
+                    //write to the file
                     case LogLevel.File:
                         if (FileWriter != null)
                         {
