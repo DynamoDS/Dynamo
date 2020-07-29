@@ -43,7 +43,7 @@ namespace Dynamo.PythonMigration
         }
 
         /// <summary>
-        /// Determines if the current workspace has any dependencies on IronPython
+        /// Determines if the current workspace has any dependencies on IronPython engine.
         /// </summary>
         /// <returns>True if depencies are found, false otherwise.</returns>
         internal bool CurrentWorkspaceHasIronPythonDepency()
@@ -61,6 +61,19 @@ namespace Dynamo.PythonMigration
                 return true;
 
             return false;
+        }
+
+        /// <summary>
+        /// Determines if the current workspace has any dependencies on CPython engine.
+        /// </summary>
+        /// <returns>True if depencies are found, false otherwise.</returns>
+        internal bool CurrentWorkspaceHasCPythonDependencies()
+        {
+            var workspace = ViewLoaded.CurrentWorkspaceModel;
+            if (workspace == null)
+                throw new ArgumentNullException(nameof(workspace));
+
+            return workspace.Nodes.Any(n => IsCPythonNode(n));
         }
 
         internal IEnumerable<INodeLibraryDependencyInfo> AddPythonPackageDependency()
@@ -132,15 +145,6 @@ namespace Dynamo.PythonMigration
             }
 
             return false;
-        }
-
-        internal bool ContainsCPythonDependencies()
-        {
-            var workspace = ViewLoaded.CurrentWorkspaceModel;
-            if (workspace == null)
-                throw new ArgumentNullException(nameof(workspace));
-
-            return workspace.Nodes.Any(n => IsCPythonNode(n));
         }
 
         internal static bool IsIronPythonNode(NodeModel obj)
