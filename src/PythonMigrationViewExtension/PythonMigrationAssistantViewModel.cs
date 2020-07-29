@@ -1,9 +1,10 @@
-﻿using System.IO;
-using System.Windows;
-using Dynamo.Graph.Workspaces;
+﻿using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
 using Dynamo.PythonMigration.MigrationAssistant;
 using Dynamo.ViewModels;
 using PythonNodeModels;
+using System.IO;
+using System.Windows;
 
 namespace Dynamo.PythonMigration
 {
@@ -11,36 +12,41 @@ namespace Dynamo.PythonMigration
     {
         public string OldCode { get; set; }
         public string NewCode { get; set; }
-        public DynamoViewModel DynamoViewModel { get; private set; }
 
+        private readonly WorkspaceModel workspace;
+        private readonly string backupDirectory;
         private PythonNode PythonNode;
 
-        public PythonMigrationAssistantViewModel(PythonNode pythonNode, DynamoViewModel dynamoViewModel)
+        public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager)
         {
-            PythonNode = pythonNode;
-            OldCode = pythonNode.Script;
-            DynamoViewModel = dynamoViewModel;
+            this.PythonNode = pythonNode;
+            this.OldCode = pythonNode.Script;
+
+            this.workspace = workspace;
+            this.backupDirectory = pathManager.BackupDirectory;
+
             MigrateCode();
         }
 
         private void MigrateCode()
         {
-            NewCode = ScriptMigrator.MigrateCode(OldCode);
+            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
         }
 
         public void ChangeCode()
         {
             SavePythonMigrationBackup();
-            PythonNode.MigrateCode(NewCode);
+            this.PythonNode.MigrateCode(this.NewCode);
         }
 
         private void SavePythonMigrationBackup()
         {
+            // only create a backup file the first time a migration is performed on this graph/custom node file
             var path = GetPythonMigrationBackupPath();
             if (File.Exists(path))
                 return;
 
-            DynamoViewModel.SaveAs(path, true);
+            this.workspace.Save(path, true);
 
             // notify user a backup file has been created
             var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
@@ -49,12 +55,10 @@ namespace Dynamo.PythonMigration
 
         private string GetPythonMigrationBackupPath()
         {
-            var workspaceName = DynamoViewModel.CurrentSpace.Name;
-            var backupDirectory = DynamoViewModel.Model.PathManager.BackupDirectory;
-            var extension = DynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel ? ".dyf" : "dyn";
+            var extension = this.workspace is CustomNodeWorkspaceModel ? ".dyf" : ".dyn";
+            var fileName = string.Concat(this.workspace.Name, ".", Properties.Resources.PythonMigrationBackupExtension, extension);
 
-            var fileName = Path.Combine(backupDirectory, workspaceName) + string.Concat(".", Properties.Resources.PythonMigrationBackupExtension, extension);
-            return fileName;
+            return Path.Combine(this.backupDirectory, fileName);
         }
     }
 }

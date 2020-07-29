@@ -120,7 +120,7 @@ namespace Dynamo.PythonMigration
             var parentWindow = Window.GetWindow(btn);
 
             var node = sender as PythonNode;
-            var viewModel = new PythonMigrationAssistantViewModel(node, DynamoViewModel);
+            var viewModel = new PythonMigrationAssistantViewModel(node, DynamoViewModel.CurrentSpace, DynamoViewModel.Model.PathManager);
             var assistantWindow = new VisualDifferenceViewer(viewModel)
             {
                 Owner = parentWindow
