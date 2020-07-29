@@ -1,12 +1,15 @@
-﻿using Dynamo.Graph.Workspaces;
+﻿using DiffPlex.DiffBuilder;
+using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.PythonMigration.Differ;
 using PythonNodeModels;
 using System.IO;
 using System.Windows;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
-    internal class PythonMigrationAssistantViewModel
+    internal class PythonMigrationAssistantViewModel : NotificationObject
     {
         public string OldCode { get; set; }
         public string NewCode { get; set; }
@@ -14,6 +17,13 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private readonly WorkspaceModel workspace;
         private readonly string backupDirectory;
         private PythonNode PythonNode;
+
+        private IDiffViewViewModel currentViewModel;
+        public IDiffViewViewModel CurrentViewModel
+        {
+            get { return this.currentViewModel; }
+            set { this.currentViewModel = value; RaisePropertyChanged(nameof(this.CurrentViewModel)); }
+        }
 
         public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager)
         {
@@ -24,7 +34,10 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.backupDirectory = pathManager.BackupDirectory;
 
             MigrateCode();
+            SetSideBySideViewModel();
         }
+
+        #region Code migration
 
         private void MigrateCode()
         {
@@ -36,6 +49,10 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             SavePythonMigrationBackup();
             this.PythonNode.MigrateCode(this.NewCode);
         }
+
+        #endregion
+
+        #region Backup
 
         private void SavePythonMigrationBackup()
         {
@@ -58,5 +75,40 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
             return Path.Combine(this.backupDirectory, fileName);
         }
+
+        #endregion
+
+        #region View mode
+
+        internal void ChangeViewModel(ViewMode viewMode)
+        {
+            switch (viewMode)
+            {
+                case ViewMode.Inline:
+                    SetInlineViewModel();
+                    break;
+                case ViewMode.SideBySide:
+                    SetSideBySideViewModel();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetSideBySideViewModel()
+        {
+            var sidebyside = new SideBySideDiffBuilder();
+            var sidebysideModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
+            this.CurrentViewModel = new SideBySideViewModel(sidebysideModel);
+        }
+
+        private void SetInlineViewModel()
+        {
+            var inline = new InlineDiffBuilder();
+            var inlineModel = inline.BuildDiffModel(this.OldCode, this.NewCode);
+            this.CurrentViewModel = new InLineViewModel(inlineModel);
+        }
+
+        #endregion
     }
 }
