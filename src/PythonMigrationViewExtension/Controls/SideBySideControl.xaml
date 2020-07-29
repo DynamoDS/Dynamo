@@ -68,6 +68,7 @@
                    Foreground="#808080"/>
         <GridSplitter Grid.Column="1"
                       Width="5"
+                      Background="Black"
                       HorizontalAlignment="Stretch" 
                       Grid.RowSpan="2"/>
         <TextBlock Text="After"

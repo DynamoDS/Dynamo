@@ -29,7 +29,6 @@ namespace Dynamo.PythonMigration.Controls
                 ViewModel.ChangeViewModel(Differ.ViewMode.SideBySide);
                 Width = scriptEditorWindowDefaultWidth *2 + differAdditionalWidthPerPanel * 1.5;
             }
-
             else
             {
                 ViewModel.ChangeViewModel(Differ.ViewMode.Inline);
