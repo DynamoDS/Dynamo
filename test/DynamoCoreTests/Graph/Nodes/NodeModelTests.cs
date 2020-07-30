@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -14,7 +15,7 @@ namespace Dynamo.Tests
     /// Class containing tests for the NodeModel class
     /// </summary>
     [TestFixture]
-    class NodeModelTests : DynamoModelTestBase
+    public class NodeModelTests : DynamoModelTestBase
     {
         NodeModel testNodeModel;
 
@@ -33,7 +34,7 @@ namespace Dynamo.Tests
             var result = testNodeModel.ConstructDictionaryLinkFromLibrary(CurrentDynamoModel.LibraryServices);
             Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Category/Action/Number", result);
         }
-        
+
         [Test]
         [Category("UnitTests")]
         public void CategoryTest()
@@ -77,24 +78,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, countAfter);
         }
 
-        /// <summary>
-        /// Class created in order to test protected methods in the NodeModel parent
-        /// </summary>
-        private class NodeModelTestingClass : NodeModel
-        {
-            public bool UpdateValueCoreBool(UpdateValueParams uvParams) => 
-                UpdateValueCore(uvParams);
-
-            public NodeMigrationData MigrateToDsFunctionNoAssembly(NodeMigrationData nmData, string name, string funcName) => 
-                MigrateToDsFunction(nmData, name, funcName);
-
-            public NodeMigrationData MigrateToDsFunctionAssembly(NodeMigrationData nmData, string assembly, string name, string funcName) => 
-                MigrateToDsFunction(nmData, assembly, name, funcName);
-
-            public NodeMigrationData MigrateToDsVarArgFunctionNMData(NodeMigrationData data, string assembly, string name, string funcName) => 
-                MigrateToDsVarArgFunction(data, assembly, name, funcName);
-        }
-
         [Test]
         [Category("UnitTests")]
         public void UpdateValueCoreTest()
@@ -121,5 +104,94 @@ namespace Dynamo.Tests
 
             Assert.IsTrue(nodeModel.UpdateValueCoreBool(param));
         }
+    }
+
+    /// <summary>
+    /// Class containing tests for some of the migration methods of the NodeModel class
+    /// </summary>
+    [TestFixture]
+    public class NodeModelMigrationTests : DynamoModelTestBase
+    {
+        private NodeModelTestingClass nodeModel;
+        private NodeMigrationData migrationDataTest;
+
+        [SetUp]
+        public void Init()
+        {
+            string documentDynPath = Path.Combine(TestDirectory, @"core\Angle.dyn");
+            XmlDocument xmlDoc = new XmlDocument();
+
+            xmlDoc.Load(documentDynPath);
+
+            migrationDataTest = new NodeMigrationData(xmlDoc);
+
+            XmlElement dsFunctionNode = (XmlElement)xmlDoc.SelectSingleNode("//Dynamo.Graph.Nodes.ZeroTouch.DSFunction");
+            migrationDataTest.AppendNode(dsFunctionNode);
+
+            nodeModel = new NodeModelTestingClass();
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MigrateToDsFunctionNoAssemblyTest()
+        {
+            var result = nodeModel.MigrateToDsFunctionNoAssembly(migrationDataTest, "nickname", "function");
+
+            var assembly = result.MigratedNodes.First().Attributes["assembly"].Value;
+            var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
+            var function = result.MigratedNodes.First().Attributes["function"].Value;
+
+            Assert.AreEqual(assembly, "");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MigrateToDsFunctionWithAssemblyTest()
+        {
+            var result = nodeModel.MigrateToDsFunctionAssembly(migrationDataTest, "assembly", "nickname", "function");
+
+            var assembly = result.MigratedNodes.First().Attributes["assembly"].Value;
+            var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
+            var function = result.MigratedNodes.First().Attributes["function"].Value;
+
+            Assert.AreEqual(assembly, "assembly");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void MigrateToDsVarArgFunctionTest()
+        {
+            var result = nodeModel.MigrateToDsVarArgFunctionNMData(migrationDataTest, "assembly", "nickname", "function");
+
+            var assembly = result.MigratedNodes.First().Attributes["assembly"].Value;
+            var nickname = result.MigratedNodes.First().Attributes["nickname"].Value;
+            var function = result.MigratedNodes.First().Attributes["function"].Value;
+
+            Assert.AreEqual(assembly, "assembly");
+            Assert.AreEqual(nickname, "nickname");
+            Assert.AreEqual(function, "function"); 
+        }
+    }
+
+    /// <summary>
+    /// Class created in order to test protected methods in the NodeModel parent
+    /// </summary>
+    internal class NodeModelTestingClass : NodeModel
+    {
+        public bool UpdateValueCoreBool(UpdateValueParams uvParams) =>
+            UpdateValueCore(uvParams);
+
+        public NodeMigrationData MigrateToDsFunctionNoAssembly(NodeMigrationData nmData, string name, string funcName) =>
+            MigrateToDsFunction(nmData, name, funcName);
+
+        public NodeMigrationData MigrateToDsFunctionAssembly(NodeMigrationData nmData, string assembly, string name, string funcName) =>
+            MigrateToDsFunction(nmData, assembly, name, funcName);
+
+        public NodeMigrationData MigrateToDsVarArgFunctionNMData(NodeMigrationData data, string assembly, string name, string funcName) =>
+            MigrateToDsVarArgFunction(data, assembly, name, funcName);
     }
 }
