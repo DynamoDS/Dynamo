@@ -718,4 +718,14 @@ Restart Dynamo to complete the uninstall.</value>
   <data name="FailedToHandleReadyEvent" xml:space="preserve">
     <value>Failed to call Ready() in extension: </value>
   </data>
+  <data name="DuplicatedModelGuidError" xml:space="preserve">
+    <value>The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Value cannot be null.
+Parameter name: {0}</value>
+  </data>
+  <data name="ModelNotFoundError" xml:space="preserve">
+    <value>UpdateModelValue: Model not found</value>
+  </data>
 </root>
