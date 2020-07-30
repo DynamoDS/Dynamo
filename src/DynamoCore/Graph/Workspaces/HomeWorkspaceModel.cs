@@ -460,6 +460,7 @@ namespace Dynamo.Graph.Workspaces
 
         #endregion
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0.")]
         protected override bool PopulateXmlDocument(XmlDocument document)
         {
             if (!base.PopulateXmlDocument(document))

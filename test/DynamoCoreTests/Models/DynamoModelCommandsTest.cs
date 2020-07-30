@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using CoreNodeModels;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Models;
@@ -214,10 +212,10 @@ namespace Dynamo.Tests.ModelsTest
             //Connection Command with one Output port using a new guid
             var connectionCommand2 = new DynamoModel.MakeConnectionCommand(id, 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
 
-            var watch1 = new Watch { X = 100, Y = 300 };
-            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(watch1, false);
-            //Connection Command using a guid from a Watch node addded previosuly
-            var connectionCommand3 = new DynamoModel.MakeConnectionCommand(watch1.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            //Connection Command using a guid from a DSFunction added previosuly
+            var connectionCommand3 = new DynamoModel.MakeConnectionCommand(addNode.GUID, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.BeginDuplicateConnection);
 
             //Act
             //The ExecuteCommand method internally will execute the BeginDuplicateConnectionTest method
@@ -290,6 +288,6 @@ namespace Dynamo.Tests.ModelsTest
             Assert.IsNotNull(addPresetCommand);
             Assert.AreEqual(addPresetCommand.PresetStateName, "PresetName");
             Assert.AreEqual(addPresetCommand.PresetStateDescription, "Preset Description");
-        }
+        }      
     }
 }

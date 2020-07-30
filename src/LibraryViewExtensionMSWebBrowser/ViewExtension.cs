@@ -17,8 +17,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
     /// </summary>
     public class LibraryViewExtensionMSWebBrowser : IViewExtension
     {
-        private ViewLoadedParams viewLoadedParams;
-        private ViewStartupParams viewStartupParams;
+        private ViewLoadedParams viewParams;
         private LibraryViewCustomization customization = new LibraryViewCustomization();
         private LibraryViewController controller;
 
@@ -36,16 +35,15 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
-            this.viewStartupParams = viewStartupParams;
             viewStartupParams.ExtensionManager.RegisterService<ILibraryViewCustomization>(customization);
         }
 
-        public void Loaded(ViewLoadedParams viewStartupParams)
+        public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (!DynamoModel.IsTestMode)
             {
-                viewLoadedParams = viewStartupParams;
-                controller = new LibraryViewController(viewStartupParams.DynamoWindow, viewStartupParams.CommandExecutive, customization);
+                viewParams = viewLoadedParams;
+                controller = new LibraryViewController(viewLoadedParams.DynamoWindow, viewLoadedParams.CommandExecutive, customization);
                 controller.AddLibraryView();
                 (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += handleDynamoViewPropertyChanges;
             }
@@ -59,14 +57,14 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
            DynamoViewModel senderDVM = sender as DynamoViewModel;
            
            if (senderDVM!= null && e.PropertyName == nameof(senderDVM.ShowStartPage))
-            {
-                var sp = senderDVM.ShowStartPage;
-                var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
-                if(controller.browser != null)
-                {
-                    controller.browser.Visibility = vis;
-                }
-            }
+           {
+               var sp = senderDVM.ShowStartPage;
+               var vis = sp == true ? Visibility.Hidden : Visibility.Visible;
+               if(controller.browser != null)
+               {
+                   controller.browser.Visibility = vis;
+               }
+           }
         }
 
         public void Shutdown()
@@ -86,9 +84,9 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
             if (controller != null) controller.Dispose();
             if (customization != null) customization.Dispose();
-            if(viewLoadedParams != null && viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel != null)
+            if(viewParams != null && viewParams.DynamoWindow.DataContext as DynamoViewModel != null)
             {
-                (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
+                (viewParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= handleDynamoViewPropertyChanges;
             }
           
 

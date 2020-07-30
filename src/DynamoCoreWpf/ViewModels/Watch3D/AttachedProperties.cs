@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
-using SharpDX;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -11,48 +9,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     /// Properties used by Dynamo to extend the capabilities of 
     /// GeometryModel3D objects. 
     /// </summary>
+    [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
     public static class AttachedProperties
     {
-
-        // handles determining color of elementGeometry3Ds when any property is set false
-        // as the state of other properties must be checked to determine the correct color / material.
-        private static void OnPointOrLinePropertySetFalse(DependencyObject obj)
-        {
-            if (!(obj is GeometryModel3D && obj.GetType() != typeof(BillboardTextModel3D)))
-            {
-                return;
-            }
- 
-            //point or line case
-            GeometryModel3D geom = obj as GeometryModel3D;
-            if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
-            {
-                //if selection is not enabled determine if we should reset colors or set transparent colors
-                if (!GetShowSelected(geom))
-                {
-                    if (GetIsolationMode(geom))
-                    {
-                        SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, true);
-                    }
-                    else if (GetIsFrozen(geom))
-                    {
-                        SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
-                    }
-                    //all attached props are false, lets reset colors
-                    else
-                    {
-                        RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Event to raise when the GeometryModel's colors should be reset to the data cached by the HelixViewModel.
-        /// parameter is the "nodeASTid:HelixGeomType"
-        /// </summary>
-        internal static event Action<string> RequestResetColorsForDynamoGeometryModel;
-
         #region Show Selected property
 
         // TODO: Make private in 3.0
@@ -92,35 +51,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             //implementation for lines and points
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
-
-                if ((bool)args.NewValue)
-                {
-                    //if the item is both selected and isolation mode is on, then we should color the item as normal OR as frozen.
-                    if (GetIsolationMode(geom))
-                    {
-                        //selected, isolated, and frozen.
-                        if (GetIsFrozen(geom))
-                        {
-                            SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, true);
-                        }
-                        //selected and isolated, so we just reset the colors.
-                        else
-                        {
-                            //reset the colors
-                            RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-                        }
-                    }
-                    //only selected.
-                    else
-                    {
-                        //TODO cache this and update after helix 2.11 is released
-                        SetAllColors(geom, HelixWatch3DViewModel.SelectedMaterial.DiffuseColor);
-                    }
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                HandlePointLinePropertyChange(geom, args);
             }
         }
 
@@ -199,19 +130,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             var meshGeom = geom as DynamoGeometryModel3D;
             if (meshGeom != null)
             {
-
-             HandleMeshPropertyChange(meshGeom, e);
+                HandleMeshPropertyChange(meshGeom, e);
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
-                if ((bool)e.NewValue)
-                {
-                    SetAlpha(geom, HelixWatch3DViewModel.FrozenMaterial.DiffuseColor.Alpha, false);
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                HandlePointLinePropertyChange(geom, e);
             }
         }
 
@@ -257,14 +180,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
             else if (geom is DynamoPointGeometryModel3D || geom is DynamoLineGeometryModel3D)
             {
-                if ((bool)e.NewValue)
-                {
-                    SetAlpha(geom, HelixWatch3DViewModel.ptAndLineIsolatedTransparencyColor.Alpha, false);
-                }
-                else
-                {
-                    OnPointOrLinePropertySetFalse(geom);
-                }
+                HandlePointLinePropertyChange(geom, e);
             }
         }
 
@@ -311,49 +227,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         /// <param name="meshGeom"></param>
         /// <param name="args"></param>
-        private static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
+        internal static void HandleMeshPropertyChange(DynamoGeometryModel3D meshGeom, DependencyPropertyChangedEventArgs args)
         {
             var meshCore = meshGeom?.SceneNode?.RenderCore as DynamoGeometryMeshCore;
-            if (meshCore != null)
-            {
-                meshCore.SetPropertyData(args);
-            }
+            meshCore?.SetPropertyData(args);
         }
 
-        /// <summary>
-        /// Sets all colors on Geometry to a single color.
-        /// </summary>
-        /// <param name="geom">Geometry to modify.</param>
-        /// <param name="color">Color to set geometry to.</param>
-        private static void SetAllColors(GeometryModel3D geom, Color4 color)
+        private static void HandlePointLinePropertyChange(GeometryModel3D pointLineGeom,
+            DependencyPropertyChangedEventArgs args)
         {
-            var newColorCollection = new Color4Collection(Enumerable.Repeat(color, geom.Geometry.Colors.Count));
-            geom.Geometry.Colors = newColorCollection;
+            if (pointLineGeom is DynamoPointGeometryModel3D || pointLineGeom is DynamoLineGeometryModel3D)
+            {
+                (pointLineGeom.SceneNode?.RenderCore as DynamoPointLineRenderCore)?.SetPropertyData(args, pointLineGeom);
+            } 
         }
 
-        /// <summary>
-        /// Sets alpha channel of existing colors to given value, optionally attempts to reset all colors
-        /// first to original colors from renderpackages.
-        /// </summary>
-        /// <param name="geom">Geometry to modify.</param>
-        /// <param name="alpha">Alpha value to set on geometry. Float between 0 and 1.0.</param>
-        /// <param name="resetColorsFirst">If true, colors are reset to those stored in the original render packages, before having alpha modified
-        /// one may want to use this to reset colors from a selected state (blue) back to the original colors before freezing the geo for example. </param>
-        private static void SetAlpha(GeometryModel3D geom, float alpha, bool resetColorsFirst)
-        {
-            if (resetColorsFirst)
-            {
-                //reset colors if handled
-                RequestResetColorsForDynamoGeometryModel?.Invoke(geom.Tag as string);
-            }
-            //then modify alpha
-            var newColors = new Color4Collection(geom.Geometry.Colors.Select(col =>
-            {
-                col.Alpha = alpha;
-                return col;
-            }));
-            geom.Geometry.Colors = newColors;
-        }
         #endregion
 
     }

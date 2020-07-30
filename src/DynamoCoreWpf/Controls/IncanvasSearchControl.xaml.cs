@@ -34,7 +34,7 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Unloaded += InCanvasSearchControl_Unloaded; ;
+            Unloaded += InCanvasSearchControl_Unloaded;
 
         }
 

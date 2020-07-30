@@ -2239,6 +2239,9 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
+  <data name="DynamoViewSettingsMenuIsIronPythonDialogDisabled" xml:space="preserve">
+    <value>Hide IronPython Alerts</value>
+  </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
     <comment>Message box content. {0} = 1.2.3, {1} = 57d576e8f615e7725800001d</comment>
@@ -2254,5 +2257,14 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="RenderingMemoryOutageSummary" xml:space="preserve">
     <value>Dynamo has run out of memory trying to render your geometry. The geometry preview has been disabled.</value>
+  </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
 </root>

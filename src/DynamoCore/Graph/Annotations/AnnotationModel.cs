@@ -290,58 +290,26 @@ namespace Dynamo.Graph.Annotations
                 var regionY = groupModels.Min(y => y.Y) - ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
               
                 //calculates the distance between the nodes
-                var xDistance = groupModels.Max(x => x.X) - regionX;
-                var yDistance = groupModels.Max(x => x.Y) - regionY;
-
-                var widthandheight = CalculateWidthAndHeight();
-
-                var maxWidth = widthandheight.Item1;
-                var maxHeight = widthandheight.Item2;
+                var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
+                var yDistance = groupModels.Max(x => (x.Y + x.Height)) - regionY;
 
                 // InitialTop is to store the Y value without the Textblock height
                 this.InitialTop = groupModels.Min(y => y.Y);
+
 
                 var region = new Rect2D
                 {
                     X = regionX,
                     Y = regionY,
-                    Width = xDistance + maxWidth + ExtendSize,
-                    Height = yDistance + maxHeight + ExtendSize
+                    Width = xDistance + ExtendSize,
+                    Height = yDistance + ExtendSize + ExtendYHeight
                 };
-             
+
                 this.X = region.X;              
                 this.Y = region.Y;
                 this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
                 this.Height = region.Height;
 
-                //Calculate the boundary if there is any overlap
-                ModelBase overlap = null;
-                foreach (var nodesList in Nodes)
-                {
-                    if (!region.Contains(nodesList.Rect))
-                    {
-                        overlap = nodesList;
-                        if (overlap.Rect.Top < this.X ||
-                                    overlap.Rect.Bottom > region.Bottom) //Overlap in height - increase the region height
-                        {
-                            if (overlap.Rect.Bottom - region.Bottom > 0)
-                            {
-                                this.Height += overlap.Rect.Bottom - region.Bottom + ExtendSize + ExtendYHeight;
-                            }
-                            region.Height = this.Height;
-                        }
-                        if (overlap.Rect.Left < this.Y ||
-                                overlap.Rect.Right > region.Right) //Overlap in width - increase the region width
-                        {
-                            if (overlap.Rect.Right - region.Right > 0)
-                            {
-                                this.Width += overlap.Rect.Right - region.Right + ExtendSize;
-                            }
-                            region.Width = this.Width;
-                        }
-                    }
-                }
-                               
                 //Initial Height is to store the Actual height of the group.
                 //that is the height should be the initial height without the textblock height.
                 if (this.InitialHeight <= 0.0)
@@ -358,20 +326,7 @@ namespace Dynamo.Graph.Annotations
         /// Group the Models based on Height and Width
         /// </summary>
         /// <returns> the width and height of the last model </returns>
-        private Tuple<Double,Double> CalculateWidthAndHeight()
-        {           
-            var xgroup = Nodes.OrderBy(x => x.X).ToList();
-            var ygroup = Nodes.OrderBy(x => x.Y).ToList();
-            double yheight = ygroup.Last().Height;
 
-            //If the last model is Node, then increase the height so that 
-            //node border does not overlap with the group
-            if (ygroup.Last() is NodeModel)
-                yheight = yheight + ExtendYHeight;
-
-            return Tuple.Create(xgroup.Last().Width, yheight);
-        }
-              
         #region Serialization/Deserialization Methods
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)

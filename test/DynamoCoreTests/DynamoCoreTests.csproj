@@ -45,8 +45,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=1.3.7408.23353, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.1.3.7408.23353\lib\net47\Greg.dll</HintPath>
+    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -60,8 +60,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(NunitPath)\nunit.framework.dll</HintPath>
+      <HintPath>..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -85,6 +84,24 @@
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
+    <Compile Include="Engine\CodeCompletion\CodeCompletionServicesTest.cs" />
+    <Compile Include="Engine\CodeGeneration\CompilingEventArgsTest.cs" />
+    <Compile Include="Engine\Profiling\ProfilingDataTest.cs" />
+    <Compile Include="Engine\EngineControllerTest.cs" />
+    <Compile Include="Engine\LinkedListOfListTest.cs" />
+    <Compile Include="Engine\LiveRunnerServicesTest.cs" />
+    <Compile Include="Engine\ShortestQualifiedNameReplacerTest.cs" />
+    <Compile Include="Extensions\ExtensionCommandExecutiveTest.cs" />
+    <Compile Include="Extensions\ExtensionLoaderTest.cs" />
+    <Compile Include="Extensions\ExtensionManagerTest.cs" />
+    <Compile Include="Graph\Annotations\AnnotationModelTests.cs" />
+    <Compile Include="Graph\Connectors\ConnectorModelTests.cs" />
+    <Compile Include="Graph\Nodes\NodeAttributesTests.cs" />
+    <Compile Include="Graph\Nodes\NodeModelTests.cs" />
+    <Compile Include="Graph\Workspaces\CustomNodeWorkspaceModelTests.cs" />
+    <Compile Include="Graph\Workspaces\HomeWorkspaceModelTests.cs" />
+    <Compile Include="Graph\Workspaces\IdReferenceResolverTests.cs" />
+    <Compile Include="Graph\Workspaces\WorkspaceModelTests.cs" />
     <Compile Include="HomgeneousListTests.cs" />
     <Compile Include="AtLevelTest.cs" />
     <Compile Include="AttributeTest.cs" />
@@ -94,7 +111,6 @@
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
-    <Compile Include="Logging\AnalyticsServiceModulesTest.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
     <Compile Include="Logging\HeartBeatTest.cs" />
@@ -147,6 +163,8 @@
     <Compile Include="PresetsTests.cs" />
     <Compile Include="PeriodicEvaluationTests.cs" />
     <Compile Include="ProfilingTest.cs" />
+    <Compile Include="PropertiesTests\PropertiesTests.cs" />
+    <Compile Include="PythonMigrationAssistantTests.cs" />
     <Compile Include="Search\BrowserInternalElementTest.cs" />
     <Compile Include="Search\BrowserItemTest.cs" />
     <Compile Include="Search\SearchDictionaryTest.cs" />
@@ -183,7 +201,11 @@
     <Compile Include="Updates\BinaryVersionTests.cs" />
     <Compile Include="Updates\UpdatesTests.cs" />
     <Compile Include="UserDataMigrationTests.cs" />
+    <Compile Include="Utilities\UtilitiesTests.cs" />
     <Compile Include="VersionUtilitiesTests.cs" />
+    <Compile Include="Visualization\DefaultGraphicPrimitivesTest.cs" />
+    <Compile Include="Visualization\DefaultRenderPackageTest.cs" />
+    <Compile Include="Visualization\RenderPackageCacheTest.cs" />
     <Compile Include="WorkspaceHeaderTests.cs" />
     <Compile Include="CoreTests.cs" />
     <Compile Include="CoreDynTests.cs" />
@@ -226,6 +248,10 @@
       <Name>ProtoImperative</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoScript\ProtoScript.csproj">
+      <Project>{a4794476-7d0e-41c0-ad83-4ab929c0a46c}</Project>
+      <Name>ProtoScript</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
       <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
       <Name>DesignScriptBuiltin</Name>
@@ -249,11 +275,6 @@
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
-      <Project>{01de9b06-0bcb-4d8a-862e-e8170f5d6b4f}</Project>
-      <Name>PythonNodeModelsWpf</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
       <Name>PythonNodeModels</Name>
@@ -263,6 +284,10 @@
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\PythonMigrationViewExtension\PythonMigrationViewExtension.csproj">
+      <Project>{10AF430D-0D3A-49CE-A63D-848912959745}</Project>
+      <Name>PythonMigrationViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
       <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>

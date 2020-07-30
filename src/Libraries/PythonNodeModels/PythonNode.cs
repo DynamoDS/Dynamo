@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using Autodesk.DesignScript.Runtime;
-using DSCPython;
-using DSIronPython;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -17,12 +14,17 @@ using ProtoCore.AST.AssociativeAST;
 namespace PythonNodeModels
 {
     /// <summary>
-    /// Enum of possible values of python engine versions
+    /// Event arguments used to send the original and migrated code to the ScriptEditor
     /// </summary>
-    public enum PythonEngineVersion
+    internal class PythonCodeMigrationEventArgs : EventArgs
     {
-        IronPython2,
-        CPython3
+        public string OldCode { get; private set; }
+        public string NewCode { get; private set; }
+        public PythonCodeMigrationEventArgs(string oldCode, string newCode)
+        {
+            OldCode = oldCode;
+            NewCode = newCode;
+        }
     }
 
     public abstract class PythonNodeBase : VariableInputNode
@@ -42,7 +44,6 @@ namespace PythonNodeModels
                 {
                     engine = value;
                     RaisePropertyChanged(nameof(Engine));
-                    OnNodeModified();
                 }
             }
         }
@@ -85,25 +86,15 @@ namespace PythonNodeModels
             var vals = additionalBindings.Select(x => x.Item2).ToList();
             vals.Add(AstFactory.BuildExprList(inputAstNodes));
 
-            Func<string, IList, IList, object> pythonEvaluatorMethod;
-
-            if (Engine == PythonEngineVersion.IronPython2)
-            {
-                pythonEvaluatorMethod = IronPythonEvaluator.EvaluateIronPythonScript;
-            }
-            else if (Engine == PythonEngineVersion.CPython3)
-            {
-                pythonEvaluatorMethod = CPythonEvaluator.EvaluatePythonScript;
-            }
-            else
-            {
-                throw new InvalidOperationException("Unknown Python engine " + Engine);
-            }
+            // Here we switched to use the AstFactory.BuildFunctionCall version that accept
+            // class name and function name. They will be set by PythonEngineSelector by the engine value. 
+            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
                 AstFactory.BuildFunctionCall(
-                    pythonEvaluatorMethod,
+                    evaluatorClass,
+                    evaluationMethod,
                     new List<AssociativeNode>
                     {
                         codeInputNode,
@@ -111,6 +102,13 @@ namespace PythonNodeModels
                         AstFactory.BuildExprList(vals)
                     }));
         }
+
+        internal event EventHandler MigrationAssistantRequested;
+        internal void RequestCodeMigration(EventArgs e)
+        {
+            MigrationAssistantRequested?.Invoke(this, e);
+        }
+
     }
 
     [NodeName("Python Script")]
@@ -197,7 +195,10 @@ namespace PythonNodeModels
                 CreateOutputAST(
                     AstFactory.BuildStringNode(script),
                     inputAstNodes,
-                    new List<Tuple<string, AssociativeNode>>())
+                    new List<Tuple<string, AssociativeNode>>()
+                    {
+                        Tuple.Create<string, AssociativeNode>(nameof(Name), AstFactory.BuildStringNode(Name))
+                    })
             };
         }
 
@@ -213,6 +214,30 @@ namespace PythonNodeModels
             }
 
             return base.UpdateValueCore(updateValueParams);
+        }
+
+        /// <summary>
+        /// Updates the Script property of the node.
+        /// NOTE: This is a temporary method used during the Python 2 to Python 3 transistion period,
+        /// it will be removed when the transistion period is over.
+        /// </summary>
+        /// <param name="newCode">The new migrated code</param>
+        internal void MigrateCode(string newCode)
+        {        
+            var e = new PythonCodeMigrationEventArgs(Script, newCode); 
+            Script = newCode;
+            OnCodeMigrated(e);
+        }
+
+        /// <summary>
+        /// Fires when the Script content is migrated to Python 3.
+        /// NOTE: This is a temporary event used during the Python 2 to Python 3 transistion period,
+        /// it will be removed when the transistion period is over.
+        /// </summary>
+        internal event EventHandler<PythonCodeMigrationEventArgs> CodeMigrated;
+        private void OnCodeMigrated(PythonCodeMigrationEventArgs e)
+        {
+            CodeMigrated?.Invoke(this, e);
         }
 
         #region SerializeCore/DeserializeCore
@@ -286,7 +311,10 @@ namespace PythonNodeModels
                 CreateOutputAST(
                     inputAstNodes[0],
                     inputAstNodes.Skip(1).ToList(),
-                    new List<Tuple<string, AssociativeNode>>())
+                    new List<Tuple<string, AssociativeNode>>()
+                    {
+                        Tuple.Create<string, AssociativeNode>(nameof(Name), AstFactory.BuildStringNode(Name))
+                    })
             };
         }
     }

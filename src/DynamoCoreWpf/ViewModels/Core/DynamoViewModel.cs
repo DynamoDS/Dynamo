@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -23,6 +22,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
@@ -67,7 +67,7 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
         
-        private List<DefaultWatch3DViewModel> watch3DViewModels = new List<DefaultWatch3DViewModel>();
+        private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
         /// An observable collection of workspace view models which tracks the model
@@ -487,6 +487,22 @@ namespace Dynamo.ViewModels
         }
 
         public bool HideReportOptions { get; }
+
+        /// <summary>
+        /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled
+        {
+            get
+            {
+                return model.PreferenceSettings.IsIronPythonDialogDisabled;
+            }
+            set
+            {
+                model.PreferenceSettings.IsIronPythonDialogDisabled = value;
+                RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
+            }
+        }
 
         #endregion
 
@@ -1800,9 +1816,15 @@ namespace Dynamo.ViewModels
 
         public void ToggleBackgroundGridVisibility(object parameter)
         {
-            if (BackgroundPreviewViewModel == null || !BackgroundPreviewViewModel.Active) return;
-
-            BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+            if (BackgroundPreviewViewModel != null)
+            {
+                // This will change both the live object property and the PreferenceSettings for persistence
+                BackgroundPreviewViewModel.IsGridVisible = !BackgroundPreviewViewModel.IsGridVisible;
+            }
+            else
+            {
+                PreferenceSettings.IsBackgroundGridVisible = !PreferenceSettings.IsBackgroundGridVisible;
+            }
         }
 
         internal bool CanToggleBackgroundGridVisibility(object parameter)
@@ -1883,7 +1905,12 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-                this.ShowStartPage = false; // Hide start page if there's one.
+            {
+                var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
+                model.Scheduler.ScheduleForExecution(t);
+
+                ShowStartPage = false; // Hide start page if there's one.
+            }
         }
 
         internal bool CanMakeNewHomeWorkspace(object parameter)
@@ -2507,7 +2534,10 @@ namespace Dynamo.ViewModels
             // Request the View layer to close its window (see 
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
+            {
                 OnRequestClose(this, EventArgs.Empty);
+            }
+
 
             BackgroundPreviewViewModel.Dispose();
 
@@ -2518,6 +2548,11 @@ namespace Dynamo.ViewModels
             }
 
             UsageReportingManager.DestroyInstance();
+            this.model.CommandStarting -= OnModelCommandStarting;
+            this.model.CommandCompleted -= OnModelCommandCompleted;
+            BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
+            WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
+            model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
 
             return true;
         }

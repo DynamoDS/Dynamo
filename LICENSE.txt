@@ -1,6 +1,8 @@
+Apache license 2.0
+
 ## Dynamo License
 
-Copyright 2013-2019 Autodesk
+Copyright 2013-2020 Autodesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,15 +14,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ## Third Party Licenses ##
 
 ### Avalon Edit
-http://www.codeproject.com/Articles/42490/Using-AvalonEdit-WPF-Text-Editor
-http://opensource.org/licenses/lgpl-3.0.html
+http://avalonedit.net/
+https://opensource.org/licenses/lgpl-2.1.php
+  (LGPL-2.1 license)
 
 ### CEFSharp
 https://github.com/cefsharp/CefSharp/blob/master/LICENSE
-
-### DirectX
-https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
-https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
 
 ### CSharpAnalytics
 https://github.com/AttackPattern/CSharpAnalytics
@@ -30,6 +29,14 @@ http://www.apache.org/licenses/LICENSE-2.0
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt 
   (MIT license)
+
+### DiffPlex
+https://github.com/mmanela/diffplex/blob/master/License.txt
+  (Apache License)
+
+### DirectX
+https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
+https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
 
 ### Fontawesome
 https://www.nuget.org/packages/FontAwesome.WPF/
@@ -41,13 +48,13 @@ https://www.gnu.org/software/gettext/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
 ### Helix Toolkit
-https://helixtoolkit.codeplex.com/
-https://helixtoolkit.codeplex.com/license 
+https://github.com/helix-toolkit/helix-toolkit
+https://github.com/helix-toolkit/helix-toolkit/blob/develop/LICENSE
   (MIT license)
 
 ### Immutable (System.Immutable)
 https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
-(MIT License)
+  (MIT License)
 
 ### Iron Python, Dynamic Language Runtime
 http://ironpython.net/
@@ -56,22 +63,6 @@ http://opensource.org/licenses/apache2.0.php
 ### libiconv
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
-
-### libgcc, libstdc++, libgomp
-https://gcc.gnu.org/onlinedocs/libgomp/
-https://gcc.gnu.org/onlinedocs/gcc-4.3.3/libgomp/Copying.html#Copying
-  (GPL-3.0 license)
-https://gcc.gnu.org/libstdc++/ 
-https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html
-  (GPL-3.0 license, w/ GCC Runtime Library Exception version 3.1, see below)
-https://gcc.gnu.org/onlinedocs/gccint/Libgcc.html
-  (GPL-3.0 license, w/ GCC Runtime Library Exception version 3.1; see 
-  http://wiki.osdev.org/Libgcc#What_is_the_libgcc_license.3F and
-  see the runtime library exception below) 
-The GCC Runtime Library Exception, version 3.1:
-  (http://www.gnu.org/licenses/gcc-exception.html
-  see also http://www.gnu.org/licenses/gcc-exception-3.1-faq.en.html)
-
 
 ### MiConvexHull
 http://miconvexhull.codeplex.com/
@@ -123,25 +114,27 @@ http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx
 
 ### Python Standard Library
 https://www.python.org/
-https://www.python.org/download/releases/2.7/license/
+https://docs.python.org/3/license.html
+
+### Python.NET
+https://github.com/pythonnet/pythonnet/blob/master/LICENSE
+  (MIT license)
 
 ### RestSharp
 http://www.apache.org/licenses/LICENSE-2.0
 
 ### SharpDX
 https://github.com/sharpdx/SharpDX/blob/master/LICENSE
-(MIT License)
+  (MIT License)
 
 ### SimplexNoise
 https://unlicense.org/
 
 ### StarMath
 https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
-(MIT license)
+  (MIT license)
 
-###  Xceed Extended WPF Toolkit
+### Xceed Extended WPF Toolkit
 https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
-(Microsoft Public License)
-
-
+  (Microsoft Public License)
 

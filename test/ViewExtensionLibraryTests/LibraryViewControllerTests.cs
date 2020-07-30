@@ -35,6 +35,14 @@ namespace ViewExtensionLibraryTests
             };
         }
 
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            // The tests here don't really require this library, but the Python migration extension
+            // will attach itself to the workspace and it depends on PythonNodeModels but does not copy it.
+            // Ideally we would remove the extension for these tests, but not sure that can be done.
+            libraries.Add("DSCPython.dll");
+        }
+
         [Test]
         [Category("UnitTests")]
         public void CreatingNodeCustomNodeDefinitionOrUpdatingItShouldRaiseUpdate()

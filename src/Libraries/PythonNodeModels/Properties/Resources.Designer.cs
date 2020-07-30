@@ -19,7 +19,7 @@ namespace PythonNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -86,40 +86,52 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("EditHeader", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PythonNodeModels;PythonMigrationWarning.html.
+        /// </summary>
+        public static string PythonMigrationWarningUriString {
+            get {
+                return ResourceManager.GetString("PythonMigrationWarningUriString", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Python Engine Version.
         /// </summary>
-        public static string PythonNodeContextMenuEngineSwitcher
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineSwitcher {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineSwitcher", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Python3.
+        ///   Looks up a localized string similar to CPython3.
         /// </summary>
-        public static string PythonNodeContextMenuEngineVersionThree
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineVersionThree {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineVersionThree", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Python2.
+        ///   Looks up a localized string similar to IronPython2.
         /// </summary>
-        public static string PythonNodeContextMenuEngineVersionTwo
-        {
-            get
-            {
+        public static string PythonNodeContextMenuEngineVersionTwo {
+            get {
                 return ResourceManager.GetString("PythonNodeContextMenuEngineVersionTwo", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about Python.
+        /// </summary>
+        public static string PythonNodeContextMenuLearnMoreButton {
+            get {
+                return ResourceManager.GetString("PythonNodeContextMenuLearnMoreButton", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Result of the python script.
         /// </summary>
@@ -157,6 +169,15 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        /// </summary>
+        public static string PythonScriptEditorEngineDropdownTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Load the Python Standard and DesignScript Libraries.
         /// </summary>
         public static string PythonScriptEditorImports {
@@ -175,6 +196,24 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant to update your Python 2 scripts to Python 3..
+        /// </summary>
+        public static string PythonScriptEditorMigrationAssistantButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn about Python3 updates..
+        /// </summary>
+        public static string PythonScriptEditorMoreInfoButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorMoreInfoButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Assign your output to the OUT variable..
         /// </summary>
         public static string PythonScriptEditorOutputComment {
@@ -184,11 +223,11 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revert.
+        ///   Looks up a localized string similar to Revert the changes made to current Python node editor and close it..
         /// </summary>
-        public static string PythonScriptEditorRevertButton {
+        public static string PythonScriptEditorRevertButtonTooltip {
             get {
-                return ResourceManager.GetString("PythonScriptEditorRevertButton", resourceCulture);
+                return ResourceManager.GetString("PythonScriptEditorRevertButtonTooltip", resourceCulture);
             }
         }
         
@@ -202,11 +241,20 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Changes.
+        ///   Looks up a localized string similar to Save current code in Python node editor and run graph with it..
         /// </summary>
-        public static string PythonScriptEditorSaveChangesButton {
+        public static string PythonScriptEditorRunButtonTooltip {
             get {
-                return ResourceManager.GetString("PythonScriptEditorSaveChangesButton", resourceCulture);
+                return ResourceManager.GetString("PythonScriptEditorRunButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save the changes made to current Python node editor and close it..
+        /// </summary>
+        public static string PythonScriptEditorSaveChangesButtonTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorSaveChangesButtonTooltip", resourceCulture);
             }
         }
         

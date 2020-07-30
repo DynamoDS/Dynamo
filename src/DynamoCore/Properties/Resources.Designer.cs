@@ -70,6 +70,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        ///Parameter name: {0}.
+        /// </summary>
+        public static string ArgumentNullException {
+            get {
+                return ResourceManager.GetString("ArgumentNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -432,6 +442,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}.
+        /// </summary>
+        public static string DuplicatedModelGuidError {
+            get {
+                return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate migration type registered for {0}.
         /// </summary>
         public static string DuplicateMigrationTypeRegistered {
@@ -482,6 +501,15 @@ namespace Dynamo.Properties {
         public static string FailedToGetMirrorVariable {
             get {
                 return ResourceManager.GetString("FailedToGetMirrorVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to call Ready() in extension: .
+        /// </summary>
+        public static string FailedToHandleReadyEvent {
+            get {
+                return ResourceManager.GetString("FailedToHandleReadyEvent", resourceCulture);
             }
         }
         
@@ -889,6 +917,24 @@ namespace Dynamo.Properties {
         public static string MessageCustomNodePackageFailedToLoad {
             get {
                 return ResourceManager.GetString("MessageCustomNodePackageFailedToLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is missing some XML documentation tags..
+        /// </summary>
+        public static string MissingXmlTagConsoleMessage {
+            get {
+                return ResourceManager.GetString("MissingXmlTagConsoleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpdateModelValue: Model not found.
+        /// </summary>
+        public static string ModelNotFoundError {
+            get {
+                return ResourceManager.GetString("ModelNotFoundError", resourceCulture);
             }
         }
         

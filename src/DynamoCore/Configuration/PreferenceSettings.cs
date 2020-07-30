@@ -20,6 +20,7 @@ namespace Dynamo.Configuration
         private string numberFormat;
         private string lastUpdateDownloadPath;
         private int maxNumRecentFiles;
+        private bool isBackgroundGridVisible;
 
         #region Constants
         /// <summary>
@@ -60,10 +61,11 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Indicates whether usage reporting is approved or not.
         /// </summary>
-        public bool IsUsageReportingApproved { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public bool IsUsageReportingApproved { get { return false; } set { } }
 
         /// <summary>
-        /// Indicates whether analytics reporting is approved or not.
+        /// Indicates whether Google analytics reporting is approved or not.
         /// </summary>
         public bool IsAnalyticsReportingApproved { get; set; }
 
@@ -154,7 +156,21 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Should the background grid be shown?
         /// </summary>
-        public bool IsBackgroundGridVisible { get; set; }
+        public bool IsBackgroundGridVisible
+        {
+            get
+            {
+                return isBackgroundGridVisible;
+            }
+            set
+            {
+                if (value == isBackgroundGridVisible) return;
+                isBackgroundGridVisible = value;
+
+                RaisePropertyChanged(nameof(IsBackgroundGridVisible));
+            }
+        }
+
 
         /// <summary>
         /// Indicates whether background preview is active or not.
@@ -308,6 +324,11 @@ namespace Dynamo.Configuration
         public bool OpenFileInManualExecutionMode { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the Iron Python Extension Dialog box on every new session.
+        /// </summary>
+        public bool IsIronPythonDialogDisabled { get; set; }
+
+        /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
         /// </summary>
@@ -335,7 +356,6 @@ namespace Dynamo.Configuration
 
             // Default Settings
             IsFirstRun = true;
-            IsUsageReportingApproved = false;
             IsAnalyticsReportingApproved = true;
             LibraryWidth = 304;
             ConsoleHeight = 0;
@@ -361,6 +381,7 @@ namespace Dynamo.Configuration
 
             CustomPackageFolders = new List<string>();
             PythonTemplateFilePath = "";
+            IsIronPythonDialogDisabled = false;
         }
 
         /// <summary>

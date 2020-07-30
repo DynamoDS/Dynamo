@@ -1872,6 +1872,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide IronPython Alerts.
+        /// </summary>
+        public static string DynamoViewSettingsMenuIsIronPythonDialogDisabled {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuIsIronPythonDialogDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Isolate Selected Geometry.
         /// </summary>
         public static string DynamoViewSettingsMenuIsolationMode {
@@ -4424,9 +4433,29 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        public static byte[] psDynamoLine {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoLine", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         public static byte[] psDynamoMesh {
             get {
                 object obj = ResourceManager.GetObject("psDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] psDynamoPoint {
+            get {
+                object obj = ResourceManager.GetObject("psDynamoPoint", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -5583,6 +5612,16 @@ namespace Dynamo.Wpf.Properties {
         public static byte[] vsDynamoMesh {
             get {
                 object obj = ResourceManager.GetObject("vsDynamoMesh", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        public static byte[] vsDynamoPointLine {
+            get {
+                object obj = ResourceManager.GetObject("vsDynamoPointLine", resourceCulture);
                 return ((byte[])(obj));
             }
         }

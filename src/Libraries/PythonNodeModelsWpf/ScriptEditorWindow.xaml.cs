@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly IronPythonCompletionProvider completionProvider;
+        private readonly SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -37,13 +37,20 @@ namespace PythonNodeModelsWpf
             ref ModelessChildWindow.WindowRect windowRect
             ) : base(nodeView, ref windowRect)
         {
+            this.Closed += OnScriptEditorWindowClosed;
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new IronPythonCompletionProvider(dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
+            nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
+
+            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
+            {
+                EngineSelectorComboBox.Visibility = Visibility.Visible;
+            }
 
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
@@ -126,6 +133,14 @@ namespace PythonNodeModelsWpf
 
         #region Private Event Handlers
 
+        private void OnNodeModelCodeMigrated(object sender, PythonCodeMigrationEventArgs e)
+        {
+            originalScript = e.OldCode;
+            editText.Text = e.NewCode;
+            if (nodeModel.Engine != PythonEngineVersion.CPython3)
+                nodeModel.Engine = PythonEngineVersion.CPython3;
+        }
+
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
@@ -162,8 +177,37 @@ namespace PythonNodeModelsWpf
             }
         }
 
+        private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
+        {
+            if (nodeModel == null)
+                throw new NullReferenceException(nameof(nodeModel));
+
+            UpdateScript(editText.Text);
+            nodeModel.RequestCodeMigration(e);
+        }
+
         #endregion
 
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(PythonNodeModels.Properties.Resources.PythonMigrationWarningUriString, UriKind.Relative)));
+        }
 
+        private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            //removedItems will be empty during the first binding
+            //as the window is constructed, we don't want to execute the node just
+            //as a consequence of opening the editor.
+            if (e.RemovedItems.Count > 0)
+            {
+                UpdateScript(editText.Text);
+            }
+        }
+
+        private void OnScriptEditorWindowClosed(object sender, EventArgs e)
+        {
+            nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
+            this.Closed -= OnScriptEditorWindowClosed;
+        }
     }
 }

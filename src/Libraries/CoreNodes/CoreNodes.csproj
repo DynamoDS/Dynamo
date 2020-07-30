@@ -45,8 +45,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NCalc, Version=1.3.8.0, Culture=neutral, PublicKeyToken=973cde3f1cafed03, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\NCalc\NCalc.dll</HintPath>
+      <HintPath>..\..\packages\ncalc.1.3.8\lib\NCalc.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -73,6 +72,7 @@
     <Compile Include="Color.cs" />
     <Compile Include="Compare.cs" />
     <Compile Include="DateTime.cs" />
+    <Compile Include="DummyPythonEvaluator.cs" />
     <Compile Include="FileSystem.cs" />
     <Compile Include="Data.cs" />
     <Compile Include="List.cs" />
@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Flatten.ds" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DSCoreNodes.Migrations.xml">

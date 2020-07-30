@@ -146,6 +146,7 @@ namespace Dynamo.Controls
                 expansionBay.Children.Remove(previewControl);
                 previewControl = null;
             }
+            nodeBorder.SizeChanged -= OnSizeChanged;
         }
 
         #endregion
@@ -489,7 +490,7 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen ||
+            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
@@ -632,11 +633,32 @@ namespace Dynamo.Controls
                     {
                         isInside = true;
                     }
-
                     return HitTestFilterBehavior.Stop;
                 },
                 ht => HitTestResultBehavior.Stop,
                 new PointHitTestParameters(mousePosition));
+            return isInside;
+        }
+
+        /// <summary>
+        /// Checks whether a mouse event occurred at a position matching the preview.
+        /// Alternatives attempted:
+        /// - PreviewControl.IsMouseOver => This is always false
+        /// - HitTest on NodeView => Anomalous region that skips right part of preview if larger than node
+        /// - HitTest on Preview => Bounds become irreversible larger than "mouse over area" after preview is expanded
+        /// </summary>
+        /// <param name="e">A mouse event</param>
+        /// <returns>Whether the mouse is over the preview or not</returns>
+        private bool IsMouseInsidePreview(MouseEventArgs e)
+        {
+            var isInside = false;
+            if (previewControl != null)
+            {
+                var bounds = new Rect(0, 0, previewControl.ActualWidth, previewControl.ActualHeight);
+                var mousePosition = e.GetPosition(previewControl);
+                isInside = bounds.Contains(mousePosition);
+            }
+
             return isInside;
         }
 

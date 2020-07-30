@@ -16,8 +16,8 @@ namespace Dynamo.Notifications
     {
         private ViewLoadedParams viewLoadedParams;
         private Action<Logging.NotificationMessage> notificationHandler;
-
         private ObservableCollection<Logging.NotificationMessage> notifications;
+        private bool disposed;
         /// <summary>
         /// Notifications data collection. PropertyChanged event is raised to help dealing WPF bind dispose.
         /// </summary>
@@ -57,11 +57,15 @@ namespace Dynamo.Notifications
 
         public void Dispose()
         {
-            UnregisterEventHandlers();
-            //for some reason the menuItem was not being gc'd in tests without manually removing it
-            viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
-            BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
-            notificationsMenuItem = null;
+            if (!disposed)
+            {
+                UnregisterEventHandlers();
+                //for some reason the menuItem was not being gc'd in tests without manually removing it
+                viewLoadedParams.dynamoMenu.Items.Remove(notificationsMenuItem.MenuItem);
+                BindingOperations.ClearAllBindings(notificationsMenuItem.CountLabel);
+                notificationsMenuItem = null;
+                disposed = true;
+            }
         }
 
         private void UnregisterEventHandlers()

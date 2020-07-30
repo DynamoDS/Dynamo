@@ -22,10 +22,7 @@ PSInput main(VSInput input)
         */
 
     uint flags = int(vParams.x);
-    bool isFrozen = flags & 1;
     bool isSelected = flags & 2;
-    bool isIsolated = flags & 4;
-    bool isSpecialRenderPackage = flags & 8;
     bool requiresPerVertexColoration = flags & 32;
         
     float4 inputp;
@@ -39,10 +36,6 @@ PSInput main(VSInput input)
     {
         inputp = input.p;
     }
-
-    float3 inputn = input.n;
-    float3 inputt1 = input.t1;
-    float3 inputt2 = input.t2;
 
     //set position into world space
     output.p = mul(inputp, mWorld);
