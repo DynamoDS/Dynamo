@@ -35,20 +35,8 @@ namespace Dynamo.PythonMigration.Differ
             var richTextBox = (RichTextBox)dep;
             var model = (DiffPaneModel)e.NewValue;
 
-            switch (richTextBox.Name)
-            {
-                case "BeforePanel":
-                    ShowLineDiffs(richTextBox, model, richTextBox.Name);
-                    break;
-                case "AfterPanel":
-                    ShowLineDiffs(richTextBox, model, richTextBox.Name);
-                    break;
-                case "InlinePanel":
-                    ShowLineDiffs(richTextBox, model, richTextBox.Name);
-                    break;
-                default:
-                    break;
-            }
+            // possible panel names : AfterPanel, BeforePanel, InlinePanel
+            ShowLineDiffs(richTextBox, model, richTextBox.Name);
         }
 
         private static void ShowLineDiffs(RichTextBox diffBox, DiffPaneModel model, string senderPanel)
@@ -64,10 +52,10 @@ namespace Dynamo.PythonMigration.Differ
                         paragraphs.Add(CreateParagraph(line.Text ?? string.Empty, line.Position.ToString() ?? " ", UNCHANGED_SIGN));
                         break;
                     case ChangeType.Inserted:
-                        paragraphs.Add(CreateParagraph(line.Text ?? string.Empty, line.Position.ToString() ?? " ", ADDED_SIGN, GetAfterModifiedBrush()));
+                        paragraphs.Add(ShowSubPieceDiffs(line, false));
                         break;
                     case ChangeType.Deleted:
-                        paragraphs.Add(CreateParagraph(line.Text ?? string.Empty, line.Position.ToString() ?? " ", REMOVED_SIGN, GetBeforeModifiedBrush()));
+                        paragraphs.Add(ShowSubPieceDiffs(line, true));
                         break;
                     case ChangeType.Modified:
                         paragraphs.Add(ShowSubPieceDiffs(line, isBeforePanel));

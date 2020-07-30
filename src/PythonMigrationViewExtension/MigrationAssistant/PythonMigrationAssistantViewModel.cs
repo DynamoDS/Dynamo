@@ -1,4 +1,5 @@
 ﻿using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -19,6 +20,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private PythonNode PythonNode;
 
         private IDiffViewViewModel currentViewModel;
+        private SideBySideDiffModel diffModel;
+
         public IDiffViewViewModel CurrentViewModel
         {
             get { return this.currentViewModel; }
@@ -42,6 +45,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private void MigrateCode()
         {
             this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
+
+            var sidebyside = new SideBySideDiffBuilder();
+            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
         }
 
         public void ChangeCode()
@@ -97,16 +103,12 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         private void SetSideBySideViewModel()
         {
-            var sidebyside = new SideBySideDiffBuilder();
-            var sidebysideModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
-            this.CurrentViewModel = new SideBySideViewModel(sidebysideModel);
+            this.CurrentViewModel = new SideBySideViewModel(this.diffModel);
         }
 
         private void SetInlineViewModel()
         {
-            var inline = new InlineDiffBuilder();
-            var inlineModel = inline.BuildDiffModel(this.OldCode, this.NewCode);
-            this.CurrentViewModel = new InLineViewModel(inlineModel);
+            this.CurrentViewModel = new InLineViewModel(this.diffModel);
         }
 
         #endregion
