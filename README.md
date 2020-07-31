@@ -47,7 +47,7 @@ Dynamo is an open-source project and would be nothing without its community.  Yo
 See the [Release Notes](https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
 
 ## Instrumentation ##
-Dynamo now leverage the same instrumentation component as other Autodesk products which share the opt-in option. Those data will be used to enhance the usability of the product.
+Dynamo now leverages the same instrumentation component as other Autodesk products which share the opt-in option. The data will be used to enhance the usability of the product.
 
 
 

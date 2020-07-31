@@ -183,7 +183,7 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="tag">Usage tag</param>
         /// <param name="data">Usage data</param>
-        [Obsolete("Function will be deprecated in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public static void LogPiiInfo(string tag, string data)
         {
             if (client != null) client.LogPiiInfo(tag, data);
