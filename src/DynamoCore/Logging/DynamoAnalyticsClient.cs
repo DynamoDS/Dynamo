@@ -73,7 +73,7 @@ namespace Dynamo.Logging
 
             if (tryGetValue != null)
             {
-                Debug.WriteLine("User id found: " + tryGetValue);
+                Debug.WriteLine("Unique User id for Analytics found: " + tryGetValue);
                 return tryGetValue;
             }
 
@@ -357,7 +357,7 @@ namespace Dynamo.Logging
             throw new ArgumentException("Invalid action for FileOperation.");
         }
 
-        [Obsolete("Function will be deprecated in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void LogPiiInfo(string tag, string data)
         {
             if (!ReportingUsage) return;

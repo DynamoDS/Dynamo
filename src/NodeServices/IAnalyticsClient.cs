@@ -166,7 +166,7 @@ namespace Dynamo.Logging
         bool ReportingAnalytics { get; }
 
         /// <summary>
-        /// Cheks if detailed usage reporting is ON.
+        /// Checks if detailed usage reporting is ON.
         /// </summary>
         bool ReportingUsage { get; }
 
