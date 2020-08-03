@@ -79,10 +79,9 @@
 
         <Grid Grid.Row="1"
               Grid.Column="0">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
                 <RichTextBox IsReadOnly="True"
                              x:Name="BeforePanel"
-                             Grid.Column="1"
                              viewModels:RichTextBoxHandler.Update="{Binding BeforePane}" />
             </ScrollViewer>
 
@@ -90,11 +89,10 @@
 
         <Grid Grid.Row="1"
               Grid.Column="3">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
                 <RichTextBox IsReadOnly="True"
                              x:Name="AfterPanel"
-                             Grid.Column="1"
-                             viewModels:RichTextBoxHandler.Update="{Binding AfterPane}" />
+                             viewModels:RichTextBoxHandler.Update="{Binding AfterPane}"/>
             </ScrollViewer>
 
         </Grid>

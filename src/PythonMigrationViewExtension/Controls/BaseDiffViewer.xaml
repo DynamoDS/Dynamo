@@ -11,10 +11,9 @@
         mc:Ignorable="d"
         d:DesignHeight="450"
         d:DesignWidth="800"
+        Height="500"
         MinWidth="500"
         MinHeight="450"
-        Width="1200"
-        Height="500"
         Title="Migration Assistant"
         WindowStartupLocation="CenterOwner"
         Background="#272822">

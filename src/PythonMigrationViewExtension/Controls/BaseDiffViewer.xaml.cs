@@ -19,6 +19,8 @@ namespace Dynamo.PythonMigration.Controls
         {
             ViewModel = viewModel;
             DataContext = viewModel;
+            // The diff viewer is initialized with the SideBySide view
+            SetSideBySideWindowWidth();
             InitializeComponent();
         }
 
@@ -27,13 +29,23 @@ namespace Dynamo.PythonMigration.Controls
             if (ViewModel.CurrentViewModel.ViewMode == Differ.ViewMode.Inline)
             {
                 ViewModel.ChangeViewModel(Differ.ViewMode.SideBySide);
-                Width = scriptEditorWindowDefaultWidth *2 + differAdditionalWidthPerPanel * 1.5;
+                SetSideBySideWindowWidth();
             }
             else
             {
                 ViewModel.ChangeViewModel(Differ.ViewMode.Inline);
-                Width = scriptEditorWindowDefaultWidth + differAdditionalWidthPerPanel;
+                SetInlineWindowWidth();
             }
+        }
+
+        private void SetSideBySideWindowWidth()
+        {
+            Width = scriptEditorWindowDefaultWidth * 2 + differAdditionalWidthPerPanel * 1.5;
+        }
+
+        private void SetInlineWindowWidth()
+        {
+            Width = scriptEditorWindowDefaultWidth + differAdditionalWidthPerPanel;
         }
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)

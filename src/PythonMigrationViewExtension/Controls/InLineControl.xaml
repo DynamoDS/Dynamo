@@ -47,6 +47,7 @@
                     Value="0,0,0,0" />
         </Style>
     </UserControl.Resources>
+    
 
     <Grid>
         <Grid.RowDefinitions>
@@ -58,10 +59,10 @@
                    Grid.Row="0"
                    VerticalAlignment="Center"
                    Foreground="#808080" />
-        <ScrollViewer VerticalScrollBarVisibility="Auto"
+        <ScrollViewer VerticalScrollBarVisibility="Visible"
                       Grid.Row="1">
             <RichTextBox IsReadOnly="True"
-                         x:Name="InlinePanel"                       
+                         x:Name="InlinePanel"
                          viewModels:RichTextBoxHandler.Update="{Binding DiffModel}" />
         </ScrollViewer>
 
