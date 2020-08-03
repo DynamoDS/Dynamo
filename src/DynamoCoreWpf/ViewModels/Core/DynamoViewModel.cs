@@ -504,7 +504,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions();
+        private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions() {
+            ConvertTabsToSpaces = false
+        };
 
         /// <summary>
         /// Gets the text editor options for python script editor.
@@ -521,7 +523,7 @@ namespace Dynamo.ViewModels
                 if (editTextOptions != value)
                 {
                     editTextOptions = value;
-                    RaisePropertyChanged("TextOptions");
+                    RaisePropertyChanged(nameof(TextOptions));
                 }
             }
         }

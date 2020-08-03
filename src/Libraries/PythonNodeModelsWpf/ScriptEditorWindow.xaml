@@ -72,7 +72,11 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="44" />
         </Grid.RowDefinitions>
-
+        <Grid.Resources>
+            <!-- This resource is necessary to make sure that AvalonEdit always has valid options
+            (even when there is no document if options bound to the editor control) -->
+            <avalonedit:TextEditorOptions x:Key="TextEditOptions"/>
+        </Grid.Resources>
         <Border Margin="0,0,0,0"
                 BorderThickness="0"
                 Background="Black"
@@ -84,7 +88,7 @@
                                    Background="#272822"
                                    Foreground="#F8F8F2"
                                    HorizontalScrollBarVisibility="Disabled"
-                                   Options="{Binding TextOptions, Mode=TwoWay}" />
+                                   Options="{Binding TextOptions, FallbackValue={StaticResource TextEditOptions}}" />
         </Border>
         <Grid HorizontalAlignment="Stretch"
               Grid.Row="1">
