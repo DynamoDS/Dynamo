@@ -8,7 +8,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel
     {
+        /// <summary>
+        /// The original Python 2 code
+        /// </summary>
         public string OldCode { get; private set; }
+
+        /// <summary>
+        /// The Python code after the migration assistants changes has been applied
+        /// </summary>
         public string NewCode { get; private set; }
 
         private readonly WorkspaceModel workspace;
