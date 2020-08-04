@@ -23,7 +23,7 @@ def refactor_script(source_script, refactoring_tool):
     except ParseError as e:
         if e.msg != 'bad input' or e.value != '=':
             raise
-        tree = refactoring_tool.refactor_string(source_script, self.pathname)
+        tree = refactoring_tool.refactor_string(source_script, 'script')
     return str(tree)[:-1] # remove added newline 
 
      
