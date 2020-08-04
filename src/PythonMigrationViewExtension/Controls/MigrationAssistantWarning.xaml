@@ -77,7 +77,8 @@
                       VerticalAlignment="Center"
                       FontSize="12"
                       Background="White"
-                      IsChecked="False">
+                      IsChecked="False"
+                      Click="DisableIronPythonDialogCheck_Click">
                 <TextBlock Text="{x:Static p:Resources.MigrationAssistantWarningDisable}"
                            Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                            HorizontalAlignment="Stretch"
@@ -95,11 +96,13 @@
             <Button Content="{x:Static p:Resources.MigrationAssistantWarningDecline}"
                     Name="DeclineBtn"
                     Style="{StaticResource STextButton}"
-                    Visibility="Visible" />
-            <Button Content="{x:Static p:Resources.MigrationAssistantWarningAccept}"
+                    Visibility="Visible"
+                    Click="DeclineBtn_Click"/>
+            <Button Content="{x:Static p:Resources.MigrationAssistantWarningContinueButtonContent}"
                     Name="AcceptBtn"
                     Style="{StaticResource STextButton}"
-                    Visibility="Visible" />
+                    Visibility="Visible"
+                    Click="AcceptBtn_Click"/>
         </StackPanel>
     </Grid>
 </Window>

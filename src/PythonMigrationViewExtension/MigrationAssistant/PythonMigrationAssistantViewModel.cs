@@ -5,6 +5,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.PythonMigration.Differ;
 using PythonNodeModels;
+using System;
 using System.IO;
 using System.Windows;
 
@@ -12,6 +13,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel : NotificationObject
     {
+        internal readonly string disableMigrationAssistantWarningFileName = @"Dynamo\MigrationAssistantWarningSetting.txt";
+        internal readonly string localFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         public string OldCode { get; set; }
         public string NewCode { get; set; }
 
@@ -112,5 +115,17 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         }
 
         #endregion
+
+        internal void DisableMigrationAssistanWarning()
+        {
+            var filePath = Path.Combine(localFolder, disableMigrationAssistantWarningFileName);
+
+            var timeStamp = DateTime.Now.ToString();
+            var machineName = Environment.MachineName;
+
+            var file = new FileInfo(filePath);
+            file.Directory.Create();
+            File.WriteAllText(file.FullName, string.Format("{0} {1}", timeStamp, machineName));
+        }
     }
 }

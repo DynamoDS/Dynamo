@@ -98,8 +98,6 @@
     <Compile Include="Controls\MigrationAssistantWarning.xaml.cs">
       <DependentUpon>MigrationAssistantWarning.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\VisualDifferenceViewer.xaml.cs">
-      <DependentUpon>VisualDifferenceViewer.xaml</DependentUpon>
     <Compile Include="Controls\BaseDiffViewer.xaml.cs">
       <DependentUpon>BaseDiffViewer.xaml</DependentUpon>
     </Compile>
@@ -154,7 +152,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\VisualDifferenceViewer.xaml">
     <Page Include="Controls\BaseDiffViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

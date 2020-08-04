@@ -1,4 +1,6 @@
 ﻿using Dynamo.PythonMigration.MigrationAssistant;
+using System;
+using System.IO;
 using System.Windows;
 
 namespace Dynamo.PythonMigration.Controls
@@ -50,6 +52,17 @@ namespace Dynamo.PythonMigration.Controls
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
         {
+            if (!File.Exists(Path.Combine(ViewModel.localFolder, ViewModel.disableMigrationAssistantWarningFileName)))
+            {
+                var warningMessage = new MigrationAssistantWarning(ViewModel);
+                warningMessage.ShowDialog();
+                if (!warningMessage.WarningAccepted)
+                {
+                    this.Close();
+                    return;
+                }
+            }
+
             ViewModel.ChangeCode();
             this.Close();
         }
