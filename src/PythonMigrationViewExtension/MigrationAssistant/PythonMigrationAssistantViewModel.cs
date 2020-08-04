@@ -13,13 +13,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel : NotificationObject
     {
-        internal readonly string disableMigrationAssistantWarningFileName = @"Dynamo\MigrationAssistantWarningSetting.txt";
-        internal readonly string localFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        internal readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
+        internal readonly string localFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
         public string OldCode { get; set; }
         public string NewCode { get; set; }
 
         private readonly WorkspaceModel workspace;
         private readonly string backupDirectory;
+        private readonly Version dynamoVersion;
         private PythonNode PythonNode;
 
         private IDiffViewViewModel currentViewModel;
@@ -31,13 +32,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             set { this.currentViewModel = value; RaisePropertyChanged(nameof(this.CurrentViewModel)); }
         }
 
-        public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager)
+        public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager, Version dynamoVersion)
         {
             this.PythonNode = pythonNode;
             this.OldCode = pythonNode.Script;
 
             this.workspace = workspace;
             this.backupDirectory = pathManager.BackupDirectory;
+            this.dynamoVersion = dynamoVersion;
 
             MigrateCode();
             SetSideBySideViewModel();
@@ -118,7 +120,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         internal void DisableMigrationAssistanWarning()
         {
-            var filePath = Path.Combine(localFolder, disableMigrationAssistantWarningFileName);
+            var filePath = GetMigrationAssistantSettingsFile();
 
             var timeStamp = DateTime.Now.ToString();
             var machineName = Environment.MachineName;
@@ -126,6 +128,16 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             var file = new FileInfo(filePath);
             file.Directory.Create();
             File.WriteAllText(file.FullName, string.Format("{0} {1}", timeStamp, machineName));
+        }
+
+        internal bool MigrationAssistantSettingsFileExists()
+        {
+            return File.Exists(GetMigrationAssistantSettingsFile());
+        }
+
+        private string GetMigrationAssistantSettingsFile()
+        {
+            return Path.Combine(localFolder, dynamoVersion.ToString(), disableMigrationAssistantWarningFileName);
         }
     }
 }

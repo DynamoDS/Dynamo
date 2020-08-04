@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace Dynamo.PythonMigration.Controls
 {
@@ -52,7 +53,7 @@ namespace Dynamo.PythonMigration.Controls
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (!File.Exists(Path.Combine(ViewModel.localFolder, ViewModel.disableMigrationAssistantWarningFileName)))
+            if (!ViewModel.MigrationAssistantSettingsFileExists())
             {
                 var warningMessage = new MigrationAssistantWarning(ViewModel);
                 warningMessage.ShowDialog();
