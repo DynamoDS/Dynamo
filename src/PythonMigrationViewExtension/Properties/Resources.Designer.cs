@@ -70,20 +70,20 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change between Side-by-Side and Inline view..
-        /// </summary>
-        public static string DiffButtonTooltip {
-            get {
-                return ResourceManager.GetString("DiffButtonTooltip", resourceCulture);
-            }
-        }
-
-        /// <summary>
         ///   Looks up a localized string similar to Custom Nodes that have an IronPython2 dependency.
         /// </summary>
         public static string CustomNodesPythonDependencyHeader {
             get {
                 return ResourceManager.GetString("CustomNodesPythonDependencyHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change between Side-by-Side and Inline view..
+        /// </summary>
+        public static string DiffButtonTooltip {
+            get {
+                return ResourceManager.GetString("DiffButtonTooltip", resourceCulture);
             }
         }
         
@@ -116,6 +116,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not show again..
+        /// </summary>
+        public static string IronPythonDisableAlertMessage {
+            get {
+                return ResourceManager.GetString("IronPythonDisableAlertMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This graph currently contains python nodes that are using the old IronPython Engine which will be deprecated in later versions.Consider updating these nodes to use the new CPython 3.7 Engine..
         /// </summary>
         public static string IronPythonNotificationDetailedMessage {
@@ -132,32 +141,31 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("IronPythonNotificationShortMessage", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Do not show again..
-        /// </summary>
-        public static string IronPythonDisableAlertMessage { 
-            get
-            {
-                return ResourceManager.GetString("IronPythonDisableAlertMessage", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to After.
-        /// </summary>
-        public static string PythonMigrationAssistantCodeAfter {
-            get {
-                return ResourceManager.GetString("PythonMigrationAssistantCodeAfter", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
             get {
                 return ResourceManager.GetString("PackagedCustomNodesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please notify the package author to update the package.
+        /// </summary>
+        public static string PackagedCustomNodesTooltip {
+            get {
+                return ResourceManager.GetString("PackagedCustomNodesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to After.
+        /// </summary>
+        public static string PythonMigrationAssistantCodeAfter {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantCodeAfter", resourceCulture);
             }
         }
         
@@ -169,13 +177,22 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("PythonMigrationAssistantCodeBefore", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Please notify the package author to update the package.
+        ///   Looks up a localized string similar to Python2.
         /// </summary>
-        public static string PackagedCustomNodesTooltip {
+        public static string PythonMigrationBackupExtension {
             get {
-                return ResourceManager.GetString("PackagedCustomNodesTooltip", resourceCulture);
+                return ResourceManager.GetString("PythonMigrationBackupExtension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}.
+        /// </summary>
+        public static string PythonMigrationBackupFileCreatedMessage {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupFileCreatedMessage", resourceCulture);
             }
         }
         
@@ -187,7 +204,7 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("RejectButtonTooltip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Double-click on the custom node to open its workspace.
         /// </summary>

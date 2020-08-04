@@ -4,23 +4,26 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Dynamo;
 using Dynamo.Configuration;
-using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PythonMigration;
+using Dynamo.PythonMigration.Controls;
 using Dynamo.Utilities;
+using Dynamo.Views;
 using Dynamo.Wpf.Extensions;
 using DynamoCoreWpfTests.Utility;
-using GraphLayout;
 using NUnit.Framework;
+using PythonNodeModelsWpf;
 
 namespace DynamoCoreWpfTests
 {
     class PythonMigrationViewExtensionTests : DynamoTestUIBase
     {
-        private PythonMigrationViewExtension viewExtension = new PythonMigrationViewExtension();
+        private readonly PythonMigrationViewExtension viewExtension = new PythonMigrationViewExtension();
         private string CoreTestDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "core"); } }
 
         private List<string> raisedEvents = new List<string>();
@@ -255,7 +258,7 @@ namespace DynamoCoreWpfTests
                 as PythonMigrationViewExtension;
 
             // Assert
-            Assert.IsTrue(pythonMigration.PythonDependencies.ContainsIronPythonDependencyInCurrentWS());
+            Assert.IsTrue(pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDependency());
             DispatcherUtil.DoEvents();
         }
 
@@ -328,7 +331,7 @@ namespace DynamoCoreWpfTests
                 .Select(x => x)
                 .First() as PythonMigrationViewExtension;
 
-            var result = pythonMigration.PythonDependencies.ContainsIronPythonDependencyInCurrentWS();
+            var result = pythonMigration.PythonDependencies.CurrentWorkspaceHasIronPythonDependency();
 
             Assert.IsTrue(result);
             DispatcherUtil.DoEvents();
@@ -395,5 +398,47 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(GraphPythonDependencies.PythonPackageVersion, pkgDependencyInfo.Version);
         }
 
+        [Test]
+        public void MigratingPython2CodeWillSaveBackupFile()
+        {
+            // Arrange
+            var dynFileName = "2to3Test.dyn";
+            var dynBackupFileName = "2to3Test.Python2.dyn";
+            DynamoModel.IsTestMode = true;
+
+            var python2dynPath = Path.Combine(UnitTestBase.TestDirectory, @"core\python", dynFileName);
+            var backupFilePath = Path.Combine(Model.PathManager.BackupDirectory, dynBackupFileName);
+            if (File.Exists(backupFilePath))
+                File.Delete(backupFilePath);
+
+            Open(python2dynPath);
+            DispatcherUtil.DoEvents();
+
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsNotNull(currentWs, "DynamoView does not have any WorkspaceView");
+
+            var nodeView = currentWs.ChildOfType<NodeView>();
+
+            var editMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Edit...");
+
+            editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            // Act
+            var scriptEditor = View.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
+            scriptEditor.MigrationAssistantBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            DispatcherUtil.DoEvents();
+            var assistantWindow = scriptEditor.GetChildrenWindowsOfType<VisualDifferenceViewer>().FirstOrDefault();
+            assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+
+            // Assert
+            Assert.That(File.Exists(backupFilePath));
+
+            // Clean up
+            File.Delete(backupFilePath);
+        }
     }
 }
