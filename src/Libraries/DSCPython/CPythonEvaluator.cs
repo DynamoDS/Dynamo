@@ -6,6 +6,7 @@ using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
+using Dynamo.Logging;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -188,7 +189,7 @@ namespace DSCPython
                 {
                     if (globalScope == null)
                     {
-                        globalScope = Py.CreateScope(globalScopeName);
+                        globalScope = CreateGlobalScope();
                     }
                     using (PyScope scope = Py.CreateScope())
                     {
@@ -236,6 +237,20 @@ namespace DSCPython
         }
 
         /// <summary>
+        /// Creates and initializaes the global Python scope.
+        /// </summary>
+        private static PyScope CreateGlobalScope()
+        {
+            var scope = Py.CreateScope(globalScopeName);
+            // Allows discoverability of modules by inspecting their attributes
+            scope.Exec(@"
+import clr
+clr.setPreload(True)
+");
+            return scope;
+        }
+
+        /// <summary>
         /// Processes additional bindings that are not actual inputs.
         /// Currently, only the node name is received in this way.
         /// </summary>
@@ -263,7 +278,7 @@ namespace DSCPython
             if (ExecutionEvents.ActiveSession != null)
             {
                 dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set("DynamoPrint", logFunction.ToPython());
             }
         }

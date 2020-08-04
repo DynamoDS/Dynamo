@@ -290,6 +290,53 @@ OUT = s2, fs2
             }
         }
 
+        /// <summary>
+        /// Tests that the results from doing dir(DSCore) are somewhat equivalent between engines.
+        /// They are known not to be exactly the same. Namely the following differences have been found:
+        /// - Private (double underscore) attributes are different across engines
+        /// - IronPython does not define private attributes for namespaces at all
+        /// - PythonNET includes additional methods to classes (Overloads and Finalize)
+        /// - PythonNET also includes results from assemblies not explicitly added as references (DSCore.File)
+        /// </summary>
+        [Test]
+        public void TestDir()
+        {
+            var code = @"
+import clr
+clr.AddReference('DSCoreNodes')
+import DSCore
+ref = DSCore
+dirAll = []
+dic = {}
+for key in dir(ref) :
+    dir_str = getattr(ref, key)
+    dirAll.append(dir(dir_str))
+    for value in dirAll :
+        dic[key] = value
+OUT = dic
+";
+            var empty = new ArrayList();
+            foreach (var pythonEvaluator in Evaluators)
+            {
+                var result = pythonEvaluator(code, empty, empty);
+                Assert.IsTrue(result is IDictionary);
+                var dsCore = result as IDictionary;
+                // Assertions for a Class
+                CollectionAssert.Contains(dsCore.Keys, "Color", "public class not found");
+                Assert.IsTrue(dsCore["Color"] is IList);
+                var color = dsCore["Color"] as IList;
+                CollectionAssert.Contains(color, "ByARGB", "public static method not found");
+                CollectionAssert.Contains(color, "Equals", "public instance method not found");
+                CollectionAssert.Contains(color, "Alpha", "public property not found");
+                CollectionAssert.Contains(color, "IndexedColor1D", "nested class not found");
+                // Assertions for a Namespace
+                CollectionAssert.Contains(dsCore.Keys, "IO", "nested namespace not found");
+                Assert.IsTrue(dsCore["IO"] is IList);
+                var dsCoreIO = dsCore["IO"] as IList;
+                CollectionAssert.Contains(dsCoreIO, "Image", "class in nested namespace not found");
+            }
+        }
+
         private void DictionaryAssert(IDictionary expected, IDictionary actual)
         {
             Assert.AreEqual(expected.Count, actual.Count);

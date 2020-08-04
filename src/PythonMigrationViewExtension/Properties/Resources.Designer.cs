@@ -243,6 +243,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}.
+        /// </summary>
+        public static string PythonMigrationBackupFileCreatedMessage {
+            get {
+                return ResourceManager.GetString("PythonMigrationBackupFileCreatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reject the current code changes..
         /// </summary>
         public static string RejectButtonTooltip {
