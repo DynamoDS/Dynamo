@@ -8,8 +8,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel
     {
-        public string OldCode { get; set; }
-        public string NewCode { get; set; }
+        public string OldCode { get; private set; }
+        public string NewCode { get; private set; }
 
         private readonly WorkspaceModel workspace;
         private readonly string backupDirectory;
@@ -26,15 +26,18 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             MigrateCode();
         }
 
-        private void MigrateCode()
-        {
-            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
-        }
-
+        /// <summary>
+        /// Replaces the code in the Pyton node with the code changes made by the Migration Assistant.
+        /// </summary>
         public void ChangeCode()
         {
             SavePythonMigrationBackup();
             this.PythonNode.MigrateCode(this.NewCode);
+        }
+
+        private void MigrateCode()
+        {
+            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
         }
 
         private void SavePythonMigrationBackup()
@@ -47,8 +50,11 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.workspace.Save(path, true);
 
             // notify user a backup file has been created
-            var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-            MessageBox.Show(message);
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
+                MessageBox.Show(message);
+            }
         }
 
         private string GetPythonMigrationBackupPath()

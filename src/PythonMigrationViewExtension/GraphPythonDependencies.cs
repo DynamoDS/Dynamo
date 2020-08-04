@@ -15,7 +15,7 @@ namespace Dynamo.PythonMigration
     {
         internal static readonly string PythonPackage = "DSIronPython_Test";
         internal static readonly Version PythonPackageVersion = new Version(1, 0, 8);
-        private readonly IWorkspaceModel workspace;
+        private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
 
         /// <summary>
@@ -35,6 +35,11 @@ namespace Dynamo.PythonMigration
         {
             this.workspace = workspaceModel;
             this.customNodeManager = customNodeManager;
+        }
+
+        internal void UpdateWorkspace(IWorkspaceModel workspaceModel)
+        {
+            this.workspace = workspaceModel;
         }
 
         private static bool IsIronPythonPackageLoaded()
@@ -97,7 +102,7 @@ namespace Dynamo.PythonMigration
         /// <summary>
         /// This recursive function returns true if any of the custom nodes in the input list has an IronPython dependency.
         /// Any custom nodes in the input list traversed during evalution have their dependencies cached in <see cref="CustomNodePythonDependencyMap"/>.
-        /// Custom odes are found to depend on IronPython if the parent custom node or any of its child custom nodes contain an IronPython dependency.
+        /// Custom nodes are found to depend on IronPython if the parent custom node or any of its child custom nodes contain an IronPython dependency.
         /// </summary>
         /// <param name="customNodes">The custom nodes to evaluate.</param>
         /// <param name="customNodeManager">The custom node manager.</param>
