@@ -1,15 +1,16 @@
 ﻿<Window x:Class="Dynamo.PythonMigration.Controls.MigrationAssistantWarning"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
         xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties;assembly=PythonMigrationViewExtension"
         xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
-             mc:Ignorable="d" 
-        Width="600" SizeToContent="Height"
-             d:DesignHeight="450" d:DesignWidth="800"
-        Title="Migration Assistant Warning" ResizeMode="NoResize">
+        Width="660"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        mc:Ignorable="d"
+        Title="Migration Assistant Warning">
 
     <Window.Resources>
         <ResourceDictionary>
@@ -20,20 +21,31 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    
+
     <Grid Background="#444444">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="44" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
+
+        <Image Name="DialogIcon"
+               Width="100"
+               Height="35"
+               Margin="15,60,15,0"
+               VerticalAlignment="Top"
+               HorizontalAlignment="Center"
+               Source="/DynamoCoreWpf;component/UI/Images/python-logo.png"
+               Grid.Column="0">
+        </Image>
+
         <StackPanel Margin="15,25,15,25"
                     Grid.Row="0"
-                    Grid.ColumnSpan="2">
-            
+                    Grid.Column="1">
+
             <TextBlock Name="SummaryText"
                        Text="{x:Static p:Resources.MigrationAssistantWarningHeader}"
                        FontSize="16"
@@ -42,7 +54,7 @@
                        TextWrapping="Wrap"
                        Margin="0,0,0,5">
             </TextBlock>
-            
+
             <TextBlock Name="DescriptionText"
                        Text="{x:Static p:Resources.MigrationAssistantWarningMessage}"
                        FontSize="13"
@@ -58,16 +70,19 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="15,0,10,10">
-            <CheckBox x:Name="DisableMigrationAssistantCheck"
+            <CheckBox x:Name="DisableIronPythonDialogCheck"
                       Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       VerticalAlignment="Center"
                       FontSize="12"
                       Background="White"
-                      IsChecked="False"
-                      Content="{x:Static p:Resources.MigrationAssistantWarningDisable}"
-                      Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}">
+                      IsChecked="False">
+                <TextBlock Text="{x:Static p:Resources.MigrationAssistantWarningDisable}"
+                           Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                           HorizontalAlignment="Stretch"
+                           TextWrapping="Wrap"
+                           Name="IronPythonDisableAlertTextBlock" />
             </CheckBox>
         </StackPanel>
 
@@ -77,8 +92,12 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="10,0,10,10">
-            <Button Content="{x:Static p:Resources.MigrationAssistantWarningContinueButtonContent}"
-                    Name="ContinueButton"
+            <Button Content="{x:Static p:Resources.MigrationAssistantWarningDecline}"
+                    Name="DeclineBtn"
+                    Style="{StaticResource STextButton}"
+                    Visibility="Visible" />
+            <Button Content="{x:Static p:Resources.MigrationAssistantWarningAccept}"
+                    Name="AcceptBtn"
                     Style="{StaticResource STextButton}"
                     Visibility="Visible" />
         </StackPanel>

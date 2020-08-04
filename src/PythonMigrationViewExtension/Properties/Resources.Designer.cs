@@ -143,11 +143,29 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accept.
+        /// </summary>
+        public static string MigrationAssistantWarningAccept {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningAccept", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         public static string MigrationAssistantWarningContinueButtonContent {
             get {
                 return ResourceManager.GetString("MigrationAssistantWarningContinueButtonContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline.
+        /// </summary>
+        public static string MigrationAssistantWarningDecline {
+            get {
+                return ResourceManager.GetString("MigrationAssistantWarningDecline", resourceCulture);
             }
         }
         
