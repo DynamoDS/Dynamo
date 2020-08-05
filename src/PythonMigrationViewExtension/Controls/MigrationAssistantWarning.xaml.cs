@@ -7,7 +7,7 @@ namespace Dynamo.PythonMigration.Controls
     /// <summary>
     /// Interaction logic for MigrationAssistantWarning.xaml
     /// </summary>
-    public partial class MigrationAssistantWarning : Window
+    internal partial class MigrationAssistantWarning : Window
     {
         internal bool WarningAccepted { get; private set; }
         private PythonMigrationAssistantViewModel ViewModel { get; set; }

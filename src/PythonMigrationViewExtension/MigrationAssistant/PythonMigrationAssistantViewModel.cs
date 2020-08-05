@@ -13,8 +13,8 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel : NotificationObject
     {
-        internal readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
-        internal readonly string localFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
+        private readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
+        private readonly string warningDismissPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
         public string OldCode { get; set; }
         public string NewCode { get; set; }
 
@@ -137,7 +137,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         private string GetMigrationAssistantSettingsFile()
         {
-            return Path.Combine(localFolder, dynamoVersion.ToString(), disableMigrationAssistantWarningFileName);
+            return Path.Combine(warningDismissPath, dynamoVersion.ToString(), disableMigrationAssistantWarningFileName);
         }
     }
 }
