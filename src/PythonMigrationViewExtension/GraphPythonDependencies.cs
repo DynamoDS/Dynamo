@@ -9,7 +9,7 @@ using System.Linq;
 namespace Dynamo.PythonMigration
 {
     /// <summary>
-    /// Class that helps with determining if a graph has specific Python dependecies and identifying them.
+    /// Class that helps with determining if a graph has specific Python dependencies and identifying them.
     /// </summary>
     public class GraphPythonDependencies
     {
@@ -56,7 +56,7 @@ namespace Dynamo.PythonMigration
         /// <summary>
         /// Determines if the current workspace has any dependencies on IronPython engine.
         /// </summary>
-        /// <returns>True if depencies are found, false otherwise.</returns>
+        /// <returns>True if dependencies are found, false otherwise.</returns>
         internal bool CurrentWorkspaceHasIronPythonDependency()
         {
             var hasIronPythonDependency = false;
@@ -76,7 +76,7 @@ namespace Dynamo.PythonMigration
         /// <summary>
         /// Determines if the current workspace has any dependencies on CPython engine.
         /// </summary>
-        /// <returns>True if depencies are found, false otherwise.</returns>
+        /// <returns>True if dependencies are found, false otherwise.</returns>
         internal bool CurrentWorkspaceHasCPythonDependencies()
         {
             if (this.workspace == null)
@@ -101,12 +101,12 @@ namespace Dynamo.PythonMigration
 
         /// <summary>
         /// This recursive function returns true if any of the custom nodes in the input list has an IronPython dependency.
-        /// Any custom nodes in the input list traversed during evalution have their dependencies cached in <see cref="CustomNodePythonDependencyMap"/>.
+        /// Any custom nodes in the input list traversed during evaluation have their dependencies cached in <see cref="CustomNodePythonDependencyMap"/>.
         /// Custom nodes are found to depend on IronPython if the parent custom node or any of its child custom nodes contain an IronPython dependency.
         /// </summary>
         /// <param name="customNodes">The custom nodes to evaluate.</param>
         /// <param name="customNodeManager">The custom node manager.</param>
-        /// <returns>True if any IronPython depencies are found, false otherwise.</returns>
+        /// <returns>True if any IronPython dependencies are found, false otherwise.</returns>
         private static bool CustomNodesHaveIronPythonDependency(IEnumerable<Function> customNodes, ICustomNodeManager customNodeManager)
         {
             var hasIronPythonDependency = false;

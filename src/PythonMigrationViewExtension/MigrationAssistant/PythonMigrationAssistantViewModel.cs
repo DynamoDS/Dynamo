@@ -1,12 +1,16 @@
-﻿using Dynamo.Graph.Workspaces;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
+using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.PythonMigration.Differ;
 using PythonNodeModels;
 using System.IO;
 using System.Windows;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
-    internal class PythonMigrationAssistantViewModel
+    internal class PythonMigrationAssistantViewModel : NotificationObject
     {
         /// <summary>
         /// The original Python 2 code
@@ -22,6 +26,15 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         private readonly string backupDirectory;
         private PythonNode PythonNode;
 
+        private IDiffViewViewModel currentViewModel;
+        private SideBySideDiffModel diffModel;
+
+        public IDiffViewViewModel CurrentViewModel
+        {
+            get { return this.currentViewModel; }
+            set { this.currentViewModel = value; RaisePropertyChanged(nameof(this.CurrentViewModel)); }
+        }
+
         public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager)
         {
             this.PythonNode = pythonNode;
@@ -31,10 +44,21 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.backupDirectory = pathManager.BackupDirectory;
 
             MigrateCode();
+            SetSideBySideViewModel();
+        }
+
+        #region Code migration
+
+        private void MigrateCode()
+        {
+            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
+
+            var sidebyside = new SideBySideDiffBuilder();
+            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
         }
 
         /// <summary>
-        /// Replaces the code in the Pyton node with the code changes made by the Migration Assistant.
+        /// Replaces the code in the Python node with the code changes made by the Migration Assistant.
         /// </summary>
         public void ChangeCode()
         {
@@ -42,10 +66,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.PythonNode.MigrateCode(this.NewCode);
         }
 
-        private void MigrateCode()
-        {
-            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
-        }
+        #endregion
+
+        #region Backup
 
         private void SavePythonMigrationBackup()
         {
@@ -71,5 +94,36 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
             return Path.Combine(this.backupDirectory, fileName);
         }
+
+        #endregion
+
+        #region View mode
+
+        internal void ChangeViewModel(ViewMode viewMode)
+        {
+            switch (viewMode)
+            {
+                case ViewMode.Inline:
+                    SetInlineViewModel();
+                    break;
+                case ViewMode.SideBySide:
+                    SetSideBySideViewModel();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetSideBySideViewModel()
+        {
+            this.CurrentViewModel = new SideBySideViewModel(this.diffModel);
+        }
+
+        private void SetInlineViewModel()
+        {
+            this.CurrentViewModel = new InLineViewModel(this.diffModel);
+        }
+
+        #endregion
     }
 }
