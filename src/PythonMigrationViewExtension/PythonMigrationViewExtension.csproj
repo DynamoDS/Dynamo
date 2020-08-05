@@ -149,8 +149,17 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\MigrationAssistantWarning.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Controls\BaseDiffViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\InLineControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SideBySideControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\BaseDiffViewer.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -187,7 +187,7 @@ namespace Dynamo.PythonMigration.Properties {
                 return ResourceManager.GetString("MigrationAssistantWarningMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>

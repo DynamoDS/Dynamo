@@ -1676,7 +1676,7 @@ namespace Dynamo.Graph.Workspaces
 
             var retrievedModels = GetModelsInternal(modelGuids);
             if (!retrievedModels.Any())
-                throw new InvalidOperationException("UpdateModelValue: Model not found");
+                throw new InvalidOperationException(Resources.ModelNotFoundError);
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
             using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))

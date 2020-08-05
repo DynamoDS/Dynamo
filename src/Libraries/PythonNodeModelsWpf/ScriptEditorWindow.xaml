@@ -125,10 +125,6 @@
                                Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
                     </Button.Resources>
                 </Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1">
                 <Button Style="{StaticResource IconButton}"
                         Name="MoreInfoButton"
                         Click="OnMoreInfoClicked"
@@ -139,6 +135,10 @@
                                          Icon="QuestionCircleOutline" />
                     </Button.Resources>
                 </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
                 <Button Style="{StaticResource IconButton}"
                         Name="SaveScriptChangesButton"
                         Click="OnSaveClicked"

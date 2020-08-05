@@ -41,7 +41,7 @@
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="8,8,8,0">
-            <views:RichTextFile x:Name="GoogleAnalyticsContent"
+            <views:RichTextFile x:Name="GoogleAnalyticsConsent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"
@@ -58,7 +58,7 @@
                       Grid.ColumnSpan="2"
                       HorizontalScrollBarVisibility="Disabled"
                       Margin="8,8,8,0">
-            <views:RichTextFile x:Name="InstrumentationContent"
+            <views:RichTextFile x:Name="ADPAnalyticsConsent"
                                 IsReadOnly="True"
                                 IsEnabled="True"
                                 IsDocumentEnabled="True"

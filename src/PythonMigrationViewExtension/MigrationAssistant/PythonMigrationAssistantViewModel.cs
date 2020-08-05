@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows;
 using DiffPlex.DiffBuilder;
@@ -16,9 +16,6 @@ namespace Dynamo.PythonMigration.MigrationAssistant
     {
         private readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
         private readonly string warningDismissPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
-        public string OldCode { get; set; }
-        public string NewCode { get; set; }
-
         private readonly WorkspaceModel workspace;
         private readonly string backupDirectory;
         private readonly Version dynamoVersion;
@@ -26,6 +23,16 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         private IDiffViewViewModel currentViewModel;
         private SideBySideDiffModel diffModel;
+
+        /// <summary>
+        /// The original Python 2 code
+        /// </summary>
+        public string OldCode { get; private set; }
+
+        /// <summary>
+        /// The Python code after the migration assistants changes has been applied
+        /// </summary>
+        public string NewCode { get; private set; }
 
         public IDiffViewViewModel CurrentViewModel
         {
@@ -84,8 +91,11 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.workspace.Save(path, true);
 
             // notify user a backup file has been created
-            var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-            MessageBox.Show(message);
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
+                MessageBox.Show(message);
+            }
         }
 
         private string GetPythonMigrationBackupPath()
