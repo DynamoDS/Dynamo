@@ -53,17 +53,6 @@ namespace Dynamo.PythonMigration.Controls
 
         private void OnAcceptButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (!ViewModel.MigrationAssistantSettingsFileExists())
-            {
-                var warningMessage = new MigrationAssistantWarning(ViewModel);
-                warningMessage.ShowDialog();
-                if (!warningMessage.WarningAccepted)
-                {
-                    this.Close();
-                    return;
-                }
-            }
-
             ViewModel.ChangeCode();
             this.Close();
         }

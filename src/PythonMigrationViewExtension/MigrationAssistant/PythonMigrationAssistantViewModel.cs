@@ -6,6 +6,7 @@ using DiffPlex.DiffBuilder.Model;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.Differ;
 using PythonNodeModels;
 
@@ -57,6 +58,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         public void ChangeCode()
         {
+            if (!File.Exists(GetMigrationAssistantSettingsFile()))
+            {
+                var warningMessage = new MigrationAssistantWarning(this);
+                warningMessage.ShowDialog();
+                if (!warningMessage.WarningAccepted)
+                    return;
+            }
+
             SavePythonMigrationBackup();
             this.PythonNode.MigrateCode(this.NewCode);
         }
@@ -128,11 +137,6 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             var file = new FileInfo(filePath);
             file.Directory.Create();
             File.WriteAllText(file.FullName, string.Format("{0} {1}", timeStamp, machineName));
-        }
-
-        internal bool MigrationAssistantSettingsFileExists()
-        {
-            return File.Exists(GetMigrationAssistantSettingsFile());
         }
 
         private string GetMigrationAssistantSettingsFile()
