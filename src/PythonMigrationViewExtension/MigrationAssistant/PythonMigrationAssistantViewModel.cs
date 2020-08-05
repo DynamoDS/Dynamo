@@ -63,6 +63,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
         }
 
+        /// <summary>
+        /// Replaces the code in the Python node with the code changes made by the Migration Assistant.
+        /// </summary>
         public void ChangeCode()
         {
             if (!File.Exists(GetMigrationAssistantSettingsFile()))
