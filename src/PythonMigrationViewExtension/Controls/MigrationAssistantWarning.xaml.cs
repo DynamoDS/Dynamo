@@ -27,12 +27,10 @@ namespace Dynamo.PythonMigration.Controls
         private void AcceptBtn_Click(object sender, RoutedEventArgs e)
         {
             WarningAccepted = true;
-            this.Close();
-        }
+            if (DisableMigrationAssitantWarningDialogCheck.IsChecked ?? false)
+                ViewModel.DisableMigrationAssistanWarning();
 
-        private void DisableIronPythonDialogCheck_Click(object sender, RoutedEventArgs e)
-        {
-            ViewModel.DisableMigrationAssistanWarning();
+            this.Close();
         }
     }
 }

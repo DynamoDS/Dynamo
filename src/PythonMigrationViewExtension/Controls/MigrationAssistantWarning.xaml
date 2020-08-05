@@ -1,4 +1,5 @@
 ﻿<Window x:Class="Dynamo.PythonMigration.Controls.MigrationAssistantWarning"
+        x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -70,15 +71,14 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="15,0,10,10">
-            <CheckBox x:Name="DisableIronPythonDialogCheck"
+            <CheckBox x:Name="DisableMigrationAssitantWarningDialogCheck"
                       Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
                       VerticalAlignment="Center"
                       FontSize="12"
                       Background="White"
-                      IsChecked="False"
-                      Click="DisableIronPythonDialogCheck_Click">
+                      IsChecked="False">
                 <TextBlock Text="{x:Static p:Resources.MigrationAssistantWarningDisable}"
                            Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                            HorizontalAlignment="Stretch"
