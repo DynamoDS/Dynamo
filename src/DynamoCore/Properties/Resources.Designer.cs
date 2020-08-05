@@ -70,6 +70,16 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Value cannot be null.
+        ///Parameter name: {0}.
+        /// </summary>
+        public static string ArgumentNullException {
+            get {
+                return ResourceManager.GetString("ArgumentNullException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -428,6 +438,15 @@ namespace Dynamo.Properties {
         public static string DummyNodeDescription {
             get {
                 return ResourceManager.GetString("DummyNodeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}.
+        /// </summary>
+        public static string DuplicatedModelGuidError {
+            get {
+                return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
             }
         }
         
@@ -907,6 +926,15 @@ namespace Dynamo.Properties {
         public static string MissingXmlTagConsoleMessage {
             get {
                 return ResourceManager.GetString("MissingXmlTagConsoleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UpdateModelValue: Model not found.
+        /// </summary>
+        public static string ModelNotFoundError {
+            get {
+                return ResourceManager.GetString("ModelNotFoundError", resourceCulture);
             }
         }
         
@@ -1661,7 +1689,7 @@ namespace Dynamo.Properties {
         ///   Looks up a localized string similar to Uh oh...
         /// We&apos;re sorry - we tried to save your decisions, but something went wrong. The decision probably hasn&apos;t been saved. This really shouldn&apos;t have happened. Please get in touch via GitHub and send us this information.
         ///You can also try deleting [FILEPATH] and trying again.
-        ///Depending on your previous choice, instrumentation may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.
+        ///Depending on your previous choice, analytics may still be running, if you&apos;re worried about this, please consider not using Dynamo until we&apos;ve got back to you to solve the problem.
         ///Sorry about that..
         /// </summary>
         public static string UsageReportingErrorMessage {

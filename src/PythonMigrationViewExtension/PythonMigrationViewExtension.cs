@@ -121,13 +121,20 @@ namespace Dynamo.PythonMigration
             var parentWindow = Window.GetWindow(btn);
 
             var node = sender as PythonNode;
-            var viewModel = new PythonMigrationAssistantViewModel(node, DynamoViewModel.CurrentSpace, DynamoViewModel.Model.PathManager);
+            var viewModel = new PythonMigrationAssistantViewModel(node, LoadedParams.CurrentWorkspaceModel as WorkspaceModel, LoadedParams.StartupParams.PathManager);
             var assistantWindow = new BaseDiffViewer(viewModel)
             {
                 Owner = parentWindow
             };
 
             // show modal window so user cant interact with dynamo while migration assistant is open
+            // if running in test mode, show modeless window show the test doesn't hang when opening the assistant window.
+            if (Models.DynamoModel.IsTestMode)
+            {
+                assistantWindow.Show();
+                return;
+            }
+                
             assistantWindow.ShowDialog();
         }
 
@@ -183,6 +190,7 @@ namespace Dynamo.PythonMigration
             {
                 UnSubscribeWorkspaceEvents();
                 CurrentWorkspace = workspace as WorkspaceModel;
+                PythonDependencies.UpdateWorkspace(CurrentWorkspace);
                 SubscribeToWorkspaceEvents();
 
                 NotificationTracker.Remove(CurrentWorkspace.Guid);

@@ -16,6 +16,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
 using Dynamo.Library;
 using Dynamo.Logging;
+using Dynamo.Properties;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -1141,8 +1142,7 @@ namespace Dynamo.Graph.Workspaces
         {
             if (modelMap.ContainsKey(oldId))
             {
-                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized: "+oldId);
+                throw new InvalidOperationException(string.Format(Resources.DuplicatedModelGuidError, oldId));
             }
             modelMap.Add(oldId, newObject);
         }
@@ -1152,8 +1152,7 @@ namespace Dynamo.Graph.Workspaces
             Guid id = new Guid(reference);
             if (models.ContainsKey(id))
             {
-                throw new InvalidOperationException(@"the map already contains a model with this id, the id must
-                    be unique for the workspace that is currently being deserialized :"+id);
+                throw new InvalidOperationException(string.Format(Resources.DuplicatedModelGuidError, id));
             }
             models[id] = value;
         }

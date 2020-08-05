@@ -1,4 +1,4 @@
-﻿using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
@@ -12,8 +12,15 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 {
     internal class PythonMigrationAssistantViewModel : NotificationObject
     {
-        public string OldCode { get; set; }
-        public string NewCode { get; set; }
+        /// <summary>
+        /// The original Python 2 code
+        /// </summary>
+        public string OldCode { get; private set; }
+
+        /// <summary>
+        /// The Python code after the migration assistants changes has been applied
+        /// </summary>
+        public string NewCode { get; private set; }
 
         private readonly WorkspaceModel workspace;
         private readonly string backupDirectory;
@@ -50,6 +57,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
         }
 
+        /// <summary>
+        /// Replaces the code in the Python node with the code changes made by the Migration Assistant.
+        /// </summary>
         public void ChangeCode()
         {
             SavePythonMigrationBackup();
@@ -70,8 +80,11 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.workspace.Save(path, true);
 
             // notify user a backup file has been created
-            var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
-            MessageBox.Show(message);
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                var message = string.Format(Properties.Resources.PythonMigrationBackupFileCreatedMessage, path);
+                MessageBox.Show(message);
+            }
         }
 
         private string GetPythonMigrationBackupPath()
