@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -48,7 +49,8 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
+
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
             // Restart banner should not display by default
@@ -67,10 +69,9 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
-            var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
@@ -160,7 +161,7 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var homeWorkspaceModel = ViewModel.Model.Workspaces.OfType<HomeWorkspaceModel>().FirstOrDefault();
 
@@ -185,7 +186,7 @@ namespace DynamoCoreWpfTests
 
             var loadedParams = new ViewLoadedParams(View, ViewModel);
             viewExtension.pmExtension = this.Model.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
-            viewExtension.DependencyView = new WorkspaceDependencyView(viewExtension, loadedParams);
+            viewExtension.Loaded(loadedParams);
 
             var CurrentWorkspace = ViewModel.Model.CurrentWorkspace;
             var info = CurrentWorkspace.NodeLibraryDependencies.Find(x => x.Name == "Dynamo Samples");
@@ -236,17 +237,27 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("Workspace References", viewExtension.Name);
 
             Assert.AreEqual("A6706BF5-11C2-458F-B7C8-B745A77EF7FD", viewExtension.UniqueId);
-
         }
 
-        public static void RaiseLoadedEvent(FrameworkElement element)
+        [Test]
+        public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
         {
-            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
-                BindingFlags.Instance | BindingFlags.NonPublic);
+            List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
+            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
+            DynamoModel.IsTestMode = false;
 
-            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
+            var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");
+            Open(examplePath);
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
 
-            eventMethod.Invoke(element, new object[] { args });
+            var workspaceViewExtension = (WorkspaceDependencyViewExtension) View.viewExtensionManager.ViewExtensions
+                                                                                .Where(x => x.Name.Equals("Workspace References")).FirstOrDefault();
+
+            foreach (PackageDependencyRow packageDependencyRow in workspaceViewExtension.DependencyView.dataRows) 
+            {
+                var dependencyInfo = packageDependencyRow.DependencyInfo;
+                Assert.Contains(dependencyInfo.Name, dependenciesList);
+            }
         }
     }
 }

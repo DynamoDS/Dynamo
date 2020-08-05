@@ -83,7 +83,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreTests", "..\test\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoCoreWpfTests", "..\test\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj", "{7DD8077A-201E-4C56-96C5-3C901A51BDF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPythonTests", "..\test\Libraries\DynamoPythonTests\IronPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamoPythonTests", "..\test\Libraries\DynamoPythonTests\DynamoPythonTests.csproj", "{773988FE-EDF6-45CB-A63F-482955EB3553}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSIronPython", "Libraries\DSIronPython\DSIronPython.csproj", "{9EEF4F42-6B3B-4358-9A8A-C2701539A822}"
 	ProjectSection(ProjectDependencies) = postProject

@@ -1,0 +1,226 @@
+{
+  "Uuid": "b5a40826-2443-4d78-860c-435623d4c62b",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "cpythoncustomclass_modified",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\nclass myClass:\r\n\tdef __init__(self,name):\r\n\t\tself.name = name\r\n\t\r\n\tdef newName(self,x):\r\n\t\treturn self.name+x\t\r\n\t\r\n\r\nOUT = myClass(\"mike\")",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "171dd90290b04238851e4d0bc3a822f7",
+      "Inputs": [
+        {
+          "Id": "402e13f0a17f456ca90d3ef8fca74b8a",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "666a86477ccb4451b1e3c177711265f7",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ntest = IN[0]\r\n\r\n# Place your code below this line\r\ntest.name = IN[1]\r\n# Assign your output to the OUT variable.\r\nOUT = test",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "da61b52e2ffc46cc81d46870578cb118",
+      "Inputs": [
+        {
+          "Id": "38a60a614a70477bbba8595f1876c6ce",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "198c4dfc984347e3b4a87ea775714c74",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7f6adcaf0b38477cb6230c92e7e9bffa",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ninstance = IN[0]\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = instance.name",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "b1e0b9744ae443b7b93ae6adeec48eae",
+      "Inputs": [
+        {
+          "Id": "6248269f872347ff8857daef50bfbaf9",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ee2269469a9c481fa102a6ba91ecd2a1",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"joe\";",
+      "Id": "c99c729391774050ac89af0ed68bb271",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6b9b83a7c2e84d19906655bb97a74431",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "666a86477ccb4451b1e3c177711265f7",
+      "End": "38a60a614a70477bbba8595f1876c6ce",
+      "Id": "7e9671ed10e447eb8d9ef6eb375fe5b2"
+    },
+    {
+      "Start": "7f6adcaf0b38477cb6230c92e7e9bffa",
+      "End": "6248269f872347ff8857daef50bfbaf9",
+      "Id": "ca9b97e744af45d894da1a72a460f92f"
+    },
+    {
+      "Start": "6b9b83a7c2e84d19906655bb97a74431",
+      "End": "198c4dfc984347e3b4a87ea775714c74",
+      "Id": "624329088d8d431a8f551696b90d3333"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.8.0.1915",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "classdef",
+        "Id": "171dd90290b04238851e4d0bc3a822f7",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 196.50088738835802,
+        "Y": 296.36054542349081
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "downstream1",
+        "Id": "da61b52e2ffc46cc81d46870578cb118",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 445.14744948384538,
+        "Y": 301.91171143402107
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "downstream2",
+        "Id": "b1e0b9744ae443b7b93ae6adeec48eae",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 691.29429521992984,
+        "Y": 301.94234845153608
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "c99c729391774050ac89af0ed68bb271",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 227.94234845153596,
+        "Y": 425.29369147216875
+      }
+    ],
+    "Annotations": [],
+    "X": -73.562557333833865,
+    "Y": -30.907560227417491,
+    "Zoom": 0.97141181463691251
+  }
+}

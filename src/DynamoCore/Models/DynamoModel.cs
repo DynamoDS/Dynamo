@@ -366,7 +366,7 @@ namespace Dynamo.Models
                 var old = currentWorkspace;
                 currentWorkspace = value;
                 OnWorkspaceHidden(old);
-                OnPropertyChanged("CurrentWorkspace");
+                OnPropertyChanged(nameof(CurrentWorkspace));
             }
         }
 
@@ -628,11 +628,10 @@ namespace Dynamo.Models
             {
                 // Do nothing for now
             }
-            // If user skipped analytics from assembly configuration, do not try to launch the client at all 
-            // Skip call to instrumentation logger initialization.
+            // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {
-                InitializeInstrumentationLogger();
+                InitializeAnalyticsService();
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -1324,7 +1323,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void InitializeInstrumentationLogger()
+        private void InitializeAnalyticsService()
         {
             if (!IsTestMode && !IsHeadless)
             {

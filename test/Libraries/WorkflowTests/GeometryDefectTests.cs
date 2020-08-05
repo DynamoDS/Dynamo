@@ -590,6 +590,27 @@ namespace Dynamo.Tests
                 Assert.IsTrue((bool)x);
             }
         }
+
+        [Test]
+        public void TestSweepAsSolid()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\WorkflowTestFiles\GeometryDefects\SweepAsSolid\sweep as solid failure_nurbs.dyn");
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check the number of nodes and connectors
+            Assert.AreEqual(75, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            Assert.AreEqual(55, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            // check Curve.SweepAsSolid
+            var solid1 = "df601349-3c41-4223-8c4d-e9fa043d1663";
+            var obj = GetPreviewValue(solid1);
+            Assert.IsTrue(obj is Solid);
+
+            AssertPreviewValue("7b4c927a-685e-43dc-8f43-527e21d59786", 2.5531);
+        }
+
         #region Test Node Changes
         [Test]
         public void TestNodeChange_BoundingBox_ByGeometry()
@@ -674,6 +695,7 @@ namespace Dynamo.Tests
             Assert.NotNull(GetPreviewValue("5b5c0108-5e74-4ff1-a435-cf86c219ae73"));
         }
         #endregion
+
         #region Helper Methods
         private static void ShouldBeApproximate(double x, double y, double epsilon = Epsilon)
         {
