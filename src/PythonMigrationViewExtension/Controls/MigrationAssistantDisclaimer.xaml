@@ -1,4 +1,4 @@
-﻿<Window x:Class="Dynamo.PythonMigration.Controls.MigrationAssistantWarning"
+﻿<Window x:Class="Dynamo.PythonMigration.Controls.MigrationAssistantDisclaimer"
         x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,6 +11,7 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="Migration Assistant Warning">
 
     <Window.Resources>
@@ -48,7 +49,7 @@
                     Grid.Column="1">
 
             <TextBlock Name="SummaryText"
-                       Text="{x:Static p:Resources.MigrationAssistantWarningHeader}"
+                       Text="{x:Static p:Resources.MigrationAssistantDisclaimerHeader}"
                        FontSize="16"
                        Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                        HorizontalAlignment="Stretch"
@@ -57,7 +58,7 @@
             </TextBlock>
 
             <TextBlock Name="DescriptionText"
-                       Text="{x:Static p:Resources.MigrationAssistantWarningMessage}"
+                       Text="{x:Static p:Resources.MigrationAssistantDisclaimerMessage}"
                        FontSize="13"
                        Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                        HorizontalAlignment="Stretch"
@@ -71,7 +72,7 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="15,0,10,10">
-            <CheckBox x:Name="DisableMigrationAssitantWarningDialogCheck"
+            <CheckBox x:Name="DisableMigrationAssitantDisclaimerDialogCheck"
                       Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"
@@ -79,7 +80,7 @@
                       FontSize="12"
                       Background="White"
                       IsChecked="False">
-                <TextBlock Text="{x:Static p:Resources.MigrationAssistantWarningDisable}"
+                <TextBlock Text="{x:Static p:Resources.MigrationAssistantDisclaimerDisable}"
                            Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                            HorizontalAlignment="Stretch"
                            TextWrapping="Wrap"
@@ -93,16 +94,16 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Margin="10,0,10,10">
-            <Button Content="{x:Static p:Resources.MigrationAssistantWarningDecline}"
-                    Name="DeclineBtn"
-                    Style="{StaticResource STextButton}"
-                    Visibility="Visible"
-                    Click="DeclineBtn_Click"/>
-            <Button Content="{x:Static p:Resources.MigrationAssistantWarningContinueButtonContent}"
+            <Button Content="{x:Static p:Resources.MigrationAssistantDisclaimerContinueButtonContent}"
                     Name="AcceptBtn"
                     Style="{StaticResource STextButton}"
                     Visibility="Visible"
-                    Click="AcceptBtn_Click"/>
+                    Click="AcceptBtn_Click" />
+            <Button Content="{x:Static p:Resources.MigrationAssistantDisclaimerDecline}"
+                    Name="DeclineBtn"
+                    Style="{StaticResource STextButton}"
+                    Visibility="Visible"
+                    Click="DeclineBtn_Click" />
         </StackPanel>
     </Grid>
 </Window>

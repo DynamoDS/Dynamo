@@ -7,12 +7,12 @@ namespace Dynamo.PythonMigration.Controls
     /// <summary>
     /// Interaction logic for MigrationAssistantWarning.xaml
     /// </summary>
-    internal partial class MigrationAssistantWarning : Window
+    internal partial class MigrationAssistantDisclaimer : Window
     {
-        internal bool WarningAccepted { get; private set; }
+        internal bool DisclaimerAccepted { get; private set; }
         private PythonMigrationAssistantViewModel ViewModel { get; set; }
 
-        internal MigrationAssistantWarning(PythonMigrationAssistantViewModel viewModel)
+        internal MigrationAssistantDisclaimer(PythonMigrationAssistantViewModel viewModel)
         {
             ViewModel = viewModel;
             InitializeComponent();
@@ -20,15 +20,15 @@ namespace Dynamo.PythonMigration.Controls
 
         private void DeclineBtn_Click(object sender, RoutedEventArgs e)
         {
-            WarningAccepted = false;
+            DisclaimerAccepted = false;
             this.Close();
         }
 
         private void AcceptBtn_Click(object sender, RoutedEventArgs e)
         {
-            WarningAccepted = true;
-            if (DisableMigrationAssitantWarningDialogCheck.IsChecked ?? false)
-                ViewModel.DisableMigrationAssistanWarning();
+            DisclaimerAccepted = true;
+            if (DisableMigrationAssitantDisclaimerDialogCheck.IsChecked ?? false)
+                ViewModel.DisableMigrationAssistantDisclaimer();
 
             this.Close();
         }

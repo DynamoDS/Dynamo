@@ -95,8 +95,8 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
-    <Compile Include="Controls\MigrationAssistantWarning.xaml.cs">
-      <DependentUpon>MigrationAssistantWarning.xaml</DependentUpon>
+    <Compile Include="Controls\MigrationAssistantDisclaimer.xaml.cs">
+      <DependentUpon>MigrationAssistantDisclaimer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\BaseDiffViewer.xaml.cs">
       <DependentUpon>BaseDiffViewer.xaml</DependentUpon>
@@ -148,7 +148,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\MigrationAssistantWarning.xaml">
+    <Page Include="Controls\MigrationAssistantDisclaimer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

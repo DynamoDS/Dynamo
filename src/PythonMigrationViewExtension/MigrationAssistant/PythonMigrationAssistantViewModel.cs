@@ -68,11 +68,11 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public void ChangeCode()
         {
-            if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantSettingsFile()))
+            if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
             {
-                var warningMessage = new MigrationAssistantWarning(this);
+                var warningMessage = new MigrationAssistantDisclaimer(this);
                 warningMessage.ShowDialog();
-                if (!warningMessage.WarningAccepted)
+                if (!warningMessage.DisclaimerAccepted)
                     return;
             }
 
@@ -140,9 +140,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         #endregion
 
-        internal void DisableMigrationAssistanWarning()
+        internal void DisableMigrationAssistantDisclaimer()
         {
-            var filePath = GetMigrationAssistantSettingsFile();
+            var filePath = GetMigrationAssistantDisclaimerDismissFile();
 
             var timeStamp = DateTime.Now.ToString();
             var machineName = Environment.MachineName;
@@ -152,9 +152,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             File.WriteAllText(file.FullName, string.Format("{0} {1}", timeStamp, machineName));
         }
 
-        private string GetMigrationAssistantSettingsFile()
+        private string GetMigrationAssistantDisclaimerDismissFile()
         {
-            return Path.Combine(warningDismissPath, dynamoVersion.ToString(), disableMigrationAssistantWarningFileName);
+            return Path.Combine(warningDismissPath, string.Format("{0}.{1}", dynamoVersion.Major,dynamoVersion.Minor), disableMigrationAssistantWarningFileName);
         }
     }
 }
