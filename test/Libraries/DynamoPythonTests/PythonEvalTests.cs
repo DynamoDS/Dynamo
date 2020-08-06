@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Linq;
+using ProtoCore.Lang;
 
 namespace DSPythonTests
 {
@@ -213,7 +215,7 @@ OUT = o
         }
 
         [Test]
-        public void PythonObjectWithDynamoSKIPisNotMarshaled()
+        public void PythonObjectWithDynamoSkipisNotMarshaled()
         {
             var code = @"
 
@@ -229,7 +231,7 @@ o = iterable()
 OUT = o
 ";
 
-         var code2 = @"
+            var code2 = @"
 
 class notiterable:
     def __dynamoskipconversion__(self):
@@ -245,10 +247,11 @@ o = notiterable()
 OUT = o
 ";
             var empty = new ArrayList();
-           
-           Assert.IsInstanceOf(typeof(IList),DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty));
-           Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty));
 
+            Assert.IsInstanceOf(typeof(IList), DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty));
+            Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
+                .SequenceEqual((IEnumerable<Obj>)DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty)));
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty));
 
         }
 

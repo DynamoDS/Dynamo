@@ -387,6 +387,7 @@ clr.setPreload(True)
                             {
                                 return outputMarshaler.Marshal(clrObj);
                             }
+
                             if (IsMarkedToSkipConversion(pyObj))
                             {
                                 var globalScope = PyScopeManager.Global.Get(globalScopeName);
