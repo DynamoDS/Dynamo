@@ -18,7 +18,8 @@
         6) DynamoUtilities.dll
         7) ProtoCore.dll
         8) DesignScriptBuiltin.dll
-        9) VMDataBridge.dll</description>
+        9) VMDataBridge.dll
+        10) DSCPython.dll</description>
         <summary>This package contains the core assemblies for Dynamo.</summary>
         <copyright>Copyright Autodesk 2020</copyright>
         <dependencies>
@@ -43,5 +44,6 @@
         <file src="DesignScriptBuiltin.dll" target="lib\net48" />
         <file src="VMDataBridge.dll" target="lib\net48" />
         <file src="..\..\..\doc\distrib\Images\logo_square_32x32.png" target="content\images\logo.png" />
+        <file src="DSCPython.dll" target="lib\net48" />
     </files>
 </package>
