@@ -1,13 +1,29 @@
-﻿using Dynamo.Graph.Workspaces;
-using Dynamo.Interfaces;
-using PythonNodeModels;
+using System;
 using System.IO;
 using System.Windows;
+using DiffPlex.DiffBuilder;
+using DiffPlex.DiffBuilder.Model;
+using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Interfaces;
+using Dynamo.PythonMigration.Controls;
+using Dynamo.PythonMigration.Differ;
+using PythonNodeModels;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
 {
-    internal class PythonMigrationAssistantViewModel
+    internal class PythonMigrationAssistantViewModel : NotificationObject
     {
+        private readonly string disableMigrationAssistantWarningFileName = @"MigrationAssistantWarningSetting.txt";
+        private readonly string warningDismissPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"Dynamo\");
+        private readonly WorkspaceModel workspace;
+        private readonly string backupDirectory;
+        private readonly Version dynamoVersion;
+        private PythonNode PythonNode;
+
+        private IDiffViewViewModel currentViewModel;
+        private SideBySideDiffModel diffModel;
+
         /// <summary>
         /// The original Python 2 code
         /// </summary>
@@ -18,34 +34,55 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public string NewCode { get; private set; }
 
-        private readonly WorkspaceModel workspace;
-        private readonly string backupDirectory;
-        private PythonNode PythonNode;
+        public IDiffViewViewModel CurrentViewModel
+        {
+            get { return this.currentViewModel; }
+            set { this.currentViewModel = value; RaisePropertyChanged(nameof(this.CurrentViewModel)); }
+        }
 
-        public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager)
+        public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager, Version dynamoVersion)
         {
             this.PythonNode = pythonNode;
             this.OldCode = pythonNode.Script;
 
             this.workspace = workspace;
             this.backupDirectory = pathManager.BackupDirectory;
+            this.dynamoVersion = dynamoVersion;
 
             MigrateCode();
+            SetSideBySideViewModel();
         }
 
-        /// <summary>
-        /// Replaces the code in the Pyton node with the code changes made by the Migration Assistant.
-        /// </summary>
-        public void ChangeCode()
-        {
-            SavePythonMigrationBackup();
-            this.PythonNode.MigrateCode(this.NewCode);
-        }
+        #region Code migration
 
         private void MigrateCode()
         {
             this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
+
+            var sidebyside = new SideBySideDiffBuilder();
+            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
         }
+
+        /// <summary>
+        /// Replaces the code in the Python node with the code changes made by the Migration Assistant.
+        /// </summary>
+        public void ChangeCode()
+        {
+            if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
+            {
+                var warningMessage = new MigrationAssistantDisclaimer(this);
+                warningMessage.ShowDialog();
+                if (!warningMessage.DisclaimerAccepted)
+                    return;
+            }
+
+            SavePythonMigrationBackup();
+            this.PythonNode.MigrateCode(this.NewCode);
+        }
+
+        #endregion
+
+        #region Backup
 
         private void SavePythonMigrationBackup()
         {
@@ -70,6 +107,54 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             var fileName = string.Concat(this.workspace.Name, ".", Properties.Resources.PythonMigrationBackupExtension, extension);
 
             return Path.Combine(this.backupDirectory, fileName);
+        }
+
+        #endregion
+
+        #region View mode
+
+        internal void ChangeViewModel(ViewMode viewMode)
+        {
+            switch (viewMode)
+            {
+                case ViewMode.Inline:
+                    SetInlineViewModel();
+                    break;
+                case ViewMode.SideBySide:
+                    SetSideBySideViewModel();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void SetSideBySideViewModel()
+        {
+            this.CurrentViewModel = new SideBySideViewModel(this.diffModel);
+        }
+
+        private void SetInlineViewModel()
+        {
+            this.CurrentViewModel = new InLineViewModel(this.diffModel);
+        }
+
+        #endregion
+
+        internal void DisableMigrationAssistantDisclaimer()
+        {
+            var filePath = GetMigrationAssistantDisclaimerDismissFile();
+
+            var timeStamp = DateTime.Now.ToString();
+            var machineName = Environment.MachineName;
+
+            var file = new FileInfo(filePath);
+            file.Directory.Create();
+            File.WriteAllText(file.FullName, string.Format("{0} {1}", timeStamp, machineName));
+        }
+
+        private string GetMigrationAssistantDisclaimerDismissFile()
+        {
+            return Path.Combine(warningDismissPath, string.Format("{0}.{1}", dynamoVersion.Major,dynamoVersion.Minor), disableMigrationAssistantWarningFileName);
         }
     }
 }

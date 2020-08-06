@@ -431,7 +431,7 @@ namespace DynamoCoreWpfTests
             var scriptEditor = View.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
             scriptEditor.MigrationAssistantBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             DispatcherUtil.DoEvents();
-            var assistantWindow = scriptEditor.GetChildrenWindowsOfType<VisualDifferenceViewer>().FirstOrDefault();
+            var assistantWindow = scriptEditor.GetChildrenWindowsOfType<BaseDiffViewer>().FirstOrDefault();
             assistantWindow.AcceptButton.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
             // Assert

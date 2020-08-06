@@ -121,14 +121,14 @@ namespace Dynamo.PythonMigration
             var parentWindow = Window.GetWindow(btn);
 
             var node = sender as PythonNode;
-            var viewModel = new PythonMigrationAssistantViewModel(node, LoadedParams.CurrentWorkspaceModel as WorkspaceModel, LoadedParams.StartupParams.PathManager);
-            var assistantWindow = new VisualDifferenceViewer(viewModel)
+            var viewModel = new PythonMigrationAssistantViewModel(node, LoadedParams.CurrentWorkspaceModel as WorkspaceModel, LoadedParams.StartupParams.PathManager, LoadedParams.ViewStartupParams.DynamoVersion);
+            var assistantWindow = new BaseDiffViewer(viewModel)
             {
                 Owner = parentWindow
             };
 
             // show modal window so user cant interact with dynamo while migration assistant is open
-            // if running in test mode, show modeless window show the test dosent hang when opening the assistant window.
+            // if running in test mode, show modeless window show the test doesn't hang when opening the assistant window.
             if (Models.DynamoModel.IsTestMode)
             {
                 assistantWindow.Show();
