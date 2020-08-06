@@ -213,6 +213,46 @@ OUT = o
         }
 
         [Test]
+        public void PythonObjectWithDynamoSKIPisNotMarshaled()
+        {
+            var code = @"
+
+class iterable:
+    def __str__(self):
+        return 'I want to participate in conversion'
+    def __iter__(self):
+        return iter([0,1,2,3])
+    def __getitem__(self,key):
+        return key
+
+o = iterable()
+OUT = o
+";
+
+         var code2 = @"
+
+class notiterable:
+    def __dynamoskipconversion__(self):
+        pass
+    def __str__(self):
+        return 'I want to skip in conversion'
+    def __iter__(self):
+        return iter([0,1,2,3])
+    def __getitem__(self,key):
+        return key
+
+o = notiterable()
+OUT = o
+";
+            var empty = new ArrayList();
+           
+           Assert.IsInstanceOf(typeof(IList),DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty));
+           Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty));
+
+
+        }
+
+        [Test]
         public void NonListIterablesCanBeOutput()
         {
             var code = @"
