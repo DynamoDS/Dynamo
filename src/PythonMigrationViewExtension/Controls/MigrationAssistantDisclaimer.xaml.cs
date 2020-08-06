@@ -5,7 +5,7 @@ using Dynamo.PythonMigration.MigrationAssistant;
 namespace Dynamo.PythonMigration.Controls
 {
     /// <summary>
-    /// Interaction logic for MigrationAssistantWarning.xaml
+    /// Interaction logic for MigrationAssistantDisclaimer.xaml
     /// </summary>
     internal partial class MigrationAssistantDisclaimer : Window
     {
@@ -27,7 +27,7 @@ namespace Dynamo.PythonMigration.Controls
         private void AcceptBtn_Click(object sender, RoutedEventArgs e)
         {
             DisclaimerAccepted = true;
-            if (DisableMigrationAssitantDisclaimerDialogCheck.IsChecked ?? false)
+            if (DisableMigrationAssistantDisclaimerDialogCheck.IsChecked ?? false)
                 ViewModel.DisableMigrationAssistantDisclaimer();
 
             this.Close();

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
              xmlns:viewModels="clr-namespace:Dynamo.PythonMigration.Differ"
+             xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties;assembly=PythonMigrationViewExtension"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
@@ -55,7 +56,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Before -> After"
+        <TextBlock Text="{x:Static p:Resources.PythonMigrationAssistantInlinePaneTitle}"
                    Grid.Row="0"
                    VerticalAlignment="Center"
                    Foreground="#808080" />

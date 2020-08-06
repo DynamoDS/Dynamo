@@ -72,7 +72,7 @@
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     Margin="15,0,10,10">
-            <CheckBox x:Name="DisableMigrationAssitantDisclaimerDialogCheck"
+            <CheckBox x:Name="DisableMigrationAssistantDisclaimerDialogCheck"
                       Grid.Row="1"
                       Grid.Column="0"
                       Grid.ColumnSpan="2"

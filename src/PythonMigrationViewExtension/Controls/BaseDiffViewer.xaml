@@ -14,7 +14,7 @@
         Height="500"
         MinWidth="500"
         MinHeight="450"
-        Title="Migration Assistant"
+        Title="{x:Static p:Resources.PythonMigrationAssistantWindowTitle}"
         WindowStartupLocation="CenterOwner"
         Background="#272822">
 

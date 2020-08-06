@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
              xmlns:viewModels="clr-namespace:Dynamo.PythonMigration.Differ"
              xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties;assembly=PythonMigrationViewExtension"
              mc:Ignorable="d"     
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -60,8 +61,8 @@
             <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        
-        <TextBlock Text="Before"
+
+        <TextBlock Text="{x:Static p:Resources.PythonMigrationAssistantCodeBefore}"
                    Grid.Row="0"
                    Grid.Column="0"
                    VerticalAlignment="Center"
@@ -71,7 +72,7 @@
                       Background="Black"
                       HorizontalAlignment="Stretch" 
                       Grid.RowSpan="2"/>
-        <TextBlock Text="After"
+        <TextBlock Text="{x:Static p:Resources.PythonMigrationAssistantCodeAfter}"
                    Grid.Row="0"
                    Grid.Column="2"
                    VerticalAlignment="Center"

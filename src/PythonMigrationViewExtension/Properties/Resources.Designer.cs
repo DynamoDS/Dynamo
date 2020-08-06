@@ -189,6 +189,15 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant Disclaimer.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerWindowTitle {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
@@ -221,6 +230,24 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationAssistantCodeBefore {
             get {
                 return ResourceManager.GetString("PythonMigrationAssistantCodeBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before -&gt; After.
+        /// </summary>
+        public static string PythonMigrationAssistantInlinePaneTitle {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantInlinePaneTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant.
+        /// </summary>
+        public static string PythonMigrationAssistantWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantWindowTitle", resourceCulture);
             }
         }
         
