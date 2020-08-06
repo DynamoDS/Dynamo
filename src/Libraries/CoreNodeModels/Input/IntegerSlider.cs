@@ -22,7 +22,7 @@ namespace CoreNodeModels.Input
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
-    public class IntegerSlider : SliderBase<int>
+    public class IntegerSlider : SliderBase<long>
     {
         /// <summary>
         /// The NodeType property provides a name which maps to the 
@@ -91,7 +91,7 @@ namespace CoreNodeModels.Input
         //If the value field in the slider has a number greater than
         //In32.Maxvalue (or MinValue), the value will be changed to Int32.MaxValue (or MinValue)
         //The value will be changed, but to update the UI, this property is overridden here. 
-        public override int Value
+        public override long Value
         {
             get
             {
@@ -140,11 +140,11 @@ namespace CoreNodeModels.Input
             return new[] {assignment};
         }
 
-        protected override int DeserializeValue(string val)
+        protected override long DeserializeValue(string val)
         {
             try
             {
-                return Convert.ToInt32(val, CultureInfo.InvariantCulture);
+                return Convert.ToInt64(val, CultureInfo.InvariantCulture);
             }
             catch
             {

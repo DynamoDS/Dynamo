@@ -2764,6 +2764,11 @@ namespace ProtoCore.AST.AssociativeAST
             return new IntNode(value);
         }
 
+        public static IntNode BuildIntNode(long value)
+        {
+            return new IntNode(value);
+        }
+
         public static DoubleNode BuildDoubleNode(double value)
         {
             return new DoubleNode(value);

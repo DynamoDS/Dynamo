@@ -109,10 +109,10 @@ namespace CoreNodeModels.Input
             return result;
         }
 
-        internal static int ConvertStringToInt(string value)
+        internal static long ConvertStringToInt(string value)
         {
-            int result = 0;
-            if (System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+            long result = 0;
+            if (long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
                 return result;
             //check if the value exceeds the 32 bit maximum / minimum value
             if (value.Length > 1)
@@ -126,7 +126,7 @@ namespace CoreNodeModels.Input
                     }
 
                 }
-                result = start == 0 ? int.MaxValue : int.MinValue;
+                result = start == 0 ? long.MaxValue : long.MinValue;
             }
             return result;
         }

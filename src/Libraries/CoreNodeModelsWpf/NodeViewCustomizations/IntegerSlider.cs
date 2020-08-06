@@ -11,7 +11,7 @@ namespace CoreNodeModelsWpf.NodeViewCustomizations
         {
             var slider = new DynamoSlider(model, nodeView)
             {
-                DataContext = new SliderViewModel<int>(model)
+                DataContext = new SliderViewModel<long>(model)
             };
 
             nodeView.inputGrid.Children.Add(slider);
