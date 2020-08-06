@@ -143,6 +143,61 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerContinueButtonContent {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerContinueButtonContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decline.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerDecline {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerDecline", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show again..
+        /// </summary>
+        public static string MigrationAssistantDisclaimerDisable {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerDisable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are about to make changes to your Python code.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerHeader {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Migration Assistant helps users to update scripts from Python 2 to Python 3.
+        ///By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant Disclaimer.
+        /// </summary>
+        public static string MigrationAssistantDisclaimerWindowTitle {
+            get {
+                return ResourceManager.GetString("MigrationAssistantDisclaimerWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {
@@ -175,6 +230,24 @@ namespace Dynamo.PythonMigration.Properties {
         public static string PythonMigrationAssistantCodeBefore {
             get {
                 return ResourceManager.GetString("PythonMigrationAssistantCodeBefore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Before -&gt; After.
+        /// </summary>
+        public static string PythonMigrationAssistantInlinePaneTitle {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantInlinePaneTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migration Assistant.
+        /// </summary>
+        public static string PythonMigrationAssistantWindowTitle {
+            get {
+                return ResourceManager.GetString("PythonMigrationAssistantWindowTitle", resourceCulture);
             }
         }
         
