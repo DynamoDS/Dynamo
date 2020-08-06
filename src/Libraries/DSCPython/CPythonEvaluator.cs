@@ -387,6 +387,13 @@ clr.setPreload(True)
                             {
                                 return outputMarshaler.Marshal(clrObj);
                             }
+                            if (IsMarkedToSkipConversion(pyObj))
+                            {
+                                var globalScope = PyScopeManager.Global.Get(globalScopeName);
+                                globalScope.Set(pyObj.Handle.ToString(), pyObj);
+                                return new DynamoCPythonHandle(pyObj.Handle);
+                            }
+
                             // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
@@ -457,6 +464,11 @@ clr.setPreload(True)
                 }
                 return outputMarshaler;
             }
+        }
+
+        private static bool IsMarkedToSkipConversion(PyObject pyObj)
+        {
+            return pyObj.HasAttr("__dynamoskipconversion__");
         }
 
         private static DataMarshaler inputMarshaler;
