@@ -12,7 +12,7 @@
         ResizeMode="NoResize"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Migration Assistant Warning">
+        Title="{x:Static p:Resources.MigrationAssistantDisclaimerWindowTitle}">
 
     <Window.Resources>
         <ResourceDictionary>
