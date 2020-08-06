@@ -34,6 +34,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -504,14 +505,15 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions() {
-            ConvertTabsToSpaces = false
-        };
+        //private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions() {
+        //    ConvertTabsToSpaces = false
+        //};
+        private DynamoTextOptions editTextOptions = new DynamoTextOptions();
 
         /// <summary>
         /// Gets the text editor options for python script editor.
         /// </summary>
-        public ICSharpCode.AvalonEdit.TextEditorOptions TextOptions
+        public DynamoTextOptions TextOptions
         {
             get
             {
@@ -539,8 +541,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                TextOptions.ShowSpaces = value;
-                TextOptions.ShowTabs = value;
+                TextOptions.SetTextOptions(value);
                 model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
                 RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
             }
