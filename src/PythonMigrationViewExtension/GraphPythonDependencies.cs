@@ -13,7 +13,7 @@ namespace Dynamo.PythonMigration
     /// </summary>
     public class GraphPythonDependencies
     {
-        internal static readonly string PythonPackage = "DSIronPython2.7";
+        internal static readonly string PythonPackage = "DynamoIronPython2.7";
         internal static readonly Version PythonPackageVersion = new Version(1, 0, 0);
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
