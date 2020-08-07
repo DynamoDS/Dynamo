@@ -40,7 +40,7 @@ namespace DSCPython
     /// then make sure to call Dispose when you are done with the instance.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoCPythonHandle : IDisposable
+    internal class DynamoCPythonHandle : IDisposable
     {
         /// <summary>
         /// A static map of DynamoCPythonHandle counts, is used to avoid removing the underlying python objects from the 
@@ -133,13 +133,10 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
-    internal enum EvaluationState { Begin, Success, Failed }
+    public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    internal delegate void EvaluationEventHandler(EvaluationState state,
-                                                  PyScope scope,
-                                                  string code,
-                                                  IList bindingValues);
+    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -470,13 +467,13 @@ clr.setPreload(True)
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationBegin;
+        public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationEnd;
+        public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         /// Called immediately before evaluation starts
