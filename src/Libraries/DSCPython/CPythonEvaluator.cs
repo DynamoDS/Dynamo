@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
@@ -146,6 +147,7 @@ namespace DSCPython
     {
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -176,7 +178,6 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-
             }
 
             IntPtr gs = PythonEngine.AcquireLock();
@@ -188,6 +189,10 @@ namespace DSCPython
                     {
                         globalScope = CreateGlobalScope();
                     }
+                   
+                    // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                    code = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]" + Environment.NewLine + code;
+
                     using (PyScope scope = Py.CreateScope())
                     {
                         ProcessAdditionalBindings(scope, bindingNames, bindingValues);

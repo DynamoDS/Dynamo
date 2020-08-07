@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -612,7 +613,31 @@ namespace Dynamo.Tests
             ViewModel.Model.ExecuteCommand(deleteCmd2);
 
             Assert.IsEmpty(DynamoCPythonHandle.HandleCountMap.Where(x => x.ToString().Contains("myClass")));
+        }
 
+        [Test]
+        public void VerifySysPathValueForCPythonEngine()
+        {
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", "CPythonSysPath.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+
+            var firstPythonNodeGUID = "07ea2d39-811e-4df7-a38c-8c784d5079b0";
+            var secondPythonNodeGUID = "a3058920-586a-43d9-9806-7d41c36803bb";
+
+            var sysPathList = GetFlattenedPreviewValues(firstPythonNodeGUID);
+
+            // Verify that the custom path is added to the 'sys.path'.
+            Assert.AreEqual(sysPathList.Count(), 4);
+            Assert.AreEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
+
+            // Change the python engine for the 2nd node and verify that the custom path is not reflected in the 2nd node. 
+            // Only the default python paths would be present in 'sys.path' when a python node is evaluated.
+            var nodeModel = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace(secondPythonNodeGUID);
+            var pynode = nodeModel as PythonNode;
+            UpdatePythonEngineAndRun(pynode, PythonEngineVersion.CPython3);
+            sysPathList = GetFlattenedPreviewValues(secondPythonNodeGUID);
+            Assert.AreNotEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
         }
     }
 }
