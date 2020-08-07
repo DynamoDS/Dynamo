@@ -1,6 +1,6 @@
-﻿using Dynamo.PythonMigration.MigrationAssistant;
+﻿using System;
+using Dynamo.PythonMigration.MigrationAssistant;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace Dynamo.Tests
 {
@@ -33,6 +33,35 @@ namespace Dynamo.Tests
 
             // Assert
             Assert.AreEqual(expectedPython3Code, migratedScript);
+        }
+
+        [Test]
+        public void MigrationWillNormalizeWhiteSpaceIfCodeContainsTabs()
+        {
+            var original = "import sys" + Environment.NewLine +
+                "class MyClass:" + Environment.NewLine +
+                "  def __init__(self):" + Environment.NewLine +
+                "\t  pass" + Environment.NewLine +
+                "MyClass()" + Environment.NewLine;
+            var expected = "import sys" + Environment.NewLine +
+                "class MyClass:" + Environment.NewLine +
+                "    def __init__(self):" + Environment.NewLine +
+                "        pass" + Environment.NewLine +
+                "MyClass()" + Environment.NewLine;
+            var actual = ScriptMigrator.MigrateCode(original);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void MigrationWontChangeWhiteSpaceIfCodeDoesNotContainTabs()
+        {
+            var original = "import sys" + Environment.NewLine +
+                "class MyClass:" + Environment.NewLine +
+                "  def __init__(self):" + Environment.NewLine +
+                "    pass" + Environment.NewLine +
+                "MyClass()" + Environment.NewLine;
+            var actual = ScriptMigrator.MigrateCode(original);
+            Assert.AreEqual(original, actual);
         }
     }
 }
