@@ -66,7 +66,11 @@ namespace PythonNodeModelsWpf
             editText.TextArea.TextEntered += OnTextAreaTextEntered;
 
             // Initialize editor with global settings for show/hide tabs and spaces
-            editText.Options = dynamoViewModel.TextOptions.GetTextOptions();
+            editText.Options = dynamoViewModel.PythonScriptEditorTextOptions.GetTextOptions();
+
+            // Set options to reflect global settings when python script editor in initialized for the first time.
+            editText.Options.ShowSpaces = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
+            editText.Options.ShowTabs = dynamoViewModel.ShowTabsAndSpacesInScriptEditor;
 
             const string highlighting = "ICSharpCode.PythonBinding.Resources.Python.xshd";
             var elem = GetType().Assembly.GetManifestResourceStream(

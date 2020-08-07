@@ -505,15 +505,12 @@ namespace Dynamo.ViewModels
             }
         }
 
-        //private ICSharpCode.AvalonEdit.TextEditorOptions editTextOptions = new ICSharpCode.AvalonEdit.TextEditorOptions() {
-        //    ConvertTabsToSpaces = false
-        //};
-        private DynamoTextOptions editTextOptions = new DynamoTextOptions();
 
+        private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
         /// <summary>
-        /// Gets the text editor options for python script editor.
+        /// Gets/Sets the text editor options for python script editor.
         /// </summary>
-        public DynamoTextOptions TextOptions
+        public DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
         {
             get
             {
@@ -525,13 +522,15 @@ namespace Dynamo.ViewModels
                 if (editTextOptions != value)
                 {
                     editTextOptions = value;
-                    RaisePropertyChanged(nameof(TextOptions));
+                    RaisePropertyChanged(nameof(PythonScriptEditorTextOptions));
                 }
             }
-        }
+        } 
+
 
         /// <summary>
-        /// Indicates if whether the whitespaces and tabs should be visible in the python script editor.
+        /// Indicates if the whitespaces and tabs should be visible in the python script editor.
+        /// This property is for the global whitespace toggle option in settings menu.
         /// </summary>
         public bool ShowTabsAndSpacesInScriptEditor
         {
@@ -541,7 +540,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                TextOptions.SetTextOptions(value);
+                PythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
                 model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
                 RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
             }
