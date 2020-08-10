@@ -60,7 +60,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
 
             var sidebyside = new SideBySideDiffBuilder();
-            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
+            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode, false);
         }
 
         /// <summary>
