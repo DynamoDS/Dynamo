@@ -190,7 +190,6 @@ namespace DSCPython
                         globalScope = CreateGlobalScope();
                     }
 
-                    var path = PythonEngine.PythonPath;
                     using (PyScope scope = Py.CreateScope())
                     {
                         // Reset the 'sys.path' value to the default python paths on node evaluation. 
