@@ -144,6 +144,7 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
         static CPythonEvaluator()
@@ -384,6 +385,12 @@ clr.setPreload(True)
                             {
                                 return outputMarshaler.Marshal(clrObj);
                             }
+
+                            if (IsMarkedToSkipConversion(pyObj))
+                            {
+                                return GetDynamoCPythonHandle(pyObj);
+                            }
+
                             // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
@@ -436,11 +443,7 @@ clr.setPreload(True)
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
-                                        var globalScope = PyScopeManager.Global.Get(globalScopeName);
-                                        //try moving object to global scope
-                                        globalScope.Set(pyObj.Handle.ToString(), pyObj);
-
-                                        return new DynamoCPythonHandle(pyObj.Handle);
+                                        return GetDynamoCPythonHandle(pyObj);
                                     }
                                     else
                                     {
@@ -454,6 +457,18 @@ clr.setPreload(True)
                 }
                 return outputMarshaler;
             }
+        }
+
+        private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
+        {
+            var globalScope = PyScopeManager.Global.Get(globalScopeName);
+            globalScope.Set(pyObj.Handle.ToString(), pyObj);
+            return new DynamoCPythonHandle(pyObj.Handle);
+        }
+
+        private static bool IsMarkedToSkipConversion(PyObject pyObj)
+        {
+            return pyObj.HasAttr(DynamoSkipAttributeName);
         }
 
         private static DataMarshaler inputMarshaler;
