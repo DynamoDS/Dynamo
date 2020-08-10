@@ -113,7 +113,8 @@
                           SelectionChanged="OnEngineChanged"
                           Style="{StaticResource DropDown}"
                           Name="EngineSelectorComboBox"
-                          Visibility="Collapsed" />
+                          Visibility="Collapsed" 
+                          ToolTip="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}"/>
                 <Button Style="{StaticResource IconButton}"
                         Name="MigrationAssistantBtn"
                         Click="OnMigrationAssistantClicked"
