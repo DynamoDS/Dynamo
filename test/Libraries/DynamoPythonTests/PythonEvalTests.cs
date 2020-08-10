@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System.Linq;
 using ProtoCore.Lang;
 using DSCPython;
+using Python.Runtime;
 
 namespace DSPythonTests
 {
@@ -16,7 +17,6 @@ namespace DSPythonTests
             DSCPython.CPythonEvaluator.EvaluatePythonScript,
             DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
-        static int count = 0;
 
         [Test]
         [Category("UnitTests")]
@@ -175,25 +175,32 @@ print 'hello'
         [Test]
         public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
+            var code = @"1";
+            var count = 0;
+            DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
+            {
+                count = count + 1;
+                if (count == 1)
+                {
+                    Assert.AreEqual(EvaluationState.Success, state);
+                }
+                else if (count == 2)
+                {
+                    Assert.AreEqual(EvaluationState.Failed, state);
+                }
+            };
 
-            var code = @"
-1
-";          count = 0;
-            DSCPython.CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
-          
+            CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
+
             try
             {
                 DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
             }
-           
-          
             finally
             {
                 Assert.AreEqual(1, count);
             }
-             code = @"
-1/a
-";
+            code = @"1/a";
 
             try
             {
@@ -201,28 +208,13 @@ print 'hello'
             }
             catch
             {
-                //we anticipate a undefined var error.
+                //we anticipate an undefined var error.
             }
-
             finally
             {
                 DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
                 Assert.AreEqual(2, count);
             }
-        }
-
-        private void CPythonEvaluator_EvaluationEnd(DSCPython.EvaluationState state, Python.Runtime.PyScope scope, string code, IList bindingValues)
-        {
-            count = count + 1;
-            if(count == 1)
-            {
-                Assert.AreEqual(EvaluationState.Success, state);
-            }
-            else if(count == 2)
-            {
-                Assert.AreEqual(EvaluationState.Failed, state);
-            }
-           
         }
 
         [Test]
