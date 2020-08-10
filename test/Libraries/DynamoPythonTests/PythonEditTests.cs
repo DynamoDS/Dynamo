@@ -637,6 +637,7 @@ namespace Dynamo.Tests
             var pynode = nodeModel as PythonNode;
             UpdatePythonEngineAndRun(pynode, PythonEngineVersion.CPython3);
             sysPathList = GetFlattenedPreviewValues(secondPythonNodeGUID);
+            Assert.AreEqual(sysPathList.Count(), 3);
             Assert.AreNotEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
         }
     }
