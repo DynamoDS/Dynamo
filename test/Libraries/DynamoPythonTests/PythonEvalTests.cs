@@ -247,11 +247,12 @@ o = notiterable()
 OUT = o
 ";
             var empty = new ArrayList();
-
-            Assert.IsInstanceOf(typeof(IList), DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty));
+            var result1 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            var result2 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty);
+            Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
-                .SequenceEqual((IEnumerable<Obj>)DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty)));
-            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty));
+                .SequenceEqual((IEnumerable<Object>)result1));
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle),result2 );
 
         }
 
