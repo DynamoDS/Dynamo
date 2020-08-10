@@ -2268,6 +2268,6 @@ Uninstall the following packages: {0}?</value>
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor" xml:space="preserve">
-    <value>Show Python Editor Whitespace Characters</value>
+    <value>Show Whitespace Characters in Python Editor</value>
   </data>
 </root>
