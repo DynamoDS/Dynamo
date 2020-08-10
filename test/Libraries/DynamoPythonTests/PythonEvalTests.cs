@@ -16,7 +16,7 @@ namespace DSPythonTests
             DSCPython.CPythonEvaluator.EvaluatePythonScript,
             DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
-
+        static int count = 0;
 
         [Test]
         [Category("UnitTests")]
@@ -175,34 +175,54 @@ print 'hello'
         [Test]
         public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
+
             var code = @"
-# extra line
-1/0
-# extra line
-"; 
+1
+";          count = 0;
             DSCPython.CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
-            var count = 0;
+          
             try
             {
                 DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
-                Assert.Fail("An exception was expected");
             }
-            catch (Exception exc)
+           
+          
+            finally
             {
-                // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
-                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
-                count = count + 1;
+                Assert.AreEqual(1, count);
             }
+             code = @"
+1/a
+";
+
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            catch
+            {
+                //we anticipate a undefined var error.
+            }
+
             finally
             {
                 DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
-                Assert.AreEqual(1, count);
+                Assert.AreEqual(2, count);
             }
         }
 
         private void CPythonEvaluator_EvaluationEnd(DSCPython.EvaluationState state, Python.Runtime.PyScope scope, string code, IList bindingValues)
         {
-            Assert.AreEqual(EvaluationState.Failed, state);
+            count = count + 1;
+            if(count == 1)
+            {
+                Assert.AreEqual(EvaluationState.Success, state);
+            }
+            else if(count == 2)
+            {
+                Assert.AreEqual(EvaluationState.Failed, state);
+            }
+           
         }
 
         [Test]
