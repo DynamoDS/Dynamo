@@ -104,7 +104,6 @@ namespace DSIronPython
                 ScriptEngine PythonEngine = Python.CreateEngine();
                 if (!string.IsNullOrEmpty(stdLib))
                 {
-                    code = "import sys" + System.Environment.NewLine + code;
                     paths = PythonEngine.GetSearchPaths().ToList();
                     paths.Add(stdLib);
                 }
