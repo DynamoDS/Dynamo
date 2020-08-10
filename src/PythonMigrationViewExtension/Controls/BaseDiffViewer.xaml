@@ -1,19 +1,20 @@
-﻿<Window x:Class="Dynamo.PythonMigration.Controls.VisualDifferenceViewer"
+﻿<Window x:Class="Dynamo.PythonMigration.Controls.BaseDiffViewer"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties;assembly=PythonMigrationViewExtension"
+        xmlns:p="clr-namespace:Dynamo.PythonMigration.Properties"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+        xmlns:viewModels="clr-namespace:Dynamo.PythonMigration.Differ"
         xmlns:local="clr-namespace:Dynamo.PythonMigration.Controls"
-        xmlns:diffplex="clr-namespace:DiffPlex.Wpf.Controls;assembly=DiffPlex.Wpf"
         mc:Ignorable="d"
         d:DesignHeight="450"
         d:DesignWidth="800"
+        Height="500"
         MinWidth="500"
         MinHeight="450"
-        Title="Migration Assistant"
+        Title="{x:Static p:Resources.PythonMigrationAssistantWindowTitle}"
         WindowStartupLocation="CenterOwner"
         Background="#272822">
 
@@ -22,6 +23,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type viewModels:InLineViewModel}">
+                <local:InLineControl DataContext="{Binding}" />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewModels:SideBySideViewModel}">
+                <local:SideBySideControl DataContext="{Binding}" />
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -47,19 +54,12 @@
                 <Setter Property="TextWrapping"
                         Value="Wrap" />
             </Style>
-
         </Grid.Resources>
+        
+        <ContentControl Content="{Binding CurrentViewModel}"
+                        Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
-        <diffplex:DiffViewer x:Name="DiffView"
-                             OldTextHeader="{x:Static p:Resources.PythonMigrationAssistantCodeBefore}"
-                             NewTextHeader="{x:Static p:Resources.PythonMigrationAssistantCodeAfter}"
-                             FontFamily="Consolas"
-                             FontSize="10pt"
-                             Background="#272822"
-                             Foreground="#F8F8F2"
-                             HeaderForeground="#808080">
-        </diffplex:DiffViewer>
-
+        <!-- Buttons row -->
         <Grid HorizontalAlignment="Stretch"
               Grid.Row="1"
               Background="Black">
@@ -71,7 +71,7 @@
                         HorizontalAlignment="Left"
                         Grid.Column="0">
                 <Button  Name="DiffButton"
-                         Click="DiffButton_Click"
+                         Click="OnDiffButtonClick"
                          HorizontalAlignment="Right"
                          ToolTip="{x:Static p:Resources.DiffButtonTooltip}"
                          Height="44">

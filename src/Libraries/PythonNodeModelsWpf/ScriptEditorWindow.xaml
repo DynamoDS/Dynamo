@@ -72,7 +72,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="44" />
         </Grid.RowDefinitions>
-
         <Border Margin="0,0,0,0"
                 BorderThickness="0"
                 Background="Black"
@@ -83,7 +82,7 @@
                                    ShowLineNumbers="True"
                                    Background="#272822"
                                    Foreground="#F8F8F2"
-                                   HorizontalScrollBarVisibility="Disabled" />
+                                   HorizontalScrollBarVisibility="Disabled"/>
         </Border>
         <Grid HorizontalAlignment="Stretch"
               Grid.Row="1">
@@ -125,10 +124,6 @@
                                Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
                     </Button.Resources>
                 </Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1">
                 <Button Style="{StaticResource IconButton}"
                         Name="MoreInfoButton"
                         Click="OnMoreInfoClicked"
@@ -139,6 +134,10 @@
                                          Icon="QuestionCircleOutline" />
                     </Button.Resources>
                 </Button>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Grid.Column="1">
                 <Button Style="{StaticResource IconButton}"
                         Name="SaveScriptChangesButton"
                         Click="OnSaveClicked"

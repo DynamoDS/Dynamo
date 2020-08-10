@@ -262,7 +262,7 @@ If you don't mind, it would be helpful for you to send us your file. That will m
     <value>Uh oh...
  We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
 You can also try deleting [FILEPATH] and trying again.
-Depending on your previous choice, instrumentation may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
+Depending on your previous choice, analytics may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
 Sorry about that.</value>
   </data>
   <data name="CouldNotLoadTypes" xml:space="preserve">

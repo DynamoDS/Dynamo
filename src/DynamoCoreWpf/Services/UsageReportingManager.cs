@@ -156,7 +156,7 @@ namespace Dynamo.Services
             }
         }
 
-        [Obsolete("Function will be deprecated in Dynamo 3.0, please set IsUsageReportingApproved.")]
+        [Obsolete("Function will be removed in Dynamo 3.0, please set IsUsageReportingApproved.")]
         public void ToggleIsUsageReportingApproved(object parameter)
         {
             var ownerWindow = parameter as Window;
@@ -198,7 +198,7 @@ namespace Dynamo.Services
         /// IsAnalyticsReportingApproved.
         /// </summary>
         /// <param name="approved"></param>
-        [Obsolete("Function will be deprecated in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
+        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
         public void SetUsageReportingAgreement(bool approved)
         {
             IsUsageReportingApproved = approved && IsAnalyticsReportingApproved;

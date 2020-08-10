@@ -40,7 +40,7 @@ namespace DSCPython
     /// then make sure to call Dispose when you are done with the instance.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoCPythonHandle : IDisposable
+    internal class DynamoCPythonHandle : IDisposable
     {
         /// <summary>
         /// A static map of DynamoCPythonHandle counts, is used to avoid removing the underlying python objects from the 
@@ -133,13 +133,10 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
-    internal enum EvaluationState { Begin, Success, Failed }
+    public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    internal delegate void EvaluationEventHandler(EvaluationState state,
-                                                  PyScope scope,
-                                                  string code,
-                                                  IList bindingValues);
+    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -147,6 +144,7 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
         static CPythonEvaluator()
@@ -387,6 +385,12 @@ clr.setPreload(True)
                             {
                                 return outputMarshaler.Marshal(clrObj);
                             }
+
+                            if (IsMarkedToSkipConversion(pyObj))
+                            {
+                                return GetDynamoCPythonHandle(pyObj);
+                            }
+
                             // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
@@ -439,11 +443,7 @@ clr.setPreload(True)
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
-                                        var globalScope = PyScopeManager.Global.Get(globalScopeName);
-                                        //try moving object to global scope
-                                        globalScope.Set(pyObj.Handle.ToString(), pyObj);
-
-                                        return new DynamoCPythonHandle(pyObj.Handle);
+                                        return GetDynamoCPythonHandle(pyObj);
                                     }
                                     else
                                     {
@@ -459,6 +459,18 @@ clr.setPreload(True)
             }
         }
 
+        private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
+        {
+            var globalScope = PyScopeManager.Global.Get(globalScopeName);
+            globalScope.Set(pyObj.Handle.ToString(), pyObj);
+            return new DynamoCPythonHandle(pyObj.Handle);
+        }
+
+        private static bool IsMarkedToSkipConversion(PyObject pyObj)
+        {
+            return pyObj.HasAttr(DynamoSkipAttributeName);
+        }
+
         private static DataMarshaler inputMarshaler;
         private static DataMarshaler outputMarshaler;
 
@@ -470,13 +482,13 @@ clr.setPreload(True)
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationBegin;
+        public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationEnd;
+        public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         /// Called immediately before evaluation starts

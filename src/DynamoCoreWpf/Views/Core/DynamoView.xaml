@@ -721,6 +721,10 @@
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuIsIronPythonDialogDisabled}"
                                   Visibility="{Binding IsPython2ObsoleteDebugModeEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"/>
                         <MenuItem Focusable="False"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding ShowTabsAndSpacesInScriptEditor, Mode=TwoWay}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor}"/>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />
