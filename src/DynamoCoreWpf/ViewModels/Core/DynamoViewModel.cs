@@ -510,20 +510,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Gets/Sets the text editor options for python script editor.
         /// </summary>
-        public DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
+        internal DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
         {
             get
             {
                 return editTextOptions;
-            }
-
-            set
-            {
-                if (editTextOptions != value)
-                {
-                    editTextOptions = value;
-                    RaisePropertyChanged(nameof(PythonScriptEditorTextOptions));
-                }
             }
         } 
 
