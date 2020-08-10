@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
 using ProtoCore.Lang;
+using DSCPython;
 
 namespace DSPythonTests
 {
@@ -169,6 +170,39 @@ print 'hello'
                 // Trace back is not available for this call, but we still get a reasonable message back
                 Assert.AreEqual(@"SyntaxError : ('invalid syntax', ('<string>', 3, 7, ""print 'hello'\n""))", exc.Message);
             }
+        }
+
+        [Test]
+        public void CPythonEngineWithErrorRaisesCorrectEvent()
+        {
+            var code = @"
+# extra line
+1/0
+# extra line
+"; 
+            DSCPython.CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
+            var count = 0;
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                // Trace back is expected here. Line is 3 due to the line break from the code variable declaration
+                Assert.AreEqual(@"ZeroDivisionError : division by zero ['  File ""<string>"", line 3, in <module>\n']", exc.Message);
+                count = count + 1;
+            }
+            finally
+            {
+                DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
+                Assert.AreEqual(1, count);
+            }
+        }
+
+        private void CPythonEvaluator_EvaluationEnd(DSCPython.EvaluationState state, Python.Runtime.PyScope scope, string code, IList bindingValues)
+        {
+            Assert.AreEqual(EvaluationState.Failed, state);
         }
 
         [Test]
