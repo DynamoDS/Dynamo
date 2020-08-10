@@ -189,12 +189,14 @@ namespace DSCPython
                     {
                         globalScope = CreateGlobalScope();
                     }
-                   
-                    // Reset the 'sys.path' value to the default python paths on node evaluation. 
-                    code = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]" + Environment.NewLine + code;
 
+                    var path = PythonEngine.PythonPath;
                     using (PyScope scope = Py.CreateScope())
                     {
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
+                        scope.Exec(pythonNodeSetupCode);
+
                         ProcessAdditionalBindings(scope, bindingNames, bindingValues);
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
