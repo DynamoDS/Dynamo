@@ -1908,6 +1908,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Whitespace Characters in Python Editor.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visualization Settings.
         /// </summary>
         public static string DynamoViewSettingsMenuVisualizationSettings {

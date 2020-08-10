@@ -72,7 +72,6 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="44" />
         </Grid.RowDefinitions>
-
         <Border Margin="0,0,0,0"
                 BorderThickness="0"
                 Background="Black"
@@ -83,7 +82,7 @@
                                    ShowLineNumbers="True"
                                    Background="#272822"
                                    Foreground="#F8F8F2"
-                                   HorizontalScrollBarVisibility="Disabled" />
+                                   HorizontalScrollBarVisibility="Disabled"/>
         </Border>
         <Grid HorizontalAlignment="Stretch"
               Grid.Row="1">

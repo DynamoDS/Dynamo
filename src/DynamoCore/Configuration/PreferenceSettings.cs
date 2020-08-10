@@ -329,6 +329,11 @@ namespace Dynamo.Configuration
         public bool IsIronPythonDialogDisabled { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the whitespaces and tabs in python script editor.
+        /// </summary>
+        public bool ShowTabsAndSpacesInScriptEditor { get; set; }
+
+        /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
         /// </summary>
@@ -382,6 +387,7 @@ namespace Dynamo.Configuration
             CustomPackageFolders = new List<string>();
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
+            ShowTabsAndSpacesInScriptEditor = false;
         }
 
         /// <summary>
