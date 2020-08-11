@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
-using ProtoCore.Lang;
 using DSCPython;
-using Python.Runtime;
 
 namespace DSPythonTests
 {
@@ -175,7 +173,7 @@ print 'hello'
         [Test]
         public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
-            var code = @"1";
+          
             var count = 0;
             DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
             {
@@ -192,6 +190,7 @@ print 'hello'
 
             CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
 
+            var code = @"1";
             try
             {
                 DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
@@ -200,8 +199,8 @@ print 'hello'
             {
                 Assert.AreEqual(1, count);
             }
-            code = @"1/a";
 
+            code = @"1/a";
             try
             {
                 DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
@@ -298,7 +297,7 @@ OUT = o
             Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
                 .SequenceEqual((IEnumerable<Object>)result1));
-            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle),result2 );
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
 
         }
 
