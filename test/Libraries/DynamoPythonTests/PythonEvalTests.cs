@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
-using ProtoCore.Lang;
+using DSCPython;
 
 namespace DSPythonTests
 {
@@ -15,7 +15,6 @@ namespace DSPythonTests
             DSCPython.CPythonEvaluator.EvaluatePythonScript,
             DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
-
 
         [Test]
         [Category("UnitTests")]
@@ -172,6 +171,52 @@ print 'hello'
         }
 
         [Test]
+        public void CPythonEngineWithErrorRaisesCorrectEvent()
+        {
+          
+            var count = 0;
+            DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
+            {
+                count = count + 1;
+                if (count == 1)
+                {
+                    Assert.AreEqual(EvaluationState.Success, state);
+                }
+                else if (count == 2)
+                {
+                    Assert.AreEqual(EvaluationState.Failed, state);
+                }
+            };
+
+            CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
+
+            var code = @"1";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            finally
+            {
+                Assert.AreEqual(1, count);
+            }
+
+            code = @"1/a";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            catch
+            {
+                //we anticipate an undefined var error.
+            }
+            finally
+            {
+                DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
+                Assert.AreEqual(2, count);
+            }
+        }
+
+        [Test]
         public void OutputPythonObjectDoesNotThrow()
         {
             var code = @"
@@ -252,7 +297,7 @@ OUT = o
             Assert.IsInstanceOf(typeof(IList), result1);
             Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
                 .SequenceEqual((IEnumerable<Object>)result1));
-            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle),result2 );
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
 
         }
 
