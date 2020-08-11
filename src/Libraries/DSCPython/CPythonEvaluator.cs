@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
@@ -147,6 +148,7 @@ namespace DSCPython
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -166,6 +168,7 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
+            var evaluationSuccess = true;
             if (code == null)
             {
                 return null;
@@ -177,7 +180,6 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-
             }
 
             IntPtr gs = PythonEngine.AcquireLock();
@@ -189,8 +191,13 @@ namespace DSCPython
                     {
                         globalScope = CreateGlobalScope();
                     }
+
                     using (PyScope scope = Py.CreateScope())
                     {
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
+                        scope.Exec(pythonNodeSetupCode);
+
                         ProcessAdditionalBindings(scope, bindingNames, bindingValues);
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
@@ -210,6 +217,7 @@ namespace DSCPython
                         }
                         catch (Exception e)
                         {
+                            evaluationSuccess = false;
                             var traceBack = GetTraceBack(e);
                             if (!string.IsNullOrEmpty(traceBack))
                             {
@@ -223,7 +231,7 @@ namespace DSCPython
                         }
                         finally
                         {
-                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                         }
                     }
                 }
