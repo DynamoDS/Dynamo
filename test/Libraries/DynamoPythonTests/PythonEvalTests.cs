@@ -217,6 +217,26 @@ print 'hello'
         }
 
         [Test]
+        public void IronPythonGivesCorrectErrorLineNumberAndLoadsStdLib()
+        {
+            var code = @"
+from xml.dom.minidom import parseString
+my_xml = parseString('invalid XML!')
+";
+            try
+            {
+                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(code, new ArrayList(), new ArrayList());
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                StringAssert.StartsWith(@"Traceback (most recent call last):
+  File ""<string>"", line 3, in <module>", exc.Message);
+                StringAssert.EndsWith("Data at the root level is invalid. Line 1, position 1.", exc.Message);
+            }
+        }
+
+        [Test]
         public void OutputPythonObjectDoesNotThrow()
         {
             var code = @"

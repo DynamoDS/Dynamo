@@ -104,7 +104,6 @@ namespace DSIronPython
                 ScriptEngine PythonEngine = Python.CreateEngine();
                 if (!string.IsNullOrEmpty(stdLib))
                 {
-                    code = "import sys" + System.Environment.NewLine + code;
                     paths = PythonEngine.GetSearchPaths().ToList();
                     paths.Add(stdLib);
                 }
@@ -123,6 +122,8 @@ namespace DSIronPython
 
             ScriptEngine engine = prev_script.Engine;
             ScriptScope scope = engine.CreateScope();
+            // For backwards compatibility: "sys" was imported by default due to a bug so we keep it that way
+            scope.ImportModule("sys");
 
             ProcessAdditionalBindings(scope, bindingNames, bindingValues);
 
