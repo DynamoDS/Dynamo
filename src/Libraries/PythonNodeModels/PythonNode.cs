@@ -251,6 +251,10 @@ namespace PythonNodeModels
             XmlElement script = element.OwnerDocument.CreateElement("Script");
             script.InnerText = this.script;
             element.AppendChild(script);
+            XmlElement engine = element.OwnerDocument.CreateElement(nameof(Engine));
+            engine.InnerText = Enum.GetName(typeof(PythonEngineVersion), Engine);
+            element.AppendChild(engine);
+
         }
 
         [Obsolete]
@@ -264,6 +268,13 @@ namespace PythonNodeModels
             if (scriptNode != null)
             {
                 script = scriptNode.InnerText;
+            }
+            var engineNode =
+              nodeElement.ChildNodes.Cast<XmlNode>().FirstOrDefault(x => x.Name == nameof(Engine));
+
+            if (engineNode != null)
+            {
+                this.Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
             }
         }
 

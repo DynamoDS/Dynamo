@@ -2143,6 +2143,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
+            helper.SetAttribute(nameof(DisplayLabels), DisplayLabels);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
@@ -2201,6 +2202,7 @@ namespace Dynamo.Graph.Nodes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
+            displayLabels = helper.ReadBoolean(nameof(DisplayLabels), false);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);

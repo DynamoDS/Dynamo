@@ -371,7 +371,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeLogic.DisplayLabels = value;
-                RaisePropertyChanged("IsDisplayingLabels");
+                RaisePropertyChanged(nameof(IsDisplayingLabels));
             }
         }
 
