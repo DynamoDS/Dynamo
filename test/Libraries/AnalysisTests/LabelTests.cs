@@ -25,10 +25,10 @@ namespace AnalysisTests
             var package = factory.CreateRenderPackage();
 
             //Act
+            Assert.IsNotNull(labelTest);
             labelTest.Tessellate(package, new TessellationParameters());
 
             //Assert
-            Assert.IsNotNull(labelTest);
             //Validates when Point is null
             Assert.Throws<ArgumentNullException>( () => Label.ByPointAndString(null, "TestingLabel"));
             //Validates when the label string is null

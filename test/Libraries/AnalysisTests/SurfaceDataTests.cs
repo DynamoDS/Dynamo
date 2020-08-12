@@ -19,8 +19,8 @@ namespace AnalysisTests
             var sad = SurfaceData.BySurfaceAndPoints(TestSurface(),TestUvs());
 
             //Assert
-            Assert.NotNull(sad);
-            Assert.NotNull(sad.Surface);
+            Assert.IsNotNull(sad);
+            Assert.IsNotNull(sad.Surface);
             //The BySurfaceAndPoints method creates a surface without values, then we validate that values is null
             Assert.IsNull(sad.Values);
 
