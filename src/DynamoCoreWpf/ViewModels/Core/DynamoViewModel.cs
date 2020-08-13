@@ -38,12 +38,27 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
+using WpfResources = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
         ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
+    }
+
+    public class SimpleViewModel<T> : ViewModelBase, INotifyPropertyChanged
+    {
+        public T Value { get; private set; }
+        public string Name { get; private set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public SimpleViewModel(T value, string name)
+        {
+            Value = value;
+            Name = name;
+        }
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
@@ -67,7 +82,13 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
-        
+
+        private ObservableCollection<SimpleViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<SimpleViewModel<string>>();
+        public ObservableCollection<SimpleViewModel<string>> DefaultPythonEngineOptions
+        {
+            get { return defaultPythonEngineOptions; }
+        }
+
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -537,7 +558,21 @@ namespace Dynamo.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// Engine used by default for new Python script and string nodes. If defined this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine
+        {
+            get { return model.PreferenceSettings.DefaultPythonEngine; }
+            set
+            {
+                if (value != model.PreferenceSettings.DefaultPythonEngine)
+                {
+                    model.PreferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(DefaultPythonEngine));
+                }
+            }
+        }
 
         #endregion
 
@@ -583,6 +618,11 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            // These options are currently fixed. Eventually we should make them dynamic I guess.
+            defaultPythonEngineOptions.Add(new SimpleViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
+            defaultPythonEngineOptions.Add(new SimpleViewModel<string>("IronPython2", "IronPython2"));
+            defaultPythonEngineOptions.Add(new SimpleViewModel<string>("CPython3", "CPython3"));
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures

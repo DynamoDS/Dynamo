@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -7,6 +8,8 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
@@ -29,13 +32,15 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
+        private PythonEngineVersion? engine = null;
 
         [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue("IronPython2")]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
-        public PythonEngineVersion Engine
+        public PythonEngineVersion? Engine
         {
             get { return engine; }
             set
@@ -52,6 +57,30 @@ namespace PythonNodeModels
         {
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("OUT", Properties.Resources.PythonNodePortDataOutputToolTip)));
             ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override void OnBeforeAdd(DynamoModel dynamoModel, WorkspaceModel workspace)
+        {
+            // Init engine for new node based on setting and system default.
+            if (!Engine.HasValue)
+            {
+                PythonEngineVersion version;
+                var setting = dynamoModel.PreferenceSettings.DefaultPythonEngine;
+                var systemDefault = dynamoModel.DefaultPythonEngine;
+                if (!string.IsNullOrEmpty(setting) && Enum.TryParse(setting, out version))
+                {
+                    Engine = version;
+                }
+                else if (!string.IsNullOrEmpty(systemDefault) && Enum.TryParse(setting, out version))
+                {
+                    Engine = version;
+                }
+                else
+                {
+                    // In the absence of both a setting and system default, default to deserialization default.
+                    Engine = PythonEngineVersion.IronPython2;
+                }
+            }
         }
 
         /// <summary>
@@ -88,7 +117,7 @@ namespace PythonNodeModels
 
             // Here we switched to use the AstFactory.BuildFunctionCall version that accept
             // class name and function name. They will be set by PythonEngineSelector by the engine value. 
-            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine, out string evaluatorClass, out string evaluationMethod);
+            PythonEngineSelector.Instance.GetEvaluatorInfo(Engine.Value, out string evaluatorClass, out string evaluationMethod);
 
             return AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),

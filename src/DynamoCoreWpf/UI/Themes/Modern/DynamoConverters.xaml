@@ -94,6 +94,7 @@
     <controls:NonEmptyStringToCollapsedConverter x:Key="NonEmptyStringToCollapsedConverter" />
     <controls:SearchResultsToVisibilityConverter x:Key="SearchResultsToVisibilityConverter" />
     <controls:EnumToBooleanConverter x:Key="EnumToBoolConverter" />
+    <!--<controls:CompareToParameterConverter x:Key="CompareToParameterConverter" />-->
     <controls:PackageUploadStateToStringConverter x:Key="PackageUploadStateToStringConverter" />
     <controls:PackageDownloadStateToStringConverter x:Key="PackageDownloadStateToStringConverter" />
     <controls:ShowHideClassicNavigatorMenuItemConverter x:Key="ShowHideClassicNavigatorMenuItemConverter" />

@@ -1108,6 +1108,48 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    //public class CompareToParameterConverter : IValueConverter, IMultiValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        if (parameter == null)
+    //        {
+    //            return value == null;
+    //        }
+
+    //        return parameter.Equals(value);
+    //    }
+
+    //    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        if (values[0] == null)
+    //        {
+    //            return values[1] == null;
+    //        }
+
+    //        return values[0].Equals(values[1]);
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        if ((bool)value)
+    //        {
+    //            return parameter;
+    //        }
+
+    //        return DependencyProperty.UnsetValue;
+    //    }
+
+    //    public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+    //    {
+    //        // No way to implement this. Multi-binding can't achieve this
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
     public class PortTypeToMarginConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

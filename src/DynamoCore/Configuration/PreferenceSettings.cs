@@ -334,6 +334,11 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// Engine used by default for new Python script and string nodes. If defined this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine { get; set; }
+
+        /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
         /// </summary>
@@ -388,6 +393,7 @@ namespace Dynamo.Configuration
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
+            DefaultPythonEngine = string.Empty;
         }
 
         /// <summary>
