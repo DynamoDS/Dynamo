@@ -109,6 +109,24 @@ namespace PythonNodeModels
             MigrationAssistantRequested?.Invoke(this, e);
         }
 
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            if (name == nameof(Engine))
+            {
+                PythonEngineVersion result;
+                if (Enum.TryParse<PythonEngineVersion>(value, out result))
+                {
+                    Engine = result;
+                    return true;
+                }
+
+            }
+            return base.UpdateValueCore(updateValueParams);
+        }
+
     }
 
     [NodeName("Python Script")]
@@ -211,17 +229,6 @@ namespace PythonNodeModels
             {
                 script = value;
                 return true;
-            }
-            
-            else if(name == nameof(Engine))
-            {
-                PythonEngineVersion result;
-                if(Enum.TryParse<PythonEngineVersion>(value, out result))
-                {
-                    Engine = result;
-                    return true;
-                }
-              
             }
 
             return base.UpdateValueCore(updateValueParams);
