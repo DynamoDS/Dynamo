@@ -212,6 +212,17 @@ namespace PythonNodeModels
                 script = value;
                 return true;
             }
+            
+            else if(name == nameof(Engine))
+            {
+                PythonEngineVersion result;
+                if(Enum.TryParse<PythonEngineVersion>(value, out result))
+                {
+                    Engine = result;
+                    return true;
+                }
+              
+            }
 
             return base.UpdateValueCore(updateValueParams);
         }
