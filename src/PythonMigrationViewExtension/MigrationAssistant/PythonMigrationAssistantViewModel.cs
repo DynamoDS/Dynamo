@@ -68,6 +68,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public void ChangeCode()
         {
+            if (!this.CurrentViewModel.HasChanges)
+                return;
+
             if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
             {
                 var warningMessage = new MigrationAssistantDisclaimer(this);

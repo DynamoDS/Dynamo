@@ -29,6 +29,37 @@
             <DataTemplate DataType="{x:Type viewModels:SideBySideViewModel}">
                 <local:SideBySideControl DataContext="{Binding}" />
             </DataTemplate>
+            <Style x:Key="HasDifferenceController"
+                   TargetType="{x:Type ContentControl}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.HasChanges}"
+                                 Value="True">
+                        <Setter Property="Content"
+                                Value="{Binding Path=CurrentViewModel}">
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.HasChanges}"
+                                 Value="False">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center">
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateHeader}"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="24"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssisantNoChangesStateMessage}"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -56,8 +87,9 @@
             </Style>
         </Grid.Resources>
         
-        <ContentControl Content="{Binding CurrentViewModel}"
+        <ContentControl Style="{StaticResource HasDifferenceController}"
                         Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        
 
         <!-- Buttons row -->
         <Grid HorizontalAlignment="Stretch"
