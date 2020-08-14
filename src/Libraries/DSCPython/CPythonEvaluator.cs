@@ -134,9 +134,11 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
     public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
@@ -490,12 +492,14 @@ clr.setPreload(True)
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
