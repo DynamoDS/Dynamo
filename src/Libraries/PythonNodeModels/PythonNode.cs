@@ -111,7 +111,6 @@ namespace PythonNodeModels
 
     }
 
-    ///<search>IronPython</search>
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
