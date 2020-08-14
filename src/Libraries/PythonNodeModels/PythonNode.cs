@@ -111,9 +111,11 @@ namespace PythonNodeModels
 
     }
 
+    ///<search>IronPython</search>
     [NodeName("Python Script")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("PythonScriptDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("PythonSearchTags", typeof(Properties.Resources))]
     [OutPortTypes("var[]..[]")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
@@ -273,6 +275,7 @@ namespace PythonNodeModels
     [NodeName("Python Script From String")]
     [NodeCategory(BuiltinNodeCategories.CORE_SCRIPTING)]
     [NodeDescription("PythonScriptFromStringDescription", typeof(Properties.Resources))]
+    [NodeSearchTags("PythonSearchTags", typeof(Properties.Resources))]
     [OutPortTypes("var[]..[]")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
