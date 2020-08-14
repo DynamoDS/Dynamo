@@ -147,6 +147,7 @@ namespace DSCPython
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         private const string DynamoPrintFuncName = "__dynamoprint__";
+        private const string NodeName = "__pythonnodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
 
@@ -198,7 +199,8 @@ namespace DSCPython
                         // Reset the 'sys.path' value to the default python paths on node evaluation. 
                         var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
                         scope.Exec(pythonNodeSetupCode);
-                        var nodeName = ProcessAdditionalBindings(bindingNames, bindingValues);
+
+                        scope.Set(NodeName, ProcessAdditionalBindings(bindingNames, bindingValues).ToPython());
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
@@ -207,7 +209,7 @@ namespace DSCPython
                             scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                         }
                         
-                        scope.Exec($"sys.stdout.prefix = '{nodeName}'");
+                        scope.Exec($"sys.stdout.prefix = {NodeName}");
 
                         try
                         {
