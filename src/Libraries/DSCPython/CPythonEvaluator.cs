@@ -147,7 +147,7 @@ namespace DSCPython
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
         private const string DynamoPrintFuncName = "__dynamoprint__";
-        private const string NodeName = "__pythonnodename__";
+        private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
 
