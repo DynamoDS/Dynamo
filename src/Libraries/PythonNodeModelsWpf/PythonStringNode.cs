@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Dynamo.Controls;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using PythonNodeModels;
@@ -66,15 +67,6 @@ namespace PythonNodeModelsWpf
         }
 
         /// <summary>
-        /// MenuItem click handler
-        /// </summary>
-        private void UpdateToPython2Engine(object sender, EventArgs e)
-        {
-            pythonStringNodeModel.Engine = PythonEngineVersion.IronPython2;
-            pythonStringNodeModel.OnNodeModified();
-        }
-
-        /// <summary>
         /// Learn More button handler
         /// </summary>
         /// <param name="sender"></param>
@@ -88,9 +80,22 @@ namespace PythonNodeModelsWpf
         /// <summary>
         /// MenuItem click handler
         /// </summary>
+        private void UpdateToPython2Engine(object sender, EventArgs e)
+        {
+            dynamoViewModel.ExecuteCommand(
+          new DynamoModel.UpdateModelValueCommand(
+              Guid.Empty, pythonStringNodeModel.GUID, nameof(pythonStringNodeModel.Engine), PythonEngineVersion.IronPython2.ToString()));
+            pythonStringNodeModel.OnNodeModified();
+        }
+
+        /// <summary>
+        /// MenuItem click handler
+        /// </summary>
         private void UpdateToPython3Engine(object sender, EventArgs e)
         {
-            pythonStringNodeModel.Engine = PythonEngineVersion.CPython3;
+            dynamoViewModel.ExecuteCommand(
+        new DynamoModel.UpdateModelValueCommand(
+            Guid.Empty, pythonStringNodeModel.GUID, nameof(pythonStringNodeModel.Engine), PythonEngineVersion.CPython3.ToString()));
             pythonStringNodeModel.OnNodeModified();
         }
     }
