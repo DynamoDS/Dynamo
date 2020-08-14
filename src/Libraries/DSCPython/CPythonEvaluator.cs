@@ -169,6 +169,7 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
+            var evaluationSuccess = true;
             if (code == null)
             {
                 return null;
@@ -218,6 +219,7 @@ namespace DSCPython
                         }
                         catch (Exception e)
                         {
+                            evaluationSuccess = false;
                             var traceBack = GetTraceBack(e);
                             if (!string.IsNullOrEmpty(traceBack))
                             {
@@ -231,7 +233,7 @@ namespace DSCPython
                         }
                         finally
                         {
-                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                         }
                     }
                 }
