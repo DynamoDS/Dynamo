@@ -388,6 +388,111 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void CanCopydAndPasteAndUndoShowLabels()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+         
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            addNode.DisplayLabels = true;
+            CurrentDynamoModel.AddToSelection(addNode);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+
+            CurrentDynamoModel.Copy();
+            Assert.AreEqual(1, CurrentDynamoModel.ClipBoard.Count);
+
+            CurrentDynamoModel.Paste();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.All(x => x.DisplayLabels));
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            addNode.DisplayLabels = false;
+
+            CurrentDynamoModel.ExecuteCommand(
+                 new DynCmd.UpdateModelValueCommand(
+                     Guid.Empty, addNode.GUID, nameof(NodeModel.DisplayLabels), "true"));
+           Assert.IsTrue(addNode.DisplayLabels);
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            Assert.IsFalse(addNode.DisplayLabels);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanCopydAndPasteAndUndoInputState()
+        {
+            var numberNode = new DoubleInput();
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(numberNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            numberNode.IsSetAsInput = true;
+            CurrentDynamoModel.AddToSelection(numberNode);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+
+            CurrentDynamoModel.Copy();
+            Assert.AreEqual(1, CurrentDynamoModel.ClipBoard.Count);
+
+            CurrentDynamoModel.Paste();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.All(x => x.IsSetAsInput));
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            numberNode.IsSetAsInput = false;
+
+            CurrentDynamoModel.ExecuteCommand(
+                 new DynCmd.UpdateModelValueCommand(
+                     Guid.Empty, numberNode.GUID, nameof(NodeModel.IsSetAsInput), "true"));
+            Assert.IsTrue(numberNode.IsSetAsInput);
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            Assert.IsFalse(numberNode.IsSetAsInput);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CanCopydAndPasteAndUndoOutputState()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            addNode.IsSetAsOutput = true;
+            CurrentDynamoModel.AddToSelection(addNode);
+            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
+
+            CurrentDynamoModel.Copy();
+            Assert.AreEqual(1, CurrentDynamoModel.ClipBoard.Count);
+
+            CurrentDynamoModel.Paste();
+            Assert.AreEqual(2, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+
+            Assert.IsTrue(CurrentDynamoModel.CurrentWorkspace.Nodes.All(x => x.IsSetAsOutput));
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+            Assert.AreEqual(1, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            addNode.IsSetAsOutput = false;
+
+            CurrentDynamoModel.ExecuteCommand(
+                 new DynCmd.UpdateModelValueCommand(
+                     Guid.Empty, addNode.GUID, nameof(NodeModel.IsSetAsOutput), "true"));
+            Assert.IsTrue(addNode.IsSetAsOutput);
+
+            CurrentDynamoModel.CurrentWorkspace.Undo();
+
+            Assert.IsFalse(addNode.IsSetAsOutput);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanCopydAndPasteNodeWithRightOffset()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
