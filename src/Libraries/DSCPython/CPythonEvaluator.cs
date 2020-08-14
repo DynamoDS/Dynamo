@@ -146,6 +146,7 @@ namespace DSCPython
     public static class CPythonEvaluator
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
+        private const string DynamoPrintFuncName = "__dynamoprint__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
 
@@ -196,8 +197,7 @@ namespace DSCPython
                         // Reset the 'sys.path' value to the default python paths on node evaluation. 
                         var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
                         scope.Exec(pythonNodeSetupCode);
-
-                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+                        var nodeName = ProcessAdditionalBindings(bindingNames, bindingValues);
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
@@ -205,6 +205,8 @@ namespace DSCPython
                         {
                             scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                         }
+                        
+                        scope.Exec($"sys.stdout.prefix = '{nodeName}'");
 
                         try
                         {
@@ -251,6 +253,16 @@ namespace DSCPython
 import clr
 clr.setPreload(True)
 ");
+
+            // Session is null when running unit tests.
+            if (ExecutionEvents.ActiveSession != null)
+            {
+                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                Action<string> logFunction = msg => logger.Log($"{msg}", LogLevel.ConsoleOnly);
+                scope.Set(DynamoPrintFuncName, logFunction.ToPython());
+                scope.Exec(RedirectPrint());
+            }
+
             return scope;
         }
 
@@ -261,7 +273,7 @@ clr.setPreload(True)
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
+        private static string ProcessAdditionalBindings(IList bindingNames, IList bindingValues)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -278,13 +290,27 @@ clr.setPreload(True)
                 bindingValues.RemoveAt(0);
             }
 
-            // Session is null when running unit tests.
-            if (ExecutionEvents.ActiveSession != null)
-            {
-                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
-                scope.Set("DynamoPrint", logFunction.ToPython());
-            }
+            return nodeName;
+        }
+
+        private static string RedirectPrint()
+        {
+            return String.Format(@"
+import sys
+
+class DynamoStdOut:
+  def __init__(self, log_func):
+    self.text = ''
+    self.log_func = log_func
+    self.prefix = ''
+  def write(self, text):
+    if text == '\n':
+      self.log_func(self.prefix + ': ' + self.text)
+      self.text = ''
+    else:
+      self.text += text
+sys.stdout = DynamoStdOut({0})
+", DynamoPrintFuncName);
         }
 
         /// <summary>
