@@ -726,53 +726,12 @@
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor}"/>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}">
-                            <ComboBox ItemsSource="{Binding DefaultPythonEngineOptions}" SelectedValue="{Binding DefaultPythonEngine, Mode=TwoWay}" SelectedValuePath="Value" DisplayMemberPath="Name"/>
+                            <ComboBox ItemsSource="{Binding DefaultPythonEngineOptions}"
+                                      SelectedValue="{Binding DefaultPythonEngine, Mode=TwoWay}"
+                                      SelectedValuePath="Value"
+                                      DisplayMemberPath="Name"
+                                      Style="{StaticResource SComboBox}"/>
                         </MenuItem>
-                        <!--<MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}"
-                                  ItemsSource="{Binding DefaultPythonEngineOptions}">
-                            <MenuItem.ItemContainerStyle>
-                                <Style TargetType="MenuItem">
-                                    <Setter Property="Focusable" Value="False"/>
-                                    <Setter Property="IsCheckable" Value="True"/>
-                                    <Setter Property="Header" Value="{Binding Name}"/>-->
-                                    <!--<Setter Property="IsChecked" Value="{Binding DefaultPythonEngine,
-                                        RelativeSource={RelativeSource AncestorType=MenuItem},
-                                        Mode=TwoWay,
-                                        Converter={StaticResource CompareToParameterConverter}, ConverterParameter={Binding Value}}"/>-->
-                                    <!--<Setter Property="IsChecked">
-                                        <Setter.Value>
-                                            <MultiBinding Converter="{StaticResource CompareToParameterConverter}">
-                                                <Binding Path="DefaultPythonEngine" RelativeSource="{RelativeSource AncestorType=MenuItem}" Mode="TwoWay"/>
-                                                <Binding Path="Value"/>
-                                            </MultiBinding>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </MenuItem.ItemContainerStyle>
-x                        </MenuItem>-->
-                        <!--<MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}"
-                                  Name="PythonEngine">
-                            <MenuItem Focusable="False"
-                                      Header="{x:Static p:Resources.DefaultPythonEngineNone}"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter='', Mode=TwoWay}"
-                                      Command="{Binding SetNumberFormatCommand}"
-                                      CommandParameter="" />
-                            <MenuItem Focusable="False"
-                                      Header="IronPython2"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter='IronPython2', Mode=TwoWay}"
-                                      Command="{Binding SetNumberFormatCommand}"
-                                      CommandParameter="IronPython2" />
-                            <MenuItem Focusable="False"
-                                      Header="CPython3"
-                                      IsCheckable="True"
-                                      IsChecked="{Binding PreferenceSettings.NumberFormat,Converter={StaticResource NumberFormatToBoolConverter},ConverterParameter='CPython3', Mode=TwoWay}"
-                                      Command="{Binding SetNumberFormatCommand}"
-                                      CommandParameter="CPython3" />
-                        </MenuItem>-->
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"

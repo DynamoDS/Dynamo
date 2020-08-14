@@ -2515,11 +2515,6 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        public virtual void OnBeforeAdd(Dynamo.Models.DynamoModel dynamoModel, WorkspaceModel workspace)
-        {
-            // Purposely empty. For inheritors to override if needed.
-        }
-
         [JsonIgnore]
         public bool ShouldDisplayPreview
         {

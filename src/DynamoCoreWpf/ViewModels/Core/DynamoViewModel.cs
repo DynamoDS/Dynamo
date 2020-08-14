@@ -47,20 +47,6 @@ namespace Dynamo.ViewModels
         ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
     }
 
-    public class SimpleViewModel<T> : ViewModelBase, INotifyPropertyChanged
-    {
-        public T Value { get; private set; }
-        public string Name { get; private set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public SimpleViewModel(T value, string name)
-        {
-            Value = value;
-            Name = name;
-        }
-    }
-
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
     {
         public int ScaleFactorLog
@@ -559,7 +545,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Engine used by default for new Python script and string nodes. If defined this takes precedence over any system settings.
+        /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
         public string DefaultPythonEngine
         {

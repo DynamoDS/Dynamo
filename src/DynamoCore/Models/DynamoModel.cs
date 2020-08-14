@@ -115,7 +115,7 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-        private string defaultPythonEngine;
+        private static string defaultPythonEngine;
 
         #endregion
 
@@ -425,7 +425,7 @@ namespace Dynamo.Models
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 
-        internal string DefaultPythonEngine
+        internal static string DefaultPythonEngine
         {
             get
             {
@@ -511,14 +511,6 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
-            /// <summary>
-            /// Default Python script engine
-            /// </summary>
-            string DefaultPythonEngine { get; set; }
-            /// <summary>
-            /// Provide values for startup options
-            /// </summary>
-            //IDictionary<string, string> StartupOptions { get; set; }
         }
 
         /// <summary>
@@ -540,8 +532,10 @@ namespace Dynamo.Models
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
             public string PythonTemplatePath { get; set; }
+            /// <summary>
+            /// Default Python script engine
+            /// </summary>
             public string DefaultPythonEngine { get; set; }
-            //public IDictionary<string, string> StartupOptions { get; set; }
         }
 
         /// <summary>
@@ -573,14 +567,12 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            //if (config.StartupOptions != null)
-            //{
-            //    if (config.StartupOptions.ContainsKey("PythonEngine"))
-            //    {
-            //        defaultPythonEngine = config.StartupOptions["PythonEngine"];
-            //    }
-            //}
-            defaultPythonEngine = config.DefaultPythonEngine;
+            if (config is DefaultStartConfiguration)
+            {
+                // This is not exposed in IStartConfiguration to avoid a breaking change.
+                // This fact should probably be revisited in next major.
+                defaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
+            }
 
             ClipBoard = new ObservableCollection<ModelBase>();
 
@@ -2232,7 +2224,6 @@ namespace Dynamo.Models
         /// should be selected</param>
         internal void AddNodeToCurrentWorkspace(NodeModel node, bool centered, bool addToSelection = true)
         {
-            node.OnBeforeAdd(this, CurrentWorkspace);
             CurrentWorkspace.AddAndRegisterNode(node, centered);
 
             //TODO(Steve): This should be moved to WorkspaceModel.AddNode when all workspaces have their own selection -- MAGN-5707

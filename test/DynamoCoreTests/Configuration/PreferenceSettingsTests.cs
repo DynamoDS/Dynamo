@@ -5,7 +5,7 @@ using System.IO;
 namespace Dynamo.Tests.Configuration
 {
     [TestFixture]
-    class PreferenceSettingsTests : DynamoModelTestBase
+    class PreferenceSettingsTests : UnitTestBase
     {
         [Test]
         [Category("UnitTests")]
@@ -44,117 +44,52 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
-        public void TestSetIsBackgroundPreviewActive()
+        public void TestSettingsSerialization()
         {
             string tempPath = System.IO.Path.GetTempPath();
             tempPath = Path.Combine(tempPath, "userPreference.xml");
 
-            // Force initial state
-            PreferenceSettings initialSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
-            
-            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
+            PreferenceSettings settings = new PreferenceSettings();
 
-            initialSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
+            // Assert defaults
+            Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
+            Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
+            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
+            Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
+            Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
+            Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
 
-            Assert.AreEqual(resultSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"),
-                initialSetting.GetIsBackgroundPreviewActive("IsBackgroundPreviewActive"));
-        }
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
 
-        [Test]
-        [Category("UnitTests")]
-        public void TestSetDisplayCBNLineNumber()
-        {
-            string tempPath = System.IO.Path.GetTempPath();
-            tempPath = Path.Combine(tempPath, "userPreference.xml");
+            // Assert deserialized values are same when saved with defaults
+            Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), true);
+            Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
+            Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
+            Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
+            Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
+            Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
 
-            // Force initial state
-            PreferenceSettings initialSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
+            // Change setting values
+            settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
+            settings.ShowCodeBlockLineNumber = false;
+            settings.IsIronPythonDialogDisabled = true;
+            settings.ShowTabsAndSpacesInScriptEditor = true;
+            settings.DefaultPythonEngine = "CP3";
+            settings.MaxNumRecentFiles = 24;
 
-            Assert.AreEqual(initialSetting.ShowCodeBlockLineNumber, true);
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
 
-            initialSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, true);
-
-            resultSetting.ShowCodeBlockLineNumber = false;
-            resultSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.ShowCodeBlockLineNumber, false);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestDisableIronPythonDialogAlert()
-        {
-            string tempPath = System.IO.Path.GetTempPath();
-            tempPath = Path.Combine(tempPath, "userPreference.xml");
-
-            // Force initial state
-            PreferenceSettings initialSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
-
-            Assert.AreEqual(initialSetting.IsIronPythonDialogDisabled, false);
-
-            initialSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.IsIronPythonDialogDisabled, false);
-
-            resultSetting.IsIronPythonDialogDisabled = true;
-            resultSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.IsIronPythonDialogDisabled, true);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestShowTabsAndSpacesInScriptEditor()
-        {
-            string tempPath = System.IO.Path.GetTempPath();
-            tempPath = Path.Combine(tempPath, "userPreference.xml");
-
-            // Force initial state
-            PreferenceSettings initialSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
-
-            Assert.AreEqual(initialSetting.ShowTabsAndSpacesInScriptEditor, false);
-
-            initialSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.ShowTabsAndSpacesInScriptEditor, false);
-
-            resultSetting.ShowTabsAndSpacesInScriptEditor = true;
-            resultSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.ShowTabsAndSpacesInScriptEditor, true);
-        }
-
-        [Test]
-        [Category("UnitTests")]
-        public void TestMaxNumRecentFiles()
-        {
-            string tempPath = System.IO.Path.GetTempPath();
-            tempPath = Path.Combine(tempPath, "userPreference.xml");
-
-            // Force initial state
-            PreferenceSettings initialSetting = new PreferenceSettings();
-            PreferenceSettings resultSetting;
-
-            initialSetting.SetIsBackgroundPreviewActive("IsBackgroundPreviewActive", true);
-
-            initialSetting.Save(tempPath);
-            resultSetting = PreferenceSettings.Load(tempPath);
-
-            Assert.AreEqual(resultSetting.MaxNumRecentFiles,
-                initialSetting.MaxNumRecentFiles);
+            // Assert deserialized values are same as last changed
+            Assert.AreEqual(settings.GetIsBackgroundPreviewActive("MyBackgroundPreview"), false);
+            Assert.AreEqual(settings.ShowCodeBlockLineNumber, false);
+            Assert.AreEqual(settings.IsIronPythonDialogDisabled, true);
+            Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
+            Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
+            Assert.AreEqual(settings.MaxNumRecentFiles, 24);
         }
     }
 }
