@@ -2094,6 +2094,30 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
                     return true;
+
+                case nameof(DisplayLabels):
+                    bool newDisplayLabels;
+                    if (bool.TryParse(value, out newDisplayLabels))
+                    {
+                        DisplayLabels = newDisplayLabels;
+                    }
+                    return true;
+
+                case nameof(IsSetAsInput):
+                    bool newIsSetAsInput;
+                    if (bool.TryParse(value, out newIsSetAsInput))
+                    {
+                        IsSetAsInput = newIsSetAsInput;
+                    }
+                    return true;
+
+                case nameof(IsSetAsOutput):
+                    bool newIsSetAsOutput;
+                    if (bool.TryParse(value, out newIsSetAsOutput))
+                    {
+                        IsSetAsOutput = newIsSetAsOutput;
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
