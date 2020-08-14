@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -57,6 +58,24 @@ namespace PythonNodeModels
                     engine = value;
                     RaisePropertyChanged(nameof(Engine));
                 }
+            }
+        }
+
+        private ObservableCollection<PythonEngineVersion> availableEngines;
+        /// <summary>
+        /// Available Python engines.
+        /// </summary>
+        public ObservableCollection<PythonEngineVersion> AvailableEngines
+        {
+            get
+            {
+                if (availableEngines == null)
+                {
+                    availableEngines = new ObservableCollection<PythonEngineVersion>();
+                    availableEngines.Add(PythonEngineVersion.IronPython2);
+                    availableEngines.Add(PythonEngineVersion.CPython3);
+                }
+                return availableEngines;
             }
         }
 
