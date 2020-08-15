@@ -202,7 +202,7 @@ namespace DSCPython
                         var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
                         scope.Exec(pythonNodeSetupCode);
 
-                        scope.Set(NodeName, ProcessAdditionalBindings(bindingNames, bindingValues).ToPython());
+                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
@@ -210,8 +210,6 @@ namespace DSCPython
                         {
                             scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
                         }
-                        
-                        scope.Exec($"sys.stdout.prefix = {NodeName}");
 
                         try
                         {
@@ -260,15 +258,6 @@ import clr
 clr.setPreload(True)
 ");
 
-            // Session is null when running unit tests.
-            if (ExecutionEvents.ActiveSession != null)
-            {
-                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{msg}", LogLevel.ConsoleOnly);
-                scope.Set(DynamoPrintFuncName, logFunction.ToPython());
-                scope.Exec(RedirectPrint());
-            }
-
             return scope;
         }
 
@@ -279,7 +268,7 @@ clr.setPreload(True)
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static string ProcessAdditionalBindings(IList bindingNames, IList bindingValues)
+        private static void ProcessAdditionalBindings(PyScope scope, IList bindingNames, IList bindingValues)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -296,22 +285,28 @@ clr.setPreload(True)
                 bindingValues.RemoveAt(0);
             }
 
-            return nodeName;
+            // Session is null when running unit tests.
+            if (ExecutionEvents.ActiveSession != null)
+            {
+                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                scope.Set(DynamoPrintFuncName, logFunction.ToPython());
+                scope.Exec(RedirectPrint());
+            }
         }
 
         private static string RedirectPrint()
         {
-            return String.Format(@"
+            return string.Format(@"
 import sys
 
 class DynamoStdOut:
   def __init__(self, log_func):
     self.text = ''
     self.log_func = log_func
-    self.prefix = ''
   def write(self, text):
     if text == '\n':
-      self.log_func(self.prefix + ': ' + self.text)
+      self.log_func(self.text)
       self.text = ''
     else:
       self.text += text
