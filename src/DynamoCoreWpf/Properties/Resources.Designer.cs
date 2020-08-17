@@ -855,6 +855,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use System Default.
+        /// </summary>
+        public static string DefaultPythonEngineNone {
+            get {
+                return ResourceManager.GetString("DefaultPythonEngineNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecating Package.
         /// </summary>
         public static string DeprecatingPackageMessageBoxTitle {
@@ -1841,6 +1850,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingMenuVolumeUnits {
             get {
                 return ResourceManager.GetString("DynamoViewSettingMenuVolumeUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Python Engine.
+        /// </summary>
+        public static string DynamoViewSettingsDefaultPythonEngine {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsDefaultPythonEngine", resourceCulture);
             }
         }
         

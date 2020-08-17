@@ -133,7 +133,7 @@ namespace Dynamo.Applications
                     ConvertFile = convertFile,
                     GeometryFilePath = geometryFilePath,
                     ImportedPaths = importPaths,
-                    ASMPath = asmPath,
+                    ASMPath = asmPath
                 };
             }
 

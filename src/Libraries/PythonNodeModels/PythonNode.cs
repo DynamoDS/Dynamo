@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -7,6 +9,7 @@ using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
@@ -29,15 +32,25 @@ namespace PythonNodeModels
 
     public abstract class PythonNodeBase : VariableInputNode
     {
-        private PythonEngineVersion engine = PythonEngineVersion.IronPython2;
+        private PythonEngineVersion engine = PythonEngineVersion.Unspecified;
 
         [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue(nameof(PythonEngineVersion.IronPython2))]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
         public PythonEngineVersion Engine
         {
-            get { return engine; }
+            get
+            {
+                // This is a first-time case for newly created nodes only
+                if (engine == PythonEngineVersion.Unspecified)
+                {
+                    SetEngineByDefault();
+                }
+                return engine;
+            }
             set
             {
                 if (engine != value)
@@ -45,6 +58,47 @@ namespace PythonNodeModels
                     engine = value;
                     RaisePropertyChanged(nameof(Engine));
                 }
+            }
+        }
+
+        private ObservableCollection<PythonEngineVersion> availableEngines;
+        /// <summary>
+        /// Available Python engines.
+        /// </summary>
+        public ObservableCollection<PythonEngineVersion> AvailableEngines
+        {
+            get
+            {
+                if (availableEngines == null)
+                {
+                    availableEngines = new ObservableCollection<PythonEngineVersion>();
+                    availableEngines.Add(PythonEngineVersion.IronPython2);
+                    availableEngines.Add(PythonEngineVersion.CPython3);
+                }
+                return availableEngines;
+            }
+        }
+
+        /// <summary>
+        /// Set the engine to be used by default for this node, based on user and system settings.
+        /// </summary>
+        private void SetEngineByDefault()
+        {
+            PythonEngineVersion version;
+            var setting = PreferenceSettings.GetDefaultPythonEngine();
+            var systemDefault = DynamoModel.DefaultPythonEngine;
+            if (!string.IsNullOrEmpty(setting) && Enum.TryParse(setting, out version))
+            {
+                engine = version;
+            }
+            else if (!string.IsNullOrEmpty(systemDefault) && Enum.TryParse(systemDefault, out version))
+            {
+                engine = version;
+            }
+            else
+            {
+                // In the absence of both a setting and system default, default to deserialization default.
+                engine = PythonEngineVersion.IronPython2;
             }
         }
 
