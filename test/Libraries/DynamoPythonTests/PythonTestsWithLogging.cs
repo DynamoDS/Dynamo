@@ -32,7 +32,10 @@ namespace DynamoPythonTests
             var expectedOutput = "Greeting CPython node: Hello from Python3!!!" + Environment.NewLine
                 + "Greeting IronPython node: Hello from Python2!!!" + Environment.NewLine
                 + "Greeting CPython String node: Hello from Python3!!!" + Environment.NewLine
-                + "Greeting IronPython String node: Hello from Python2!!!" + Environment.NewLine;
+                + "Greeting IronPython String node: Hello from Python2!!!" + Environment.NewLine
+                + "Multiple print parameter node: Hello Dynamo Print !!!" + Environment.NewLine
+                + "Print separator parameter node: Hello_Dynamo_Print_!!!" + Environment.NewLine
+                + @"`!""£$%^&*()_+-[{]}#~'@;:|\,<.>/? Special character node: Lot's of special characters!!!" + Environment.NewLine;
 
             CurrentDynamoModel.OpenFileFromPath(Path.Combine(TestDirectory, "core", "python", "DynamoPrint.dyn"));
             StringAssert.EndsWith(expectedOutput, CurrentDynamoModel.Logger.LogText);

@@ -148,6 +148,8 @@ namespace DSCPython
     public static class CPythonEvaluator
     {
         private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
+        private const string DynamoPrintFuncName = "__dynamoprint__";
+        private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
 
@@ -255,6 +257,7 @@ namespace DSCPython
 import clr
 clr.setPreload(True)
 ");
+
             return scope;
         }
 
@@ -287,8 +290,28 @@ clr.setPreload(True)
             {
                 dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
                 Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
-                scope.Set("DynamoPrint", logFunction.ToPython());
+                scope.Set(DynamoPrintFuncName, logFunction.ToPython());
+                scope.Exec(RedirectPrint());
             }
+        }
+
+        private static string RedirectPrint()
+        {
+            return string.Format(@"
+import sys
+
+class DynamoStdOut:
+  def __init__(self, log_func):
+    self.text = ''
+    self.log_func = log_func
+  def write(self, text):
+    if text == '\n':
+      self.log_func(self.text)
+      self.text = ''
+    else:
+      self.text += text
+sys.stdout = DynamoStdOut({0})
+", DynamoPrintFuncName);
         }
 
         /// <summary>
