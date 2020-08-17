@@ -69,8 +69,8 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
 
-        private ObservableCollection<SimpleViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<SimpleViewModel<string>>();
-        public ObservableCollection<SimpleViewModel<string>> DefaultPythonEngineOptions
+        private ObservableCollection<NameValuePairViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<NameValuePairViewModel<string>>();
+        public ObservableCollection<NameValuePairViewModel<string>> DefaultPythonEngineOptions
         {
             get { return defaultPythonEngineOptions; }
         }
@@ -605,9 +605,9 @@ namespace Dynamo.ViewModels
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
             // These options are currently fixed. Eventually we should make them dynamic I guess.
-            defaultPythonEngineOptions.Add(new SimpleViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
-            defaultPythonEngineOptions.Add(new SimpleViewModel<string>("IronPython2", "IronPython2"));
-            defaultPythonEngineOptions.Add(new SimpleViewModel<string>("CPython3", "CPython3"));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("IronPython2", "IronPython2"));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("CPython3", "CPython3"));
 
             this.ShowLogin = startConfiguration.ShowLogin;
 

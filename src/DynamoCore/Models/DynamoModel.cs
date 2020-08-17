@@ -115,7 +115,6 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
-        private static string defaultPythonEngine;
 
         #endregion
 
@@ -425,13 +424,7 @@ namespace Dynamo.Models
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 
-        internal static string DefaultPythonEngine
-        {
-            get
-            {
-                return defaultPythonEngine;
-            }
-        }
+        internal static string DefaultPythonEngine { get; private set; }
 
         #endregion
 
@@ -570,8 +563,8 @@ namespace Dynamo.Models
             if (config is DefaultStartConfiguration)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
-                // This fact should probably be revisited in next major.
-                defaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
+                // TODO: This fact should probably be revisited in next major.
+                DefaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();

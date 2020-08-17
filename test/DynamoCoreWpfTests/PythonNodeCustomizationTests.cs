@@ -15,7 +15,11 @@ namespace DynamoCoreWpfTests
 {
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
-        private readonly List<string> expectedEngineMenuItems = Enum.GetNames(typeof(PythonNodeModels.PythonEngineVersion)).Skip(1).ToList();
+        private readonly List<string> expectedEngineMenuItems = new List<string>()
+        {
+            PythonEngineVersion.IronPython2.ToString(),
+            PythonEngineVersion.CPython3.ToString()
+        };
 
         public override void Open(string path)
         {

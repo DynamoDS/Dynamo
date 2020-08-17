@@ -6,7 +6,7 @@ namespace Dynamo.ViewModels
     /// Dead simple view model for when you only need to have a different display name and underlying value.
     /// </summary>
     /// <typeparam name="T">The type of your value</typeparam>
-    public class SimpleViewModel<T> : ViewModelBase, INotifyPropertyChanged
+    public class NameValuePairViewModel<T> : ViewModelBase, INotifyPropertyChanged
     {
         /// <summary>
         /// Underlying value.
@@ -22,7 +22,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="value">Underlying value</param>
         /// <param name="name">Display name</param>
-        public SimpleViewModel(T value, string name)
+        public NameValuePairViewModel(T value, string name)
         {
             Value = value;
             Name = name;
