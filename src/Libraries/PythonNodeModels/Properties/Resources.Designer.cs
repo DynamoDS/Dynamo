@@ -142,7 +142,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runs an embedded IronPython script..
+        ///   Looks up a localized string similar to Runs an embedded Python script..
         /// </summary>
         public static string PythonScriptDescription {
             get {
@@ -259,11 +259,20 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runs a IronPython script from a string..
+        ///   Looks up a localized string similar to Runs a Python script from a string..
         /// </summary>
         public static string PythonScriptFromStringDescription {
             get {
                 return ResourceManager.GetString("PythonScriptFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IronPython;CPython;.
+        /// </summary>
+        public static string PythonSearchTags {
+            get {
+                return ResourceManager.GetString("PythonSearchTags", resourceCulture);
             }
         }
         
