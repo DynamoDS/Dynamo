@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Dynamo.Wpf.Windows;
@@ -156,7 +157,9 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython2Engine(object sender, EventArgs e)
         {
-            pythonNodeModel.Engine = PythonEngineVersion.IronPython2;
+            dynamoViewModel.ExecuteCommand(
+            new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.Engine), PythonEngineVersion.IronPython2.ToString()));
             pythonNodeModel.OnNodeModified();
         }
 
@@ -165,7 +168,9 @@ namespace PythonNodeModelsWpf
         /// </summary>
         private void UpdateToPython3Engine(object sender, EventArgs e)
         {
-            pythonNodeModel.Engine = PythonEngineVersion.CPython3;
+            dynamoViewModel.ExecuteCommand(
+           new DynamoModel.UpdateModelValueCommand(
+               Guid.Empty, pythonNodeModel.GUID, nameof(pythonNodeModel.Engine), PythonEngineVersion.CPython3.ToString()));
             pythonNodeModel.OnNodeModified();
         }
     }
