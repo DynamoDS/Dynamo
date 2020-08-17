@@ -69,7 +69,12 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         public void ChangeCode()
         {
             if (!this.CurrentViewModel.HasChanges)
+            {
+                if (this.PythonNode.Engine == PythonEngineVersion.CPython3)
+                    return;
+                this.PythonNode.Engine = PythonEngineVersion.CPython3;
                 return;
+            }
 
             if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
             {

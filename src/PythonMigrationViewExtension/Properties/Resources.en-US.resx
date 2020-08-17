@@ -146,7 +146,7 @@ There will be a time of transition where both versions of Python node will work 
     <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which will be deprecated in later versions. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
   </data>
   <data name="MigrationAssisantNoChangesStateMessage" xml:space="preserve">
-    <value>Your code is ready to run with the Python 3 engine.</value>
+    <value>Your code is ready to run with the Python 3 engine. Click accept and we'll switch to the Python 3 engine for you.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
     <value>Continue</value>

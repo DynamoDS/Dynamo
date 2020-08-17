@@ -44,15 +44,20 @@
                             <Setter.Value>
                                 <DataTemplate>
                                     <StackPanel Orientation="Vertical"
-                                                VerticalAlignment="Center">
+                                                VerticalAlignment="Center"
+                                                Width="400">
                                         <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateHeader}"
+                                                   TextAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    FontSize="24"
-                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
                                         <TextBlock Text="{x:Static p:Resources.MigrationAssisantNoChangesStateMessage}"
+                                                   TextAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    FontSize="14"
-                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}" />
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
                                     </StackPanel>
                                 </DataTemplate>
                             </Setter.Value>
