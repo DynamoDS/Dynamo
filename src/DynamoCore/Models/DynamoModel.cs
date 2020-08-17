@@ -563,7 +563,7 @@ namespace Dynamo.Models
             if (config is DefaultStartConfiguration)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
-                // TODO: This fact should probably be revisited in next major.
+                // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
             }
 
