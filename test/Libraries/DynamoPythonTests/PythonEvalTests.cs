@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Linq;
+using DSCPython;
 
 namespace DSPythonTests
 {
@@ -13,7 +15,6 @@ namespace DSPythonTests
             DSCPython.CPythonEvaluator.EvaluatePythonScript,
             DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript
         };
-
 
         [Test]
         [Category("UnitTests")]
@@ -170,6 +171,72 @@ print 'hello'
         }
 
         [Test]
+        public void CPythonEngineWithErrorRaisesCorrectEvent()
+        {
+          
+            var count = 0;
+            DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
+            {
+                count = count + 1;
+                if (count == 1)
+                {
+                    Assert.AreEqual(EvaluationState.Success, state);
+                }
+                else if (count == 2)
+                {
+                    Assert.AreEqual(EvaluationState.Failed, state);
+                }
+            };
+
+            CPythonEvaluator.EvaluationEnd += CPythonEvaluator_EvaluationEnd;
+
+            var code = @"1";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            finally
+            {
+                Assert.AreEqual(1, count);
+            }
+
+            code = @"1/a";
+            try
+            {
+                DSCPython.CPythonEvaluator.EvaluatePythonScript(code, new ArrayList(), new ArrayList());
+            }
+            catch
+            {
+                //we anticipate an undefined var error.
+            }
+            finally
+            {
+                DSCPython.CPythonEvaluator.EvaluationEnd -= CPythonEvaluator_EvaluationEnd;
+                Assert.AreEqual(2, count);
+            }
+        }
+
+        [Test]
+        public void IronPythonGivesCorrectErrorLineNumberAndLoadsStdLib()
+        {
+            var code = @"
+from xml.dom.minidom import parseString
+my_xml = parseString('invalid XML!')
+";
+            try
+            {
+                DSIronPython.IronPythonEvaluator.EvaluateIronPythonScript(code, new ArrayList(), new ArrayList());
+                Assert.Fail("An exception was expected");
+            }
+            catch (Exception exc)
+            {
+                StringAssert.StartsWith(@"Traceback (most recent call last):
+  File ""<string>"", line 3, in <module>", exc.Message);
+                StringAssert.EndsWith("Data at the root level is invalid. Line 1, position 1.", exc.Message);
+            }
+        }
+
+        [Test]
         public void OutputPythonObjectDoesNotThrow()
         {
             var code = @"
@@ -210,6 +277,48 @@ OUT = o
                 Assert.AreEqual("I am a myobj", DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty).ToString());
 
             });
+        }
+
+        [Test]
+        public void PythonObjectWithDynamoSkipisNotMarshaled()
+        {
+            var code = @"
+
+class iterable:
+    def __str__(self):
+        return 'I want to participate in conversion'
+    def __iter__(self):
+        return iter([0,1,2,3])
+    def __getitem__(self,key):
+        return key
+
+o = iterable()
+OUT = o
+";
+
+            var code2 = @"
+
+class notiterable:
+    def __dynamoskipconversion__(self):
+        pass
+    def __str__(self):
+        return 'I want to skip in conversion'
+    def __iter__(self):
+        return iter([0,1,2,3])
+    def __getitem__(self,key):
+        return key
+
+o = notiterable()
+OUT = o
+";
+            var empty = new ArrayList();
+            var result1 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code, empty, empty);
+            var result2 = DSCPython.CPythonEvaluator.EvaluatePythonScript(code2, empty, empty);
+            Assert.IsInstanceOf(typeof(IList), result1);
+            Assert.IsTrue(new List<object>() { 0L, 1L, 2L, 3L }
+                .SequenceEqual((IEnumerable<Object>)result1));
+            Assert.IsInstanceOf(typeof(DSCPython.DynamoCPythonHandle), result2);
+
         }
 
         [Test]

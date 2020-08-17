@@ -34,6 +34,7 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
@@ -503,6 +504,40 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsIronPythonDialogDisabled));
             }
         }
+
+
+        private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
+        /// <summary>
+        /// Gets/Sets the text editor options for python script editor.
+        /// </summary>
+        internal DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
+        {
+            get
+            {
+                return editTextOptions;
+            }
+        } 
+
+
+        /// <summary>
+        /// Indicates if the whitespaces and tabs should be visible in the python script editor.
+        /// This property is for the global whitespace toggle option in settings menu.
+        /// </summary>
+        public bool ShowTabsAndSpacesInScriptEditor
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor;
+            }
+            set
+            {
+                PythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
+                model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
+                RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
+            }
+        }
+
+
 
         #endregion
 

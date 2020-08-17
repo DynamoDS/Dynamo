@@ -142,7 +142,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runs an embedded IronPython script..
+        ///   Looks up a localized string similar to Runs an embedded Python script..
         /// </summary>
         public static string PythonScriptDescription {
             get {
@@ -165,6 +165,15 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorCodeComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorCodeComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
+        /// </summary>
+        public static string PythonScriptEditorEngineDropdownTooltip {
+            get {
+                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
             }
         }
         
@@ -194,26 +203,6 @@ namespace PythonNodeModels.Properties {
                 return ResourceManager.GetString("PythonScriptEditorMigrationAssistantButtonTooltip", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Use this dropdown to choose the python version/engine to execute your code..
-        /// </summary>
-        public static string PythonScriptEditorEngineDropdownTooltip
-        {
-            get
-            {
-                return ResourceManager.GetString("PythonScriptEditorEngineDropdownTooltip", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Learn More.
-        /// </summary>
-        public static string PythonScriptEditorMoreInfoButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorMoreInfoButton", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Learn about Python3 updates..
@@ -230,15 +219,6 @@ namespace PythonNodeModels.Properties {
         public static string PythonScriptEditorOutputComment {
             get {
                 return ResourceManager.GetString("PythonScriptEditorOutputComment", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Revert.
-        /// </summary>
-        public static string PythonScriptEditorRevertButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorRevertButton", resourceCulture);
             }
         }
         
@@ -270,15 +250,6 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
-        /// </summary>
-        public static string PythonScriptEditorSaveChangesButton {
-            get {
-                return ResourceManager.GetString("PythonScriptEditorSaveChangesButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Save the changes made to current Python node editor and close it..
         /// </summary>
         public static string PythonScriptEditorSaveChangesButtonTooltip {
@@ -288,11 +259,20 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Runs a IronPython script from a string..
+        ///   Looks up a localized string similar to Runs a Python script from a string..
         /// </summary>
         public static string PythonScriptFromStringDescription {
             get {
                 return ResourceManager.GetString("PythonScriptFromStringDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IronPython;CPython;.
+        /// </summary>
+        public static string PythonSearchTags {
+            get {
+                return ResourceManager.GetString("PythonSearchTags", resourceCulture);
             }
         }
         

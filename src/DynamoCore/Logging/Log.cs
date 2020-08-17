@@ -366,7 +366,7 @@ namespace Dynamo.Logging
         }
 
         /// <summary>
-        /// Code to transfer an item iver the network
+        /// Code to transfer an item over the network
         /// </summary>
         /// <param name="item"></param>
         /// <returns>true if success, false otherwise</returns>

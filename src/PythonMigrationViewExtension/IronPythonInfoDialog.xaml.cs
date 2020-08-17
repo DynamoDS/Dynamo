@@ -25,69 +25,61 @@ namespace Dynamo.PythonMigration
             var customNodesWithPythonDependencies = GraphPythonDependencies.CustomNodePythonDependencyMap
                                                             .Where(x => x.Value.Equals(GraphPythonDependencies.CNPythonDependencyType.DirectDependency));
 
-            if (customNodesWithPythonDependencies.Any())
+            if (!customNodesWithPythonDependencies.Any()) return;
+
+            foreach (var entry in customNodesWithPythonDependencies)
             {
-                foreach (var entry in customNodesWithPythonDependencies)
-                {
-                    ViewModel.CustomNodeManager.TryGetNodeInfo(entry.Key, out CustomNodeInfo customNodeInfo);
+                this.ViewModel.CustomNodeManager.TryGetNodeInfo(entry.Key, out CustomNodeInfo customNodeInfo);
 
-                    var packageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : CustomNodeItem.UserDefinitions;
+                var packageName = customNodeInfo.PackageInfo != null ? customNodeInfo.PackageInfo.Name : CustomNodeItem.UserDefinitions;
 
-                    CustomNodeItem customNodeItem = new CustomNodeItem(customNodeInfo.Name, customNodeInfo.FunctionId, packageName);
+                CustomNodeItem customNodeItem = new CustomNodeItem(customNodeInfo.Name, customNodeInfo.FunctionId, packageName);
 
-                    if (customNodeInfo.PackageInfo != null)
-                    {
-                        PackagedCustomNodesContainingPython.Items.Add(customNodeItem);
-                    }
-                    else
-                    {
-                        UserDefinitionCustomNodesContainingPython.Items.Add(customNodeItem);
-                    }
-                }
-
-                if (PackagedCustomNodesContainingPython.Items.Count > 0)
-                {
-                    ExpanderForPackagedDependencies.Visibility = Visibility.Visible;
-                }
-
-                if (UserDefinitionCustomNodesContainingPython.Items.Count > 0)
-                {
-                    ExpanderForUserDefinitionDependencies.Visibility = Visibility.Visible;
-                }
-                MainExpander.Visibility = Visibility.Visible;
+                if (customNodeInfo.PackageInfo != null)
+                    this.PackagedCustomNodesContainingPython.Items.Add(customNodeItem);
+                else
+                    this.UserDefinitionCustomNodesContainingPython.Items.Add(customNodeItem);
             }
+
+            if (this.PackagedCustomNodesContainingPython.Items.Count > 0)
+                this.ExpanderForPackagedDependencies.Visibility = Visibility.Visible;
+
+            if (this.UserDefinitionCustomNodesContainingPython.Items.Count > 0)
+                this.ExpanderForUserDefinitionDependencies.Visibility = Visibility.Visible;
+
+            this.MainExpander.Visibility = Visibility.Visible;
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void OnMoreInformationButtonClicked(object sender, RoutedEventArgs e)
         {
             this.ViewModel.OpenPythonMigrationWarningDocumentation();
-            this.Close();
+            Close();
         }
 
         private void ToggleIronPythonDialog(object sender, RoutedEventArgs e)
         {
-            ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = DisableIronPythonDialogCheck.IsChecked.Value;
+            this.ViewModel.DynamoViewModel.IsIronPythonDialogDisabled = this.DisableIronPythonDialogCheck.IsChecked.Value;
         }
 
         private void OnCustomNodeClick(object sender, RoutedEventArgs e)
         {
-            if (UserDefinitionCustomNodesContainingPython.SelectedItems.Count == 1)
+            if (this.UserDefinitionCustomNodesContainingPython.SelectedItems.Count == 1)
             {
-                CustomNodeItem selectedCNItem = UserDefinitionCustomNodesContainingPython.SelectedItem as CustomNodeItem;
+                CustomNodeItem selectedCNItem = this.UserDefinitionCustomNodesContainingPython.SelectedItem as CustomNodeItem;
                 Guid functionId = selectedCNItem.FunctionId;
-                ViewModel.DynamoViewModel.Model.OpenCustomNodeWorkspace(functionId);
+                this.ViewModel.DynamoViewModel.Model.OpenCustomNodeWorkspace(functionId);
             }
         }
 
         private void ExecuteCtrlCCopyCommand(object sender, ExecutedRoutedEventArgs e)
         {
             string collectedText = "";
-            ListBox lb = (ListBox) sender;
-            
+            ListBox lb = (ListBox)sender;
+
             foreach (var item in lb.SelectedItems)
             {
                 collectedText += item.ToString() + System.Environment.NewLine;
@@ -103,34 +95,35 @@ namespace Dynamo.PythonMigration
         {
             e.CanExecute = true;
         }
-    }
 
-    // Represents the data for each Custom Node item in the listbox. 
-    internal class CustomNodeItem
-    {
-        internal CustomNodeItem(string name, Guid functionId, string packageName) 
+        // Represents the data for each Custom Node item in the listbox. 
+        private class CustomNodeItem
         {
-            Name = name;
-            FunctionId = functionId;
-            PackageName = packageName;
+            internal CustomNodeItem(string name, Guid functionId, string packageName)
+            {
+                this.Name = name;
+                this.FunctionId = functionId;
+                this.PackageName = packageName;
+            }
+
+            public string Name { get; private set; }
+            public string PackageName { get; private set; }
+            internal Guid FunctionId { get; private set; }
+
+            internal const string UserDefinitions = "Definitions";
+
+            public override string ToString()
+            {
+                if (this.PackageName.Equals(UserDefinitions))
+                {
+                    return this.Name;
+                }
+                else
+                {
+                    return this.PackageName + " : " + this.Name;
+                }
+            }
         }
 
-        public string Name { get; private set; }
-        public string PackageName { get; private set; }
-        internal Guid FunctionId { get; private set; }
-
-        internal const string UserDefinitions = "Definitions";
-
-        public override string ToString()
-        {
-            if (PackageName.Equals(UserDefinitions))
-            {
-                return Name;
-            }
-            else
-            {
-                return PackageName + " : " + Name;
-            }
-        }
     }
 }

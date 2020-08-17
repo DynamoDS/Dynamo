@@ -412,15 +412,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}.
-        /// </summary>
-        public static string ConsentFormInstrumentationCheckBoxContent {
-            get {
-                return ResourceManager.GetString("ConsentFormInstrumentationCheckBoxContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
@@ -1913,6 +1904,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuShowPreviewBubbles {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Whitespace Characters in Python Editor.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor", resourceCulture);
             }
         }
         
