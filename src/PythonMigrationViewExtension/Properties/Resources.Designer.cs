@@ -143,15 +143,6 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your code is ready to run with the Python 3 engine. Click accept and we&apos;ll switch to the Python 3 engine for you..
-        /// </summary>
-        public static string MigrationAssisantNoChangesStateMessage {
-            get {
-                return ResourceManager.GetString("MigrationAssisantNoChangesStateMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Continue.
         /// </summary>
         public static string MigrationAssistantDisclaimerContinueButtonContent {
@@ -212,6 +203,15 @@ namespace Dynamo.PythonMigration.Properties {
         public static string MigrationAssistantNoChangesStateHeader {
             get {
                 return ResourceManager.GetString("MigrationAssistantNoChangesStateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your code is ready to run with the Python 3 engine. Click accept and we&apos;ll switch to the Python 3 engine for you..
+        /// </summary>
+        public static string MigrationAssistantNoChangesStateMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantNoChangesStateMessage", resourceCulture);
             }
         }
         

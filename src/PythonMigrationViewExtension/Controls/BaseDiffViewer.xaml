@@ -52,7 +52,7 @@
                                                    FontSize="24"
                                                    Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                                                    TextWrapping="Wrap" />
-                                        <TextBlock Text="{x:Static p:Resources.MigrationAssisantNoChangesStateMessage}"
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateMessage}"
                                                    TextAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    FontSize="14"
