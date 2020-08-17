@@ -101,7 +101,7 @@
                         </Polygon>
                     </Button.Resources>
                 </Button>
-                <ComboBox ItemsSource="{Binding nodeModel.AvailableEngines}"
+                <ComboBox ItemsSource="{Binding nodeModel.AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
                           SelectionChanged="OnEngineChanged"
                           Style="{StaticResource DropDown}"
