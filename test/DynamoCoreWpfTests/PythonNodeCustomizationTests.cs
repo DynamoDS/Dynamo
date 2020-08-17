@@ -15,7 +15,11 @@ namespace DynamoCoreWpfTests
 {
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
-        private readonly List<string> expectedEngineMenuItems = Enum.GetNames(typeof(PythonNodeModels.PythonEngineVersion)).ToList();
+        private readonly List<string> expectedEngineMenuItems = new List<string>()
+        {
+            PythonEngineVersion.IronPython2.ToString(),
+            PythonEngineVersion.CPython3.ToString()
+        };
 
         public override void Open(string path)
         {
@@ -47,14 +51,18 @@ namespace DynamoCoreWpfTests
         public void CanChangeEngineFromScriptEditorDropDown()
         {
             // Arrange
-            var expectedAvailableEngines = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
-            var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var expectedAvailableEngines = new List<PythonEngineVersion>()
+            {
+                PythonEngineVersion.IronPython2,
+                PythonEngineVersion.CPython3
+            };
+            var expectedDefaultEngine = PythonEngineVersion.IronPython2;
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
 
             var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
             Assert.NotNull(nodeModel);
 
             var scriptWindow = EditPythonCode(nodeView,View);
@@ -70,7 +78,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
             CollectionAssert.AreEqual(expectedAvailableEngines, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
-            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonNodeModels.PythonEngineVersion.CPython3);
+            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonEngineVersion.CPython3);
             Assert.AreEqual(nodeModel.Engine, engineAfterChange);
             var engineMenuItem = nodeView.MainContextMenu
                 .Items
