@@ -162,9 +162,8 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsInput != value)
                 {
-                    DynamoViewModel.ExecuteCommand(
-               new DynamoModel.UpdateModelValueCommand(
-                   Guid.Empty, NodeModel.GUID, nameof(IsSetAsInput), value.ToString()));
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsInput), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsSetAsInput));
                 }
@@ -190,9 +189,8 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsOutput != value)
                 {
-                    DynamoViewModel.ExecuteCommand(
-               new DynamoModel.UpdateModelValueCommand(
-                   Guid.Empty, NodeModel.GUID, nameof(IsSetAsOutput), value.ToString()));
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsOutput), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsSetAsOutput));
                 }
@@ -376,12 +374,13 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.DisplayLabels; }
             set
             {
-                
-                    DynamoViewModel.ExecuteCommand(
-               new DynamoModel.UpdateModelValueCommand(
-                   Guid.Empty, NodeModel.GUID, nameof(nodeLogic.DisplayLabels), value.ToString()));
+                if (nodeLogic.DisplayLabels != value)
+                {
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                    Guid.Empty, NodeModel.GUID, nameof(nodeLogic.DisplayLabels), value.ToString()));
 
                     RaisePropertyChanged(nameof(IsDisplayingLabels));
+                }
             }
         }
 

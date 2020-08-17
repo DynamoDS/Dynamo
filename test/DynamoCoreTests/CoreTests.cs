@@ -388,7 +388,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CanCopydAndPasteAndUndoShowLabels()
+        public void CanCopyAndPasteAndUndoShowLabels()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
          
@@ -423,7 +423,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CanCopydAndPasteAndUndoInputState()
+        public void CanCopyAndPasteAndUndoInputState()
         {
             var numberNode = new DoubleInput();
 
@@ -458,7 +458,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CanCopydAndPasteAndUndoOutputState()
+        public void CanCopyAndPasteAndUndoOutputState()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
 
@@ -493,7 +493,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CanCopydAndPasteNodeWithRightOffset()
+        public void CanCopyAndPasteNodeWithRightOffset()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             addNode.Height = 2;
@@ -519,7 +519,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void CanCopydAndPaste2NodesWithRightOffset()
+        public void CanCopyAndPaste2NodesWithRightOffset()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
             addNode.Height = 2;
