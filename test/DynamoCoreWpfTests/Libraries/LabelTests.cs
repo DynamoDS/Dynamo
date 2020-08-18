@@ -1,14 +1,36 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Graph.Nodes;
+using Dynamo.Wpf.ViewModels.Watch3D;
 using HelixToolkit.Wpf.SharpDX;
 using NUnit.Framework;
+using SystemTestServices;
 
 namespace AnalysisTests
 {
     [TestFixture, RequiresSTA]
-    class LabelTests : WpfVisualizationTests.VisualizationTest
+    class LabelTests : SystemTestBase
     {
+        protected void OpenVisualizationTest(string fileName)
+        {
+            string relativePath = Path.Combine(
+                GetTestDirectory(ExecutingDirectory),
+                string.Format(@"core\visualization\{0}", fileName));
+
+            if (!File.Exists(relativePath))
+            {
+                throw new FileNotFoundException("The specified .dyn file could not be found.");
+            }
+
+            ViewModel.OpenCommand.Execute(relativePath);
+        }
+
+        protected IEnumerable<Element3D> BackgroundPreviewGeometry
+        {
+            get { return ((HelixWatch3DViewModel)ViewModel.BackgroundPreviewViewModel).SceneItems; }
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("ProtoGeometry.dll");
