@@ -152,34 +152,6 @@ namespace Dynamo.Scheduler
             }
         }
 
-        /// <summary>
-        /// Returns true if this task's graph sync data is a super set of the other
-        /// </summary>
-        /// <param name="other"></param>
-        /// <returns></returns>
-        private bool Contains(UpdateGraphAsyncTask other)
-        {
-            // Be more conservative here. Not only check ModifiedNodes, but
-            // also check *all* nodes in graph sync data. For example, consider
-            // a CBN outputs to a node, the node is a downstream node of cbn.
-            //
-            // Now if node is modified and request a run, task's ModifiedNodes
-            // will cotain this node; then CBN is modified and request a run,
-            // ModifiedNodes would contain both CBN and the node, and previous
-            // task will be thrown away.
-            if (!other.ModifiedNodes.All(ModifiedNodes.Contains))
-                return false;
-
-            if (graphSyncData == null)
-                return other.graphSyncData == null;
-            else if (other.graphSyncData == null)
-                return true;
-
-            return other.graphSyncData.AddedNodeIDs.All(graphSyncData.AddedNodeIDs.Contains) &&
-                   other.graphSyncData.ModifiedNodeIDs.All(graphSyncData.ModifiedNodeIDs.Contains) &&
-                   other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
-        }
-
         protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
             // One cannot just simply merge these tasks on a compare one to another basis.

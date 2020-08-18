@@ -73,7 +73,7 @@
                             Maximum="{Binding Max}" 
                             Minimum="{Binding Min}" 
                             TickFrequency="{Binding Step}" 
-                            Value="{Binding Value}" 
+                            Value="{Binding Value, Delay=500}" 
                             TickPlacement="None" 
                             IsSnapToTickEnabled="true" 
                             Grid.Column="2" 
