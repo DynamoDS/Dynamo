@@ -112,7 +112,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             // if runsettings is manual, and if the graph is not executed, then turing on showrunpreview 
             //should turn on showexectionpreview on every node.
-            if (nodeGuids.Count == 0 && graphExecuted)
+            if (nodeGuids.Count == 0 && !graphExecuted)
             {
                 foreach (var nodeModel in Nodes)
                 {
