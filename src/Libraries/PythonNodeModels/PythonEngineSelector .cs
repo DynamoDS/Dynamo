@@ -9,6 +9,7 @@ namespace PythonNodeModels
     /// </summary>
     public enum PythonEngineVersion
     {
+        Unspecified,
         IronPython2,
         CPython3
     }
