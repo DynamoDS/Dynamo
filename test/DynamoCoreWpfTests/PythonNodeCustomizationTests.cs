@@ -28,13 +28,18 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        protected override void GetLibrariesToPreload(List<string> libraries)
+        public override void Start()
         {
-            libraries.Add("DSCPython.dll");
-            libraries.Add("DSIronPython.dll");
+            base.Start();
             // Make sure Python Engine Selector Singleton has all the info up-to-date.
             // This is not needed for Dynamo in normal use case but useful in unit test case.
             PythonEngineSelector.Instance.ScanPythonEngines();
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCPython.dll");
+            libraries.Add("DSIronPython.dll"); 
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -310,6 +315,14 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
             DispatcherUtil.DoEvents();
+
+            Model.CurrentWorkspace.Undo();
+            Assert.AreEqual(new List<string> { "2.7.9", "3.8.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            DispatcherUtil.DoEvents();
+            Model.CurrentWorkspace.Undo();
+            Assert.AreEqual(new List<string> { "3.8.3", "3.8.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            DispatcherUtil.DoEvents();
+            
         }
     }
 }
