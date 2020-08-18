@@ -180,23 +180,15 @@ namespace Dynamo.Scheduler
                    other.graphSyncData.DeletedNodeIDs.All(graphSyncData.DeletedNodeIDs.Contains);
         }
 
-        private bool IsScheduledAfter(UpdateGraphAsyncTask other)
-        {
-            return CreationTime > other.CreationTime;
-        }
-
         protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
         {
-            var theOtherTask = otherTask as UpdateGraphAsyncTask;
-            if (theOtherTask == null)
-                return base.CanMergeWithCore(otherTask);
-
-            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.Contains(this))
-                return TaskMergeInstruction.KeepOther;
-            else if (this.IsScheduledAfter(theOtherTask) && this.Contains(theOtherTask))
-                return TaskMergeInstruction.KeepThis;
-            else
-                return TaskMergeInstruction.KeepBoth;
+            // One cannot just simply merge these tasks on a compare one to another basis.
+            // The reason is that the changeSetComputer internal state might get corrupted.
+            // Imagine a sequence of queued tasks with changes like these: +A | -A | +AB
+            // Imagine a new task with change -A, ending up with the following sequence: -A | +A | -A | +AB
+            // While the merge routine would simplify this sequence to: -A | +A | +AB
+            // That creates an inconsistent sequence of changes where subtree A is added when it already exists!
+            return TaskMergeInstruction.KeepBoth;
         }
 
         #endregion
