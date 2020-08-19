@@ -5,11 +5,16 @@ import os.path
 from pathlib import Path
 import sys
 
+
 def transform(source):
     python_zip_path = str(Path(os.path.dirname(os.__file__)).parents[0])
     python_zip_file = get_zip_file(python_zip_path)
     python_zip_folder = zipfile.ZipFile(os.path.join(python_zip_path, python_zip_file))
     fixers = get_all_fixers_from_zipfolder(python_zip_folder)
+
+    dir_path = os.getcwd()
+    sys.path.append(os.path.join(dir_path, '..\\..\\..\\src\\PythonMigrationViewExtension\\MigrationAssistant\\custom_fixers'))
+    fixers.extend(['fix_none'])
 
     refactoring_tool = RefactoringTool(fixers)
 
@@ -46,6 +51,27 @@ def get_all_fixers_from_zipfolder(folder):
         if "fix_" not in f.filename:
             continue
         fixers.append(f.filename.replace('/', '.')[:-4])
+    
     return fixers
 
+#code = """
+## Load the Python Standard and DesignScript Libraries
+#import sys
+#import clr
+#
+#clr.AddReference('System.Windows.Forms')
+#from System.Windows.Forms import *
+#
+#groupBox1 = GroupBox();
+#textBox1 = TextBox();
+#
+#groupBox1.Controls.Add(textBox1);
+#
+#groupBox1.Text = "MyGroupBox";
+#groupBox1.Dock = DockStyle.None;
+#
+#OUT = groupBox1
+#"""
+
 output = transform(code)
+
