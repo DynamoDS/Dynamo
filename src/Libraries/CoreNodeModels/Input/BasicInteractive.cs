@@ -97,8 +97,18 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(nodeElement, context); // Base implementation must be called
 
-            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
-                .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
+            var subNodes = nodeElement.ChildNodes.Cast<XmlNode>()
+                .Where(subNode =>
+                {
+                    if ((typeof(T) == typeof(long) && subNode.Name.Equals(typeof(int).FullName)) ||
+                        subNode.Name.Equals(typeof(T).FullName))
+                    {
+                        return true;
+                    }
+                    return false;
+                });
+
+            foreach (XmlNode subNode in subNodes)
             {
                 var attrs = subNode.Attributes;
 
