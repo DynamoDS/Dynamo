@@ -1,6 +1,3 @@
-# Copyright 2006 Google, Inc. All Rights Reserved.
-# Licensed to PSF under a Contributor Agreement.
-
 """Fixer for keywords None if used in enums.
 
 Usage of x.None is expressed in terms of getattr method:

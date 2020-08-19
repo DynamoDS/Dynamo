@@ -13,7 +13,7 @@ def transform(source):
     fixers = get_all_fixers_from_zipfolder(python_zip_folder)
 
     dir_path = os.getcwd()
-    sys.path.append(os.path.join(dir_path, '..\\..\\..\\src\\PythonMigrationViewExtension\\MigrationAssistant\\custom_fixers'))
+    sys.path.append(os.path.join(dir_path, '.\\custom_fixers'))
     fixers.extend(['fix_none'])
 
     refactoring_tool = RefactoringTool(fixers)
