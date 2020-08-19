@@ -88,7 +88,7 @@ groupBox1 = GroupBox();
 textBox1 = TextBox();
 groupBox1.Controls.Add(textBox1);
 groupBox1.Text = ""MyGroupBox"";
-groupBox1.Dock = getattr(DockStyle,'None');
+groupBox1.Dock = getattr(DockStyle, 'None');
 OUT = groupBox1
 ";
             var actual = ScriptMigrator.MigrateCode(original);
