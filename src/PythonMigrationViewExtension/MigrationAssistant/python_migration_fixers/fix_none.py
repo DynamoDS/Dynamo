@@ -21,7 +21,7 @@ from lib2to3.fixer_util import Name, Call, Comma, String
 # The fixer class needs to derive from BaseFix and
 # its name should match that of the .py file.
 # Overriding the BaseFix class means implementing an overridden
-# the 'PATTERN' attribute (similar to AST grammar) you wish to transform 
+# 'PATTERN' attribute (similar to AST grammar) you wish to transform 
 # and a corresponding 'transform' method. 
 class FixNone(fixer_base.BaseFix):
     BM_compatible = True
