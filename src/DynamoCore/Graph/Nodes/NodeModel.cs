@@ -2297,15 +2297,17 @@ namespace Dynamo.Graph.Nodes
                 // in different ways and their views will always be up-to-date with
                 // respect to their models.
                 RaisePropertyChanged("InteractionEnabled");
-                RaisePropertyChanged("State");
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("ArgumentLacing");
-                RaisePropertyChanged("IsVisible");
-                 
+                RaisePropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(ArgumentLacing));
+                RaisePropertyChanged(nameof(IsVisible));
+                RaisePropertyChanged(nameof(DisplayLabels));
+                RaisePropertyChanged(nameof(IsSetAsInput));
+                RaisePropertyChanged(nameof(IsSetAsOutput));
                 //we need to modify the downstream nodes manually in case the
                 //undo is for toggling freeze. This is ONLY modifying the execution hint.
                 // this does not run the graph.
-                RaisePropertyChanged("IsFrozen");
+                RaisePropertyChanged(nameof(IsFrozen));
                 MarkDownStreamNodesAsModified(this);
 
                 // Notify listeners that the position of the node has changed,
