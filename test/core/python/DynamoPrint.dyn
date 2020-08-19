@@ -12,7 +12,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
       "Engine": "CPython3",
       "VariableInputPorts": true,
       "Id": "7fa1ef232e13484586b692c71d9e5c70",
@@ -44,7 +44,7 @@
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
       "NodeType": "PythonScriptNode",
-      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint 'Hello from Python' + str(sys.version_info.major) + '!!!'\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
       "Engine": "IronPython2",
       "VariableInputPorts": true,
       "Id": "b518fc1118b745898bf5b840e3ea1c35",
@@ -116,7 +116,7 @@
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
       "NodeType": "StringInputNode",
-      "InputValue": "import sys\r\nDynamoPrint('Hello from Python' + str(sys.version_info.major) + '!!!')",
+      "InputValue": "import sys\r\nprint('Hello from Python' + str(sys.version_info.major) + '!!!')",
       "Id": "8dd9296336d04ca8850b267e86f04156",
       "Inputs": [],
       "Outputs": [
@@ -172,13 +172,109 @@
       ],
       "Replication": "Disabled",
       "Description": "Runs a IronPython script from a string."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Hello\", \"Dynamo\", \"Print\", \"!!!\")\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "763b6063ac3e428fbe24673220bdac7e",
+      "Inputs": [
+        {
+          "Id": "7e135cf5addc4484826327bb1948da14",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b09875a66b2c4da994f656e87f8e50e6",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Hello\", \"Dynamo\", \"Print\", \"!!!\", sep='_')\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "36ae4bcb97a144e6b79f96dabc661b34",
+      "Inputs": [
+        {
+          "Id": "9b0e261a32e6481a91b86dc5b1239cf8",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4f2809c8e8284c95ba50cfbc38a899bb",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\nprint(\"Lot's of special characters!!!\")\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "da61a0ad7b024ec3bc05c63503a70358",
+      "Inputs": [
+        {
+          "Id": "23cdb52bf14346a182789f3ffa4eb617",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fae28773b0a94dd3b4328694574c7516",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
     }
   ],
   "Connectors": [
     {
       "Start": "6138bc73890041e5837b37cbd69f47ea",
       "End": "1b76bf9b56f943718514b62adb561e28",
-      "Id": "b938a0e52e4f4036b4c7f2a2d91debeb"
+      "Id": "97c3927b7c7e463db28e68e12419421c"
     },
     {
       "Start": "e85535a49d2b4850ab95e6950405d015",
@@ -198,7 +294,22 @@
     {
       "Start": "b9b37c561566490cb54e6ad8236b71be",
       "End": "be1ffa19bc9d4c53a84d8215f262361c",
-      "Id": "f2bb060269f74f638b266f05b6cb5f98"
+      "Id": "a15b8a556aae4200902e7a59642eb01d"
+    },
+    {
+      "Start": "cf0b0de0487f440fb84ecda9e67bc7d7",
+      "End": "7e135cf5addc4484826327bb1948da14",
+      "Id": "a45af6eca064459ba72a26096229dac0"
+    },
+    {
+      "Start": "b09875a66b2c4da994f656e87f8e50e6",
+      "End": "9b0e261a32e6481a91b86dc5b1239cf8",
+      "Id": "d5b795956d5e47e2a43041c477c857cb"
+    },
+    {
+      "Start": "4f2809c8e8284c95ba50cfbc38a899bb",
+      "End": "23cdb52bf14346a182789f3ffa4eb617",
+      "Id": "8e8ca8e26731478485fd70ec66a8f32f"
     }
   ],
   "Dependencies": [],
@@ -209,7 +320,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.8.0.2035",
+      "Version": "2.9.0.2264",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -253,8 +364,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 26.0,
-        "Y": 283.2000000000001
+        "X": -30.181998021760705,
+        "Y": 356.79050445103866
       },
       {
         "ShowGeometry": true,
@@ -263,8 +374,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 13.999999999999943,
-        "Y": 151.59999999999991
+        "X": -374.5360764375958,
+        "Y": 289.13073463873121
       },
       {
         "ShowGeometry": true,
@@ -273,13 +384,43 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 315.2,
-        "Y": 284.40000000000009
+        "X": 418.90170106619183,
+        "Y": 295.80718711728127
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Multiple print parameter node",
+        "Id": "763b6063ac3e428fbe24673220bdac7e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 753.36739373856165,
+        "Y": 294.21756429802304
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Print separator parameter node",
+        "Id": "36ae4bcb97a144e6b79f96dabc661b34",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1085.9907784454263,
+        "Y": 296.7782117575635
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "`!\"£$%^&*()_+-[{]}#~'@;:|\\,<.>/? Special character node",
+        "Id": "da61a0ad7b024ec3bc05c63503a70358",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1387.150636448549,
+        "Y": 298.27522638910949
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -1400.6301500749578,
+    "Y": -137.92920539995117,
+    "Zoom": 1.1994243414922066
   }
 }

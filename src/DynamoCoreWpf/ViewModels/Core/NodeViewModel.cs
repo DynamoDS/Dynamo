@@ -162,8 +162,10 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsInput != value)
                 {
-                    nodeLogic.IsSetAsInput = value;
-                    RaisePropertyChanged("IsSetAsInput");
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsInput), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsSetAsInput));
                 }
             }
         }
@@ -187,8 +189,10 @@ namespace Dynamo.ViewModels
             {
                 if (nodeLogic.IsSetAsOutput != value)
                 {
-                    nodeLogic.IsSetAsOutput = value;
-                    RaisePropertyChanged("IsSetAsOutput");
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                        Guid.Empty, NodeModel.GUID, nameof(IsSetAsOutput), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
                 }
             }
         }
@@ -198,10 +202,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public string Name
         {
-            get 
+            get
             {
                 IsRenamed = OriginalName != nodeLogic.Name;
-                return nodeLogic.Name; 
+                return nodeLogic.Name;
             }
             set { nodeLogic.Name = value; }
         }
@@ -324,7 +328,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-    
+
         [JsonIgnore]
         public Visibility PeriodicUpdateVisibility
         {
@@ -370,8 +374,13 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.DisplayLabels; }
             set
             {
-                nodeLogic.DisplayLabels = value;
-                RaisePropertyChanged("IsDisplayingLabels");
+                if (nodeLogic.DisplayLabels != value)
+                {
+                    DynamoViewModel.ExecuteCommand(new DynamoModel.UpdateModelValueCommand(
+                    Guid.Empty, NodeModel.GUID, nameof(nodeLogic.DisplayLabels), value.ToString()));
+
+                    RaisePropertyChanged(nameof(IsDisplayingLabels));
+                }
             }
         }
 
@@ -897,7 +906,7 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel.ExecuteCommand(
                 new DynamoModel.UpdateModelValueCommand(
-                    Guid.Empty, NodeModel.GUID, "ArgumentLacing", param.ToString()));
+                    Guid.Empty, NodeModel.GUID, nameof(ArgumentLacing), param.ToString()));
 
             DynamoViewModel.RaiseCanExecuteUndoRedo();
         }

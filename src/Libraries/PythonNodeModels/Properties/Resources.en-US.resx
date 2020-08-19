@@ -145,7 +145,7 @@
     <value>Result of the python script</value>
   </data>
   <data name="PythonScriptDescription" xml:space="preserve">
-    <value>Runs an embedded IronPython script.</value>
+    <value>Runs an embedded Python script.</value>
     <comment>Description for Python Script</comment>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
@@ -181,7 +181,7 @@
     <value>Save the changes made to current Python node editor and close it.</value>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
-    <value>Runs a IronPython script from a string.</value>
+    <value>Runs a Python script from a string.</value>
     <comment>Description for Python Script From String</comment>
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
@@ -192,5 +192,8 @@
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
     <value>Migration Assistant to update your Python 2 scripts to Python 3.</value>
+  </data>
+  <data name="PythonSearchTags" xml:space="preserve">
+    <value>IronPython;CPython;</value>
   </data>
 </root>

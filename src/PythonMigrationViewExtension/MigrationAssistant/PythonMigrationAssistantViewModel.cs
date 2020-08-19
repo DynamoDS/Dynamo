@@ -60,7 +60,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
 
             var sidebyside = new SideBySideDiffBuilder();
-            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode);
+            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode, false);
         }
 
         /// <summary>
@@ -68,6 +68,14 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public void ChangeCode()
         {
+            if (!this.CurrentViewModel.HasChanges)
+            {
+                if (this.PythonNode.Engine == PythonEngineVersion.CPython3)
+                    return;
+                this.PythonNode.Engine = PythonEngineVersion.CPython3;
+                return;
+            }
+
             if (!Models.DynamoModel.IsTestMode && !File.Exists(GetMigrationAssistantDisclaimerDismissFile()))
             {
                 var warningMessage = new MigrationAssistantDisclaimer(this);

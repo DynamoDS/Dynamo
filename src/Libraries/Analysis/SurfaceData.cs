@@ -110,39 +110,6 @@ namespace Analysis
             return new SurfaceData(surface, uvs, values);
         }
 
-        #region private methods
-
-        /// <summary>
-        /// Cull calculation locations that aren't within 1e-6 of the surface.
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerable<UV> CullCalculationLocations(Surface surface, IEnumerable<UV> calculationLocations)
-        {
-            var pts = new List<UV>();
-
-            foreach (var uv in calculationLocations)
-            {
-                var pt = surface.PointAtParameter(uv.U, uv.V);
-                var dist = pt.DistanceTo(surface);
-                if (dist < 1e-6 && dist > -1e-6)
-                {
-                    pts.Add(uv);
-                }
-            }
-
-            return pts;
-        }
-
-        #endregion
-
-        private static void DebugTime(Stopwatch sw, string message)
-        {
-            sw.Stop();
-            Debug.WriteLine("{0}:{1}", sw.Elapsed, message);
-            sw.Reset();
-            sw.Start();
-        }
-
         /// <summary>
         /// This method constructs a surface through the UV locations,
         /// converting UVs to Points in the 0,0->1,1 domain. This surface is used
