@@ -34,9 +34,11 @@ using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
+using WpfResources = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
 {
@@ -66,7 +68,13 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
-        
+
+        private ObservableCollection<NameValuePairViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<NameValuePairViewModel<string>>();
+        public ObservableCollection<NameValuePairViewModel<string>> DefaultPythonEngineOptions
+        {
+            get { return defaultPythonEngineOptions; }
+        }
+
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -504,6 +512,54 @@ namespace Dynamo.ViewModels
             }
         }
 
+
+        private DynamoPythonScriptEditorTextOptions editTextOptions = new DynamoPythonScriptEditorTextOptions();
+        /// <summary>
+        /// Gets/Sets the text editor options for python script editor.
+        /// </summary>
+        internal DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
+        {
+            get
+            {
+                return editTextOptions;
+            }
+        } 
+
+
+        /// <summary>
+        /// Indicates if the whitespaces and tabs should be visible in the python script editor.
+        /// This property is for the global whitespace toggle option in settings menu.
+        /// </summary>
+        public bool ShowTabsAndSpacesInScriptEditor
+        {
+            get
+            {
+                return model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor;
+            }
+            set
+            {
+                PythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
+                model.PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
+                RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
+            }
+        }
+
+        /// <summary>
+        /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine
+        {
+            get { return model.PreferenceSettings.DefaultPythonEngine; }
+            set
+            {
+                if (value != model.PreferenceSettings.DefaultPythonEngine)
+                {
+                    model.PreferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(DefaultPythonEngine));
+                }
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
@@ -548,6 +604,11 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            // These options are currently fixed. Eventually we should make them dynamic I guess.
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("IronPython2", "IronPython2"));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("CPython3", "CPython3"));
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures

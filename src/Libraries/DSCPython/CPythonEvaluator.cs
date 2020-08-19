@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
+using Dynamo.Logging;
 using Dynamo.Session;
 using Dynamo.Utilities;
 using Python.Runtime;
@@ -39,7 +41,7 @@ namespace DSCPython
     /// then make sure to call Dispose when you are done with the instance.
     /// </summary>
     [IsVisibleInDynamoLibrary(false)]
-    public class DynamoCPythonHandle : IDisposable
+    internal class DynamoCPythonHandle : IDisposable
     {
         /// <summary>
         /// A static map of DynamoCPythonHandle counts, is used to avoid removing the underlying python objects from the 
@@ -132,13 +134,12 @@ namespace DSCPython
     }
 
     [SupressImportIntoVM]
-    internal enum EvaluationState { Begin, Success, Failed }
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
-    internal delegate void EvaluationEventHandler(EvaluationState state,
-                                                  PyScope scope,
-                                                  string code,
-                                                  IList bindingValues);
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+    public delegate void EvaluationEventHandler(EvaluationState state, PyScope scope, string code, IList bindingValues);
 
     /// <summary>
     ///     Evaluates a Python script in the Dynamo context.
@@ -146,8 +147,12 @@ namespace DSCPython
     [IsVisibleInDynamoLibrary(false)]
     public static class CPythonEvaluator
     {
+        private const string DynamoSkipAttributeName = "__dynamoskipconversion__";
+        private const string DynamoPrintFuncName = "__dynamoprint__";
+        private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+
         static CPythonEvaluator()
         {
             InitializeEncoders();
@@ -167,6 +172,7 @@ namespace DSCPython
             IList bindingNames,
             [ArbitraryDimensionArrayImport] IList bindingValues)
         {
+            var evaluationSuccess = true;
             if (code == null)
             {
                 return null;
@@ -178,7 +184,6 @@ namespace DSCPython
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-
             }
 
             IntPtr gs = PythonEngine.AcquireLock();
@@ -188,10 +193,15 @@ namespace DSCPython
                 {
                     if (globalScope == null)
                     {
-                        globalScope = Py.CreateScope(globalScopeName);
+                        globalScope = CreateGlobalScope();
                     }
+
                     using (PyScope scope = Py.CreateScope())
                     {
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
+                        scope.Exec(pythonNodeSetupCode);
+
                         ProcessAdditionalBindings(scope, bindingNames, bindingValues);
 
                         int amt = Math.Min(bindingNames.Count, bindingValues.Count);
@@ -211,6 +221,7 @@ namespace DSCPython
                         }
                         catch (Exception e)
                         {
+                            evaluationSuccess = false;
                             var traceBack = GetTraceBack(e);
                             if (!string.IsNullOrEmpty(traceBack))
                             {
@@ -224,7 +235,7 @@ namespace DSCPython
                         }
                         finally
                         {
-                            OnEvaluationEnd(false, scope, code, bindingValues);
+                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                         }
                     }
                 }
@@ -233,6 +244,21 @@ namespace DSCPython
             {
                 PythonEngine.ReleaseLock(gs);
             }
+        }
+
+        /// <summary>
+        /// Creates and initializaes the global Python scope.
+        /// </summary>
+        private static PyScope CreateGlobalScope()
+        {
+            var scope = Py.CreateScope(globalScopeName);
+            // Allows discoverability of modules by inspecting their attributes
+            scope.Exec(@"
+import clr
+clr.setPreload(True)
+");
+
+            return scope;
         }
 
         /// <summary>
@@ -263,9 +289,29 @@ namespace DSCPython
             if (ExecutionEvents.ActiveSession != null)
             {
                 dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}");
-                scope.Set("DynamoPrint", logFunction.ToPython());
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                scope.Set(DynamoPrintFuncName, logFunction.ToPython());
+                scope.Exec(RedirectPrint());
             }
+        }
+
+        private static string RedirectPrint()
+        {
+            return string.Format(@"
+import sys
+
+class DynamoStdOut:
+  def __init__(self, log_func):
+    self.text = ''
+    self.log_func = log_func
+  def write(self, text):
+    if text == '\n':
+      self.log_func(self.text)
+      self.text = ''
+    else:
+      self.text += text
+sys.stdout = DynamoStdOut({0})
+", DynamoPrintFuncName);
         }
 
         /// <summary>
@@ -372,6 +418,12 @@ namespace DSCPython
                             {
                                 return outputMarshaler.Marshal(clrObj);
                             }
+
+                            if (IsMarkedToSkipConversion(pyObj))
+                            {
+                                return GetDynamoCPythonHandle(pyObj);
+                            }
+
                             // Dictionaries are iterable, so they should come first
                             if (PyDict.IsDictType(pyObj))
                             {
@@ -424,11 +476,7 @@ namespace DSCPython
                                 {
                                     if (unmarshalled.Equals(pyObj))
                                     {
-                                        var globalScope = PyScopeManager.Global.Get(globalScopeName);
-                                        //try moving object to global scope
-                                        globalScope.Set(pyObj.Handle.ToString(), pyObj);
-
-                                        return new DynamoCPythonHandle(pyObj.Handle);
+                                        return GetDynamoCPythonHandle(pyObj);
                                     }
                                     else
                                     {
@@ -444,6 +492,18 @@ namespace DSCPython
             }
         }
 
+        private static DynamoCPythonHandle GetDynamoCPythonHandle(PyObject pyObj)
+        {
+            var globalScope = PyScopeManager.Global.Get(globalScopeName);
+            globalScope.Set(pyObj.Handle.ToString(), pyObj);
+            return new DynamoCPythonHandle(pyObj.Handle);
+        }
+
+        private static bool IsMarkedToSkipConversion(PyObject pyObj)
+        {
+            return pyObj.HasAttr(DynamoSkipAttributeName);
+        }
+
         private static DataMarshaler inputMarshaler;
         private static DataMarshaler outputMarshaler;
 
@@ -455,13 +515,15 @@ namespace DSCPython
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationBegin;
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
-        internal static event EvaluationEventHandler EvaluationEnd;
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
+        public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>
         /// Called immediately before evaluation starts

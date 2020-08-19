@@ -32,12 +32,12 @@ namespace Dynamo.UI.Prompts
             var googleAnalyticsFile = "GoogleAnalyticsConsent.rtf";
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref googleAnalyticsFile))
-                GoogleAnalyticsContent.File = googleAnalyticsFile;
+                GoogleAnalyticsConsent.File = googleAnalyticsFile;
 
             var adpAnalyticsFile = "ADPAnalyticsConsent.rtf";
 
             if (viewModel.Model.PathManager.ResolveDocumentPath(ref adpAnalyticsFile))
-                InstrumentationContent.File = adpAnalyticsFile;
+                ADPAnalyticsConsent.File = adpAnalyticsFile;
 
             AcceptADPAnalyticsTextBlock.Text =
                 string.Format(Wpf.Properties.Resources.ConsentFormADPAnalyticsCheckBoxContent,
