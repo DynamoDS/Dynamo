@@ -152,15 +152,61 @@ namespace Dynamo.Scheduler
             }
         }
 
-        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        /// <summary>
+        /// Returns true if this task's graph sync data is a super set of the other
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        private bool CanReplace(UpdateGraphAsyncTask other)
         {
-            // One cannot just simply merge these tasks on a compare one to another basis.
-            // The reason is that the changeSetComputer internal state might get corrupted.
+            // Be more conservative here. Not only check ModifiedNodes, but
+            // also check *all* nodes in graph sync data. For example, consider
+            // a CBN outputs to a node, the node is a downstream node of cbn.
+            //
+            // Now if node is modified and request a run, task's ModifiedNodes
+            // will cotain this node; then CBN is modified and request a run,
+            // ModifiedNodes would contain both CBN and the node, and previous
+            // task will be thrown away.
+            if (!other.ModifiedNodes.All(ModifiedNodes.Contains))
+                return false;
+
+            if (graphSyncData == null)
+                return other.graphSyncData == null;
+            else if (other.graphSyncData == null)
+                return true;
+
+            // Merging additions and removals can make the changeSetComputer internal state get corrupted.
             // Imagine a sequence of queued tasks with changes like these: +A | -A | +AB
             // Imagine a new task with change -A, ending up with the following sequence: -A | +A | -A | +AB
             // While the merge routine would simplify this sequence to: -A | +A | +AB
             // That creates an inconsistent sequence of changes where subtree A is added when it already exists!
-            return TaskMergeInstruction.KeepBoth;
+            // Modifications are not susceptible to this problem. Imagine ~A incoming with sequence: +A | -A | ~A | +AB
+            // The resulting sequence is: ~A | +A | -A | +AB, which is valid.
+            // Because modifications do not create or remove entries in the changeSetComputer internal state,
+            // if we remove one from anywhere in the sequence we remain consistent.
+            return other.graphSyncData.AddedNodeIDs.Count() == 0 &&
+                   other.graphSyncData.ModifiedNodeIDs.All(graphSyncData.ModifiedNodeIDs.Contains) &&
+                   other.graphSyncData.DeletedNodeIDs.Count() == 0;
+        }
+
+        private bool IsScheduledAfter(UpdateGraphAsyncTask other)
+        {
+            return CreationTime > other.CreationTime;
+        }
+
+        protected override TaskMergeInstruction CanMergeWithCore(AsyncTask otherTask)
+        {
+            var theOtherTask = otherTask as UpdateGraphAsyncTask;
+
+            if (theOtherTask == null)
+                return base.CanMergeWithCore(otherTask);
+
+            if (theOtherTask.IsScheduledAfter(this) && theOtherTask.CanReplace(this))
+                return TaskMergeInstruction.KeepOther;
+            else if (this.IsScheduledAfter(theOtherTask) && this.CanReplace(theOtherTask))
+                return TaskMergeInstruction.KeepThis;
+            else
+                return TaskMergeInstruction.KeepBoth;
         }
 
         #endregion
