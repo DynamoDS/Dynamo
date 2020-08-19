@@ -93,17 +93,12 @@ namespace Dynamo.Wpf.ViewModels.Core
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
         {
             // Using Nodes here is not thread safe, as nodes can be added/removed by the UI thread midway.
-            // Dispatching this to the UI thread helps avoid concurrency issues and seems more correct.
-            if (!DynamoViewModel.Model.ShutdownRequested && DynamoViewModel.UIDispatcher != null)
+            // Dispatching this to the UI thread would help to avoid concurrency issues but has caveats.
+            // When Dynamo is shutting down, a deadlock situation can occur, where each thread waits on the other.
+            // Moreover, tight periodic runs can create situations where we cannot safely check if we are shutting down.
+            // In summary, even if locking may be more costly, it is the safer approach.
+            lock (Nodes)
             {
-                DynamoViewModel.UIDispatcher.Invoke(() => UpdateNodesDeltaState(e.NodeGuidList, e.GraphExecuted));
-            }
-            else
-            {
-                // However, when Dynamo is shutting down, a funny deadlock situation occurs.
-                // The main thread is waiting for the scheduler to finish executing.
-                // So in order to avoid it, we do the update on the scheduler thread.
-                // Concurrency should not be an issue now that the UI is blocked waiting for shutdown.
                 UpdateNodesDeltaState(e.NodeGuidList, e.GraphExecuted);
             }
         }

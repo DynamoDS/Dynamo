@@ -666,12 +666,15 @@ namespace Dynamo.ViewModels
 
         void Model_NodesCleared()
         {
-            foreach(var nodeViewModel in Nodes)
+            lock (Nodes)
             {
-                this.unsubscribeNodeEvents(nodeViewModel);
-                nodeViewModel.Dispose();
+                foreach (var nodeViewModel in Nodes)
+                {
+                    this.unsubscribeNodeEvents(nodeViewModel);
+                    nodeViewModel.Dispose();
+                }
+                Nodes.Clear();
             }
-            Nodes.Clear();
             Errors.Clear();
 
             PostNodeChangeActions();
@@ -685,9 +688,13 @@ namespace Dynamo.ViewModels
 
         void Model_NodeRemoved(NodeModel node)
         {
-            NodeViewModel nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-            Errors.Remove(nodeViewModel.ErrorBubble);
-            Nodes.Remove(nodeViewModel);
+            NodeViewModel nodeViewModel;
+            lock (Nodes)
+            {
+                nodeViewModel = Nodes.First(x => x.NodeLogic == node);
+                Errors.Remove(nodeViewModel.ErrorBubble);
+                Nodes.Remove(nodeViewModel);
+            }
             //unsub the events we attached below in NodeAdded.
             this.unsubscribeNodeEvents(nodeViewModel);
             nodeViewModel.Dispose();
@@ -700,7 +707,10 @@ namespace Dynamo.ViewModels
             var nodeViewModel = new NodeViewModel(this, node);
             nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
             nodeViewModel.NodeLogic.Modified += OnNodeModified;
-            Nodes.Add(nodeViewModel);
+            lock (Nodes)
+            {
+                Nodes.Add(nodeViewModel);
+            }
             Errors.Add(nodeViewModel.ErrorBubble);
             nodeViewModel.UpdateBubbleContent();
 
