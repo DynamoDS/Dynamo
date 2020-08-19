@@ -806,8 +806,14 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Height");
                     UpdateErrorBubblePosition();
                     break;
-                case "DisplayLabels":
-                    RaisePropertyChanged("IsDisplayingLables");
+                case nameof(NodeModel.DisplayLabels):
+                    RaisePropertyChanged(nameof(IsDisplayingLabels));
+                    break;
+                case nameof(NodeModel.IsSetAsInput):
+                    RaisePropertyChanged(nameof(IsSetAsInput));
+                    break;
+                case nameof(NodeModel.IsSetAsOutput):
+                    RaisePropertyChanged(nameof(IsSetAsOutput));
                     break;
                 case "Position":
                     UpdateErrorBubblePosition();
