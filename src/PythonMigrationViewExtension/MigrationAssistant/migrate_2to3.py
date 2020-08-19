@@ -54,24 +54,5 @@ def get_all_fixers_from_zipfolder(folder):
     
     return fixers
 
-#code = """
-## Load the Python Standard and DesignScript Libraries
-#import sys
-#import clr
-#
-#clr.AddReference('System.Windows.Forms')
-#from System.Windows.Forms import *
-#
-#groupBox1 = GroupBox();
-#textBox1 = TextBox();
-#
-#groupBox1.Controls.Add(textBox1);
-#
-#groupBox1.Text = "MyGroupBox";
-#groupBox1.Dock = DockStyle.None;
-#
-#OUT = groupBox1
-#"""
-
 output = transform(code)
 

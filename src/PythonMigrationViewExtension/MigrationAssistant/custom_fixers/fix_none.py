@@ -1,17 +1,15 @@
 # Copyright 2006 Google, Inc. All Rights Reserved.
 # Licensed to PSF under a Contributor Agreement.
 
-"""Fixer for keywords None, True and False if used in enums.
+"""Fixer for keywords None if used in enums.
 
-Usage of x.None x.True and x.False are expressed in terms of getattr method:
+Usage of x.None is expressed in terms of getattr method:
 
     x.None -> getattr(x, 'None')
-	x.True -> getattr(x, 'True')
-	x.False -> getattr(x, 'False')
 
 CAVEATS:
 1) While the primary target of this fixer is an enum, 
-   the fixer will change any x.None usage, regardless of whether is an enum.
+   the fixer will change any x.None usage, regardless of whether it is an enum.
 """
 
 # Local imports
