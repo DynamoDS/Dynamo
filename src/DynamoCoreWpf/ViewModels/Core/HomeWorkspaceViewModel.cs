@@ -94,7 +94,7 @@ namespace Dynamo.Wpf.ViewModels.Core
         {
             // Using Nodes here is not thread safe, as nodes can be added/removed by the UI thread midway.
             // Dispatching this to the UI thread helps avoid concurrency issues and seems more correct.
-            if (!DynamoViewModel.Model.ShutdownRequested)
+            if (!DynamoViewModel.Model.ShutdownRequested && DynamoViewModel.UIDispatcher != null)
             {
                 DynamoViewModel.UIDispatcher.Invoke(() => UpdateNodesDeltaState(e.NodeGuidList, e.GraphExecuted));
             }
