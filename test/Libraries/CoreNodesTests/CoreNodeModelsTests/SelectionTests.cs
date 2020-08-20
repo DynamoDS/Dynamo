@@ -58,8 +58,8 @@ namespace CoreNodeModelsTests
             selection.Select(testNode);
 
             //checks one node is selected
-            var cant = selection.SelectionResults.Count();
-            Assert.AreEqual(1, cant);
+            var count = selection.SelectionResults.Count();
+            Assert.AreEqual(1, count);
 
             selection.ClearSelections();
             //Checks no nodes are selected
