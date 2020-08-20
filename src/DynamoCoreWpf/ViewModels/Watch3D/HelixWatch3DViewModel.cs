@@ -1133,6 +1133,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     AttachedProperties.SetShowSelected(model.Value, isSelected);
                 }
             }
+            //we need to resort the sceneItems as the selectedIsolated item should be drawn last.
+            UpdateSceneItems();
         }
 
         private void LogCameraWarning(string msg, Exception ex)
