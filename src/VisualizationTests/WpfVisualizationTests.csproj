@@ -99,6 +99,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CameraTests.cs" />
+    <Compile Include="CustomGraphicItemVisualizationTest.cs" />
     <Compile Include="CustomNodeTests.cs" />
     <Compile Include="HelixImageComparisonTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
