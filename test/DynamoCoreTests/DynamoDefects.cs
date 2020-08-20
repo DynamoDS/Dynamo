@@ -7,8 +7,6 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
-
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -348,7 +346,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
             var integerInput = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider;
+                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider64Bit;
             for (int i = 0; i <= 10; i++)
             {
                 integerInput.Value = 5 + i;
@@ -373,7 +371,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 12);
             var input = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("7cbafd1f-cec2-48b2-ac52-c9605acfb644") as IntegerSlider;
+                ("7cbafd1f-cec2-48b2-ac52-c9605acfb644") as IntegerSlider64Bit;
             input.Value = 12;
             BeginRun();
             AssertPreviewValue("99975a42-f887-4b99-9b0a-e36513d2bd6d", 24);

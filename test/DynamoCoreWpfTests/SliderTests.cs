@@ -77,14 +77,14 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanConstructIntegerSlider()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
         }
 
         [Test]
         public void SliderCanNotBeSetGreaterThanMaxIntValue()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
             var param = new UpdateValueParams("Value", "9223372036854775807");
@@ -96,7 +96,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void  SliderCanNotBeSetLessThanMinIntValue()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
             var param = new UpdateValueParams("Value", "-9223372036854775808");
@@ -108,7 +108,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SliderMaxResetsToIntMax()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
             var param = new UpdateValueParams("Max", "9223372036854775808");
@@ -120,7 +120,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void SliderMinResetsToIntMin()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
             var param = new UpdateValueParams("Min", "-9223372036854775809");

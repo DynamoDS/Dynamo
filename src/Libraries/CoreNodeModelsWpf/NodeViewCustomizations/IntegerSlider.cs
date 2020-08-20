@@ -5,9 +5,9 @@ using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
-    public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
+    public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider64Bit>
     {
-        public void CustomizeView(IntegerSlider model, NodeView nodeView)
+        public void CustomizeView(IntegerSlider64Bit model, NodeView nodeView)
         {
             var slider = new DynamoSlider(model, nodeView)
             {
