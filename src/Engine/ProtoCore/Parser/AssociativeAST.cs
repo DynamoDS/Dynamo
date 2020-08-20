@@ -2806,8 +2806,9 @@ namespace ProtoCore.AST.AssociativeAST
                 case "Int64":
                 case "UInt16":
                 case "UInt32":
-                case "UInt64":
                     return BuildIntNode(Convert.ToInt32(value));
+                case "UInt64":
+                    return BuildIntNode(Convert.ToInt64(value));
                 case "Single":
                 case "Double":
                     return BuildDoubleNode(Convert.ToDouble(value));
