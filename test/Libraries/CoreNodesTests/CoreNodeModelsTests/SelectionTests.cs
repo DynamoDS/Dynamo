@@ -45,7 +45,7 @@ namespace CoreNodeModelsTests
             var result = selection.SelectionResults.Count();
             Assert.AreEqual(1, result);
 
-            Mock.VerifyAll();
+            selectionHelperMock.VerifyAll();
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace CoreNodeModelsTests
             var result = selection.SelectionResults.Count();
             Assert.AreEqual(0, result);
 
-            Mock.VerifyAll();
+            selectionHelperMock.VerifyAll();
         }
 
         [Test]
@@ -86,7 +86,24 @@ namespace CoreNodeModelsTests
             toStringResult = selection.ToString();
             Assert.AreEqual("testPrefix : Dynamo.Graph.Nodes.CodeBlockNodeModel", toStringResult);
 
-            Mock.VerifyAll();
+            selectionHelperMock.VerifyAll();
+        }
+
+        [TestCase(SelectionObjectType.Edge, SelectionType.One, "Curve")]
+        [TestCase(SelectionObjectType.Edge, SelectionType.Many, "Curves")]
+        [TestCase(SelectionObjectType.Face, SelectionType.One, "Surface")]
+        [TestCase(SelectionObjectType.Face, SelectionType.Many, "Surfaces")]
+        [TestCase(SelectionObjectType.PointOnFace, SelectionType.One, "Point")]
+        [TestCase(SelectionObjectType.PointOnFace, SelectionType.Many, "Points")]
+        [TestCase(SelectionObjectType.None, SelectionType.One, "Element")]
+        [TestCase(SelectionObjectType.None, SelectionType.Many, "Elements")]
+        public void GetSelectionOutputTest(SelectionObjectType selectionObjectType, SelectionType selectinType, string expectedResult)
+        {
+            selection = new SelectionConcrete(selectinType, selectionObjectType, "testMessage", "testPrefix");
+
+            var result = selection.GetOutputPortName();
+
+            Assert.AreEqual(expectedResult, result);
         }
 
         /// <summary>
@@ -97,16 +114,16 @@ namespace CoreNodeModelsTests
             public override IModelSelectionHelper<ModelBase> SelectionHelper { get; }
 
             public void SerializeCore(XmlElement nodeElement, SaveContext context) =>
-                SerializeCore(nodeElement, context);
+                base.SerializeCore(nodeElement, context);
 
             public void DeserializeCore(XmlElement nodeElement, SaveContext context) =>
-                DeserializeCore(nodeElement, context);
+                base.DeserializeCore(nodeElement, context);
 
             public bool UpdateValueCore(UpdateValueParams updateValueParams) =>
-                UpdateValueCore(updateValueParams);
+                base.UpdateValueCore(updateValueParams);
 
             public string GetOutputPortName() =>
-                 GetOutputPortName();
+                 base.GetOutputPortName();
 
             //Implemented this way for testing so the selection suffers no modifications
             protected override IEnumerable<ModelBase> ExtractSelectionResults(ModelBase selections)
