@@ -6,8 +6,7 @@ using Dynamo.Wpf.Extensions;
 namespace Dynamo.NodeAutoComplete
 {
     /// <summary>
-    /// This sample view extension demonstrates a sample IViewExtension 
-    /// which tracks current clicked node port in Dynamo and 
+    /// This view extension tracks current clicked node port in Dynamo and 
     /// try to suggest the next best node to connect that port.
     /// </summary>
     public class NodeAutoCompleteViewExtension : IViewExtension, ILogSource
