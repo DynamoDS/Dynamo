@@ -97,21 +97,21 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2335",
+      "Version": "2.9.0.2336",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
       "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
+      "EyeX": -1.2032631635665894,
+      "EyeY": 1.733094334602356,
+      "EyeZ": 4.1445307731628418,
+      "LookX": 1.2032631635665894,
+      "LookY": -1.733094334602356,
+      "LookZ": -4.1445307731628418,
+      "UpX": 0.046017393469810486,
+      "UpY": 0.98628562688827515,
+      "UpZ": -0.15850274264812469
     },
     "NodeViews": [
       {
@@ -122,7 +122,7 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 78.0,
-        "Y": 216.0
+        "Y": 215.0
       },
       {
         "ShowGeometry": true,
@@ -136,8 +136,8 @@
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": -28.534948309330503,
+    "Y": -17.32101017353429,
+    "Zoom": 1.1047642563030275
   }
 }
