@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -91,10 +92,22 @@ namespace Dynamo.Wpf.ViewModels.Core
 
         private void hwm_SetNodeDeltaState(object sender, DeltaComputeStateEventArgs e)
         {
-            var nodeGuids = e.NodeGuidList;
+            // Using Nodes here is not thread safe, as nodes can be added/removed by the UI thread midway.
+            // Dispatching this to the UI thread would help to avoid concurrency issues but has caveats.
+            // When Dynamo is shutting down, a deadlock situation can occur, where each thread waits on the other.
+            // Moreover, tight periodic runs can create situations where we cannot safely check if we are shutting down.
+            // In summary, even if locking may be more costly, it is the safer approach.
+            lock (Nodes)
+            {
+                UpdateNodesDeltaState(e.NodeGuidList, e.GraphExecuted);
+            }
+        }
+
+        private void UpdateNodesDeltaState(List<Guid> nodeGuids, bool graphExecuted)
+        {
             // if runsettings is manual, and if the graph is not executed, then turing on showrunpreview 
             //should turn on showexectionpreview on every node.
-            if (nodeGuids.Count == 0 && !e.GraphExecuted)
+            if (nodeGuids.Count == 0 && !graphExecuted)
             {
                 foreach (var nodeModel in Nodes)
                 {
@@ -104,7 +117,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             //if the graph is executed then set the node preview to false , provided
             // there is no error on that node.
-            if (nodeGuids.Count == 0 && e.GraphExecuted)
+            if (nodeGuids.Count == 0 && graphExecuted)
             {
                 foreach (var nodeViewModel in Nodes)
                 {
@@ -113,7 +126,7 @@ namespace Dynamo.Wpf.ViewModels.Core
                         nodeViewModel.ShowExecutionPreview = false;
                         nodeViewModel.IsNodeAddedRecently = false;
                     }
-                }                
+                }
             }
 
             foreach (Guid t in nodeGuids)
@@ -132,7 +145,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 if (nodes.ShowExecutionPreview)
                     nodes.ShowExecutionPreview = nodes.DynamoViewModel.ShowRunPreview;
-            }           
+            }
         }
 
         void hwm_EvaluationCompleted(object sender, EvaluationCompletedEventArgs e)
