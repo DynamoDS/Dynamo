@@ -240,7 +240,7 @@ namespace WpfVisualizationTests
             OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
             View.BackgroundPreview.ViewModel.IsolationMode = true;
             RunCurrentModel();            
-            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere2")).FirstOrDefault();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere1")).FirstOrDefault();
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node1);
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
