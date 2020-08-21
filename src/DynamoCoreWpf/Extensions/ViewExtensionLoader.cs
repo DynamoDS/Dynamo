@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using System.Xml;
 using Dynamo.Logging;
 using DynamoUtilities;
@@ -19,10 +20,14 @@ namespace Dynamo.Wpf.Extensions
                     CertificateVerification.CheckAssemblyForValidCertificate(viewExtension.AssemblyPath);
                 }
 
-                var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
-                var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
-                ExtensionLoading?.Invoke(result);
-                return result;
+                if (viewExtension.IsEnabled)
+                {
+                    var assembly = Assembly.LoadFrom(viewExtension.AssemblyPath);
+                    var result = assembly.CreateInstance(viewExtension.TypeName) as IViewExtension;
+                    ExtensionLoading?.Invoke(result);
+                    return result;
+                }
+                return null;
             }
             catch(Exception ex)
             {
@@ -59,6 +64,11 @@ namespace Dynamo.Wpf.Extensions
                 else if (item.Name == "TypeName")
                 {
                     definition.TypeName = item.InnerText;
+                }
+                else if (item.Name == "IsEnabled")
+                {
+                    // Because the default value for this property is true so we check if user specifically put it false
+                    definition.IsEnabled = !item.InnerText.Equals("false") && !item.InnerText.Equals("False");
                 }
             }
 
