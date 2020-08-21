@@ -1,6 +1,6 @@
 ﻿
 //UNCOMMENT THIS DEFINE TO UPDATE THE REFERENCE IMAGES.
-//#define UPDATEIMAGEDATA
+#define UPDATEIMAGEDATA
 //UNCOMMENT TO SAVE DEBUG IMAGES.
 //#define SAVEDEBUGIMAGES
 using System;
@@ -214,6 +214,49 @@ namespace WpfVisualizationTests
             node3.IsFrozen = true;
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
+        [Test]
+        public void SelectedSolidsOverlapping1()
+        {
+            OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere1")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void SelectedSolidsOverlapping2()
+        {
+            OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere2")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void SelectedSolidsOverlappingIsolated1()
+        {
+            OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
+            View.BackgroundPreview.ViewModel.IsolationMode = true;
+            RunCurrentModel();            
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere2")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
+        public void SelectedSolidsOverlappingIsolated2()
+        {
+            OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");
+            View.BackgroundPreview.ViewModel.IsolationMode = true;
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere2")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
         #endregion
 
         #region pointsAndLines
