@@ -214,7 +214,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
     [NodeSearchTags("IntegerSliderSearchTags", typeof(Resources))]
     [InPortTypes("UI Input")]
-    [OutPortTypes("int")]
+    [OutPortTypes("long")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
