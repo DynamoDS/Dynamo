@@ -67,6 +67,18 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(initialNum + 2, View.ExtensionTabItems.Count); 
         }
 
+        [Test]
+        public void ExtensionNotEnabledLoadingTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var extensionManager = View.viewExtensionManager;
+            var loader = extensionManager.ExtensionLoader;
+            var ext = new ViewExtensionDefinition();
+            ext.IsEnabled = false;
+            Assert.IsNull(loader.Load(ext));
+        }
+
         public static void RaiseLoadedEvent(FrameworkElement element)
         {
             MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",

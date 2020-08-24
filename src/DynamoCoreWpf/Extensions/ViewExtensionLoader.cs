@@ -10,7 +10,7 @@ namespace Dynamo.Wpf.Extensions
 {
     public class ViewExtensionLoader : IViewExtensionLoader, ILogSource
     {
-        private IViewExtension Load(ViewExtensionDefinition viewExtension)
+        internal IViewExtension Load(ViewExtensionDefinition viewExtension)
         {
             try
             {
