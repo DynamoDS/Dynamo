@@ -174,9 +174,10 @@ namespace CoreNodeModels.Input
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
-            base.DeserializeCore(element, context); //Base implementation must be called.
+            var el = MigrationManager.CloneIntegerSliderAndConvertTo64Bit(element);
+            base.DeserializeCore(el, context); //Base implementation must be called.
 
-            foreach (XmlNode subNode in element.ChildNodes)
+            foreach (XmlNode subNode in el.ChildNodes)
             {
                 if (!subNode.Name.Equals("Range"))
                     continue;
@@ -414,7 +415,7 @@ namespace Dynamo.Nodes
         {
             var migrationData = new NodeMigrationData(data.Document);
             XmlElement oldNode = data.MigratedNodes.ElementAt(0);
-            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "CoreNodeModels.Input.IntegerSlider64Bit", "Integer Slider", true);
+            XmlElement newNode = MigrationManager.CloneAndChangeName(oldNode, "CoreNodeModels.Input.IntegerSlider", "Integer Slider", true);
 
             migrationData.AppendNode(newNode);
             return migrationData;

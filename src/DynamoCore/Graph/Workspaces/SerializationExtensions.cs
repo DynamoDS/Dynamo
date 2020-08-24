@@ -44,7 +44,7 @@ namespace Dynamo.Graph.Workspaces
             var json = JsonConvert.SerializeObject(workspace, settings);
             var result = ReplaceTypeDeclarations(json);
 
-            result = SerializeIntegerSliderTo32BitType(result);
+            result = SerializeIntegerSliderAs32BitType(result);
 
             return result;
         }
@@ -86,7 +86,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         [Obsolete("Remove method after obsoleting IntegerSlider and replacing it with IntegerSlider64Bit")]
-        internal static string SerializeIntegerSliderTo32BitType(string json)
+        internal static string SerializeIntegerSliderAs32BitType(string json)
         {
             var result = json;
 

@@ -5,7 +5,22 @@ using Dynamo.Wpf;
 
 namespace CoreNodeModelsWpf.NodeViewCustomizations
 {
-    public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider64Bit>
+    public class IntegerSliderNodeViewCustomization : INodeViewCustomization<IntegerSlider>
+    {
+        public void CustomizeView(IntegerSlider model, NodeView nodeView)
+        {
+            var slider = new DynamoSlider(model, nodeView)
+            {
+                DataContext = new SliderViewModel<int>(model)
+            };
+
+            nodeView.inputGrid.Children.Add(slider);
+        }
+
+        public void Dispose() { }
+    }
+
+    public class IntegerSlider64BitNodeViewCustomization : INodeViewCustomization<IntegerSlider64Bit>
     {
         public void CustomizeView(IntegerSlider64Bit model, NodeView nodeView)
         {

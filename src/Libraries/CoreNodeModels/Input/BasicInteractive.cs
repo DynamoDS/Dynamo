@@ -100,13 +100,15 @@ namespace CoreNodeModels.Input
             var subNodes = nodeElement.ChildNodes.Cast<XmlNode>()
                 .Where(subNode =>
                 {
-                    if ((typeof(T) == typeof(long) && subNode.Name.Equals(typeof(int).FullName)) ||
+                    if ((typeof(T) == typeof(int) && subNode.Name.Equals(typeof(long).FullName)) ||
                         subNode.Name.Equals(typeof(T).FullName))
                     {
                         return true;
                     }
                     return false;
                 });
+            //var subNodes = nodeElement.ChildNodes.Cast<XmlNode>()
+            //    .Where(subNode => subNode.Name.Equals(typeof(T).FullName));
 
             foreach (XmlNode subNode in subNodes)
             {
