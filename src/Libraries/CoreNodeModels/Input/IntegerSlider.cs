@@ -240,6 +240,7 @@ namespace CoreNodeModels.Input
                 return "Integer";
             }
         }
+
         public override NodeInputData InputData
         {
            get
@@ -284,9 +285,9 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        //If the value field in the slider has a number greater than
-        //In32.Maxvalue (or MinValue), the value will be changed to Int32.MaxValue (or MinValue)
-        //The value will be changed, but to update the UI, this property is overridden here. 
+        // If the value field in the slider has a number greater than
+        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // The property setter is overridden here to update the UI, in case the value is changed. 
         public override long Value
         {
             get
@@ -307,19 +308,19 @@ namespace CoreNodeModels.Input
 
             switch (name)
             {
-                case "Min":
+                case nameof(Min):
                 case "MinText":
                     Min = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
-                case "Max":
+                case nameof(Max):
                 case "MaxText":
                     Max = ConvertStringToInt64(value);
                     return true; // UpdateValueCore handled.
-                case "Value":
+                case nameof(Value):
                 case "ValueText":
                     Value = ConvertStringToInt64(value);                   
                     return true; // UpdateValueCore handled.
-                case "Step":
+                case nameof(Step):
                 case "StepText":
                     Step = ConvertStringToInt64(value);
                     return true;
@@ -360,7 +361,7 @@ namespace CoreNodeModels.Input
             base.SerializeCore(element, context); // Base implementation must be called.
 
             var xmlDocument = element.OwnerDocument;
-            var subNode = xmlDocument.CreateElement("Range");
+            var subNode = xmlDocument.CreateElement(nameof(Range));
             subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
             subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
             subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
@@ -373,7 +374,7 @@ namespace CoreNodeModels.Input
 
             foreach (XmlNode subNode in element.ChildNodes)
             {
-                if (!subNode.Name.Equals("Range"))
+                if (!subNode.Name.Equals(nameof(Range)))
                     continue;
                 if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
                     continue;

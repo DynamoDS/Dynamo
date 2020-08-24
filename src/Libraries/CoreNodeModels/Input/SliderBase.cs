@@ -137,7 +137,7 @@ namespace CoreNodeModels.Input
             long result = 0;
             if (long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
                 return result;
-            //check if the value exceeds the 32 bit maximum / minimum value
+            //check if the value exceeds the 64 bit maximum / minimum value
             if (value.Length > 1)
             {
                 var start = value[0] == '-' ? 1 : 0;
