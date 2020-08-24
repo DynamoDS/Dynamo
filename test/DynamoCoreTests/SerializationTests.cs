@@ -216,6 +216,11 @@ namespace Dynamo.Tests
         public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.Value.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
@@ -255,6 +260,14 @@ namespace Dynamo.Tests
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
 
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
+
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
 
                 try
@@ -285,6 +298,11 @@ namespace Dynamo.Tests
             Dictionary<Guid, string> modelGuidsToIDmap)
         {
             var nodeDiff = a.NodeTypeMap.Select(x => x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.ToString())));
@@ -336,6 +354,14 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[newGuid]);
 

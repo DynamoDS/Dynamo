@@ -346,7 +346,7 @@ namespace Dynamo.Tests
             RunModel(openPath);
             AssertPreviewCount("354ec30b-b13f-4399-beb2-a68753c09bfc", 1);
             var integerInput = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace
-                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider64Bit;
+                ("65d226ea-cfb5-4c5a-940e-a5c4eab1915d") as IntegerSlider;
             for (int i = 0; i <= 10; i++)
             {
                 integerInput.Value = 5 + i;
