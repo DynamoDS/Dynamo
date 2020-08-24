@@ -1607,6 +1607,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// <param name="packages">An <see cref="IEnumerable"/> of <see cref="HelixRenderPackage"/>.</param>
         internal virtual void AggregateRenderPackages(IEnumerable<HelixRenderPackage> packages)
         {
+            packages = FilterOutInvalidPackages(packages);
+
             IEnumerable<string> customNodeIdents = null;
             if (InCustomNode())
             {
@@ -1807,6 +1809,29 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 }
 
             }
+        }
+
+        /// <summary>
+        /// Filters out packages that are considered invalid by Helix. This includes any package
+        /// that has a coordinate with a special value like NaN or Infinite.
+        /// </summary>
+        /// <param name="packages">Original packages to render</param>
+        /// <returns>List of packages considered valid</returns>
+        private IEnumerable<HelixRenderPackage> FilterOutInvalidPackages(IEnumerable<HelixRenderPackage> packages)
+        {
+            List<HelixRenderPackage> result = new List<HelixRenderPackage>();
+
+            foreach (var package in packages)
+            {
+                if (!package.Points.Positions.Any(v => v.IsInvalid()) &&
+                    !package.Lines.Positions.Any(v => v.IsInvalid()) &&
+                    !package.Mesh.Positions.Any(v => v.IsInvalid()))
+                {
+                    result.Add(package);
+                }
+            }
+
+            return result;
         }
 
         private void AddLabelPlace(string nodeId, Vector3 pos, IRenderPackage rp)
@@ -2480,6 +2505,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal static double DistanceToPlane(this Vector3 point, Vector3 planeOrigin, Vector3 planeNormal)
         {
             return Vector3.Dot(planeNormal, (point - planeOrigin));
+        }
+
+        internal static bool IsInvalid(this Vector3 point)
+        {
+            return float.IsNaN(point.X) || float.IsInfinity(point.X) ||
+                float.IsNaN(point.Y) || float.IsInfinity(point.Y) ||
+                float.IsNaN(point.Z) || float.IsInfinity(point.Z);
         }
     }
 
