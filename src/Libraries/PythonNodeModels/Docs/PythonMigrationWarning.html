@@ -171,9 +171,9 @@
 
     <h3>Backwards Compatibility</h3>
     <p>
-        Dynamo 2.7 introduces a new Python engine, CPython3, that provides access to Python 3 inside of Dynamo.
-        Any Python 3 specific code authored inside of Dynamo graphs will NOT be backwards compatible to versions of
-        Dynamo prior to 2.7 unless that code is syntactically executable in both Python 2 and Python 3.
+        Dynamo 2.7 introduces a new Python engine, CPython3, that provides access to Python 3 inside of Dynamo. There 
+        is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. 
+        Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.
     </p>
 
     <h3>Why did we need to change the Python version</h3>
