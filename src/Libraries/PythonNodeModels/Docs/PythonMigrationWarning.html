@@ -169,6 +169,13 @@
         This stopped on January 1st 2020, when Python 2 support from the PSF officially ended.
     </p>
 
+    <h3>Backwards Compatibility</h3>
+    <p>
+        Dynamo 2.7 introduces a new Python engine, CPython3, that provides access to Python 3 inside of Dynamo. There 
+        is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. 
+        Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.
+    </p>
+
     <h3>Why did we need to change the Python version</h3>
     <p>
         Dynamo, and many other C#-based environments, uses a tool called IronPython to move data between .NET objects
