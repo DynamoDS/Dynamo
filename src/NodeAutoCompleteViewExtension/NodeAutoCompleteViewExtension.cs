@@ -7,7 +7,7 @@ namespace Dynamo.NodeAutoComplete
 {
     /// <summary>
     /// This view extension tracks current clicked node port in Dynamo and 
-    /// try to suggest the next best node to connect that port.
+    /// tries to suggest the next best node to connect that port.
     /// </summary>
     public class NodeAutoCompleteViewExtension : IViewExtension, ILogSource
     {
