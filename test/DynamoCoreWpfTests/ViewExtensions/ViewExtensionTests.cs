@@ -75,6 +75,9 @@ namespace DynamoCoreWpfTests
             var extensionManager = View.viewExtensionManager;
             var loader = extensionManager.ExtensionLoader;
             var ext = new ViewExtensionDefinition();
+            // By default, extensions are enabled.
+            Assert.IsTrue(ext.IsEnabled);
+            // Once we set it to false, loader will skip the loading and expect to return null.
             ext.IsEnabled = false;
             Assert.IsNull(loader.Load(ext));
         }
