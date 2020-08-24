@@ -175,9 +175,9 @@ namespace CoreNodeModels.Input
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             var el = MigrationManager.CloneIntegerSliderAndConvertTo64Bit(element);
-            base.DeserializeCore(el, context); //Base implementation must be called.
+            base.DeserializeCore(element, context); //Base implementation must be called.
 
-            foreach (XmlNode subNode in el.ChildNodes)
+            foreach (XmlNode subNode in element.ChildNodes)
             {
                 if (!subNode.Name.Equals("Range"))
                     continue;
