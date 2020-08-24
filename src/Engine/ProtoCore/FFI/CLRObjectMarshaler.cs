@@ -159,7 +159,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue)
+            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue || double.IsNaN(dsObject.DoubleValue))
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);

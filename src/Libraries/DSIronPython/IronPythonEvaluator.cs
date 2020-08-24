@@ -17,9 +17,11 @@ using Microsoft.Scripting.Utils;
 namespace DSIronPython
 {
     [SupressImportIntoVM]
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
     public enum EvaluationState { Begin, Success, Failed }
 
     [SupressImportIntoVM]
+    [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
     public delegate void EvaluationEventHandler(EvaluationState state,
                                                 ScriptEngine engine,
                                                 ScriptScope scope,
@@ -32,6 +34,7 @@ namespace DSIronPython
     [IsVisibleInDynamoLibrary(false)]
     public static class IronPythonEvaluator
     {
+        private const string DynamoPrintFuncName = "__dynamoprint__";
         /// <summary> stores a copy of the previously executed code</summary>
         private static string prev_code { get; set; }
         /// <summary> stores a copy of the previously compiled engine</summary>
@@ -104,7 +107,6 @@ namespace DSIronPython
                 ScriptEngine PythonEngine = Python.CreateEngine();
                 if (!string.IsNullOrEmpty(stdLib))
                 {
-                    code = "import sys" + System.Environment.NewLine + code;
                     paths = PythonEngine.GetSearchPaths().ToList();
                     paths.Add(stdLib);
                 }
@@ -123,8 +125,10 @@ namespace DSIronPython
 
             ScriptEngine engine = prev_script.Engine;
             ScriptScope scope = engine.CreateScope();
+            // For backwards compatibility: "sys" was imported by default due to a bug so we keep it that way
+            scope.ImportModule("sys");
 
-            ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+            ProcessAdditionalBindings(scope, bindingNames, bindingValues, engine);
 
             int amt = Math.Min(bindingNames.Count, bindingValues.Count);
 
@@ -160,7 +164,7 @@ namespace DSIronPython
         /// <param name="scope">Python scope where execution will occur</param>
         /// <param name="bindingNames">List of binding names received for evaluation</param>
         /// <param name="bindingValues">List of binding values received for evaluation</param>
-        private static void ProcessAdditionalBindings(ScriptScope scope, IList bindingNames, IList bindingValues)
+        private static void ProcessAdditionalBindings(ScriptScope scope, IList bindingNames, IList bindingValues, ScriptEngine engine)
         {
             const string NodeNameInput = "Name";
             string nodeName;
@@ -182,8 +186,29 @@ namespace DSIronPython
             {
                 dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
                 Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
-                scope.SetVariable("DynamoPrint", logFunction);
+                scope.SetVariable(DynamoPrintFuncName, logFunction);
+                ScriptSource source = engine.CreateScriptSourceFromString(RedirectPrint());
+                source.Execute(scope);
             }
+        }
+
+        private static string RedirectPrint()
+        {
+            return String.Format(@"
+import sys
+
+class DynamoStdOut:
+  def __init__(self, log_func):
+    self.text = ''
+    self.log_func = log_func
+  def write(self, text):
+    if text == '\n':
+      self.log_func(self.text)
+      self.text = ''
+    else:
+      self.text += text
+sys.stdout = DynamoStdOut({0})
+", DynamoPrintFuncName);
         }
 
         #region Marshalling
@@ -244,12 +269,14 @@ namespace DSIronPython
         ///     Emitted immediately before execution begins
         /// </summary>
         [SupressImportIntoVM]
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationBegin;
 
         /// <summary>
         ///     Emitted immediately after execution ends or fails
         /// </summary>
         [SupressImportIntoVM]
+        [Obsolete("Do not use! This will be subject to changes in a future version of Dynamo")]
         public static event EvaluationEventHandler EvaluationEnd;
 
         /// <summary>

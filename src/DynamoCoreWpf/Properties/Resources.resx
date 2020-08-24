@@ -2267,4 +2267,12 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor" xml:space="preserve">
     <value>Show Whitespace Characters in Python Editor</value>
   </data>
+  <data name="DynamoViewSettingsDefaultPythonEngine" xml:space="preserve">
+    <value>Default Python Engine</value>
+    <comment>Settings Menu | Default Python Engine</comment>
+  </data>
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
+    <value>Use System Default</value>
+    <comment>Settings Menu | Default Python Engine (first option, rest are purposely not translated)</comment>
+  </data>
 </root>
