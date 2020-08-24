@@ -24,18 +24,23 @@ PSInput main(VSInput input)
     uint flags = int(vParams.x);
     bool isSelected = flags & 2;
     bool requiresPerVertexColoration = flags & 32;
-        
+     
     float4 inputp;
-    if (isSelected || requiresPerVertexColoration)
+    float3 nudge = normalize(input.n) * 0.0001;
+
+    inputp = input.p;
+    if (requiresPerVertexColoration)
     {
-        // Nudge the vertex out slightly along its normal.
-        float3 nudge = normalize(input.n) * 0.0001;
-        inputp = float4(input.p.x + nudge.x, input.p.y + nudge.y, input.p.z + nudge.z, input.p.w);
+        // Nudge the vertex out slightly along its normal a tiny bit.
+        inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
     }
-    else
+    if (isSelected)
     {
-        inputp = input.p;
+        // Nudge the vertex out slightly along its normal a bit more.
+        nudge  = nudge * 100;
+        inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
     }
+    
 
     //set position into world space
     output.p = mul(inputp, mWorld);
