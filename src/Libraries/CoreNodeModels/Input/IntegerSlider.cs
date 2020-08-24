@@ -297,7 +297,7 @@ namespace CoreNodeModels.Input
             set
             {
                 base.Value = value;              
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(nameof(Value));
             }
         }
 
