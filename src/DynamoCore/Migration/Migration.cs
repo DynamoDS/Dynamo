@@ -914,39 +914,6 @@ namespace Dynamo.Migration
         }
 
         /// <summary>
-        /// Call this method to create a clone of the original XmlElement and 
-        /// change its type at one go. This method preserves all the attributes 
-        /// while updating only the type name.
-        /// </summary>
-        /// <param name="element">The XmlElement to be cloned and the type name 
-        /// updated.</param>
-        /// <param name="type">The fully qualified name of the new type.</param>
-        /// <param name="name">The new name, by which this node is known.</param>
-        /// <param name="cloneInnerXml">Parameter indicating whether the inner xml 
-        /// of the original node should be cloned.</param>
-        /// <returns>Returns the cloned and updated XmlElement.</returns>
-        public static XmlElement CloneIntegerSliderAndConvertTo64Bit(XmlElement element)
-        {
-            var type = "CoreNodeModels.Input.IntegerSlider64Bit";
-            XmlDocument document = element.OwnerDocument;
-            XmlElement cloned = document.CreateElement(type);
-
-            foreach (XmlAttribute attribute in element.Attributes)
-                cloned.SetAttribute(attribute.Name, attribute.Value);
-
-            cloned.InnerXml = element.InnerXml;
-
-            var child = cloned.ChildNodes[0];
-            var newChild = document.CreateElement("System.Int64");
-            newChild.InnerXml = child.InnerXml;
-            cloned.ReplaceChild(newChild, child);
-
-            cloned.SetAttribute("type", type);
-            cloned.SetAttribute("nickname", "Integer Slider");
-            return cloned;
-        }
-
-        /// <summary>
         /// Call this method to create a dummy node, should a node failed to be 
         /// migrated. This results in a dummy node with a description of what the 
         /// original node type was, and also retain the number of input and output
