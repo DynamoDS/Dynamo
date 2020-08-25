@@ -38,7 +38,7 @@ namespace Dynamo.LibraryUI
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         public void Dispose()

@@ -99,12 +99,14 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="CameraTests.cs" />
+    <Compile Include="CustomGraphicItemVisualizationTest.cs" />
     <Compile Include="CustomNodeTests.cs" />
     <Compile Include="HelixImageComparisonTests.cs" />
     <Compile Include="HelixRenderPackageTests.cs" />
     <Compile Include="HelixWatch3dViewModelPrimitiveTests.cs" />
     <Compile Include="HelixWatch3DViewModelTests.cs" />
     <Compile Include="HelixWatch3DViewModelUnitTests.cs" />
+    <Compile Include="PerformanceVisualizationTests.cs" />
     <Compile Include="Preview3DMemoryOutageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Watch3DViewModelTests.cs" />

@@ -283,7 +283,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public NodeSearchElementViewModel FindViewModelForNode(string nodeName)
         {
-            var result = dynamoViewModel.Model.SearchModel.SearchEntries.Where(e => {
+            var result = Model.SearchEntries.Where(e => {
                 if (e.CreationName.Equals(nodeName))
                 {
                     return true;
