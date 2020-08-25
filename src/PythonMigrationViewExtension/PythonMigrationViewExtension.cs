@@ -43,7 +43,7 @@ namespace Dynamo.PythonMigration
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         public void Startup(ViewStartupParams viewStartupParams)
