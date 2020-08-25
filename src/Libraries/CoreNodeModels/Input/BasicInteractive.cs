@@ -61,7 +61,6 @@ namespace CoreNodeModels.Input
 
         protected BasicInteractive(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            Type type = typeof(T);
         }
 
         protected BasicInteractive()

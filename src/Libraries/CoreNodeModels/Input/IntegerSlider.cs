@@ -214,7 +214,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
     [NodeSearchTags("IntegerSliderSearchTags", typeof(Resources))]
     [InPortTypes("UI Input")]
-    [OutPortTypes("long")]
+    [OutPortTypes("int")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
@@ -272,6 +272,9 @@ namespace CoreNodeModels.Input
             Step = 1;
             Value = 1;
             ShouldDisplayPreviewCore = false;
+
+            var outport = outPorts.First();
+            outport.ToolTip = "Int64";
         }
 
         public IntegerSlider64Bit()
