@@ -50,7 +50,7 @@ namespace Dynamo.NodeAutoComplete
 
         public void Shutdown()
         {
-            this.Dispose();
+            // Do nothing for now
         }
 
         public void Startup(ViewStartupParams viewStartupParams)

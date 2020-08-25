@@ -67,7 +67,6 @@ namespace Dynamo.WorkspaceDependency
         public void Shutdown()
         {
             DependencyView.Dispose();
-            this.Dispose();
         }
 
         public void Startup(ViewStartupParams viewStartupParams)
