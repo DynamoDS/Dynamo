@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO;
+using System.Reflection;
 using System.Windows;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
@@ -65,6 +66,32 @@ namespace DynamoCoreWpfTests
             extensionsSideBarViewExtensionNew.UniqueId = "ExtensionsSideBarDummyIDNew";
             extensionManager.Add(extensionsSideBarViewExtensionNew);
             Assert.AreEqual(initialNum + 2, View.ExtensionTabItems.Count); 
+        }
+
+        [Test]
+        public void ExtensionNotEnabledLoadingTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var extensionManager = View.viewExtensionManager;
+            var loader = extensionManager.ExtensionLoader;
+            var ext = new ViewExtensionDefinition();
+            // By default, extensions are enabled.
+            Assert.IsTrue(ext.IsEnabled);
+            // Once we set it to false, loader will skip the loading and expect to return null.
+            ext.IsEnabled = false;
+            Assert.IsNull(loader.Load(ext));
+        }
+
+        [Test]
+        public void ExtensionFromManifestNotEnabledLoadingTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var extensionManager = View.viewExtensionManager;
+            var loader = extensionManager.ExtensionLoader;
+            // Once IsEnabled set to false, loader will skip the loading and expect to return null.
+            Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpfTests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)

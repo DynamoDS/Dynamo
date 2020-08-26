@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo;
@@ -32,7 +33,6 @@ namespace DynamoCoreWpfTests
             libraryCore.ParsingMode = ParseMode.AllowNonAssignment;
 
             var pathResolver = new TestPathResolver();
-            pathResolver.AddPreloadLibraryPath("DSCoreNodes.dll");
 
             var pathManager = new PathManager(new PathManagerParams
             {
@@ -84,30 +84,9 @@ namespace DynamoCoreWpfTests
         public void DumpLibraryToXmlZeroTouchTest()
         {
             var searchViewModel = new SearchViewModel(new NodeSearchModel());
-
-            LibraryLoaded = false;
-
             string libraryPath = "DSOffice.dll";
 
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already here, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-                Assert.IsTrue(LibraryLoaded);
-            }
-
-            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
-            foreach (var funcGroup in fgToCompare)
-            {
-                foreach (var functionDescriptor in funcGroup.Functions)
-                {
-                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
-                    {
-                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
-                    }
-                }
-            }
+            var fgToCompare = LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
 
             var document = searchViewModel.Model.ComposeXmlForLibrary(ExecutingDirectory);
 
@@ -157,30 +136,9 @@ namespace DynamoCoreWpfTests
         public void SearchHiddenInterfaceNodeTest()
         {
             var searchViewModel = new SearchViewModel(new NodeSearchModel());
-
-            LibraryLoaded = false;
-
             string libraryPath = "FFITarget.dll";
 
-            // All we need to do here is to ensure that the target has been loaded
-            // at some point, so if it's already here, don't try and reload it
-            if (!libraryServices.IsLibraryLoaded(libraryPath))
-            {
-                libraryServices.ImportLibrary(libraryPath);
-                Assert.IsTrue(LibraryLoaded);
-            }
-
-            var fgToCompare = libraryServices.GetFunctionGroups(libraryPath);
-            foreach (var funcGroup in fgToCompare)
-            {
-                foreach (var functionDescriptor in funcGroup.Functions)
-                {
-                    if (functionDescriptor.IsVisibleInLibrary && !functionDescriptor.DisplayName.Contains("GetType"))
-                    {
-                        searchViewModel.Model.Add(new ZeroTouchSearchElement(functionDescriptor));
-                    }
-                }
-            }
+            LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
 
             var searchString = "InterfaceA";
             var nodes = searchViewModel.Search(searchString);
@@ -207,10 +165,47 @@ namespace DynamoCoreWpfTests
         public void SearchHiddenEnumTest()
         {
             var searchViewModel = new SearchViewModel(new NodeSearchModel());
-
-            LibraryLoaded = false;
-
             string libraryPath = "FFITarget.dll";
+
+            LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
+
+            var searchString = "Days";
+            var nodes = searchViewModel.Search(searchString);
+            var foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
+
+            searchString = "Sunday";
+            nodes = searchViewModel.Search(searchString);
+            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
+
+            searchString = "Tuesday";
+            nodes = searchViewModel.Search(searchString);
+            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
+            Assert.IsFalse(foundNodes.Any());
+        }
+
+        /// <summary>
+        /// Tests that the XmlDocumentationExtension is able to translate a DS mangled function name that contains
+        /// array parameters back into the correct .NET type based mangled name.
+        /// </summary>
+        [Test]
+        public void CanResolveCorrectOverloadByRecognizingDoubleArrayParameter()
+        {
+            var searchViewModel = new SearchViewModel(new NodeSearchModel());
+            var libraryPath = "ProtoGeometry.dll";
+
+            LoadLibraryIntoSearchViewModel(searchViewModel, libraryPath);
+
+            var node = searchViewModel.FindViewModelForNode("Autodesk.DesignScript.Geometry.Curve.SplitByParameter@double[]");
+            Assert.IsNotNull(node);
+            // This is the description of SplitByParameter(System.Double[]).
+            Assert.AreEqual("Split a Curve into multiple pieces at the given parameters", node.Description);
+        }
+
+        private IEnumerable<Dynamo.Engine.FunctionGroup> LoadLibraryIntoSearchViewModel(SearchViewModel searchViewModel, string libraryPath)
+        {
+            LibraryLoaded = false;
 
             // All we need to do here is to ensure that the target has been loaded
             // at some point, so if it's already here, don't try and reload it
@@ -232,20 +227,7 @@ namespace DynamoCoreWpfTests
                 }
             }
 
-            var searchString = "Days";
-            var nodes = searchViewModel.Search(searchString);
-            var foundNodes = nodes.Where(n => n.Class.Equals(searchString));
-            Assert.IsFalse(foundNodes.Any());
-
-            searchString = "Sunday";
-            nodes = searchViewModel.Search(searchString);
-            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
-            Assert.IsFalse(foundNodes.Any());
-
-            searchString = "Tuesday";
-            nodes = searchViewModel.Search(searchString);
-            foundNodes = nodes.Where(n => n.Class.Equals(searchString));
-            Assert.IsFalse(foundNodes.Any());
+            return fgToCompare;
         }
     }
 }
