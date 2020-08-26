@@ -4301,8 +4301,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, codeblock.OutPorts.Count);
 
             AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
-
-            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test]
