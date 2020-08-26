@@ -91,8 +91,8 @@ limitations under the License.
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=2.7.0.9606, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_226_0_0.2.7.0.9606\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.2375, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2375\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -385,7 +385,7 @@ limitations under the License.
       <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0*\tools\net48\LibG.Interface.dll" />
       <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_226_0_0*\lib\net48\protogeometry.xml" />
       <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0*\tools\net48\$(UICulture)\*" />
-      <LibGProtoGeometryLibGLocale Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0.2.7.0.9606\tools\net48\libg_locale\**\*.*" />
+      <LibGProtoGeometryLibGLocale Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2375\tools\net48\libg_locale\**\*.*" />
       <LibG224 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_224_0_1*\tools\net48\LibG_224_0_1\*" />
       <LibG2244 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_224_4_0*\tools\net48\LibG_224_4_0\*" />
       <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0*\tools\net48\LibG_225_0_0\*" />
