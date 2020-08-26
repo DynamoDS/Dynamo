@@ -245,7 +245,21 @@ namespace Dynamo.Tests
             foreach (var portkvp in a.PortDataMap)
             {
                 Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
-                Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
+
+                var aData = a.PortDataMap[portkvp.Key];
+                var bData = b.PortDataMap[portkvp.Key];
+                
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aData.Description == "Int32")
+                {
+                    Assert.IsTrue(bData.Description == "Int32" || bData.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aData, bData);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -337,7 +351,18 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
-                Assert.AreEqual(aPort.Description, bPort.Description);
+
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aPort.Description == "Int32")
+                {
+                    Assert.IsTrue(bPort.Description == "Int32" || bPort.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aPort.Description, bPort.Description);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
