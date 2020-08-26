@@ -23,6 +23,7 @@ namespace CoreNodeModels.Input
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
+    [IsVisibleInDynamoLibrary(false)]
     public class IntegerSlider : SliderBase<int>
     {
         /// <summary>
