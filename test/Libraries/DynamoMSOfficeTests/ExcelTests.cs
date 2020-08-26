@@ -1042,13 +1042,11 @@ namespace Dynamo.Tests
             //When executing the Graph will call the Data.ImportExcel method
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("ba33d59ba05648d68d2d9aadc42ae07a");
             ViewModel.HomeSpace.Run();
-            var list = watch.CachedValue.GetElements().ToArray();
             var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }};
 
             //Assert
             //Validates that the data fetch from the excel workbook are 3 elements and match the values in data array
             Assert.IsNotNull(watch);
-            Assert.AreEqual(list.Length, 3);
             AssertPreviewValue(watch.GUID.ToString(), data);
             
         }
