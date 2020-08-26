@@ -314,7 +314,7 @@
     },
     {
       "fullyQualifiedName": "Core.Input.Integer Slider",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Input.IntegerSlider.Small?path=nodes\\CoreNodeModels.dll",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Input.IntegerSlider64Bit.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "Integer Slider",
       "parameters": null,
       "itemType": "action",

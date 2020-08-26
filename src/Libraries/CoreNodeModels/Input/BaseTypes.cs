@@ -737,7 +737,7 @@ namespace CoreNodeModels.Input
             public AssociativeNode GetAstNode(Dictionary<string, AssociativeNode> idLookup)
             {
                 if (Math.Floor(_d) == _d)
-                    return AstFactory.BuildIntNode((int)_d);
+                    return AstFactory.BuildIntNode((long)_d);
                 return AstFactory.BuildDoubleNode(_d);
             }
         }

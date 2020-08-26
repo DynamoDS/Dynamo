@@ -25,7 +25,6 @@ using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
 using TestServices;
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DynamoCoreWpfTests
 {
@@ -4285,7 +4284,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(3, workspace.Nodes.Count());
 
             var number = GetNode("31f48bb5-4bdf-4066-b343-5df0f6f4337f") as DoubleInput;
-            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider;
+            var slider = GetNode("ff4d4e43-8932-4588-95ed-f41c7f322ad0") as IntegerSlider64Bit;
             var codeblock = GetNode("d7e88a85-d32f-416c-b449-b22f099c5471") as CodeBlockNodeModel;
 
             Assert.IsNotNull(number);
@@ -4302,8 +4301,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, codeblock.OutPorts.Count);
 
             AssertPreviewValue("d7e88a85-d32f-416c-b449-b22f099c5471", 80);
-
-            //Assert.Inconclusive("Porting : DoubleInput");
         }
 
         [Test]

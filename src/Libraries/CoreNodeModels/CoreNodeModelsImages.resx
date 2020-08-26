@@ -724,7 +724,7 @@
         AFwtvaEfzhR5AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="CoreNodeModels.Input.IntegerSlider.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Input.IntegerSlider64Bit.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIqSURBVHhe7dlNbtNAGMbxHCF3iVTYUEWIig9VqEfo
@@ -740,7 +740,7 @@
         rkJggg==
 </value>
   </data>
-  <data name="CoreNodeModels.Input.IntegerSlider.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Input.IntegerSlider64Bit.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACgSURBVFhHYxgFo2AUjIJRMAqoAQ76eBoAcQMUG0CF
