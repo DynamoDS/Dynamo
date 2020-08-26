@@ -132,7 +132,14 @@ namespace CoreNodeModels.Input
             return result;
         }
 
-        internal static long ConvertStringToInt64(string value)
+        /// <summary>
+        /// Convert a value with a string representation into 64 bit integers.
+        /// This is used by IntegerSlider64Bit. The expected range of values are
+        /// from -2^63 to 2^63 - 1
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static long ConvertStringToInt64(string value)
         {
             long result = 0;
             if (long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
