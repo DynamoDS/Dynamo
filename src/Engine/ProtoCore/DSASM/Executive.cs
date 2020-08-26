@@ -3595,7 +3595,21 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata1.IntegerValue * opdata2.IntegerValue);
+                long val;
+                try
+                {
+                    val = checked(opdata1.IntegerValue * opdata2.IntegerValue);
+                }
+                catch (OverflowException)
+                {
+                    opdata2 = StackValue.BuildInt(opdata1.IntegerValue * opdata2.IntegerValue);
+                    runtimeCore.RuntimeStatus.LogWarning(WarningID.Overflow, Resources.OverflowWarning);
+
+                    rmem.Push(opdata2);
+                    ++pc;
+                    return;
+                }
+                opdata2 = StackValue.BuildInt(val);
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
