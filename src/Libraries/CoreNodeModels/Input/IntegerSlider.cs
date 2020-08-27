@@ -13,6 +13,7 @@ using ProtoCore.AST.AssociativeAST;
 
 namespace CoreNodeModels.Input
 {
+    [Obsolete("IntegerSlider will be removed in favor of IntegerSlider64Bit in a future version of Dynamo")]
     [NodeName("Integer Slider")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
@@ -22,6 +23,7 @@ namespace CoreNodeModels.Input
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
+    [IsVisibleInDynamoLibrary(false)]
     public class IntegerSlider : SliderBase<int>
     {
         /// <summary>
@@ -46,7 +48,7 @@ namespace CoreNodeModels.Input
         }
         public override NodeInputData InputData
         {
-           get
+            get
             {
                 return new NodeInputData()
                 {
@@ -68,7 +70,7 @@ namespace CoreNodeModels.Input
 
         [JsonConstructor]
         private IntegerSlider(IEnumerable<PortModel> inPorts,
-            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+            IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             Min = 0;
             Max = 100;
@@ -99,7 +101,7 @@ namespace CoreNodeModels.Input
             }
             set
             {
-                base.Value = value;              
+                base.Value = value;
                 RaisePropertyChanged("Value");
             }
         }
@@ -121,7 +123,7 @@ namespace CoreNodeModels.Input
                     return true; // UpdateValueCore handled.
                 case "Value":
                 case "ValueText":
-                    Value = ConvertStringToInt(value);                   
+                    Value = ConvertStringToInt(value);
                     return true; // UpdateValueCore handled.
                 case "Step":
                 case "StepText":
@@ -137,7 +139,7 @@ namespace CoreNodeModels.Input
             var rhs = AstFactory.BuildIntNode(Value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
-            return new[] {assignment};
+            return new[] { assignment };
         }
 
         protected override int DeserializeValue(string val)
@@ -194,6 +196,205 @@ namespace CoreNodeModels.Input
                             break;
                         case "step":
                             Step = ConvertStringToInt(attr.Value);
+                            break;
+                        default:
+                            Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));
+                            break;
+                    }
+                }
+
+                break;
+            }
+        }
+
+        #endregion
+    }
+
+    [NodeName("Integer Slider")]
+    [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
+    [NodeDescription("IntegerSliderNodeDescription", typeof(Resources))]
+    [NodeSearchTags("IntegerSliderSearchTags", typeof(Resources))]
+    [InPortTypes("UI Input")]
+    [OutPortTypes("int")]
+    [SupressImportIntoVM]
+    [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.Input.IntegerSlider")]
+    public class IntegerSlider64Bit : SliderBase<long>
+    {
+        /// <summary>
+        /// The NodeType property provides a name which maps to the 
+        /// server type for the node. This property should only be
+        /// used for serialization. 
+        /// </summary>
+        public override string NodeType
+        {
+            get
+            {
+                return "NumberInputNode";
+            }
+        }
+
+        public string NumberType
+        {
+            get
+            {
+                return "Integer";
+            }
+        }
+
+        public override NodeInputData InputData
+        {
+           get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputTypes.numberInput,
+                    Description = this.Description,
+                    Value = Value.ToString(CultureInfo.InvariantCulture),
+
+                    MinimumValue = this.Min,
+                    MaximumValue = this.Max,
+                    StepValue = this.Step,
+                    NumberType = this.NumberType,
+
+                };
+            }
+        }
+
+
+        [JsonConstructor]
+        private IntegerSlider64Bit(IEnumerable<PortModel> inPorts,
+            IEnumerable<PortModel> outPorts): base(inPorts, outPorts)
+        {
+            Min = 0;
+            Max = 100;
+            Step = 1;
+            Value = 1;
+            ShouldDisplayPreviewCore = false;
+
+            var outport = outPorts.First();
+            outport.ToolTip = "Int64";
+        }
+
+        public IntegerSlider64Bit()
+        {
+            RegisterAllPorts();
+
+            Min = 0;
+            Max = 100;
+            Step = 1;
+            Value = 1;
+            ShouldDisplayPreviewCore = false;
+        }
+
+        // If the value field in the slider has a number greater than
+        // long.Maxvalue (or MinValue), the value will be changed to long.MaxValue (or MinValue)
+        // The property setter is overridden here to update the UI, in case the value is changed. 
+        public override long Value
+        {
+            get
+            {
+                return base.Value;
+            }
+            set
+            {
+                base.Value = value;              
+                RaisePropertyChanged(nameof(Value));
+            }
+        }
+
+        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
+        {
+            string name = updateValueParams.PropertyName;
+            string value = updateValueParams.PropertyValue;
+
+            switch (name)
+            {
+                case nameof(Min):
+                case "MinText":
+                    Min = ConvertStringToInt64(value);
+                    return true; // UpdateValueCore handled.
+                case nameof(Max):
+                case "MaxText":
+                    Max = ConvertStringToInt64(value);
+                    return true; // UpdateValueCore handled.
+                case nameof(Value):
+                case "ValueText":
+                    Value = ConvertStringToInt64(value);                   
+                    return true; // UpdateValueCore handled.
+                case nameof(Step):
+                case "StepText":
+                    Step = ConvertStringToInt64(value);
+                    return true;
+            }
+
+            return base.UpdateValueCore(updateValueParams);
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var rhs = AstFactory.BuildIntNode(Value);
+            var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
+
+            return new[] {assignment};
+        }
+
+        protected override long DeserializeValue(string val)
+        {
+            try
+            {
+                return Convert.ToInt64(val, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        protected override string SerializeValue()
+        {
+            return Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context); // Base implementation must be called.
+
+            var xmlDocument = element.OwnerDocument;
+            var subNode = xmlDocument.CreateElement(nameof(Range));
+            subNode.SetAttribute("min", Min.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("max", Max.ToString(CultureInfo.InvariantCulture));
+            subNode.SetAttribute("step", Step.ToString(CultureInfo.InvariantCulture));
+            element.AppendChild(subNode);
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context); //Base implementation must be called.
+
+            foreach (XmlNode subNode in element.ChildNodes)
+            {
+                if (!subNode.Name.Equals(nameof(Range)))
+                    continue;
+                if (subNode.Attributes == null || (subNode.Attributes.Count <= 0))
+                    continue;
+
+                foreach (XmlAttribute attr in subNode.Attributes)
+                {
+                    switch (attr.Name)
+                    {
+                        case "min":
+                            Min = ConvertStringToInt64(attr.Value);
+                            break;
+                        case "max":
+                            Max = ConvertStringToInt64(attr.Value);
+                            break;
+                        case "step":
+                            Step = ConvertStringToInt64(attr.Value);
                             break;
                         default:
                             Log(string.Format("{0} attribute could not be deserialized for {1}", attr.Name, GetType()));

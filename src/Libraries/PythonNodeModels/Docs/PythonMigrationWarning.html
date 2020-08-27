@@ -169,6 +169,13 @@
         This stopped on January 1st 2020, when Python 2 support from the PSF officially ended.
     </p>
 
+    <h3>Backwards Compatibility</h3>
+    <p>
+        Dynamo 2.7 introduces a new Python engine, CPython3, that provides access to Python 3 inside of Dynamo. There 
+        is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. 
+        Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.
+    </p>
+
     <h3>Why did we need to change the Python version</h3>
     <p>
         Dynamo, and many other C#-based environments, uses a tool called IronPython to move data between .NET objects
@@ -208,13 +215,18 @@
 
     <h3>How to make changes to your Python nodes for Python 3 </h3>
     <p>
-        Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your
-        script contains syntax that has changed between versions, we have made it easier for you to update your script
-        by including an automatic code converter in the Python node.
+        Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your 
+        script contains syntax that has changed between versions, we have made it easier for you to update your script 
+        by including an automatic code converter in the Python node called the <em>Migration Assistant</em>.
     </p>
     <p>
-        Using this, all you need to do is switch to the CPython3 engine and Dynamo will let you know which changes are
-        needed and will give you the option to decline or accept the conversion.
+        Using the migration assistant, all you need to do is switch to the CPython3 engine and click on the 2->3 icon and Dynamo 
+        will let you know which changes are needed and will give you the option to decline or accept the conversion.
+    </p>
+    <p>
+        As the Python Script From String node simply executes the Python code input into it, rather than providing a text editor 
+        environment, it does not have access to the Migration Assistant. If you wish to use this feature you will need to copy 
+        and paste your code into a Python node temporarily before copy and pasting it back into your code block node.
     </p>
     <p>
         If you are curious about diving deeper into the differences between the two Python versions, here are two

@@ -61,7 +61,6 @@ namespace CoreNodeModels.Input
 
         protected BasicInteractive(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            Type type = typeof(T);
         }
 
         protected BasicInteractive()
@@ -97,8 +96,10 @@ namespace CoreNodeModels.Input
         {
             base.DeserializeCore(nodeElement, context); // Base implementation must be called
 
-            foreach (XmlNode subNode in nodeElement.ChildNodes.Cast<XmlNode>()
-                .Where(subNode => subNode.Name.Equals(typeof(T).FullName)))
+            var subNodes = nodeElement.ChildNodes.Cast<XmlNode>()
+                .Where(subNode => subNode.Name.Equals(typeof(T).FullName));
+
+            foreach (XmlNode subNode in subNodes)
             {
                 var attrs = subNode.Attributes;
 

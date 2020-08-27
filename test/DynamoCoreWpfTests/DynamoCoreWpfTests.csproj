@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="ColorPaletteTests.cs" />
     <Compile Include="InfoBubbleTests.cs" />
+    <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
@@ -174,6 +175,7 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
+    <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
@@ -261,6 +263,10 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj">
+      <Project>{51511AFD-F326-4995-8E27-5D711419EF6F}</Project>
+      <Name>NodeAutoCompleteViewExtension</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
       <Name>DynamoServices</Name>
@@ -313,6 +319,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
