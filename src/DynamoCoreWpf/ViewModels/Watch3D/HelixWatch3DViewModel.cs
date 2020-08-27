@@ -1030,7 +1030,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return true;
         }
 
-#region internal methods
+        #region internal methods
 
         internal void ComputeFrameUpdate()
         {
@@ -1048,9 +1048,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             currentFrameSkipCount++;
         }
 
-#endregion
+        #endregion
 
-#region private methods
+        #region private methods
 
         private void OnSceneItemsChanged()
         {
@@ -2287,7 +2287,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-#endregion
+        #endregion
 
         protected override void Dispose(bool disposing)
         {
