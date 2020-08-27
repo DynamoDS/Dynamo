@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 using System.Xml;
 using Autodesk.DesignScript.Interfaces;
 using Dynamo.Controls;
@@ -855,10 +856,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 (dynamoModel as DynamoModel).Report3DPreviewOutage(summary, description);
             }
 #if DEBUG
-            renderTimer.Stop();
-            Debug.WriteLine(string.Format("RENDER: {0} ellapsed for compiling assets for rendering.", renderTimer.Elapsed));
-            renderTimer.Reset();
-            renderTimer.Start();
+            // Defer stopping the timer until after the rendering has occurred
+            Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+            {
+                renderTimer.Stop();
+                Debug.WriteLine(string.Format("RENDER: {0} ellapsed time rendering.", renderTimer.Elapsed));
+                renderTimer.Restart();
+            }));
 #endif
 
             OnSceneItemsChanged();
@@ -1026,19 +1030,10 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return true;
         }
 
-        #region internal methods
+#region internal methods
 
         internal void ComputeFrameUpdate()
         {
-#if DEBUG
-            if (renderTimer.IsRunning)
-            {
-                renderTimer.Stop();
-                Debug.WriteLine(string.Format("RENDER: {0} ellapsed for setting properties and rendering.", renderTimer.Elapsed));
-                renderTimer.Reset();
-            }
-#endif
-
             // Raising a property change notification for
             // the SceneItems collections causes a full
             // re-render including sorting for transparency.
@@ -1053,9 +1048,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             currentFrameSkipCount++;
         }
 
-        #endregion
+#endregion
 
-        #region private methods
+#region private methods
 
         private void OnSceneItemsChanged()
         {
@@ -2292,7 +2287,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        #endregion
+#endregion
 
         protected override void Dispose(bool disposing)
         {

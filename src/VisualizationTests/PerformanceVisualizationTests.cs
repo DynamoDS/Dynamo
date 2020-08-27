@@ -1,7 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
 namespace WpfVisualizationTests
@@ -18,14 +18,16 @@ namespace WpfVisualizationTests
     public class PerformanceVisualizationTests : VisualizationTest
     {
         // Determines how many times each performance graph will be run.
-        const int SamplingAmount = 10;
+        const int SamplingAmount = 3;
 
         [Test]
         [TestCaseSource("PerformanceTestSource")]
         public void TestVisualizationPerformance(string filePath)
         {
             ViewModel.OpenCommand.Execute(filePath);
+            DispatcherUtil.DoEvents();
             RunCurrentModel();
+            DispatcherUtil.DoEvents();
         }
 
         public IEnumerable<string> PerformanceTestSource
