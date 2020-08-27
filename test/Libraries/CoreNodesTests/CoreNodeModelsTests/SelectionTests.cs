@@ -25,6 +25,7 @@ namespace CoreNodeModelsTests
         {
             selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
             selection = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
+            selection.Name = "selectionTestName";
             testNode = CreateCodeBlockNode();
         }
 
@@ -106,11 +107,93 @@ namespace CoreNodeModelsTests
             Assert.AreEqual(expectedResult, result);
         }
 
+        [Test]
+        public void SerializeCoreTest()
+        {
+            //Selects the test node
+            selectionHelperMock
+                .Setup(x => x.RequestSelectionOfType("testMessage", SelectionType.Many, SelectionObjectType.Element))
+                .Returns(new List<ModelBase> { testNode });
+            selection.Select(testNode);
+
+            //Serializes selection into xml
+            var testDocument = new XmlDocument();
+            testDocument.LoadXml("<ElementTag/>");
+            var testElement = testDocument.DocumentElement;
+            selection.SerializeCore(testElement, SaveContext.None);
+
+            string expectedInnerXML = String.Format("<instance id=\"{0}\" />",
+                testNode.GUID.ToString());
+            Assert.AreEqual(expectedInnerXML, testElement.InnerXml);
+        }
+
+        [Test]
+        public void DeserializeCoreTest()
+        {
+            selection.testNode = testNode;
+
+            //Selects the test node
+            selectionHelperMock
+                .Setup(x => x.RequestSelectionOfType("testMessage", SelectionType.Many, SelectionObjectType.Element))
+                .Returns(new List<ModelBase> { testNode });
+            selection.Select(testNode);
+            var count = selection.SelectionResults.Count();
+            Assert.AreEqual(1, count);
+
+
+            //Serializes selection into xml
+            var testDocument = new XmlDocument();
+            testDocument.LoadXml("<ElementTag/>");
+            var testElement = testDocument.DocumentElement;
+            selection.SerializeCore(testElement, SaveContext.None);
+
+            //Clears selection
+            selection.ClearSelections();
+            count = selection.SelectionResults.Count();
+            Assert.AreEqual(0, count);
+
+            //Recovers selection from xml
+            selection.DeserializeCore(testElement, SaveContext.None);
+            count = selection.SelectionResults.Count();
+            Assert.AreEqual(1, count);
+            var selectedNode = selection.SelectionResults.FirstOrDefault();
+            Assert.AreEqual(testNode.GUID, selectedNode.GUID);
+        }
+
+        [Test]
+        public void UpdateValueCoreTest()
+        {
+            //Sets property to be updated
+            selection.Name = "Starting Name";
+
+            //Updates Name property with new value
+            var updatedValue = new UpdateValueParams("Name", "UpdatedName");
+            bool response = selection.UpdateValueCore(updatedValue);
+            Assert.IsTrue(response);
+            Assert.AreEqual(updatedValue.PropertyValue, selection.Name);
+
+            //Case: Update "Value" property
+            //Load node for testing
+            testNode.GUID = Guid.NewGuid();
+            selection.testNode = testNode;
+
+            //Updates selection value
+            updatedValue = new UpdateValueParams("Value", testNode.GUID.ToString());
+            response = selection.UpdateValueCore(updatedValue);
+
+            var count = selection.SelectionResults.Count();
+            Assert.AreEqual(1, count);
+            var selectedNode = selection.SelectionResults.FirstOrDefault();
+            Assert.AreEqual(testNode.GUID, selectedNode.GUID);
+        }
+
         /// <summary>
         /// Class created in order to test protected methods in SelectionBase parent
         /// </summary>
         private class SelectionConcrete : SelectionBase<ModelBase, ModelBase>
         {
+            //Property used to allow testing with implementation specific method
+            public NodeModel testNode { get; set; }
             public override IModelSelectionHelper<ModelBase> SelectionHelper { get; }
 
             public void SerializeCore(XmlElement nodeElement, SaveContext context) =>
@@ -133,15 +216,15 @@ namespace CoreNodeModelsTests
 
             protected override string GetIdentifierFromModelObject(ModelBase modelObject)
             {
-                throw new NotImplementedException();
+                return modelObject.GUID.ToString();
             }
 
             protected override ModelBase GetModelObjectFromIdentifer(string id)
             {
-                throw new NotImplementedException();
+                return testNode;
             }
 
-            //This constructor is only used during testing to allow the initalization of the SelectionHelper property
+            //This constructor is only used during testing to allow the initialization of the SelectionHelper property
             public SelectionConcrete(
                 SelectionType selectionType,
                 SelectionObjectType selectionObjectType,
