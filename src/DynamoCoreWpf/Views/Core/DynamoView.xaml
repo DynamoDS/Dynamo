@@ -1516,7 +1516,7 @@
                     VerticalAlignment="Top"
                     Margin="0,310,0,0">
             <Grid Background="#353535"
-                  Width="100"
+                  Width="Auto"
                   Cursor="Hand">
                 <Button Click="OnCollapsedLeftSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
@@ -1533,8 +1533,8 @@
                             </Border>
                         </ControlTemplate>
                     </Button.Resources>
-                    <Grid Mouse.MouseEnter="Button_MouseEnter"
-                          Mouse.MouseLeave="Button_MouseLeave">
+                    <Grid Mouse.MouseEnter="LibraryHandle_MouseEnter"
+                          Mouse.MouseLeave="LibraryHandle_MouseLeave">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -1581,9 +1581,10 @@
                     Background="{StaticResource HighlightedBrush}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Margin="0,310,-79,0">
+                    Margin="0,310,0,0"
+                    RenderTransformOrigin="1,0">
             <Grid Background="#353535"
-                  Width="100"
+                  Width="Auto"
                   Cursor="Hand">
                 <Button Click="OnCollapsedRightSidebarClick"
                         Template="{DynamicResource BackgroundButton}">
@@ -1600,22 +1601,14 @@
                             </Border>
                         </ControlTemplate>
                     </Button.Resources>
-                    <Grid Mouse.MouseEnter="Button_MouseEnter"
-                          Mouse.MouseLeave="Button_MouseLeave">
+                    <Grid Mouse.MouseEnter="ExtensionHandle_MouseEnter"
+                          Mouse.MouseLeave="ExtensionHandle_MouseLeave">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <StackPanel Orientation="Horizontal" 
                                     HorizontalAlignment="Center">
-                            <TextBlock Grid.Column="0"
-                                   Name="ExtensionSidebarText"
-                                   VerticalAlignment="Center"
-                                   Foreground="#aaaaaa"
-                                   FontWeight="Normal"
-                                   Margin="5,0,0,5"
-                                   Text="{x:Static p:Resources.ExtensionsViewTitle}">
-                            </TextBlock>
                             <Image Grid.Column="0"
                                Name="ExtensionSidebarIcon"
                                Source="/DynamoCoreWpf;component/UI/Images/expand_normal.png"
@@ -1625,9 +1618,21 @@
                                Margin="5,5,5,5"
                                RenderTransformOrigin="0.5, 0.5">
                                 <Image.RenderTransform>
-                                    <RotateTransform Angle="90" />
+                                    <RotateTransform Angle="-90" />
                                 </Image.RenderTransform>
                             </Image>
+                            <TextBlock Grid.Column="0"
+                                   Name="ExtensionSidebarText"
+                                   VerticalAlignment="Center"
+                                   Foreground="#aaaaaa"
+                                   FontWeight="Normal"
+                                   Margin="0,5,5,0"
+                                   Text="{x:Static p:Resources.ExtensionsViewTitle}"
+                                   RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <RotateTransform Angle="180"/>
+                                </TextBlock.RenderTransform>
+                            </TextBlock>
                         </StackPanel>
                     </Grid>
                 </Button>
@@ -1635,7 +1640,7 @@
             </Grid>
 
             <StackPanel.RenderTransform>
-                <RotateTransform Angle="-90" />
+                <RotateTransform Angle="90" />
             </StackPanel.RenderTransform>
         </StackPanel>
 

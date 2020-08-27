@@ -77,56 +77,56 @@ namespace DynamoCoreWpfTests
         [Test]
         public void CanConstructIntegerSlider()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
         }
 
         [Test]
         public void SliderCanNotBeSetGreaterThanMaxIntValue()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
-            var param = new UpdateValueParams("Value", "2147483648");
+            var param = new UpdateValueParams("Value", "9223372036854775807");
             slider.UpdateValue(param);
 
-            Assert.AreEqual(slider.Value, Int32.MaxValue);
+            Assert.AreEqual(slider.Value, Int64.MaxValue);
         }
 
         [Test]
         public void  SliderCanNotBeSetLessThanMinIntValue()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
-            var param = new UpdateValueParams("Value", "-2147483649");
+            var param = new UpdateValueParams("Value", "-9223372036854775808");
             slider.UpdateValue(param);
 
-            Assert.AreEqual(slider.Value, Int32.MinValue);
+            Assert.AreEqual(slider.Value, Int64.MinValue);
         }
 
         [Test]
         public void SliderMaxResetsToIntMax()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
-            var param = new UpdateValueParams("Max", "2147483648");
+            var param = new UpdateValueParams("Max", "9223372036854775808");
             slider.UpdateValue(param);
 
-            Assert.AreEqual(slider.Max, Int32.MaxValue);
+            Assert.AreEqual(slider.Max, Int64.MaxValue);
         }
 
         [Test]
         public void SliderMinResetsToIntMin()
         {
-            var slider = new IntegerSlider();
+            var slider = new IntegerSlider64Bit();
             Assert.NotNull(slider);
 
-            var param = new UpdateValueParams("Min", "-2147483649");
+            var param = new UpdateValueParams("Min", "-9223372036854775809");
             slider.UpdateValue(param);
 
-            Assert.AreEqual(slider.Min, Int32.MinValue);
+            Assert.AreEqual(slider.Min, Int64.MinValue);
         }
 
     }
