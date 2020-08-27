@@ -61,11 +61,11 @@ namespace PythonNodeModels
             }
         }
 
-        private ObservableCollection<PythonEngineVersion> availableEngines;
+        private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
         /// Available Python engines.
         /// </summary>
-        public ObservableCollection<PythonEngineVersion> AvailableEngines
+        public static ObservableCollection<PythonEngineVersion> AvailableEngines
         {
             get
             {
