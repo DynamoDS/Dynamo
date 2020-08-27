@@ -81,10 +81,19 @@ namespace Dynamo.Python
         #endregion
 
         #region Methods
-        internal ICompletionData[] GetCompletionData(string code, bool expand = false)
+        internal ICompletionData[] GetCompletionData(string code, PythonEngineVersion engineVersion, bool expand = false)
         {
-            return this.providerImplementation?.GetCompletionData(code, expand).
-                Select(x => new IronPythonCompletionData(x)).ToArray();
+            if (engineVersion.Equals(PythonEngineVersion.IronPython2))
+            {
+                return this.providerImplementation?.GetCompletionData(code, expand).
+                    Select(x => new IronPythonCompletionData(x)).ToArray();
+            }
+            else if (engineVersion.Equals(PythonEngineVersion.CPython3))
+            {
+                return this.providerImplementation?.GetCompletionData(code, expand).
+                    Select(x => new IronPythonCompletionData(x)).ToArray();
+            }
+            return null;
         }
         #endregion
     }

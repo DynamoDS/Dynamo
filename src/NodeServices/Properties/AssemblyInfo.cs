@@ -21,4 +21,5 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("ProtoTest")]
 [assembly: InternalsVisibleTo("IntegrationTests")]
 [assembly: InternalsVisibleTo("DSIronPython")]
+[assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]

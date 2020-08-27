@@ -151,6 +151,7 @@ namespace DSCPython
         private const string DynamoPrintFuncName = "__dynamoprint__";
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
+
         internal static readonly string globalScopeName = "global";
 
         static CPythonEvaluator()
@@ -255,6 +256,7 @@ namespace DSCPython
             // Allows discoverability of modules by inspecting their attributes
             scope.Exec(@"
 import clr
+import sys
 clr.setPreload(True)
 ");
 

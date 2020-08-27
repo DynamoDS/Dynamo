@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly SharedCompletionProvider completionProvider;
+        private SharedCompletionProvider completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -110,7 +110,7 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    var completions = completionProvider.GetCompletionData(subString, false);
+                    var completions = completionProvider.GetCompletionData(subString, nodeModel.Engine, false);
 
                     if (completions.Length == 0)
                         return;
@@ -209,6 +209,7 @@ namespace PythonNodeModelsWpf
             }
 
             editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

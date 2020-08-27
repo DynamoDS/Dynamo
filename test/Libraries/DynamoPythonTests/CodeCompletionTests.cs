@@ -34,7 +34,7 @@ namespace DynamoPythonTests
             Assert.IsNotNull(provider);
             var str = "\nimport System.Collections\nSystem.Collections.";
 
-            var completionData = provider.GetCompletionData(str);
+            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
@@ -49,7 +49,7 @@ namespace DynamoPythonTests
             Assert.IsNotNull(provider);
             var str = "import math\n math.";
 
-            var completionData = provider.GetCompletionData(str);
+            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "degrees", "radians", "fmod" }).Count() == 3);
