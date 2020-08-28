@@ -1,0 +1,403 @@
+{
+  "Uuid": "1c2ea82e-1127-4c24-b8fe-c3b5ae49671a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Overflow",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "max = 9223372036854775807;\nsumOF = max + max;",
+      "Id": "522202560f1747f08b748703b779161f",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "625d1957b3c048f8b83424e17ddf8b0e",
+          "Name": "",
+          "Description": "max",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "83f2e13ce8d948c7afa69f2527930e70",
+          "Name": "",
+          "Description": "sumOF",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "subOF = -9223372036854775807 - 9223372036854775807;",
+      "Id": "b02c4ef36e0c486a928cabb19184c399",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "37edfd7f48f3433cbee92484c0fd6613",
+          "Name": "",
+          "Description": "subOF",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "// Cannot define min long constant in DS\nnextMin = -9223372036854775807;\nmin = nextMin - 1;\nnegOF = min - 1;",
+      "Id": "d4a7ca5e26d84b77b7c187d4af778dd1",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4e5054ea7ef34855b21d9275dcd0a04a",
+          "Name": "",
+          "Description": "nextMin",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "62acf5212d714881abfd991c81e4bbd8",
+          "Name": "",
+          "Description": "min",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "619e0dd6b5e44a51bf5d9a7c7f523137",
+          "Name": "",
+          "Description": "negOF",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "mulOF = 9223372036854775807 * 2;",
+      "Id": "b71671d2e54742d6acc6025c1bbc22ba",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2db961008845420089410046a5799ae6",
+          "Name": "",
+          "Description": "mulOF",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Abs@double",
+      "Id": "ae81d5fb8fb842cdae1287d1d5f89673",
+      "Inputs": [
+        {
+          "Id": "a42f462ce08841fc81bef9ae876a44b4",
+          "Name": "number",
+          "Description": "A number.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f7830838f1a04ca9839e8824239b17ca",
+          "Name": "absoluteValue",
+          "Description": "Absolute value of the number.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the absolute value of a number.\n\nMath.Abs (number: double): double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Ceiling@double",
+      "Id": "30685da332f14665a13084054a3f3b28",
+      "Inputs": [
+        {
+          "Id": "4d9fd411024744aa85ccd0355a3aa7b6",
+          "Name": "number",
+          "Description": "Number to round up.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "97badf07005847bcad43e4b5279c74b5",
+          "Name": "integer",
+          "Description": "First integer greater than the number.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the first integer greater than the number\n\nMath.Ceiling (number: double): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "doubleBiggerThanMax = 9.3e18;",
+      "Id": "1f4d49efe5564c37ba122add792f0d97",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f7eab292966a47ac82475db3eb2f5cba",
+          "Name": "",
+          "Description": "doubleBiggerThanMax",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Factorial@int",
+      "Id": "5604cec21c31465eb5bd473df83ea30f",
+      "Inputs": [
+        {
+          "Id": "1cc56ffd1b604cb7b667fd0fa2b63612",
+          "Name": "number",
+          "Description": "A positive integer.\n\nint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a8487adc1d624c7c988d360021f5a9f6",
+          "Name": "number!",
+          "Description": "The factorial result of the integer.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the factorial result of a positive integer.\n\nMath.Factorial (number: int): int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Floor@double",
+      "Id": "cb2da2b912bb419896dd75648fba561f",
+      "Inputs": [
+        {
+          "Id": "02914f790b20460aac22d3848e884012",
+          "Name": "number",
+          "Description": "Number to round up.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c3c04408f82049ad9d4eaf72ccd7b2c5",
+          "Name": "integer",
+          "Description": "First integer smaller than the number.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the first integer smaller than the number.\n\nMath.Floor (number: double): int"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "625d1957b3c048f8b83424e17ddf8b0e",
+      "End": "1cc56ffd1b604cb7b667fd0fa2b63612",
+      "Id": "0fce6049e3b24a988bdf940162a0a02c"
+    },
+    {
+      "Start": "62acf5212d714881abfd991c81e4bbd8",
+      "End": "a42f462ce08841fc81bef9ae876a44b4",
+      "Id": "e4b4b42c5b2d4f5db5673a0bcc9ee6ea"
+    },
+    {
+      "Start": "f7eab292966a47ac82475db3eb2f5cba",
+      "End": "4d9fd411024744aa85ccd0355a3aa7b6",
+      "Id": "8c90118c78b54123b0f75de569b79420"
+    },
+    {
+      "Start": "f7eab292966a47ac82475db3eb2f5cba",
+      "End": "02914f790b20460aac22d3848e884012",
+      "Id": "408848ac6fae4ce3923a5683700c3b2d"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2405",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "DS Sum Overflow",
+        "Id": "522202560f1747f08b748703b779161f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -32.379003415276088,
+        "Y": -17.097725899316032
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DS Sub Overflow",
+        "Id": "b02c4ef36e0c486a928cabb19184c399",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -56.06280070844673,
+        "Y": 138.73260940381425
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DS Neg Overflow",
+        "Id": "d4a7ca5e26d84b77b7c187d4af778dd1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 12.66949357113765,
+        "Y": 280.79372384526658
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "DS Mul Overflow",
+        "Id": "b71671d2e54742d6acc6025c1bbc22ba",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 16.807415264112876,
+        "Y": 468.28111054091306
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Abs Overflow",
+        "Id": "ae81d5fb8fb842cdae1287d1d5f89673",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 547.945719232824,
+        "Y": 244.27030324695045
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Ceiling Overflow",
+        "Id": "30685da332f14665a13084054a3f3b28",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 561.78351883894129,
+        "Y": 528.71733849100417
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "1f4d49efe5564c37ba122add792f0d97",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 44.030371433846767,
+        "Y": 563.83084718459486
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Factorial Overflow",
+        "Id": "5604cec21c31465eb5bd473df83ea30f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 535.80042503005768,
+        "Y": -12.649300946025022
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Floor Overflow",
+        "Id": "cb2da2b912bb419896dd75648fba561f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 564.19972776813324,
+        "Y": 385.81587823097874
+      }
+    ],
+    "Annotations": [],
+    "X": 67.289661426146949,
+    "Y": 66.652549236782846,
+    "Zoom": 0.79848923623784152
+  }
+}

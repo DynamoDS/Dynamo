@@ -3530,8 +3530,9 @@ namespace ProtoCore.DSASM
             // Need to optmize these if-elses to a table. 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata1.IntegerValue + opdata2.IntegerValue);
-
+                opdata2 = StackValue.BuildInt(HandleOverflow(
+                    () => checked(opdata1.IntegerValue + opdata2.IntegerValue),
+                    () => opdata1.IntegerValue + opdata2.IntegerValue));
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -3563,7 +3564,28 @@ namespace ProtoCore.DSASM
             rmem.Push(opdata2);
             ++pc;
         }
-        
+
+        /// <summary>
+        /// Handles possible overflows from a checked operation. If it works, its result is
+        /// returned, otherwise the result of the unchecked operation is returned and a warning
+        /// is logged.
+        /// </summary>
+        /// <param name="checkedOperation">Checked operation to be attempted first</param>
+        /// <param name="uncheckedOperation">Unchecked operation to be perfomed when the checked operation overflowed</param>
+        /// <returns>The result of the first succesful operation</returns>
+        private long HandleOverflow(Func<long> checkedOperation, Func<long> uncheckedOperation)
+        {
+            try
+            {
+                return checkedOperation();
+            }
+            catch (OverflowException)
+            {
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.IntegerOverflow, Resources.IntegerOverflow);
+                return uncheckedOperation();
+            }
+        }
+
         private void SUB_Handler(Instruction instruction)
         {
             StackValue opdata1 = rmem.Pop();
@@ -3571,7 +3593,9 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata2.IntegerValue - opdata1.IntegerValue);
+                opdata2 = StackValue.BuildInt(HandleOverflow(
+                    () => checked(opdata2.IntegerValue - opdata1.IntegerValue),
+                    () => opdata2.IntegerValue - opdata1.IntegerValue));
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -3595,7 +3619,9 @@ namespace ProtoCore.DSASM
 
             if (opdata1.IsInteger && opdata2.IsInteger)
             {
-                opdata2 = StackValue.BuildInt(opdata1.IntegerValue * opdata2.IntegerValue);
+                opdata2 = StackValue.BuildInt(HandleOverflow(
+                    () => checked(opdata1.IntegerValue * opdata2.IntegerValue),
+                    () => opdata1.IntegerValue * opdata2.IntegerValue));
             }
             else if (opdata1.IsNumeric && opdata2.IsNumeric)
             {
@@ -3691,7 +3717,9 @@ namespace ProtoCore.DSASM
             StackValue opdata1 = rmem.Pop();
             if (opdata1.IsInteger)
             {
-                opdata1 = StackValue.BuildInt(-opdata1.IntegerValue);
+                opdata1 = StackValue.BuildInt(HandleOverflow(
+                    () => checked(-opdata1.IntegerValue),
+                    () => -opdata1.IntegerValue));
             }
             else if (opdata1.IsDouble)
             {
