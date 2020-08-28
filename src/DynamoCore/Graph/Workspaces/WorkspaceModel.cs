@@ -1676,7 +1676,7 @@ namespace Dynamo.Graph.Workspaces
 
             var retrievedModels = GetModelsInternal(modelGuids);
             if (!retrievedModels.Any())
-                throw new InvalidOperationException("UpdateModelValue: Model not found");
+                throw new InvalidOperationException(Resources.ModelNotFoundError);
 
             var updateValueParams = new UpdateValueParams(propertyName, value, ElementResolver);
             using (new UndoRedoRecorder.ModelModificationUndoHelper(undoRecorder, retrievedModels))
@@ -1881,6 +1881,10 @@ namespace Dynamo.Graph.Workspaces
             };
 
             var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+
+            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
+            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
+
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;

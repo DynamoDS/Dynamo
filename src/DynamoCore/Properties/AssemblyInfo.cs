@@ -32,5 +32,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("DynamoPackages")]
 [assembly: InternalsVisibleTo("WorkspaceDependencyViewExtension")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]

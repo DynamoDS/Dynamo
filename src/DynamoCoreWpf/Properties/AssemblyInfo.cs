@@ -41,3 +41,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("DocumentationBrowserViewExtension")]
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
+[assembly: InternalsVisibleTo("PythonNodeModelsWpf")]

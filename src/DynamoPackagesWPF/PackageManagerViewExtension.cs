@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager.UI
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         public void Startup(ViewStartupParams viewStartupParams)

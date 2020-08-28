@@ -283,6 +283,7 @@
                 Background="#99B8CA"
                 Opacity=".4"
                 Style="{StaticResource SZoomFadePreview}"
+                ToolTipService.ShowDuration="60000"
                 MouseDown="NameBlock_OnMouseDown">
             <Border.Visibility>
                 <Binding Path="IsVisible"
@@ -291,6 +292,38 @@
                          Converter="{StaticResource InverseBoolToVisibilityConverter}">
                 </Binding>
             </Border.Visibility>
+            <Border.ToolTip>
+                <dynui:DynamoToolTip AttachmentSide="Top"
+                                     Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <StackPanel Orientation="Vertical"
+                                    MaxWidth="320">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{x:Static p:Resources.NodeTooltipOriginalName}">
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Path=OriginalName}"
+                                           FontWeight="SemiBold">
+                                </TextBlock>
+                            </StackPanel>
+                            <!--Space for splitting the original name and description-->
+                            <StackPanel>
+                                <TextBlock Text="&#xD;" />
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{x:Static p:Resources.NodeTooltipDescription}">
+                                </TextBlock>
+                                <TextBlock TextWrapping="Wrap"
+                                           Text="{Binding Path=Description}"
+                                           FontWeight="Normal">
+                                </TextBlock>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </dynui:DynamoToolTip>
+            </Border.ToolTip>
         </Border>
         <Border Name="previewState"
                 Grid.Row="2"

@@ -412,15 +412,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to I give my consent for Autodesk to collect information, using a tool called Instrumentation, on how I use {0}.
-        /// </summary>
-        public static string ConsentFormInstrumentationCheckBoxContent {
-            get {
-                return ResourceManager.GetString("ConsentFormInstrumentationCheckBoxContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Add To Group.
         /// </summary>
         public static string ContextAddGroupFromSelection {
@@ -860,6 +851,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CustomNodeTypeShortString {
             get {
                 return ResourceManager.GetString("CustomNodeTypeShortString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use System Default.
+        /// </summary>
+        public static string DefaultPythonEngineNone {
+            get {
+                return ResourceManager.GetString("DefaultPythonEngineNone", resourceCulture);
             }
         }
         
@@ -1854,6 +1854,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Python Engine.
+        /// </summary>
+        public static string DynamoViewSettingsDefaultPythonEngine {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsDefaultPythonEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Run Preview.
         /// </summary>
         public static string DynamoViewSettingShowRunPreview {
@@ -1913,6 +1922,15 @@ namespace Dynamo.Wpf.Properties {
         public static string DynamoViewSettingsMenuShowPreviewBubbles {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Whitespace Characters in Python Editor.
+        /// </summary>
+        public static string DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor", resourceCulture);
             }
         }
         

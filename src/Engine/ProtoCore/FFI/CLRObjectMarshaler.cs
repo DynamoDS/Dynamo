@@ -159,7 +159,7 @@ namespace ProtoFFI
 
         public override object UnMarshal(StackValue dsObject, ProtoCore.Runtime.Context context, Interpreter dsi, Type type)
         {
-            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue)
+            if (dsObject.DoubleValue > MaxValue || dsObject.DoubleValue < MinValue || double.IsNaN(dsObject.DoubleValue))
             {
                 string message = String.Format(Resources.kFFIInvalidCast, dsObject.DoubleValue, type.Name, MinValue, MaxValue);
                 dsi.LogWarning(ProtoCore.Runtime.WarningID.TypeMismatch, message);
@@ -1256,21 +1256,28 @@ namespace ProtoFFI
 
             if (clrObject != null)
             {
-                if (!DumpXmlProperties)
+                try
                 {
-                    return clrObject.ToString();
-                }
-                else
-                {
-                    XmlWriterSettings settings = new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true };
-                    using (StringWriter sw = new StringWriter())
+                    if (!DumpXmlProperties)
                     {
-                        using (XmlWriter xw = XmlTextWriter.Create(sw, settings))
-                        {
-                            GeneratePrimaryPropertiesAsXml(clrObject, xw);
-                        }
-                        return sw.ToString();
+                        return clrObject.ToString();
                     }
+                    else
+                    {
+                        XmlWriterSettings settings = new XmlWriterSettings { Indent = false, OmitXmlDeclaration = true };
+                        using (StringWriter sw = new StringWriter())
+                        {
+                            using (XmlWriter xw = XmlTextWriter.Create(sw, settings))
+                            {
+                                GeneratePrimaryPropertiesAsXml(clrObject, xw);
+                            }
+                            return sw.ToString();
+                        }
+                    }
+                }
+                catch
+                {
+                    return string.Empty;
                 }
             }
             else

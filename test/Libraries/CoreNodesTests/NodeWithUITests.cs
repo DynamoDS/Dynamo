@@ -14,11 +14,11 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using CoreNodeModels.Input;
 using Dynamo.Graph;
 using NUnit.Framework;
 using ProtoCore.AST.AssociativeAST;
 using DoubleSlider = CoreNodeModels.Input.DoubleSlider;
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
 
 namespace DSCoreNodesTests
 {
@@ -71,7 +71,7 @@ namespace DSCoreNodesTests
         [Test]
         public void IntegerSliderMaxValue()
         {
-            var integerSliderNode = new IntegerSlider() { Value = 500 };
+            var integerSliderNode = new IntegerSlider64Bit() { Value = 500 };
             var updateValueParams = new UpdateValueParams("Value", "1000");
             integerSliderNode.UpdateValue(updateValueParams);
 
@@ -90,14 +90,14 @@ namespace DSCoreNodesTests
             integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
-                2147483647,
+                2147483648,
                 integerSliderNode.Max);
 
             updateValueParams = new UpdateValueParams("Value", "-2147483649");
             integerSliderNode.UpdateValue(updateValueParams);
 
             Assert.AreEqual(
-                -2147483648,
+                -2147483649,
                 integerSliderNode.Min);
         }
     }

@@ -69,7 +69,7 @@ namespace Dynamo.LibraryViewExtensionMSWebBrowser
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         public void Dispose()

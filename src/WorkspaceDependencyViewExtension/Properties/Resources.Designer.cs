@@ -115,6 +115,15 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workspace References.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install Specified Version.
         /// </summary>
         public static string InstallButtonText {

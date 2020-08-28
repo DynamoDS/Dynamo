@@ -53,6 +53,7 @@
     <Compile Include="ClassFunctionality.cs" />
     <Compile Include="ClassWithRefParams.cs" />
     <Compile Include="CodeCompletionClass.cs" />
+    <Compile Include="CustomLabel.cs" />
     <Compile Include="DefaultArguments.cs" />
     <Compile Include="DisposeTest.cs" />
     <Compile Include="DummyMath.cs" />

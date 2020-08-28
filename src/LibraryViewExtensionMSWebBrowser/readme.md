@@ -27,4 +27,4 @@
 
 ### how to use this:
 
-copy the extension manifest and bin directory of this project to the `Dynamo/viewExtensions/` folder of Dynamo. The manifest expects the extension binary to live in `./librarymsWebBrowser/LibraryViewExtensionMSWebBrowser.dll`.
+copy the extension manifest and bin directory of this project to the `Dynamo/viewExtensions/` folder of Dynamo. The manifest expects the extension binary to live in `./librarymsWebBrowser/LibraryViewExtensionMSWebBrowser.dll` which is relative to `viewExtensions` folder.

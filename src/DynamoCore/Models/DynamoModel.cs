@@ -115,6 +115,7 @@ namespace Dynamo.Models
         private Timer backupFilesTimer;
         private Dictionary<Guid, string> backupFilesDict = new Dictionary<Guid, string>();
         internal readonly Stopwatch stopwatch = Stopwatch.StartNew();
+
         #endregion
 
         #region events
@@ -423,6 +424,8 @@ namespace Dynamo.Models
         /// </summary>
         public AuthenticationManager AuthenticationManager { get; set; }
 
+        internal static string DefaultPythonEngine { get; private set; }
+
         #endregion
 
         #region initialization and disposal
@@ -522,6 +525,10 @@ namespace Dynamo.Models
             public TaskProcessMode ProcessMode { get; set; }
             public bool IsHeadless { get; set; }
             public string PythonTemplatePath { get; set; }
+            /// <summary>
+            /// Default Python script engine
+            /// </summary>
+            public string DefaultPythonEngine { get; set; }
         }
 
         /// <summary>
@@ -553,6 +560,13 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
+            if (config is DefaultStartConfiguration)
+            {
+                // This is not exposed in IStartConfiguration to avoid a breaking change.
+                // TODO: This fact should probably be revisited in 3.0.
+                DefaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
+            }
+
             ClipBoard = new ObservableCollection<ModelBase>();
 
             pathManager = new PathManager(new PathManagerParams
@@ -628,11 +642,10 @@ namespace Dynamo.Models
             {
                 // Do nothing for now
             }
-            // If user skipped analytics from assembly configuration, do not try to launch the client at all 
-            // Skip call to instrumentation logger initialization.
+            // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {
-                InitializeInstrumentationLogger();
+                InitializeAnalyticsService();
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -1324,7 +1337,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void InitializeInstrumentationLogger()
+        private void InitializeAnalyticsService()
         {
             if (!IsTestMode && !IsHeadless)
             {

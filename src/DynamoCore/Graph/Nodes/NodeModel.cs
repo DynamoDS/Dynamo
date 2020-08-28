@@ -1299,7 +1299,7 @@ namespace Dynamo.Graph.Nodes
                 // If any exception from BuildOutputAst(), we emit
                 // a function call "var_guid = %nodeAstFailed(full.node.name)"
                 // for this node, set the state of node to AstBuildBroken and
-                // disply the corresponding error message.
+                // display the corresponding error message.
                 //
                 // The return value of function %nodeAstFailed() is always
                 // null.
@@ -2094,6 +2094,30 @@ namespace Dynamo.Graph.Nodes
                         }
                     }
                     return true;
+
+                case nameof(DisplayLabels):
+                    bool newDisplayLabels;
+                    if (bool.TryParse(value, out newDisplayLabels))
+                    {
+                        DisplayLabels = newDisplayLabels;
+                    }
+                    return true;
+
+                case nameof(IsSetAsInput):
+                    bool newIsSetAsInput;
+                    if (bool.TryParse(value, out newIsSetAsInput))
+                    {
+                        IsSetAsInput = newIsSetAsInput;
+                    }
+                    return true;
+
+                case nameof(IsSetAsOutput):
+                    bool newIsSetAsOutput;
+                    if (bool.TryParse(value, out newIsSetAsOutput))
+                    {
+                        IsSetAsOutput = newIsSetAsOutput;
+                    }
+                    return true;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -2143,6 +2167,7 @@ namespace Dynamo.Graph.Nodes
             helper.SetAttribute("x", X);
             helper.SetAttribute("y", Y);
             helper.SetAttribute("isVisible", IsVisible);
+            helper.SetAttribute(nameof(DisplayLabels), DisplayLabels);
             helper.SetAttribute("lacing", ArgumentLacing.ToString());
             helper.SetAttribute("isSelectedInput", IsSetAsInput.ToString());
             helper.SetAttribute("isSelectedOutput", IsSetAsOutput.ToString());
@@ -2201,6 +2226,7 @@ namespace Dynamo.Graph.Nodes
             X = helper.ReadDouble("x", 0.0);
             Y = helper.ReadDouble("y", 0.0);
             isVisible = helper.ReadBoolean("isVisible", true);
+            displayLabels = helper.ReadBoolean(nameof(DisplayLabels), false);
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
@@ -2271,15 +2297,17 @@ namespace Dynamo.Graph.Nodes
                 // in different ways and their views will always be up-to-date with
                 // respect to their models.
                 RaisePropertyChanged("InteractionEnabled");
-                RaisePropertyChanged("State");
-                RaisePropertyChanged("Name");
-                RaisePropertyChanged("ArgumentLacing");
-                RaisePropertyChanged("IsVisible");
-                 
+                RaisePropertyChanged(nameof(State));
+                RaisePropertyChanged(nameof(Name));
+                RaisePropertyChanged(nameof(ArgumentLacing));
+                RaisePropertyChanged(nameof(IsVisible));
+                RaisePropertyChanged(nameof(DisplayLabels));
+                RaisePropertyChanged(nameof(IsSetAsInput));
+                RaisePropertyChanged(nameof(IsSetAsOutput));
                 //we need to modify the downstream nodes manually in case the
                 //undo is for toggling freeze. This is ONLY modifying the execution hint.
                 // this does not run the graph.
-                RaisePropertyChanged("IsFrozen");
+                RaisePropertyChanged(nameof(IsFrozen));
                 MarkDownStreamNodesAsModified(this);
 
                 // Notify listeners that the position of the node has changed,

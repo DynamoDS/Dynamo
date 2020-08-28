@@ -216,6 +216,11 @@ namespace Dynamo.Tests
         public static void CompareWorkspaceModels(serializationTestUtils.WorkspaceComparisonData a, serializationTestUtils.WorkspaceComparisonData b, Dictionary<Guid, string> c = null)
         {
             var nodeDiff = a.NodeTypeMap.Except(b.NodeTypeMap);
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.Value.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.Value.ToString())));
@@ -240,7 +245,21 @@ namespace Dynamo.Tests
             foreach (var portkvp in a.PortDataMap)
             {
                 Assert.IsTrue(b.PortDataMap.ContainsKey(portkvp.Key));
-                Assert.AreEqual(a.PortDataMap[portkvp.Key], b.PortDataMap[portkvp.Key]);
+
+                var aData = a.PortDataMap[portkvp.Key];
+                var bData = b.PortDataMap[portkvp.Key];
+                
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aData.Description == "Int32")
+                {
+                    Assert.IsTrue(bData.Description == "Int32" || bData.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aData, bData);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -254,6 +273,14 @@ namespace Dynamo.Tests
             {
                 var valueA = kvp.Value;
                 var valueB = b.NodeDataMap[kvp.Key];
+
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[kvp.Key].FullName);
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[kvp.Key]);
 
@@ -285,6 +312,11 @@ namespace Dynamo.Tests
             Dictionary<Guid, string> modelGuidsToIDmap)
         {
             var nodeDiff = a.NodeTypeMap.Select(x => x.Value).Except(b.NodeTypeMap.Select(x => x.Value));
+
+            // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+            // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+            nodeDiff = nodeDiff.Where(nd => nd.FullName != "CoreNodeModels.Input.IntegerSlider");
+
             if (nodeDiff.Any())
             {
                 Assert.Fail("The workspaces don't have the same number of nodes. The json workspace is missing: " + string.Join(",", nodeDiff.Select(i => i.ToString())));
@@ -319,7 +351,18 @@ namespace Dynamo.Tests
                 Assert.AreEqual(aPort.UseLevels, bPort.UseLevels);
                 Assert.AreEqual(aPort.KeepListStructure, bPort.KeepListStructure);
                 Assert.AreEqual(aPort.Level, bPort.Level);
-                Assert.AreEqual(aPort.Description, bPort.Description);
+
+                // With the change to JSON based IntegerSlider nodes returning 64 bit integers,
+                // the description between the old XML and the new JSON based workspaces will be
+                // "Int32" and "Int64" respectively.
+                if (aPort.Description == "Int32")
+                {
+                    Assert.IsTrue(bPort.Description == "Int32" || bPort.Description == "Int64");
+                }
+                else
+                {
+                    Assert.AreEqual(aPort.Description, bPort.Description);
+                }
             }
 
             foreach (var kvp in a.NodeReplicationMap)
@@ -336,6 +379,14 @@ namespace Dynamo.Tests
                 //convert the old guid to the new guid
                 var newGuid = GuidUtility.Create(GuidUtility.UrlNamespace, modelGuidsToIDmap[kvp.Key]);
                 var valueB = b.NodeDataMap[newGuid];
+
+                // Ignore IntegerSlider nodes as they are being read as IntegerSlider64Bit JSON nodes.
+                // TODO: Remove this filter once we deprecate IntegerSlider nodes in a future Dynamo version.
+                if (a.NodeTypeMap[kvp.Key].FullName == "CoreNodeModels.Input.IntegerSlider")
+                {
+                    Assert.AreEqual("CoreNodeModels.Input.IntegerSlider64Bit", b.NodeTypeMap[newGuid].FullName);
+                    continue;
+                }
 
                 Assert.AreEqual(a.NodeTypeMap[kvp.Key], b.NodeTypeMap[newGuid]);
 

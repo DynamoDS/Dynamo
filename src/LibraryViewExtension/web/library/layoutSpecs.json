@@ -802,7 +802,11 @@
           "text": "Display",
           "iconUrl": "./dist/resources/Category.Display.svg",
           "elementType": "category",
-          "include": [],
+          "include": [
+            {
+              "path": "Analysis.Analysis.Label"
+            }
+          ],
           "childElements": [
             {
               "text": "Color",
@@ -849,7 +853,7 @@
                   "path": "Core.Color.Color Palette"
                 }
               ],
-              "childElements": [ ]
+              "childElements": []
             },
             {
               "text": "Color Range",
@@ -866,7 +870,7 @@
                   "path": "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter"
                 }
               ],
-              "childElements": [ ]
+              "childElements": []
             },
             {
               "text": "Watch",
@@ -883,7 +887,7 @@
                   "path": "Core.View.Watch 3D"
                 }
               ],
-              "childElements": [ ]
+              "childElements": []
             }
           ]
         },

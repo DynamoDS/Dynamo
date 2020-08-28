@@ -90,7 +90,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void Shutdown()
         {
-            Dispose();
+            // Do nothing for now
         }
 
         protected virtual void Dispose(bool disposing)

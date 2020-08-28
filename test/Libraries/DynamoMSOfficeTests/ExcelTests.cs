@@ -1026,9 +1026,33 @@ namespace Dynamo.Tests
             Assert.IsTrue(watch.State == ElementState.Warning);
             if (fileAttributes == FileAttributes.ReadOnly)
                 File.SetAttributes(filePath, FileAttributes.Normal);
-
         }
+
+        /// <summary>
+        /// This will execute the Data.ImportExcel method
+        /// </summary>
+        [Test, Category("ExcelTest")]
+        public void ImportExcelShowExcelReturnDataObjectArray()
+        {
+            //Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ImportExcelFileShowArray.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            //Act
+            //When executing the Graph will call the Data.ImportExcel method
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("ba33d59ba05648d68d2d9aadc42ae07a");
+            ViewModel.HomeSpace.Run();
+            var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }};
+
+            //Assert
+            //Validates that the data fetch from the excel workbook are 3 elements and match the values in data array
+            Assert.IsNotNull(watch);
+            AssertPreviewValue(watch.GUID.ToString(), data);
+            
+        }
+
         
+
         [Test, Category("ExcelTest")]
         public void WriteModifyFilename()
         {
@@ -1273,6 +1297,24 @@ namespace Dynamo.Tests
                 new List<object> { 8, 12, 16 }
             });
         }
+
+        /// <summary>
+        /// This will execute the Data.ImportCSV when reading a csv in which the columns and rows have different length
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public static void ImportCSVRowsGreaterThanColumnsTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\test3.csv");
+            var CSVList = Data.ImportCSV(filePath);
+            Assert.AreEqual(CSVList, new List<object> {
+                new List<object> { 2,       1,      3,      1,      5,      null},
+                new List<object> { 5,       2,      4,      2,      null,   null},
+                new List<object> { 6,       null,   5,      null,   null,   null},
+                new List<object> { 7,       null,   null,   null,   null,   null}
+            });
+        }
+
 
         [Test]
         [Category("UnitTests")]
