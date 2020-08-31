@@ -10,7 +10,7 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              mc:Ignorable="d" 
              d:DesignHeight="40" d:DesignWidth="300">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,12 +27,12 @@
                     <x:Type TypeName="models:RunType" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-            
+
             <viewModels:RunPeriodConverter x:Key="RunPeriodConverter"/>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid>
         <StackPanel Orientation="Horizontal">
 
@@ -85,7 +85,17 @@
                                 IsEnabled="{Binding Path=RunButtonEnabled}"
                                 Visibility="{Binding RunButtonVisibility}"
                                 Focusable="False" Margin="0,0,2.5,0"/>
-            
+
+            <Button Name="CancelButton" 
+                                Width="100" 
+                                Content="{x:Static p:Resources.DynamoViewCancelButton}" 
+                                Style="{StaticResource ResourceKey=STextButton}" 
+                                Click="CancelButton_OnClick"
+                                Command="{Binding CancelRunCommand}"
+                                IsEnabled="{Binding Path=CancelButtonEnabled}"
+                                Focusable="False" Margin="0,0,2.5,0"/>
+
+
             <TextBox Name="RunPeriodTextBox" 
                     Text="{Binding RunPeriod, Converter={StaticResource RunPeriodConverter}, Mode=TwoWay}"
                      VerticalContentAlignment="Center"
@@ -105,8 +115,8 @@
                       VerticalContentAlignment="Center"
                       Visibility="{Binding DebugCheckBoxVisibility}">
             </CheckBox>
-            
+
         </StackPanel>
-        
+
     </Grid>
 </UserControl>

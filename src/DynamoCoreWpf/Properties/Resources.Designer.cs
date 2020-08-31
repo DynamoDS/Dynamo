@@ -918,6 +918,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string DynamoViewCancelButton {
+            get {
+                return ResourceManager.GetString("DynamoViewCancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel Run (Shift+F5).
         /// </summary>
         public static string DynamoViewCancelButtonTooltip {

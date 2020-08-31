@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
@@ -12,6 +13,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
@@ -39,6 +41,9 @@ namespace Dynamo.Graph.Workspaces
         private bool executingTask;
 
         private IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> historicalTraceData;
+        private CancellationTokenSource cts;
+        private CancellationTokenRegistration ctr;
+        private Daemon daemon;
 
         /// <summary>
         ///     Returns <see cref="EngineController"/> object assosiated with thisPreloadedTraceData home workspace
@@ -133,6 +138,8 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="e">The event data.</param>
         public virtual void OnEvaluationStarted(EventArgs e)
         {
+            RefreshCancellationToken();
+
             this.HasRunWithoutCrash = false;
 
             var handler = EvaluationStarted;
@@ -157,6 +164,22 @@ namespace Dynamo.Graph.Workspaces
             if (handler != null) handler(this, e);
 
             this.ScaleFactorChanged = false;
+
+            if (cts != null)
+            {
+                if (cts.Token.IsCancellationRequested)
+                {
+                    // if evaluation has completed due to cancellation
+                    // mark all nodes as modified so that they can be executed again.
+                    foreach (var node in Nodes)
+                    {
+                        node.MarkNodeAsModified();
+                    }
+                    EngineController.ResetSyncDataManager();
+                }
+            }
+
+            DisposeCancellationToken();
         }
 
         /// <summary>
@@ -314,6 +337,8 @@ namespace Dynamo.Graph.Workspaces
             if (pulseMaker == null) return;
 
             pulseMaker.Stop();
+            
+            DisposeCancellationToken();
         }
 
         protected override void OnNodeRemoved(NodeModel node)
@@ -483,6 +508,30 @@ namespace Dynamo.Graph.Workspaces
             MarkNodesAsModifiedAndRequestRun(nodesToUpdate, true);
         }
 
+        private void RefreshCancellationToken()
+        {
+            if (cts == null)
+            {
+                cts = new CancellationTokenSource();
+                ctr = cts.Token.Register(EngineController.LiveRunnerRuntimeCore.RequestCancellation);
+
+                daemon = new Daemon(cts);
+            }
+        }
+
+        private void DisposeCancellationToken()
+        {
+            if (cts != null)
+            {
+                //daemon.Dispose();
+
+                // Unregister cancellation callback
+                ctr.Dispose();
+
+                cts.Dispose();
+                cts = null;
+            }
+        }
 
         #region evaluation
 
@@ -640,8 +689,19 @@ namespace Dynamo.Graph.Workspaces
         /// in actual graph update (e.g. moving of node on UI), the update task 
         /// will not be scheduled for execution.
         /// </summary>
-        public void Run()
+        public void Run(bool cancelRun = false)
         {
+            if (cancelRun)
+            {
+                if (cts != null)
+                {
+                    if (!cts.Token.IsCancellationRequested)
+                    {
+                        cts.Cancel();
+                    }
+                }
+                return;
+            }
             graphExecuted = true;
 
             // When Dynamo is shut down, the workspace is cleared, which results
@@ -695,6 +755,58 @@ namespace Dynamo.Graph.Workspaces
                 OnEvaluationCompleted(e);
             }
         }
+
+        //public void Run()
+        //{
+        //    graphExecuted = true;
+
+        //    // When Dynamo is shut down, the workspace is cleared, which results
+        //    // in Modified() being called. But, we don't want to run when we are
+        //    // shutting down so we check whether an engine controller is available.
+        //    if (this.EngineController == null)
+        //    {
+        //        return;
+        //    }
+
+        //    var traceData = PreloadedTraceData;
+        //    if ((traceData != null) && traceData.Any())
+        //    {
+        //        // If we do have preloaded trace data, set it here first.
+        //        var setTraceDataTask = new SetTraceDataAsyncTask(scheduler);
+        //        if (setTraceDataTask.Initialize(EngineController, this))
+        //            scheduler.ScheduleForExecution(setTraceDataTask);
+        //    }
+
+        //    // If one or more custom node have been updated, make sure they
+        //    // are compiled first before the home workspace gets evaluated.
+        //    // 
+        //    EngineController.ProcessPendingCustomNodeSyncData(scheduler);
+
+        //    var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
+        //    if (task.Initialize(EngineController, this))
+        //    {
+        //        task.Completed += OnUpdateGraphCompleted;
+        //        RunSettings.RunEnabled = false; // Disable 'Run' button.
+
+        //        // Reset node states
+        //        foreach (var node in Nodes)
+        //        {
+        //            node.WasInvolvedInExecution = false;
+        //        }
+
+        //        // The workspace has been built for the first time
+        //        silenceNodeModifications = false;
+
+        //        OnEvaluationStarted(EventArgs.Empty);
+        //        scheduler.ScheduleForExecution(task);
+        //    }
+        //    else
+        //    {
+        //        // Notify handlers that evaluation did not take place.
+        //        var e = new EvaluationCompletedEventArgs(false);
+        //        OnEvaluationCompleted(e);
+        //    }
+        //}
 
         /// <summary>
         /// This function gets the set of nodes that will get executed in the next run.

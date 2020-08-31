@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Threading;
 using Dynamo.Core;
 using Dynamo.Selection;
 using Dynamo.Utilities;
@@ -56,7 +57,9 @@ namespace Dynamo.Models
         {
             var model = CurrentWorkspace as HomeWorkspaceModel;
             if (model != null)
-                model.Run();
+            {
+                model.Run(command.CancelRun);
+            }
         }
 
         private void ForceRunCancelImpl(ForceRunCancelCommand command)

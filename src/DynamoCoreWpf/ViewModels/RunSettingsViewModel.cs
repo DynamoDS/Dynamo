@@ -141,6 +141,11 @@ namespace Dynamo.Wpf.ViewModels
             }
         }
 
+        public bool CancelButtonEnabled
+        {
+            get { return !Model.RunEnabled; }
+        }
+
         public string RunButtonToolTip
         {
             get
@@ -187,9 +192,9 @@ namespace Dynamo.Wpf.ViewModels
 
         public ObservableCollection<RunTypeItem> RunTypeItems { get; set; }
  
-        public DelegateCommand RunExpressionCommand { get; private set; }
+        public DelegateCommand RunExpressionCommand { get; }
 
-        public DelegateCommand CancelRunCommand { get; set; }
+        public DelegateCommand CancelRunCommand { get; }
 
         public Visibility DebugCheckBoxVisibility
         {
@@ -262,6 +267,7 @@ namespace Dynamo.Wpf.ViewModels
                     RaisePropertyChanged("RunEnabled");
                     RaisePropertyChanged("RunButtonEnabled");
                     RaisePropertyChanged("RunButtonToolTip");
+                    RaisePropertyChanged("CancelButtonEnabled");
                     if (Application.Current != null)
                     {
                         Application.Current.Dispatcher.Invoke(new Action(() =>

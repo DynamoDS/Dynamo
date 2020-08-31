@@ -152,6 +152,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancellation cannot be requested twice.
+        /// </summary>
+        public static string CancelExecutionTwice {
+            get {
+                return ResourceManager.GetString("CancelExecutionTwice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &quot;catch&quot; expected.
         /// </summary>
         public static string catch_expected {
