@@ -156,6 +156,9 @@
   <data name="FromObjectObsolete" xml:space="preserve">
     <value>This node is obsolete, please use "String from Object"</value>
   </data>
+  <data name="IntegerOverflow" xml:space="preserve">
+    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+  </data>
   <data name="InvalidKeysErrorMessage" xml:space="preserve">
     <value>One or more input types are not matching. Lists as keys are not supported.</value>
   </data>
