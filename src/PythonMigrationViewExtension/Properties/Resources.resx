@@ -174,7 +174,7 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
     <value>There is an error in your code!</value>
   </data>
   <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
-    <value>Fix all errors before attempting code migration. Clicking cancel will switch back to the Python 2 engine without any code changes.</value>
+    <value>Fix all errors before attempting code migration.</value>
   </data>
   <data name="PackagedCustomNodesHeader" xml:space="preserve">
     <value>Packaged</value>

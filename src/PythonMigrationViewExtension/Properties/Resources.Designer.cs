@@ -207,7 +207,7 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fix all errors before attempting code migration. Clicking cancel will switch back to the Python 2 engine without any code changes..
+        ///   Looks up a localized string similar to Fix all errors before attempting code migration..
         /// </summary>
         public static string MigrationAssistantErrorStateMessage {
             get {

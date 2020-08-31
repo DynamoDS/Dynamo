@@ -83,7 +83,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public void ChangeCode()
         {
-            if (CurrentViewModel.DiffState == State.Error || CurrentViewModel.DiffState == State.NoChanges)
+            if (CurrentViewModel.DiffState == State.NoChanges)
             {
                 PythonNode.Engine = PythonEngineVersion.CPython3;
                 return;
