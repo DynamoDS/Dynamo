@@ -55,6 +55,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                     return output;
                 }
             }
+
             finally
             {
                 PythonEngine.ReleaseLock(gs);
