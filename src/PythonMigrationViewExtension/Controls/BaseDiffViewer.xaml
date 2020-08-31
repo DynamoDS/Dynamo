@@ -23,6 +23,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <viewModels:DiffStateToVisibilityConverter x:Key="DiffStateToVis" />
             <DataTemplate DataType="{x:Type viewModels:InLineViewModel}">
                 <local:InLineControl DataContext="{Binding}" />
             </DataTemplate>
@@ -133,6 +134,7 @@
                         HorizontalAlignment="Left"
                         Grid.Column="0">
                 <Button  Name="DiffButton"
+                         Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnDiffButtonClick"
                          HorizontalAlignment="Right"
                          ToolTip="{x:Static p:Resources.DiffButtonTooltip}"
@@ -150,6 +152,7 @@
                         HorizontalAlignment="Right"
                         Grid.Column="1">
                 <Button  x:Name="AcceptButton"
+                         Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnAcceptButtonClicked"
                          HorizontalAlignment="Right"
                          ToolTip="{x:Static p:Resources.AcceptButtonTooltip}"

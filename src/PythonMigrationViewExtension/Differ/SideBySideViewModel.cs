@@ -9,23 +9,25 @@ namespace Dynamo.PythonMigration.Differ
         public DiffPaneModel AfterPane { get { return DiffModel.NewText; } }
         public DiffPaneModel BeforePane { get { return DiffModel.OldText; } }
         private bool HasChanges { get { return DiffModel.NewText.HasDifferences | DiffModel.OldText.HasDifferences; } }
-        public bool Error { get; set; }
 
+        private State diffState;
         public State DiffState
         {
             get
             {
-                if (Error) return State.Error;
-                if (HasChanges) return State.HasChanges;
-                return State.NoChanges;
+                if (diffState == State.Error) return State.Error;
+
+                diffState = HasChanges ? State.HasChanges : State.NoChanges;
+
+                return diffState;
             }
+            set { diffState = value; }
         }
 
         public SideBySideViewModel(SideBySideDiffModel diffModel)
         {
             ViewMode = ViewMode.SideBySide;
             DiffModel = diffModel;
-            Error = false;
         }
     }
 }

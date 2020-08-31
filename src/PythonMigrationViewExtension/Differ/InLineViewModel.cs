@@ -10,17 +10,19 @@ namespace Dynamo.PythonMigration.Differ
         public DiffPaneModel DiffModel { get; set; }
         private bool HasChanges { get { return DiffModel.HasDifferences; } }
 
+        private State diffState;
         public State DiffState
         {
             get
             {
-                if (Error) return State.Error;
-                if (HasChanges) return State.HasChanges;
-                return State.NoChanges;
-            }
-        }
+                if (diffState == State.Error) return State.Error;
 
-        public bool Error { get; set; }
+                diffState = HasChanges ? State.HasChanges : State.NoChanges;
+
+                return diffState;
+            }
+            set { diffState = value; }
+        }
 
         public InLineViewModel(SideBySideDiffModel diffModel)
         {

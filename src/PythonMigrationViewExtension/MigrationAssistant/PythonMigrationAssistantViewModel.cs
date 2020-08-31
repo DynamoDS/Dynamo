@@ -61,7 +61,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
                 SetSideBySideViewModel();
                 
-                CurrentViewModel.Error = true;
+                CurrentViewModel.DiffState = State.Error;
                 return;
             }
             SetSideBySideViewModel();
@@ -149,20 +149,12 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         private void SetSideBySideViewModel()
         {
-            var previousViewModel = CurrentViewModel;
-            CurrentViewModel = new SideBySideViewModel(diffModel)
-            {
-                Error = previousViewModel?.Error ?? false
-            };
+            CurrentViewModel = new SideBySideViewModel(diffModel);
         }
 
         private void SetInlineViewModel()
         {
-            var previousViewModel = CurrentViewModel;
-            CurrentViewModel = new InLineViewModel(diffModel)
-            {
-                Error = previousViewModel?.Error ?? false
-            };
+            CurrentViewModel = new InLineViewModel(diffModel);
         }
 
         #endregion
