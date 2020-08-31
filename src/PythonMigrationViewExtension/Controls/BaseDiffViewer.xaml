@@ -32,14 +32,14 @@
             <Style x:Key="HasDifferenceController"
                    TargetType="{x:Type ContentControl}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=CurrentViewModel.HasChanges}"
-                                 Value="True">
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.HasChanges}">
                         <Setter Property="Content"
                                 Value="{Binding Path=CurrentViewModel}">
                         </Setter>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=CurrentViewModel.HasChanges}"
-                                 Value="False">
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.NoChanges}">
                         <Setter Property="ContentTemplate">
                             <Setter.Value>
                                 <DataTemplate>
@@ -53,6 +53,31 @@
                                                    Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
                                                    TextWrapping="Wrap" />
                                         <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateMessage}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.Error}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                Width="400">
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantErrorStateHeader}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="24"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantErrorStateMessage}"
                                                    TextAlignment="Center"
                                                    HorizontalAlignment="Center"
                                                    FontSize="14"

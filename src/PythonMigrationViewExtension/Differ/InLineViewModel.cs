@@ -8,12 +8,25 @@ namespace Dynamo.PythonMigration.Differ
     {
         public ViewMode ViewMode { get; set; }
         public DiffPaneModel DiffModel { get; set; }
-        public bool HasChanges { get { return DiffModel.HasDifferences; } } 
+        private bool HasChanges { get { return DiffModel.HasDifferences; } }
+
+        public State DiffState
+        {
+            get
+            {
+                if (Error) return State.Error;
+                if (HasChanges) return State.HasChanges;
+                return State.NoChanges;
+            }
+        }
+
+        public bool Error { get; set; }
 
         public InLineViewModel(SideBySideDiffModel diffModel)
         {
-            this.ViewMode = ViewMode.Inline;
-            this.DiffModel = ConvertToInline(diffModel);
+            ViewMode = ViewMode.Inline;
+            DiffModel = ConvertToInline(diffModel);
+            Error = false;
         }
 
         /// <summary>

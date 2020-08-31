@@ -198,6 +198,24 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is an error in your code!.
+        /// </summary>
+        public static string MigrationAssistantErrorStateHeader {
+            get {
+                return ResourceManager.GetString("MigrationAssistantErrorStateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix all errors before attempting code migration. Clicking accept will switch to the Python 3 engine without any code changes..
+        /// </summary>
+        public static string MigrationAssistantErrorStateMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantErrorStateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing to see here!.
         /// </summary>
         public static string MigrationAssistantNoChangesStateHeader {

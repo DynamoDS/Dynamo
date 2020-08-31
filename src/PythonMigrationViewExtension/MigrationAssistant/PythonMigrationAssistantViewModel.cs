@@ -8,6 +8,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.PythonMigration.Controls;
 using Dynamo.PythonMigration.Differ;
+using Python.Runtime;
 using PythonNodeModels;
 
 namespace Dynamo.PythonMigration.MigrationAssistant
@@ -42,25 +43,39 @@ namespace Dynamo.PythonMigration.MigrationAssistant
 
         public PythonMigrationAssistantViewModel(PythonNode pythonNode, WorkspaceModel workspace, IPathManager pathManager, Version dynamoVersion)
         {
-            this.PythonNode = pythonNode;
-            this.OldCode = pythonNode.Script;
+            PythonNode = pythonNode;
+            OldCode = pythonNode.Script;
 
             this.workspace = workspace;
-            this.backupDirectory = pathManager.BackupDirectory;
+            backupDirectory = pathManager.BackupDirectory;
             this.dynamoVersion = dynamoVersion;
 
-            MigrateCode();
+            try
+            {
+                MigrateCode();
+            }
+            catch (PythonException)
+            {
+                var sidebyside = new SideBySideDiffBuilder();
+                diffModel = sidebyside.BuildDiffModel(OldCode, OldCode, false);
+
+                SetSideBySideViewModel();
+                
+                CurrentViewModel.Error = true;
+                return;
+            }
             SetSideBySideViewModel();
+
         }
 
         #region Code migration
 
         private void MigrateCode()
         {
-            this.NewCode = ScriptMigrator.MigrateCode(this.OldCode);
+            NewCode = ScriptMigrator.MigrateCode(OldCode);
 
             var sidebyside = new SideBySideDiffBuilder();
-            this.diffModel = sidebyside.BuildDiffModel(this.OldCode, this.NewCode, false);
+            diffModel = sidebyside.BuildDiffModel(OldCode, NewCode, false);
         }
 
         /// <summary>
@@ -68,11 +83,9 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// </summary>
         public void ChangeCode()
         {
-            if (!this.CurrentViewModel.HasChanges)
+            if (CurrentViewModel.DiffState == State.Error || CurrentViewModel.DiffState == State.NoChanges)
             {
-                if (this.PythonNode.Engine == PythonEngineVersion.CPython3)
-                    return;
-                this.PythonNode.Engine = PythonEngineVersion.CPython3;
+                PythonNode.Engine = PythonEngineVersion.CPython3;
                 return;
             }
 
@@ -85,7 +98,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             }
 
             SavePythonMigrationBackup();
-            this.PythonNode.MigrateCode(this.NewCode);
+            PythonNode.MigrateCode(this.NewCode);
         }
 
         #endregion
