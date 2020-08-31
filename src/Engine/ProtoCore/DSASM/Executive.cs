@@ -3581,7 +3581,7 @@ namespace ProtoCore.DSASM
             }
             catch (OverflowException)
             {
-                runtimeCore.RuntimeStatus.LogWarning(WarningID.IntegerOverflow, Resources.IntegerOverflow);
+                runtimeCore.RuntimeStatus.LogWarning(WarningID.IntegerOverflow, string.Format($"{Resources.IntegerOverflow}href=IntegerOverflow.html"));
                 return uncheckedOperation();
             }
         }

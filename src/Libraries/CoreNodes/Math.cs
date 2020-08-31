@@ -661,7 +661,7 @@ namespace DSCore
             }
             catch (OverflowException)
             {
-                LogWarningMessageEvents.OnLogWarningMessage(Properties.Resources.IntegerOverflow);
+                LogWarningMessageEvents.OnLogWarningMessage(string.Format($"{Properties.Resources.IntegerOverflow}href=IntegerOverflow.html"));
                 return (long)value;
             }
         }

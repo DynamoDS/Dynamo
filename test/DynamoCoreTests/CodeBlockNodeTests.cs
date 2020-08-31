@@ -1275,7 +1275,7 @@ var06 = g;
             var mathFloor = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Floor Overflow");
             var mathCeiling = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Ceiling Overflow");
 
-            var expectedWarning = "The operation resulted in an integer overflow. Its result may be unexpected.";
+            var expectedWarning = "The operation resulted in an integer overflow. Its result may be unexpected.href=IntegerOverflow.html";
 
             Assert.IsNotNull(dsSum);
             Assert.AreEqual(ElementState.Warning, dsSum.State);
