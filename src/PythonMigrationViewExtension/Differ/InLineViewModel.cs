@@ -26,7 +26,6 @@ namespace Dynamo.PythonMigration.Differ
         {
             ViewMode = ViewMode.Inline;
             DiffModel = ConvertToInline(diffModel);
-            Error = false;
         }
 
         /// <summary>

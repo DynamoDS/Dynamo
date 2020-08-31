@@ -144,19 +144,25 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 case ViewMode.SideBySide:
                     SetSideBySideViewModel();
                     break;
-                default:
-                    break;
             }
         }
 
         private void SetSideBySideViewModel()
         {
-            this.CurrentViewModel = new SideBySideViewModel(this.diffModel);
+            var previousViewModel = CurrentViewModel;
+            CurrentViewModel = new SideBySideViewModel(diffModel)
+            {
+                Error = previousViewModel?.Error ?? false
+            };
         }
 
         private void SetInlineViewModel()
         {
-            this.CurrentViewModel = new InLineViewModel(this.diffModel);
+            var previousViewModel = CurrentViewModel;
+            CurrentViewModel = new InLineViewModel(diffModel)
+            {
+                Error = previousViewModel?.Error ?? false
+            };
         }
 
         #endregion
