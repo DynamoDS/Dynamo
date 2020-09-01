@@ -103,8 +103,8 @@ namespace CoreNodeModels
         public FromArray() : base("__ToStringFromArray")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("arr", Resources.FromArrayPortDataArrayToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FromArrayPortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("array", Resources.FromArrayPortDataArrayToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromArrayPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }
