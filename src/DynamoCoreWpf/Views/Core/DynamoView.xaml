@@ -733,6 +733,22 @@
                                       Style="{StaticResource SComboBox}"/>
                         </MenuItem>
                         <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}"
+                                  Name="PythonEngine">
+                            <MenuItem Focusable="False"
+                                      Header="{x:Static p:Resources.DefaultPythonEngineNone}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding PreferenceSettings.DefaultPythonEngine,Converter={StaticResource PythonSelectionToStringConverter},ConverterParameter='', Mode=TwoWay}"/>
+                            <MenuItem Focusable="False"
+                                      Header="IronPython2"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding PreferenceSettings.DefaultPythonEngine,Converter={StaticResource PythonSelectionToStringConverter},ConverterParameter='IronPython2', Mode=TwoWay}"/>
+                            <MenuItem Focusable="False"
+                                      Header="CPython3"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding PreferenceSettings.DefaultPythonEngine,Converter={StaticResource PythonSelectionToStringConverter},ConverterParameter='CPython3', Mode=TwoWay}" />
+                        </MenuItem>
+                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
                                   Command="{Binding ManagePackagePathsCommand}"
                                   Name="managePackagePaths" />

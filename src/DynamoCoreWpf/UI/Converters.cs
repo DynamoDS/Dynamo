@@ -1855,6 +1855,19 @@ namespace Dynamo.Controls
         }
     }
 
+    public class PythonSelectionToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return parameter.ToString() == value.ToString() ? true : false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return parameter as string;
+        }
+    }
+
     public class FullyQualifiedNameToDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
