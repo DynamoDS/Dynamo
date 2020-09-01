@@ -121,6 +121,11 @@
       <Name>DynamoCoreTests</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\TestUINodes\TestUINodes.csproj">
+      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
+      <Name>TestUINodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\SystemTestServices\SystemTestServices.csproj">
       <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
       <Name>SystemTestServices</Name>
