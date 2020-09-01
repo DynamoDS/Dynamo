@@ -85,15 +85,15 @@ namespace CoreNodeModels.HigherOrder
 
         public ComposeFunctions()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func0", Resources.ComposePortDataFunc0ToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func1", Resources.ComposePortDataFunc1ToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func", Resources.ComposePortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function0", Resources.ComposePortDataFunc0ToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function1", Resources.ComposePortDataFunc1ToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("function", Resources.ComposePortDataResultToolTip)));
             RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
         {
-            return "func" + index;
+            return "function" + index;
         }
 
         protected override string GetInputTooltip(int index)

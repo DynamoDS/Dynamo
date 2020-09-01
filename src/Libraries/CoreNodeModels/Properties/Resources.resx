@@ -265,11 +265,11 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Applies a function to arguments.</value>
+    <value>Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point.</value>
     <comment>Description for Function.Apply</comment>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Compose multiple functions.</value>
+    <value>Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list.</value>
     <comment>Description for Function.Compose</comment>
   </data>
   <data name="IfDescription" xml:space="preserve">

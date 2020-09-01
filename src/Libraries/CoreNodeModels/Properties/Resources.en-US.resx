@@ -269,7 +269,7 @@
     <comment>Description for Function.Apply</comment>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Compose multiple functions.</value>
+    <value>Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list.</value>
     <comment>Description for Function.Compose</comment>
   </data>
   <data name="IfDescription" xml:space="preserve">
