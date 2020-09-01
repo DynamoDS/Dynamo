@@ -207,6 +207,8 @@ namespace PythonNodeModelsWpf
             {
                 UpdateScript(editText.Text);
             }
+
+            editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

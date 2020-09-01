@@ -5,11 +5,16 @@ import os.path
 from pathlib import Path
 import sys
 
+
 def transform(source):
     python_zip_path = str(Path(os.path.dirname(os.__file__)).parents[0])
     python_zip_file = get_zip_file(python_zip_path)
     python_zip_folder = zipfile.ZipFile(os.path.join(python_zip_path, python_zip_file))
     fixers = get_all_fixers_from_zipfolder(python_zip_folder)
+
+    dir_path = os.getcwd()
+    sys.path.append(os.path.join(dir_path, '.\\python_migration_fixers'))
+    fixers.extend(['fix_none'])
 
     refactoring_tool = RefactoringTool(fixers)
 
@@ -46,6 +51,8 @@ def get_all_fixers_from_zipfolder(folder):
         if "fix_" not in f.filename:
             continue
         fixers.append(f.filename.replace('/', '.')[:-4])
+    
     return fixers
 
 output = transform(code)
+

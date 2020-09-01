@@ -63,5 +63,36 @@ namespace Dynamo.Tests
             var actual = ScriptMigrator.MigrateCode(original);
             Assert.AreEqual(original, actual);
         }
+
+        [Test]
+        public void CanMigrateDotNoneToPython3GetAttr()
+        {
+            var original = @"
+import sys
+import clr
+clr.AddReference('System.Windows.Forms')
+from System.Windows.Forms import *
+groupBox1 = GroupBox();
+textBox1 = TextBox();
+groupBox1.Controls.Add(textBox1);
+groupBox1.Text = ""MyGroupBox"";
+groupBox1.Dock = DockStyle.None;
+OUT = groupBox1
+";
+            var expected = @"
+import sys
+import clr
+clr.AddReference('System.Windows.Forms')
+from System.Windows.Forms import *
+groupBox1 = GroupBox();
+textBox1 = TextBox();
+groupBox1.Controls.Add(textBox1);
+groupBox1.Text = ""MyGroupBox"";
+groupBox1.Dock = getattr(DockStyle, 'None');
+OUT = groupBox1
+";
+            var actual = ScriptMigrator.MigrateCode(original);
+            Assert.AreEqual(expected, actual);
+        }
     }
 }

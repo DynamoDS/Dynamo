@@ -154,6 +154,8 @@ namespace Dynamo.Engine
                 documentNode = documentNodes[fullyQualifiedName];
             else
             {
+                // Note that the following may take the incorrect overload.
+                // Unfortunately we can't map back to the exact .NET parameter types from the DS function descriptor.
                 var overloadedName = documentNodes.Keys.
                         Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
 
@@ -199,6 +201,10 @@ namespace Dynamo.Engine
             }
         }
 
+        /// <summary>
+        /// Attempts to translate a DS type into a .NET type. Note that,
+        /// given these do not map 1 to 1, this is just a heuristic.
+        /// </summary>
         private static string PrimitiveMap(string s)
         {
             switch (s)
@@ -211,12 +217,20 @@ namespace Dynamo.Engine
                     return "System.Object";
                 case "double":
                     return "System.Double";
+                case "double[]":
+                    return "System.Double[]";
                 case "int":
                     return "System.Int32";
+                case "int[]":
+                    return "System.Int32[]";
                 case "bool":
                     return "System.Boolean";
+                case "bool[]":
+                    return "System.Boolean[]";
                 case "string":
                     return "System.String";
+                case "string[]":
+                    return "System.String[]";
                 default:
                     return s;
             }

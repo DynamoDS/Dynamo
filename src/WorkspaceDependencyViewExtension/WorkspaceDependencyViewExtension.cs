@@ -18,7 +18,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private const String extensionName = "Workspace References";
+        private readonly String extensionName = Properties.Resources.ExtensionName;
 
         internal WorkspaceDependencyView DependencyView
         {
@@ -56,6 +56,7 @@ namespace Dynamo.WorkspaceDependency
         public void Dispose()
         {
             DependencyView.OnExtensionTabClosed -= OnCloseExtension;
+            DependencyView.Dispose();
         }
 
 
@@ -66,8 +67,7 @@ namespace Dynamo.WorkspaceDependency
 
         public void Shutdown()
         {
-            DependencyView.Dispose();
-            this.Dispose();
+            // Do nothing for now
         }
 
         public void Startup(ViewStartupParams viewStartupParams)

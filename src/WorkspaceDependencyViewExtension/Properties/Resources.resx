@@ -135,6 +135,9 @@
   <data name="DetailsMessageWarning" xml:space="preserve">
     <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
   </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Workspace References</value>
+  </data>
   <data name="InstallButtonText" xml:space="preserve">
     <value>Install Specified Version</value>
   </data>

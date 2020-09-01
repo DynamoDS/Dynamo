@@ -23,12 +23,74 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <viewModels:DiffStateToVisibilityConverter x:Key="DiffStateToVis" />
             <DataTemplate DataType="{x:Type viewModels:InLineViewModel}">
                 <local:InLineControl DataContext="{Binding}" />
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewModels:SideBySideViewModel}">
                 <local:SideBySideControl DataContext="{Binding}" />
             </DataTemplate>
+            <Style x:Key="HasDifferenceController"
+                   TargetType="{x:Type ContentControl}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.HasChanges}">
+                        <Setter Property="Content"
+                                Value="{Binding Path=CurrentViewModel}">
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.NoChanges}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                Width="400">
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateHeader}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="24"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantNoChangesStateMessage}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Path=CurrentViewModel.DiffState}"
+                                 Value="{x:Static viewModels:State.Error}">
+                        <Setter Property="ContentTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Vertical"
+                                                VerticalAlignment="Center"
+                                                Width="400">
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantErrorStateHeader}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="24"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{x:Static p:Resources.MigrationAssistantErrorStateMessage}"
+                                                   TextAlignment="Center"
+                                                   HorizontalAlignment="Center"
+                                                   FontSize="14"
+                                                   Foreground="{StaticResource WorkspaceTabHeaderActiveTextBrush}"
+                                                   TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -56,8 +118,9 @@
             </Style>
         </Grid.Resources>
         
-        <ContentControl Content="{Binding CurrentViewModel}"
+        <ContentControl Style="{StaticResource HasDifferenceController}"
                         Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        
 
         <!-- Buttons row -->
         <Grid HorizontalAlignment="Stretch"
@@ -71,6 +134,7 @@
                         HorizontalAlignment="Left"
                         Grid.Column="0">
                 <Button  Name="DiffButton"
+                         Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnDiffButtonClick"
                          HorizontalAlignment="Right"
                          ToolTip="{x:Static p:Resources.DiffButtonTooltip}"
@@ -88,6 +152,7 @@
                         HorizontalAlignment="Right"
                         Grid.Column="1">
                 <Button  x:Name="AcceptButton"
+                         Visibility="{Binding Path=CurrentViewModel.DiffState, Converter={StaticResource DiffStateToVis}}"
                          Click="OnAcceptButtonClicked"
                          HorizontalAlignment="Right"
                          ToolTip="{x:Static p:Resources.AcceptButtonTooltip}"

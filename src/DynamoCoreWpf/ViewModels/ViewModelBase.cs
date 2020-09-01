@@ -20,15 +20,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        [JsonIgnore]
-        public bool IsPython2ObsoleteDebugModeEnabled
-        {
-            get
-            {
-                return DebugModes.IsEnabled("Python2ObsoleteMode"); 
-            }
-        }
-
         /// <summary>
         /// Dispose this viewModel, in the case of our ViewModels this usually means
         /// unsubscribing from events which we subscribed to in the construction of

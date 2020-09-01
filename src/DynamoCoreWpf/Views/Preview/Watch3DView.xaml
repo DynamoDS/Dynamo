@@ -94,6 +94,7 @@
             IsInertiaEnabled="False" 
             IsChangeFieldOfViewEnabled="False" 
             SpinReleaseTime="0" 
+            MSAA="Maximum"
             EffectsManager="{Binding EffectsManager}"
             Background="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}"
             BackgroundColor="{Binding Path=DataContext.ViewingHomespace, RelativeSource={RelativeSource AncestorType={x:Type controls:DynamoView}}, Converter={StaticResource Watch3DBackgroundColorConverter}}">

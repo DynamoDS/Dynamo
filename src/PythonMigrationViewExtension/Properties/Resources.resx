@@ -164,6 +164,18 @@ By clicking “Continue”, you are agreeing to implement the syntax changes to 
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
     <value>Migration Assistant Disclaimer</value>
   </data>
+  <data name="MigrationAssistantNoChangesStateHeader" xml:space="preserve">
+    <value>Nothing to see here!</value>
+  </data>
+  <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
+    <value>Your code is ready to run with the Python 3 engine. Click accept and we'll switch to the Python 3 engine for you.</value>
+  </data>
+  <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
+    <value>There is an error in your code!</value>
+  </data>
+  <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
+    <value>Fix all errors before attempting code migration.</value>
+  </data>
   <data name="PackagedCustomNodesHeader" xml:space="preserve">
     <value>Packaged</value>
   </data>

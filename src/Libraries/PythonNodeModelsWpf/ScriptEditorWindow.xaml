@@ -19,13 +19,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <ObjectDataProvider x:Key="engineEnum"
-                                MethodName="GetValues"
-                                ObjectType="{x:Type sys:Enum}">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="pythonNodeModel:PythonEngineVersion" />
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
             <Style x:Key="IconButton"
                    TargetType="{x:Type Button}"
                    BasedOn="{StaticResource ResourceKey=SButtonWithShapeIcon}">
@@ -84,83 +77,76 @@
                                    Foreground="#F8F8F2"
                                    HorizontalScrollBarVisibility="Disabled"/>
         </Border>
-        <Grid HorizontalAlignment="Stretch"
-              Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal"
-                        Grid.Column="0">
-                <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
-                        Style="{StaticResource IconTextButton}"
-                        Name="RunPythonScriptButton"
-                        Click="OnRunClicked"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}">
-                    <Button.Resources>
-                        <Polygon x:Key="Shape"
-                                 Points="5,0 12,7 5,14 5,0"
-                                 Height="14">
-                            <Polygon.Fill>
-                                <SolidColorBrush Color="DarkSeaGreen" />
-                            </Polygon.Fill>
-                        </Polygon>
-                    </Button.Resources>
-                </Button>
-                <ComboBox ItemsSource="{Binding Source={StaticResource engineEnum}, Mode=OneWay}"
-                          SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
-                          SelectionChanged="OnEngineChanged"
-                          Style="{StaticResource DropDown}"
-                          Name="EngineSelectorComboBox"
-                          Visibility="Collapsed" 
-                          ToolTip="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}"/>
-                <Button Style="{StaticResource IconButton}"
-                        Name="MigrationAssistantBtn"
-                        Click="OnMigrationAssistantClicked"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}">
-                    <Button.Resources>
-                        <Image x:Key="Shape"
-                               Width="44"
-                               Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
-                    </Button.Resources>
-                </Button>
-                <Button Style="{StaticResource IconButton}"
-                        Name="MoreInfoButton"
-                        Click="OnMoreInfoClicked"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}">
-                    <Button.Resources>
-                        <fa:ImageAwesome x:Key="Shape"
-                                         Style="{StaticResource ImageAwesomeIcons}"
-                                         Icon="QuestionCircleOutline" />
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right"
-                        Grid.Column="1">
-                <Button Style="{StaticResource IconButton}"
-                        Name="SaveScriptChangesButton"
-                        Click="OnSaveClicked"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}">
-                    <Button.Resources>
-                        <fa:ImageAwesome x:Key="Shape"
-                                         Style="{StaticResource ImageAwesomeIcons}"
-                                         Icon="Save" />
-                    </Button.Resources>
-                </Button>
-                <Button Style="{StaticResource IconButton}"
-                        Name="RevertScriptChangesButton"
-                        Click="OnRevertClicked"
-                        ToolTip="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}">
-                    <Button.Resources>
-                        <fa:ImageAwesome x:Key="Shape"
-                                         Style="{StaticResource ImageAwesomeIcons}"
-                                         Icon="Undo" />
-                    </Button.Resources>
-                </Button>
-            </StackPanel>
-        </Grid>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="1">
+            <Button Content="{x:Static p:Resources.PythonScriptEditorRunButton}"
+                    Style="{StaticResource IconTextButton}"
+                    Name="RunPythonScriptButton"
+                    Click="OnRunClicked"
+                    ToolTip="{x:Static p:Resources.PythonScriptEditorRunButtonTooltip}">
+                <Button.Resources>
+                    <Polygon x:Key="Shape"
+                             Points="5,0 12,7 5,14 5,0"
+                             Height="14">
+                        <Polygon.Fill>
+                            <SolidColorBrush Color="DarkSeaGreen" />
+                        </Polygon.Fill>
+                    </Polygon>
+                </Button.Resources>
+            </Button>
+            <ComboBox ItemsSource="{Binding nodeModel.AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                      SelectedItem="{Binding nodeModel.Engine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                      SelectionChanged="OnEngineChanged"
+                      Style="{StaticResource DropDown}"
+                      Name="EngineSelectorComboBox"
+                      Visibility="Collapsed" 
+                      ToolTip="{x:Static p:Resources.PythonScriptEditorEngineDropdownTooltip}"/>
+            <Button Style="{StaticResource IconButton}"
+                    Name="MigrationAssistantBtn"
+                    Click="OnMigrationAssistantClicked"
+                    ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}">
+                <Button.Resources>
+                    <Image x:Key="Shape"
+                           Width="44"
+                           Source="/PythonNodeModelsWpf;component/Resources/2to3Icon.png" />
+                </Button.Resources>
+            </Button>
+            <Button Style="{StaticResource IconButton}"
+                    Name="MoreInfoButton"
+                    Click="OnMoreInfoClicked"
+                    ToolTip="{x:Static p:Resources.PythonScriptEditorMoreInfoButtonTooltip}">
+                <Button.Resources>
+                    <fa:ImageAwesome x:Key="Shape"
+                                     Style="{StaticResource ImageAwesomeIcons}"
+                                     Icon="QuestionCircleOutline" />
+                </Button.Resources>
+            </Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Grid.Row="1">
+            <Button Style="{StaticResource IconButton}"
+                    Name="SaveScriptChangesButton"
+                    Click="OnSaveClicked"
+                    ToolTip="{x:Static p:Resources.PythonScriptEditorSaveChangesButtonTooltip}">
+                <Button.Resources>
+                    <fa:ImageAwesome x:Key="Shape"
+                                     Style="{StaticResource ImageAwesomeIcons}"
+                                     Icon="Save" />
+                </Button.Resources>
+            </Button>
+            <Button Style="{StaticResource IconButton}"
+                    Name="RevertScriptChangesButton"
+                    Click="OnRevertClicked"
+                    ToolTip="{x:Static p:Resources.PythonScriptEditorRevertButtonTooltip}">
+                <Button.Resources>
+                    <fa:ImageAwesome x:Key="Shape"
+                                     Style="{StaticResource ImageAwesomeIcons}"
+                                     Icon="Undo" />
+                </Button.Resources>
+            </Button>
+        </StackPanel>
     </Grid>
 
 </dww:ModelessChildWindow>
