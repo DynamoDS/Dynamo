@@ -7,8 +7,6 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using NUnit.Framework;
 using ProtoCore.Mirror;
 
-using IntegerSlider = CoreNodeModels.Input.IntegerSlider;
-
 namespace Dynamo.Tests
 {
     [TestFixture]
@@ -366,6 +364,7 @@ namespace Dynamo.Tests
             AssertPreviewCount("7e825844-c428-4067-a916-11ff14bc0715", 100);
         }
 
+        [Test, Category("RegressionTests")]
         public void Defect_MAGN_2607()
         {
             //Detail steps are here http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-2607

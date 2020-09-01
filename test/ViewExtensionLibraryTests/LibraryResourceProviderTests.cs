@@ -36,7 +36,7 @@ namespace ViewExtensionLibraryTests
         }
     }
 
-    public class LibraryResourceProviderTests
+    public class LibraryResourceProviderTests : UnitTestBase
     {
         private const string EventX = "X";
 
@@ -218,6 +218,19 @@ namespace ViewExtensionLibraryTests
             var customNode = new IconUrl(name, path, true);
             Assert.AreEqual(IconUrl.DefaultPath, customNode.Path);
             Assert.AreEqual(IconUrl.DefaultIcon, customNode.Name);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void CustomNodeIconUrlIsCorrectWhenCustomizationDllExists()
+        {
+            var name = "c4a6b7cc-f860-4afc-bc74-72d8888002f2";
+            var packagePath = Path.Combine(TestDirectory, "pkgs", "IconizedCustomNode");
+            var customNodePath = Path.Combine(packagePath, "dyf", "MyOR.dyf");
+            var url = new IconUrl(name, customNodePath, true);
+
+            var binaryPath = Path.Combine(packagePath, "bin", "Package.dll");
+            Assert.AreEqual($"http://localhost/icons/{name}.Small?path={binaryPath}", url.Url);
         }
 
         [Test]

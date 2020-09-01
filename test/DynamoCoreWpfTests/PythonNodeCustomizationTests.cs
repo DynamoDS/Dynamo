@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
@@ -15,7 +16,11 @@ namespace DynamoCoreWpfTests
 {
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
-        private readonly List<string> expectedEngineMenuItems = Enum.GetNames(typeof(PythonNodeModels.PythonEngineVersion)).ToList();
+        private readonly List<string> expectedEngineMenuItems = new List<string>()
+        {
+            PythonEngineVersion.IronPython2.ToString(),
+            PythonEngineVersion.CPython3.ToString()
+        };
 
         public override void Open(string path)
         {
@@ -24,13 +29,18 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
-        protected override void GetLibrariesToPreload(List<string> libraries)
+        public override void Start()
         {
-            libraries.Add("DSCPython.dll");
-            libraries.Add("DSIronPython.dll");
+            base.Start();
             // Make sure Python Engine Selector Singleton has all the info up-to-date.
             // This is not needed for Dynamo in normal use case but useful in unit test case.
             PythonEngineSelector.Instance.ScanPythonEngines();
+        }
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("DSCPython.dll");
+            libraries.Add("DSIronPython.dll"); 
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -42,14 +52,18 @@ namespace DynamoCoreWpfTests
         public void CanChangeEngineFromScriptEditorDropDown()
         {
             // Arrange
-            var expectedAvailableEngines = Enum.GetValues(typeof(PythonNodeModels.PythonEngineVersion)).Cast<PythonNodeModels.PythonEngineVersion>();
-            var expectedDefaultEngine = PythonNodeModels.PythonEngineVersion.IronPython2;
-            var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
+            var expectedAvailableEngines = new List<PythonEngineVersion>()
+            {
+                PythonEngineVersion.IronPython2,
+                PythonEngineVersion.CPython3
+            };
+            var expectedDefaultEngine = PythonEngineVersion.IronPython2;
+            var engineChange = PythonEngineVersion.CPython3;
 
             Open(@"core\python\python.dyn");
 
             var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeModels.PythonNodeBase;
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
             Assert.NotNull(nodeModel);
 
             var scriptWindow = EditPythonCode(nodeView,View);
@@ -65,7 +79,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(engineSelectorComboBox.Visibility, Visibility.Visible);
             CollectionAssert.AreEqual(expectedAvailableEngines, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
-            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonNodeModels.PythonEngineVersion.CPython3);
+            Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonEngineVersion.CPython3);
             Assert.AreEqual(nodeModel.Engine, engineAfterChange);
             var engineMenuItem = nodeView.MainContextMenu
                 .Items
@@ -121,6 +135,16 @@ namespace DynamoCoreWpfTests
             //still only 2 executions.
             Assert.AreEqual(2,(Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
             DispatcherUtil.DoEvents();
+        }
+
+        private static ICSharpCode.AvalonEdit.TextEditor FindCodeEditor(ScriptEditorWindow view)
+        {
+            DispatcherUtil.DoEvents();
+            var windowGrid = view.Content as Grid;
+            var codeEditor = windowGrid
+                .ChildrenOfType<ICSharpCode.AvalonEdit.TextEditor>()
+                .First();
+            return codeEditor;
         }
 
         private static ComboBox FindEditorDropDown(ScriptEditorWindow view)
@@ -302,6 +326,63 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
             Assert.AreEqual(new List<string> { "2.7.9", "2.7.9" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
             DispatcherUtil.DoEvents();
+
+            Model.CurrentWorkspace.Undo();
+            Assert.AreEqual(new List<string> { "2.7.9", "3.8.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            DispatcherUtil.DoEvents();
+            Model.CurrentWorkspace.Undo();
+            Assert.AreEqual(new List<string> { "3.8.3", "3.8.3" }, pynode2.CachedValue.GetElements().Select(x => x.Data));
+            DispatcherUtil.DoEvents();
+            
+        }
+
+        [Test]
+        public void TabWithSpacesMatchesEngine()
+        {
+            // Arrange
+            Open(@"core\python\python.dyn");
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            var scriptWindow = EditPythonCode(nodeView, View);
+            var codeEditor = FindCodeEditor(scriptWindow);
+            var engineSelectorComboBox = FindEditorDropDown(scriptWindow);
+
+            Assert.AreEqual(PythonEngineVersion.IronPython2, engineSelectorComboBox.SelectedItem);
+
+            // Act
+            codeEditor.Focus();
+            codeEditor.SelectionStart = 0;
+            var textArea = Keyboard.FocusedElement;
+            textArea.RaiseEvent(new KeyEventArgs(
+                Keyboard.PrimaryDevice,
+                PresentationSource.FromVisual(codeEditor),
+                0,
+                Key.Tab)
+                {
+                    RoutedEvent = Keyboard.KeyDownEvent
+                }
+            );
+            DispatcherUtil.DoEvents();
+
+            engineSelectorComboBox.SelectedItem = PythonEngineVersion.CPython3;
+
+            codeEditor.SelectionStart = 0;
+            textArea.RaiseEvent(new KeyEventArgs(
+                Keyboard.PrimaryDevice,
+                PresentationSource.FromVisual(codeEditor),
+                0,
+                Key.Tab)
+            {
+                RoutedEvent = Keyboard.KeyDownEvent
+            }
+            );
+            DispatcherUtil.DoEvents();
+
+            // Assert
+            StringAssert.StartsWith("    \t", codeEditor.Text);
         }
     }
 }

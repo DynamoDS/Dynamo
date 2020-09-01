@@ -198,6 +198,42 @@ namespace Dynamo.PythonMigration.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There is an error in your code!.
+        /// </summary>
+        public static string MigrationAssistantErrorStateHeader {
+            get {
+                return ResourceManager.GetString("MigrationAssistantErrorStateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix all errors before attempting code migration..
+        /// </summary>
+        public static string MigrationAssistantErrorStateMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantErrorStateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing to see here!.
+        /// </summary>
+        public static string MigrationAssistantNoChangesStateHeader {
+            get {
+                return ResourceManager.GetString("MigrationAssistantNoChangesStateHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your code is ready to run with the Python 3 engine. Click accept and we&apos;ll switch to the Python 3 engine for you..
+        /// </summary>
+        public static string MigrationAssistantNoChangesStateMessage {
+            get {
+                return ResourceManager.GetString("MigrationAssistantNoChangesStateMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Packaged.
         /// </summary>
         public static string PackagedCustomNodesHeader {

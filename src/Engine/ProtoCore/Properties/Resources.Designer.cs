@@ -602,6 +602,15 @@ namespace ProtoCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation resulted in an integer overflow. Its result may be unexpected..
+        /// </summary>
+        public static string IntegerOverflow {
+            get {
+                return ResourceManager.GetString("IntegerOverflow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to invalid Associative_AccessSpecifier.
         /// </summary>
         public static string invalid_Associative_AccessSpecifier {

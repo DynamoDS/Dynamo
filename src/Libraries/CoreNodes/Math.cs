@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
+using DynamoServices;
 using NCalc;
 using ProtoCore.Utils;
 using CSMath = System.Math;
@@ -280,7 +281,8 @@ namespace DSCore
         /// <search>ceiling,round</search>
         public static long Ceiling(double number)
         {
-            return (long)CSMath.Ceiling(number);
+            var ceiling = CSMath.Ceiling(number);
+            return DoCheckedCast(ceiling);
         }
 
         /// <summary>
@@ -360,7 +362,8 @@ namespace DSCore
         /// <search>round</search>
         public static long Floor(double number)
         {
-            return (long)CSMath.Floor(number);
+            var floor = CSMath.Floor(number);
+            return DoCheckedCast(floor);
         }
         
         [IsVisibleInDynamoLibrary(false)]
@@ -643,5 +646,24 @@ namespace DSCore
         }
 
         private static readonly Random mRandom = new Random();
+
+        /// <summary>
+        /// Performs a cast to long in a checked context. If the operation produces an overflow,
+        /// then a warning is produced and the overflowed result is returned.
+        /// </summary>
+        /// <param name="value">Operation to be performed</param>
+        /// <returns>The result of the operation</returns>
+        private static long DoCheckedCast(double value)
+        {
+            try
+            {
+                return checked((long)value);
+            }
+            catch (OverflowException)
+            {
+                LogWarningMessageEvents.OnLogWarningMessage(string.Format($"{Properties.Resources.IntegerOverflow}href=IntegerOverflow.html"));
+                return (long)value;
+            }
+        }
     }
 }

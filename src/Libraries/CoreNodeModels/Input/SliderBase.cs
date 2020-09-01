@@ -109,10 +109,11 @@ namespace CoreNodeModels.Input
             return result;
         }
 
+        [Obsolete("Remove method after deprecating IntegerSlider in favor of IntegerSlider64Bit")]
         internal static int ConvertStringToInt(string value)
         {
             int result = 0;
-            if (System.Int32.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+            if (int.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
                 return result;
             //check if the value exceeds the 32 bit maximum / minimum value
             if (value.Length > 1)
@@ -127,6 +128,35 @@ namespace CoreNodeModels.Input
 
                 }
                 result = start == 0 ? int.MaxValue : int.MinValue;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Convert a value with a string representation into 64 bit integers.
+        /// This is used by IntegerSlider64Bit. The expected range of values are
+        /// from -2^63 to 2^63 - 1
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        protected static long ConvertStringToInt64(string value)
+        {
+            long result = 0;
+            if (long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+                return result;
+            //check if the value exceeds the 64 bit maximum / minimum value
+            if (value.Length > 1)
+            {
+                var start = value[0] == '-' ? 1 : 0;
+                for (var i = start; i < value.Length; i++)
+                {
+                    if (!char.IsDigit(value[i]))
+                    {
+                        return 0;
+                    }
+
+                }
+                result = start == 0 ? long.MaxValue : long.MinValue;
             }
             return result;
         }

@@ -38,6 +38,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using Dynamo.Wpf.ViewModels.Watch3D;
 using DynamoUtilities;
 using ISelectable = Dynamo.Selection.ISelectable;
+using WpfResources = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
 {
@@ -67,7 +68,13 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
-        
+
+        private ObservableCollection<NameValuePairViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<NameValuePairViewModel<string>>();
+        public ObservableCollection<NameValuePairViewModel<string>> DefaultPythonEngineOptions
+        {
+            get { return defaultPythonEngineOptions; }
+        }
+
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -537,7 +544,21 @@ namespace Dynamo.ViewModels
             }
         }
 
-
+        /// <summary>
+        /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine
+        {
+            get { return model.PreferenceSettings.DefaultPythonEngine; }
+            set
+            {
+                if (value != model.PreferenceSettings.DefaultPythonEngine)
+                {
+                    model.PreferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(DefaultPythonEngine));
+                }
+            }
+        }
 
         #endregion
 
@@ -583,6 +604,11 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
+            // These options are currently fixed. Eventually we should make them dynamic I guess.
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("IronPython2", "IronPython2"));
+            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("CPython3", "CPython3"));
+
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures

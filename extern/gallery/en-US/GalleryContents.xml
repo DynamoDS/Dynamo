@@ -46,5 +46,10 @@
 		<Body>There are more resources to help you learn more about Dynamo.&#10;- OFFICIAL WEBSITE: dynamobim.com&#10;- USERS' GUIDE: dynamoprimer.com&#10;- NODE DICTIONARY: dictionary.dynamobim.com&#10;- SAMPLE FILES: check out examples in the application menu under "Help > Samples"</Body>
 		<ImagePath>10-Help.png</ImagePath>
 	</GalleryContent>
+		<GalleryContent>
+		<Header>Dynamo Python Node</Header>
+		<Body>[1] NEW PYTHON FEATURES: Access the Python Engine selector, Migration Assistant and More Information panel.&#10;[2] MIGRATION ASSISTANT: Use the Migration Assistant to help migrate your code from Python 2 to Python 3.&#10;[3] MORE INFORMATION PANEL: Understand the differences between IronPython2 and CPython3.</Body>
+		<ImagePath>11-Python3.png</ImagePath>
+	</GalleryContent>
 	</GalleryUiContents>
 </GalleryContents>
