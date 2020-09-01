@@ -22,8 +22,8 @@ namespace CoreNodeModels.HigherOrder
 
         public ApplyFunction() : base()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func", Resources.ApplyPortDataFuncToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function", Resources.ApplyPortDataFuncToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", Resources.ApplyPortDataFuncArgToolTip)));
             AddInput();
             RegisterAllPorts();
         }
@@ -31,9 +31,9 @@ namespace CoreNodeModels.HigherOrder
         protected override string GetInputName(int index)
         {
             if (index == 0)
-                return "func";
+                return "function";
 
-            return "arg" + index;
+            return "argument" + index;
         }
 
         protected override string GetInputTooltip(int index)

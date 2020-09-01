@@ -265,7 +265,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Applies a function to arguments.</value>
+    <value>Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point.</value>
     <comment>Description for Function.Apply</comment>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
