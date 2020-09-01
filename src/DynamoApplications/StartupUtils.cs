@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -93,11 +94,13 @@ namespace Dynamo.Applications
 
                 // Generate geometry json file
                 var geometryFilePath = string.Empty;
+
                 // dll paths we'll import before running a graph 
                 var importPaths = new List<string>() ;
 
                 var asmPath = string.Empty;
 
+                bool keepAlive = false;
                 bool showHelp = false;
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
@@ -109,9 +112,10 @@ namespace Dynamo.Applications
                 .Add("h|H|help", "Get some help", h => showHelp = h != null)
                 .Add("g=|G=|geometry", "Geometry, Instruct Dynamo to output geometry from all evaluations to a json file at this path", g => geometryFilePath = g)
                 .Add("i=|I=|import", "Import, Instruct Dynamo to import an assembly as a node library. This argument should be a filepath to a single .dll" +
-                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i)).
-                Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp);
-
+                " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
+                .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
+                .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                ;
                 optionsSet.Parse(args);
 
                 if (showHelp)
@@ -134,6 +138,7 @@ namespace Dynamo.Applications
                     GeometryFilePath = geometryFilePath,
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
+                    KeepAlive = keepAlive
                 };
             }
 
@@ -151,6 +156,7 @@ namespace Dynamo.Applications
             public string GeometryFilePath { get; set; }
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
+            public bool KeepAlive { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
