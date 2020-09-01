@@ -78,8 +78,8 @@ namespace CoreNodeModels
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("obj", Resources.FromObjectPortDataObjToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("str", Resources.FormulaPortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FormulaPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }
