@@ -152,7 +152,7 @@
     <value>A list of values between 0.0 and 1.0. These values are used to look up the color within the range.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
-    <value>Combinator</value>
+    <value>Function to use as combinator</value>
   </data>
   <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
     <value>Combined lists</value>

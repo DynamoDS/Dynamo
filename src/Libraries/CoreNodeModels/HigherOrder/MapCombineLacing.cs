@@ -57,11 +57,11 @@ namespace CoreNodeModels.HigherOrder
 
         protected CombinatorNode() : this(3)
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("comb", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("combinator", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list2", Resources.PortDataListToolTip + " #2")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("combined", Resources.CombinatorPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.CombinatorPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -73,12 +73,12 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return Resources.PortDataListToolTip + " #" + index;
+            return Resources.PortDataListToolTip + " #" + (index-1);
         }
 
         protected override void RemoveInput()

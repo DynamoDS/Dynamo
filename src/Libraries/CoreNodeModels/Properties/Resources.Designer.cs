@@ -178,7 +178,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Combinator.
+        ///   Looks up a localized string similar to Function to use as combinator.
         /// </summary>
         public static string CombinatorPortDataCombToolTip {
             get {
