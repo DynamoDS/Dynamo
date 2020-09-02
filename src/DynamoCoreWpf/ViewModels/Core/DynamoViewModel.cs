@@ -881,6 +881,7 @@ namespace Dynamo.ViewModels
 
             // Reset workspace state
             CurrentSpaceViewModel.CancelActiveState();
+            BackgroundPreviewViewModel.RefreshState();
         }
 
         internal void ForceRunExprCmd(object parameters)
@@ -2441,12 +2442,7 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
+            BackgroundPreviewViewModel.RefreshState();
         }
 
         internal bool CanEscape(object parameter)
