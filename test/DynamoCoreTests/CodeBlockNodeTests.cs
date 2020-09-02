@@ -1256,7 +1256,68 @@ var06 = g;
             int outportBrokenNodeCount = helloBrokenNode.OutPorts.Count;
             Assert.IsFalse(outportCount > 0);
         }
-        
+
+        /// <summary>
+        /// Tests a variety of DS operations and builtin nodes that can result in an
+        /// integer overflow.
+        /// </summary>
+        [Test]
+        public void IntegerOverflow()
+        {
+            OpenModel(Path.Combine(TestDirectory, @"core\dsevaluation\Overflow.dyn"));
+
+            var dsSum = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Sum Overflow");
+            var dsSub = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Sub Overflow");
+            var dsNeg = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Neg Overflow");
+            var dsMul = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "DS Mul Overflow");
+            var mathFactorial = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Factorial Overflow");
+            var mathAbs = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Abs Overflow");
+            var mathFloor = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Floor Overflow");
+            var mathCeiling = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(n => n.Name == "Math.Ceiling Overflow");
+
+            var expectedWarning = "The operation resulted in an integer overflow. Its result may be unexpected.href=IntegerOverflow.html";
+
+            Assert.IsNotNull(dsSum);
+            Assert.AreEqual(ElementState.Warning, dsSum.State);
+            Assert.AreEqual(expectedWarning, dsSum.ToolTipText);
+            AssertPreviewValue(dsSum.AstIdentifierGuid, -2);
+
+            Assert.IsNotNull(dsSub);
+            Assert.AreEqual(ElementState.Warning, dsSub.State);
+            Assert.AreEqual(expectedWarning, dsSub.ToolTipText);
+            AssertPreviewValue(dsSub.AstIdentifierGuid, 2);
+
+            Assert.IsNotNull(dsNeg);
+            Assert.AreEqual(ElementState.Warning, dsNeg.State);
+            Assert.AreEqual(expectedWarning, dsNeg.ToolTipText);
+            AssertPreviewValue(dsNeg.AstIdentifierGuid, long.MaxValue);
+
+            Assert.IsNotNull(dsMul);
+            Assert.AreEqual(ElementState.Warning, dsMul.State);
+            Assert.AreEqual(expectedWarning, dsMul.ToolTipText);
+            AssertPreviewValue(dsMul.AstIdentifierGuid, -2);
+
+            Assert.IsNotNull(mathFactorial);
+            Assert.AreEqual(ElementState.Warning, mathFactorial.State);
+            StringAssert.EndsWith("The return value of Math.Factorial is out of range.", mathFactorial.ToolTipText);
+            AssertPreviewValue(mathFactorial.AstIdentifierGuid, null);
+
+            Assert.IsNotNull(mathAbs);
+            Assert.AreEqual(ElementState.Warning, mathAbs.State);
+            StringAssert.EndsWith("Negating the minimum value of a twos complement number is invalid.", mathAbs.ToolTipText);
+            AssertPreviewValue(mathAbs.AstIdentifierGuid, null);
+
+            Assert.IsNotNull(mathFloor);
+            Assert.AreEqual(ElementState.Warning, mathFloor.State);
+            Assert.AreEqual(expectedWarning, mathFloor.ToolTipText);
+            AssertPreviewValue(mathFloor.AstIdentifierGuid, long.MinValue);
+
+            Assert.IsNotNull(mathCeiling);
+            Assert.AreEqual(ElementState.Warning, mathCeiling.State);
+            Assert.AreEqual(expectedWarning, mathCeiling.ToolTipText);
+            AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
