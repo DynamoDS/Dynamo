@@ -267,35 +267,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             IRenderPackageFactory renderPackageFactory)
         {
             this.viewModel = viewModel;
-            //foreach (WorkspaceViewModel workspace in this.viewModel.Workspaces)
-            //{
-            //    workspace.PropertyChanged += Workspace_PropertyChanged;
-            //}
-            //this.viewModel.Workspaces.CollectionChanged += Workspaces_CollectionChanged;
             this.renderPackageFactory = renderPackageFactory;
         }
-
-        //private void Workspaces_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    foreach (WorkspaceViewModel workspace in e.OldItems)
-        //    {
-        //        workspace.PropertyChanged -= Workspace_PropertyChanged;
-        //    }
-        //    foreach (WorkspaceViewModel workspace in e.NewItems)
-        //    {
-        //        workspace.PropertyChanged += Workspace_PropertyChanged;
-        //    }
-        //}
-
-        //private void Workspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    if (e.PropertyName == nameof(IsPanning))
-        //    {
-        //        RaisePropertyChanged("IsPanning");
-        //        RaisePropertyChanged("IsOrbiting");
-        //        RaisePropertyChanged("LeftClickCommand");
-        //    }
-        //}
 
         protected virtual void OnShutdown()
         {
@@ -758,13 +731,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         internal void TogglePan(object parameter)
         {
             CurrentSpaceViewModel.RequestTogglePanMode();
+            RefreshState();
+        }
 
+        internal void RefreshState()
+        {
             // Since panning and orbiting modes are exclusive from one another,
             // turning one on may turn the other off. This is the reason we must
             // raise property change for both at the same time to update visual.
-            //RaisePropertyChanged("IsPanning");
-            //RaisePropertyChanged("IsOrbiting");
-            //RaisePropertyChanged("LeftClickCommand");
+            RaisePropertyChanged("IsPanning");
+            RaisePropertyChanged("IsOrbiting");
+            RaisePropertyChanged("LeftClickCommand");
         }
 
         private static bool CanTogglePan(object parameter)
@@ -775,13 +752,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void ToggleOrbit(object parameter)
         {
             CurrentSpaceViewModel.RequestToggleOrbitMode();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
-            RaisePropertyChanged("LeftClickCommand");
+            RefreshState();
         }
 
         private static bool CanToggleOrbit(object parameter)
@@ -826,10 +797,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         protected virtual void Dispose(bool disposing)
         {
-            //if (this.viewModel != null)
-            //{
-            //    this.viewModel.Workspaces.CollectionChanged -= Workspaces_CollectionChanged;
-            //}
+            // Nothing to do here.
         }
 
         public void Dispose()
