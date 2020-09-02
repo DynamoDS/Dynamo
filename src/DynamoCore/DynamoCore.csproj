@@ -422,7 +422,7 @@ limitations under the License.
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
-    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse" />
+    <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG224)" DestinationFolder="$(OutputPath)libg_224_0_1\" />
     <Copy SourceFiles="@(LibG2244)" DestinationFolder="$(OutputPath)libg_224_4_0\" />
     <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />

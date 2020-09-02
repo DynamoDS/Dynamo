@@ -68,8 +68,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Repositories\\GitHub\\Dynamo\\test\\core\\excel\\SingleSheet.xlsx",
-      "InputValue": "C:\\Repositories\\GitHub\\Dynamo\\test\\core\\excel\\SingleSheet.xlsx",
+      "HintPath": "..\\..\\..\\test\\core\\excel\\SingleSheet.xlsx",
+      "InputValue": "..\\..\\..\\test\\core\\excel\\SingleSheet.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "f68623b9c1a940559914153edbbc770f",
       "Inputs": [],

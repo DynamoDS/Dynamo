@@ -18,7 +18,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private const String extensionName = "Workspace References";
+        private readonly String extensionName = Properties.Resources.ExtensionName;
 
         internal WorkspaceDependencyView DependencyView
         {
