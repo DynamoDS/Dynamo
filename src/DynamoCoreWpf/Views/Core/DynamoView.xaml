@@ -725,14 +725,6 @@
                                   IsChecked="{Binding ShowTabsAndSpacesInScriptEditor, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor}"/>
                         <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}">
-                            <ComboBox ItemsSource="{Binding DefaultPythonEngineOptions}"
-                                      SelectedValue="{Binding DefaultPythonEngine, Mode=TwoWay}"
-                                      SelectedValuePath="Value"
-                                      DisplayMemberPath="Name"
-                                      Style="{StaticResource SComboBox}"/>
-                        </MenuItem>
-                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}"
                                   Name="PythonEngine">
                             <MenuItem Focusable="False"
