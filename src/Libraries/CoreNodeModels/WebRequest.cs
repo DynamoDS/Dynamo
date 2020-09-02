@@ -25,7 +25,7 @@ namespace CoreNodeModels
         public WebRequest()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("url", Resources.WebRequestPortDataUrlToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", Resources.WebRequestPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.WebRequestPortDataResultToolTip)));
             RegisterAllPorts();
 
             CanUpdatePeriodically = true;

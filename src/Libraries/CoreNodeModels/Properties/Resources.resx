@@ -494,10 +494,10 @@
     <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>The result of the web request.</value>
+    <value>Content of a webpage as a string.</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request.</value>
+    <value>The url for the web request as a string.</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>

@@ -19,7 +19,7 @@ namespace CoreNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -1349,7 +1349,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The result of the web request..
+        ///   Looks up a localized string similar to Content of a webpage as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {
@@ -1358,7 +1358,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The url for the web request..
+        ///   Looks up a localized string similar to The url for the web request as a string..
         /// </summary>
         public static string WebRequestPortDataUrlToolTip {
             get {
