@@ -1046,7 +1046,7 @@ namespace Dynamo.Tests
             var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("88fa7b79-ddc3-4d80-9546-e377cf2434a5");
             ViewModel.HomeSpace.Run();
             Assert.IsNull(watch.CachedValue.Data);
-           // Assert.IsTrue(watch.State == ElementState.Warning);
+            Assert.IsTrue(watch.State == ElementState.Warning);
             if (fileAttributes == FileAttributes.ReadOnly)
                 File.SetAttributes(filePath, FileAttributes.Normal);
         }
