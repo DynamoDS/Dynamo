@@ -56,6 +56,11 @@ namespace Dynamo.Controls
     {
         public const string BackgroundPreviewName = "BackgroundPreview";
 
+        /// <summary>
+        /// This event is raised on the dynamo view when an extension tab is closed.
+        /// </summary>
+        public static event Action<String> CloseExtension;
+
         private const int navigationInterval = 100;
         // This is used to determine whether ESC key is being held down
         private bool IsEscKeyPressed = false;
@@ -74,10 +79,7 @@ namespace Dynamo.Controls
         private bool isPSSCalledOnViewModelNoCancel = false;
         private readonly DispatcherTimer _workspaceResizeTimer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 500), IsEnabled = false };
         private ViewLoadedParams sharedViewExtensionLoadedParams;
-        /// <summary>
-        /// This event is raised on the dynamo view when an extension tab is closed.
-        /// </summary>
-        internal static event Action<String> CloseExtension;
+
         internal ObservableCollection<TabItem> ExtensionTabItems { set; get; } = new ObservableCollection<TabItem>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
