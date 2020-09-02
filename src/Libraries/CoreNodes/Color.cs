@@ -107,10 +107,10 @@ namespace DSCore
         /// <summary>
         /// Returns the saturation value for this color.
         /// </summary>
-        /// <returns name="saturation">double between 0 and 1 inclusive.</returns>
-        public static float Saturation(Color c)
+        /// <returns name="double">Saturation value as double between 0 and 1 inclusive.</returns>
+        public static float Saturation(Color color)
         {
-            return c.color.GetSaturation();
+            return color.color.GetSaturation();
         }
 
         /// <summary>
