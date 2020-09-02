@@ -308,9 +308,8 @@
                              RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
                 </ui:ImageCheckBox.Command>
                 <ui:ImageCheckBox.IsChecked>
-                    <Binding Path="DataContext.BackgroundPreviewViewModel.IsPanning"
-                             Mode="OneWay"
-                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}" />
+                    <Binding Path="IsPanning"
+                             Mode="OneWay" />
                 </ui:ImageCheckBox.IsChecked>
             </ui:ImageCheckBox>
 

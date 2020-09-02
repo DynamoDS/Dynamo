@@ -575,8 +575,16 @@ namespace Dynamo.ViewModels
                         break;
                 }
 
+
+                var panChanged = currentState == State.PanMode || newState == State.PanMode;
+
                 owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(cursorToUse);
                 this.currentState = newState; // update state
+
+                if (panChanged)
+                {
+                    owningWorkspace.RaisePropertyChanged(nameof(IsPanning));
+                }
             }
 
             #endregion
