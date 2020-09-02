@@ -394,7 +394,7 @@
     <value>List</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>operand</value>
+    <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>result</value>
