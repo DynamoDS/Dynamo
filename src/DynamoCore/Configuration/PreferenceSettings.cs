@@ -345,7 +345,6 @@ namespace Dynamo.Configuration
             set
             {
                 defaultPythonEngine = value;
-                RaisePropertyChanged(nameof(DefaultPythonEngine));
             }
         }
 
