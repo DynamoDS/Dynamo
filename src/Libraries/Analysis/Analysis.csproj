@@ -71,7 +71,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Analysis_DynamoCustomization.xml" />
-    <Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

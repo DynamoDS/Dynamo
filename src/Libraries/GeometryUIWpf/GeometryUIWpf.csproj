@@ -127,9 +127,6 @@
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\logo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

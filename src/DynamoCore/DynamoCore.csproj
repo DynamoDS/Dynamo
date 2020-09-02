@@ -379,9 +379,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="images\logo.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
     <When Condition=" '$(OS)' != 'Unix' ">

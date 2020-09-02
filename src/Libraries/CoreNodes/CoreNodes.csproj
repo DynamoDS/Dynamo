@@ -127,7 +127,6 @@
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DSCoreNodesImages.resx">

@@ -97,7 +97,6 @@
     <Content Include="GeometryColor_DynamoCustomization.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

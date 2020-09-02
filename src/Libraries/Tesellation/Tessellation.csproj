@@ -71,7 +71,6 @@
     <Compile Include="Voronoi.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="images\logo.png" />
     <Content Include="MIConvexHull.xml" />
     <Content Include="StarMath.XML" />
     <Content Include="Tessellation_DynamoCustomization.xml" />
