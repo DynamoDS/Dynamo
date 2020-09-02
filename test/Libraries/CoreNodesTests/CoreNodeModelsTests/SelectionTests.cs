@@ -7,6 +7,7 @@ using CoreNodeModels.Properties;
 using Dynamo;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using NUnit.Framework;
 using Moq;
 using TestUINodes;
@@ -19,6 +20,18 @@ namespace DSCoreNodesTests
         private SelectionConcrete selection;
         private NodeModel testNode;
         private Mock<IModelSelectionHelper<ModelBase>> selectionHelperMock;
+        
+        //Creates a NodeModel to use for testing
+        private CodeBlockNodeModel CreateCodeBlockNode()
+        {
+            var cbn = new CodeBlockNodeModel(CurrentDynamoModel.LibraryServices);
+            var command = new DynamoModel.CreateNodeCommand(cbn, 0, 0, true, false);
+
+            CurrentDynamoModel.ExecuteCommand(command);
+
+            Assert.IsNotNull(cbn);
+            return cbn;
+        }
 
         [SetUp]
         public void TestsSetup()
@@ -26,7 +39,7 @@ namespace DSCoreNodesTests
             selectionHelperMock = new Mock<IModelSelectionHelper<ModelBase>>(MockBehavior.Strict);
             selection = new SelectionConcrete(SelectionType.Many, SelectionObjectType.Element, "testMessage", "testPrefix", selectionHelperMock.Object);
             selection.Name = "selectionTestName";
-            testNode = new DummyNode();
+            testNode = CreateCodeBlockNode();
         }
 
         [Test]
@@ -85,7 +98,9 @@ namespace DSCoreNodesTests
 
             //Checks ToString result for the selected element
             toStringResult = selection.ToString();
-            Assert.AreEqual("testPrefix : Dynamo.Graph.Nodes.DummyNode", toStringResult);
+            string nodeType = testNode.GetType().ToString();
+            string expected = $"testPrefix : {nodeType}";
+            Assert.AreEqual(expected, toStringResult);
 
             selectionHelperMock.VerifyAll();
         }
