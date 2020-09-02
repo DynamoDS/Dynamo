@@ -1855,11 +1855,11 @@ namespace Dynamo.Controls
         }
     }
 
-    public class PythonSelectionToStringConverter : IValueConverter
+    public class CompareToParameterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return parameter.ToString() == value.ToString() ? true : false;
+            return parameter.ToString() == value.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
