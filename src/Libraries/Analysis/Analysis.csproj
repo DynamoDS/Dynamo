@@ -38,8 +38,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ProtoGeometry, Version=2.9.0.2375, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2375\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.2446, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2446\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Analysis_DynamoCustomization.xml" />
+    <Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

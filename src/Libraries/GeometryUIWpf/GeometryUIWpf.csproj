@@ -39,8 +39,8 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.9.0.2375, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2375\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.2446, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_226_0_0.2.9.0.2446\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -125,6 +125,9 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\logo.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
