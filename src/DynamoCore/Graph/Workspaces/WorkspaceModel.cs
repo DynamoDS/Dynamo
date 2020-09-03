@@ -1881,6 +1881,10 @@ namespace Dynamo.Graph.Workspaces
             };
 
             var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+
+            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
+            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
+
             var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
 
             return ws;

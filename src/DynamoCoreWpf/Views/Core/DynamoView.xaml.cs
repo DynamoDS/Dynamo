@@ -120,7 +120,7 @@ namespace Dynamo.Controls
             LocationChanged += DynamoView_LocationChanged;
 
             // Apply appropriate expand/collapse library button state depending on initial width
-            updateCollapseIcon();
+            UpdateLibraryCollapseIcon();
 
             // Check that preference bounds are actually within one
             // of the available monitors.
@@ -1780,23 +1780,38 @@ namespace Dynamo.Controls
             }
         }
 
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        private void LibraryHandle_MouseEnter(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             StackPanel sp = (StackPanel)(g.Children[0]);
             TextBlock tb = (TextBlock)(sp.Children[0]);
-            var bc = new BrushConverter();
-            tb.Foreground = (Brush)bc.ConvertFrom("#cccccc");
             Image collapseIcon = (Image)sp.Children[1];
 
-            // When hovered swap appropriate expand/collapse button state
+            UpdateHandleHoveredStyle(tb, collapseIcon);
+        }
+
+        private void UpdateHandleHoveredStyle(TextBlock text, Image icon)
+        {
+            var bc = new BrushConverter();
+            text.Foreground = (Brush)bc.ConvertFrom("#cccccc");
+
             if (LibraryCollapsed || ExtensionsCollapsed)
             {
                 Uri imageUri;
                 imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_hover.png");
                 BitmapImage hover = new BitmapImage(imageUri);
-                collapseIcon.Source = hover;
+                icon.Source = hover;
             }
+        }
+
+        private void ExtensionHandle_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[1]);
+            Image collapseIcon = (Image)sp.Children[0];
+
+            UpdateHandleHoveredStyle(tb, collapseIcon);
         }
 
         private bool libraryCollapsed;
@@ -1842,7 +1857,7 @@ namespace Dynamo.Controls
         }
 
         // Check if library is collapsed or expanded and apply appropriate button state
-        private void updateCollapseIcon()
+        private void UpdateLibraryCollapseIcon()
         {
             if (LibraryCollapsed)
             {
@@ -1882,7 +1897,7 @@ namespace Dynamo.Controls
                 LeftExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
-            updateCollapseIcon();
+            UpdateLibraryCollapseIcon();
         }
 
         private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
@@ -1898,24 +1913,39 @@ namespace Dynamo.Controls
             }
 
             // TODO: Maynot need this depending on tab design
-            updateCollapseIcon();
+            UpdateLibraryCollapseIcon();
         }
 
-        private void Button_MouseLeave(object sender, MouseEventArgs e)
+        private void LibraryHandle_MouseLeave(object sender, MouseEventArgs e)
         {
             Grid g = (Grid)sender;
             StackPanel sp = (StackPanel)(g.Children[0]);
             TextBlock tb = (TextBlock)(sp.Children[0]);
-            var bc = new BrushConverter();
-            tb.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
             Image collapseIcon = (Image)sp.Children[1];
+
+            UpdateHandleUnhoveredStyle(tb, collapseIcon);
+            UpdateLibraryCollapseIcon();
+        }
+
+        private void UpdateHandleUnhoveredStyle(TextBlock text, Image icon)
+        {
+            var bc = new BrushConverter();
+            text.Foreground = (Brush)bc.ConvertFromString("#aaaaaa");
 
             Uri imageUri;
             imageUri = new Uri(@"pack://application:,,,/DynamoCoreWpf;component/UI/Images/expand_normal.png");
             BitmapImage hover = new BitmapImage(imageUri);
-            collapseIcon.Source = hover;
+            icon.Source = hover;
+        }
 
-            updateCollapseIcon();
+        private void ExtensionHandle_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Grid g = (Grid)sender;
+            StackPanel sp = (StackPanel)(g.Children[0]);
+            TextBlock tb = (TextBlock)(sp.Children[1]);
+            Image collapseIcon = (Image)sp.Children[0];
+
+            UpdateHandleUnhoveredStyle(tb, collapseIcon);
         }
 
         private double restoreWidth = 0;
@@ -2004,7 +2034,7 @@ namespace Dynamo.Controls
             ToggleWorkspaceTabVisibility(WorkspaceTabs.SelectedIndex);
 
             // When workspace is resized apply appropriate library expand/collapse icon
-            updateCollapseIcon();
+            UpdateLibraryCollapseIcon();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)

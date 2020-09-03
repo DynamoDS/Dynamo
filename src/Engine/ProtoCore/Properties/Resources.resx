@@ -944,4 +944,7 @@ Parameter name: {0} href-ArgumentNullException.html</value>
   <data name="ListMethodDeprecated" xml:space="preserve">
     <value>Method '{0}' has been deprecated, please use method '{1}' instead with Dictionary type</value>
   </data>
+  <data name="IntegerOverflow" xml:space="preserve">
+    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+  </data>
 </root>

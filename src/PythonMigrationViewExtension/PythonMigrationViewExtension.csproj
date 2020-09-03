@@ -107,6 +107,7 @@
     <Compile Include="Controls\SideBySideControl.xaml.cs">
       <DependentUpon>SideBySideControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Differ\DiffStateToVisibilityConverter.cs" />
     <Compile Include="Differ\IDiffViewViewModel.cs" />
     <Compile Include="Differ\InLineViewModel.cs" />
     <Compile Include="Differ\RichTextBoxHandler.cs" />
