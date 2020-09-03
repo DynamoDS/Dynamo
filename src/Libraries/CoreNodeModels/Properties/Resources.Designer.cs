@@ -19,7 +19,7 @@ namespace CoreNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -422,7 +422,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a file object from a path..
+        ///   Looks up a localized string similar to Creates a file object from a path. A file object loads the selected file in memory for use downstream..
         /// </summary>
         public static string FileFromPathDescription {
             get {
@@ -449,7 +449,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the file..
+        ///   Looks up a localized string similar to Path to the file as string..
         /// </summary>
         public static string FileObjectPortDataPathToolTip {
             get {
