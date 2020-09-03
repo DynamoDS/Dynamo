@@ -373,9 +373,9 @@ namespace CoreNodeModels.HigherOrder
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ScanPortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ScanPortDataSeedToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scanned", Resources.ScanPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.ScanPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -415,12 +415,12 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return "List" + index;
+            return "List #" + (index-1);
         }
 
         protected override int GetInputIndex()
