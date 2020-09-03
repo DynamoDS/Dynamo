@@ -1217,7 +1217,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to permute.</param>
         /// <param name="length">Length of each permutation.</param>
-        /// <returns name="perm">Permutations of the list of the given length.</returns>
+        /// <returns name="permutations">Permutations of the list of the given length.</returns>
         /// <search>permutation,permutations</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Permutations(IList list, int? length = null)
