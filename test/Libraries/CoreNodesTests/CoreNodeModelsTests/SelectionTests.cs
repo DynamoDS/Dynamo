@@ -43,6 +43,44 @@ namespace DSCoreNodesTests
         }
 
         [Test]
+        public void ConstructorWithPortsTest()
+        {
+            //Ports for testing
+            PortModel inPort = new PortModel(PortType.Input, testNode,new PortData("input", "input port"));
+            PortModel outPort = new PortModel(PortType.Output, testNode,new PortData("output", "output port"));
+
+            IEnumerable<PortModel> inPorts = new List<PortModel>{inPort};
+            IEnumerable<PortModel> outPorts = new List<PortModel>{outPort};
+
+            //Creates the new selection
+            selection = new SelectionConcrete(
+                SelectionType.Many,
+                SelectionObjectType.Element,
+                "testMessage",
+                "testPrefix",
+                new List<string>{"selection Identifier"},
+                inPorts,
+                outPorts);
+
+            Assert.IsNotNull(selection);
+        }
+
+        [Test]
+        public void SelectionIdentifierTest()
+        {
+            //Selects the test node
+            selectionHelperMock
+                .Setup(x => x.RequestSelectionOfType("testMessage", SelectionType.Many, SelectionObjectType.Element))
+                .Returns(new List<ModelBase> { testNode });
+            selection.Select(testNode);
+
+            var expectedResult = new List<string> {testNode.GUID.ToString()};
+            var result = selection.SelectionIdentifier;
+
+            Assert.AreEqual(expectedResult, result);
+        }
+
+        [Test]
         public void SelectTest()
         {
             //Checks there is no elements selected
