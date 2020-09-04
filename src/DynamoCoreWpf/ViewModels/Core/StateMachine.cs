@@ -129,6 +129,7 @@ namespace Dynamo.ViewModels
             // before they get updated by the drag operation.
             // 
             RecordSelectionForUndo();
+            draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
                 ILocatable locatable = selectable as ILocatable;
