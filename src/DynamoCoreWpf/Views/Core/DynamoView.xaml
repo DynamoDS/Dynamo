@@ -725,12 +725,20 @@
                                   IsChecked="{Binding ShowTabsAndSpacesInScriptEditor, Mode=TwoWay}"
                                   Header="{x:Static p:Resources.DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor}"/>
                         <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}">
-                            <ComboBox ItemsSource="{Binding DefaultPythonEngineOptions}"
-                                      SelectedValue="{Binding DefaultPythonEngine, Mode=TwoWay}"
-                                      SelectedValuePath="Value"
-                                      DisplayMemberPath="Name"
-                                      Style="{StaticResource SComboBox}"/>
+                                  Header="{x:Static p:Resources.DynamoViewSettingsDefaultPythonEngine}"
+                                  Name="PythonEngine">
+                            <MenuItem Focusable="False"
+                                      Header="{x:Static p:Resources.DefaultPythonEngineNone}"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding DefaultPythonEngine,Converter={StaticResource CompareToParameterConverter},ConverterParameter='', Mode=TwoWay}"/>
+                            <MenuItem Focusable="False"
+                                      Header="IronPython2"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding DefaultPythonEngine,Converter={StaticResource CompareToParameterConverter},ConverterParameter='IronPython2', Mode=TwoWay}"/>
+                            <MenuItem Focusable="False"
+                                      Header="CPython3"
+                                      IsCheckable="True"
+                                      IsChecked="{Binding DefaultPythonEngine,Converter={StaticResource CompareToParameterConverter},ConverterParameter='CPython3', Mode=TwoWay}" />
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
