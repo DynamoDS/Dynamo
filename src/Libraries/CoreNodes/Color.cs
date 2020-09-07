@@ -126,20 +126,21 @@ namespace DSCore
         /// <summary>
         ///     Lists the components for the color in the order: alpha, red, green, blue.
         /// </summary>
-        /// <returns name="a">alpha value</returns>
-        /// <returns name="r">red value</returns>
-        /// <returns name="g">green value</returns>
-        /// <returns name="b">blue value</returns>
+        /// <param name="color"> A color object</param> 
+        /// <returns name="alpha">Alpha value, int between 0 and 255 inclusive.</returns>
+        /// <returns name="red">Red value for RGB color model, int between 0 and 255 inclusive.</returns>
+        /// <returns name="green">Green value for RGB color model, int between 0 and 255 inclusive.</returns>
+        /// <returns name="blue">Blue value for RGB color model, int between 0 and 255 inclusive.</returns>
         /// <search>alpha,red,green,blue</search>
-        [MultiReturn("a", "r", "g", "b")]
-        public static Dictionary<string, byte> Components(Color c)
+        [MultiReturn("alpha", "red", "green", "blue")]
+        public static Dictionary<string, byte> Components(Color color)
         {
             return new Dictionary<string, byte>
             {
-                {"a", c.color.A}, 
-                {"r", c.color.R},
-                {"g", c.color.G},
-                {"b", c.color.B}, 
+                {"alpha", color.color.A}, 
+                {"red", color.color.R},
+                {"green", color.color.G},
+                {"blue", color.color.B}, 
             };
         }
 
