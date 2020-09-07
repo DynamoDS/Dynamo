@@ -441,9 +441,9 @@ namespace DSCore
         ///     Sort list based on its keys
         /// </summary>
         /// <param name="list">list to be sorted</param>
-        /// <param name="keys">list of keys</param>
-        /// <returns name="sorted list">sorted list</returns>
-        /// <returns name="sorted keys">sorted keys</returns>
+        /// <param name="keys">list of keys, keys have to be sortable (ex: numbers,strings)   </param>
+        /// <returns name="sortedList">List sorted using keys</returns>
+        /// <returns name="sortedKeys">Keys sorted</returns>
         /// <search>sort;key</search>
         [MultiReturn(new[] { "sorted list", "sorted keys" })]
         [IsVisibleInDynamoLibrary(true)]
