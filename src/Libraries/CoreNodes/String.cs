@@ -98,23 +98,23 @@ namespace DSCore
         /// <summary>
         ///     Converts the given string to all uppercase characters.
         /// </summary>
-        /// <param name="str">String to be made uppercase.</param>
-        /// <returns name="str">Uppercase string.</returns>
+        /// <param name="string">String to be made uppercase.</param>
+        /// <returns name="string">Uppercase string.</returns>
         /// <search>2uppercase,to uppercase,touppercase,uppercase</search>
-        public static string ToUpper(string str)
+        public static string ToUpper(string @string)
         {
-            return str.ToUpper();
+            return @string.ToUpper();
         }
 
         /// <summary>
         ///     Converts the given string to all lowercase characters.
         /// </summary>
-        /// <param name="str">String to be made lowercase.</param>
-        /// <returns name="str">Lowercase string.</returns>
+        /// <param name="string">String to be made lowercase.</param>
+        /// <returns name="string">Lowercase string.</returns>
         /// <search>2lowercase,to lowercase,tolowercase,lowercase</search>
-        public static string ToLower(string str)
+        public static string ToLower(string @string)
         {
-            return str.ToLower();
+            return @string.ToLower();
         }
 
         /// <summary>
@@ -261,34 +261,34 @@ namespace DSCore
         /// <summary>
         ///     Removes all whitespace from the start and end of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with beginning and ending whitespaces removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with beginning and ending whitespaces removed.</returns>
         /// <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
-        public static string TrimWhitespace(string str)
+        public static string TrimWhitespace(string @string)
         {
-            return str.Trim();
+            return @string.Trim();
         }
 
         /// <summary>
         ///     Removes all whitespace from the start of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with leading white spaces removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with leading white spaces removed.</returns>
         /// <search>trim string,clean string,trim leading whitespaces,string trim</search>
-        public static string TrimLeadingWhitespace(string str)
+        public static string TrimLeadingWhitespace(string @string)
         {
-            return str.TrimStart();
+            return @string.TrimStart();
         }
 
         /// <summary>
         ///     Removes all whitespace from the end of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with white spaces at end removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with white spaces at end removed.</returns>
         /// <search>trim string,clean string,trim trailing whitespaces,string trim</search>
-        public static string TrimTrailingWhitespace(string str)
+        public static string TrimTrailingWhitespace(string @string)
         {
-            return str.TrimEnd();
+            return @string.TrimEnd();
         }
 
         /// <summary>
