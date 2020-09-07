@@ -116,11 +116,12 @@ namespace DSCore
         /// <summary>
         /// Returns the hue value for this color.
         /// </summary>
+        /// <param name="color"> A color object</param> 
         /// <returns name="hue">Hue value for color as a double between 0 and 1 inclusive.</returns>
         /// <search>hues</search>
-        public static float Hue(Color c)
+        public static float Hue(Color color)
         {
-            return c.color.GetHue();
+            return color.color.GetHue();
         }
 
         /// <summary>
