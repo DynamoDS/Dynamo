@@ -29,7 +29,7 @@ namespace DSCore
         /// <summary>
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="green">int between 0 and 255 inclusive.</returns>
+        /// <returns name="green">Green value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "G")]
         public byte Green
         {
@@ -39,7 +39,7 @@ namespace DSCore
         /// <summary>
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="blue">int between 0 and 255 inclusive.</returns>
+        /// <returns name="blue">Blue value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "B")]
         public byte Blue
         {
@@ -49,7 +49,7 @@ namespace DSCore
         /// <summary>
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="alpha">int between 0 and 255 inclusive.</returns>
+        /// <returns name="alpha">Alpha value, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "A")]
         public byte Alpha
         {
@@ -116,7 +116,7 @@ namespace DSCore
         /// <summary>
         /// Returns the hue value for this color.
         /// </summary>
-        /// <returns name="hue">double between 0 and 1 inclusive.</returns>
+        /// <returns name="hue">Hue value for color as a double between 0 and 1 inclusive.</returns>
         /// <search>hues</search>
         public static float Hue(Color c)
         {
