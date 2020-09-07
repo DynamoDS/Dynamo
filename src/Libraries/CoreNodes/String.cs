@@ -311,12 +311,12 @@ namespace DSCore
                     : StringComparison.InvariantCulture);
         }
         /// <summary>
-        /// Finds a list of zero-based indexes of occurrence of a sub-string inside a string.
+        /// Finds list of indices where sub-string appears inside a string.
         /// </summary>
         /// <param name="string">A string to search in.</param>
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        /// <returns name="indexList">List of indices or ints where substring is found</returns>
+        /// <returns name="indexList">List of indices (integers) where substring is found</returns>
         /// /// <search>all indices of,find substring,where,search</search>
         public static int[] AllIndicesOf(string @string, string searchFor, bool ignoreCase = false)
         {
