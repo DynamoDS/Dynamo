@@ -19,7 +19,7 @@ namespace CoreNodeModels.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -890,7 +890,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to False block.
+        ///   Looks up a localized string similar to Block returned if test is false.
         /// </summary>
         public static string PortDataFalseBlockToolTip {
             get {
@@ -935,7 +935,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test block.
+        ///   Looks up a localized string similar to Boolean to determine what code block is returned.
         /// </summary>
         public static string PortDataTestBlockToolTip {
             get {
@@ -944,7 +944,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True block.
+        ///   Looks up a localized string similar to Block returned if test is true.
         /// </summary>
         public static string PortDataTrueBlockToolTip {
             get {
@@ -1088,7 +1088,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scoped If statement.
+        ///   Looks up a localized string similar to Returns the input of either the True or False input depending on what boolean value is toggled in the test input..
         /// </summary>
         public static string ScopeIfDescription {
             get {
