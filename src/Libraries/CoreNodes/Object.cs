@@ -10,14 +10,14 @@ namespace DSCore
     public static class Object
     {
         /// <summary>
-        ///     Determines the if the given object is null.
+        ///     Determines if the given object is null.
         /// </summary>
-        /// <param name="obj">Object to test.</param>
-        /// <returns name="bool">Whether object is null.</returns>
+        /// <param name="object">Object to test.</param>
+        /// <returns name="boolean">Whether object is null.</returns>
         /// <search>is null</search>
-        public static bool IsNull(object obj)
+        public static bool IsNull(object @object)
         {
-            return obj == null;
+            return @object == null;
         }
 
         /// <summary>
