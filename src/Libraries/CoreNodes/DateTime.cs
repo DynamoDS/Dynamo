@@ -223,6 +223,7 @@ namespace DSCore
         ///     given DateTime.
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
+        /// <returns name="timeSpan">TimeSpan since midnight</returns>
         public static System.TimeSpan TimeOfDay(System.DateTime dateTime)
         {
             return dateTime.TimeOfDay;
