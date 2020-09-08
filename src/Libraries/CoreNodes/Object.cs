@@ -23,10 +23,11 @@ namespace DSCore
         /// <summary>
         ///     Returns what is passed in, doing nothing.
         /// </summary>
-        /// <param name="obj">An object.</param>
-        public static object Identity(object obj)
+        /// <param name="object">An object.</param>
+        /// <returns name="object">Same object</returns>
+        public static object Identity(object @object)
         {
-            return obj;
+            return @object;
         }
 
         /// <summary>
