@@ -434,6 +434,8 @@ namespace DSCore.IO
         /// Returns the width and height of an image.
         /// </summary>
         /// <param name="image">Image to get dimensions of.</param>
+        /// <returns name="width"> width of image in pixels</returns>
+        /// <returns name="height"> height of image in pixels </returns>
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
