@@ -157,6 +157,8 @@ namespace DSCore
         ///     Extracts only the date from a DateTime. Time components are set to 0.
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
+        /// <returns name="date">date from DateTime</returns>
+        /// <search>Date,DataTime.Date</search>
         public static System.DateTime Date(System.DateTime dateTime)
         {
             return dateTime.Date;
