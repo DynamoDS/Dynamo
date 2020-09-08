@@ -118,7 +118,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
-        /// <returns name="success"> Message if file was written correctly </returns>
+        /// <returns name="success"> Success message if file was written correctly </returns>
         /// <search>write file,text,file,filepath</search>
         public static string WriteText(string filePath, string text)
         {
@@ -454,7 +454,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
-        /// <returns name="success"> Message if file was written correctly </returns>
+        /// <returns name="success">Success message if file was written correctly </returns>
         /// <search>write image,image,file,filepath</search>
         public static string WriteToFile(string path, Bitmap image)
         {
