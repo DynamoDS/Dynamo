@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Path = System.IO.Path;
@@ -117,11 +118,13 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
+        /// <returns name="success"> Message if file was written correctly </returns>
         /// <search>write file,text,file,filepath</search>
-        public static void WriteText(string filePath, string text)
+        public static string WriteText(string filePath, string text)
         {
             var fullpath = AbsolutePath(filePath);
             System.IO.File.WriteAllText(fullpath, text);
+            return "File has been succesfully written";
         }
 
         /// <summary>
