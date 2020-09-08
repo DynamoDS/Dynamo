@@ -183,7 +183,7 @@
     <value>Creates a directory object from a path</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the directory.</value>
+    <value>Path to the directory. (string)</value>
   </data>
   <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
     <value>Directory object.</value>
