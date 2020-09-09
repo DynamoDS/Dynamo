@@ -135,8 +135,9 @@
     <member name="List.GroupByFunction">
       <summary>Use a function to determine how list items should be grouped.</summary>
       <param name="list">list of values</param>
-      <param name="function"></param>
-      <search>group,function</search>
+      <param name="groupFunction">Function to group list</param>
+      <returns name="groupedList">Grouped list</returns>
+      <search>group,function,groupbyfunction</search>
     </member>
     <member name="List.TrueForAll">
       <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
