@@ -1820,6 +1820,7 @@ namespace Dynamo.Controls
 
         // Default side bar width
         private const int defaultSideBarWidth = 200;
+        // By default the extension bar over canvas size ratio is 2/5
         private const int DefaultExtensionBarWidthMultiplier = 2;
 
         /// <summary>
