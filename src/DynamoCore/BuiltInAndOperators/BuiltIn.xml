@@ -157,9 +157,10 @@
     </member>
     <member name="LoopWhile">
       <summary>Constructs a while loop node given an initial value, a condition and a loop body.</summary>
-      <param name="init">initial value</param>
+      <param name="initialValue">initial value for loop</param>
       <param name="continueWhile">while loop condition</param>
       <param name="loopBody">while loop body</param>
+      <returns name="result">result from loop</returns>
       <search>loop,while,repeat</search>
     </member>
   </members>
