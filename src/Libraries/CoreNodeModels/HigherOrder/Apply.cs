@@ -33,7 +33,7 @@ namespace CoreNodeModels.HigherOrder
             if (index == 0)
                 return "function";
 
-            return "argument" + index;
+            return "argument" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
@@ -41,7 +41,7 @@ namespace CoreNodeModels.HigherOrder
             if (index == 0)
                 return "Function to apply.";
 
-            return "Argument #" + index;
+            return "Argument #" + (index-1);
         }
 
         protected override void RemoveInput()
