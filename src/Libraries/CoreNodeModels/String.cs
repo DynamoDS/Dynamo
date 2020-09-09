@@ -79,7 +79,7 @@ namespace CoreNodeModels
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FormulaPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromObjectPortDataResultToolTip)));
             RegisterAllPorts();
         }
     }

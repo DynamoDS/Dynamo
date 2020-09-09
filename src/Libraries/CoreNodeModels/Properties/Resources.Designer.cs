@@ -530,7 +530,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to String representation of the object..
+        ///   Looks up a localized string similar to Result of math computation.
         /// </summary>
         public static string FormulaPortDataResultToolTip {
             get {

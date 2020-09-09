@@ -242,7 +242,7 @@
     <comment>Description for Formula</comment>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the object.</value>
+    <value>Result of math computation</value>
   </data>
   <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
     <value>The array of object to be serialized</value>
