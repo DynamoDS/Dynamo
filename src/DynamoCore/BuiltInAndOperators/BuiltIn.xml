@@ -70,6 +70,7 @@
       <summary>Returns the items from the list that generate the minimum values for the function supplied as the key projector</summary>
       <param name="list">list of values</param>
       <param name="keyProjector">function applied to the list items</param>
+      <returns name="minItem">minimum item in list using keyProjector</returns>
       <search>min,item,key</search>
     </member>
     <member name="List.MaximumItemByKey">
