@@ -926,7 +926,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to result.
+        ///   Looks up a localized string similar to Result block produced.
         /// </summary>
         public static string PortDataResultToolTip {
             get {

@@ -385,7 +385,7 @@
     <comment>Description for Or</comment>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>False block</value>
+    <value>Block returned if test is false</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
     <value>image</value>
@@ -397,13 +397,13 @@
     <value>operand</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>result</value>
+    <value>Result block produced</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Test block</value>
+    <value>Boolean to determine what code block is returned</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>True block</value>
+    <value>Block returned if test is true</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
     <value>variable</value>
@@ -447,7 +447,7 @@
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Scoped If statement</value>
+    <value>Returns the input of either the True or False input depending on what boolean value is toggled in the test input.</value>
     <comment>Description for Scope If</comment>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">

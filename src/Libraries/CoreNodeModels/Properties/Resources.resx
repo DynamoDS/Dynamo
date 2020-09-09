@@ -397,7 +397,7 @@
     <value>operand</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>result</value>
+    <value>Result block produced</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
     <value>Boolean to determine what code block is returned</value>
