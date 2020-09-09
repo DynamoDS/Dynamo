@@ -113,6 +113,7 @@
                 Reverses the result, returns false if the result is true
             </summary>
             <param name="x">boolean to reverse.</param>
+            <returns name="boolean">reversed boolean</returns>
             <search>not</search>
         </member>
     </members>
