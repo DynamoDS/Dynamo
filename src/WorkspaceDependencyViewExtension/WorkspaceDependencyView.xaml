@@ -9,7 +9,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
-             HorizontalAlignment="Left">
+             HorizontalAlignment="Stretch">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -153,6 +153,7 @@
                         <TextBlock
                             Text="{Binding DetailsMessage}"
                             TextWrapping="Wrap"
+                            TextAlignment="Center"
                             Foreground="{DynamicResource MemberButtonText}"
                             Margin="10"
                             FontSize="11">
