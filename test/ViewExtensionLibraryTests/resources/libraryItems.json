@@ -2505,9 +2505,9 @@
       "keywords": "segments, joincurves, lines"
     },
     {
-      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve",
-      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve.Small?path=ProtoGeometry.dll",
-      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurve@Autodesk.DesignScript.Geometry.Curve,double,Autodesk.DesignScript.Geometry.Vector",
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal@Autodesk.DesignScript.Geometry.Curve,double,Autodesk.DesignScript.Geometry.Vector",
       "parameters": null,
       "itemType": "create",
       "keywords": "offset"
