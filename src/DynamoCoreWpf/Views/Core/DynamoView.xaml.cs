@@ -1816,9 +1816,12 @@ namespace Dynamo.Controls
 
         private bool libraryCollapsed;
         private bool extensionsCollapsed;
+        private GridLength? extensionsColumnWidth;
 
         // Default side bar width
         private const int defaultSideBarWidth = 200;
+        // By default the extension bar over canvas size ratio is 2/5
+        private const int DefaultExtensionBarWidthMultiplier = 2;
 
         /// <summary>
         /// Check if library is collapsed or expanded
@@ -1873,14 +1876,29 @@ namespace Dynamo.Controls
         // Show the extensions right side bar when there is atleast one extension
         private void HideOrShowRightSideBar()
         {
-            if (ExtensionTabItems.Count < 1)
+            if (ExtensionTabItems.Count == 0)
             {
+                if (RightExtensionsViewColumn.Width.Value != 0)
+                {
+                    extensionsColumnWidth = RightExtensionsViewColumn.Width;
+                }
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
                 collapsedExtensionSidebar.Visibility = Visibility.Collapsed;
             }
             else
             {
-                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                // The introduction of extensionsColumnWidth is two-fold:
+                // 1. It allows the resized width to be remembered which is nice to have.
+                // 2. It allows to avoid a slider glitch which sets the panels size in pixel amount but using star,
+                // changing the proportions so that the initial value is counted as pixels after the first resize.
+                if (extensionsColumnWidth == null)
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                }
+                else
+                {
+                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
+                }
                 collapsedExtensionSidebar.Visibility = Visibility.Visible;
             }
         }
