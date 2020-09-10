@@ -199,7 +199,7 @@ namespace DSCPython
             return importMatches;
         }
 
-        private static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
+        internal static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
 
             var pattern = fromImportRegex +
@@ -236,7 +236,7 @@ namespace DSCPython
             return importMatches;
         }
 
-        private static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
@@ -608,7 +608,7 @@ namespace DSCPython
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        private static Dictionary<string, string> FindBasicImportStatements(string code)
+        internal static Dictionary<string, string> FindBasicImportStatements(string code)
         {
             var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
 
@@ -646,7 +646,7 @@ namespace DSCPython
             try
             {
                 // type = engine.CreateScriptSourceFromString(lookupScr, SourceCodeKind.Expression).Execute(scope);
-                type = Scope.Eval(lookupScr);
+                type = ExecutePythonScriptCode(lookupScr);
             }
             catch (Exception e)
             {
@@ -707,20 +707,15 @@ namespace DSCPython
             var items = new List<Tuple<string, string,bool, ExternalCodeCompletionType>>();
             var d = (module as PyObject);
 
-
-            PyDict variables = GetVariables();
-
-            foreach (var member in d.GetAttr("builtin_module_names"))
+            foreach (var member in d.Dir())
             {
-                // var completionType = member.Value is BuiltinFunction ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
+               // var completionType = member.Value is BuiltinFunction ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
                 var completionType = ExternalCodeCompletionType.Method;
                 items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
             }
 
             return items;
-        } 
-
-       
+        }
 
         /// <summary>
         /// List all of the members in a CLR type
@@ -832,7 +827,7 @@ namespace DSCPython
         public object LookupMember(string name)
         {
             object varOutput = null;
-
+            object currentOutput = null;
             var periodIndex = name.IndexOf('.');
 
             IntPtr gs = PythonEngine.AcquireLock();
@@ -848,25 +843,25 @@ namespace DSCPython
                         }
                         return null;
                     }
+
+                    var currentName = name.Substring(0, periodIndex);
+                    var theRest = name.Substring(periodIndex + 1);
+                    Scope.TryGet(currentName, out currentOutput);
+
+                    if (currentOutput != null)
+                    {
+                        if (currentOutput is NamespaceTracker)
+                        {
+                            return LookupMember(theRest, varOutput as NamespaceTracker);
+                        }
+                    }
+                    return null;
                 }
             }
             finally
             {
                 PythonEngine.ReleaseLock(gs);
             }
-
-            var currentName = name.Substring(0, periodIndex);
-            var theRest = name.Substring(periodIndex + 1);
-
-            if (varOutput != null)
-            {
-                if (varOutput is NamespaceTracker)
-                {
-                    return LookupMember(theRest, varOutput as NamespaceTracker);
-                }
-            }
-            return null;
-
         }
 
         private PythonEngine engine;
@@ -882,7 +877,7 @@ namespace DSCPython
         }
         private PyScope scope;
 
-        internal static readonly string globalScopeName = "globalScopeNew";
+        internal static readonly string globalScopeName = "globalScope";
 
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
@@ -919,8 +914,7 @@ namespace DSCPython
         {
             IEnumerable<DSCPythonCodeCompletionDataCore> items = new List<DSCPythonCodeCompletionDataCore>();
 
-            Python.Included.Installer.SetupPython().Wait();
-
+            // Python.Included.Installer.SetupPython().Wait();
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
@@ -937,7 +931,11 @@ namespace DSCPython
                         code = StripDocStrings(code);
                     }
 
-                    Scope = CreateGlobalScope(code);
+                    if (Scope == null)
+                    {
+                        Scope = CreateGlobalScope();
+                    }
+
                     UpdateImportedTypes(code);
                     UpdateVariableTypes(code);  // Possibly use hindley-milner in the future
 
@@ -1189,9 +1187,10 @@ namespace DSCPython
 
         #endregion
 
-        private PyScope CreateGlobalScope(string code)
+        private PyScope CreateGlobalScope()
         {
-           
+            PyScopeManager.Global.TryGet(globalScopeName, out PyScope Scope);
+
             if (Scope == null)
             {
                 Scope = Py.CreateScope(globalScopeName);
@@ -1205,7 +1204,7 @@ clr.setPreload(True)
             return Scope;
         }
 
-        private void ExecutePythonScriptCode(string code) 
+        private PyObject ExecutePythonScriptCode(string code) 
         {
             Python.Included.Installer.SetupPython().Wait();
 
@@ -1220,31 +1219,8 @@ clr.setPreload(True)
             {
                 using (Py.GIL())
                 {
-                    Scope.Exec(code);
-                }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
-        }
-
-        private PyDict GetVariables()
-        {
-            Python.Included.Installer.SetupPython().Wait();
-
-            if (!PythonEngine.IsInitialized)
-            {
-                PythonEngine.Initialize();
-                PythonEngine.BeginAllowThreads();
-            }
-
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
-            {
-                using (Py.GIL())
-                {
-                    return Scope.Variables();
+                    var result = Scope.Eval(code);
+                    return result;
                 }
             }
             finally

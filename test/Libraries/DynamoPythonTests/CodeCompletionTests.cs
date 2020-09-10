@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using DSCPython;
+using DSIronPython;
 using Dynamo.Logging;
 using Dynamo.Python;
 using Dynamo.Utilities;
@@ -45,12 +47,22 @@ namespace DynamoPythonTests
         public void SharedCoreCanReturnPythonCompletionData()
         {
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
-            Assert.IsNotNull(provider);
-            var str = "import math\n math.";
+             var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+             Assert.IsNotNull(provider);
+             var str = "import math\n math.";
 
-            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
-            var completionList = completionData.Select(d => d.Text);
+             var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
+             var completionList = completionData.Select(d => d.Text);
+             Assert.IsTrue(completionList.Any());
+             Assert.IsTrue(completionList.Intersect(new[] { "degrees", "radians", "fmod" }).Count() == 3);
+             Assert.AreEqual(45, completionData.Length);
+
+            // For CPython3 engine.
+            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
+            Assert.IsNotNull(provider);
+
+            completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
+            completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "degrees", "radians", "fmod" }).Count() == 3);
             Assert.AreEqual(45, completionData.Length);
@@ -138,6 +150,10 @@ namespace DynamoPythonTests
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
 
+            Assembly.LoadFrom(Path.Combine(moduleRootFolder, "DSCPython.dll"));
+          //  Assembly.LoadFrom(Path.Combine(moduleRootFolder, "Python.Included.dll"));
+          //  Assembly.LoadFrom(Path.Combine(moduleRootFolder, "Python.Runtime.dll"));
+
             var resolutionPaths = new[]
             {
                 // These tests need "DSIronPythonNode.dll" under "nodes" folder.
@@ -163,7 +179,13 @@ namespace DynamoPythonTests
         public void CanMatchBasicNumVarSingleLine()
         {
             var matchNumVar = "a = 5.0";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchNumVar, IronPythonCompletionProvider.doubleRegex);
+
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, SharedCompletionProvider.doubleRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("5.0", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, SharedCompletionProvider.doubleRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
@@ -174,7 +196,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicArrayVarSingleLine()
         {
             var matchArray = "a = []";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchArray, IronPythonCompletionProvider.arrayRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, SharedCompletionProvider.arrayRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("[]", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, SharedCompletionProvider.arrayRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("[]", matches["a"]);
@@ -185,7 +212,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicDictVarSingleLine()
         {
             var matchDict = "a = {}";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.dictRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("{}", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{}", matches["a"]);
@@ -196,7 +228,12 @@ namespace DynamoPythonTests
         public void CanMatchIntSingleLine()
         {
             var matchDict = "a = 2";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict, IronPythonCompletionProvider.intRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.intRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("2", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.intRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("2", matches["a"]);
@@ -207,7 +244,12 @@ namespace DynamoPythonTests
         public void CanMatchComplexDictVarSingleLine()
         {
             var matchDict2 = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -218,7 +260,12 @@ namespace DynamoPythonTests
         public void CanMatchComplexDictVarMultiLine()
         {
             var matchDict2 = "\n\na = { 'Alice': 7, 'Toby': 'Nuts' }\nb = 5.0";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("a"));
+            Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -229,7 +276,10 @@ namespace DynamoPythonTests
         public void DoesntMatchBadVariable()
         {
             var matchDict2 = "a! = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCompletionProvider.FindVariableStatementWithRegex(matchDict2, IronPythonCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            Assert.AreEqual(0, matches.Count);
+
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
             Assert.AreEqual(0, matches.Count);
         }
 
@@ -238,12 +288,15 @@ namespace DynamoPythonTests
         public void CanMatchAllVariablesSingleLine()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var completionProvider = new IronPythonCompletionProvider();
-
-            var matches = completionProvider.FindAllVariables(str);
-
+            var ironPythonCompletionProvider = new IronPythonCodeCompletionProviderCore();
+            var matches = ironPythonCompletionProvider.FindAllVariables(str);
             Assert.AreEqual(1, matches.Count);
-            Assert.AreEqual(typeof( IronPython.Runtime.PythonDictionary), matches["a"].Item3);
+            Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
+
+            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
+            matches = CPythonCompletionProvider.FindAllVariables(str);
+            Assert.AreEqual(1, matches.Count);
+            Assert.AreEqual(typeof(Python.Runtime.PyDict), matches["a"].Item3);
         }
 
         [Test]
@@ -251,9 +304,8 @@ namespace DynamoPythonTests
         public void CanMatchAllVariableTypes()
         {
             var str = "a = { 'Alice': 7, 'Toby': 'Nuts' }\nb = {}\nc = 5.0\nd = 'pete'\ne = []";
-            var completionProvider = new IronPythonCompletionProvider();
-
-            var matches = completionProvider.FindAllVariables(str);
+            var ironPythonCompletionProvider = new IronPythonCodeCompletionProviderCore();
+            var matches = ironPythonCompletionProvider.FindAllVariables(str);
 
             Assert.AreEqual(5, matches.Count);
             Assert.AreEqual(typeof(IronPython.Runtime.PythonDictionary), matches["a"].Item3);
@@ -261,6 +313,16 @@ namespace DynamoPythonTests
             Assert.AreEqual(typeof(double), matches["c"].Item3);
             Assert.AreEqual(typeof(string), matches["d"].Item3);
             Assert.AreEqual(typeof(IronPython.Runtime.List), matches["e"].Item3);
+
+            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
+            matches = CPythonCompletionProvider.FindAllVariables(str);
+
+            Assert.AreEqual(5, matches.Count);
+            Assert.AreEqual(typeof(Python.Runtime.PyDict), matches["a"].Item3);
+            Assert.AreEqual(typeof(Python.Runtime.PyDict), matches["b"].Item3);
+            Assert.AreEqual(typeof(double), matches["c"].Item3);
+            Assert.AreEqual(typeof(string), matches["d"].Item3);
+            Assert.AreEqual(typeof(Python.Runtime.PyList), matches["e"].Item3);
         }
 
         [Test]
@@ -268,7 +330,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicImportStatement()
         {
             var str = "import System";
-            var matches = IronPythonCompletionProvider.FindBasicImportStatements(str);
+            var matches = IronPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
+
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("System"));
+
+            matches = DSCPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("System"));
@@ -279,7 +346,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicImportStatementMultiLine()
         {
             var str = "\nimport System\n";
-            var matches = IronPythonCompletionProvider.FindBasicImportStatements(str);
+            var matches = IronPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
+
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("System"));
+
+            matches = DSCPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("System"));
@@ -290,11 +362,17 @@ namespace DynamoPythonTests
         public void CanImportLibrary()
         {
             var str = "\nimport System\n";
-            var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.UpdateImportedTypes(str);
+            var ironPythonCompletionProvider = new IronPythonCodeCompletionProviderCore();
+            ironPythonCompletionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(completionProvider.ImportedTypes.ContainsKey("System"));
+            Assert.AreEqual(2, ironPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(ironPythonCompletionProvider.ImportedTypes.ContainsKey("System"));
+
+            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
+            CPythonCompletionProvider.UpdateImportedTypes(str);
+
+            Assert.AreEqual(2, CPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(CPythonCompletionProvider.ImportedTypes.ContainsKey("System"));
         }
 
         [Test]
@@ -302,11 +380,17 @@ namespace DynamoPythonTests
         public void DuplicateCallsToImportShouldBeFine()
         {
             var str = "\nimport System\nimport System";
-            var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.UpdateImportedTypes(str);
+            var ironPythonCompletionProvider = new IronPythonCodeCompletionProviderCore();
+            ironPythonCompletionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
+            Assert.AreEqual(2, ironPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(ironPythonCompletionProvider.ImportedTypes.Keys.ToList()));
+
+            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
+            CPythonCompletionProvider.UpdateImportedTypes(str);
+
+            Assert.AreEqual(2, CPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(CPythonCompletionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -314,12 +398,24 @@ namespace DynamoPythonTests
         public void CanImportSystemLibraryAndGetCompletionData()
         {
             var str = "\nimport System\nSystem.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
 
-            var completionData = completionProvider.GetCompletionData(str);
+            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
 
             // Randomly verify some namepsaces are in the completion list
             var completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
+          //  Assert.AreEqual(2, provider.ImportedTypes.Count);
+          //  Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
+
+            var completionProvider = new IronPythonCompletionProvider();
+
+            completionData = completionProvider.GetCompletionData(str);
+
+            // Randomly verify some namepsaces are in the completion list
+            completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "IO", "Console", "Reflection" }).Count() == 3);
             Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
@@ -331,12 +427,21 @@ namespace DynamoPythonTests
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
-            var completionProvider = new IronPythonCompletionProvider();
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
 
-            var completionData = completionProvider.GetCompletionData(str);
+            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
             var completionList = completionData.Select(d => d.Text);
             Assert.IsTrue(completionList.Any());
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack"}).Count() == 3);
+            Assert.AreEqual(29, completionData.Length);
+
+            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
+
+            completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
+            completionList = completionData.Select(d => d.Text);
+            Assert.IsTrue(completionList.Any());
+            Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack" }).Count() == 3);
             Assert.AreEqual(29, completionData.Length);
         }
 
@@ -345,7 +450,12 @@ namespace DynamoPythonTests
         public void CanMatchImportSystemLibraryWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var matches = IronPythonCompletionProvider.FindBasicImportStatements(str);
+            var matches = IronPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
+
+            Assert.AreEqual(1, matches.Count);
+            Assert.IsTrue(matches.ContainsKey("System"));
+
+            matches = DSCPythonCodeCompletionProviderCore.FindBasicImportStatements(str);
 
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("System"));
@@ -356,11 +466,17 @@ namespace DynamoPythonTests
         public void CanMatchImportSystemAndLoadLibraryAndWithComment()
         {
             var str = "# Write your script here.\r\nimport System.";
-            var completionProvider = new IronPythonCompletionProvider();
-            completionProvider.UpdateImportedTypes(str);
+            var ironPythonCompletionProvider = new IronPythonCodeCompletionProviderCore();
+            ironPythonCompletionProvider.UpdateImportedTypes(str);
 
-            Assert.AreEqual(2, completionProvider.ImportedTypes.Count);
-            Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
+            Assert.AreEqual(2, ironPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(ironPythonCompletionProvider.ImportedTypes.Keys.ToList()));
+
+            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
+            CPythonCompletionProvider.UpdateImportedTypes(str);
+
+            Assert.AreEqual(2, CPythonCompletionProvider.ImportedTypes.Count);
+            Assert.IsTrue(defaultImports.SequenceEqual(CPythonCompletionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
@@ -369,8 +485,14 @@ namespace DynamoPythonTests
         {
             var str = "a = 5.0\na.";
 
-            var completionProvider = new IronPythonCompletionProvider();
-            var completionData = completionProvider.GetCompletionData(str);
+            var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
+
+            Assert.AreNotEqual(0, completionData.Length);
+
+            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
+            completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
 
             Assert.AreNotEqual(0, completionData.Length);
         }
@@ -381,10 +503,17 @@ namespace DynamoPythonTests
         {
             var str = "from math import sin, cos\n";
 
-            var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
+            var imports = IronPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
             Assert.IsTrue( imports.ContainsKey("sin") );
             Assert.AreEqual("from math import sin", imports["sin"]);
             Assert.IsTrue( imports.ContainsKey("cos") );
+            Assert.AreEqual("from math import cos", imports["cos"]);
+
+
+            imports = DSCPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
+            Assert.IsTrue(imports.ContainsKey("sin"));
+            Assert.AreEqual("from math import sin", imports["sin"]);
+            Assert.IsTrue(imports.ContainsKey("cos"));
             Assert.AreEqual("from math import cos", imports["cos"]);
         }
 
@@ -394,7 +523,11 @@ namespace DynamoPythonTests
         {
             var str = "from math import sin\n";
 
-            var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
+            var imports = IronPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
+            Assert.IsTrue(imports.ContainsKey("sin"));
+            Assert.AreEqual("from math import sin", imports["sin"]);
+
+            imports = DSCPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("sin"));
             Assert.AreEqual("from math import sin", imports["sin"]);
         }
@@ -405,7 +538,11 @@ namespace DynamoPythonTests
         {
             var str = "from Autodesk.Revit.DB import Events\n";
 
-            var imports = IronPythonCompletionProvider.FindTypeSpecificImportStatements(str);
+            var imports = IronPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
+            Assert.IsTrue(imports.ContainsKey("Events"));
+            Assert.AreEqual("from Autodesk.Revit.DB import Events", imports["Events"]);
+
+            imports = DSCPythonCodeCompletionProviderCore.FindTypeSpecificImportStatements(str);
             Assert.IsTrue(imports.ContainsKey("Events"));
             Assert.AreEqual("from Autodesk.Revit.DB import Events", imports["Events"]);
         }

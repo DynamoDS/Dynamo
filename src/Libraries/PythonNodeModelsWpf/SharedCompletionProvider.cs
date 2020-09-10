@@ -8,11 +8,25 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-    internal class SharedCompletionProvider : LogSourceBase
+    public class SharedCompletionProvider : LogSourceBase
     {
 
         #region Properties and Fields
         private readonly IExternalCodeCompletionProviderCore providerImplementation;
+
+        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
+        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
+        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        public static string arrayRegex = "(\\[.*\\])";
+        public static string spacesOrNone = @"(\s*)";
+        public static string atLeastOneSpaceRegex = @"(\s+)";
+        public static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
+        public static string dictRegex = "({.*})";
+        public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        public static string intRegex = @"([-+]?\d+)[\s\n]*$";
+        public static string basicImportRegex = @"(import)";
+        public static string fromImportRegex = @"^(from)";
 
         #endregion
 
@@ -95,6 +109,7 @@ namespace Dynamo.Python
             }
             return null;
         }
+
         #endregion
     }
 }

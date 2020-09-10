@@ -198,7 +198,7 @@ namespace DSIronPython
             return importMatches;
         }
 
-        private static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
+        internal static Dictionary<string, string> FindTypeSpecificImportStatements(string code)
         {
 
             var pattern = fromImportRegex +
@@ -235,7 +235,7 @@ namespace DSIronPython
             return importMatches;
         }
 
-        private static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
@@ -604,7 +604,7 @@ namespace DSIronPython
         /// </summary>
         /// <param name="code">The code to search</param>
         /// <returns>A dictionary matching the lib to the code where lib is the library being imported from</returns>
-        private static Dictionary<string, string> FindBasicImportStatements(string code)
+        internal static Dictionary<string, string> FindBasicImportStatements(string code)
         {
             var pattern = "^" + basicImportRegex + spacesOrNone + variableName;
 
@@ -1142,8 +1142,6 @@ namespace DSIronPython
                     Log("Failed to load ProtoGeometry types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
                 }
             }
-
-           
         }
 
         #endregion
