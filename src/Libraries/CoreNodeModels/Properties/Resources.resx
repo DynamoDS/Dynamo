@@ -385,7 +385,7 @@
     <comment>Description for Or</comment>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>Block returned if test is false</value>
+    <value>Returned if test is false</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
     <value>image</value>
@@ -400,10 +400,10 @@
     <value>Result block produced</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Boolean to determine what code block is returned</value>
+    <value>Boolean test</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>Block returned if test is true</value>
+    <value>Returned if test is true</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
     <value>variable</value>

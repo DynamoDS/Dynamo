@@ -890,7 +890,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block returned if test is false.
+        ///   Looks up a localized string similar to Returned if test is false.
         /// </summary>
         public static string PortDataFalseBlockToolTip {
             get {
@@ -935,7 +935,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Boolean to determine what code block is returned.
+        ///   Looks up a localized string similar to Boolean test.
         /// </summary>
         public static string PortDataTestBlockToolTip {
             get {
@@ -944,7 +944,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Block returned if test is true.
+        ///   Looks up a localized string similar to Returned if test is true.
         /// </summary>
         public static string PortDataTrueBlockToolTip {
             get {
