@@ -1922,11 +1922,21 @@ namespace Dynamo.Controls
         {
             if (ExtensionsCollapsed)
             {
-                // Restore right extension grid to default width (200)
-                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                if (extensionsColumnWidth == null)
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                }
+                else
+                {
+                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
+                }
             }
             else
             {
+                if (RightExtensionsViewColumn.Width.Value != 0)
+                {
+                    extensionsColumnWidth = RightExtensionsViewColumn.Width;
+                }
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
