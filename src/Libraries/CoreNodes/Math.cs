@@ -253,7 +253,7 @@ namespace DSCore
         ///     Finds the inverse tangent, the angle whose tangent is the given ratio.
         /// </summary>
         /// <param name="ratio">The tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is the input ratio (double)</returns>
+        /// <returns name="double">The angle whose tangent is the input ratio (double)</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan(double ratio)
         {
@@ -266,7 +266,7 @@ namespace DSCore
         /// </summary>
         /// <param name="numerator">The numerator of the tangent of the angle.</param>
         /// <param name="denominator">The denominator of the tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is numerator/denominator (double)</returns>
+        /// <returns name="double">The angle whose tangent is numerator/denominator (double)</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan2(double numerator, double denominator)
         {
