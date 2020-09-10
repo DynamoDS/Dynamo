@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Dynamo.Graph;
 using Moq;
@@ -18,14 +16,12 @@ namespace DSCoreNodesTests
         private EnumAsStringConcrete testNode;
         private Mock<AssociativeNode> associativeNodeMock;
 
-
         [SetUp]
         public void TestsSetup()
         {
             testNode = new EnumAsStringConcrete();
             associativeNodeMock = new Mock<AssociativeNode>(MockBehavior.Strict);
             testNode.Name = "testNodeName";
-
         }
 
         [Test]
