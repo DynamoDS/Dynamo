@@ -231,7 +231,7 @@ namespace DSCore
         ///     Finds the inverse cosine, the angle whose cosine is the given ratio.
         /// </summary>
         /// <param name="ratio">The cosine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose cosine is the input ratio. (double)</returns>
+        /// <returns name="double">The angle whose cosine is the input ratio. (double)</returns>
         /// <search>acosine,arccosine</search>
         public static double Acos(double ratio)
         {
@@ -242,7 +242,7 @@ namespace DSCore
         ///     Finds the inverse sine, the angle whose sine is the given ratio.
         /// </summary>
         /// <param name="ratio">The sine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose sine is the input ratio (double)</returns>
+        /// <returns name="double">The angle whose sine is the input ratio (double)</returns>
         /// <search>asine,arcsin</search>
         public static double Asin(double ratio)
         {
