@@ -317,7 +317,7 @@ namespace DSCore
         /// <param name="searchFor">Substring to search for.</param>
         /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
         /// <returns name="indexList">List of indices (integers) where substring is found</returns>
-        /// /// <search>all indices of,find substring,where,search</search>
+        /// <search>all indices of,find substring,where,search</search>
         public static int[] AllIndicesOf(string @string, string searchFor, bool ignoreCase = false)
         {
             var indices = new List<int>();
