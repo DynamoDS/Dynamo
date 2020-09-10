@@ -69,12 +69,6 @@ namespace Dynamo.ViewModels
         private Point transformOrigin;
         private bool showStartPage = false;
 
-        private ObservableCollection<NameValuePairViewModel<string>> defaultPythonEngineOptions = new ObservableCollection<NameValuePairViewModel<string>>();
-        public ObservableCollection<NameValuePairViewModel<string>> DefaultPythonEngineOptions
-        {
-            get { return defaultPythonEngineOptions; }
-        }
-
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
         /// <summary>
@@ -604,11 +598,6 @@ namespace Dynamo.ViewModels
 
         protected DynamoViewModel(StartConfiguration startConfiguration)
         {
-            // These options are currently fixed. Eventually we should make them dynamic I guess.
-            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>(string.Empty, WpfResources.DefaultPythonEngineNone));
-            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("IronPython2", "IronPython2"));
-            defaultPythonEngineOptions.Add(new NameValuePairViewModel<string>("CPython3", "CPython3"));
-
             this.ShowLogin = startConfiguration.ShowLogin;
 
             // initialize core data structures
@@ -881,6 +870,7 @@ namespace Dynamo.ViewModels
 
             // Reset workspace state
             CurrentSpaceViewModel.CancelActiveState();
+            BackgroundPreviewViewModel.RefreshState();
         }
 
         internal void ForceRunExprCmd(object parameters)
@@ -2441,12 +2431,7 @@ namespace Dynamo.ViewModels
         public void Escape(object parameter)
         {
             CurrentSpaceViewModel.CancelActiveState();
-
-            // Since panning and orbiting modes are exclusive from one another,
-            // turning one on may turn the other off. This is the reason we must
-            // raise property change for both at the same time to update visual.
-            RaisePropertyChanged("IsPanning");
-            RaisePropertyChanged("IsOrbiting");
+            BackgroundPreviewViewModel.RefreshState();
         }
 
         internal bool CanEscape(object parameter)
