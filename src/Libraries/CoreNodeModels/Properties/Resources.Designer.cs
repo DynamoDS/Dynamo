@@ -422,7 +422,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Creates a file object from a path. A file object loads the selected file in memory for use downstream..
+        ///   Looks up a localized string similar to Creates a file object from a path..
         /// </summary>
         public static string FileFromPathDescription {
             get {

@@ -206,7 +206,7 @@
     <value>The selected {0}</value>
   </data>
   <data name="FileFromPathDescription" xml:space="preserve">
-    <value>Creates a file object from a path. A file object loads the selected file in memory for use downstream.</value>
+    <value>Creates a file object from a path.</value>
     <comment>Description for File.FromPath</comment>
   </data>
   <data name="FilenameNodeDescription" xml:space="preserve">
