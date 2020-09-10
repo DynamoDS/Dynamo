@@ -289,7 +289,7 @@ namespace DSCore
         ///     Finds the cosine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the cosine of.</param>
-        /// <returns name="cos">Cosine of the angle (double)</returns>
+        /// <returns name="double">Cosine of the angle (double)</returns>
         /// <search>cosine</search>
         public static double Cos(double angle)
         {
@@ -300,7 +300,7 @@ namespace DSCore
         ///     Finds the hyperbolic cosine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="cosh">Hyperbolic cosine of the angle (double)</returns>
+        /// <returns name="double">Hyperbolic cosine of the angle (double)</returns>
         /// <search>hyperbolic cosine</search>
         public static double Cosh(double angle)
         {
@@ -312,7 +312,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dividend">The number to be divided.</param>
         /// <param name="divisor">The number to be divided by.</param>
-        /// <returns name="remainder">The remainder of the division (int)</returns>
+        /// <returns name="integer">The remainder of the division (integer)</returns>
         /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
