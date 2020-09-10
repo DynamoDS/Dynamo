@@ -347,7 +347,7 @@ namespace DSCore
         ///     Returns the exponential of the number, the constant e raised to the value number.
         /// </summary>
         /// <param name="number">Number.</param>
-        /// <returns name="e^number">The exponential of the number.</returns>
+        /// <returns name="double">The exponential of the number.</returns>
         /// <search>exponential</search>
         public static double Exp(double number)
         {
@@ -376,7 +376,7 @@ namespace DSCore
         ///     Finds the natural logarithm of a number in the range (0, ∞).
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Natural log of the number.</returns>
+        /// <returns name="double">Natural log of the number.</returns>
         /// <search>natural,logarithm,ln</search>
         public static double Log(double number)
         {
@@ -388,7 +388,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
         /// <param name="logBase">Base of the logarithm in the range [0,1),(1, ∞).</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm,ld,lg</search>
         public static double Log(double number, double logBase)
         {
@@ -399,7 +399,7 @@ namespace DSCore
         ///     Finds the base-10 logarithm of a number.
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm</search>
         public static double Log10(double number)
         {
@@ -523,7 +523,7 @@ namespace DSCore
         ///     Finds the sine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the sine of.</param>
-        /// <returns name="sin">Sine of the angle.</returns>
+        /// <returns name="double">Sine of the angle.</returns>
         /// <search>sine</search>
         public static double Sin(double angle)
         {
@@ -534,7 +534,7 @@ namespace DSCore
         ///     Finds the hyperbolic sine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="sinh">Hyperbolic sine of the angle.</returns>
+        /// <returns name="double">Hyperbolic sine of the angle.</returns>
         /// <search>hyperbolic</search>
         public static double Sinh(double angle)
         {
@@ -545,7 +545,7 @@ namespace DSCore
         ///     Finds the positive square root of a number in the range [0, ∞).
         /// </summary>
         /// <param name="number">A number in the range [0, ∞).</param>
-        /// <returns name="sqrt">Positive square root of the number.</returns>
+        /// <returns name="double">Positive square root of the number.</returns>
         /// <search>square,root,radical</search>
         public static double Sqrt(double number)
         {
