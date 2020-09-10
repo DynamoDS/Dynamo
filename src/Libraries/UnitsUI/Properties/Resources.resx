@@ -132,11 +132,11 @@
     <value>Edit...</value>
   </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
-    <value>A length defined as feet and inches is turned into a number representation in feet.</value>
+    <value>Enter a length.</value>
     <comment>Description for Length From String</comment>
   </data>
   <data name="LengthFromStringPortDataLengthToolTip" xml:space="preserve">
-    <value>Number representation in feet (double)</value>
+    <value>number (Feet)</value>
   </data>
   <data name="LengthFromStringSearchTags" xml:space="preserve">
     <value>Imperial;Metric;Length;Project;units</value>

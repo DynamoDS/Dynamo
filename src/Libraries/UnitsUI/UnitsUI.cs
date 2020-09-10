@@ -227,7 +227,7 @@ namespace UnitsUI
         {
             Measure = Length.FromDouble(0.0, LengthUnit.FractionalFoot);
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("feet", Resources.LengthFromStringPortDataLengthToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData(Resources.LengthFromStringPortDataLengthToolTip, Resources.LengthFromStringPortDataLengthToolTip)));
             RegisterAllPorts();
         }
 
