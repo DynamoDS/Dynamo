@@ -1281,7 +1281,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Amount of numbers in the sequence
+        ///   Looks up a localized string similar to Amount of numbers or letters in the sequence
         ///Default value: 10.
         /// </summary>
         public static string RangePortDataAmountToolTip {

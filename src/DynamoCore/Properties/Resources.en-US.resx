@@ -163,7 +163,7 @@
     <value>Composed function: g(f(x))</value>
   </data>
   <data name="RangePortDataAmountToolTip" xml:space="preserve">
-    <value>Amount of numbers in the sequence
+    <value>Amount of numbers or letters in the sequence
 Default value: 10</value>
   </data>
   <data name="RangePortDataEndToolTip" xml:space="preserve">
