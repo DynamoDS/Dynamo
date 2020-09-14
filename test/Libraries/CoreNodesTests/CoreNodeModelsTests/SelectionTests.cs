@@ -62,7 +62,8 @@ namespace DSCoreNodesTests
                 inPorts,
                 outPorts);
 
-            Assert.IsNotNull(selection);
+            Assert.AreEqual(inPort.GUID, selection.InPorts.FirstOrDefault().GUID);
+            Assert.AreEqual(outPort.GUID, selection.OutPorts.FirstOrDefault().GUID);
         }
 
         [Test]
