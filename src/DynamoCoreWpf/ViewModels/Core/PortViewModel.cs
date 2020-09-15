@@ -364,6 +364,22 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // Handler to invoke node Auto Complete
+        private void AutoComplete(object parameter)
+        {
+            DynamoViewModel dynamoViewModel = this._node.DynamoViewModel;
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
+            if (dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input)
+            {
+                dynamoViewModel.CurrentSpaceViewModel.ShowNodeAutoCompleteSearchCommand.Execute(ShowHideFlags.Show);
+            }
+        }
+
+        private bool CanAutoComplete(object parameter)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Handles the Mouse enter event on the port
         /// </summary>

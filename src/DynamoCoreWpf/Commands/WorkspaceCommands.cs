@@ -27,6 +27,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand _unpauseVisualizationManagerUpdateCommand;
         private DelegateCommand _showHideAllGeometryPreviewCommand;
         private DelegateCommand _showInCanvasSearchCommand;
+        private DelegateCommand _showNodeAutoCompleteSearchCommand;
         private DelegateCommand _pasteCommand;
         private DelegateCommand _computeRunStateCommand;
 
@@ -215,6 +216,18 @@ namespace Dynamo.ViewModels
                     _showInCanvasSearchCommand = new DelegateCommand(OnRequestShowInCanvasSearch);
 
                 return _showInCanvasSearchCommand;
+            }
+        }
+
+        [JsonIgnore]
+        public DelegateCommand ShowNodeAutoCompleteSearchCommand
+        {
+            get
+            {
+                if (_showNodeAutoCompleteSearchCommand == null)
+                    _showNodeAutoCompleteSearchCommand = new DelegateCommand(OnRequestNodeAutoCompleteSearch);
+
+                return _showNodeAutoCompleteSearchCommand;
             }
         }
 

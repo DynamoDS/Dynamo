@@ -108,6 +108,7 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
@@ -160,6 +161,11 @@ namespace Dynamo.Views
             
         }
 
+        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        {
+            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, InCanvasSearchBar);
@@ -195,6 +201,10 @@ namespace Dynamo.Views
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            if (NodeAutoCompleteSearchBar.IsOpen)
+            {
+                ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
             }
         }
 
