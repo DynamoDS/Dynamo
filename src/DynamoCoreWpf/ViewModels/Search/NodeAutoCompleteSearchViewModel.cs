@@ -18,21 +18,16 @@ namespace Dynamo.ViewModels
         {
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are hard copied all time top 7 nodes placed by customers
-            // This should be only served as default case.
-            var foundNodes = Search("Code Block").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("Watch").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("Flatten").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("List Create").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("String").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("Double").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
-            foundNodes = Search("Python").ToList();
-            candidates.Add(foundNodes.FirstOrDefault());
+            // This should be only served as a temporary default case.
+            var queries = new List<string>(){ "Code Block", "Watch", "List Flatten", "List Create", "String", "Double", "Python" };
+            foreach (var query in queries)
+            {
+                var foundNode = Search(query).ToList().FirstOrDefault();
+                if(foundNode != null)
+                {
+                    candidates.Add(foundNode);
+                }
+            }
             FilteredResults = candidates;
         }
     }
