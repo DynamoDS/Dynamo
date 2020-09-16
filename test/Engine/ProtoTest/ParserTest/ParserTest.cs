@@ -32,7 +32,8 @@ namespace ProtoTest.ParserTest
         public void CanParseMinLongValue()
         {
             var code = "x = -9223372036854775808;";
-            thisTest.RunScriptSource(code);            thisTest.Verify("x", long.MinValue);
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", long.MinValue);
         }
     }
 }
