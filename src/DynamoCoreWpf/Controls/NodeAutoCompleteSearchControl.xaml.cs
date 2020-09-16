@@ -15,6 +15,8 @@ namespace Dynamo.UI.Controls
 {
     /// <summary>
     /// Interaction logic for AutoCompleteSearchControl.xaml
+    /// Notice this control shares a lot of logic with InCanvasSearchControl for now
+    /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
     public partial class NodeAutoCompleteSearchControl
     {
@@ -110,14 +112,15 @@ namespace Dynamo.UI.Controls
             if (!(bool)e.NewValue)
                 return;
 
-            // Select text in text box.
-            SearchTextBox.SelectAll();
+            // When launching this control, always start with clear search term.
+            SearchTextBox.Clear();
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox.Focus();
+                (ViewModel as NodeAutoCompleteSearchViewModel).InitializeDefaultAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
         }
 
