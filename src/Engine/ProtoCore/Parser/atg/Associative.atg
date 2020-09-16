@@ -1361,13 +1361,14 @@ Associative_Level<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         ] number
         (.
             Int64 value;
-            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+            if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
-                node = new ProtoCore.AST.AssociativeAST.IntNode(sign*value);
+                node = new ProtoCore.AST.AssociativeAST.IntNode(value);
             }
             else
             {
-                errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, t.val));
+                errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, tokenWithSign));
             }
 
             NodeUtils.SetNodeLocation(node, t);
@@ -1395,9 +1396,10 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
         number  
         (.  
             Int64 value;
-            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+            if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
-                node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
+                node = new ProtoCore.AST.AssociativeAST.IntNode(value);
             }
             else
             {

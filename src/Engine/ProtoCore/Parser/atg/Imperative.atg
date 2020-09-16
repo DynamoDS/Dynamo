@@ -1135,9 +1135,10 @@ Imperative_num<out ProtoCore.AST.ImperativeAST.ImperativeNode node>
         number  
         (.  
             Int64 value;
-            if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+            var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+            if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
             {
-                node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
+                node = new ProtoCore.AST.ImperativeAST.IntNode(value);
             }
             else
             {
