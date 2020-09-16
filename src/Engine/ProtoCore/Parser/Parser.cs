@@ -2253,13 +2253,14 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			}
 			Expect(2);
 			Int64 value;
-			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+			var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+			if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
-			   node = new ProtoCore.AST.AssociativeAST.IntNode(sign*value);
+			   node = new ProtoCore.AST.AssociativeAST.IntNode(value);
 			}
 			else
 			{
-			   errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, t.val));
+			   errors.SemErr(t.line, t.col, String.Format(Resources.kInvalidListLevelName, tokenWithSign));
 			}
 			
 			NodeUtils.SetNodeLocation(node, t);
@@ -2283,9 +2284,10 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+			var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+			if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
-			   node = new ProtoCore.AST.AssociativeAST.IntNode(value * sign);
+			   node = new ProtoCore.AST.AssociativeAST.IntNode(value);
 			}
 			else
 			{
@@ -3742,9 +3744,10 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		if (la.kind == 2) {
 			Get();
 			Int64 value;
-			if (Int64.TryParse(t.val, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
+			var tokenWithSign = sign == -1 ? "-" + t.val : t.val;
+			if (Int64.TryParse(tokenWithSign, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.InvariantCulture, out value))
 			{
-			   node = new ProtoCore.AST.ImperativeAST.IntNode(value * sign);
+			   node = new ProtoCore.AST.ImperativeAST.IntNode(value);
 			}
 			else
 			{
