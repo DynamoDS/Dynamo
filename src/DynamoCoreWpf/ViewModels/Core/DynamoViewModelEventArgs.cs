@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 
@@ -151,6 +154,84 @@ namespace Dynamo.ViewModels
 
             Link = link;
             IsRemoteResource = link.IsAbsoluteUri && !link.IsFile;
+        }
+    }
+
+    /// <summary>
+    /// Provides information about the Dynamo RequestOpenDocumentaitonLink event,
+    /// such as the namespace of the node used to lookup the .md documentation file
+    /// and additional Node Info gathered from the NodeModel properties.
+    /// </summary>
+    public class OpenNodeAnnotationEventArgs : OpenDocumentationLinkEventArgs
+    {
+        public string NodeNamespace { get; }
+        public string NodeType { get; }
+        public string Description { get; }
+        public string Category { get; }
+        public List<string> InputNames { get; private set; }
+        public List<string> OutputNames { get; private set; }
+        public List<string> InputDescriptions { get; private set; }
+        public List<string> OutputDescriptions { get; private set; }
+
+        private NodeModel nodeModel;
+        public OpenNodeAnnotationEventArgs(NodeModel model) : base(new Uri(String.Empty,UriKind.Relative))
+        {
+            if (model == null) throw new ArgumentNullException(nameof(model));
+
+            nodeModel = model;
+
+            NodeNamespace = GetNamespace(model);
+            NodeType = nodeModel.Name;
+            Description = nodeModel.Description;
+            Category = nodeModel.Category;
+            SetInputs();
+            SetOutputs();
+
+        }
+
+        private void SetOutputs()
+        {
+            OutputNames = new List<string>();
+            OutputDescriptions = new List<string>();
+
+            var outputs = nodeModel.OutPorts;
+            foreach (var output in outputs)
+            {
+                OutputNames.Add(output.Name);
+                OutputDescriptions.Add(output.ToolTip);
+            }
+        }
+
+        private void SetInputs()
+        {
+            InputNames = new List<string>();
+            InputDescriptions = new List<string>();
+
+            var inputs = nodeModel.InPorts;
+            foreach (var input in inputs)
+            {
+                InputNames.Add(input.Name);
+                InputDescriptions.Add(input.ToolTip);
+            }
+        }
+
+        static private string GetNamespace(NodeModel nodeModel)
+        {          
+            switch (nodeModel)
+            {
+                case Function function:
+                    return string.Empty;
+
+                case DSFunctionBase dSFunction:
+                    var descriptor = dSFunction.Controller.Definition;
+                    var className = descriptor.ClassName;
+                    var functionName = descriptor.FunctionName;
+
+                    return string.Format("{0}.{1}", className, functionName);
+
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
