@@ -204,7 +204,13 @@ namespace Dynamo.Views
             }
             if (NodeAutoCompleteSearchBar.IsOpen)
             {
-                ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                // Suppress the mouse action from last 0.2 second otherwise mouse button release 
+                // in Dynamo window will forcefully shutdown all the open SearchBars
+                if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
+                {
+                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                    ViewModel.CancelActiveState();
+                }
             }
         }
 

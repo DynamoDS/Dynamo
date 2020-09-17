@@ -117,6 +117,11 @@ namespace Dynamo.ViewModels
             stateMachine.CancelActiveState();
         }
 
+        internal DateTime GetLastStateTimestamp()
+        {
+            return stateMachine.Timestamp;
+        }
+
         internal void BeginDragSelection(Point2D mouseCursor)
         {
             // This represents the first mouse-move event after the mouse-down
@@ -439,6 +444,11 @@ namespace Dynamo.ViewModels
             #endregion
 
             #region Public Class Properties
+            /// <summary>
+            /// Optionally record the last time a particular state is updated.
+            /// Currently only used for Node AutoComplete feature.
+            /// </summary>
+            internal DateTime Timestamp { get; set; }
 
             internal bool IsInIdleState
             {
@@ -808,6 +818,7 @@ namespace Dynamo.ViewModels
                         this.currentState = State.Connection;
                         owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                         owningWorkspace.IsCursorForced = false;
+                        Timestamp = DateTime.Now;
                         return true;
                     }
 
