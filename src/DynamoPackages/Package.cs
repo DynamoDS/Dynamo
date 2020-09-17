@@ -98,6 +98,15 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
+        private IEnumerable<string> nodeAnnotationPaths;
+
+        public IEnumerable<string> NodeAnnotationPaths
+        {
+            get { return nodeAnnotationPaths; }
+            set { nodeAnnotationPaths = value; RaisePropertyChanged(nameof(NodeAnnotationPaths)); }
+        }
+
+
         private bool markedForUninstall;
         public bool MarkedForUninstall
         {
@@ -191,6 +200,8 @@ namespace Dynamo.PackageManager
                     SiteUrl = body.site_url,
                     RepositoryUrl = body.repository_url,
                     HostDependencies = body.host_dependencies,
+                    // hard coded for now, until we get "annotationPaths" in the package json
+                    NodeAnnotationPaths = new List<string> { @"C:\Users\SylvesterKnudsen\AppData\Roaming\Dynamo\Dynamo Core\2.9\packages\JsonData\doc" },
                     Header = body
                 };
                 
