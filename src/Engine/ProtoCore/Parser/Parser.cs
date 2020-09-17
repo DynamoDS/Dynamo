@@ -2325,6 +2325,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			else
 			{
 			   node.line = line; node.col = col;
+			   node.endLine = t.line; node.endCol = t.col;
 			}
 			
 		} else SynErr(93);
@@ -2339,10 +2340,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 		node = new ProtoCore.AST.AssociativeAST.CharNode() 
 		{ 
-		   Value = t.val.Substring(1, t.val.Length - 2),
-		   line = t.line,
-		   col = t.col
+		   Value = t.val.Substring(1, t.val.Length - 2)
 		}; 
+		NodeUtils.SetNodeLocation(node, t);
 		
 	}
 
@@ -2351,7 +2351,7 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(4);
 		node = new ProtoCore.AST.AssociativeAST.StringNode() 
 		{ 
-		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
+		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2))
 		}; 
 		NodeUtils.SetNodeLocation(node, t);
 		
@@ -3710,10 +3710,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		
 		node = new ProtoCore.AST.ImperativeAST.CharNode() 
 		{ 
-		   Value = t.val.Substring(1, t.val.Length - 2),
-		   line = t.line,
-		   col = t.col
-		}; 
+		   Value = t.val.Substring(1, t.val.Length - 2)
+		};
+		NodeUtils.SetNodeLocation(node, t);
 		
 	}
 
@@ -3722,10 +3721,9 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 		Expect(4);
 		node = new ProtoCore.AST.ImperativeAST.StringNode() 
 		{ 
-		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)), 
-		   line = t.line,
-		   col = t.col
+		   Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2))
 		}; 
+		NodeUtils.SetNodeLocation(node, t);
 		
 	}
 
@@ -3756,7 +3754,8 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			
 			if (ProtoCore.DSASM.Constants.kInvalidIndex != line)
 			{
-			   node.line = line; node.col = col; 
+			   node.line = line; node.col = col;
+			   node.endLine = t.line; node.endCol = t.col;
 			}
 			else
 			{
@@ -3775,10 +3774,15 @@ langblock.codeblock.Language == ProtoCore.Language.NotSpecified) {
 			   node = new ProtoCore.AST.ImperativeAST.NullNode();
 			}
 			
-			if (ProtoCore.DSASM.Constants.kInvalidIndex != line){
-			   node.line = line; node.col = col; }
-			else{
-			   NodeUtils.SetNodeLocation(node, t); }
+			if (ProtoCore.DSASM.Constants.kInvalidIndex != line)
+			{
+			   node.line = line; node.col = col;
+			   node.endLine = t.line; node.endCol = t.col;
+			}
+			else
+			{
+			   NodeUtils.SetNodeLocation(node, t);
+			}
 			
 		} else SynErr(118);
 	}

@@ -1438,6 +1438,7 @@ Associative_Number<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             else
             {
                 node.line = line; node.col = col;
+                node.endLine = t.line; node.endCol = t.col;
             }
         .)
     )
@@ -1453,10 +1454,9 @@ Associative_Char<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
 
                 node = new ProtoCore.AST.AssociativeAST.CharNode() 
                 { 
-                    Value = t.val.Substring(1, t.val.Length - 2),
-                    line = t.line,
-                    col = t.col
+                    Value = t.val.Substring(1, t.val.Length - 2)
                 }; 
+                NodeUtils.SetNodeLocation(node, t);
             .)
 .
 
@@ -1466,7 +1466,7 @@ Associative_String<out ProtoCore.AST.AssociativeAST.AssociativeNode node>
             (. 
                 node = new ProtoCore.AST.AssociativeAST.StringNode() 
                 { 
-                    Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2)),
+                    Value = GetEscapedString(t.val.Length <= 2 ? "" : t.val.Substring(1, t.val.Length - 2))
                 }; 
                 NodeUtils.SetNodeLocation(node, t);
             .)
