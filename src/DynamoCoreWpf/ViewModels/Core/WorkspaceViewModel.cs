@@ -158,7 +158,6 @@ namespace Dynamo.ViewModels
         private void OnRequestShowInCanvasSearch(object param)
         {
             var flag = (ShowHideFlags)param;
-
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
@@ -167,9 +166,7 @@ namespace Dynamo.ViewModels
         private void OnRequestNodeAutoCompleteSearch(object param)
         {
             var flag = (ShowHideFlags)param;
-
-            if (RequestNodeAutoCompleteSearch != null)
-                RequestNodeAutoCompleteSearch(flag);
+            RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
         #endregion
