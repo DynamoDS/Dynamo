@@ -22,7 +22,7 @@ namespace Dynamo.UI.Controls
     {
         ListBoxItem HighlightedItem;
 
-        internal event Action<ShowHideFlags> RequestShowInCanvasSearch;
+        internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
         public SearchViewModel ViewModel
         {
@@ -36,11 +36,11 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Unloaded += InCanvasSearchControl_Unloaded;
+            Unloaded += NodeAutoCompleteSearchControl_Unloaded;
 
         }
 
-        private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
+        private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
         {
             if (Application.Current != null)
             {
@@ -50,14 +50,14 @@ namespace Dynamo.UI.Controls
 
         private void currentApplicationDeactivated(object sender, EventArgs e)
         {
-            OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
         }
 
-        private void OnRequestShowInCanvasSearch(ShowHideFlags flags)
+        private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
         {
-            if (RequestShowInCanvasSearch != null)
+            if (RequestShowNodeAutoCompleteSearch != null)
             {
-                RequestShowInCanvasSearch(flags);
+                RequestShowNodeAutoCompleteSearch(flags);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Dynamo.UI.Controls
             if (listBoxItem == null || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
-            OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
             e.Handled = true;
         }
 
@@ -106,7 +106,7 @@ namespace Dynamo.UI.Controls
             toolTipPopup.IsOpen = false;
         }
 
-        private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // If visibility  is false, then stop processing it.
             if (!(bool)e.NewValue)
@@ -190,13 +190,13 @@ namespace Dynamo.UI.Controls
             switch (key)
             {
                 case Key.Escape:
-                    OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                    OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
                     break;
                 case Key.Enter:
                     if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                     {
                         ExecuteSearchElement(HighlightedItem);
-                        OnRequestShowInCanvasSearch(ShowHideFlags.Hide);
+                        OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
                     }
                     break;
                 case Key.Up:

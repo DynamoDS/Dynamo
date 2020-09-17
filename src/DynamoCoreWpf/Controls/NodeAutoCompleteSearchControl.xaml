@@ -8,7 +8,7 @@
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
              mc:Ignorable="d"
              MinWidth="250"
-             IsVisibleChanged="OnInCanvasSearchControlVisibilityChanged">
+             IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
