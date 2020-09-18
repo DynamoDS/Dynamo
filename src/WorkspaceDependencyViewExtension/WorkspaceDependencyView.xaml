@@ -153,16 +153,16 @@
                             TextAlignment="Center"
                             Foreground="{DynamicResource MemberButtonText}"
                             Margin="10"
-                            FontSize="13">
+                            FontSize="11">
                         </TextBlock>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Style="{DynamicResource STextButton}"
+                            <Button Style="{StaticResource SmallTextButton}"
                                 Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
                                 Name="DownloadPackageButton"
                                 Click="DownloadPackage"
                                 Margin="10"
                                 Content="{x:Static w:Resources.InstallButtonText}"/>
-                            <Button Style="{DynamicResource STextButton}"
+                            <Button Style="{StaticResource SmallTextButton}"
                                 Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
                                 Name="KeepLocalPackageButton"
                                 Click="KeepLocalPackage"
