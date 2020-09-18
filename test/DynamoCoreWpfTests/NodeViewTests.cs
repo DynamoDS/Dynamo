@@ -20,8 +20,6 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            //libraries.Add("DesignScriptBuiltin.dll");
-            //libraries.Add("DSCoreNodes.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
             libraries.Add("FFITarget.dll");
