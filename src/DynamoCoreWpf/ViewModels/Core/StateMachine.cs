@@ -814,7 +814,7 @@ namespace Dynamo.ViewModels
                 {
                     if (Keyboard.Modifiers == ModifierKeys.Alt)
                     {
-                        portViewModel.NodeAutoCompleteCommand.Execute(null);
+                        portViewModel.NodeAutoCompleteCommand.Execute(portViewModel);
                         this.currentState = State.Connection;
                         owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
                         owningWorkspace.IsCursorForced = false;

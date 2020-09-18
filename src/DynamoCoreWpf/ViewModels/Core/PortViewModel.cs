@@ -374,6 +374,7 @@ namespace Dynamo.ViewModels
             // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
             if (dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input)
             {
+                (dynamoViewModel.CurrentSpaceViewModel.NodePortAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel).targetPortViewModel = parameter as PortViewModel;
                 dynamoViewModel.CurrentSpaceViewModel.ShowNodeAutoCompleteSearchCommand.Execute(ShowHideFlags.Show);
             }
         }

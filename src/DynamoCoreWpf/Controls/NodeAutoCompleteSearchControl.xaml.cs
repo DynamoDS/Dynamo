@@ -24,9 +24,9 @@ namespace Dynamo.UI.Controls
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        public SearchViewModel ViewModel
+        public NodeAutoCompleteSearchViewModel ViewModel
         {
-            get { return DataContext as SearchViewModel; }
+            get { return DataContext as NodeAutoCompleteSearchViewModel; }
         }
 
         public NodeAutoCompleteSearchControl()
@@ -87,7 +87,8 @@ namespace Dynamo.UI.Controls
             if (searchElement != null)
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
-                searchElement.ClickedCommand.Execute(null);
+                PortViewModel port = ViewModel.targetPortViewModel;
+                searchElement.CreateAndConnectCommand.Execute(port.PortModel);
             }
         }
 
@@ -120,7 +121,7 @@ namespace Dynamo.UI.Controls
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox.Focus();
-                (ViewModel as NodeAutoCompleteSearchViewModel).InitializeDefaultAutoCompleteCandidates();
+                ViewModel.InitializeDefaultAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
         }
 
