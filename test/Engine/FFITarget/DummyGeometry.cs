@@ -80,16 +80,6 @@ namespace FFITarget
             return this.DirectionTo(other).GetLengthSquare() < 0.00001;
         }
 
-        [MultiReturnAttribute(new string[] {"point", "vector"})]
-        public Dictionary<string, object> ReturnPointVectorDict()
-        {
-            return new Dictionary<string, object>
-            {
-                {"point", new DummyPoint()},
-                {"vector", new DummyVector()},
-            };
-        }
-
         public void Dispose()
         {
             //Don't do anything
