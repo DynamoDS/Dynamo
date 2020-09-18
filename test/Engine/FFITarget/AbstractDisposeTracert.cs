@@ -1,4 +1,5 @@
 ﻿using System;
+using Autodesk.DesignScript.Runtime;
 
 namespace FFITarget
 {
@@ -15,7 +16,7 @@ namespace FFITarget
     }
 
 
-
+    [PreferredShortName("ADDT")]
     public class AbstractDerivedDisposeTracer2 : AbstractDisposeTracert
     {
 

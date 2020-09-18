@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -387,7 +391,9 @@ namespace Dynamo.ViewModels
         private void OnRectangleMouseEnter(object parameter)
         {
             if (MouseEnter != null)
+            {
                 MouseEnter(parameter, null);
+            }
         }
 
         /// <summary>
@@ -428,6 +434,49 @@ namespace Dynamo.ViewModels
             ShowUseLevelMenu = false;
         }
 
-       
+        /// <summary>
+        /// Returns a collection of node search elements for nodes
+        /// that output a type compatible with the port type if it's an input port.
+        /// These search elements can belong to either zero touch, NodeModel or Builtin nodes.
+        /// This method returns an empty collection if the input port type cannot be inferred or
+        /// there are no matching nodes found for the type. Currently the match is an exact match
+        /// done including the rank information in the type, e.g. Point[] or var[]..[].
+        /// The search elements can be made to appear in the node autocomplete search dialog.
+        /// </summary>
+        /// <returns>collection of node search elements</returns>
+        internal IEnumerable<NodeSearchElement> GetMatchingNodes()
+        {
+            var elements = new List<NodeSearchElement>();
+
+            var inputPortType = PortModel.GetInputPortType();
+            if (inputPortType == null) return elements;
+
+            var dynamoModel = _node.DynamoViewModel.Model;
+            var libraryServices = dynamoModel.LibraryServices;
+
+            // Builtin functions and zero-touch functions
+            // Multi-return ports for these nodes do not contain type information
+            // and are therefore skipped.
+            var functionGroups = libraryServices.GetAllFunctionGroups();
+            var functionDescriptors = functionGroups.SelectMany(fg => fg.Functions).Where(fd => fd.IsVisibleInLibrary);
+
+            foreach (var descriptor in functionDescriptors)
+            {
+                if (descriptor.ReturnType.ToString() == inputPortType)
+                {
+                    elements.Add(new ZeroTouchSearchElement(descriptor));
+                }
+            }
+
+            // NodeModel nodes
+            var searchModel = dynamoModel.SearchModel;
+            foreach (var element in searchModel.SearchEntries.OfType<NodeModelSearchElement>())
+            {
+                if (element.OutputParameters.Any(op => op == inputPortType))
+                    elements.Add(element);
+            }
+
+            return elements;
+        }
     }
 }
