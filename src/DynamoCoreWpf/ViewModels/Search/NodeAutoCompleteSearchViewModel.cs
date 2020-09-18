@@ -9,6 +9,8 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
+        internal PortViewModel targetPortViewModel { get; set; }
+
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             InitializeDefaultAutoCompleteCandidates();

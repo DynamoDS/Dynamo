@@ -1059,6 +1059,18 @@ namespace Dynamo.ViewModels
             OnRequestFocusSearch();
         }
 
+        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
+        {
+            if (!nodeCreationName.Contains("Code Block"))
+            {
+                // Create a new node based on node creation name and connect ports
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(Guid.NewGuid(), portModel.Owner.GUID,
+                    nodeCreationName, 0, portModel.Index, portModel.CenterX - 50, portModel.CenterY + 200, false, false));
+            }
+
+            OnRequestFocusSearch();
+        }
+
         #endregion
 
         #region Commands
