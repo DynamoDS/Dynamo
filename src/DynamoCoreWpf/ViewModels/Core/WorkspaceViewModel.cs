@@ -239,7 +239,7 @@ namespace Dynamo.ViewModels
         /// ViewModel that is used in NodeAutoComplete feature in context menu and called by Shift+DoubleClick.
         /// </summary>
         [JsonIgnore]
-        public SearchViewModel NodePortAutoCompleteSearchViewModel { get; private set; }
+        public SearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
@@ -472,7 +472,7 @@ namespace Dynamo.ViewModels
             {
                 Visible = true
             };
-            NodePortAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true
             };
@@ -523,7 +523,7 @@ namespace Dynamo.ViewModels
             Connectors.Clear();
             Errors.Clear();
             InCanvasSearchViewModel.Dispose();
-            NodePortAutoCompleteSearchViewModel.Dispose();
+            NodeAutoCompleteSearchViewModel.Dispose();
         }
 
         internal void ZoomInInternal()
