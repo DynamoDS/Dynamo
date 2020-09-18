@@ -351,7 +351,7 @@
                IsOpen="False"
                Placement="MousePoint"
                HorizontalOffset="-290"
-               DataContext="{Binding NodePortAutoCompleteSearchViewModel}">
+               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideInCanvasControl" />
         </Popup>
 
