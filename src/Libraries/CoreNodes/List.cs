@@ -304,7 +304,6 @@ namespace DSCore
         ///     Creates a new list containing the given items.
         /// </summary>
         /// <param name="items">Items to be stored in the new list.</param>
-        [IsVisibleInDynamoLibrary(true)]
         public static IList __Create(IList items)
         {
             return items;

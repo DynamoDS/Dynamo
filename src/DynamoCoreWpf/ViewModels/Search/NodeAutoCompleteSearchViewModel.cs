@@ -9,11 +9,11 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
-        internal PortViewModel targetPortViewModel { get; set; }
+        internal PortViewModel PortViewModel { get; set; }
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
-            InitializeDefaultAutoCompleteCandidates();
+            //InitializeDefaultAutoCompleteCandidates();
         }
 
         internal void InitializeDefaultAutoCompleteCandidates()
@@ -31,6 +31,17 @@ namespace Dynamo.ViewModels
                 }
             }
             FilteredResults = candidates;
+        }
+
+        internal void PopulateAutoCompleteCandidates()
+        {
+            var searchElements = PortViewModel.GetMatchingNodes();
+            FilteredResults = searchElements.Select(e =>
+            {
+                var vm  = new NodeSearchElementViewModel(e, this);
+                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                return vm;
+            });
         }
     }
 }
