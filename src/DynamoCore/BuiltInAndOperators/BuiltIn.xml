@@ -137,7 +137,7 @@
       <param name="list">list of values</param>
       <param name="groupFunction">Function to group list</param>
       <returns name="groupedList">Grouped list</returns>
-      <search>group,function,groupbyfunction</search>
+      <search>group,function</search>
     </member>
     <member name="List.TrueForAll">
       <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
