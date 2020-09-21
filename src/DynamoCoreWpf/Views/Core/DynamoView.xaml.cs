@@ -1848,12 +1848,17 @@ namespace Dynamo.Controls
         {
             get
             {
-                // Threshold that determines if button should be displayed
-                if (RightExtensionsViewColumn.Width.Value < 20)
-                { extensionsCollapsed = true; }
-
+                // Special case: when the extension bar was never resized its size will be 2.
+                // While 2 is a valid size for the extension bar, 5 is not one for the canvas,
+                // so that's a safer check to be made.
+                if (CanvasColumn.Width.Value == 5)
+                {
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value == 0;
+                }
                 else
-                { extensionsCollapsed = false; }
+                {
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < 20;
+                }
 
                 return extensionsCollapsed;
             }
