@@ -19,7 +19,7 @@ namespace DSCore
         /// <summary>
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="integer">Red value for RGB color model, int between 0 and 255 inclusive.</returns>
+        /// <returns name="int">Red value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "R")]
         public byte Red
         {
