@@ -683,6 +683,68 @@
         </Setter>
     </Style>
 
+    <Style x:Key="SmallTextButton" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="container"
+                                Background="Transparent"
+                                BorderBrush="#3c3c3c"
+                                BorderThickness="1">
+                        <Grid x:Name="inner"
+                                    Background="#373737">
+                            <TextBlock x:Name="text"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Margin="5,0"
+                                       Foreground="#bbbbbb"
+                                       FontSize="10px"
+                                       Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"></TextBlock>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Button.IsMouseOver"
+                                    Value="true">
+                            <Setter TargetName="container"
+                                        Property="BorderBrush"
+                                        Value="#656565" />
+                            <Setter TargetName="inner"
+                                        Property="Background"
+                                        Value="#373737" />
+                        </Trigger>
+                        <Trigger Property="Button.IsPressed"
+                                    Value="true">
+                            <Setter TargetName="container"
+                                        Property="BorderBrush"
+                                        Value="#656565" />
+                            <Setter TargetName="inner"
+                                        Property="Background"
+                                        Value="#272727" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled"
+                                    Value="true">
+                            <Setter TargetName="text"
+                                        Property="Foreground"
+                                        Value="#bbbbbb" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled"
+                                    Value="false">
+                            <Setter TargetName="container"
+                                        Property="BorderBrush"
+                                        Value="Transparent" />
+                            <Setter TargetName="inner"
+                                        Property="Background"
+                                        Value="#373737" />
+                            <Setter TargetName="text"
+                                        Property="Foreground"
+                                        Value="#555555" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="STextButtonWithShapeIcon"
            TargetType="{x:Type Button}">
         <Setter Property="Template">

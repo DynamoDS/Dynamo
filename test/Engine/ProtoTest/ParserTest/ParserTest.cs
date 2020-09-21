@@ -11,7 +11,7 @@ namespace ProtoTest.ParserTest
         [Test]
         public void TestInvalidEscape1()
         {
-            string code = @"x = ""\\""";
+            string code = @"x = ""\"";";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
@@ -21,12 +21,19 @@ namespace ProtoTest.ParserTest
         [Test]
         public void TestInvalidEscape2()
         {
-            string code = @"x = ""\\X""";
+            string code = @"x = ""\X"";";
             Assert.Throws(typeof(ProtoCore.Exceptions.CompileErrorsOccured), () =>
             {
                 thisTest.RunScriptSource(code);
             });
         }
 
+        [Test]
+        public void CanParseMinLongValue()
+        {
+            var code = "x = -9223372036854775808;";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("x", long.MinValue);
+        }
     }
 }

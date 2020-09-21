@@ -207,7 +207,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="5*" MinWidth="200" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition MaxWidth="500"
+            <ColumnDefinition Width="0"
                               MinWidth="1"
                               Name="RightExtensionsViewColumn">
             </ColumnDefinition>
