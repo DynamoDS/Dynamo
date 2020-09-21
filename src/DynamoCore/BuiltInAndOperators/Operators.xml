@@ -110,8 +110,8 @@
         </member>
 		<member name="%Not">
 		            <summary>
-                Reverses the result, returns false if the result is true
-            </summary>
+                  Negates the input, e.g. returns false when the input is true.
+                </summary>
             <param name="x">boolean to reverse.</param>
             <returns name="boolean">reversed boolean</returns>
             <search>not</search>
