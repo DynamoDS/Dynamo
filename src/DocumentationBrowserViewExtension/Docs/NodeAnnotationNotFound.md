@@ -1,1 +1,3 @@
-﻿## No documentaion for this node is provided. Please contatact the node author for more information.
+## No documentation provided for this node.
+ 
+Please contact the node author for more information.
