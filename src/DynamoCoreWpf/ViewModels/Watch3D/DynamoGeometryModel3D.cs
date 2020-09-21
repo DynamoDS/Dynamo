@@ -3,7 +3,6 @@ using System.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using HelixToolkit.Wpf.SharpDX.Core;
 using HelixToolkit.Wpf.SharpDX.Model.Scene;
-using SharpDX.Direct3D11;
 
 namespace Dynamo.Wpf.ViewModels.Watch3D
 {
@@ -49,9 +48,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
     {
         protected override SceneNode OnCreateSceneNode()
         {
-            var node = new DynamoMeshNode();
-            node.CullMode = CullMode.Back;
-            return node;
+            return new DynamoMeshNode();
         }
 
         [Obsolete("This property will be deprecated and made internal in Dynamo 3.0.")]
