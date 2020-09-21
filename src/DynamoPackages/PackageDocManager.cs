@@ -76,22 +76,25 @@ namespace Dynamo.PackageManager
 
         private void OnFileCreated(object sender, FileSystemEventArgs e)
         {
-            nodeDocumentationDict.Add(e.Name, e.FullPath);
+            nodeDocumentationDict.Add(Path.GetFileNameWithoutExtension(e.Name), e.FullPath);
         }
 
         private void OnFileDeleted(object sender, FileSystemEventArgs e)
         {
-            if (nodeDocumentationDict.ContainsKey(e.Name))
-                nodeDocumentationDict.Remove(e.Name);
+            var fileName = Path.GetFileNameWithoutExtension(e.Name);
+            if (nodeDocumentationDict.ContainsKey(fileName))
+                nodeDocumentationDict.Remove(fileName);
         }
 
         private void OnFileRenamed(object sender, RenamedEventArgs e)
         {
-            if (nodeDocumentationDict.ContainsKey(e.OldName))
-                nodeDocumentationDict.Remove(e.OldName);
+            var oldFileName = Path.GetFileNameWithoutExtension(e.OldName);
+            if (nodeDocumentationDict.ContainsKey(oldFileName))
+                nodeDocumentationDict.Remove(oldFileName);
 
-            if (!nodeDocumentationDict.ContainsKey(e.Name))
-                nodeDocumentationDict.Add(e.Name, e.FullPath);
+            var newFileName = Path.GetFileNameWithoutExtension(e.Name);
+            if (!nodeDocumentationDict.ContainsKey(newFileName))
+                nodeDocumentationDict.Add(newFileName, e.FullPath);
         }
     }
 }

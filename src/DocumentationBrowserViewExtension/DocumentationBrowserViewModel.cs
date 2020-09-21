@@ -178,7 +178,7 @@ namespace Dynamo.DocumentationBrowser
                         var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.NodeNamespace);
                         if (!(mdLink is null))
                             WatchMdFile(mdLink);
-                        link = string.IsNullOrEmpty(mdLink) ? null : new Uri(PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.NodeNamespace));
+                        link = string.IsNullOrEmpty(mdLink) ? null : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
 
                         break;

@@ -216,7 +216,7 @@ namespace Dynamo.ViewModels
         }
 
         static private string GetNamespace(NodeModel nodeModel)
-        {          
+        {
             switch (nodeModel)
             {
                 case Function function:
@@ -230,7 +230,8 @@ namespace Dynamo.ViewModels
                     return string.Format("{0}.{1}", className, functionName);
 
                 default:
-                    return string.Empty;
+                    var type = nodeModel.GetType();
+                    return type.FullName;
             }
         }
     }
