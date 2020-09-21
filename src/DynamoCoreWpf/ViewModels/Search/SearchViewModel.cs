@@ -771,7 +771,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        protected void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;

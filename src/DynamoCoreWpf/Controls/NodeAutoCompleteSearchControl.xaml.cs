@@ -87,7 +87,7 @@ namespace Dynamo.UI.Controls
             if (searchElement != null)
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
-                PortViewModel port = ViewModel.targetPortViewModel;
+                PortViewModel port = ViewModel.PortViewModel;
                 searchElement.CreateAndConnectCommand.Execute(port.PortModel);
             }
         }
@@ -121,7 +121,8 @@ namespace Dynamo.UI.Controls
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox.Focus();
-                ViewModel.InitializeDefaultAutoCompleteCandidates();
+                //ViewModel.InitializeDefaultAutoCompleteCandidates();
+                ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
         }
 
