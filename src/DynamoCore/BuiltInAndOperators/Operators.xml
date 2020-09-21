@@ -113,7 +113,7 @@
                   Negates the input, e.g. returns false when the input is true.
                 </summary>
             <param name="x">boolean to reverse.</param>
-            <returns name="bool">reversed boolean</returns>
+            <returns name="bool">type var[]..[] (reversed boolean) </returns>
             <search>not</search>
         </member>
     </members>
