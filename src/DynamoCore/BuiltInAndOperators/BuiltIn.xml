@@ -136,7 +136,7 @@
       <summary>Use a function to determine how list items should be grouped.</summary>
       <param name="list">list of values</param>
       <param name="groupFunction">Function to group list</param>
-      <returns name="groupedList">Grouped list</returns>
+      <returns name="groupedList">type: var[]..[] (list of arbitrary rank/levels)</returns>
       <search>group,function</search>
     </member>
     <member name="List.TrueForAll">
