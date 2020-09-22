@@ -236,7 +236,6 @@ namespace Dynamo.DocumentationBrowser
             // the same event twice, when a file is modified from some programs.
             // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
             var currentTime = DateTime.UtcNow;
-            Console.WriteLine((currentTime - lastMdFileChangeTimeStamp).TotalMilliseconds);
             if (currentTime - lastMdFileChangeTimeStamp < TimeSpan.FromMilliseconds(20))
                 return;             
 
