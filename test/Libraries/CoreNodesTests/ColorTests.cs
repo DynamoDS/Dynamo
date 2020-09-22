@@ -68,10 +68,10 @@ namespace DSCoreNodesTests
             Color color = Color.ByARGB(128, 64, 160, 255);
             var components = Color.Components(color);
 
-            Assert.AreEqual(128, components["a"]);
-            Assert.AreEqual(64,  components["r"]);
-            Assert.AreEqual(160, components["g"]);
-            Assert.AreEqual(255, components["b"]);
+            Assert.AreEqual(128, components["alpha"]);
+            Assert.AreEqual(64,  components["red"]);
+            Assert.AreEqual(160, components["green"]);
+            Assert.AreEqual(255, components["blue"]);
         }
 
 
