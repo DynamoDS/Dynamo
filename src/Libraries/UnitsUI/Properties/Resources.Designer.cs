@@ -106,7 +106,7 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number representation in feet (double).
+        ///   Looks up a localized string similar to Number representation in feet.
         /// </summary>
         internal static string LengthFromStringPortDataLengthToolTip {
             get {
