@@ -22,9 +22,9 @@ class List extends DSCore.List
 		return __SortByFunction(list, func);
 	}
 
-	public static def MaximumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MaximumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MaximumItemByKey(list, keyProjector);
+		return __MaximumItemByKey(list, keyFunction);
 	}
 
 	public static def MinimumItemByKey(list: var[]..[], keyProjector: Function)
