@@ -5,7 +5,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph.Nodes;
 using Path = System.IO.Path;
