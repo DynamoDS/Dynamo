@@ -25,7 +25,7 @@ namespace CoreNodeModels.HigherOrder
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list", Resources.MapPortDataListToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("function", Resources.MapPortDataFxToolTip)));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("mapped", Resources.MapPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.MapPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
