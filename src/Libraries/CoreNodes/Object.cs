@@ -13,7 +13,7 @@ namespace DSCore
         ///     Determines if the given object is null.
         /// </summary>
         /// <param name="object">Object to test.</param>
-        /// <returns name="boolean">Whether object is null.</returns>
+        /// <returns name="bool">Whether object is null.</returns>
         /// <search>is null</search>
         public static bool IsNull(object @object)
         {
