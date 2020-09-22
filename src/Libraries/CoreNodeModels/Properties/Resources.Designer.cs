@@ -1088,7 +1088,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Returns the input of either the True or False input depending on what boolean value is toggled in the test input..
+        ///   Looks up a localized string similar to Returns the result of either the True or False input depending on what boolean value is toggled in the test input..
         /// </summary>
         public static string ScopeIfDescription {
             get {
