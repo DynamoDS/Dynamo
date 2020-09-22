@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorRangeTests.cs" />
+    <Compile Include="CoreNodeModelsTests\BaseTypesTests.cs" />
     <Compile Include="CoreNodeModelsTests\EnumAsStringTests.cs" />
     <Compile Include="CoreNodeModelsTests\SelectionTests.cs" />
     <Compile Include="DateTimeTests.cs" />
