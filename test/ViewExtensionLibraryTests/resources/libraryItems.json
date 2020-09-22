@@ -2729,6 +2729,14 @@
       "keywords": "bevel, flattenedges"
     },
     {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Solid.Separate",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Solid.Separate.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.Solid.Separate@Autodesk.DesignScript.Geometry.Solid",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "split, disjoint"
+    },
+    {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints.Point1.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
