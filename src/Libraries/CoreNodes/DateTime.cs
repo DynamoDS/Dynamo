@@ -158,7 +158,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
         /// <returns name="date">date from DateTime</returns>
-        /// <search>Date,DataTime.Date</search>
+        /// <search>Date</search>
         public static System.DateTime Date(System.DateTime dateTime)
         {
             return dateTime.Date;
