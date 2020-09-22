@@ -160,7 +160,7 @@ namespace Dynamo.ViewModels
     }
 
     /// <summary>
-    /// Provides information about the Dynamo RequestOpenDocumentaitonLink event,
+    /// A node documentation request compatible with the Dynamo RequestOpenDocumentationLink event,
     /// such as the namespace of the node used to lookup the .md documentation file
     /// and additional Node Info gathered from the NodeModel properties.
     /// </summary>
