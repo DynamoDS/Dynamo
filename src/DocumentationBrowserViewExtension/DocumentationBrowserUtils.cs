@@ -5,9 +5,9 @@ using System.Text.RegularExpressions;
 namespace Dynamo.DocumentationBrowser
 {
     /// <summary>
-    /// 
+    /// Common utilities used across classes in the DocumentationBrowserViewExtension.
     /// </summary>
-    internal static class DocumentaionBrowserUtils
+    internal static class DocumentationBrowserUtils
     {
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
         private const string DPISCRIPT = @"<script> function getDPIScale()
@@ -81,7 +81,6 @@ namespace Dynamo.DocumentationBrowser
             }
 
             return result;
-
         }
     }
 }

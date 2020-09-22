@@ -53,6 +53,11 @@ namespace Dynamo.PackageManager
             return output;
         }
 
+        public bool ContainsAnnotationDoc(string nodeNamespace)
+        {
+            return nodeDocumentationFileLookup.ContainsKey(nodeNamespace);
+        }
+
         /// <summary>
         /// Retrieves the FileWatcher for the specified directory file path.
         /// </summary>

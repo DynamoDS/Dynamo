@@ -21,7 +21,7 @@ namespace Dynamo.DocumentationBrowser
 
 
         private static MarkdownHandler instance;
-        public static MarkdownHandler Instance
+        internal static MarkdownHandler Instance
         {
             get
             {
@@ -30,7 +30,7 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        public MarkdownHandler()
+        private MarkdownHandler()
         {
             var pipelineBuilder = new MarkdownPipelineBuilder();
             pipeline = pipelineBuilder
@@ -56,23 +56,29 @@ namespace Dynamo.DocumentationBrowser
 
             if (string.IsNullOrWhiteSpace(mdFilePath) ||
                 !File.Exists(mdFilePath))
-                mdString = DocumentaionBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
+                mdString = DocumentationBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
 
             else
             {
-                var fileInfo = new FileInfo(mdFilePath);
-                while (IsFileLocked(fileInfo))
+                // Doing this to avoid 'System.ObjectDisposedException'
+                // https://docs.microsoft.com/en-us/visualstudio/code-quality/ca2202?view=vs-2019
+                Stream stream = null;
+                try
                 {
-                    Console.WriteLine("File is busy....");
+                    stream = File.Open(mdFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        stream = null;
+                        mdString = reader.ReadToEnd();
+                    }
                 }
-
-                using (Stream stream = File.Open(mdFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-                using (StreamReader reader = new StreamReader(stream))
+                finally
                 {
-                    mdString = reader.ReadToEnd();
-                }
+                    stream?.Dispose();
+                }    
 
-                if (DocumentaionBrowserUtils.RemoveScriptTagsFromString(ref mdString))
+                // Remove scripts from user content for security reasons.
+                if (DocumentationBrowserUtils.RemoveScriptTagsFromString(ref mdString))
                     scriptTagsRemoved = true;
             }
             scriptTagsRemoved = false;
@@ -85,7 +91,7 @@ namespace Dynamo.DocumentationBrowser
 
             renderer.Render(document);
             // inject the syntax highlighting script at the bottom at the document.
-            writer.WriteLine(DocumentaionBrowserUtils.GetDPIScript());
+            writer.WriteLine(DocumentationBrowserUtils.GetDPIScript());
             writer.WriteLine(GetSyntaxHighlighting());
 
             return scriptTagsRemoved;
@@ -97,7 +103,7 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="content"></param>
         private static string GetSyntaxHighlighting()
         {
-            var syntaxHighlightingContent = DocumentaionBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
+            var syntaxHighlightingContent = DocumentationBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
             if (string.IsNullOrWhiteSpace(syntaxHighlightingContent))
                 return string.Empty;
 
@@ -128,28 +134,6 @@ namespace Dynamo.DocumentationBrowser
 
                 image.Url = absoluteImagePath;
             }
-        }
-
-        private bool IsFileLocked(FileInfo file)
-        {
-            try
-            {
-                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
-                {
-                    stream.Close();
-                }
-            }
-            catch (IOException)
-            {
-                //the file is unavailable because it is:
-                //still being written to
-                //or being processed by another thread
-                //or does not exist (has already been processed)
-                return true;
-            }
-
-            //file is not locked
-            return false;
         }
     }
 }

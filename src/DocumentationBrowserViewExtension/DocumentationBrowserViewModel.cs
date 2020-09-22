@@ -27,6 +27,7 @@ namespace Dynamo.DocumentationBrowser
         private bool shouldLoadDefaultContent;
         private readonly PackageDocManager packageManagerDoc;
         private readonly MarkdownHandler markdownHandler;
+        private FileSystemWatcher markdownFileWatcher;
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -37,9 +38,18 @@ namespace Dynamo.DocumentationBrowser
             get { return this.link; }
             private set
             {
-                UnsubscribeMdWatcher(link);
+                var oldLink = link;
+                // if the link is changed we unsubscribe the current watcher and create a new
+                // for the new link, if its a markdown file.
+                if(value != oldLink)
+                {
+                    UnsubscribeMdWatcher();
+                    WatchMdFile(value.OriginalString);
+                }
+
                 this.link = value;
                 OnLinkChanged(value);
+
             }
         }
 
@@ -88,6 +98,7 @@ namespace Dynamo.DocumentationBrowser
 
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
+        private DateTime lastMdFileChangeTimeStamp;
 
         #endregion
 
@@ -101,6 +112,7 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = true;
             packageManagerDoc = PackageManager.PackageDocManager.Instance;
             markdownHandler = MarkdownHandler.Instance;
+            lastMdFileChangeTimeStamp = DateTime.MinValue;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -146,8 +158,6 @@ namespace Dynamo.DocumentationBrowser
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
                         var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
-                        if (!(mdLink is null))
-                            WatchMdFile(mdLink);
                         link = string.IsNullOrEmpty(mdLink) ? null : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
 
@@ -195,20 +205,24 @@ namespace Dynamo.DocumentationBrowser
 
         private void WatchMdFile(string mdLink)
         {
-            var watcher = packageManagerDoc.GetMarkdownFileWatcher(mdLink);
-            watcher.Changed += OnCurrentMdFileChanged;
+            var fileName = Path.GetFileNameWithoutExtension(mdLink);
+            if (!PackageDocManager.Instance.ContainsAnnotationDoc(fileName))
+                return;
+
+            markdownFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(mdLink))
+            {
+                Filter = Path.GetFileName(mdLink),
+                EnableRaisingEvents = true
+            };
+            markdownFileWatcher.Changed += OnCurrentMdFileChanged;
         }
 
-        private void UnsubscribeMdWatcher(Uri link)
+        private void UnsubscribeMdWatcher()
         {
-            if (link is null)
+            if (markdownFileWatcher is null)
                 return;
 
-            var watcher = packageManagerDoc.GetMarkdownFileWatcher(link.OriginalString);
-            if (watcher is null)
-                return;
-
-            watcher.Changed -= OnCurrentMdFileChanged;
+            markdownFileWatcher.Changed -= OnCurrentMdFileChanged;
         }
 
         private void OnCurrentMdFileChanged(object sender, FileSystemEventArgs e)
@@ -218,16 +232,26 @@ namespace Dynamo.DocumentationBrowser
             if (!(openDocumentationLinkEventArgs is OpenNodeAnnotationEventArgs))
                 return;
 
+            // Check the time between this event is fired, its a known issue that FileWatchers raises
+            // the same event twice, when a file is modified from some programs.
+            // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
+            var currentTime = DateTime.UtcNow;
+            Console.WriteLine((currentTime - lastMdFileChangeTimeStamp).TotalMilliseconds);
+            if (currentTime - lastMdFileChangeTimeStamp < TimeSpan.FromMilliseconds(20))
+                return;             
+
+            this.lastMdFileChangeTimeStamp = currentTime;
+
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
-            OnContentChanged();
+            this.Link = new Uri(e.FullPath);
         }
 
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
         {
             var writer = new StringWriter();
             // Write the Node info section to the string writer
-            writer.WriteLine(NodeDocumetaionHandler.GetNodeInfoFromAnnotationArgs(e));
+            writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
 
             // Convert the markdown file to html and remove script tags if any
             if (markdownHandler.ParseToHtml(ref writer, e.Namespace))
@@ -362,14 +386,14 @@ namespace Dynamo.DocumentationBrowser
 
             // Clean up possible script tags from document
             if (removeScriptTags &&
-                DocumentaionBrowserUtils.RemoveScriptTagsFromString(ref result))
+                DocumentationBrowserUtils.RemoveScriptTagsFromString(ref result))
             {
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
             }
 
             //inject our DPI functions:
             if (injectDPI)
-                result += DocumentaionBrowserUtils.GetDPIScript();
+                result += DocumentationBrowserUtils.GetDPIScript();
 
             return result;
         }

@@ -8,7 +8,7 @@ namespace Dynamo.DocumentationBrowser
     /// <summary>
     /// Class responsible for creating the Node Info part of the node documentation. 
     /// </summary>
-    static class NodeDocumetaionHandler
+    internal static class NodeDocumentationHtmlGenerator
     {
         private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
 
@@ -18,13 +18,13 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="e"></param>
         /// <returns></returns>
-        internal static string GetNodeInfoFromAnnotationArgs(OpenNodeAnnotationEventArgs e)
+        internal static string FromAnnotationEventArgs(OpenNodeAnnotationEventArgs e)
         {
             if (e is null)
                 throw new ArgumentNullException(nameof(e));
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(DocumentaionBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+            sb.AppendLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
             sb.AppendLine(CreateHeader(e));
             sb.AppendLine(CreateNodeInfo(e));
 
