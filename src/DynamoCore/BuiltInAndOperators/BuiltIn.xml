@@ -27,7 +27,7 @@
       <summary>Use a function to determine how list items should be sorted.</summary>
       <param name="list">list of values</param>
       <param name="sortFunction">function used to sort list</param>
-      <returns name="sortedList">list sorted by function</returns>
+      <returns name="sortedList">type: var[]..[]</returns>
       <search>sort,order</search>
     </member>
     <member name="ToString">
