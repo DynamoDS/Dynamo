@@ -44,31 +44,22 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Retrieves the markdown node documentation file associated with the input node namespace
         /// </summary>
-        /// <param name="nodeNamespace">Namespace of the node to lookup documentaion for</param>
+        /// <param name="nodeNamespace">Namespace of the node to lookup documentation for</param>
         /// <returns></returns>
         public string GetAnnotationDoc(string nodeNamespace)
         {
-            string output;
-            nodeDocumentationFileLookup.TryGetValue(nodeNamespace, out output);
+            nodeDocumentationFileLookup.TryGetValue(nodeNamespace, out string output);
             return output;
         }
 
+        /// <summary>
+        /// Checks if the nodeNamespace has a documentation markdown associated.
+        /// </summary>
+        /// <param name="nodeNamespace"></param>
+        /// <returns></returns>
         public bool ContainsAnnotationDoc(string nodeNamespace)
         {
             return nodeDocumentationFileLookup.ContainsKey(nodeNamespace);
-        }
-
-        /// <summary>
-        /// Retrieves the FileWatcher for the specified directory file path.
-        /// </summary>
-        /// <param name="filePath">File path to lookup associated file watcher.</param>
-        /// <returns></returns>
-        public FileSystemWatcher GetMarkdownFileWatcher(string filePath)
-        {
-            var directory = Path.GetDirectoryName(filePath);
-            FileSystemWatcher watcher;
-            markdownFileWatchers.TryGetValue(directory, out watcher);
-            return watcher;
         }
 
         /// <summary>
@@ -86,7 +77,7 @@ namespace Dynamo.PackageManager
                 var directoryInfo = new DirectoryInfo(path);
                 MonitorDirectory(directoryInfo);
                 var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
-                AddDocumentationToDictionary(files);
+                TrackDocumentationFiles(files);
             }
         }
 
@@ -102,7 +93,7 @@ namespace Dynamo.PackageManager
             markdownFileWatchers.Add(watcher.Path, watcher);
         }
 
-        private void AddDocumentationToDictionary(FileInfo[] files)
+        private void TrackDocumentationFiles(FileInfo[] files)
         {
             foreach (var file in files)
             {
