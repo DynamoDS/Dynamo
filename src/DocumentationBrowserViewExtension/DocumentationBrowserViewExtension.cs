@@ -19,7 +19,6 @@ namespace Dynamo.DocumentationBrowser
     {
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
-        private PackageDocManager packageDocManager;
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -70,9 +69,6 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowserMenuItem.Checked += MenuItemCheckHandler;
             this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
             this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
-
-            packageDocManager = PackageManager.PackageDocManager.Instance;
-
 
             DynamoView.CloseExtension += OnCloseExtension;
 

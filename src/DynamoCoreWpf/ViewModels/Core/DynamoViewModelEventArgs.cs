@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
@@ -164,8 +166,8 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class OpenNodeAnnotationEventArgs : OpenDocumentationLinkEventArgs
     {
-        public string NodeNamespace { get; }
-        public string NodeType { get; }
+        public string Namespace { get; }
+        public string Type { get; }
         public string Description { get; }
         public string Category { get; }
         public List<string> InputNames { get; private set; }
@@ -173,23 +175,20 @@ namespace Dynamo.ViewModels
         public List<string> InputDescriptions { get; private set; }
         public List<string> OutputDescriptions { get; private set; }
 
-        private NodeModel nodeModel;
         public OpenNodeAnnotationEventArgs(NodeModel model) : base(new Uri(String.Empty,UriKind.Relative))
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            nodeModel = model;
-
-            NodeNamespace = GetNamespace(model);
-            NodeType = nodeModel.Name;
-            Description = nodeModel.Description;
-            Category = nodeModel.Category;
-            SetInputs();
-            SetOutputs();
+            Namespace = GetNamespace(model);
+            Type = model.Name;
+            Description = model.Description;
+            Category = model.Category;
+            SetInputs(model);
+            SetOutputs(model);
 
         }
 
-        private void SetOutputs()
+        private void SetOutputs(NodeModel nodeModel)
         {
             OutputNames = new List<string>();
             OutputDescriptions = new List<string>();
@@ -202,7 +201,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SetInputs()
+        private void SetInputs(NodeModel nodeModel)
         {
             InputNames = new List<string>();
             InputDescriptions = new List<string>();
@@ -220,6 +219,7 @@ namespace Dynamo.ViewModels
             switch (nodeModel)
             {
                 case Function function:
+                    // implementation for custom nodes goes here.
                     return string.Empty;
 
                 case DSFunctionBase dSFunction:
@@ -229,9 +229,14 @@ namespace Dynamo.ViewModels
 
                     return string.Format("{0}.{1}", className, functionName);
 
-                default:
-                    var type = nodeModel.GetType();
+                case NodeModel node:
+                    var type = node.GetType();
+                    var inPortAttribute = type.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
                     return type.FullName;
+
+                default:
+                    return string.Empty;
+
             }
         }
     }

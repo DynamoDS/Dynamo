@@ -332,13 +332,6 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            //var helpDialog = new NodeHelpPrompt(e.Model);
-            //helpDialog.Owner = Window.GetWindow(this);
-
-            //helpDialog.Show();
-            //var viewm = viewModel;
-            //var m = viewModel.NodeModel;
-
             var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(viewModel.NodeModel);
             ViewModel.DynamoViewModel.OpenDocumentationLink(nodeAnnotationEventArgs);
         }

@@ -1,0 +1,87 @@
+﻿using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
+
+namespace Dynamo.DocumentationBrowser
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    internal static class DocumentaionBrowserUtils
+    {
+        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
+        private const string DPISCRIPT = @"<script> function getDPIScale()
+        {
+            var dpi = 96.0;
+            if (window.screen.deviceXDPI != undefined)
+            {
+                dpi = window.screen.deviceXDPI;
+            }
+            else
+            {
+                var tmpNode = document.createElement('DIV');
+                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
+                document.body.appendChild(tmpNode);
+                dpi = parseInt(tmpNode.offsetWidth);
+                tmpNode.parentNode.removeChild(tmpNode);
+            }
+
+            return dpi / 96.0;
+        }
+
+        function adaptDPI()
+        {
+            var dpiScale = getDPIScale();
+            document.body.style.zoom = dpiScale;
+
+            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
+            document.body.style.width = widthPercentage;
+        }
+        adaptDPI() </script>";
+
+        /// <summary>
+        /// Clean up possible script tags from the content string.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns>Returns true if any tags was removed from the content</returns>
+        internal static bool RemoveScriptTagsFromString(ref string content)
+        {
+            if (Regex.IsMatch(content, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
+            {
+                content = Regex.Replace(content, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns the DPIScript
+        /// </summary>
+        /// <param name="content"></param>
+        internal static string GetDPIScript()
+        {
+            return DPISCRIPT;
+        }
+
+        /// <summary>
+        /// Returns the content of an embedded resource file.
+        /// </summary>
+        /// <param name="resourceName"></param>
+        /// <returns></returns>
+        internal static string GetContentFromEmbeddedResource(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var result = "";
+
+            using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                result = reader.ReadToEnd();
+            }
+
+            return result;
+
+        }
+    }
+}

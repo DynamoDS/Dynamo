@@ -3,8 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -22,34 +20,6 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
         private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
-        private const string DPISCRIPT = @"<script> function getDPIScale()
-        {
-            var dpi = 96.0;
-            if (window.screen.deviceXDPI != undefined)
-            {
-                dpi = window.screen.deviceXDPI;
-            }
-            else
-            {
-                var tmpNode = document.createElement('DIV');
-                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
-                document.body.appendChild(tmpNode);
-                dpi = parseInt(tmpNode.offsetWidth);
-                tmpNode.parentNode.removeChild(tmpNode);
-            }
-
-            return dpi / 96.0;
-        }
-
-        function adaptDPI()
-        {
-            var dpiScale = getDPIScale();
-            document.body.style.zoom = dpiScale;
-
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
-            document.body.style.width = widthPercentage;
-        }
-        adaptDPI() </script>";
         #endregion
 
         #region Properties
@@ -175,7 +145,7 @@ namespace Dynamo.DocumentationBrowser
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
-                        var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.NodeNamespace);
+                        var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
                         if (!(mdLink is null))
                             WatchMdFile(mdLink);
                         link = string.IsNullOrEmpty(mdLink) ? null : new Uri(mdLink);
@@ -225,7 +195,7 @@ namespace Dynamo.DocumentationBrowser
 
         private void WatchMdFile(string mdLink)
         {
-            var watcher = packageManagerDoc.GetFileSystemWatcher(mdLink);
+            var watcher = packageManagerDoc.GetMarkdownFileWatcher(mdLink);
             watcher.Changed += OnCurrentMdFileChanged;
         }
 
@@ -234,7 +204,7 @@ namespace Dynamo.DocumentationBrowser
             if (link is null)
                 return;
 
-            var watcher = packageManagerDoc.GetFileSystemWatcher(link.OriginalString);
+            var watcher = packageManagerDoc.GetMarkdownFileWatcher(link.OriginalString);
             if (watcher is null)
                 return;
 
@@ -256,77 +226,15 @@ namespace Dynamo.DocumentationBrowser
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
         {
             var writer = new StringWriter();
+            // Write the Node info section to the string writer
+            writer.WriteLine(NodeDocumetaionHandler.GetNodeInfoFromAnnotationArgs(e));
 
-            var style = LoadContentFromResources("MarkdownStyling.html", false);
-            writer.WriteLine(style);
-
-            var header = CreateHeader(e);
-            writer.WriteLine(header);
-
-            var nodeInfo = CreateNodeInfo(e);
-            writer.WriteLine(nodeInfo);
-
-            var mdFilePath = packageManagerDoc.GetAnnotationDoc(e.NodeNamespace);
-            markdownHandler.GetAnnotationFromMd(ref writer, mdFilePath);
-
-            // inject the syntax highlighting and DPI script at the bottom at the document.
-            writer.WriteLine(LoadContentFromResources("syntaxHighlight.html", true, false));
+            // Convert the markdown file to html and remove script tags if any
+            if (markdownHandler.ParseToHtml(ref writer, e.Namespace))
+                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
 
             writer.Flush();
             return writer.ToString();
-        }
-
-        private string CreateHeader(OpenNodeAnnotationEventArgs e)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<br>");
-            sb.AppendLine(string.Format("<h1>{0}</h1>", e.NodeType));
-            sb.AppendLine(string.Format("<p><i>{0}</i></p>", e.NodeNamespace));
-            sb.AppendLine("<hr>");
-
-            return sb.ToString();
-        }
-
-        private string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<h2>Node Info</h2>");
-            sb.AppendLine("<table class=\"table--noborder\">");
-            sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Node Type"));
-            sb.AppendLine(string.Format("<td>{0}</td>", e.NodeType));
-            sb.AppendLine("</tr>");
-            sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Description"));
-            sb.AppendLine(string.Format("<td>{0}</td>", Regex.Replace(e.Description, @"\r\n?|\n", "<br>")));
-            sb.AppendLine("</tr>");
-            sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Category"));
-            sb.AppendLine(string.Format("<td>{0}</td>", e.Category));
-            sb.AppendLine("</tr>");
-            sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Inputs"));
-            sb.AppendLine("<td>");
-            for (int i = 0; i < e.InputNames.Count; i++)
-            {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.InputNames[i], Regex.Replace(e.InputDescriptions[i], @"\r\n?|\n", "<br>")));
-            }
-            sb.AppendLine("</td>");
-            sb.AppendLine("</tr>");
-            sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Outputs"));
-            sb.AppendLine("<td>");
-            for (int i = 0; i < e.OutputNames.Count; i++)
-            {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.OutputNames[i], Regex.Replace(e.OutputDescriptions[i], @"\r\n?|\n", "<br>")));
-            }
-            sb.AppendLine("</td>");
-            sb.AppendLine("</tr>");
-            sb.AppendLine("</table>");
-            sb.AppendLine("<br></br>");
-            sb.AppendLine("<hr>");
-
-            return sb.ToString();
         }
 
         #endregion
@@ -453,18 +361,15 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Clean up possible script tags from document
-            if (removeScriptTags)
+            if (removeScriptTags &&
+                DocumentaionBrowserUtils.RemoveScriptTagsFromString(ref result))
             {
-                if (Regex.IsMatch(result, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
-                {
-                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
-                    result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
-                }
+                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
             }
 
             //inject our DPI functions:
             if (injectDPI)
-                result += DPISCRIPT;
+                result += DocumentaionBrowserUtils.GetDPIScript();
 
             return result;
         }

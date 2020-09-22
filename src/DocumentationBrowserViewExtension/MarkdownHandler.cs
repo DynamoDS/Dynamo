@@ -1,21 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Dynamo.PackageManager;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 namespace Dynamo.DocumentationBrowser
 {
+    /// <summary>
+    /// Handles markdown files by converting them to Html, so they can display in the doc browser.
+    /// </summary>
     internal class MarkdownHandler
     {
         private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
-        private MarkdownPipeline pipeline;
+        private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
+        private readonly MarkdownPipeline pipeline;
 
 
         private static MarkdownHandler instance;
@@ -36,14 +38,25 @@ namespace Dynamo.DocumentationBrowser
                 .Build();
         }
 
-        internal void GetAnnotationFromMd(ref StringWriter writer, string mdFilePath)
+        /// <summary>
+        /// Converts a markdown string into Html.
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="mdFilePath"></param>
+        /// <returns>Returns true if any script tags was removed from the string</returns>
+        internal bool ParseToHtml(ref StringWriter writer, string nodeNamespace)
         {
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
 
+            var mdFilePath = PackageDocManager.Instance.GetAnnotationDoc(nodeNamespace);
+
             string mdString;
-            if (string.IsNullOrEmpty(mdFilePath))
-                mdString = GetNodeAnnotationNotFoundContent();
+            bool scriptTagsRemoved;
+
+            if (string.IsNullOrWhiteSpace(mdFilePath) ||
+                !File.Exists(mdFilePath))
+                mdString = DocumentaionBrowserUtils.GetContentFromEmbeddedResource(NODE_ANNOTATION_NOT_FOUND);
 
             else
             {
@@ -58,35 +71,70 @@ namespace Dynamo.DocumentationBrowser
                 {
                     mdString = reader.ReadToEnd();
                 }
+
+                if (DocumentaionBrowserUtils.RemoveScriptTagsFromString(ref mdString))
+                    scriptTagsRemoved = true;
             }
+            scriptTagsRemoved = false;
 
             var renderer = new HtmlRenderer(writer);
             pipeline.Setup(renderer);
 
             var document = MarkdownParser.Parse(mdString, pipeline);
+            ConvertRelativeLocalImagePathsToAbsolute(mdFilePath, document);
+
             renderer.Render(document);
+            // inject the syntax highlighting script at the bottom at the document.
+            writer.WriteLine(DocumentaionBrowserUtils.GetDPIScript());
+            writer.WriteLine(GetSyntaxHighlighting());
+
+            return scriptTagsRemoved;
         }
 
-        private string GetNodeAnnotationNotFoundContent()
+        /// <summary>
+        /// Inject syntax highlighting into a html string.
+        /// </summary>
+        /// <param name="content"></param>
+        private static string GetSyntaxHighlighting()
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var result = "";
+            var syntaxHighlightingContent = DocumentaionBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
+            if (string.IsNullOrWhiteSpace(syntaxHighlightingContent))
+                return string.Empty;
 
-            using (Stream stream = assembly.GetManifestResourceStream(NODE_ANNOTATION_NOT_FOUND))
-            using (StreamReader reader = new StreamReader(stream))
+            return syntaxHighlightingContent;
+        }
+
+        /// <summary>
+        /// For markdown local images needs to be in the same folder as the md file
+        /// referencing it with a relative path "./image.png", when we convert to html
+        /// we need the full path. This method finds relative image paths and converts them to absolute paths.
+        /// </summary>
+        private static void ConvertRelativeLocalImagePathsToAbsolute(string mdFilePath, MarkdownDocument document)
+        {
+            var imageLinks = document.Descendants<ParagraphBlock>()
+                .SelectMany(x => x.Inline.Descendants<LinkInline>())
+                .Where(x => x.IsImage)
+                .Select(x => x).ToList();
+
+            foreach (var image in imageLinks)
             {
-                result = reader.ReadToEnd();
+                if (!image.Url.StartsWith("./"))
+                    continue;
+
+                var imageName = image.Url.Split(new string[] { "./" }, StringSplitOptions.None);
+                var dir = Path.GetDirectoryName(mdFilePath);
+
+                var absoluteImagePath = Path.Combine(@"file://localhost/", dir, imageName.Last());
+
+                image.Url = absoluteImagePath;
             }
-
-            return result;
-
         }
 
         private bool IsFileLocked(FileInfo file)
         {
             try
             {
-                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.None))
+                using (FileStream stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
                 {
                     stream.Close();
                 }

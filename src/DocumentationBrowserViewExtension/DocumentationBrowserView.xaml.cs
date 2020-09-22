@@ -90,13 +90,15 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
-            }));
+            NavigateToString(this.viewModel.GetContent());
         }
 
         private void OnContentChanged(object sender, EventArgs e)
+        {
+            NavigateToString(this.viewModel.GetContent());
+        }
+
+        private void NavigateToString(string content)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -108,6 +110,7 @@ namespace Dynamo.DocumentationBrowser
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
+            this.viewModel.ContentChanged -= OnContentChanged;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
             this.documentationBrowser.Dispose();
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;

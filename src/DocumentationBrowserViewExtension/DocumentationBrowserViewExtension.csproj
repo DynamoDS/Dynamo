@@ -70,9 +70,11 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="DocumentaionBrowserUtils.cs" />
     <Compile Include="DocumentationBrowserViewExtension.cs" />
     <Compile Include="DocumentationBrowserViewModel.cs" />
     <Compile Include="MarkdownHandler.cs" />
+    <Compile Include="NodeDocumetaionMarkdownHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
