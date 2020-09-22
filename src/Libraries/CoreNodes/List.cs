@@ -423,8 +423,8 @@ namespace DSCore
         ///     except the first.
         /// </summary>
         /// <param name="list">List to be split.</param>
-        /// <returns name="first">First item in the list.</returns>
-        /// <returns name="rest">Rest of the list.</returns>
+        /// <returns name="first">type: var[]..[] (first item in the list)</returns>
+        /// <returns name="rest">type: var[]..[] (rest of the list)</returns>
         /// <search>first,rest,list split,listcontains</search>
         [MultiReturn(new[] { "first", "rest" })]
         [IsVisibleInDynamoLibrary(true)]
@@ -1162,7 +1162,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
-        /// <returns name="list">List of repeated lists.</returns>
+        /// <returns name="list">type: var[]..[] (list of repeated lists)</returns>
         /// <search>repeat,repeated,duplicate,repeated list,concat list</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Cycle(IList list, int amount)
