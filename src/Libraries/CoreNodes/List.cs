@@ -441,7 +441,7 @@ namespace DSCore
         ///     Sort list based on its keys
         /// </summary>
         /// <param name="list">list to be sorted</param>
-        /// <param name="keys">list of keys, keys have to be sortable (ex: numbers,strings)   </param>
+        /// <param name="keys">list of keys, keys have to be sortable (e.g. numbers,strings)   </param>
         /// <returns name="sortedList">type: var[]..[]</returns>
         /// <returns name="sortedKeys">type: var[]..[]</returns>
         /// <search>sort;key</search>
