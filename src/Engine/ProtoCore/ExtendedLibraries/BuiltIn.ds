@@ -27,9 +27,9 @@ class List extends DSCore.List
 		return __MaximumItemByKey(list, keyProjector);
 	}
 
-	public static def MinimumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MinimumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MinimumItemByKey(list, keyProjector);
+		return __MinimumItemByKey(list, keyFunction);
 	}
 
 	public static def TrueForAll: bool(list: var[]..[], predicate: Function)
