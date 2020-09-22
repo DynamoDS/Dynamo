@@ -326,15 +326,15 @@ namespace DSCore
         /// </summary>
         /// <param name="formulaString">NCalc formula</param>
         /// <param name="parameters">Variable names</param>
-        /// <param name="args">Variable bindings</param>
-        /// <returns name="result">Result of the formula calculation.</returns>
-        public static object EvaluateFormula(string formulaString, string[] parameters, object[] args)
+        /// <param name="arguments">Variable bindings</param>
+        /// <returns name="result">type: var[]..[] (result of the formula calculation)</returns>
+        public static object EvaluateFormula(string formulaString, string[] parameters, object[] arguments)
         {
             var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;
 
-            foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
+            foreach (var arg in arguments.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = parameters[arg.Index];
                 e.Parameters[parameter] = arg.Value;
