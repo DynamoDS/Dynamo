@@ -312,7 +312,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dividend">The number to be divided.</param>
         /// <param name="divisor">The number to be divided by.</param>
-        /// <returns name="integer">The remainder of the division</returns>
+        /// <returns name="int">The remainder of the division</returns>
         /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
