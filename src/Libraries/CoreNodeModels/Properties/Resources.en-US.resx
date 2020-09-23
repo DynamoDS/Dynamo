@@ -591,7 +591,7 @@
     <value>color</value>
   </data>
   <data name="EqualsWithToleranceDescription" xml:space="preserve">
-    <value>Equals with tolerance input.</value>
+    <value>Compares if two numbers are equal given a certain tolerance.</value>
     <comment>Description for Equals with tolerance node</comment>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
