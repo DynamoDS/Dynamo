@@ -256,7 +256,6 @@ namespace DSCPython
             // Allows discoverability of modules by inspecting their attributes
             scope.Exec(@"
 import clr
-import sys
 clr.setPreload(True)
 ");
 
