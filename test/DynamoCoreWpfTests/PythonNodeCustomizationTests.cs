@@ -244,6 +244,8 @@ namespace DynamoCoreWpfTests
 
             var scriptWindow = EditPythonCode(nodeView, View);
             var codeEditor = FindCodeEditor(scriptWindow);
+
+            //This line is replacing the python dictionary values so later after re-running we will see the changes in the Watch node
             codeEditor.Text = codeEditor.Text.Replace("Autodesk", "Softdesk").Replace("1982", "1997");
             codeEditor.Focus();
 
@@ -263,7 +265,7 @@ namespace DynamoCoreWpfTests
                             .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
                             .FirstOrDefault();
 
-            //Validate hat the DocmentationBrowser extension tab is valid
+            //Validate that the DocmentationBrowser extension tab is valid
             Assert.IsNotNull(docBrowser);
             Assert.IsTrue(docBrowser.IsVisible);
         }
