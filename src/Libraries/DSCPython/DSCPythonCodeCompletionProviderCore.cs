@@ -332,115 +332,131 @@ namespace DSCPython
         public void UpdateImportedTypes(string code)
         {
             // Detect all lib references prior to attempting to import anything
-            var refs = FindClrReferences(code);
-            foreach (var statement in refs)
+            Python.Included.Installer.SetupPython().Wait();
+
+            if (!PythonEngine.IsInitialized)
             {
-                var previousTries = 0;
-                badStatements.TryGetValue(statement, out previousTries);
-                // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
-                if (previousTries > 3)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
-
-                    //  If the library name cannot be found in the loaded clr modules
-                    if (!clrModules.Contains(libName))
-                    {
-                        if (statement.Contains("AddReferenceToFileAndPath"))
-                        {
-                            Scope.Exec(statement);
-                            // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-                            clrModules.Add(libName);
-                            continue;
-                        }
-
-                        if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
-                        {
-                            Scope.Exec(statement);
-                            // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
-                            clrModules.Add(libName);
-                        }
-                    } 
-                }
-                catch (Exception e)
-                {
-                    Log(String.Format("Failed to reference library: {0}", statement));
-                    Log(e.ToString());
-                    badStatements[statement] = previousTries + 1;
-                }
+                PythonEngine.Initialize();
+                PythonEngine.BeginAllowThreads();
             }
 
-            var importStatements = FindAllImportStatements(code);
-
-            // Format import statements based on available data
-            foreach (var i in importStatements)
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
             {
-                string module = i.Item1;
-                string memberName = i.Item2;
-                string asname = i.Item3;
-                string name = asname ?? memberName;
-                string statement = "";
-                var previousTries = 0;
-
-                if (name != "*" && (Scope.Contains(name) || ImportedTypes.ContainsKey(name)))
+                var refs = FindClrReferences(code);
+                foreach (var statement in refs)
                 {
-                    continue;
-                }
-
-                try
-                {
-                    if (module == null)
-                    {
-                        if (asname == null)
-                        {
-                            statement = String.Format("import {0}", memberName);
-                        }
-                        else
-                        {
-                            statement = String.Format("import {0} as {1}", memberName, asname);
-                        }
-                    }
-                    else
-                    {
-                        if (memberName != "*" && asname != null)
-                        {
-                            statement = String.Format("from {0} import {1} as {2}", module, memberName, asname);
-                        }
-                        else
-                        {
-                            statement = String.Format("from {0} import *", module);
-                        }
-                    }
-
+                    var previousTries = 0;
                     badStatements.TryGetValue(statement, out previousTries);
-
+                    // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
                     if (previousTries > 3)
                     {
                         continue;
                     }
 
-                    Scope.Exec(statement);
-                   // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                    try
+                    {
+                        string libName = MATCH_FIRST_QUOTED_NAME.Match(statement).Groups[1].Value;
 
-                    if (memberName == "*")
+                        //  If the library name cannot be found in the loaded clr modules
+                        if (!clrModules.Contains(libName))
+                        {
+                            if (statement.Contains("AddReferenceToFileAndPath"))
+                            {
+                                Scope.Exec(statement);
+                                // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                                clrModules.Add(libName);
+                                continue;
+                            }
+
+                            if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
+                            {
+                                Scope.Exec(statement);
+                                // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+                                clrModules.Add(libName);
+                            }
+                        } 
+                    }
+                    catch (Exception e)
+                    {
+                        Log(String.Format("Failed to reference library: {0}", statement));
+                        Log(e.ToString());
+                        badStatements[statement] = previousTries + 1;
+                    }
+                }
+
+                var importStatements = FindAllImportStatements(code);
+
+                // Format import statements based on available data
+                foreach (var i in importStatements)
+                {
+                    string module = i.Item1;
+                    string memberName = i.Item2;
+                    string asname = i.Item3;
+                    string name = asname ?? memberName;
+                    string statement = "";
+                    var previousTries = 0;
+
+                    if (name != "*" && (Scope.Contains(name) || ImportedTypes.ContainsKey(name)))
                     {
                         continue;
                     }
 
-                    string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
-                    var type = Type.GetType(typeName);
-                    ImportedTypes.Add(name, type);
+                    try
+                    {
+                        if (module == null)
+                        {
+                            if (asname == null)
+                            {
+                                statement = String.Format("import {0}", memberName);
+                            }
+                            else
+                            {
+                                statement = String.Format("import {0} as {1}", memberName, asname);
+                            }
+                        }
+                        else
+                        {
+                            if (memberName != "*" && asname != null)
+                            {
+                                statement = String.Format("from {0} import {1} as {2}", module, memberName, asname);
+                            }
+                            else
+                            {
+                                statement = String.Format("from {0} import *", module);
+                            }
+                        }
+
+                        badStatements.TryGetValue(statement, out previousTries);
+
+                        if (previousTries > 3)
+                        {
+                            continue;
+                        }
+
+                        Scope.Exec(statement);
+                       // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
+
+                        if (memberName == "*")
+                        {
+                            continue;
+                        }
+
+                        string typeName = module == null ? memberName : String.Format("{0}.{1}", module, memberName);
+                        var type = Type.GetType(typeName);
+                        ImportedTypes.Add(name, type);
+                    }
+                    catch (Exception)
+                    {
+                        Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
+                        // Log(e.ToString());
+                        badStatements[statement] = previousTries + 1;
+                    }
                 }
-                catch (Exception)
-                {
-                    Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
-                    // Log(e.ToString());
-                    badStatements[statement] = previousTries + 1;
-                }
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
             }
         }
 
@@ -1035,13 +1051,13 @@ namespace DSCPython
                     {
                         docCommand = stub + "." + item + ".__doc__";
                     }
-                    ExecutePythonScriptCode(docCommand);
+                   object value = ExecutePythonScriptCode(docCommand);
                     //object value = engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
 
-                    /*if (!String.IsNullOrEmpty((string)value))
+                    if (!String.IsNullOrEmpty((string)value))
                     {
                         description = (string)value;
-                    }*/
+                    }
                 }
                 catch
                 {
@@ -1082,6 +1098,8 @@ namespace DSCPython
             {
               //  pythonLibDir = Path.Combine(dynamoCorePath, IronPythonEvaluator.PythonLibName);
             }
+
+            // TODO: check if any python libraries for CPython engine has to be imported. 
 
             // If IronPython.Std folder is excluded from DynamoCore (which could be user mistake or integrator exclusion)
             if (!Directory.Exists(pythonLibDir))
@@ -1134,53 +1152,69 @@ namespace DSCPython
             BasicVariableTypes.Add(Tuple.Create(INT_VARIABLE, typeof(int)));
             BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(PyList)));
             BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PyDict)));
-
-           // Scope = CreateGlobalScope("import clr\n");
-            // Main CLR module
-            // ExecutePythonScriptCode("import clr\n");
-            // Scope.Exec("import clr\n");
-            //engine.CreateScriptSourceFromString("import clr\n", SourceCodeKind.SingleStatement).Execute(scope);
-
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            // Determine if the Revit API is available in the given context
-            if (assemblies.Any(x => x.GetName().Name == "RevitAPI"))
+            
+            Python.Included.Installer.SetupPython().Wait();
+            if (!PythonEngine.IsInitialized)
             {
-                // Try to load Revit Type for autocomplete
-                try
-                {
-                    var revitImports =
-                        "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
-
-                   // Scope.Exec(revitImports);
-                    // engine.CreateScriptSourceFromString(revitImports, SourceCodeKind.Statements).Execute(scope);
-                    clrModules.Add("RevitAPI");
-                    clrModules.Add("RevitAPIUI");
-                }
-                catch
-                {
-                    Log("Failed to load Revit types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
-                }
+                PythonEngine.Initialize();
+                PythonEngine.BeginAllowThreads();
             }
 
-            // Determine if the ProtoGeometry is available in the given context
-            if (assemblies.Any(x => x.GetName().Name == "ProtoGeometry"))
+            IntPtr gs = PythonEngine.AcquireLock();
+            try
             {
-                // Try to load ProtoGeometry Type for autocomplete
-                try
+                using (Py.GIL())
                 {
-                    var libGImports =
-                        "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
+                    if (Scope == null)
+                    {
+                        Scope = CreateGlobalScope();
+                    }
 
-                   // Scope.Exec(libGImports);
-                    // engine.CreateScriptSourceFromString(libGImports, SourceCodeKind.Statements).Execute(scope);
-                    clrModules.Add("ProtoGeometry");
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                    // Determine if the Revit API is available in the given context
+                    if (assemblies.Any(x => x.GetName().Name == "RevitAPI"))
+                    {
+                        // Try to load Revit Type for autocomplete
+                        try
+                        {
+                            var revitImports =
+                                "import clr\nclr.AddReference('RevitAPI')\nclr.AddReference('RevitAPIUI')\nfrom Autodesk.Revit.DB import *\nimport Autodesk\n";
+
+                            Scope.Exec(revitImports);
+
+                            clrModules.Add("RevitAPI");
+                            clrModules.Add("RevitAPIUI");
+                        }
+                        catch
+                        {
+                            Log("Failed to load Revit types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
+                        }
+                    }
+
+                    // Determine if the ProtoGeometry is available in the given context
+                    if (assemblies.Any(x => x.GetName().Name == "ProtoGeometry"))
+                    {
+                        // Try to load ProtoGeometry Type for autocomplete
+                        try
+                        {
+                            var libGImports =
+                                "import clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n";
+
+                            Scope.Exec(libGImports);
+                            clrModules.Add("ProtoGeometry");
+                        }
+                        catch (Exception e)
+                        {
+                            Log(e.ToString());
+                            Log("Failed to load ProtoGeometry types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
+                        }
+                    }
                 }
-                catch (Exception e)
-                {
-                    Log(e.ToString());
-                    Log("Failed to load ProtoGeometry types for autocomplete. Python autocomplete will not see Autodesk namespace types.");
-                }
+            }
+            finally
+            {
+                PythonEngine.ReleaseLock(gs);
             }
         }
 
@@ -1220,30 +1254,6 @@ clr.setPreload(True)
                 {
                     var result = Scope.Eval(code);
                     return result;
-                }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
-        }
-
-        private PyObject ScopeGetVariableValue(string var)
-        {
-            Python.Included.Installer.SetupPython().Wait();
-
-            if (!PythonEngine.IsInitialized)
-            {
-                PythonEngine.Initialize();
-                PythonEngine.BeginAllowThreads();
-            }
-
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
-            {
-                using (Py.GIL())
-                {
-                    return Scope.Get(var);
                 }
             }
             finally
