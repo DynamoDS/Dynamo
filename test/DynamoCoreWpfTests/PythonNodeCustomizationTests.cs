@@ -160,6 +160,7 @@ namespace DynamoCoreWpfTests
             //Act
             DispatcherUtil.DoEvents();
 
+            scriptWindow.editText.TextArea.TextEntering -= TextArea_TextEntering;
             //Assert
             //Validates that OnTextAreaTextEntering event was executed.
             Assert.IsNotNull(codeEditor.Text);
