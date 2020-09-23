@@ -151,7 +151,6 @@ namespace DSCPython
         private const string DynamoPrintFuncName = "__dynamoprint__";
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
-
         internal static readonly string globalScopeName = "global";
 
         static CPythonEvaluator()
