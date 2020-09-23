@@ -35,5 +35,53 @@ namespace ProtoTest.ParserTest
             thisTest.RunScriptSource(code);
             thisTest.Verify("x", long.MinValue);
         }
+
+        [Test]
+        public void CanParseTypedFunctionParametersWithNamespace()
+        {
+            var code = @"
+a : var = Builtin.Dictionary.ByKeysValues([""hello""], [""world""]);
+def foo(x: Builtin.Dictionary)
+{
+    return x;
+};
+b = foo(a);
+keys = b.Keys;
+values = b.Values;
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("keys", new[] { "hello" });
+            thisTest.Verify("values", new[] { "world" });
+        }
+
+        [Test]
+        public void CanParseTypedFunctionParametersWithoutNamespace()
+        {
+            var code = @"
+a = 1;
+def foo(x: int)
+{
+    return x;
+};
+b = foo(a);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 1);
+        }
+
+        [Test]
+        public void CanParseUntypedFunctionParameters()
+        {
+            var code = @"
+a = 2;
+def foo(x)
+{
+    return x;
+};
+b = foo(a);
+";
+            thisTest.RunScriptSource(code);
+            thisTest.Verify("b", 2);
+        }
     }
 }
