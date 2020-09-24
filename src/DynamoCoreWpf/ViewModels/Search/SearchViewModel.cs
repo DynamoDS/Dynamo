@@ -299,7 +299,7 @@ namespace Dynamo.ViewModels
         }
 
         public NodeSearchModel Model { get; private set; }
-        private readonly DynamoViewModel dynamoViewModel;
+        internal readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
