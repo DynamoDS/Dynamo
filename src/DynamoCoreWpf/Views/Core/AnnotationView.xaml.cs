@@ -165,7 +165,6 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DynamoSelection.Instance.ClearSelection();
             System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
             ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
                new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
