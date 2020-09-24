@@ -298,31 +298,6 @@ namespace CoreNodeModels.HigherOrder
             }
         }
 
-        protected override void AddInput()
-        {
-            base.AddInput();
-        }
-
-        private void UpdateReductorPort()
-        {
-            if (InPorts.Count > 6) 
-                reductorPort.Name = "f(x1, x2, ... xN, a)";
-            else
-            {
-                if (InPorts.Count == 3) 
-                    reductorPort.Name = "f(x, a)";
-                else
-                {
-                    reductorPort.Name = "f("
-                        + string.Join(
-                            ", ",
-                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
-                        + ", a)";
-                }
-            }
-            RegisterAllPorts();
-        }
-
         protected override string GetInputName(int index)
         {
             return "list" + index;
@@ -386,31 +361,6 @@ namespace CoreNodeModels.HigherOrder
             {
                 base.RemoveInput();
             }
-        }
-
-        protected override void AddInput()
-        {
-            base.AddInput();
-        }
-
-        private void UpdateReductorPort()
-        {
-            if (InPorts.Count > 6)
-                reductorPort.Name = "f(x1, x2, ... xN, a)";
-            else
-            {
-                if (InPorts.Count == 3)
-                    reductorPort.Name = "f(x, a)";
-                else
-                {
-                    reductorPort.Name = "f("
-                        + string.Join(
-                            ", ",
-                            Enumerable.Range(0, InPorts.Count - 2).Select(x => "x" + (x + 1)))
-                        + ", a)";
-                }
-            }
-            RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
