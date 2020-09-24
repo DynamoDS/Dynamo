@@ -1848,12 +1848,17 @@ namespace Dynamo.Controls
         {
             get
             {
-                // Threshold that determines if button should be displayed
-                if (RightExtensionsViewColumn.Width.Value < 20)
-                { extensionsCollapsed = true; }
-
+                // Special case: when the extension bar was never resized its size will be 2.
+                // While 2 is a valid size for the extension bar, 5 is not one for the canvas,
+                // so that's a safer check to be made.
+                if (CanvasColumn.Width.Value == 5)
+                {
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value == 0;
+                }
                 else
-                { extensionsCollapsed = false; }
+                {
+                    extensionsCollapsed = RightExtensionsViewColumn.Width.Value < 20;
+                }
 
                 return extensionsCollapsed;
             }
@@ -1922,11 +1927,21 @@ namespace Dynamo.Controls
         {
             if (ExtensionsCollapsed)
             {
-                // Restore right extension grid to default width (200)
-                RightExtensionsViewColumn.Width = new GridLength(defaultSideBarWidth, GridUnitType.Star);
+                if (extensionsColumnWidth == null)
+                {
+                    RightExtensionsViewColumn.Width = new GridLength(DefaultExtensionBarWidthMultiplier, GridUnitType.Star);
+                }
+                else
+                {
+                    RightExtensionsViewColumn.Width = extensionsColumnWidth.Value;
+                }
             }
             else
             {
+                if (RightExtensionsViewColumn.Width.Value != 0)
+                {
+                    extensionsColumnWidth = RightExtensionsViewColumn.Width;
+                }
                 RightExtensionsViewColumn.Width = new GridLength(0, GridUnitType.Star);
             }
 
