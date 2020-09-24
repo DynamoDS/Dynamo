@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PythonMigration.Differ;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
@@ -354,7 +355,9 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("FFITarget.DummyVector", type);
 
-            var suggestions = inPorts[1].GetMatchingNodes();
+            var searchViewMode = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewMode.PortViewModel = inPorts[1];
+            var suggestions = searchViewMode.GetMatchingNodes();
             Assert.AreEqual(5, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -386,7 +389,9 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("string", type);
 
-            var suggestions = inPorts[1].GetMatchingNodes();
+            var searchViewMode = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewMode.PortViewModel = inPorts[1];
+            var suggestions = searchViewMode.GetMatchingNodes();
             Assert.AreEqual(16, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);

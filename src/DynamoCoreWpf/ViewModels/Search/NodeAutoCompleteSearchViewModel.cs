@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Dynamo.Controls;
+using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.ViewModels
@@ -13,7 +15,7 @@ namespace Dynamo.ViewModels
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
-            //InitializeDefaultAutoCompleteCandidates();
+            // Do nothing for now, but we may off load some time consuming operation here later
         }
 
         internal void InitializeDefaultAutoCompleteCandidates()
@@ -37,13 +39,56 @@ namespace Dynamo.ViewModels
         {
             if(PortViewModel == null) return;
 
-            var searchElements = PortViewModel.GetMatchingNodes();
+            var searchElements = GetMatchingNodes();
             FilteredResults = searchElements.Select(e =>
             {
                 var vm  = new NodeSearchElementViewModel(e, this);
                 vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                 return vm;
             });
+        }
+
+        /// <summary>
+        /// Returns a collection of node search elements for nodes
+        /// that output a type compatible with the port type if it's an input port.
+        /// These search elements can belong to either zero touch, NodeModel or Builtin nodes.
+        /// This method returns an empty collection if the input port type cannot be inferred or
+        /// there are no matching nodes found for the type. Currently the match is an exact match
+        /// done including the rank information in the type, e.g. Point[] or var[]..[].
+        /// The search elements can be made to appear in the node autocomplete search dialog.
+        /// </summary>
+        /// <returns>collection of node search elements</returns>
+        internal IEnumerable<NodeSearchElement> GetMatchingNodes()
+        {
+            var elements = new List<NodeSearchElement>();
+
+            var inputPortType = PortViewModel.PortModel.GetInputPortType();
+            if (inputPortType == null) return elements;
+
+            var libraryServices = dynamoViewModel.Model.LibraryServices;
+
+            // Builtin functions and zero-touch functions
+            // Multi-return ports for these nodes do not contain type information
+            // and are therefore skipped.
+            var functionGroups = libraryServices.GetAllFunctionGroups();
+            var functionDescriptors = functionGroups.SelectMany(fg => fg.Functions).Where(fd => fd.IsVisibleInLibrary);
+
+            foreach (var descriptor in functionDescriptors)
+            {
+                if (descriptor.ReturnType.ToString() == inputPortType)
+                {
+                    elements.Add(new ZeroTouchSearchElement(descriptor));
+                }
+            }
+
+            // NodeModel nodes
+            foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+            {
+                if (element.OutputParameters.Any(op => op == inputPortType))
+                    elements.Add(element);
+            }
+
+            return elements;
         }
     }
 }
