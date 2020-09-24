@@ -120,6 +120,9 @@
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
     <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
   </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Documentation Browser</value>
+  </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
     <value>No further details available for this error.</value>
   </data>
