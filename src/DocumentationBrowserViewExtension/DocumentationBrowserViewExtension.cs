@@ -24,7 +24,7 @@ namespace Dynamo.DocumentationBrowser
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name => "Documentation Browser";
+        public string Name => Properties.Resources.ExtensionName;
 
         /// <summary>
         /// GUID of the extension
