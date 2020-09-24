@@ -7,7 +7,6 @@ using System.Threading;
 using System.Windows.Input;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
-using Dynamo.PythonMigration.Differ;
 using Dynamo.Selection;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
