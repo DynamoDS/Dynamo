@@ -354,9 +354,9 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("FFITarget.DummyVector", type);
 
-            var searchViewMode = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
-            searchViewMode.PortViewModel = inPorts[1];
-            var suggestions = searchViewMode.GetMatchingNodes();
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[1];
+            var suggestions = searchViewModel.GetMatchingNodes();
             Assert.AreEqual(5, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -388,9 +388,9 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("string", type);
 
-            var searchViewMode = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
-            searchViewMode.PortViewModel = inPorts[1];
-            var suggestions = searchViewMode.GetMatchingNodes();
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[1];
+            var suggestions = searchViewModel.GetMatchingNodes();
             Assert.AreEqual(16, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
