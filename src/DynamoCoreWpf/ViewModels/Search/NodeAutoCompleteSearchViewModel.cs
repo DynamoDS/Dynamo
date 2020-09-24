@@ -35,6 +35,8 @@ namespace Dynamo.ViewModels
 
         internal void PopulateAutoCompleteCandidates()
         {
+            if(PortViewModel == null) return;
+
             var searchElements = PortViewModel.GetMatchingNodes();
             FilteredResults = searchElements.Select(e =>
             {
