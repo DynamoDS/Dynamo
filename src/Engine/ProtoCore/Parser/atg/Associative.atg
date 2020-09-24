@@ -633,7 +633,18 @@ Associative_ArgDecl<out ProtoCore.AST.AssociativeAST.AssociativeNode node, Proto
                                         (. ProtoCore.Type argtype = new ProtoCore.Type(); argtype.Name = "var"; argtype.rank = 0; argtype.UID = 0; .)
     [                                   
         ':'
-        ident                           (. argtype.Name = t.val; .)
+        (IF (IsIdentList())
+            (
+                TypedIdentifierList<out node>
+                    (.	argtype.Name = node.ToString(); .)
+            )
+            |
+            (
+                ident
+                    (. argtype.Name = t.val; .)
+                            
+            )
+        )	
         [                               
             openbracket closebracket    (. argtype.rank = 1; .)
             [
