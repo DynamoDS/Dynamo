@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Controls;
+using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 

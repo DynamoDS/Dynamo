@@ -369,13 +369,10 @@ namespace Dynamo.ViewModels
         {
             // Since NodeAutoCompleteCommand is not triggered from xml event trigger directly,
             // CanAutoComplete will not be triggered automatically.
-            if (CanAutoComplete(parameter))
-            {
-                DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-                var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
-                svm.PortViewModel = parameter as PortViewModel;
-                dynamoViewModel.CurrentSpaceViewModel.ShowNodeAutoCompleteSearchCommand.Execute(ShowHideFlags.Show);
-            }
+            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
+            var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
+            svm.PortViewModel = parameter as PortViewModel;
+            dynamoViewModel.CurrentSpaceViewModel.ShowNodeAutoCompleteSearchCommand.Execute(ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)
