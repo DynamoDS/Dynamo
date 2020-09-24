@@ -367,8 +367,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            // Since NodeAutoCompleteCommand is not triggered from xml event trigger directly,
-            // CanAutoComplete will not be triggered automatically.
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
             var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = parameter as PortViewModel;
