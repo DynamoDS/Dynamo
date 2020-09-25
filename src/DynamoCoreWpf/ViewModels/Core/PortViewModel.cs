@@ -370,7 +370,7 @@ namespace Dynamo.ViewModels
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
             var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = parameter as PortViewModel;
-            dynamoViewModel.CurrentSpaceViewModel.ShowNodeAutoCompleteSearchCommand.Execute(ShowHideFlags.Show);
+            dynamoViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)

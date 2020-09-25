@@ -25,7 +25,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand graphAutoLayoutCommand;
         private DelegateCommand showHideAllGeometryPreviewCommand;
         private DelegateCommand showInCanvasSearchCommand;
-        private DelegateCommand showNodeAutoCompleteSearchCommand;
         private DelegateCommand pasteCommand;
 
         #endregion
@@ -215,19 +214,6 @@ namespace Dynamo.ViewModels
                 return showInCanvasSearchCommand;
             }
         }
-
-        [JsonIgnore]
-        public DelegateCommand ShowNodeAutoCompleteSearchCommand
-        {
-            get
-            {
-                if (showNodeAutoCompleteSearchCommand == null)
-                    showNodeAutoCompleteSearchCommand = new DelegateCommand(OnRequestNodeAutoCompleteSearch);
-
-                return showNodeAutoCompleteSearchCommand;
-            }
-        }
-
         #endregion
 
         #region Properties for Command Data Binding

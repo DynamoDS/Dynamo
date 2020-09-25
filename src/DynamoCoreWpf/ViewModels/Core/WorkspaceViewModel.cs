@@ -163,7 +163,7 @@ namespace Dynamo.ViewModels
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
 
-        private void OnRequestNodeAutoCompleteSearch(object param)
+        internal void OnRequestNodeAutoCompleteSearch(object param)
         {
             var flag = (ShowHideFlags)param;
             RequestNodeAutoCompleteSearch?.Invoke(flag);
