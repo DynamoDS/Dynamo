@@ -18,50 +18,6 @@ namespace DynamoShapeManager
 
         #region ASM DLLs per version (to be kept in sync with LibG)
 
-        private static readonly ISet<string> ASM224DllNames = new HashSet<string>()
-        {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES6A.DLL",
-            "ASMMATRIX224A.DLL",
-            "ASMBASE224A.DLL",
-            "ASMLAW224A.DLL",
-            "ASMKERN224A.DLL",
-            "ASMGA224A.DLL",
-            "ASMINTR224A.DLL",
-            "ASMTOPT224A.DLL",
-            "ASMCT224A.DLL",
-            "ASMCSTR224A.DLL",
-            "ASMEULR224A.DLL",
-            "ASMBOOL224A.DLL",
-            "ASMFCT224A.DLL",
-            "ASMLOPT224A.DLL",
-            "ASMRB224A.DLL",
-            "ASMRBI224A.DLL",
-            "ASMAHL224A.DLL",
-            "ASMOFST224A.DLL",
-            "ASMREM224A.DLL",
-            "ASMCOVR224A.DLL",
-            "ASMSKIN224A.DLL",
-            "ASMSBOOL224A.DLL",
-            "ASMBLND224A.DLL",
-            "ASMDATAX224A.DLL",
-            "ASMHEAL224A.DLL",
-            "ASMSWP224A.DLL",
-            "ASMDEFM224A.DLL",
-            "ASMFREC224A.DLL",
-            "ASMNPCH224A.DLL",
-            "ASMOPER224A.DLL",
-            "ASMIMPORT224A.DLL",
-            "ASMLOP224A.DLL",
-            "ASMSBAP224A.DLL",
-            "ASMSHL224A.DLL",
-            "ASMTWK224A.DLL",
-            "ASMPID224A.DLL",
-            "ASMUFLD224A.DLL",
-            "ASMWELD224A.DLL"
-        };
-
         private static readonly ISet<string> ASM225DllNames = new HashSet<string>()
         {
             "TBB.DLL",
@@ -147,6 +103,52 @@ namespace DynamoShapeManager
             "ASMPID226A.DLL",
             "ASMUFLD226A.DLL",
             "ASMWELD226A.DLL",
+            "ADPSDKWRAPPER.DLL",
+            "ADPSDKUI.DLL",
+            "ADPSDKCORE.DLL"
+        };
+
+        private static readonly ISet<string> ASM227DllNames = new HashSet<string>()
+        {
+            "TBB.DLL",
+            "TBBMALLOC.DLL",
+            "TSPLINES9A.DLL",
+            "ASMAHL227A.DLL",
+            "ASMBASE227A.DLL",
+            "ASMBLND227A.DLL",
+            "ASMBOOL227A.DLL",
+            "ASMCOVR227A.DLL",
+            "ASMCSTR227A.DLL",
+            "ASMCT227A.DLL",
+            "ASMDATAX227A.DLL",
+            "ASMDEFM227A.DLL",
+            "ASMEULR227A.DLL",
+            "ASMFCT227A.DLL",
+            "ASMFREC227A.DLL",
+            "ASMGA227A.DLL",
+            "ASMHEAL227A.DLL",
+            "ASMIMPORT227A.DLL",
+            "ASMINTR227A.DLL",
+            "ASMKERN227A.DLL",
+            "ASMLAW227A.DLL",
+            "ASMLOP227A.DLL",
+            "ASMLOPT227A.DLL",
+            "ASMNPCH227A.DLL",
+            "ASMOFST227A.DLL",
+            "ASMOPER227A.DLL",
+            "ASMPID227A.DLL",
+            "ASMRBASE227A.DLL",
+            "ASMRBI227A.DLL",
+            "ASMREM227A.DLL",
+            "ASMSBAP227A.DLL",
+            "ASMSBOOL227A.DLL",
+            "ASMSHL227A.DLL",
+            "ASMSKIN227A.DLL",
+            "ASMSWP227A.DLL",
+            "ASMTOPT227A.DLL",
+            "ASMTWK227A.DLL",
+            "ASMUFLD227A.DLL",
+            "ASMWELD227A.DLL",
             "ADPSDKWRAPPER.DLL",
             "ADPSDKUI.DLL",
             "ADPSDKCORE.DLL"
@@ -607,12 +609,12 @@ namespace DynamoShapeManager
             var fileNames = filePaths.Select(path => Path.GetFileName(path).ToUpper());
             switch (majorVersion)
             {
+                case 227:
+                    return !ASM227DllNames.Except(fileNames).Any();
                 case 226:
                     return !ASM226DllNames.Except(fileNames).Any();
                 case 225:
                     return !ASM225DllNames.Except(fileNames).Any();
-                case 224:
-                    return !ASM224DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;

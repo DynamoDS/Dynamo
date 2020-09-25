@@ -70,6 +70,15 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Documentation Browser.
+        /// </summary>
+        public static string ExtensionName {
+            get {
+                return ResourceManager.GetString("ExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No further details available for this error..
         /// </summary>
         public static string InternalErrorNoDetailsAvailable {
