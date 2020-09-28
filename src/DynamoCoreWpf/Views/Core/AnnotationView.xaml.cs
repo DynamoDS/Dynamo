@@ -112,6 +112,10 @@ namespace Dynamo.Nodes
         {
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
+                System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
         }
@@ -165,9 +169,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+            ViewModel.Select();                      
         }
 
         /// <summary>
@@ -250,6 +252,7 @@ namespace Dynamo.Nodes
             //Select the group and the models within that group
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
                 ViewModel.Select();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
