@@ -205,9 +205,9 @@
             </ColumnDefinition>
             <!--MinWidth fix for GridSplitter dragging in frameless window-->
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="5*" MinWidth="200" />
+            <ColumnDefinition Width="5*" MinWidth="200" Name="CanvasColumn" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition MaxWidth="500"
+            <ColumnDefinition Width="0"
                               MinWidth="1"
                               Name="RightExtensionsViewColumn">
             </ColumnDefinition>

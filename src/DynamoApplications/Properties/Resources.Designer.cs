@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace DynamoApplications.Properties
-{
-
-
+namespace DynamoApplications.Properties {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -19,7 +19,7 @@ namespace DynamoApplications.Properties
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -70,7 +70,7 @@ namespace DynamoApplications.Properties
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatiable version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state..
+        ///   Looks up a localized string similar to While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state..
         /// </summary>
         public static string MismatchedAssemblyVersion {
             get {
