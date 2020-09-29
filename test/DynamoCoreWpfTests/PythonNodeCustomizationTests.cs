@@ -358,6 +358,7 @@ namespace DynamoCoreWpfTests
             //Unsubscribing events
             worker.DoWork -= Worker_DoWork;
             nodeModel.DeletionStarted -= NodeModel_DeletionStarted;
+            worker.RunWorkerCompleted -= Worker_RunWorkerCompleted;
 
             //Just validates that the method subscribed to the DeletionStarted event was executed.
             Assert.IsTrue(bNodeDeletionStarted);
