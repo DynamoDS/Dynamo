@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-
+using System.Xml;
 using CoreNodeModels.Input;
 using Dynamo.Graph;
 using Dynamo.Models;
@@ -129,5 +129,25 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(slider.Min, Int64.MinValue);
         }
 
+        [Test]
+        public void DeserializeCoreTest()
+        {
+            var slider = new IntegerSlider64Bit();
+            var param = new UpdateValueParams("Min", "10");
+            slider.UpdateValue(param);
+
+            //Serializes slider into xml
+            var testDocument = new XmlDocument();
+            testDocument.LoadXml("<ElementTag/>");
+            XmlElement xmlElement = slider.Serialize(new XmlDocument(), SaveContext.None);
+
+            //Resets slider to constructor default
+            slider = new IntegerSlider64Bit();
+            Assert.AreNotEqual(10, slider.Min);
+
+            //Recovers slider from xml
+            slider.Deserialize(xmlElement, SaveContext.None);
+            Assert.AreEqual(10, slider.Min);
+        }
     }
 }
