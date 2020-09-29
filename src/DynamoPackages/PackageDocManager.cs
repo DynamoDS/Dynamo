@@ -67,18 +67,23 @@ namespace Dynamo.PackageManager
         /// Note this only works for Markdown files and for package that specify a node annotation path in the pkg json.
         /// </summary>
         /// <param name="package"></param>
-        public void AddPackageDocumentation(Package package)
+        internal void AddPackageDocumentation(Package package)
         {
             if (!package.NodeAnnotationPaths.Any())
                 return;
 
-            foreach (var path in package.NodeAnnotationPaths)
-            {
-                var directoryInfo = new DirectoryInfo(path);
-                MonitorDirectory(directoryInfo);
-                var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
-                TrackDocumentationFiles(files);
-            }
+            //foreach (var path in package.NodeAnnotationPaths)
+            //{
+            //    var directoryInfo = new DirectoryInfo(path);
+            //    MonitorDirectory(directoryInfo);
+            //    var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
+            //    TrackDocumentationFiles(files);
+            //}
+
+            var directoryInfo = new DirectoryInfo(package.NodeDocumentaionDirectory);
+            MonitorDirectory(directoryInfo);
+            var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
+            TrackDocumentationFiles(files);
         }
 
         private void MonitorDirectory(DirectoryInfo directoryInfo)

@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
@@ -98,7 +99,6 @@ namespace Dynamo.DocumentationBrowser
 
         internal Action<ILogMessage> MessageLogged;
         private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
-        private DateTime lastMdFileChangeTimeStamp;
 
         #endregion
 
@@ -112,7 +112,6 @@ namespace Dynamo.DocumentationBrowser
             this.shouldLoadDefaultContent = true;
             packageManagerDoc = PackageManager.PackageDocManager.Instance;
             markdownHandler = MarkdownHandler.Instance;
-            lastMdFileChangeTimeStamp = DateTime.MinValue;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -158,7 +157,7 @@ namespace Dynamo.DocumentationBrowser
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
                         var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
-                        link = string.IsNullOrEmpty(mdLink) ? null : new Uri(mdLink);
+                        link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
 
                         break;
@@ -205,6 +204,9 @@ namespace Dynamo.DocumentationBrowser
 
         private void WatchMdFile(string mdLink)
         {
+            if (string.IsNullOrWhiteSpace(mdLink))
+                return;
+
             var fileName = Path.GetFileNameWithoutExtension(mdLink);
             if (!PackageDocManager.Instance.ContainsAnnotationDoc(fileName))
                 return;
@@ -225,21 +227,14 @@ namespace Dynamo.DocumentationBrowser
             markdownFileWatcher.Changed -= OnCurrentMdFileChanged;
         }
 
+        // Its a known issue that FileWatchers raises the same event twice when a file is modified from some programs.
+        // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
         private void OnCurrentMdFileChanged(object sender, FileSystemEventArgs e)
         {
             if (e.FullPath != link.OriginalString)
                 return;
             if (!(openDocumentationLinkEventArgs is OpenNodeAnnotationEventArgs))
                 return;
-
-            // Check the time between this event is fired, its a known issue that FileWatchers raises
-            // the same event twice, when a file is modified from some programs.
-            // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
-            var currentTime = DateTime.UtcNow;
-            if (currentTime - lastMdFileChangeTimeStamp < TimeSpan.FromMilliseconds(20))
-                return;             
-
-            this.lastMdFileChangeTimeStamp = currentTime;
 
             var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
             this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);

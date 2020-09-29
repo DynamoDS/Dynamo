@@ -75,7 +75,10 @@ namespace Dynamo.DocumentationBrowser
                 finally
                 {
                     stream?.Dispose();
-                }    
+                }
+
+                if (string.IsNullOrWhiteSpace(mdString))
+                    return false;
 
                 // Remove scripts from user content for security reasons.
                 if (DocumentationBrowserUtils.RemoveScriptTagsFromString(ref mdString))

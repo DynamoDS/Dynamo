@@ -9,6 +9,7 @@ using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.PackageManager;
 
 namespace Dynamo.ViewModels
 {
@@ -175,11 +176,11 @@ namespace Dynamo.ViewModels
         public List<string> InputDescriptions { get; private set; }
         public List<string> OutputDescriptions { get; private set; }
 
-        public OpenNodeAnnotationEventArgs(NodeModel model) : base(new Uri(String.Empty,UriKind.Relative))
+        public OpenNodeAnnotationEventArgs(NodeModel model, DynamoViewModel dynamoViewModel) : base(new Uri(String.Empty,UriKind.Relative))
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            Namespace = GetNamespace(model);
+            Namespace = GetNamespace(model, dynamoViewModel);
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
@@ -214,30 +215,86 @@ namespace Dynamo.ViewModels
             }
         }
 
-        static private string GetNamespace(NodeModel nodeModel)
+        static private string GetNamespace(NodeModel nodeModel, DynamoViewModel viewModel)
         {
             switch (nodeModel)
             {
                 case Function function:
-                    // implementation for custom nodes goes here.
-                    return string.Empty;
+                    var category = function.Category;
+                    var name = function.Name;
+                    if (CustomNodeHasCollisons(name, GetPackageName(nodeModel), viewModel))
+                    {
+                        var inputString = GetInputNames(function);
+                        return $"{category}.{name}({inputString})";
+                    }
+                    return $"{category}.{name}";
 
                 case DSFunctionBase dSFunction:
                     var descriptor = dSFunction.Controller.Definition;
                     var className = descriptor.ClassName;
                     var functionName = descriptor.FunctionName;
+                    if (descriptor.IsOverloaded)
+                    {
+                        var inputString = GetInputNames(nodeModel);
+                        return $"{className}.{functionName}({inputString})";
+                    }
 
-                    return string.Format("{0}.{1}", className, functionName);
+                    return $"{className}.{functionName}";
 
                 case NodeModel node:
                     var type = node.GetType();
-                    var inPortAttribute = type.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
+                    if (NodeModelHasCollisions(node.Name, viewModel))
+                    {
+                        return $"{type.FullName}({GetInputNames(nodeModel)})";
+                    }
+                    
                     return type.FullName;
+                     
 
                 default:
                     return string.Empty;
-
             }
+        }
+
+        private static bool CustomNodeHasCollisons(string nodeName, string packageName, DynamoViewModel viewModel)
+        {
+            var pmExtension = viewModel.Model.GetPackageManagerExtension();
+            var package = pmExtension.PackageLoader.LocalPackages
+                .Where(x => x.Name == packageName)
+                .FirstOrDefault();
+
+            if (package is null)
+                return false;
+
+            var loadedNodesWithSameName =  package.LoadedCustomNodes
+                .Where(x => x.Name == nodeName)
+                .ToList();
+
+            if (loadedNodesWithSameName.Count == 1)
+                return false;
+            return true;
+        }
+
+        private static bool NodeModelHasCollisions(string nodeName, DynamoViewModel viewModel)
+        {     
+            var searchEntries = viewModel.Model.SearchModel.SearchEntries
+                .Where(x => x.Name == nodeName)
+                .Select(x => x).ToList();
+
+            if (searchEntries.Count() > 1)
+                return true;
+            return false;
+        }
+
+        private static string GetPackageName(NodeModel node)
+        {
+            return node.Category.Split(new char[] { '.' }).FirstOrDefault();
+        }
+
+        private static string GetInputNames(NodeModel node)
+        {
+            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
+            return string.Join(",", inputNames);
         }
     }
 }

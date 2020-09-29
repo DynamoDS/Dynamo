@@ -332,7 +332,7 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(viewModel.NodeModel);
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(viewModel.NodeModel, viewModel.DynamoViewModel);
             ViewModel.DynamoViewModel.OpenDocumentationLink(nodeAnnotationEventArgs);
         }
 

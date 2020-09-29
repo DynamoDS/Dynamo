@@ -53,6 +53,11 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
+        public string NodeDocumentaionDirectory
+        {
+            get { return Path.Combine(RootDirectory, "doc"); }
+        }
+
         public bool Loaded { get; internal set; }
 
         private bool typesVisibleInManager;
