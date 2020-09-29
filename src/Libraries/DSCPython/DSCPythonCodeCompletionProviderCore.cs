@@ -1051,7 +1051,8 @@ namespace DSCPython
                     {
                         docCommand = stub + "." + item + ".__doc__";
                     }
-                   object value = ExecutePythonScriptCode(docCommand);
+                    
+                    object value = ExecutePythonScriptCode(docCommand);
                     //object value = engine.CreateScriptSourceFromString(docCommand, SourceCodeKind.Expression).Execute(scope);
 
                     if (!String.IsNullOrEmpty((string)value))

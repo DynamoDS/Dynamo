@@ -235,7 +235,7 @@ namespace DSIronPython
             return importMatches;
         }
 
-        public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        internal static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
