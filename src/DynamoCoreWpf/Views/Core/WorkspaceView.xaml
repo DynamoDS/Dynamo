@@ -352,7 +352,7 @@
                Placement="MousePoint"
                HorizontalOffset="-290"
                DataContext="{Binding NodeAutoCompleteSearchViewModel}">
-            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideInCanvasControl" />
+            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
 
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"
