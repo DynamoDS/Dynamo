@@ -345,6 +345,16 @@
             <ui:InCanvasSearchControl RequestShowInCanvasSearch="ShowHideInCanvasControl" />
         </Popup>
 
+        <Popup Name="NodeAutoCompleteSearchBar"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="MousePoint"
+               HorizontalOffset="-290"
+               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
+            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
+        </Popup>
+
         <Popup Name="ContextMenuPopup" Style="{StaticResource WorkspaceContextMenuStylePopup}"
                Opened="OnContextMenuOpened" StaysOpen="True" AllowsTransparency="True" Placement="MousePoint">
             <Popup.Resources>

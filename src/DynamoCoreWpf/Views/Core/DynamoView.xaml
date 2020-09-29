@@ -751,6 +751,10 @@
                                   IsCheckable="True"
                                   IsChecked="{Binding EnableTSpline}"
                                   Header="{x:Static p:Resources.DynamoViewSettingEnableTSplineNodes}" />
+                            <MenuItem Name="EnableNodeAutoComplete"
+                                  IsCheckable="True"
+                                  IsChecked="{Binding EnableNodeAutoComplete}"
+                                  Header="{x:Static p:Resources.DynamoViewSettingEnableNodeAutoComplete}" />
                         </MenuItem>
                     </MenuItem>
 
