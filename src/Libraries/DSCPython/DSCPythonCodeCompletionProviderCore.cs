@@ -168,7 +168,7 @@ namespace DSCPython
         //but must be marked that way to satisfy the legacy interface
         #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
 
-        private static Dictionary<string, string> FindAllTypeImportStatements(string code)
+        internal static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
             //     from lib import *
@@ -364,7 +364,6 @@ namespace DSCPython
                             if (statement.Contains("AddReferenceToFileAndPath"))
                             {
                                 Scope.Exec(statement);
-                                // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
                                 clrModules.Add(libName);
                                 continue;
                             }
@@ -372,7 +371,6 @@ namespace DSCPython
                             if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == libName))
                             {
                                 Scope.Exec(statement);
-                                // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
                                 clrModules.Add(libName);
                             }
                         } 
@@ -435,7 +433,6 @@ namespace DSCPython
                         }
 
                         Scope.Exec(statement);
-                       // engine.CreateScriptSourceFromString(statement, SourceCodeKind.SingleStatement).Execute(scope);
 
                         if (memberName == "*")
                         {

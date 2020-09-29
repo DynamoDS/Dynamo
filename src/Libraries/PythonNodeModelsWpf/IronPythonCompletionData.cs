@@ -11,6 +11,7 @@ namespace Dynamo.Python
 {
     /// Implements AvalonEdit ICompletionData interface to provide the entries in the
     /// completion drop down.
+    /// TODO: 3.0 We can change this name to PythonCompletionData as we will have the same completion object type for different Python engines. 
     public class IronPythonCompletionData : ICompletionData
     {
 

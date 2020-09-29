@@ -21,6 +21,8 @@ namespace DSIronPython
             CompletionType = completionType;
         }
 
+
+        // Completion data text
         public string Text { get; private set; }
 
         public string Stub { get; private set; }
@@ -33,6 +35,7 @@ namespace DSIronPython
             get { return this.Text; }
         }
 
+        // Completion data description
         public string Description
         {
             get
@@ -48,6 +51,7 @@ namespace DSIronPython
         }
         public double Priority { get { return 0; } }
 
+        // Completion data type.
         public ExternalCodeCompletionType CompletionType { get; private set; }
 
     }

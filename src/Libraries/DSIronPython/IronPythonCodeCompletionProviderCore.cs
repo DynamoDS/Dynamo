@@ -167,7 +167,7 @@ namespace DSIronPython
         //but must be marked that way to satisfy the legacy interface
         #region BACKING LEGACY CLASS DO NOT MODIFY UNTIL 3
 
-        private static Dictionary<string, string> FindAllTypeImportStatements(string code)
+        internal static Dictionary<string, string> FindAllTypeImportStatements(string code)
         {
             // matches the following types:
             //     from lib import *
