@@ -290,17 +290,10 @@ namespace CoreNodeModels.Input
         public static List<IDoubleSequence> ParseValue(string text, char[] seps, List<string> identifiers, ConversionDelegate convertToken)
         {
             var idSet = new HashSet<string>(identifiers);
-            var doubleSequenceList = text.Replace(" ", "").Split(seps, StringSplitOptions.RemoveEmptyEntries).Select(
-                delegate(string x)
-                {
-                    IDoubleInputToken startToken = ParseToken(x, idSet, identifiers);
-
-                    return new OneNumber(startToken, convertToken) as IDoubleSequence;
-                }).ToList();
-
-            if (doubleSequenceList.Count == 0)
-                throw new Exception("No identifiers found.");
-
+            var doubleSequenceList = text.Replace(" ", "")
+                                            .Split(seps, StringSplitOptions.RemoveEmptyEntries)
+                                            .Select(x => new OneNumber(ParseToken(x, idSet,identifiers), convertToken) as IDoubleSequence)
+                                            .ToList();
             return doubleSequenceList;
         }
 
