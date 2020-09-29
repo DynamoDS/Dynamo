@@ -107,7 +107,11 @@ namespace Dynamo.Nodes
                     ViewModel.Background = brush.Color;
             }
         }
-
+        /// <summary>
+        /// This function will clear the selection and then select only the annotation node to delete it for ungrouping.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
