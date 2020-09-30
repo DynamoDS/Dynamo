@@ -28,7 +28,6 @@ namespace DynamoCoreWpfTests
     public class PythonNodeCustomizationTests : DynamoTestUIBase
     {
         bool bTextEnteringEventRaised = false;
-        bool bNodeDeletionStarted = false;
 
         private readonly List<string> expectedEngineMenuItems = new List<string>()
         {
@@ -313,117 +312,6 @@ namespace DynamoCoreWpfTests
             Assert.IsNotNull(learnMoreTab);
             Assert.IsTrue(learnMoreTab.IsVisible);
         }
-
-        /// <summary>
-        /// This test method will try to delete a python node when the script editor is open and will execute the NodeModel_DeletionStarted event method.
-        /// </summary>
-        /// <param name="msgButtonOption"></param>
-        [TestCase("OK")]//Press the OK button in the delete confirmation MessageBox
-        [TestCase("CANCEL")]//Press the CANCEL button in the delete confirmation MessageBox
-        public void NodeModel_DisposedEvent_Test(string msgButtonOption)
-        {
-            //This flag is used to verify that the method subscribed to the DeletionStarted event was executed
-            bNodeDeletionStarted = false;
-
-            Open(@"core\python\python_check_output.dyn");
-            ViewModel.HomeSpace.Run();
-
-            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
-            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
-            Assert.NotNull(nodeModel);
-
-            //Open the python script editor
-            var scriptWindow = EditPythonCode(nodeView, View);
-            Assert.NotNull(scriptWindow);
-
-            //In order to use the DeleteCommand.Execute method first we need to select a node
-            DynamoSelection.Instance.Selection.Add(Model.CurrentWorkspace.Nodes.First());
-            Assert.AreEqual(1, DynamoSelection.Instance.Selection.Count);
-
-            //We need to create a BackgroundWorker so it will close in a different thread the MessageBox appearing when trying to delete the node.
-            var worker = new BackgroundWorker();
-            worker.DoWork += Worker_DoWork;
-            worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
-
-            //Here we pass the argument msgButtonOption string (can be OK or CANCEL) so the Worker_DoWork method will know which button to press.
-            worker.RunWorkerAsync(argument: msgButtonOption);
-
-            //Subscribing to the event so we will know the DeletionStarted was raised
-            nodeModel.DeletionStarted += NodeModel_DeletionStarted;
-
-            //Internally it will execute the private NodeModel_DeletionStarted() method when trying to delete the node.
-            ViewModel.DeleteCommand.Execute(null);
-            DispatcherUtil.DoEvents();
-
-            //Unsubscribing events
-            worker.DoWork -= Worker_DoWork;
-            nodeModel.DeletionStarted -= NodeModel_DeletionStarted;
-            worker.RunWorkerCompleted -= Worker_RunWorkerCompleted;
-
-            //Just validates that the method subscribed to the DeletionStarted event was executed.
-            Assert.IsTrue(bNodeDeletionStarted);
-
-        }
-
-        //Method that will be subscribed to the BackgroundWorker.RunWorkerCompleted event
-        private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            bNodeDeletionStarted = true;
-        }
-
-        /// <summary>
-        /// This private method is using by the Background worker to close the confirmation MessageBox appearing when deleting a python node (odeModel_DeletionStarted method).
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Worker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            string msgButtonValue = (string)e.Argument;   // the 'argument' parameter passed will decide which button click
-            while (!bNodeDeletionStarted)
-            {
-                Thread.Sleep(1000);
-                View.Dispatcher.Invoke(() =>
-                {
-                    //Get all the process running
-                    Process[] processes = Process.GetProcesses();
-                    //This will get the process that in the title has the word "Dynamo", in this case always has to be just one
-                    Process dynamoProcess = (from x in processes where x.MainWindowTitle.Equals("Dynamo") orderby x.MainWindowTitle descending select x).FirstOrDefault();
-
-                    if (dynamoProcess != null)
-                    {
-                        // Get main window based in the process we got from the prev step
-                        AutomationElement mainWindow = AutomationElement.FromHandle(dynamoProcess.MainWindowHandle);
-                        AutomationElement dlg = mainWindow.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.LocalizedControlTypeProperty, "Dialog"));
-
-                        if (dlg != null)
-                        {
-                            //This will get the Dialog (the confirmation MessageBox)
-                            AutomationElement dlgText = dlg.FindFirst(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Text));
-                            //This will get all the buttons in the Dialog
-                            var automationButtons = dlg.FindAll(TreeScope.Children, new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button));
-
-                            AutomationElement dlgButton = null;
-                            //This assign the right button to be pressed depending if is the OK button or the CANCEL button passed as parameter
-                            if (msgButtonValue.Equals("OK"))
-                                dlgButton = automationButtons[0];
-                            else
-                                dlgButton = automationButtons[1];
-
-                            // click the button selected and automatically will close the MessageBox
-                            InvokePattern invoke = (InvokePattern)dlgButton.GetCurrentPattern(InvokePattern.Pattern);
-                            invoke.Invoke();
-                        }                        
-                    }
-                });            
-            }
-        }
-
-        //Method that will be subscribed to the DeletionStarted event
-        private void NodeModel_DeletionStarted(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            bNodeDeletionStarted = true;
-        }
-
 
         /// <summary>
         /// This test method will execute the EditScriptContent method from the PythonNode.cs file (when there is already a Python Editor opened).
