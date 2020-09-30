@@ -365,7 +365,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(engineMenuItem);
 
-            //Get the python engime menu CPython3
+            //Get the python engine menu option "CPython3"
             var cPython3MenuItem = engineMenuItem.Items
                 .Cast<MenuItem>()
                 .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
