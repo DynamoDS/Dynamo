@@ -412,6 +412,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
+        [Test]
         [Category("UnitTests")]
         [Category("Failure")]
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
@@ -570,6 +571,7 @@ namespace DynamoPythonTests
 
         [Test]
         [Category("UnitTests")]
+        [Category("Failure")]
         public void CanFindSystemCollectionsAssignmentAndType()
         {
             var str = "from System.Collections import ArrayList\na = ArrayList()\n";
