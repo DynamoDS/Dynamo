@@ -107,11 +107,19 @@ namespace Dynamo.Nodes
                     ViewModel.Background = brush.Color;
             }
         }
-
+        /// <summary>
+        /// This function will clear the selection and then select only the annotation node to delete it for ungrouping.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OnUngroupAnnotation(object sender, RoutedEventArgs e)
         {
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
+                System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                   new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }
         }
@@ -165,10 +173,7 @@ namespace Dynamo.Nodes
 
         private void AnnotationView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DynamoSelection.Instance.ClearSelection();
-            System.Guid annotationGuid = this.ViewModel.AnnotationModel.GUID;
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-               new DynCmd.SelectModelCommand(annotationGuid, Keyboard.Modifiers.AsDynamoType()));
+            ViewModel.Select();                      
         }
 
         /// <summary>
@@ -251,6 +256,7 @@ namespace Dynamo.Nodes
             //Select the group and the models within that group
             if (ViewModel != null)
             {
+                DynamoSelection.Instance.ClearSelection();
                 ViewModel.Select();
                 ViewModel.WorkspaceViewModel.DynamoViewModel.DeleteCommand.Execute(null);
             }

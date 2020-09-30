@@ -14,6 +14,7 @@ namespace CoreNodeModels
     [NodeCategory(BuiltinNodeCategories.CORE_VIEW)]
     [NodeSearchTags("WatchImageSearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
+    [InPortTypes("System.Drawing.Bitmap")]
     [OutPortTypes("var")]
     [AlsoKnownAs("Dynamo.Nodes.WatchImageCore", "DSCoreNodesUI.WatchImageCore")]
     public class WatchImageCore : NodeModel

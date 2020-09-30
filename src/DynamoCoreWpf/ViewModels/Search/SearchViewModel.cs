@@ -18,7 +18,6 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -300,7 +299,7 @@ namespace Dynamo.ViewModels
         }
 
         public NodeSearchModel Model { get; private set; }
-        private readonly DynamoViewModel dynamoViewModel;
+        internal readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -772,7 +771,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        protected void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;
@@ -1056,6 +1055,18 @@ namespace Dynamo.ViewModels
 
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
+
+            OnRequestFocusSearch();
+        }
+
+        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
+        {
+            if (!nodeCreationName.Contains("Code Block"))
+            {
+                // Create a new node based on node creation name and connect ports
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(Guid.NewGuid(), portModel.Owner.GUID,
+                    nodeCreationName, 0, portModel.Index, portModel.CenterX - 50, portModel.CenterY + 200, false, false));
+            }
 
             OnRequestFocusSearch();
         }
