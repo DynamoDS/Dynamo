@@ -310,6 +310,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates whether to enabled node Auto Complete feature for port interaction.
+        /// </summary>
+        public bool EnableNodeAutoComplete
+        {
+            get
+            {
+                return PreferenceSettings.EnableNodeAutoComplete;
+            }
+            set
+            {
+                PreferenceSettings.EnableNodeAutoComplete = value;
+            }
+        }
+
         public int LibraryWidth
         {
             get

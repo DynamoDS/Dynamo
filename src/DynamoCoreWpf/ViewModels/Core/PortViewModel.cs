@@ -364,6 +364,22 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // Handler to invoke node Auto Complete
+        private void AutoComplete(object parameter)
+        {
+            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
+            var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
+            svm.PortViewModel = parameter as PortViewModel;
+            dynamoViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        private bool CanAutoComplete(object parameter)
+        {
+            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
+            return dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input;
+        }
+
         /// <summary>
         /// Handles the Mouse enter event on the port
         /// </summary>
@@ -371,7 +387,9 @@ namespace Dynamo.ViewModels
         private void OnRectangleMouseEnter(object parameter)
         {
             if (MouseEnter != null)
+            {
                 MouseEnter(parameter, null);
+            }
         }
 
         /// <summary>
@@ -411,7 +429,5 @@ namespace Dynamo.ViewModels
         {
             ShowUseLevelMenu = false;
         }
-
-       
     }
 }

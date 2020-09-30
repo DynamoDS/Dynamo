@@ -64,6 +64,7 @@ Dynamo.sln.DotSettings
 *.sdf
 *.backup
 *.pdf
+*.dgml
 
 #ASM
 extern/DynamoAsm/

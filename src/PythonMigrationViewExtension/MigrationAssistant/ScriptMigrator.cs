@@ -9,6 +9,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
     internal static class ScriptMigrator
     {
         private const string INPUT_NAME = "code";
+        private const string PATH_NAME = "path_name";
         private const string RETURN_NAME = "output";
 
         /// <summary>
@@ -33,10 +34,17 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                 using (Py.GIL())
                 {
                     string output;
+                    var asm = Assembly.GetExecutingAssembly();
+
                     using (PyScope scope = Py.CreateScope())
                     {
                         scope.Set(INPUT_NAME, code.ToPython());
-                        scope.Exec(Get2To3MigrationScript());
+
+                        var path = Path.GetDirectoryName(asm.Location);
+
+                        scope.Set(PATH_NAME, path.ToPython());
+                        scope.Exec(Get2To3MigrationScript(asm));
+
                         output = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME).ToString() : string.Empty;
                     }
 
@@ -47,7 +55,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
                         using (PyScope scope = Py.CreateScope())
                         {
                             scope.Set(INPUT_NAME, output.ToPython());
-                            scope.Exec(GetReindentationScript());
+                            scope.Exec(GetReindentationScript(asm));
                             output = scope.Contains(RETURN_NAME) ? scope.Get(RETURN_NAME).ToString() : string.Empty;
                         }
                     }
@@ -62,19 +70,18 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             }
         }
 
-        private static string Get2To3MigrationScript()
+        private static string Get2To3MigrationScript(Assembly asm)
         {
-            return GetEmbeddedScript("Dynamo.PythonMigration.MigrationAssistant.migrate_2to3.py");
+            return GetEmbeddedScript(asm, "Dynamo.PythonMigration.MigrationAssistant.migrate_2to3.py");
         }
 
-        private static string GetReindentationScript()
+        private static string GetReindentationScript(Assembly asm)
         {
-            return GetEmbeddedScript("Dynamo.PythonMigration.MigrationAssistant.reindent.py");
+            return GetEmbeddedScript(asm, "Dynamo.PythonMigration.MigrationAssistant.reindent.py");
         }
 
-        private static string GetEmbeddedScript(string resourceName)
+        private static string GetEmbeddedScript(Assembly asm, string resourceName)
         {
-            Assembly asm = Assembly.GetExecutingAssembly();
             string script;
             using (var reader =
                 new StreamReader(asm.GetManifestResourceStream(resourceName)))

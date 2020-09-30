@@ -42,8 +42,12 @@ namespace Dynamo.Wpf.ViewModels
 
             Model.VisibilityChanged += ModelOnVisibilityChanged;
             if (searchViewModel != null)
+            {
                 Clicked += searchViewModel.OnSearchElementClicked;
+                CreateAndConnectToPort += searchViewModel.OnRequestConnectToPort;
+            }
             ClickedCommand = new DelegateCommand(OnClicked);
+            CreateAndConnectCommand = new DelegateCommand<PortModel>(OnRequestCreateAndConnectToPort);
 
             LoadFonts();
         }
@@ -225,6 +229,20 @@ namespace Dynamo.Wpf.ViewModels
         }
 
         internal Point Position { get; set; }
+
+        /// <summary>
+        /// Create the search element as node and connect to target port
+        /// </summary>
+        public ICommand CreateAndConnectCommand { get; private set; }
+
+        public event Action<string, PortModel> CreateAndConnectToPort;
+        protected virtual void OnRequestCreateAndConnectToPort(PortModel portModel)
+        {
+            if (CreateAndConnectToPort != null)
+            {
+                CreateAndConnectToPort(Model.CreationName, portModel);
+            }
+        }
 
         public ICommand ClickedCommand { get; private set; }
 

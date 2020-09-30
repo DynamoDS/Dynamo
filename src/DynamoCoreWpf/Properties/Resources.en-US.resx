@@ -2273,4 +2273,8 @@ Uninstall the following packages: {0}?</value>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
   </data>
+  <data name="DynamoViewSettingEnableNodeAutoComplete" xml:space="preserve">
+    <value>Enable Node Auto Complete</value>
+    <comment>Setting menu | Experimental | Enable Node Auto Complete</comment>
+  </data>
 </root>
