@@ -78,7 +78,7 @@
   <DragSelectionCommand X="600" Y="177" DragOperation="0" />
   <DragSelectionCommand X="600" Y="177" DragOperation="1" />
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
-  <UpdateModelValueCommand Name="Value" Value="1..4" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
+  <UpdateModelValueCommand Name="Code" Value="1..4;" WorkspaceGuid="cf68b8ee-7465-4f13-914f-4e5fd936fc19">
     <ModelGuid>a0e84e1b-3c59-4f0c-9770-16f7488f5b83</ModelGuid>
   </UpdateModelValueCommand>
   <SelectModelCommand ModelGuid="00000000-0000-0000-0000-000000000000" Modifiers="0" />
