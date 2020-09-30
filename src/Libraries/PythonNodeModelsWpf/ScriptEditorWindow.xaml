@@ -107,6 +107,7 @@
                     Click="OnMigrationAssistantClicked"
                     ToolTip="{x:Static p:Resources.PythonScriptEditorMigrationAssistantButtonTooltip}"
                     ToolTipService.ShowOnDisabled="True"
+                    ToolTipService.IsEnabled="True"
                     IsEnabled="{Binding SelectedItem, ElementName=EngineSelectorComboBox, Converter={StaticResource SelectedPythonEngineToMigrationConverter}}">
                 <Button.Resources>
                     <Image x:Key="Shape"
