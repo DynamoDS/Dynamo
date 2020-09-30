@@ -23,6 +23,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.ViewModels;
 using DynamoUnits;
+using PythonNodeModels;
 using Color = System.Windows.Media.Color;
 using FlowDirection = System.Windows.FlowDirection;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -2951,6 +2952,26 @@ namespace Dynamo.Controls
             return new Thickness(0,0,4,0);
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter is used in ScriptEditorWindow.xaml 
+    /// It converts the selected Python engine value of Python Script Editor window to boolean, to enable migration button only for IronPython2 engine.
+    /// </summary>
+    public class SelectedPythonEngineToMigrationConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null) {
+                return false;
+            }
+            return (PythonEngineVersion)value == PythonEngineVersion.IronPython2;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }

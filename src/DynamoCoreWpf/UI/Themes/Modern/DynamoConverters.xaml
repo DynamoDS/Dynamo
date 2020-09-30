@@ -196,6 +196,6 @@
                                       TrueBrush="{StaticResource KeepListStructureHighlight}"
                                       FalseBrush="{StaticResource NotKeepListStructureHighlight}">
     </controls:BooleanToBrushConverter>
-    
+    <controls:SelectedPythonEngineToMigrationConverter x:Key="SelectedPythonEngineToMigrationConverter" />
     
 </ResourceDictionary>
