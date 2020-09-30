@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Ganss.XSS;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -9,7 +10,6 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal static class DocumentationBrowserUtils
     {
-        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
         private const string DPISCRIPT = @"<script> function getDPIScale()
         {
             var dpi = 96.0;
@@ -38,21 +38,21 @@ namespace Dynamo.DocumentationBrowser
             document.body.style.width = widthPercentage;
         }
         adaptDPI() </script>";
+        private static HtmlSanitizer htmlSanitizer = new HtmlSanitizer();
 
         /// <summary>
-        /// Clean up possible script tags from the content string.
+        /// Clean up possible dangerous HTML content from the content string.
         /// </summary>
         /// <param name="content"></param>
-        /// <returns>Returns true if any tags was removed from the content</returns>
+        /// <returns>Returns true if any content was removed from the content string</returns>
         internal static bool RemoveScriptTagsFromString(ref string content)
         {
-            if (Regex.IsMatch(content, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
-            {
-                content = Regex.Replace(content, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
-                return true;
-            }
+            var sanitizedContent = htmlSanitizer.Sanitize(content);
+            if (content.Equals(sanitizedContent))
+                return false;
 
-            return false;
+            content = sanitizedContent;
+            return true;
         }
 
         /// <summary>
