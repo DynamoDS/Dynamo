@@ -462,12 +462,6 @@ namespace DynamoPythonTests
 
             Assert.AreEqual(2, ironPythonCompletionProvider.ImportedTypes.Count);
             Assert.IsTrue(defaultImports.SequenceEqual(ironPythonCompletionProvider.ImportedTypes.Keys.ToList()));
-
-            var CPythonCompletionProvider = new DSCPythonCodeCompletionProviderCore();
-            CPythonCompletionProvider.UpdateImportedTypes(str);
-
-            Assert.AreEqual(2, CPythonCompletionProvider.ImportedTypes.Count);
-            Assert.IsTrue(defaultImports.SequenceEqual(CPythonCompletionProvider.ImportedTypes.Keys.ToList()));
         }
 
         [Test]
