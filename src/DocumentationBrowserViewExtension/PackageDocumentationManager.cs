@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dynamo.PackageManager
+namespace Dynamo.DocumentationBrowser
 {
     /// <summary>
     /// Creates a lookup for node annotation markdown files associated with a package.
     /// Also creates file watchers for the package node annotation paths so new files can be hot reloaded in Dynamo.
     /// </summary>
-    public class PackageDocManager
+    public class PackageDocumentationManager
     {
         /// <summary>
         /// Dictionary to lookup node documentation markdown files with the node namespace.
@@ -25,21 +25,21 @@ namespace Dynamo.PackageManager
         private Dictionary<string, FileSystemWatcher> markdownFileWatchers = new Dictionary<string, FileSystemWatcher>();
 
         private const string fileExtension = "*.md";
-        private static PackageDocManager instance;
+        private static PackageDocumentationManager instance;
 
         /// <summary>
         /// PackageDocManager singleton instance.
         /// </summary>
-        public static PackageDocManager Instance
+        public static PackageDocumentationManager Instance
         {
             get
             {
-                if (instance is null) { instance = new PackageDocManager(); }
+                if (instance is null) { instance = new PackageDocumentationManager(); }
                 return instance;
             }
         }
 
-        private PackageDocManager() { }
+        private PackageDocumentationManager() { }
 
         /// <summary>
         /// Retrieves the markdown node documentation file associated with the input node namespace
@@ -64,23 +64,18 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Add package node annotation markdown files to the node annotation lookup.
-        /// Note this only works for Markdown files and for package that specify a node annotation path in the pkg json.
+        /// Note this only works for Markdown files.
         /// </summary>
         /// <param name="package"></param>
-        internal void AddPackageDocumentation(Package package)
+        internal void AddPackageDocumentation(string packageDocumentationPath)
         {
-            if (!package.NodeAnnotationPaths.Any())
+            if (string.IsNullOrWhiteSpace(packageDocumentationPath))
                 return;
 
-            //foreach (var path in package.NodeAnnotationPaths)
-            //{
-            //    var directoryInfo = new DirectoryInfo(path);
-            //    MonitorDirectory(directoryInfo);
-            //    var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
-            //    TrackDocumentationFiles(files);
-            //}
+            var directoryInfo = new DirectoryInfo(packageDocumentationPath);
+            if (!directoryInfo.Exists)
+                return;
 
-            var directoryInfo = new DirectoryInfo(package.NodeDocumentaionDirectory);
             MonitorDirectory(directoryInfo);
             var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
             TrackDocumentationFiles(files);

@@ -26,7 +26,7 @@ namespace Dynamo.DocumentationBrowser
         #region Properties
 
         private bool shouldLoadDefaultContent;
-        private readonly PackageDocManager packageManagerDoc;
+        private readonly PackageDocumentationManager packageManagerDoc;
         private readonly MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
 
@@ -110,7 +110,7 @@ namespace Dynamo.DocumentationBrowser
 
             // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
-            packageManagerDoc = PackageManager.PackageDocManager.Instance;
+            packageManagerDoc = PackageDocumentationManager.Instance;
             markdownHandler = MarkdownHandler.Instance;
         }
 
@@ -156,7 +156,7 @@ namespace Dynamo.DocumentationBrowser
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
-                        var mdLink = PackageDocManager.Instance.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
 
@@ -208,7 +208,7 @@ namespace Dynamo.DocumentationBrowser
                 return;
 
             var fileName = Path.GetFileNameWithoutExtension(mdLink);
-            if (!PackageDocManager.Instance.ContainsAnnotationDoc(fileName))
+            if (!packageManagerDoc.ContainsAnnotationDoc(fileName))
                 return;
 
             markdownFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(mdLink))

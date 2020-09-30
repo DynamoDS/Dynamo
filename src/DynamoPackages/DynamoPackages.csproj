@@ -72,7 +72,6 @@
     <Compile Include="Interfaces\MutatingFileSystem.cs" />
     <Compile Include="Package.cs" />
     <Compile Include="PackageDirectoryBuilder.cs" />
-    <Compile Include="PackageDocManager.cs" />
     <Compile Include="PackageDownloadHandle.cs" />
     <Compile Include="PackageFileInfo.cs" />
     <Compile Include="PackageLoader.cs" />

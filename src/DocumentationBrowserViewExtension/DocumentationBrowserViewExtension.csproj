@@ -87,6 +87,7 @@
     <Compile Include="DocumentationBrowserViewModel.cs" />
     <Compile Include="MarkdownHandler.cs" />
     <Compile Include="NodeDocumentationHtmlGenerator.cs" />
+    <Compile Include="PackageDocumentationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -49,7 +49,7 @@ namespace Dynamo.DocumentationBrowser
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
 
-            var mdFilePath = PackageDocManager.Instance.GetAnnotationDoc(nodeNamespace);
+            var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace);
 
             string mdString;
             bool scriptTagsRemoved;

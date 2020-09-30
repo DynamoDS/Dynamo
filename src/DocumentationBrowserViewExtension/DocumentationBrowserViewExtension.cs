@@ -6,6 +6,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,6 +20,7 @@ namespace Dynamo.DocumentationBrowser
     {
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
+        private PackageManagerExtension pmExtension;
 
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
@@ -53,7 +55,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void Startup(ViewStartupParams viewStartupParams)
         {
-            // Do nothing for now
+            pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
         public void Loaded(ViewLoadedParams viewLoadedParams)
@@ -77,6 +79,22 @@ namespace Dynamo.DocumentationBrowser
 
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+
+            // subscribe to package loaded so we can add the package documentation 
+            // to the Package documentation manager when a package is loaded
+            pmExtension.PackageLoader.PackgeLoaded += OnPackgeLoaded;
+
+            // add packages already loaded to the PackageDocumentationManager
+            foreach (var pkg in pmExtension.PackageLoader.LocalPackages)
+            {
+                OnPackgeLoaded(pkg);
+            }
+        }
+
+        private void OnPackgeLoaded(Package pkg)
+        {
+            // Add documentation files from the package to the DocManager
+            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory);
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)

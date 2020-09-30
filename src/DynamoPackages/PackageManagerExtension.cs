@@ -293,9 +293,6 @@ namespace Dynamo.PackageManager
                 }
                 CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
-
-            // Add documentation files from the package to the DocManager
-            PackageDocManager.Instance.AddPackageDocumentation(package);
         }
 
         private void OnPackageRemoved(Package package)
