@@ -10,7 +10,8 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal static class DocumentationBrowserUtils
     {
-        private const string DPISCRIPT = @"<script> function getDPIScale()
+        private const string DPISCRIPT = @"<script> 
+        function getDPIScale()
         {
             var dpi = 96.0;
             if (window.screen.deviceXDPI != undefined)
@@ -37,7 +38,8 @@ namespace Dynamo.DocumentationBrowser
             var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
             document.body.style.width = widthPercentage;
         }
-        adaptDPI() </script>";
+        adaptDPI() 
+        </script>";
         private static HtmlSanitizer htmlSanitizer = new HtmlSanitizer();
 
         /// <summary>
