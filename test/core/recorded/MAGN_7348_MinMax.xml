@@ -27,14 +27,12 @@
   <MakeConnectionCommand NodeId="0cce4b2d-47d5-427a-8235-514d3c2e90ed" PortIndex="0" Type="1" ConnectionMode="0" />
   <MakeConnectionCommand NodeId="f323299b-e841-4d47-b8bd-f6596034814f" PortIndex="0" Type="0" ConnectionMode="1" />
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
-    <Dynamo.Nodes.DoubleInput guid="daaf465b-277d-405d-8bf1-61039835ef8e" type="Dynamo.Nodes.DoubleInput" nickname="Number" x="126" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled">
-      <System.Double value="0..42" />
-    </Dynamo.Nodes.DoubleInput>
+    <Dynamo.Nodes.CodeBlockNodeModel guid="daaf465b-277d-405d-8bf1-61039835ef8e" type="Dynamo.Nodes.CodeBlockNodeModel" nickname="Code Block" x="126" y="273.5" isVisible="true" isUpstreamVisible="true" lacing="Disabled" CodeText="0..42;" ShouldFocus="false" />
   </CreateNodeCommand>
   <SelectModelCommand ModelGuid="daaf465b-277d-405d-8bf1-61039835ef8e" Modifiers="0" />
   <DragSelectionCommand X="534" Y="214" DragOperation="0" />
   <DragSelectionCommand X="139" Y="289" DragOperation="1" />
-  <UpdateModelValueCommand Name="Value" Value="0..42" WorkspaceGuid="1965ec3f-6b3e-4b24-b6d2-bf4f6dd4447a">
+  <UpdateModelValueCommand Name="Code" Value="0..42;" WorkspaceGuid="1965ec3f-6b3e-4b24-b6d2-bf4f6dd4447a">
     <ModelGuid>daaf465b-277d-405d-8bf1-61039835ef8e</ModelGuid>
   </UpdateModelValueCommand>
   <CreateNodeCommand X="0" Y="0" DefaultPosition="true" TransformCoordinates="true">
