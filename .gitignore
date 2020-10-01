@@ -64,6 +64,7 @@ Dynamo.sln.DotSettings
 *.sdf
 *.backup
 *.pdf
+*.dgml
 
 #ASM
 extern/DynamoAsm/
@@ -96,3 +97,4 @@ src/TestResults
 test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
+logo.png

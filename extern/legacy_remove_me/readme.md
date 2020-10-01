@@ -8,6 +8,7 @@ These files are actually empty .txt files renamed .dll to avoid including any du
 * \bin\Assimp64.dll,
 * \bin\AssimpNet.dll
 * \bin\Office.dll
+* \bin\Python.Runtime.NETStandard.dll
 * \bin\SharpDX.Direct3D11.Effects.dll
 * \bin\SharpDX.Toolkit.Compiler.dll
 * \bin\SharpDX.Toolkit.dll

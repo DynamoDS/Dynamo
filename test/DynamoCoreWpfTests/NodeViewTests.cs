@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,13 @@ namespace DynamoCoreWpfTests
     public class NodeViewTests : DynamoTestUIBase
     {
         // adapted from: http://stackoverflow.com/questions/9336165/correct-method-for-using-the-wpf-dispatcher-in-unit-tests
+
+        protected override void GetLibrariesToPreload(List<string> libraries)
+        {
+            libraries.Add("FunctionObject.ds");
+            libraries.Add("BuiltIn.ds");
+            libraries.Add("FFITarget.dll");
+        }
 
         public override void Open(string path)
         {
@@ -325,6 +333,22 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(nodeViewModel.IsRenamed, true);
             Assert.AreEqual(nodeViewModel.Name, newName);
             Assert.AreEqual(nodeViewModel.OriginalName, expectedOriginalName);
+        }
+
+        [Test]
+        public void InputPortType_NodeModelNode_AreCorrect()
+        {
+            Open(@"UI\CoreUINodes.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("9dedd5c5c8b14fbebaea28194fd38c9a").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(1, inPorts.Count());
+
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("System.Drawing.Bitmap", type);
         }
 
         [Test]

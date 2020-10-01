@@ -126,6 +126,7 @@
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
+    <Compile Include="NodeAutoCompleteSearchTests.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
     <Compile Include="NodeViewTests.cs" />

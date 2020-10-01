@@ -123,4 +123,7 @@
   <data name="Display" xml:space="preserve">
     <value>Display All Notifications</value>
   </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
 </root>

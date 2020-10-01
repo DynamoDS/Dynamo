@@ -886,6 +886,26 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.WorkspaceLacingMenu.IsSubmenuOpen);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void ShowHideNodeAutoCompleteSearchControl()
+        {
+            var currentWs = View.ChildOfType<WorkspaceView>();
+
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
+            RightClick(currentWs.zoomBorder);
+            // Notice AutoCompleteSearchBar can co-exist with right click search for now
+            Assert.IsTrue(currentWs.ContextMenuPopup.IsOpen);
+            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
+            // Hide Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+        }
+
         private void RightClick(IInputElement element)
         {
             element.RaiseEvent(new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Right)

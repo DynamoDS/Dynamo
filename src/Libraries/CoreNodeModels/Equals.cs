@@ -5,7 +5,6 @@ using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
-using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
 namespace CoreNodeModels
@@ -14,6 +13,7 @@ namespace CoreNodeModels
     [NodeDescription("EqualsWithToleranceDescription", typeof(Resources))]
     [NodeCategory("Core.Math")]
     [NodeSearchTags("EqualsWithToleranceSearchTags", typeof(Resources))]
+    [InPortNames("x", "y", "tolerance")]
     [InPortTypes("double", "double", "double")]
     [OutPortTypes("bool")]
     [IsDesignScriptCompatible]

@@ -117,6 +117,11 @@ namespace Dynamo.ViewModels
             stateMachine.CancelActiveState();
         }
 
+        internal DateTime GetLastStateTimestamp()
+        {
+            return stateMachine.Timestamp;
+        }
+
         internal void BeginDragSelection(Point2D mouseCursor)
         {
             // This represents the first mouse-move event after the mouse-down
@@ -129,6 +134,7 @@ namespace Dynamo.ViewModels
             // before they get updated by the drag operation.
             // 
             RecordSelectionForUndo();
+            draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
                 ILocatable locatable = selectable as ILocatable;
@@ -438,6 +444,11 @@ namespace Dynamo.ViewModels
             #endregion
 
             #region Public Class Properties
+            /// <summary>
+            /// Optionally record the last time a particular state is updated.
+            /// Currently only used for Node AutoComplete feature.
+            /// </summary>
+            internal DateTime Timestamp { get; set; }
 
             internal bool IsInIdleState
             {
@@ -575,8 +586,18 @@ namespace Dynamo.ViewModels
                         break;
                 }
 
+                var previousState = this.currentState;
                 owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(cursorToUse);
                 this.currentState = newState; // update state
+
+                if (previousState == State.PanMode || newState == State.PanMode)
+                {
+                    owningWorkspace.RaisePropertyChanged(nameof(IsPanning));
+                }
+                if (previousState == State.OrbitMode || newState == State.OrbitMode)
+                {
+                    owningWorkspace.RaisePropertyChanged(nameof(IsOrbiting));
+                }
             }
 
             #endregion
@@ -791,6 +812,17 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
+                    if (Keyboard.Modifiers == ModifierKeys.Alt &&
+                        portViewModel.NodeAutoCompleteCommand.CanExecute(portViewModel))
+                    {
+                        portViewModel.NodeAutoCompleteCommand.Execute(portViewModel);
+                        this.currentState = State.Connection;
+                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
+                        owningWorkspace.IsCursorForced = false;
+                        Timestamp = DateTime.Now;
+                        return true;
+                    }
+
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Index;
 

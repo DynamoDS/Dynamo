@@ -78,12 +78,11 @@
       <HintPath>..\..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\extern\ProtoGeometry\ProtoGeometry.dll</HintPath>
+    <Reference Include="PresentationCore" />
+    <Reference Include="ProtoGeometry, Version=2.9.0.2615, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2615\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="Python.Runtime, Version=2.5.1.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -9,6 +9,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using NUnit.Framework;
+using ProtoCore.DSASM;
 using ProtoCore.Mirror;
 
 
@@ -598,6 +599,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(100.0, rowList[0].Data);
         }
 
+        /// <summary>
+        /// This test method will execute the Excel.WriteDataToExcelWorksheet method trying to write a null value in a excel file
+        /// </summary>
+        [Test, Category("ExcelTest")]
+        public void CanAddNullItemToExcelWorksheet()
+        {
+            //Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\excel\NewWorkbook_AddNullItemData.dyn");
+
+            ViewModel.OpenCommand.Execute(openPath);
+            Assert.AreEqual(8, ViewModel.CurrentSpace.Nodes.Count());
+            var watch = ViewModel.Model.CurrentWorkspace.GetDSFunctionNodeFromWorkspace("Excel.GetDataFromExcelWorksheet");
+
+            //Act
+            //In the dyn file Dinamo will try to write a null value got from a CodeBlock node, internally will execute the WriteDataToExcelWorksheet method
+            ViewModel.HomeSpace.Run();
+
+            //Assert
+            //Verify that the data is null 
+            Assert.IsNull(watch.CachedValue.Data);
+        }
+
         [Test, Category("ExcelTest")]
         public void CanAdd1DListToExcelWorksheet()
         {
@@ -1026,9 +1049,33 @@ namespace Dynamo.Tests
             Assert.IsTrue(watch.State == ElementState.Warning);
             if (fileAttributes == FileAttributes.ReadOnly)
                 File.SetAttributes(filePath, FileAttributes.Normal);
-
         }
+
+        /// <summary>
+        /// This will execute the Data.ImportExcel method
+        /// </summary>
+        [Test, Category("ExcelTest")]
+        public void ImportExcelShowExcelReturnDataObjectArray()
+        {
+            //Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ImportExcelFileShowArray.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            //Act
+            //When executing the Graph will call the Data.ImportExcel method
+            var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("ba33d59ba05648d68d2d9aadc42ae07a");
+            ViewModel.HomeSpace.Run();
+            var data = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }};
+
+            //Assert
+            //Validates that the data fetch from the excel workbook are 3 elements and match the values in data array
+            Assert.IsNotNull(watch);
+            AssertPreviewValue(watch.GUID.ToString(), data);
+            
+        }
+
         
+
         [Test, Category("ExcelTest")]
         public void WriteModifyFilename()
         {
@@ -1225,6 +1272,39 @@ namespace Dynamo.Tests
             AssertPreviewValue(watch2.GUID.ToString(), data2);
 
         }
+
+        /// <summary>
+        /// This test method will validate the execution of the WorkSheet.ConvertToDimensionalArray passing as a parameter the next data types
+        /// - float
+        /// - DateTime
+        /// - null
+        /// - StackValue
+        /// </summary>
+        [Test, Category("ExcelTest")]
+        public void WriteIntoExcelSeveralTypesVerify()
+        {
+            //Arrange
+            string testDir = TestDirectory;
+            string excelPath = Path.Combine(testDir, @"core\excel\WriteFileSeveralTypes.xlsx");
+
+            //Act
+            var wb = Excel.ReadExcelFile(excelPath);
+
+            //Creates a two dimentional array with 6 elements
+            var data2 = new object[][] { new object[] { 5 }, new object[] { (float)6.1312 }, new object[] { System.DateTime.Now }, new object[] { null }, new object[] { StackValue.BuildInt(0) }, new object[] { 10 } };
+
+            //Validates that the elements read from the excel file are 6
+            Assert.AreEqual(wb.WorkSheets.First().Data.Length, 6);
+
+            //This will write the data in the first WorkSheet adding 6 rows and internally it executes the WorkSheet.ConvertToDimensionalArray method
+            wb.WorkSheets.First().WriteData(6, 0, data2);
+
+            //Assert
+            //Validates that the elements written in the excel file are 12 (6 already existing + 6 new values written)
+            Assert.AreEqual(wb.WorkSheets.First().Data.Length, 12);
+        }
+
+
         [Test, Category("ExcelTest")]
         public void TestFormula()
         {
@@ -1245,7 +1325,7 @@ namespace Dynamo.Tests
             Assert.IsTrue(watch.CachedValue.IsCollection);
             var data2 = new object[] { new object[] { 1 }, new object[] { 2 }, new object[] { 3 }, new object[] { null }, new object[] { 6 } };
             AssertPreviewValue(watch.GUID.ToString(), data2);
-        }
+        }     
         #endregion
     }
 
@@ -1273,6 +1353,24 @@ namespace Dynamo.Tests
                 new List<object> { 8, 12, 16 }
             });
         }
+
+        /// <summary>
+        /// This will execute the Data.ImportCSV when reading a csv in which the columns and rows have different length
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public static void ImportCSVRowsGreaterThanColumnsTest()
+        {
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\test3.csv");
+            var CSVList = Data.ImportCSV(filePath);
+            Assert.AreEqual(CSVList, new List<object> {
+                new List<object> { 2,       1,      3,      1,      5,      null},
+                new List<object> { 5,       2,      4,      2,      null,   null},
+                new List<object> { 6,       null,   5,      null,   null,   null},
+                new List<object> { 7,       null,   null,   null,   null,   null}
+            });
+        }
+
 
         [Test]
         [Category("UnitTests")]

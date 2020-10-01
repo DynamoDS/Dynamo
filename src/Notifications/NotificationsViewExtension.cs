@@ -39,7 +39,7 @@ namespace Dynamo.Notifications
         {
             get
             {
-                return "NotificationsExtension";
+                return Properties.Resources.ExtensionName;
             }
         }
 
