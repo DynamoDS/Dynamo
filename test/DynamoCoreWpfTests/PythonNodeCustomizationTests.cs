@@ -271,6 +271,155 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// PythonNode
+        /// This test method will click in the "Learn more about Python" button and the OpenPythonLearningMaterial method from PythonNode.cs will be executed
+        /// </summary>
+        [Test]
+        public void OpenPythonLearningMaterialValidationTest()
+        {
+            Open(@"core\python\python_check_output.dyn");
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            //Open the python script editor
+            var scriptWindow = EditPythonCode(nodeView, View);
+               
+            var learnMoreMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Learn more about Python");
+
+            Assert.IsNotNull(learnMoreMenuItem);
+
+            //Click the button and internally the  OpenPythonLearningMaterial method is executed
+            learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+            DispatcherUtil.DoEvents();
+
+            var learnMoreTab = this.View.ExtensionTabItems
+                                .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
+                                .FirstOrDefault();
+
+            //Validate tha the documentation browser tab is opened and visible once we clicked the button.
+            Assert.IsNotNull(learnMoreTab);
+            Assert.IsTrue(learnMoreTab.IsVisible);
+        }
+
+        /// <summary>
+        /// PythonStringNode
+        /// This test method will click in the "Learn more about Python" button and the OpenPythonLearningMaterial method from PythonStringNode.cs will be executed
+        /// </summary>
+        [Test]
+        public void OpenPythonLearningMaterial_PythonNodeFromStringValidationTest()
+        {
+            Open(@"core\python\pythonFromString.dyn");
+
+            var nodeView = NodeViewWithGuid("bad59bc8-9b49-47b6-99ee-34fa8dca91ae");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            var learnMoreMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Learn more about Python");
+
+            Assert.IsNotNull(learnMoreMenuItem);
+
+            //Click the button and internally the  OpenPythonLearningMaterial method is executed
+            learnMoreMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+            DispatcherUtil.DoEvents();
+
+            var learnMoreTab = this.View.ExtensionTabItems
+                                .Where(x => x.Content.GetType().Equals(typeof(DocumentationBrowserView)))
+                                .FirstOrDefault();
+
+            //Validate tha the documentation browser tab is opened and visible once we clicked the button.
+            Assert.IsNotNull(learnMoreTab);
+            Assert.IsTrue(learnMoreTab.IsVisible);
+        }
+
+        /// <summary>
+        /// PythonStringNode
+        /// This test method will click in the "Python Engine Version" menu option and the UpdateToPython3Engine() method from PythonStringNode.cs will be executed
+        /// </summary>
+        [Test]
+        public void UpdateToPython3Engine_PythonStringNodeTest()
+        {
+            Open(@"core\python\pythonFromString2to3Test.dyn");
+
+            var nodeView = NodeViewWithGuid("bad59bc8-9b49-47b6-99ee-34fa8dca91ae");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+
+            //Get the Watch node so we can check the content later
+            var watchOUT = Model.CurrentWorkspace.NodeFromWorkspace<Watch>("971220846c1b4d54aa11cca81f417c2b");
+            Assert.NotNull(nodeModel);
+
+            //Get the python engine menu 
+            var engineMenuItem = nodeView.MainContextMenu
+                .Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == "Python Engine Version");
+
+            Assert.IsNotNull(engineMenuItem);
+
+            //Get the python engine menu option "CPython3"
+            var cPython3MenuItem = engineMenuItem.Items
+                .Cast<MenuItem>()
+                .First(x => x.Header.ToString() == PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineVersionThree);
+
+            Assert.IsNotNull(cPython3MenuItem);
+
+            //Click the CPython3 option (previously was IronPython2)
+            cPython3MenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+
+            DispatcherUtil.DoEvents();
+
+            //After running the graph if the python code is not valid for CPython3 we will get a null value in the Watch node
+            ViewModel.HomeSpace.Run();
+
+            //Validate that the content of the Watch node is what we expected after running the Graph
+            Assert.That(watchOUT.CachedValue, Is.EqualTo("Hello World 2020"));
+
+        }
+
+        /// <summary>
+        /// This test method will execute the EditScriptContent method from the PythonNode.cs file (when there is already a Python Editor opened).
+        /// </summary>
+        [Test]
+        public void EditScriptContent_ReActivateTest()
+        {
+            Open(@"core\python\python_check_output.dyn");
+            ViewModel.HomeSpace.Run();
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            //This line will show the script editor window the first time
+            var scriptWindow = EditPythonCode(nodeView, View);
+            //Hide the script editor window
+            scriptWindow.Hide();
+            //Just validates that the script editor window is hidden
+            Assert.That(scriptWindow.Visibility, Is.EqualTo(Visibility.Hidden));
+
+            //Because previously the Edit Script window was hidden we will check that after calling the EditScriptContent method again will show the windows
+            //The Window.Show() method is Async so we need to do the Visibility verification in a function subscribed to the event
+            RoutedEventHandler tmpDelegate = (object s, RoutedEventArgs ev) => Assert.That(scriptWindow.Visibility, Is.EqualTo(Visibility.Visible));
+            scriptWindow.Loaded += tmpDelegate;
+
+            //This call will reactivate the Edit python code window and a specific section of the EditScriptContent method is executed.
+            scriptWindow = EditPythonCode(nodeView, View);
+
+            //Unsubscribing the previous delegate assigned
+            scriptWindow.Loaded -= tmpDelegate;
+      
+        }
+
+
+        /// <summary>
         /// This test checks if its changing the engine via 
         /// dropdown selector inside the script editor executes the most up to date code.
         /// </summary>
