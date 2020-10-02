@@ -3,6 +3,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
   </ImportGroup>
+  <Import Project=".\obj\Notifications.csproj.nuget.g.props" Condition="Exists('.\obj\Notifications.csproj.nuget.g.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>

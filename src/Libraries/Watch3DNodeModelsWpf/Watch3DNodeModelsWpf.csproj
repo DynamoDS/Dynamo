@@ -4,6 +4,7 @@
     <Import Project="$(SolutionDir)Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
   </ImportGroup>
+  <Import Project=".\obj\Watch3DNodeModelsWpf.csproj.nuget.g.props" Condition="Exists('.\obj\Watch3DNodeModelsWpf.csproj.nuget.g.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
