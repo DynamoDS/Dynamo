@@ -57,7 +57,7 @@ namespace CoreNodeModels.HigherOrder
 
         protected CombinatorNode() : this(3)
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("combinator", Resources.CombinatorPortDataCombToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("combineFunction", Resources.CombinatorPortDataCombToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
 
