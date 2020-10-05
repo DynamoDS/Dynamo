@@ -60,7 +60,7 @@ namespace CoreNodeModels.Logic
 
         protected override string GetInputName(int index)
         {
-            return "boolean" + index;
+            return "bool" + index;
         }
 
         protected override string GetInputTooltip(int index)
