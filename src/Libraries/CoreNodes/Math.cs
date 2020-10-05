@@ -534,7 +534,7 @@ namespace DSCore
         ///     Finds the hyperbolic sine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="sinh">Hyperbolic sine of the angle (double)</returns>
+        /// <returns name="double">Hyperbolic sine of the angle.</returns>
         /// <search>hyperbolic</search>
         public static double Sinh(double angle)
         {
