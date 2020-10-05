@@ -118,13 +118,12 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
-        /// <returns name="success"> Success message if file was written correctly </returns>
+        /// <returns name="void">No output</returns>
         /// <search>write file,text,file,filepath</search>
-        public static string WriteText(string filePath, string text)
+        public static void WriteText(string filePath, string text)
         {
             var fullpath = AbsolutePath(filePath);
             System.IO.File.WriteAllText(fullpath, text);
-            return "File has been succesfully written";
         }
 
         /// <summary>
@@ -454,12 +453,11 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
-        /// <returns name="success">Success message if file was written correctly </returns>
+        /// <returns name="void">No output </returns>
         /// <search>write image,image,file,filepath</search>
-        public static string WriteToFile(string path, Bitmap image)
+        public static void WriteToFile(string path, Bitmap image)
         {
             image.Save(FileSystem.AbsolutePath(path));
-            return "File has been succesfully written";
         }
     }
 }
