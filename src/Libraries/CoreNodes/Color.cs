@@ -29,7 +29,7 @@ namespace DSCore
         /// <summary>
         ///     Find the green component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="green">int between 0 and 255 inclusive.</returns>
+        /// <returns name="int">Green value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "G")]
         public byte Green
         {
@@ -39,7 +39,7 @@ namespace DSCore
         /// <summary>
         ///     Find the blue component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="blue">int between 0 and 255 inclusive.</returns>
+        /// <returns name="int">Blue value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "B")]
         public byte Blue
         {
@@ -49,7 +49,7 @@ namespace DSCore
         /// <summary>
         ///     Find the alpha component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="alpha">int between 0 and 255 inclusive.</returns>
+        /// <returns name="int">Alpha value, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "A")]
         public byte Alpha
         {
@@ -116,30 +116,32 @@ namespace DSCore
         /// <summary>
         /// Returns the hue value for this color.
         /// </summary>
-        /// <returns name="hue">double between 0 and 1 inclusive.</returns>
+        /// <param name="color"> A color object</param> 
+        /// <returns name="double">Hue value for color as a double between 0 and 1 inclusive.</returns>
         /// <search>hues</search>
-        public static float Hue(Color c)
+        public static float Hue(Color color)
         {
-            return c.color.GetHue();
+            return color.color.GetHue();
         }
 
         /// <summary>
         ///     Lists the components for the color in the order: alpha, red, green, blue.
         /// </summary>
-        /// <returns name="a">alpha value</returns>
-        /// <returns name="r">red value</returns>
-        /// <returns name="g">green value</returns>
-        /// <returns name="b">blue value</returns>
+        /// <param name="color"> A color object</param> 
+        /// <returns name="alpha">Alpha value, int between 0 and 255 inclusive.</returns>
+        /// <returns name="red">Red value for RGB color model, int between 0 and 255 inclusive.</returns>
+        /// <returns name="green">Green value for RGB color model, int between 0 and 255 inclusive.</returns>
+        /// <returns name="blue">Blue value for RGB color model, int between 0 and 255 inclusive.</returns>
         /// <search>alpha,red,green,blue</search>
-        [MultiReturn("a", "r", "g", "b")]
-        public static Dictionary<string, byte> Components(Color c)
+        [MultiReturn("alpha", "red", "green", "blue")]
+        public static Dictionary<string, byte> Components(Color color)
         {
             return new Dictionary<string, byte>
             {
-                {"a", c.color.A}, 
-                {"r", c.color.R},
-                {"g", c.color.G},
-                {"b", c.color.B}, 
+                {"alpha", color.color.A}, 
+                {"red", color.color.R},
+                {"green", color.color.G},
+                {"blue", color.color.B}, 
             };
         }
 
