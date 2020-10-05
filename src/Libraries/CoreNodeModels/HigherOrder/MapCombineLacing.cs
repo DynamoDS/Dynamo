@@ -281,7 +281,7 @@ namespace CoreNodeModels.HigherOrder
 
         public Reduce()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ReducePortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ReducePortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ReducePortDataSeedToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
@@ -371,7 +371,7 @@ namespace CoreNodeModels.HigherOrder
 
         public ScanList()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ScanPortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ScanPortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ScanPortDataSeedToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
