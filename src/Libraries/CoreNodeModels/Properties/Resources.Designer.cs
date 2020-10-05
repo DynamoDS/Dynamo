@@ -899,7 +899,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image.
+        ///   Looks up a localized string similar to Image for visualization.
         /// </summary>
         public static string PortDataImageToolTip {
             get {
