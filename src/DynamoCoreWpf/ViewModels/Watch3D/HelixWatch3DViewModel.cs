@@ -523,6 +523,28 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             SetupScene();
             InitializeHelix();
+            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+        }
+
+        private void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (Element3DDictionary == null)
+            {
+                sceneItems = new ObservableElement3DCollection();
+                return;
+            }
+
+            var values = Element3DDictionary.Values.ToList();
+            if (Camera != null)
+            {
+                values.Sort(new Element3DComparer(Camera.Position));
+            }
+
+            if (sceneItems == null)
+                sceneItems = new ObservableElement3DCollection();
+
+            sceneItems.Clear();
+            sceneItems.AddRange(values);
         }
 
         public void SerializeCamera(XmlElement camerasElement)
