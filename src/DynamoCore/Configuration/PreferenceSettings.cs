@@ -334,6 +334,11 @@ namespace Dynamo.Configuration
         public bool ShowTabsAndSpacesInScriptEditor { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the enabled node Auto Complete feature for port interaction.
+        /// </summary>
+        public bool EnableNodeAutoComplete { get; set; }
+
+        /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
         public string DefaultPythonEngine
@@ -408,6 +413,7 @@ namespace Dynamo.Configuration
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
+            EnableNodeAutoComplete = false;
             DefaultPythonEngine = string.Empty;
         }
 

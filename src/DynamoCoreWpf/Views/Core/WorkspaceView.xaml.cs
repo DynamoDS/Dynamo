@@ -108,6 +108,7 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
@@ -160,6 +161,11 @@ namespace Dynamo.Views
             
         }
 
+        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        {
+            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
         private void ShowHideInCanvasControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, InCanvasSearchBar);
@@ -195,6 +201,16 @@ namespace Dynamo.Views
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            if (NodeAutoCompleteSearchBar.IsOpen)
+            {
+                // Suppress the mouse action from last 0.2 second otherwise mouse button release 
+                // in Dynamo window will forcefully shutdown all the open SearchBars
+                if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
+                {
+                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                    ViewModel.CancelActiveState();
+                }
             }
         }
 

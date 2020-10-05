@@ -450,6 +450,16 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void ASM227InstallationsAreValidated()
+        {
+            var incomplete227List = LoadListFromCsv("incomplete227List.csv");
+            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+            // Add missing DLLs. Now the the installation should be valid.
+            incomplete227List.Add("tsplines9A.dll");
+            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete227List, 227));
+        }
+
+        [Test]
         public void ASM226InstallationsAreValidated()
         {
             var incomplete226List = LoadListFromCsv("incomplete226List.csv");
@@ -470,20 +480,6 @@ namespace Dynamo.Tests
             incomplete225List.Add("ASMMATRIX225A.dll");
             incomplete225List.Add("ASMRB225A.dll");
             Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete225List, 225));
-        }
-
-        [Test]
-        public void ASM224InstallationsAreValidated()
-        {
-            var incomplete224List = LoadListFromCsv("incomplete224List.csv");
-            Assert.IsFalse(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete224List, 224));
-            // Add missing DLLs. Now the the installation should be valid.
-            incomplete224List.Add("tbb.dll");
-            incomplete224List.Add("tbbmalloc.dll");
-            incomplete224List.Add("tsplines6A.dll");
-            incomplete224List.Add("ASMMATRIX224A.dll");
-            incomplete224List.Add("ASMRB224A.dll");
-            Assert.IsTrue(DynamoShapeManager.Utilities.IsASMInstallationComplete(incomplete224List, 224));
         }
 
         [Test]

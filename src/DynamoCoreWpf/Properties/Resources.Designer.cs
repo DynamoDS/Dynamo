@@ -1539,6 +1539,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Node Auto Complete.
+        /// </summary>
+        public static string DynamoViewSettingEnableNodeAutoComplete {
+            get {
+                return ResourceManager.GetString("DynamoViewSettingEnableNodeAutoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes (requires relaunch of Dynamo).
         /// </summary>
         public static string DynamoViewSettingEnableTSplineNodes {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Runtime;
 using DSCore.Properties;
+using DynamoServices;
 using NCalc;
 using ProtoCore.Utils;
 using CSMath = System.Math;
@@ -280,7 +281,8 @@ namespace DSCore
         /// <search>ceiling,round</search>
         public static long Ceiling(double number)
         {
-            return (long)CSMath.Ceiling(number);
+            var ceiling = CSMath.Ceiling(number);
+            return DoCheckedCast(ceiling);
         }
 
         /// <summary>
@@ -324,15 +326,15 @@ namespace DSCore
         /// </summary>
         /// <param name="formulaString">NCalc formula</param>
         /// <param name="parameters">Variable names</param>
-        /// <param name="args">Variable bindings</param>
-        /// <returns name="result">Result of the formula calculation.</returns>
-        public static object EvaluateFormula(string formulaString, string[] parameters, object[] args)
+        /// <param name="arguments">Variable bindings</param>
+        /// <returns name="result">type: var[]..[] (result of the formula calculation)</returns>
+        public static object EvaluateFormula(string formulaString, string[] parameters, object[] arguments)
         {
             var e = new Expression(formulaString.ToLower(), EvaluateOptions.IgnoreCase);
 
             e.Parameters["pi"] = 3.14159265358979;
 
-            foreach (var arg in args.Select((arg, i) => new { Value = arg, Index = i }))
+            foreach (var arg in arguments.Select((arg, i) => new { Value = arg, Index = i }))
             {
                 var parameter = parameters[arg.Index];
                 e.Parameters[parameter] = arg.Value;
@@ -345,7 +347,7 @@ namespace DSCore
         ///     Returns the exponential of the number, the constant e raised to the value number.
         /// </summary>
         /// <param name="number">Number.</param>
-        /// <returns name="e^number">The exponential of the number.</returns>
+        /// <returns name="double">The exponential of the number.</returns>
         /// <search>exponential</search>
         public static double Exp(double number)
         {
@@ -360,7 +362,8 @@ namespace DSCore
         /// <search>round</search>
         public static long Floor(double number)
         {
-            return (long)CSMath.Floor(number);
+            var floor = CSMath.Floor(number);
+            return DoCheckedCast(floor);
         }
         
         [IsVisibleInDynamoLibrary(false)]
@@ -373,7 +376,7 @@ namespace DSCore
         ///     Finds the natural logarithm of a number in the range (0, ∞).
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Natural log of the number.</returns>
+        /// <returns name="double">Natural log of the number.</returns>
         /// <search>natural,logarithm,ln</search>
         public static double Log(double number)
         {
@@ -385,7 +388,7 @@ namespace DSCore
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
         /// <param name="logBase">Base of the logarithm in the range [0,1),(1, ∞).</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm,ld,lg</search>
         public static double Log(double number, double logBase)
         {
@@ -396,7 +399,7 @@ namespace DSCore
         ///     Finds the base-10 logarithm of a number.
         /// </summary>
         /// <param name="number">Number greater than 0.</param>
-        /// <returns name="log">Logarithm of the number.</returns>
+        /// <returns name="double">Logarithm of the number.</returns>
         /// <search>logarithm</search>
         public static double Log10(double number)
         {
@@ -520,7 +523,7 @@ namespace DSCore
         ///     Finds the sine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the sine of.</param>
-        /// <returns name="sin">Sine of the angle.</returns>
+        /// <returns name="double">Sine of the angle.</returns>
         /// <search>sine</search>
         public static double Sin(double angle)
         {
@@ -531,7 +534,7 @@ namespace DSCore
         ///     Finds the hyperbolic sine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="sinh">Hyperbolic sine of the angle.</returns>
+        /// <returns name="double">Hyperbolic sine of the angle.</returns>
         /// <search>hyperbolic</search>
         public static double Sinh(double angle)
         {
@@ -542,7 +545,7 @@ namespace DSCore
         ///     Finds the positive square root of a number in the range [0, ∞).
         /// </summary>
         /// <param name="number">A number in the range [0, ∞).</param>
-        /// <returns name="sqrt">Positive square root of the number.</returns>
+        /// <returns name="double">Positive square root of the number.</returns>
         /// <search>square,root,radical</search>
         public static double Sqrt(double number)
         {
@@ -643,5 +646,24 @@ namespace DSCore
         }
 
         private static readonly Random mRandom = new Random();
+
+        /// <summary>
+        /// Performs a cast to long in a checked context. If the operation produces an overflow,
+        /// then a warning is produced and the overflowed result is returned.
+        /// </summary>
+        /// <param name="value">Operation to be performed</param>
+        /// <returns>The result of the operation</returns>
+        private static long DoCheckedCast(double value)
+        {
+            try
+            {
+                return checked((long)value);
+            }
+            catch (OverflowException)
+            {
+                LogWarningMessageEvents.OnLogWarningMessage(string.Format($"{Properties.Resources.IntegerOverflow}href=IntegerOverflow.html"));
+                return (long)value;
+            }
+        }
     }
 }

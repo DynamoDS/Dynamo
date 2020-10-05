@@ -1,7 +1,9 @@
 ﻿using System;
+using Autodesk.DesignScript.Runtime;
 
 namespace DesignScript.Builtin
 {
+    [SupressImportIntoVM]
     public class KeyNotFoundException : Exception
     {
         public KeyNotFoundException(string message)
@@ -10,6 +12,7 @@ namespace DesignScript.Builtin
         }
     }
 
+    [SupressImportIntoVM]
     public class IndexOutOfRangeException : Exception
     {
         public IndexOutOfRangeException(string message)
@@ -18,6 +21,7 @@ namespace DesignScript.Builtin
         }
     }
 
+    [SupressImportIntoVM]
     public class StringOverIndexingException : Exception
     {
         public StringOverIndexingException(string message)
@@ -30,6 +34,7 @@ namespace DesignScript.Builtin
     /// Null reference exception thrown with null DS builtin types:
     /// lists, dictionaries and strings.
     /// </summary>
+    [SupressImportIntoVM]
     public class BuiltinNullReferenceException : NullReferenceException
     {
         public BuiltinNullReferenceException(string message)

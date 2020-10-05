@@ -79,5 +79,24 @@ namespace ProtoTest.GraphCompiler
             Assert.AreEqual(1, inputIdentifier.Count);
             Assert.AreEqual("a", inputIdentifier.ElementAt(0).Value);
         }
+
+        [Test]
+        public void TestUnboundIdentifierInBinaryExpression()
+        {
+            var binaryExpressions = new[] { "x==-0.5;", "x>0.5;", "x<-1;", "x!=1;", "x<=\"a\";", "x>='a';", "x==true;", "x!=false;", "x==null;" };
+
+            foreach (var expression in binaryExpressions)
+            {
+                ElementResolver elementResolver = new ElementResolver();
+                ParseParam parseParam = new ParseParam(Guid.NewGuid(), expression, elementResolver);
+
+                Assert.IsTrue(CompilerUtils.PreCompileCodeBlock(thisTest.CreateTestCore(), ref parseParam));
+                Assert.IsTrue(parseParam.ParsedNodes != null && parseParam.ParsedNodes.Any());
+
+                var inputIdentifier = parseParam.UnboundIdentifiers;
+                Assert.AreEqual(1, inputIdentifier.Count);
+                Assert.AreEqual("x", inputIdentifier.ElementAt(0).Value);
+            }
+        }
     }
 }
