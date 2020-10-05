@@ -1301,7 +1301,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to type: var[]..[] (New list).
+        ///   Looks up a localized string similar to New list of type: var[]..[].
         /// </summary>
         public static string RangePortDataSeqToolTip {
             get {

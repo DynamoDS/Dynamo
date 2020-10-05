@@ -171,7 +171,7 @@ Default value: 10</value>
 Default value: 9</value>
   </data>
   <data name="RangePortDataSeqToolTip" xml:space="preserve">
-    <value>type: var[]..[] (New list)</value>
+    <value>New list of type: var[]..[]</value>
   </data>
   <data name="RangePortDataStartToolTip" xml:space="preserve">
     <value>Number or letter to start the sequence at
