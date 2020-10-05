@@ -76,7 +76,7 @@
       <summary>Returns the items from the list that generate the maximum values for the function supplied as the key projector</summary>
       <param name="list">list of values</param>
       <param name="keyFunction">function applied to the list items</param>
-      <returns name="maximumItem">type: var[]..[] (maximum item in list using keyFunction)</returns>
+      <returns name="maximumItem">Maximum item in list using keyFunction (type: var[]..[])</returns>
       <search>max,item,key</search>
     </member>
     <member name="__Replace">
