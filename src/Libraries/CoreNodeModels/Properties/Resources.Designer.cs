@@ -241,7 +241,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list.
+        ///   Looks up a localized string similar to A list (type: var[]..[]).
         /// </summary>
         public static string CreateListPortDataResultToolTip {
             get {
@@ -286,7 +286,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the directory..
+        ///   Looks up a localized string similar to Path to the directory (type: string).
         /// </summary>
         public static string DirectoryObjectPortDataPathToolTip {
             get {
@@ -449,7 +449,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the file..
+        ///   Looks up a localized string similar to Path to the file as string..
         /// </summary>
         public static string FileObjectPortDataPathToolTip {
             get {
@@ -863,7 +863,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapped list.
+        ///   Looks up a localized string similar to Mapped list of type: var[]..[].
         /// </summary>
         public static string MapPortDataResultToolTip {
             get {
@@ -890,7 +890,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to False block.
+        ///   Looks up a localized string similar to Returned if test is false.
         /// </summary>
         public static string PortDataFalseBlockToolTip {
             get {
@@ -899,7 +899,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to image.
+        ///   Looks up a localized string similar to Image for visualization.
         /// </summary>
         public static string PortDataImageToolTip {
             get {
@@ -926,7 +926,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to result.
+        ///   Looks up a localized string similar to Result block produced.
         /// </summary>
         public static string PortDataResultToolTip {
             get {
@@ -935,7 +935,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test block.
+        ///   Looks up a localized string similar to Boolean test.
         /// </summary>
         public static string PortDataTestBlockToolTip {
             get {
@@ -944,7 +944,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True block.
+        ///   Looks up a localized string similar to Returned if test is true.
         /// </summary>
         public static string PortDataTrueBlockToolTip {
             get {
@@ -989,7 +989,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reduced lists.
+        ///   Looks up a localized string similar to Reduced lists (type: var[]..[]).
         /// </summary>
         public static string ReducePortDataResultToolTip {
             get {
@@ -1070,7 +1070,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanned lists.
+        ///   Looks up a localized string similar to Scanned lists (type: var[]..[]).
         /// </summary>
         public static string ScanPortDataResultToolTip {
             get {
@@ -1088,7 +1088,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scoped If statement.
+        ///   Looks up a localized string similar to Returns the result of either the True or False input depending on what boolean value is toggled in the test input..
         /// </summary>
         public static string ScopeIfDescription {
             get {
@@ -1349,7 +1349,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The result of the web request..
+        ///   Looks up a localized string similar to Content of a webpage as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {
@@ -1358,7 +1358,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The url for the web request..
+        ///   Looks up a localized string similar to The url for the web request as a string..
         /// </summary>
         public static string WebRequestPortDataUrlToolTip {
             get {

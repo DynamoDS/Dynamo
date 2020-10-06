@@ -129,6 +129,18 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Small.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <!-- Get System.Drawing.dll -->

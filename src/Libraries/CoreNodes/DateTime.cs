@@ -157,6 +157,8 @@ namespace DSCore
         ///     Extracts only the date from a DateTime. Time components are set to 0.
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
+        /// <returns name="date">date from DateTime</returns>
+        /// <search>Date</search>
         public static System.DateTime Date(System.DateTime dateTime)
         {
             return dateTime.Date;
@@ -223,6 +225,7 @@ namespace DSCore
         ///     given DateTime.
         /// </summary>
         /// <param name="dateTime">A DateTime.</param>
+        /// <returns name="timeSpan">TimeSpan since midnight</returns>
         public static System.TimeSpan TimeOfDay(System.DateTime dateTime)
         {
             return dateTime.TimeOfDay;
@@ -358,6 +361,11 @@ namespace DSCore
         ///     Extracts the individual components of a TimeSpan.
         /// </summary>
         /// <param name="timeSpan">A TimeSpan.</param>
+        /// <returns name="days">Amount of days (type int)</returns>
+        /// <returns name="hours">Amount of hours (type int)</returns>
+        /// <returns name="minutes">Amount of minutes (type int)</returns>
+        /// <returns name="seconds">Amount of seconds (type int)</returns>
+        /// <returns name="milliseconds">Amount of milliseconds (type int)</returns>
         [MultiReturn("days", "hours", "minutes", "seconds", "milliseconds")]
         public static Dictionary<string, int> Components(System.TimeSpan timeSpan)
         {
