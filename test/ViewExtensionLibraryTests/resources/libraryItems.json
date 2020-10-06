@@ -2737,6 +2737,14 @@
       "keywords": "split, disjoint"
     },
     {
+      "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Solid.ByRuledLoft",
+      "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Solid.ByRuledLoft.Small?path=ProtoGeometry.dll",
+      "contextData": "Autodesk.DesignScript.Geometry.Solid.ByRuledLoft@Autodesk.DesignScript.Geometry.PolyCurve[],bool",
+      "parameters": "(crossSections, checkAdnRepair)",
+      "itemType": "create",
+      "keywords": "Brep, brep, ruled, loft"
+    },
+    {
       "fullyQualifiedName": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints",
       "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints.Point1.Small?path=ProtoGeometry.dll",
       "contextData": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[]",
