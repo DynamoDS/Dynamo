@@ -11,7 +11,7 @@ namespace Dynamo.DocumentationBrowser
     /// Creates a lookup for node annotation markdown files associated with a package.
     /// Also creates file watchers for the package node annotation paths so new files can be hot reloaded in Dynamo.
     /// </summary>
-    public class PackageDocumentationManager
+    public class PackageDocumentationManager : IDisposable
     {
         /// <summary>
         /// Dictionary to lookup node documentation markdown files with the node namespace.
@@ -122,6 +122,16 @@ namespace Dynamo.DocumentationBrowser
             var newFileName = Path.GetFileNameWithoutExtension(e.Name);
             if (!nodeDocumentationFileLookup.ContainsKey(newFileName))
                 nodeDocumentationFileLookup.Add(newFileName, e.FullPath);
+        }
+
+        public void Dispose()
+        {
+            foreach (var watcher in markdownFileWatchers.Values)
+            {
+                watcher.Renamed -= OnFileRenamed;
+                watcher.Deleted -= OnFileDeleted;
+                watcher.Created -= OnFileCreated;
+            }
         }
     }
 }

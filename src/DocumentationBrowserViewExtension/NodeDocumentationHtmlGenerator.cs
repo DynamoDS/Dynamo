@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
@@ -35,7 +36,7 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Format("<h1>{0}</h1>", e.Type));
-            sb.AppendLine(string.Format("<p><i>{0}</i></p>", e.Namespace));
+            sb.AppendLine(string.Format("<p><i>{0}</i></p>", e.MinimumQualifiedName));
             sb.AppendLine("<hr>");
 
             return sb.ToString();
@@ -61,18 +62,18 @@ namespace Dynamo.DocumentationBrowser
             sb.AppendLine("<tr>");
             sb.AppendLine(string.Format("<td>{0}</td>", "Inputs"));
             sb.AppendLine("<td>");
-            for (int i = 0; i < e.InputNames.Count; i++)
+            for (int i = 0; i < e.InputNames.Count(); i++)
             {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.InputNames[i], Regex.Replace(e.InputDescriptions[i], @"\r\n?|\n", "<br>")));
+                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.InputNames.ElementAt(i), Regex.Replace(e.InputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")));
             }
             sb.AppendLine("</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
             sb.AppendLine(string.Format("<td>{0}</td>", "Outputs"));
             sb.AppendLine("<td>");
-            for (int i = 0; i < e.OutputNames.Count; i++)
+            for (int i = 0; i < e.OutputNames.Count(); i++)
             {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.OutputNames[i], Regex.Replace(e.OutputDescriptions[i], @"\r\n?|\n", "<br>")));
+                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.OutputNames.ElementAt(i), Regex.Replace(e.OutputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")));
             }
             sb.AppendLine("</td>");
             sb.AppendLine("</tr>");

@@ -40,9 +40,9 @@ namespace Dynamo.DocumentationBrowser
             private set
             {
                 var oldLink = link;
-                // if the link is changed we unsubscribe the current watcher and create a new
-                // for the new link, if its a markdown file.
-                if(value != oldLink)
+                // if the link is changed we unsubscribe the current watcher
+                // and create a new watcher for the new link, if its a markdown file.
+                if (value != oldLink)
                 {
                     UnsubscribeMdWatcher();
                     WatchMdFile(value.OriginalString);
@@ -73,9 +73,6 @@ namespace Dynamo.DocumentationBrowser
 
         internal Action<Uri> LinkChanged;
         private void OnLinkChanged(Uri link) => this.LinkChanged?.Invoke(link);
-
-        internal event EventHandler ContentChanged;
-        private void OnContentChanged() => this.ContentChanged?.Invoke(this, EventArgs.Empty);
 
         private bool showBrowser;
         /// <summary>
@@ -156,7 +153,7 @@ namespace Dynamo.DocumentationBrowser
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
-                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.Namespace);
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.MinimumQualifiedName);
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
 
@@ -248,7 +245,7 @@ namespace Dynamo.DocumentationBrowser
             writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
 
             // Convert the markdown file to html and remove script tags if any
-            if (markdownHandler.ParseToHtml(ref writer, e.Namespace))
+            if (markdownHandler.ParseToHtml(ref writer, e.MinimumQualifiedName))
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
 
             writer.Flush();

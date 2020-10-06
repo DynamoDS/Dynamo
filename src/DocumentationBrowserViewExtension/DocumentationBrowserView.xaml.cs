@@ -29,8 +29,6 @@ namespace Dynamo.DocumentationBrowser
             // so we know when to navigate to a new documentation page/document
             viewModel.LinkChanged += NavigateToPage;
 
-            viewModel.ContentChanged += OnContentChanged;
-
             // handle browser component events & disable certain features that are not needed
             this.documentationBrowser.AllowDrop = false;
             this.documentationBrowser.Navigating += ShouldAllowNavigation;
@@ -100,7 +98,6 @@ namespace Dynamo.DocumentationBrowser
         {
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
-            this.viewModel.ContentChanged -= OnContentChanged;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
             this.documentationBrowser.Dispose();
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;

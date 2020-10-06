@@ -80,6 +80,10 @@ namespace Dynamo.DocumentationBrowser
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
 
+            // pmExtension could be null, if this is the case we bail before interacting with it.
+            if (pmExtension is null)
+                return;
+
             // subscribe to package loaded so we can add the package documentation 
             // to the Package documentation manager when a package is loaded
             pmExtension.PackageLoader.PackgeLoaded += OnPackgeLoaded;
@@ -123,6 +127,7 @@ namespace Dynamo.DocumentationBrowser
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
             (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
+            PackageDocumentationManager.Instance.Dispose();
         }
 
         /// <summary>

@@ -167,20 +167,50 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class OpenNodeAnnotationEventArgs : OpenDocumentationLinkEventArgs
     {
-        public string Namespace { get; }
+        /// <summary>
+        /// Minimum qualified name of the node, used to match nodes with documentation markdown files.
+        /// </summary>
+        public string MinimumQualifiedName { get; }
+        /// <summary>
+        /// Node type.
+        /// </summary>
         public string Type { get; }
+        /// <summary>
+        /// Short description of the node.
+        /// </summary>
         public string Description { get; }
+        /// <summary>
+        /// Nodes category.
+        /// </summary>
         public string Category { get; }
-        public List<string> InputNames { get; private set; }
-        public List<string> OutputNames { get; private set; }
-        public List<string> InputDescriptions { get; private set; }
-        public List<string> OutputDescriptions { get; private set; }
+        /// <summary>
+        /// Collection of the nodes input names.
+        /// </summary>
+        public IEnumerable<string> InputNames { get; private set; }
+        /// <summary>
+        /// Collection of the nodes output names
+        /// </summary>
+        public IEnumerable<string> OutputNames { get; private set; }
+        /// <summary>
+        /// Collection of the nodes inputs description.
+        /// </summary>
+        public IEnumerable<string> InputDescriptions { get; private set; }
+        /// <summary>
+        /// Collection of the nodes outputs description.
+        /// </summary>
+        public IEnumerable<string> OutputDescriptions { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance of OpenNodeAnnotationEventArgs, which contains data used
+        /// to create documentation for the node.
+        /// </summary>
+        /// <param name="model">NodeModel to document</param>
+        /// <param name="dynamoViewModel"></param>
         public OpenNodeAnnotationEventArgs(NodeModel model, DynamoViewModel dynamoViewModel) : base(new Uri(String.Empty,UriKind.Relative))
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
-            Namespace = GetNamespace(model, dynamoViewModel);
+            MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
             Type = model.Name;
             Description = model.Description;
             Category = model.Category;
@@ -191,31 +221,38 @@ namespace Dynamo.ViewModels
 
         private void SetOutputs(NodeModel nodeModel)
         {
-            OutputNames = new List<string>();
-            OutputDescriptions = new List<string>();
+            var outputNames = new List<string>();
+            var outputDescriptions = new List<string>();
 
             var outputs = nodeModel.OutPorts;
             foreach (var output in outputs)
             {
-                OutputNames.Add(output.Name);
-                OutputDescriptions.Add(output.ToolTip);
+                outputNames.Add(output.Name);
+                outputDescriptions.Add(output.ToolTip);
             }
+
+            OutputNames = outputNames;
+            OutputDescriptions = outputDescriptions;
         }
 
         private void SetInputs(NodeModel nodeModel)
         {
-            InputNames = new List<string>();
-            InputDescriptions = new List<string>();
+            var inputNames = new List<string>();
+            var inputDescriptions = new List<string>();
 
             var inputs = nodeModel.InPorts;
             foreach (var input in inputs)
             {
-                InputNames.Add(input.Name);
-                InputDescriptions.Add(input.ToolTip);
+                inputNames.Add(input.Name);
+                inputDescriptions.Add(input.ToolTip);
             }
+
+            InputNames = inputNames;
+            InputDescriptions = inputDescriptions;
+
         }
 
-        static private string GetNamespace(NodeModel nodeModel, DynamoViewModel viewModel)
+        static private string GetMinimumQualifiedName(NodeModel nodeModel, DynamoViewModel viewModel)
         {
             switch (nodeModel)
             {
@@ -259,6 +296,9 @@ namespace Dynamo.ViewModels
         private static bool CustomNodeHasCollisons(string nodeName, string packageName, DynamoViewModel viewModel)
         {
             var pmExtension = viewModel.Model.GetPackageManagerExtension();
+            if (pmExtension is null)
+                return false;
+
             var package = pmExtension.PackageLoader.LocalPackages
                 .Where(x => x.Name == packageName)
                 .FirstOrDefault();
