@@ -394,7 +394,7 @@
     <value>List</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>operand</value>
+    <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>Result block produced</value>
@@ -494,10 +494,10 @@
     <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>The result of the web request.</value>
+    <value>Content of a web request as a string.</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request.</value>
+    <value>The url for the web request as a string.</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>
