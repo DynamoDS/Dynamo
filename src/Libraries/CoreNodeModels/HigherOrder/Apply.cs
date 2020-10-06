@@ -22,8 +22,8 @@ namespace CoreNodeModels.HigherOrder
 
         public ApplyFunction() : base()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func", Resources.ApplyPortDataFuncToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func(args)", Resources.ApplyPortDataFuncArgToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function", Resources.ApplyPortDataFuncToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", Resources.ApplyPortDataFuncArgToolTip)));
             AddInput();
             RegisterAllPorts();
         }
@@ -31,9 +31,9 @@ namespace CoreNodeModels.HigherOrder
         protected override string GetInputName(int index)
         {
             if (index == 0)
-                return "func";
+                return "function";
 
-            return "arg" + index;
+            return "argument" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
@@ -41,7 +41,7 @@ namespace CoreNodeModels.HigherOrder
             if (index == 0)
                 return "Function to apply.";
 
-            return "Argument #" + index;
+            return "Argument #" + (index-1);
         }
 
         protected override void RemoveInput()
@@ -85,15 +85,15 @@ namespace CoreNodeModels.HigherOrder
 
         public ComposeFunctions()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func0", Resources.ComposePortDataFunc0ToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("func1", Resources.ComposePortDataFunc1ToolTip)));
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("func", Resources.ComposePortDataResultToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function0", Resources.ComposePortDataFunc0ToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function1", Resources.ComposePortDataFunc1ToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("function", Resources.ComposePortDataResultToolTip)));
             RegisterAllPorts();
         }
 
         protected override string GetInputName(int index)
         {
-            return "func" + index;
+            return "function" + index;
         }
 
         protected override string GetInputTooltip(int index)

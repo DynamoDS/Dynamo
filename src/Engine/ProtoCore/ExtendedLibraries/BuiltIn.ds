@@ -12,9 +12,9 @@ class List extends DSCore.List
         return __Equals(objectA, objectB);
 	}
 
-	public static def GroupByFunction(list: var[]..[], func: Function)
+	public static def GroupByFunction(list: var[]..[], groupFunction: Function)
 	{
-		return __GroupByFunction(list, func);
+		return __GroupByFunction(list, groupFunction);
 	}
 
 	public static def SortByFunction(list: var[]..[], sortFunction: Function)

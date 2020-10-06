@@ -178,7 +178,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Combinator.
+        ///   Looks up a localized string similar to Function to use as combinator.
         /// </summary>
         public static string CombinatorPortDataCombToolTip {
             get {
@@ -593,7 +593,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Applies a function to arguments..
+        ///   Looks up a localized string similar to Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point..
         /// </summary>
         public static string FunctionApplyDescription {
             get {
@@ -602,7 +602,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compose multiple functions..
+        ///   Looks up a localized string similar to Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list..
         /// </summary>
         public static string FunctionComposeDescription {
             get {
