@@ -14,6 +14,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search;
 using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
@@ -1061,11 +1062,19 @@ namespace Dynamo.ViewModels
 
         internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
         {
+            // Do not auto connect code block node since default code block node do not have output port
             if (!nodeCreationName.Contains("Code Block"))
             {
+                //dynamoViewModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(nodeModel.GUID,))
+                var id = Guid.NewGuid();
                 // Create a new node based on node creation name and connect ports
-                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(Guid.NewGuid(), portModel.Owner.GUID,
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
                     nodeCreationName, 0, portModel.Index, portModel.CenterX - 50, portModel.CenterY + 200, false, false));
+                // Clear current selections and select both nodes
+                DynamoSelection.Instance.ClearSelection();
+                dynamoViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == id).FirstOrDefault().Select(null);
+                portModel.Owner.Select();
+                dynamoViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
             }
 
             OnRequestFocusSearch();
