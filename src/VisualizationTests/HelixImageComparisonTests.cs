@@ -257,6 +257,14 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 
+        [Test]
+        public void RenderCoordinateSystemWithGeometryScaling()
+        {
+            OpenVisualizationTest(@"imageComparison\CoordinateSystems.dyn");
+            RunCurrentModel();
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
         #endregion
 
         #region pointsAndLines
