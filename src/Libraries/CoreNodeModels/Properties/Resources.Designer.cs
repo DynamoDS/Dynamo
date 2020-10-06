@@ -286,7 +286,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the directory..
+        ///   Looks up a localized string similar to Path to the directory (type: string).
         /// </summary>
         public static string DirectoryObjectPortDataPathToolTip {
             get {
