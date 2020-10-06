@@ -523,28 +523,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             SetupScene();
             InitializeHelix();
-            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-        }
-
-        private void OnSelectionCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (Element3DDictionary == null)
-            {
-                sceneItems = new ObservableElement3DCollection();
-                return;
-            }
-
-            var values = Element3DDictionary.Values.ToList();
-            if (Camera != null)
-            {
-                values.Sort(new Element3DComparer(Camera.Position));
-            }
-
-            if (sceneItems == null)
-                sceneItems = new ObservableElement3DCollection();
-
-            sceneItems.Clear();
-            sceneItems.AddRange(values);
         }
 
         public void SerializeCamera(XmlElement camerasElement)
@@ -987,8 +965,21 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// </summary>
         protected override void OnIsolationModeRequestUpdate()
         {
-            var geometries = Element3DDictionary.Values.OfType<GeometryModel3D>().ToList();
+            var values = Element3DDictionary.Values.ToList();
+
+            var geometries = values.OfType<GeometryModel3D>().ToList();
             geometries.ForEach(g => AttachedProperties.SetIsolationMode(g, IsolationMode));
+
+            if (Camera != null)
+            {
+                values.Sort(new Element3DComparer(Camera.Position));
+            }
+
+            if (sceneItems == null)
+                sceneItems = new ObservableElement3DCollection();
+
+            sceneItems.Clear();
+            sceneItems.AddRange(values);
         }
 
         protected override void ZoomToFit(object parameter)
