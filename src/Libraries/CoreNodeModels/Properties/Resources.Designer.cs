@@ -863,7 +863,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mapped list.
+        ///   Looks up a localized string similar to Mapped list of type: var[]..[].
         /// </summary>
         public static string MapPortDataResultToolTip {
             get {

@@ -370,7 +370,7 @@
     <value>The list to map over.</value>
   </data>
   <data name="MapPortDataResultToolTip" xml:space="preserve">
-    <value>Mapped list</value>
+    <value>Mapped list of type: var[]..[]</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
     <value>Creates a sequence of numbers or letters in the specified range.</value>
