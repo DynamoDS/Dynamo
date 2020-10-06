@@ -260,6 +260,7 @@ namespace WpfVisualizationTests
         [Test]
         public void RenderCoordinateSystemWithGeometryScaling()
         {
+            // This DYN has the Geometry Scaling set to the "Extra Large" setting.
             OpenVisualizationTest(@"imageComparison\CoordinateSystems.dyn");
             RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
