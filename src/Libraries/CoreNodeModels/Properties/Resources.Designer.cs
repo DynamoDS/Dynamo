@@ -890,7 +890,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to False block.
+        ///   Looks up a localized string similar to Returned if test is false.
         /// </summary>
         public static string PortDataFalseBlockToolTip {
             get {
@@ -926,7 +926,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to result.
+        ///   Looks up a localized string similar to Result block produced.
         /// </summary>
         public static string PortDataResultToolTip {
             get {
@@ -935,7 +935,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Test block.
+        ///   Looks up a localized string similar to Boolean test.
         /// </summary>
         public static string PortDataTestBlockToolTip {
             get {
@@ -944,7 +944,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to True block.
+        ///   Looks up a localized string similar to Returned if test is true.
         /// </summary>
         public static string PortDataTrueBlockToolTip {
             get {
@@ -1088,7 +1088,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scoped If statement.
+        ///   Looks up a localized string similar to Returns the result of either the True or False input depending on what boolean value is toggled in the test input..
         /// </summary>
         public static string ScopeIfDescription {
             get {
