@@ -412,6 +412,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
+        [Test]
         [Category("UnitTests")]
         [Category("Failure")]
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
