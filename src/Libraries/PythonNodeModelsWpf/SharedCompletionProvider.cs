@@ -8,14 +8,13 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
+    // TODO 3.0: Change this file name and class to CompletionProviderAdaptor. 
     public class SharedCompletionProvider : LogSourceBase
     {
 
         #region Properties and Fields
         private readonly IExternalCodeCompletionProviderCore providerImplementation;
 
-        public static string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
-        public static string variableName = @"([0-9a-zA-Z_]+(\.[a-zA-Z_0-9]+)*)";
         public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
         public static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
         public static string arrayRegex = "(\\[.*\\])";
@@ -97,16 +96,12 @@ namespace Dynamo.Python
         #region Methods
         internal ICompletionData[] GetCompletionData(string code, PythonEngineVersion engineVersion, bool expand = false)
         {
-            if (engineVersion.Equals(PythonEngineVersion.IronPython2))
+            if (engineVersion.Equals(PythonEngineVersion.IronPython2) || engineVersion.Equals(PythonEngineVersion.CPython3))
             {
                 return this.providerImplementation?.GetCompletionData(code, expand).
                     Select(x => new IronPythonCompletionData(x)).ToArray();
             }
-            else if (engineVersion.Equals(PythonEngineVersion.CPython3))
-            {
-                return this.providerImplementation?.GetCompletionData(code, expand).
-                    Select(x => new IronPythonCompletionData(x)).ToArray();
-            }
+
             return null;
         }
 

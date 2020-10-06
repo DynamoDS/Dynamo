@@ -412,7 +412,6 @@ namespace DynamoPythonTests
             Assert.IsTrue(defaultImports.SequenceEqual(completionProvider.ImportedTypes.Keys.ToList()));
         }
 
-        [Test]
         [Category("UnitTests")]
         [Category("Failure")]
         public void CanImportSystemCollectionsLibraryAndGetCompletionData()
@@ -473,11 +472,6 @@ namespace DynamoPythonTests
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
             var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
-
-            Assert.AreNotEqual(0, completionData.Length);
-
-            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
-            completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
 
             Assert.AreNotEqual(0, completionData.Length);
         }

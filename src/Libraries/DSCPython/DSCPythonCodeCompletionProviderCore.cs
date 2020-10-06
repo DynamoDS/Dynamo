@@ -74,7 +74,7 @@ namespace DSCPython
         /// <summary>
         /// Keeps track of failed statements to avoid poluting the log
         /// </summary>
-        internal Dictionary<string, int> badStatements { get; set; }
+        internal Dictionary<string, int> BadStatements { get; set; }
 
         /// <summary>
         /// Returns the last name from the input line. The regex ignores tabs, spaces, the first new line, etc.
@@ -236,7 +236,7 @@ namespace DSCPython
             return importMatches;
         }
 
-        public static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
+        internal static Dictionary<string, string> FindVariableStatementWithRegex(string code, string valueRegex)
         {
             var pattern = variableName + spacesOrNone + equalsRegex + spacesOrNone + valueRegex;
 
@@ -347,7 +347,7 @@ namespace DSCPython
                 foreach (var statement in refs)
                 {
                     var previousTries = 0;
-                    badStatements.TryGetValue(statement, out previousTries);
+                    BadStatements.TryGetValue(statement, out previousTries);
                     // TODO - Why is this 3?  Should this be a constant? Is it related to knownAssembies.Length?
                     if (previousTries > 3)
                     {
@@ -379,7 +379,7 @@ namespace DSCPython
                     {
                         Log(String.Format("Failed to reference library: {0}", statement));
                         Log(e.ToString());
-                        badStatements[statement] = previousTries + 1;
+                        BadStatements[statement] = previousTries + 1;
                     }
                 }
 
@@ -425,7 +425,7 @@ namespace DSCPython
                             }
                         }
 
-                        badStatements.TryGetValue(statement, out previousTries);
+                        BadStatements.TryGetValue(statement, out previousTries);
 
                         if (previousTries > 3)
                         {
@@ -447,7 +447,7 @@ namespace DSCPython
                     {
                         Log(String.Format("Failed to load module: {0}, with statement: {1}", memberName, statement));
                         // Log(e.ToString());
-                        badStatements[statement] = previousTries + 1;
+                        BadStatements[statement] = previousTries + 1;
                     }
                 }
             }
@@ -644,6 +644,8 @@ namespace DSCPython
 
             return importMatches;
         }
+
+        #endregion
 
         public Type TryGetType(string name)
         {
@@ -901,8 +903,6 @@ namespace DSCPython
             set { scope = (PyScope)value; }
         }
 
-        #endregion
-
         /// <summary>
         /// Already discovered variable types.
         /// </summary>
@@ -969,7 +969,7 @@ namespace DSCPython
                             // Variable type
                             else if (VariableTypes.TryGetValue(name, out type))
                             {
-                                items = EnumerateMembers(type, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                items = EnumerateMembers(type.Name, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
                             else
                             {
@@ -989,17 +989,6 @@ namespace DSCPython
                                     if (pythonModule != null)
                                     {
                                         items = EnumerateMembers(pythonModule, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                                    }
-                                    // Python type
-                                    else if (mem is PyObject)
-                                    {
-                                        // Shows static and instance methods in the same way :(
-                                        /* var value = ClrModule.GetClrType(mem as PythonType);
-
-                                         if (value != null)
-                                         {
-                                             items = EnumerateMembers(value, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
-                                         } */
                                     }
                                 }
                             }
@@ -1138,7 +1127,7 @@ namespace DSCPython
             VariableTypes = new Dictionary<string, Type>();
             ImportedTypes = new Dictionary<string, Type>();
             clrModules = new HashSet<string>();
-            badStatements = new Dictionary<string, int>();
+            BadStatements = new Dictionary<string, int>();
 
             // Special case for python variables defined as null
             ImportedTypes["None"] = null;

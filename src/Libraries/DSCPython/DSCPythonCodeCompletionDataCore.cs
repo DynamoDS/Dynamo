@@ -4,7 +4,7 @@ namespace DSCPython
 {
     /// <summary>
     /// Concrete type that gets returned and converted to an Avalonedit type implementing
-    /// ICompletionData when used from WPF ScriptEditorContorl.
+    /// IExternalCodeCompletionData when used from WPF ScriptEditorControl.
     /// </summary>
     internal class DSCPythonCodeCompletionDataCore : IExternalCodeCompletionData
     {

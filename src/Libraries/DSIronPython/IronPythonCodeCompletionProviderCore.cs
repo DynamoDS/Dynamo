@@ -628,6 +628,8 @@ namespace DSIronPython
             return importMatches;
         }
 
+        #endregion
+
         public Type TryGetType(string name)
         {
             if (ImportedTypes.ContainsKey(name))
@@ -870,8 +872,6 @@ namespace DSIronPython
             get { return scope; }
             set { scope = (ScriptScope)value; }
         }
-
-        #endregion
 
         /// <summary>
         /// Already discovered variable types.
