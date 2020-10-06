@@ -388,7 +388,7 @@
     <value>Returned if test is false</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
-    <value>image</value>
+    <value>Image for visualization</value>
   </data>
   <data name="PortDataListToolTip" xml:space="preserve">
     <value>List</value>
