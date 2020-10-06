@@ -322,7 +322,7 @@ namespace DSCore
         ///     Ex. the range \"0..3\" with an offset of 2 will yield
         ///     {0,1,2,3}{2,3,4,5}{4,5,6,7}...
         /// </param>
-        /// <returns name="lists">Sublists of the given list.</returns>
+        /// <returns name="lists">type: var[]..[]</returns>
         /// <search>sublists,build sublists,subset,</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Sublists(IList list, IList ranges, int offset)
@@ -440,9 +440,9 @@ namespace DSCore
         ///     Sort list based on its keys
         /// </summary>
         /// <param name="list">list to be sorted</param>
-        /// <param name="keys">list of keys</param>
-        /// <returns name="sorted list">sorted list</returns>
-        /// <returns name="sorted keys">sorted keys</returns>
+        /// <param name="keys">list of keys, keys have to be sortable (e.g. numbers,strings)   </param>
+        /// <returns name="sortedList">type: var[]..[]</returns>
+        /// <returns name="sortedKeys">type: var[]..[]</returns>
         /// <search>sort;key</search>
         [MultiReturn(new[] { "sorted list", "sorted keys" })]
         [IsVisibleInDynamoLibrary(true)]
