@@ -241,7 +241,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list.
+        ///   Looks up a localized string similar to A list (type: var[]..[]).
         /// </summary>
         public static string CreateListPortDataResultToolTip {
             get {
@@ -449,7 +449,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Path to the file..
+        ///   Looks up a localized string similar to Path to the file as string..
         /// </summary>
         public static string FileObjectPortDataPathToolTip {
             get {
@@ -989,7 +989,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reduced lists.
+        ///   Looks up a localized string similar to Reduced lists (type: var[]..[]).
         /// </summary>
         public static string ReducePortDataResultToolTip {
             get {
@@ -1070,7 +1070,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scanned lists.
+        ///   Looks up a localized string similar to Scanned lists (type: var[]..[]).
         /// </summary>
         public static string ScanPortDataResultToolTip {
             get {
