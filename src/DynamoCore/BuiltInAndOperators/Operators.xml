@@ -110,9 +110,10 @@
         </member>
 		<member name="%Not">
 		            <summary>
-                !x
-            </summary>
-            <param name="x">x value.</param>
+                  Negates the input, e.g. returns false when the input is true.
+                </summary>
+            <param name="x">boolean to reverse.</param>
+            <returns name="bool">type var[]..[] (reversed boolean) </returns>
             <search>not</search>
         </member>
     </members>

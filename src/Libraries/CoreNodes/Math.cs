@@ -231,7 +231,7 @@ namespace DSCore
         ///     Finds the inverse cosine, the angle whose cosine is the given ratio.
         /// </summary>
         /// <param name="ratio">The cosine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose cosine is the input ratio.</returns>
+        /// <returns name="double">The angle whose cosine is the input ratio.</returns>
         /// <search>acosine,arccosine</search>
         public static double Acos(double ratio)
         {
@@ -242,7 +242,7 @@ namespace DSCore
         ///     Finds the inverse sine, the angle whose sine is the given ratio.
         /// </summary>
         /// <param name="ratio">The sine of the angle, a number in the range [-1, 1].</param>
-        /// <returns name="angle">The angle whose sine is the input ratio.</returns>
+        /// <returns name="double">The angle whose sine is the input ratio</returns>
         /// <search>asine,arcsin</search>
         public static double Asin(double ratio)
         {
@@ -253,7 +253,7 @@ namespace DSCore
         ///     Finds the inverse tangent, the angle whose tangent is the given ratio.
         /// </summary>
         /// <param name="ratio">The tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is the input ratio.</returns>
+        /// <returns name="double">The angle whose tangent is the input ratio</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan(double ratio)
         {
@@ -266,7 +266,7 @@ namespace DSCore
         /// </summary>
         /// <param name="numerator">The numerator of the tangent of the angle.</param>
         /// <param name="denominator">The denominator of the tangent of the angle.</param>
-        /// <returns name="angle">The angle whose tangent is numerator/denominator.</returns>
+        /// <returns name="double">The angle whose tangent is numerator/denominator</returns>
         /// <search>atangent,arctangent</search>
         public static double Atan2(double numerator, double denominator)
         {
@@ -289,7 +289,7 @@ namespace DSCore
         ///     Finds the cosine of an angle.
         /// </summary>
         /// <param name="angle">Angle in degrees to take the cosine of.</param>
-        /// <returns name="cos">Cosine of the angle.</returns>
+        /// <returns name="double">Cosine of the angle</returns>
         /// <search>cosine</search>
         public static double Cos(double angle)
         {
@@ -300,7 +300,7 @@ namespace DSCore
         ///     Finds the hyperbolic cosine of an angle (radians).
         /// </summary>
         /// <param name="angle">An angle in radians.</param>
-        /// <returns name="cosh">Hyperbolic cosine of the angle.</returns>
+        /// <returns name="double">Hyperbolic cosine of the angle</returns>
         /// <search>hyperbolic cosine</search>
         public static double Cosh(double angle)
         {
@@ -312,7 +312,7 @@ namespace DSCore
         /// </summary>
         /// <param name="dividend">The number to be divided.</param>
         /// <param name="divisor">The number to be divided by.</param>
-        /// <returns name="remainder">The remainder of the division.</returns>
+        /// <returns name="int">The remainder of the division</returns>
         /// <search>remainder</search>
         public static long DivRem(long dividend, long divisor)
         {
