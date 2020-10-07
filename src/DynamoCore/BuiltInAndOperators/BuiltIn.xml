@@ -26,7 +26,8 @@
     <member name="List.SortByFunction">
       <summary>Use a function to determine how list items should be sorted.</summary>
       <param name="list">list of values</param>
-      <param name="function"></param>
+      <param name="sortFunction">function used to sort list</param>
+      <returns name="sortedList">type: var[]..[]</returns>
       <search>sort,order</search>
     </member>
     <member name="ToString">
@@ -69,13 +70,15 @@
     <member name="List.MinimumItemByKey">
       <summary>Returns the items from the list that generate the minimum values for the function supplied as the key projector</summary>
       <param name="list">list of values</param>
-      <param name="keyProjector">function applied to the list items</param>
+      <param name="keyFunction">function applied to the list items</param>
+      <returns name="minimumItem">Minimum item in list using keyFunction (type: var[]..[])</returns>
       <search>min,item,key</search>
     </member>
     <member name="List.MaximumItemByKey">
       <summary>Returns the items from the list that generate the maximum values for the function supplied as the key projector</summary>
       <param name="list">list of values</param>
-      <param name="keyProjector">function applied to the list items</param>
+      <param name="keyFunction">function applied to the list items</param>
+      <returns name="maximumItem">Maximum item in list using keyFunction (type: var[]..[])</returns>
       <search>max,item,key</search>
     </member>
     <member name="__Replace">
@@ -157,9 +160,10 @@
     </member>
     <member name="LoopWhile">
       <summary>Constructs a while loop node given an initial value, a condition and a loop body.</summary>
-      <param name="init">initial value</param>
+      <param name="initialValue">initial value for loop</param>
       <param name="continueWhile">while loop condition</param>
       <param name="loopBody">while loop body</param>
+      <returns name="result"> Result from loop (type: var[]..[])</returns>
       <search>loop,while,repeat</search>
     </member>
   </members>

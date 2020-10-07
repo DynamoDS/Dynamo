@@ -23,9 +23,9 @@ namespace CoreNodeModels.HigherOrder
         public Map()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("list", Resources.MapPortDataListToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("f(x)", Resources.MapPortDataFxToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("function", Resources.MapPortDataFxToolTip)));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("mapped", Resources.MapPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.MapPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -281,11 +281,11 @@ namespace CoreNodeModels.HigherOrder
 
         public Reduce()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ReducePortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ReducePortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ReducePortDataSeedToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("reduced", Resources.ReducePortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.ReducePortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -300,12 +300,12 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return Resources.PortDataListToolTip + " #" + index;
+            return Resources.PortDataListToolTip + " #" + (index-1);
         }
 
         protected override int GetInputIndex()
@@ -346,11 +346,11 @@ namespace CoreNodeModels.HigherOrder
 
         public ScanList()
         {
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reductor", Resources.ScanPortDataReductorToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("reduceFunction", Resources.ScanPortDataReductorToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("seed", Resources.ScanPortDataSeedToolTip)));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list1", Resources.PortDataListToolTip + " #1")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("list0", Resources.PortDataListToolTip + " #0")));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("scanned", Resources.ScanPortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("list", Resources.ScanPortDataResultToolTip)));
 
             RegisterAllPorts();
         }
@@ -365,12 +365,12 @@ namespace CoreNodeModels.HigherOrder
 
         protected override string GetInputName(int index)
         {
-            return "list" + index;
+            return "list" + (index-1);
         }
 
         protected override string GetInputTooltip(int index)
         {
-            return "List" + index;
+            return "List #" + (index-1);
         }
 
         protected override int GetInputIndex()

@@ -6,7 +6,7 @@
                          xmlns:dww="clr-namespace:Dynamo.Wpf.Windows;assembly=DynamoCoreWpf"
                          xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
                          xmlns:p="clr-namespace:PythonNodeModels.Properties;assembly=PythonNodeModels"
-                         xmlns:pythonNodeModel="clr-namespace:PythonNodeModels;assembly=PythonNodeModels"
+                         xmlns:pw="clr-namespace:PythonNodeModelsWpf"
                          xmlns:sys="clr-namespace:System;assembly=mscorlib"
                          Title="{Binding nodeModel.Name, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                          Height="500"
@@ -56,6 +56,7 @@
                 <Setter Property="Foreground"
                         Value="#bbbbbb" />
             </Style>
+            <pw:SelectedPythonEngineToMigrationConverter x:Key="SelectedPythonEngineToMigrationConverter" />
         </ResourceDictionary>
 
     </Window.Resources>
