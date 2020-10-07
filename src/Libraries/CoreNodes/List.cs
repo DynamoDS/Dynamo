@@ -304,7 +304,6 @@ namespace DSCore
         ///     Creates a new list containing the given items.
         /// </summary>
         /// <param name="items">Items to be stored in the new list.</param>
-        [IsVisibleInDynamoLibrary(true)]
         public static IList __Create(IList items)
         {
             return items;
@@ -323,7 +322,7 @@ namespace DSCore
         ///     Ex. the range \"0..3\" with an offset of 2 will yield
         ///     {0,1,2,3}{2,3,4,5}{4,5,6,7}...
         /// </param>
-        /// <returns name="lists">Sublists of the given list.</returns>
+        /// <returns name="lists">type: var[]..[]</returns>
         /// <search>sublists,build sublists,subset,</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Sublists(IList list, IList ranges, int offset)
@@ -423,8 +422,8 @@ namespace DSCore
         ///     except the first.
         /// </summary>
         /// <param name="list">List to be split.</param>
-        /// <returns name="first">First item in the list.</returns>
-        /// <returns name="rest">Rest of the list.</returns>
+        /// <returns name="first">First item in the list (type: var[]..[]) </returns>
+        /// <returns name="rest">Rest of the list (type: var[]..[]) </returns>
         /// <search>first,rest,list split,listcontains</search>
         [MultiReturn(new[] { "first", "rest" })]
         [IsVisibleInDynamoLibrary(true)]
@@ -441,9 +440,9 @@ namespace DSCore
         ///     Sort list based on its keys
         /// </summary>
         /// <param name="list">list to be sorted</param>
-        /// <param name="keys">list of keys</param>
-        /// <returns name="sorted list">sorted list</returns>
-        /// <returns name="sorted keys">sorted keys</returns>
+        /// <param name="keys">list of keys, keys have to be sortable (e.g. numbers,strings)   </param>
+        /// <returns name="sortedList">type: var[]..[]</returns>
+        /// <returns name="sortedKeys">type: var[]..[]</returns>
         /// <search>sort;key</search>
         [MultiReturn(new[] { "sorted list", "sorted keys" })]
         [IsVisibleInDynamoLibrary(true)]
@@ -1162,7 +1161,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to repeat.</param>
         /// <param name="amount">Number of times to repeat.</param>
-        /// <returns name="list">List of repeated lists.</returns>
+        /// <returns name="list">List of repeated lists of type: var[]..[]</returns>
         /// <search>repeat,repeated,duplicate,repeated list,concat list</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Cycle(IList list, int amount)
@@ -1217,7 +1216,7 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List to permute.</param>
         /// <param name="length">Length of each permutation.</param>
-        /// <returns name="perm">Permutations of the list of the given length.</returns>
+        /// <returns name="permutations">Permutations of the list of the given length (type: var[]..[]) </returns>
         /// <search>permutation,permutations</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Permutations(IList list, int? length = null)

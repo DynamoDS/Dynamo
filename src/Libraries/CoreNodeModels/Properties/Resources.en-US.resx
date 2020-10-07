@@ -152,7 +152,7 @@
     <value>A list of values between 0.0 and 1.0. These values are used to look up the color within the range.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
-    <value>Combinator</value>
+    <value>Function to use as combinator</value>
   </data>
   <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
     <value>Combined lists</value>
@@ -170,7 +170,7 @@
     <value>Item Index #0</value>
   </data>
   <data name="CreateListPortDataResultToolTip" xml:space="preserve">
-    <value>A list</value>
+    <value>A list (type: var[]..[])</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
     <value>Creates a directory object from a path.</value>
@@ -183,7 +183,7 @@
     <value>Creates a directory object from a path</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the directory.</value>
+    <value>Path to the directory (type: string)</value>
   </data>
   <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
     <value>Directory object.</value>
@@ -265,11 +265,11 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Applies a function to arguments.</value>
+    <value>Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point.</value>
     <comment>Description for Function.Apply</comment>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Compose multiple functions.</value>
+    <value>Returns a single function from multiple functions. Ex: the modulus and divide functions are composed into a single function to apply to a list.</value>
     <comment>Description for Function.Compose</comment>
   </data>
   <data name="IfDescription" xml:space="preserve">
@@ -370,7 +370,7 @@
     <value>The list to map over.</value>
   </data>
   <data name="MapPortDataResultToolTip" xml:space="preserve">
-    <value>Mapped list</value>
+    <value>Mapped list of type: var[]..[]</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
     <value>Creates a sequence of numbers or letters in the specified range.</value>
@@ -385,25 +385,25 @@
     <comment>Description for Or</comment>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>False block</value>
+    <value>Returned if test is false</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
-    <value>image</value>
+    <value>Image for visualization</value>
   </data>
   <data name="PortDataListToolTip" xml:space="preserve">
     <value>List</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>operand</value>
+    <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>result</value>
+    <value>Result block produced</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Test block</value>
+    <value>Boolean test</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>True block</value>
+    <value>Returned if test is true</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
     <value>variable</value>
@@ -412,7 +412,7 @@
     <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
   </data>
   <data name="ReducePortDataResultToolTip" xml:space="preserve">
-    <value>Reduced lists</value>
+    <value>Reduced lists (type: var[]..[])</value>
   </data>
   <data name="ReducePortDataSeedToolTip" xml:space="preserve">
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
@@ -441,13 +441,13 @@
     <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
   </data>
   <data name="ScanPortDataResultToolTip" xml:space="preserve">
-    <value>Scanned lists</value>
+    <value>Scanned lists (type: var[]..[])</value>
   </data>
   <data name="ScanPortDataSeedToolTip" xml:space="preserve">
     <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Scoped If statement</value>
+    <value>Returns the result of either the True or False input depending on what boolean value is toggled in the test input.</value>
     <comment>Description for Scope If</comment>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
@@ -494,10 +494,10 @@
     <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>The result of the web request.</value>
+    <value>Content of a web request as a string.</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request.</value>
+    <value>The url for the web request as a string.</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>

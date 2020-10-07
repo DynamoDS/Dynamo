@@ -171,7 +171,7 @@ namespace Dynamo.Search.SearchElements
         }
 
         /// <summary>
-        ///     Group to which Node belongs to 
+        ///     Assembly to which Node belongs to 
         /// </summary>        
         public string Assembly
         {

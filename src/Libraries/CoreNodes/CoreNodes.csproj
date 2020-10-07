@@ -53,8 +53,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="ProtoGeometry, Version=2.9.0.2684, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2684\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.2744, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2745\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -127,6 +127,10 @@
     <Content Include="DSCoreNodes_DynamoCustomization.xml">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Resources\DSCore.Data.StringifyJSON.Small.png" />
+    <None Include="Resources\DSCore.Data.StringifyJSON.Large.png" />
+    <None Include="Resources\DSCore.Data.ParseJSON.Small.png" />
+    <None Include="Resources\DSCore.Data.ParseJSON.Large.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DSCoreNodesImages.resx">
