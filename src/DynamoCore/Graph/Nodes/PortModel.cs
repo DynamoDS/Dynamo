@@ -408,7 +408,7 @@ namespace Dynamo.Graph.Nodes
                 string type;
                 // In the case of a node for an instance method, the first port
                 // type is the declaring class type of the method itself.
-                if (fd.Type == FunctionType.InstanceMethod)
+                if (fd.Type == FunctionType.InstanceMethod || fd.Type == FunctionType.InstanceProperty)
                 {
                     if (Index > 0)
                     {
