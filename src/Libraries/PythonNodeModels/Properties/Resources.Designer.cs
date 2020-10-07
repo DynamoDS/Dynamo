@@ -196,7 +196,7 @@ namespace PythonNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Migration Assistant to update your Python 2 scripts to Python 3. Engine must be set to Python 2 version to work..
+        ///   Looks up a localized string similar to Migration Assistant to update your Python 2 scripts to Python 3..
         /// </summary>
         public static string PythonScriptEditorMigrationAssistantButtonTooltip {
             get {
