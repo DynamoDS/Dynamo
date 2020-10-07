@@ -259,7 +259,7 @@ namespace Dynamo.ViewModels
                 case Function function:
                     var category = function.Category;
                     var name = function.Name;
-                    if (CustomNodeHasCollisons(name, GetPackageName(nodeModel), viewModel))
+                    if (CustomNodeHasCollisons(name, GetMainCategory(nodeModel), viewModel))
                     {
                         var inputString = GetInputNames(function);
                         return $"{category}.{name}({inputString})";
@@ -326,7 +326,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private static string GetPackageName(NodeModel node)
+        private static string GetMainCategory(NodeModel node)
         {
             return node.Category.Split(new char[] { '.' }).FirstOrDefault();
         }
