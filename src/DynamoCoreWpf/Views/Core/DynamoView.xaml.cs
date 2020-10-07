@@ -205,18 +205,22 @@ namespace Dynamo.Controls
             FocusableGrid.InputBindings.Clear();
         }
 
-        // This method adds a tab item to the right side bar and 
-        // sets the extension window as the tab content.
+        /// <summary>
+        /// Adds a tab item to the extension bar and sets the extension window/control as the tab
+        /// content. It also makes sure the extension is visible.
+        /// </summary>
+        /// <param name="viewExtension">View extension adding the content</param>
+        /// <param name="contentControl">Control being added to the extension bar</param>
+        /// <returns>The tab item if it was added, otherwise null</returns>
         internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
         {
-            int count = ExtensionTabItems.Count;
-
-            if (!IsExtensionAddedToRightSideBar(viewExtension))
+            var tab = FindExtensionTab(viewExtension);
+            if (tab == null)
             {
                 tabDynamic.DataContext = null;
 
                 // creates a new tab item
-                TabItem tab = new TabItem();
+                tab = new TabItem();
                 tab.Header = viewExtension.Name;
                 tab.Tag = viewExtension.GetType();
                 tab.Uid = viewExtension.UniqueId;
@@ -240,13 +244,21 @@ namespace Dynamo.Controls
                 }
 
                 //Insert the tab at the end
-                ExtensionTabItems.Insert(count, tab);
+                ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
 
                 tabDynamic.DataContext = ExtensionTabItems;
                 tabDynamic.SelectedItem = tab;
 
                 return tab;
             }
+
+            // Make sure the extension bar is visible
+            if (ExtensionsCollapsed)
+            {
+                ToggleExtensionBarCollapseStatus();
+            }
+
+            tabDynamic.SelectedItem = tab;
             return null;
         }
 
@@ -316,16 +328,9 @@ namespace Dynamo.Controls
             this.HideOrShowRightSideBar();
         }
 
-        private Boolean IsExtensionAddedToRightSideBar(IViewExtension viewExtension)
+        private TabItem FindExtensionTab(IViewExtension viewExtension)
         {
-            foreach (TabItem tabItem in ExtensionTabItems)
-            {
-                if (tabItem.Tag.Equals(viewExtension.GetType()))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return ExtensionTabItems.FirstOrDefault(tab => tab.Tag.Equals(viewExtension.GetType()));
         }
 
         private void OnRequestReturnFocusToView()
@@ -1924,6 +1929,11 @@ namespace Dynamo.Controls
         }
 
         private void OnCollapsedRightSidebarClick(object sender, EventArgs e)
+        {
+            ToggleExtensionBarCollapseStatus();
+        }
+
+        private void ToggleExtensionBarCollapseStatus()
         {
             if (ExtensionsCollapsed)
             {
