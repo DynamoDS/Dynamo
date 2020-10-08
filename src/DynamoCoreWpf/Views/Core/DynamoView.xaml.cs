@@ -1933,7 +1933,10 @@ namespace Dynamo.Controls
             ToggleExtensionBarCollapseStatus();
         }
 
-        private void ToggleExtensionBarCollapseStatus()
+        /// <summary>
+        /// Made internal for testing purposes only.
+        /// </summary>
+        internal void ToggleExtensionBarCollapseStatus()
         {
             if (ExtensionsCollapsed)
             {
