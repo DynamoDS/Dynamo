@@ -156,6 +156,7 @@
     </PackageReference>
     <PackageReference Include="IronPython">
       <Version>2.7.9</Version>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Emit">
       <Version>4.3.0</Version>
