@@ -125,6 +125,9 @@
     <PackageReference Include="AvalonEdit">
       <Version>4.3.1.9430</Version>
     </PackageReference>
+    <PackageReference Include="DynamicLanguageRuntime">
+      <Version>1.2.2</Version>
+    </PackageReference>
     <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
       <Version>*</Version>
     </PackageReference>
