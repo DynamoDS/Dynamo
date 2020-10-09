@@ -9,23 +9,23 @@ using PythonNodeModels;
 namespace Dynamo.Python
 {
     // TODO 3.0: Change this file name and class to CompletionProviderAdaptor. 
-    public class SharedCompletionProvider : LogSourceBase
+    internal class SharedCompletionProvider : LogSourceBase
     {
 
         #region Properties and Fields
         private readonly IExternalCodeCompletionProviderCore providerImplementation;
 
-        public static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        public static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
-        public static string arrayRegex = "(\\[.*\\])";
-        public static string spacesOrNone = @"(\s*)";
-        public static string atLeastOneSpaceRegex = @"(\s+)";
-        public static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
-        public static string dictRegex = "({.*})";
-        public static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
-        public static string intRegex = @"([-+]?\d+)[\s\n]*$";
-        public static string basicImportRegex = @"(import)";
-        public static string fromImportRegex = @"^(from)";
+        internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string arrayRegex = "(\\[.*\\])";
+        internal static string spacesOrNone = @"(\s*)";
+        internal static string atLeastOneSpaceRegex = @"(\s+)";
+        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
+        internal static string dictRegex = "({.*})";
+        internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
+        internal static string basicImportRegex = @"(import)";
+        internal static string fromImportRegex = @"^(from)";
 
         #endregion
 
