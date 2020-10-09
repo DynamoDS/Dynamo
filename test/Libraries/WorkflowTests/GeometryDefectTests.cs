@@ -82,8 +82,12 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        [Category("Failure")]
         public void GeometryDoesIntersect_WithNurbsSolid_IsCorrect()
         {
+            // TODO: This test passes only for ASM226 and ASM227. Remove from Failure Category after 
+            // ASM version on CI is updated. It currently uses ASM225 and this test therefore fails.
+
             string openPath = Path.Combine(TestDirectory,
         @"core\WorkflowTestFiles\GeometryDefects\GeometryDoesIntersect\Car-Script-bug-stripped-down.dyn");
 
