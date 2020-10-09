@@ -1068,13 +1068,14 @@ namespace Dynamo.ViewModels
                 //dynamoViewModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(nodeModel.GUID,))
                 var id = Guid.NewGuid();
                 // Create a new node based on node creation name and connect ports
+                var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == portModel.Owner.GUID).FirstOrDefault();
+                // Placing the new node based on which input port it is connecting to.
+                // The larger index for the input port, the lower the new node will be placed. 60 and 200 and offset we can adjust.
+                double adjustedY = initialNode.Y + (portModel.Index - 1) * 60 ;
+                // Placing the new node to the left of initial node
+                var adjustedX = initialNode.X - 200; 
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
-                    nodeCreationName, 0, portModel.Index, portModel.CenterX - 50, portModel.CenterY + 200, false, false));
-                // Clear current selections and select both nodes
-                DynamoSelection.Instance.ClearSelection();
-                dynamoViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == id).FirstOrDefault().Select(null);
-                portModel.Owner.Select();
-                dynamoViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
+                    nodeCreationName, 0, portModel.Index, adjustedX, adjustedY, false, false));
             }
 
             OnRequestFocusSearch();
