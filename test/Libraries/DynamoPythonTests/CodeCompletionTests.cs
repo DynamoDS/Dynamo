@@ -20,21 +20,21 @@ namespace DynamoPythonTests
         [Test]
         public void SharedCoreCanFindLoadedProviders()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, "");
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, "");
             Assert.IsNotNull(provider);
         }
 
         [Test]
         public void SharedCoreCanFindFirstLoadedIfNotMatch()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, "");
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.CPython3, "");
             Assert.IsNotNull(provider);
         }
 
         [Test]
         public void SharedCoreCanReturnCLRCompletionData()
         {
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, "");
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, "");
             Assert.IsNotNull(provider);
             var str = "\nimport System.Collections\nSystem.Collections.";
 
@@ -49,7 +49,7 @@ namespace DynamoPythonTests
         public void SharedCoreCanReturnPythonCompletionData()
         {
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-             var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+             var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
              Assert.IsNotNull(provider);
              var str = "import math\n math.";
 
@@ -60,7 +60,7 @@ namespace DynamoPythonTests
              Assert.AreEqual(45, completionData.Length);
 
             // For CPython3 engine.
-            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
+            provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
             Assert.IsNotNull(provider);
 
             completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
@@ -182,12 +182,12 @@ namespace DynamoPythonTests
         {
             var matchNumVar = "a = 5.0";
 
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, SharedCompletionProvider.doubleRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, PythonCompletionProviderAdaptor.doubleRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, SharedCompletionProvider.doubleRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchNumVar, PythonCompletionProviderAdaptor.doubleRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("5.0", matches["a"]);
@@ -198,12 +198,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicArrayVarSingleLine()
         {
             var matchArray = "a = []";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, SharedCompletionProvider.arrayRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, PythonCompletionProviderAdaptor.arrayRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("[]", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, SharedCompletionProvider.arrayRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchArray, PythonCompletionProviderAdaptor.arrayRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("[]", matches["a"]);
@@ -214,12 +214,12 @@ namespace DynamoPythonTests
         public void CanMatchBasicDictVarSingleLine()
         {
             var matchDict = "a = {}";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{}", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.dictRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{}", matches["a"]);
@@ -230,12 +230,12 @@ namespace DynamoPythonTests
         public void CanMatchIntSingleLine()
         {
             var matchDict = "a = 2";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.intRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, PythonCompletionProviderAdaptor.intRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("2", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, SharedCompletionProvider.intRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict, PythonCompletionProviderAdaptor.intRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("2", matches["a"]);
@@ -246,12 +246,12 @@ namespace DynamoPythonTests
         public void CanMatchComplexDictVarSingleLine()
         {
             var matchDict2 = "a = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -262,12 +262,12 @@ namespace DynamoPythonTests
         public void CanMatchComplexDictVarMultiLine()
         {
             var matchDict2 = "\n\na = { 'Alice': 7, 'Toby': 'Nuts' }\nb = 5.0";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(1, matches.Count);
             Assert.IsTrue(matches.ContainsKey("a"));
             Assert.AreEqual("{ 'Alice': 7, 'Toby': 'Nuts' }", matches["a"]);
@@ -278,10 +278,10 @@ namespace DynamoPythonTests
         public void DoesntMatchBadVariable()
         {
             var matchDict2 = "a! = { 'Alice': 7, 'Toby': 'Nuts' }";
-            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            var matches = IronPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(0, matches.Count);
 
-            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, SharedCompletionProvider.dictRegex);
+            matches = DSCPythonCodeCompletionProviderCore.FindVariableStatementWithRegex(matchDict2, PythonCompletionProviderAdaptor.dictRegex);
             Assert.AreEqual(0, matches.Count);
         }
 
@@ -389,7 +389,7 @@ namespace DynamoPythonTests
         {
             var str = "\nimport System\nSystem.";
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
 
             var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
 
@@ -419,7 +419,7 @@ namespace DynamoPythonTests
         {
             var str = "\nimport System.Collections\nSystem.Collections.";
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
 
             var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
             var completionList = completionData.Select(d => d.Text);
@@ -427,7 +427,7 @@ namespace DynamoPythonTests
             Assert.IsTrue(completionList.Intersect(new[] { "Hashtable", "Queue", "Stack"}).Count() == 3);
             Assert.AreEqual(29, completionData.Length);
 
-            provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
+            provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.CPython3, dynCorePath);
 
             completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.CPython3);
             completionList = completionData.Select(d => d.Text);
@@ -471,7 +471,7 @@ namespace DynamoPythonTests
             var str = "a = 5.0\na.";
 
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
             var completionData = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
 
             Assert.AreNotEqual(0, completionData.Length);
@@ -586,7 +586,7 @@ namespace DynamoPythonTests
             var dynCorePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var str = "from System.Collections import ArrayList\na = ArrayList()\na.";
 
-            var provider = new SharedCompletionProvider(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
+            var provider = new PythonCompletionProviderAdaptor(PythonNodeModels.PythonEngineVersion.IronPython2, dynCorePath);
             var matches = provider.GetCompletionData(str, PythonNodeModels.PythonEngineVersion.IronPython2);
 
             Assert.AreNotEqual(0, matches.Length);

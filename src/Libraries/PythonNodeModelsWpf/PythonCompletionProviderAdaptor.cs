@@ -9,7 +9,7 @@ using PythonNodeModels;
 namespace Dynamo.Python
 {
     // TODO 3.0: Change this file name and class to CompletionProviderAdaptor. 
-    internal class SharedCompletionProvider : LogSourceBase
+    internal class PythonCompletionProviderAdaptor : LogSourceBase
     {
 
         #region Properties and Fields
@@ -30,7 +30,7 @@ namespace Dynamo.Python
         #endregion
 
         #region constructors
-        internal SharedCompletionProvider(PythonEngineVersion version ,string dynamoCoreDir)
+        internal PythonCompletionProviderAdaptor(PythonEngineVersion version ,string dynamoCoreDir)
         {
             var versionName = Enum.GetName(typeof(PythonEngineVersion), version);
             var matchingCore = FindMatchingCodeCompletionCore(versionName, this.AsLogger()) ;

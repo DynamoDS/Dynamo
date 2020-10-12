@@ -109,7 +109,7 @@ namespace Dynamo.Python
         public IronPythonCompletionProvider(string dynamoCoreDir)
         {
             var versionName = Enum.GetName(typeof(PythonEngineVersion), PythonEngineVersion.IronPython2);
-            var matchingCore = SharedCompletionProvider.FindMatchingCodeCompletionCore(versionName, this.AsLogger());
+            var matchingCore = PythonCompletionProviderAdaptor.FindMatchingCodeCompletionCore(versionName, this.AsLogger());
             if (matchingCore != null)
             {
                 this.providerImplementation = matchingCore;

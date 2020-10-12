@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private SharedCompletionProvider completionProvider;
+        private PythonCompletionProviderAdaptor completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -41,7 +41,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new PythonCompletionProviderAdaptor(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
@@ -209,7 +209,7 @@ namespace PythonNodeModelsWpf
             }
 
             editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
-            completionProvider = new SharedCompletionProvider(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new PythonCompletionProviderAdaptor(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

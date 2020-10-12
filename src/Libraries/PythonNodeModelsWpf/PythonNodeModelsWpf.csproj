@@ -113,7 +113,7 @@
     <Compile Include="ScriptEditorWindow.xaml.cs">
       <DependentUpon>ScriptEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SharedCompletionProvider.cs" />
+    <Compile Include="PythonCompletionProviderAdaptor.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
