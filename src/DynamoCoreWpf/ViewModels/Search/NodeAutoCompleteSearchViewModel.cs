@@ -1,8 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using DSCore;
 using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
+using ProtoCore;
+using ProtoCore.Mirror;
 
 namespace Dynamo.ViewModels
 {
@@ -11,6 +16,8 @@ namespace Dynamo.ViewModels
     /// </summary>
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
+
+        private string currentInputPortTypeName;
         internal PortViewModel PortViewModel { get; set; }
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
@@ -23,11 +30,11 @@ namespace Dynamo.ViewModels
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are hard copied all time top 7 nodes placed by customers
             // This should be only served as a temporary default case.
-            var queries = new List<string>(){ "Code Block", "Watch", "List Flatten", "List Create", "String", "Double", "Python" };
+            var queries = new List<string>() { "Code Block", "Watch", "List Flatten", "List Create", "String", "Double", "Python" };
             foreach (var query in queries)
             {
                 var foundNode = Search(query).ToList().FirstOrDefault();
-                if(foundNode != null)
+                if (foundNode != null)
                 {
                     candidates.Add(foundNode);
                 }
@@ -37,12 +44,13 @@ namespace Dynamo.ViewModels
 
         internal void PopulateAutoCompleteCandidates()
         {
-            if(PortViewModel == null) return;
+            if (PortViewModel == null) return;
 
             var searchElements = GetMatchingNodes();
             FilteredResults = searchElements.Select(e =>
             {
-                var vm  = new NodeSearchElementViewModel(e, this);
+                var vm = new NodeSearchElementViewModel(e, this);
+                //TODO I think this leaks.
                 vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                 return vm;
             });
@@ -64,6 +72,7 @@ namespace Dynamo.ViewModels
 
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
             if (inputPortType == null) return elements;
+            currentInputPortTypeName = inputPortType;
 
             var libraryServices = dynamoViewModel.Model.LibraryServices;
 
@@ -75,7 +84,7 @@ namespace Dynamo.ViewModels
 
             foreach (var descriptor in functionDescriptors)
             {
-                if (descriptor.ReturnType.ToString() == inputPortType)
+                if ((descriptor.ReturnType.ToString() == inputPortType) || DerivesFrom(inputPortType, descriptor.ReturnType.ToString(), dynamoViewModel.Model.EngineController.LiveRunnerCore))
                 {
                     elements.Add(new ZeroTouchSearchElement(descriptor));
                 }
@@ -87,8 +96,137 @@ namespace Dynamo.ViewModels
                 if (element.OutputParameters.Any(op => op == inputPortType))
                     elements.Add(element);
             }
-
+            elements.Sort(CompareNodeSearchElementByTypeDistance);
             return elements;
         }
+
+        /// <summary>
+        /// Does typeb derive from typea
+        /// </summary>
+        /// <param name="typea"></param>
+        /// <param name="typeb"></param>
+        /// <param name="core"></param>
+        /// <returns></returns>
+        private bool DerivesFrom(string typea, string typeb, ProtoCore.Core core)
+        {
+            try
+            {
+                //TODO mirrors can be cached until new types are imported...
+                var mirror1 = new ClassMirror(typea, core);
+                var mirror2 = new ClassMirror(typeb, core);
+
+
+                //TODO as we do this check we can cache the type distance...
+                if (mirror2.GetClassHierarchy().Any(x => x.ClassName == mirror1.ClassName))
+                {
+                    //this is a derived type
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                // TODO need to deal with the fact that type[] and type[]..[] are not classes - trying to create these up as ClassMirrors will yield an exception.
+                Console.WriteLine($"failed to create class mirror for {typea} or {typeb} during node autocomplete operation ");
+                return false;
+            }
+        }
+
+
+        // TODO should we sort at the functiondescriptor stage?
+        private int CompareNodeSearchElementByTypeDistance(NodeSearchElement x, NodeSearchElement y)
+        {
+            /*
+             * -1	x proceeds y.
+             0 x and y are equal
+             1	x is after y.
+             */
+
+            // TODO - for now using OutputParameters.FirstOrDefault() - but this is not ideal. What about
+            // nodes which have multiple outputs - might need to iterate over each output param
+            // and take the closest match as mechanism for sorting.
+
+            var xTypeName = x.OutputParameters.FirstOrDefault();
+            var yTypeName = y.OutputParameters.FirstOrDefault();
+
+            if (xTypeName == yTypeName)
+            {
+                return 0;
+            }
+            // null is further away, so x is at the end of list.
+            if (xTypeName == null)
+            {
+                return 1;
+            }
+            // null is further away, so y is at the end of the list.
+            if (yTypeName == null)
+            {
+                return -1;
+            }
+
+            // x proceeds y because it's an exact match
+            if (xTypeName == currentInputPortTypeName)
+            {
+                return -1;
+            }
+            // y proceeds x because it's an exact match
+            if (yTypeName == currentInputPortTypeName)
+            {
+                return 1;
+            }
+
+            var xdistance = GetTypeDistance(currentInputPortTypeName, xTypeName, dynamoViewModel.Model.EngineController.LiveRunnerCore);
+            var ydistance = GetTypeDistance(currentInputPortTypeName, yTypeName, dynamoViewModel.Model.EngineController.LiveRunnerCore);
+
+            //if distance of x to currentSelectedType is greater than y distance
+            //then x is further away
+            if (xdistance > ydistance)
+            {
+                return 1;
+            }
+            if (xdistance == ydistance)
+            {
+                return 0;
+            }
+            // distance2 < distance 1
+            // x proceeds y
+            return -1;
+        }
+
+        /// <summary>
+        /// Return the type distance between two type names. 
+        /// </summary>
+        /// <param name="typea"></param>
+        /// <param name="typeb"></param>
+        /// <param name="core"></param>
+        /// <returns>Will return int.MaxValue if no match can be found.
+        /// Otherwise will return the distance between two types in class hierarchy.
+        /// Will throw an exception if either type name is undefined.
+        ///</returns>
+        private int GetTypeDistance(string typea, string typeb, ProtoCore.Core core)
+        {
+            //TODO - cache? Turn into params?
+            var mirror1 = new ClassMirror(typea, core);
+            var mirror2 = new ClassMirror(typeb, core);
+
+            if (mirror1.ClassNodeID == mirror2.ClassNodeID)
+            {
+                return 0;
+            }
+
+            var heirarchy = mirror2.GetClassHierarchy();
+            var dist = 0;
+            while (dist < heirarchy.Count())
+            {
+                if (heirarchy.ElementAt(dist).ClassName == mirror1.ClassName)
+                {
+                    return dist+1;
+                }
+                dist++;
+            }
+            //if we can't find a match then dist should indicate that.
+            return int.MaxValue;
+        }
+
     }
 }
