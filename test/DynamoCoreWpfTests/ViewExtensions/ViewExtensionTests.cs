@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using Dynamo.Wpf.Extensions;
 using NUnit.Framework;
 
@@ -66,6 +67,29 @@ namespace DynamoCoreWpfTests
             extensionsSideBarViewExtensionNew.UniqueId = "ExtensionsSideBarDummyIDNew";
             extensionManager.Add(extensionsSideBarViewExtensionNew);
             Assert.AreEqual(initialNum + 2, View.ExtensionTabItems.Count); 
+        }
+
+        [Test]
+        public void ExtensionSideBarIsUncollapsedOnActivation()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+            
+            // Extension bar is shown
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Collapse extension bar
+            View.ToggleExtensionBarCollapseStatus();
+            Assert.IsTrue(View.ExtensionsCollapsed);
+
+            // Simulate the extension activating the tab content again.
+            // The content here should not matter because it won't be used.
+            View.AddExtensionTabItem(viewExtension, new UserControl());
+
+            // Extension bar is shown
+            Assert.IsFalse(View.ExtensionsCollapsed);
         }
 
         [Test]

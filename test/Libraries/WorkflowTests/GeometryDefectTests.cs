@@ -82,6 +82,30 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void GeometryDoesIntersect_WithNurbsSolid_IsCorrect()
+        {
+            string openPath = Path.Combine(TestDirectory,
+        @"core\WorkflowTestFiles\GeometryDefects\GeometryDoesIntersect\Car-Script-bug-stripped-down.dyn");
+
+            RunModel(openPath);
+
+            AssertNoDummyNodes();
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(8, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+
+            var node = CurrentDynamoModel.CurrentWorkspace.Nodes.FirstOrDefault(x => x.Name.Contains("Geometry.Translate"));
+            AssertPreviewCount(node.GUID.ToString(), 6);
+
+            for (int i = 0; i < 6; i++)
+            {
+                var curve = GetPreviewValueAtIndex(node.GUID.ToString(), i) as NurbsCurve;
+                Assert.IsNotNull(curve);
+            }
+        }
+
+        [Test]
         public void MAGN_4924_CurveExtractionFromSurface()
         {
             // Details are available in defect 
