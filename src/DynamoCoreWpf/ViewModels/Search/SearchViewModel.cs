@@ -1074,7 +1074,7 @@ namespace Dynamo.ViewModels
             // Do not auto connect code block node since default code block node do not have output port
             if (!nodeSearchElement.CreationName.Contains("Code Block"))
             {
-                // Create a new node based on node creation name and connect ports
+                // Create a new node based on nodeSearchElement 
                 var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
 
                 var node = nodeSearchElement.CreateNode();
@@ -1088,7 +1088,6 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.NodeViewReady += PlaceAndConnectNode;
                     onNodeViewReadyHandlerAttached = true;
                 }
-
             }
 
             OnRequestFocusSearch();
@@ -1115,6 +1114,17 @@ namespace Dynamo.ViewModels
 
             dynamoViewModel.ExecuteCommand(new DynamoModel.PlaceAndConnectNodeCommand(id, portModel.Owner.GUID,
                 0, portModel.Index, adjustedX, adjustedY, false));
+
+            // Clear current selections and select all input nodes
+            DynamoSelection.Instance.ClearSelection();
+            var inputNodes = initialNode.NodeModel.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+            foreach (var inputNode in inputNodes)
+            {
+                DynamoSelection.Instance.Selection.AddUnique(inputNode);
+            }
+
+            dynamoViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
         }
 
         #endregion
