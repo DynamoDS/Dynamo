@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
@@ -45,6 +46,8 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         private readonly IconServices iconServices;
+        private Tuple<NodeViewModel, PortModel> nodeAutoCompleteParams;
+        private bool onNodeViewReadyHandlerAttached;
 
         /// <summary>
         /// Position, where canvas was clicked. 
@@ -346,6 +349,12 @@ namespace Dynamo.ViewModels
             }
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
+
+            if (onNodeViewReadyHandlerAttached)
+            {
+                dynamoViewModel.NodeViewReady -= PlaceAndConnectNode;
+                onNodeViewReadyHandlerAttached = false;
+            }
             base.Dispose();
         }
 
@@ -1060,25 +1069,52 @@ namespace Dynamo.ViewModels
             OnRequestFocusSearch();
         }
 
-        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
+        internal void OnRequestConnectToPort(NodeSearchElement nodeSearchElement, PortModel portModel)
         {
             // Do not auto connect code block node since default code block node do not have output port
-            if (!nodeCreationName.Contains("Code Block"))
+            if (!nodeSearchElement.CreationName.Contains("Code Block"))
             {
-                //dynamoViewModel.ExecuteCommand(new DynamoModel.MakeConnectionCommand(nodeModel.GUID,))
-                var id = Guid.NewGuid();
                 // Create a new node based on node creation name and connect ports
-                var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.Where(x => x.Id == portModel.Owner.GUID).FirstOrDefault();
-                // Placing the new node based on which input port it is connecting to.
-                // The larger index for the input port, the lower the new node will be placed. 60 and 200 and offset we can adjust.
-                double adjustedY = initialNode.Y + (portModel.Index - 1) * 60 ;
-                // Placing the new node to the left of initial node
-                var adjustedX = initialNode.X - 200; 
-                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
-                    nodeCreationName, 0, portModel.Index, adjustedX, adjustedY, false, false));
+                var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
+
+                var node = nodeSearchElement.CreateNode();
+                var createNodecmd = new DynamoModel.CreateNodeCommand(node, 0, 0, true, true);
+                dynamoViewModel.ExecuteCommand(createNodecmd);
+
+                nodeAutoCompleteParams = new Tuple<NodeViewModel, PortModel>(initialNode, portModel);
+
+                if (!onNodeViewReadyHandlerAttached)
+                {
+                    dynamoViewModel.NodeViewReady += PlaceAndConnectNode;
+                    onNodeViewReadyHandlerAttached = true;
+                }
+
             }
 
             OnRequestFocusSearch();
+        }
+
+        private void PlaceAndConnectNode(object sender, EventArgs e)
+        {
+            if (nodeAutoCompleteParams == null) return;
+
+            var nodeView = (NodeView)sender;
+            var node = nodeView.ViewModel.NodeModel;
+
+            var initialNode = nodeAutoCompleteParams.Item1;
+            var portModel = nodeAutoCompleteParams.Item2;
+
+            // Placing the new node based on which input port it is connecting to.
+            // The larger index for the input port, the lower the new node will be placed. 60 and 200 and offset we can adjust.
+            var adjustedY = initialNode.Y + (portModel.Index - 1) * node.Height;
+
+            // Placing the new node to the left of initial node
+            var adjustedX = initialNode.X - (initialNode.NodeModel.Width / 2 + node.Width / 2 + 50);
+
+            var id = node.GUID;
+
+            dynamoViewModel.ExecuteCommand(new DynamoModel.PlaceAndConnectNodeCommand(id, portModel.Owner.GUID,
+                0, portModel.Index, adjustedX, adjustedY, false));
         }
 
         #endregion
