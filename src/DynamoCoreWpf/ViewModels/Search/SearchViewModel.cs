@@ -1072,8 +1072,12 @@ namespace Dynamo.ViewModels
                 // Placing the new node based on which input port it is connecting to.
                 // The larger index for the input port, the lower the new node will be placed. 60 and 200 and offset we can adjust.
                 double adjustedY = initialNode.Y + (portModel.Index - 1) * 60 ;
-                // Placing the new node to the left of initial node
-                var adjustedX = initialNode.X - 200; 
+                double adjustedX = initialNode.X;
+                // Placing the new node to the left of initial node if port is input port
+                if (portModel.PortType == PortType.Input)
+                {
+                    adjustedX -= 200;
+                }
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
                     nodeCreationName, 0, portModel.Index, adjustedX, adjustedY, false, false));
             }
