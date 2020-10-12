@@ -60,6 +60,32 @@ namespace PythonNodeModels
                 }
             }
         }
+        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
+        [DefaultValue(nameof(PythonEngineVersion.IronPython2))]
+        /// <summary>
+        /// Return the user selected python engine enum.
+        /// </summary>
+        public PythonEngineVersion CachedEngine
+        {
+            get
+            {
+                // This is a first-time case for newly created nodes only
+                if (engine == PythonEngineVersion.Unspecified)
+                {
+                    SetEngineByDefault();
+                }
+                return engine;
+            }
+            set
+            {
+                if (engine != value)
+                {
+                    engine = value;
+                    RaisePropertyChanged(nameof(CachedEngine));
+                }
+            }
+        }
 
         private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
@@ -173,7 +199,7 @@ namespace PythonNodeModels
                 PythonEngineVersion result;
                 if (Enum.TryParse<PythonEngineVersion>(value, out result))
                 {
-                    Engine = result;
+                    CachedEngine = result;
                     return true;
                 }
 
@@ -347,7 +373,7 @@ namespace PythonNodeModels
 
             if (engineNode != null)
             {
-                this.Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
+                this.CachedEngine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
             }
         }
 

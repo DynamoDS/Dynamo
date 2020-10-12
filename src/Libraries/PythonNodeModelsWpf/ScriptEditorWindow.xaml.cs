@@ -144,13 +144,14 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (nodeModel.Engine != PythonEngineVersion.CPython3)
-                nodeModel.Engine = PythonEngineVersion.CPython3;
+            if (nodeModel.CachedEngine != PythonEngineVersion.CPython3)
+                nodeModel.CachedEngine = PythonEngineVersion.CPython3;
         }
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
+            nodeModel.Engine = nodeModel.CachedEngine;
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -159,6 +160,7 @@ namespace PythonNodeModelsWpf
             {
                 UpdateScript(originalScript);
                 editText.Text = originalScript;
+                EngineSelectorComboBox.SelectedItem = nodeModel.Engine;
             }
         }
 
@@ -206,7 +208,7 @@ namespace PythonNodeModelsWpf
                 UpdateScript(originalScript);
             }
 
-            editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
+            editText.Options.ConvertTabsToSpaces = nodeModel.CachedEngine != PythonEngineVersion.IronPython2;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
