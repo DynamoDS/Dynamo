@@ -33,6 +33,7 @@ namespace PythonNodeModels
     public abstract class PythonNodeBase : VariableInputNode
     {
         private PythonEngineVersion engine = PythonEngineVersion.Unspecified;
+        private PythonEngineVersion cached_engine = PythonEngineVersion.Unspecified;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
@@ -47,7 +48,7 @@ namespace PythonNodeModels
                 // This is a first-time case for newly created nodes only
                 if (engine == PythonEngineVersion.Unspecified)
                 {
-                    SetEngineByDefault();
+                    SetEngineByDefault(ref engine);
                 }
                 return engine;
             }
@@ -60,9 +61,6 @@ namespace PythonNodeModels
                 }
             }
         }
-        [JsonConverter(typeof(StringEnumConverter))]
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
-        [DefaultValue(nameof(PythonEngineVersion.IronPython2))]
         /// <summary>
         /// Return the user selected python engine enum.
         /// </summary>
@@ -70,18 +68,13 @@ namespace PythonNodeModels
         {
             get
             {
-                // This is a first-time case for newly created nodes only
-                if (engine == PythonEngineVersion.Unspecified)
-                {
-                    SetEngineByDefault();
-                }
-                return engine;
+                return cached_engine;
             }
             set
             {
-                if (engine != value)
+                if (cached_engine != value)
                 {
-                    engine = value;
+                    cached_engine = value;
                     RaisePropertyChanged(nameof(CachedEngine));
                 }
             }
@@ -108,23 +101,23 @@ namespace PythonNodeModels
         /// <summary>
         /// Set the engine to be used by default for this node, based on user and system settings.
         /// </summary>
-        private void SetEngineByDefault()
+        private void SetEngineByDefault(ref PythonEngineVersion eng)
         {
             PythonEngineVersion version;
             var setting = PreferenceSettings.GetDefaultPythonEngine();
             var systemDefault = DynamoModel.DefaultPythonEngine;
             if (!string.IsNullOrEmpty(setting) && Enum.TryParse(setting, out version))
             {
-                engine = version;
+                eng = version;
             }
             else if (!string.IsNullOrEmpty(systemDefault) && Enum.TryParse(systemDefault, out version))
             {
-                engine = version;
+                eng = version;
             }
             else
             {
                 // In the absence of both a setting and system default, default to deserialization default.
-                engine = PythonEngineVersion.IronPython2;
+                eng = PythonEngineVersion.IronPython2;
             }
         }
 
@@ -199,7 +192,7 @@ namespace PythonNodeModels
                 PythonEngineVersion result;
                 if (Enum.TryParse<PythonEngineVersion>(value, out result))
                 {
-                    CachedEngine = result;
+                    Engine = result;
                     return true;
                 }
 
@@ -373,7 +366,7 @@ namespace PythonNodeModels
 
             if (engineNode != null)
             {
-                this.CachedEngine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
+                this.Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
             }
         }
 

@@ -81,6 +81,7 @@ namespace PythonNodeModelsWpf
 
             editText.Text = propValue;
             originalScript = propValue;
+            nodeModel.CachedEngine = nodeModel.Engine;
         }
 
         #region Autocomplete Event Handlers
@@ -160,11 +161,11 @@ namespace PythonNodeModelsWpf
             {
                 UpdateScript(originalScript);
                 editText.Text = originalScript;
-                EngineSelectorComboBox.SelectedItem = nodeModel.Engine;
+                nodeModel.CachedEngine = nodeModel.Engine;
             }
         }
 
-        private void UpdateScript(string scriptText, bool canRun = false)
+        private void UpdateScript(string scriptText)
         {
             var command = new DynamoModel.UpdateModelValueCommand(
                 boundWorkspaceId, boundNodeId, propertyName, scriptText);
@@ -172,12 +173,12 @@ namespace PythonNodeModelsWpf
             dynamoViewModel.ExecuteCommand(command);
             this.Focus();
             nodeWasModified = true;
-            if(canRun) nodeModel.OnNodeModified();
+            nodeModel.OnNodeModified();
         }
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
-            UpdateScript(editText.Text, true);
+            UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
             {
                 dynamoViewModel.HomeSpace.Run();
@@ -200,15 +201,7 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            //removedItems will be empty during the first binding
-            //as the window is constructed, we don't want to execute the node just
-            //as a consequence of opening the editor.
-            if (e.RemovedItems.Count > 0)
-            {
-                UpdateScript(originalScript);
-            }
-
-            editText.Options.ConvertTabsToSpaces = nodeModel.CachedEngine != PythonEngineVersion.IronPython2;
+            editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
