@@ -1103,7 +1103,7 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        internal void Select(object parameter)
+        private void Select(object parameter)
         {
             //this logic has been moved to the view
             //because it depends on Keyboard modifiers.
