@@ -157,11 +157,9 @@ namespace DSCPython
             return null;
         }
 
-        //Even though the following region is full of private implementation details, these
-        // back the old IronPythonCompletionProvider class
         //!!!- do not modify these signatures until that class is removed.
         //We do not know if anyone was using that class, but we needed to remove the compile
-        //time references between PythonNodeModels and DSIronPython to support dynamically loading
+        //time references between PythonNodeModels and DSCPython to support dynamically loading
         //python versions.
 
         //note that the public members below are not really public (this is an internal class)
