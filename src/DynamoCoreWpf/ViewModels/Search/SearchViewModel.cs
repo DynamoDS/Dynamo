@@ -1074,45 +1074,42 @@ namespace Dynamo.ViewModels
         internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
         {
             // Do not auto connect code block node since default code block node do not have output port
-            if (!nodeCreationName.Contains("Code Block"))
+            if (nodeCreationName.Contains("Code Block")) return;
+            
+            var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
+            var id = Guid.NewGuid();
+
+            var adjustedX = initialNode.X;
+
+            // Placing the new node based on which input port it is connecting to.
+            if (portModel.PortType == PortType.Input)
             {
-                
-                var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
-                var id = Guid.NewGuid();
-
-                var adjustedX = initialNode.X;
-
-                // Placing the new node based on which input port it is connecting to.
-                if (portModel.PortType == PortType.Input)
-                {
-                    // Placing the new node to the left of initial node
-                    adjustedX -= portModel.Owner.Width + 50;
-                }
-                else
-                {
-                    adjustedX += portModel.Owner.Width + 50;
-                }
-
-                if (undoRecorderGroup == null)
-                {
-                    dynamoViewModel.NodeViewReady += AutoLayoutNodes;
-                    undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
-                }
-
-                // Create a new node based on node creation name and connect ports
-                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
-                    nodeCreationName, 0, portModel.Index, adjustedX, 0, false, false, true));
-
-                // Clear current selections and select all input nodes
-                DynamoSelection.Instance.ClearSelection();
-                var inputNodes = portModel.Owner.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-
-                foreach (var inputNode in inputNodes)
-                {
-                    DynamoSelection.Instance.Selection.AddUnique(inputNode);
-                }
+                // Placing the new node to the left of initial node
+                adjustedX -= portModel.Owner.Width + 50;
+            }
+            else
+            {
+                adjustedX += portModel.Owner.Width + 50;
             }
 
+            if (undoRecorderGroup == null)
+            {
+                dynamoViewModel.NodeViewReady += AutoLayoutNodes;
+                undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+            }
+
+            // Create a new node based on node creation name and connect ports
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
+                nodeCreationName, 0, portModel.Index, adjustedX, 0, false, false, true));
+
+            // Clear current selections and select all input nodes
+            DynamoSelection.Instance.ClearSelection();
+            var inputNodes = portModel.Owner.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+            foreach (var inputNode in inputNodes)
+            {
+                DynamoSelection.Instance.Selection.AddUnique(inputNode);
+            }
         }
 
         private void AutoLayoutNodes(object sender, EventArgs e)
