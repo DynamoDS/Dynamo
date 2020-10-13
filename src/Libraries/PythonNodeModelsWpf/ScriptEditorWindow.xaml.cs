@@ -180,6 +180,8 @@ namespace PythonNodeModelsWpf
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
+            originalScript = editText.Text;
+            nodeModel.Engine = nodeModel.CachedEngine;
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
             {
                 dynamoViewModel.HomeSpace.Run();
