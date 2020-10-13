@@ -86,7 +86,14 @@ namespace Dynamo.ViewModels
             {
                 if ((descriptor.ReturnType.ToString() == inputPortType) || DerivesFrom(inputPortType, descriptor.ReturnType.ToString(), dynamoViewModel.Model.EngineController.LiveRunnerCore))
                 {
-                    elements.Add(new ZeroTouchSearchElement(descriptor));
+                    //TODO it's strange we create a new search element instead of using the existing ones in the model...
+                    var entry = new ZeroTouchSearchElement(descriptor);
+                    elements.Add(entry);
+                    //TODO this would not be required if we used the elements in the model.
+                    //the group is only set when the searchElement is added to the underlying SearchModel.
+                    SearchElementGroup group = SearchElementGroup.None;
+                    Model.ProcessNodeCategory(entry.FullCategoryName, ref group);
+                    entry.Group = group;
                 }
             }
 
@@ -97,7 +104,8 @@ namespace Dynamo.ViewModels
                     elements.Add(element);
             }
             elements.Sort(CompareNodeSearchElementByTypeDistance);
-            return elements;
+            
+            return elements.OrderBy(x =>x.Group);
         }
 
         /// <summary>
