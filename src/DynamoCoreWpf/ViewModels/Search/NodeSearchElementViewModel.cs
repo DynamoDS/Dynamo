@@ -235,13 +235,13 @@ namespace Dynamo.Wpf.ViewModels
         /// </summary>
         public ICommand CreateAndConnectCommand { get; private set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public event Action<string, PortModel> CreateAndConnectToPort;
         protected virtual void OnRequestCreateAndConnectToPort(PortModel portModel)
         {
-            CreateAndConnectToPort?.Invoke(Model.CreationName, portModel);
+            if (CreateAndConnectToPort != null)
+            {
+                CreateAndConnectToPort(Model.CreationName, portModel);
+            }
         }
 
         public ICommand ClickedCommand { get; private set; }
