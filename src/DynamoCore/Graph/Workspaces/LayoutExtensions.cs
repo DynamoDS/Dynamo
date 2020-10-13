@@ -18,7 +18,7 @@ namespace Dynamo.Graph.Workspaces
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseRecorder = false)
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRecorder = false)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -35,7 +35,7 @@ namespace Dynamo.Graph.Workspaces
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
 
-            RecordUndoGraphLayout(workspace, isGroupLayout, reuseRecorder);
+            RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRecorder);
             
 
             // Generate subgraphs separately for each cluster
