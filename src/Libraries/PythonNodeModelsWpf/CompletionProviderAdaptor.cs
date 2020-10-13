@@ -8,7 +8,6 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-    // TODO 3.0: Change this file name and class to CompletionProviderAdaptor. 
     internal class CompletionProviderAdaptor : LogSourceBase
     {
 
