@@ -83,91 +83,51 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
-
-                newNode.X = command.X;
-                newNode.Y = command.Y;
-                
-                var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
-                
-                if(newNode == null || existingNode == null) return;
-
-                AddNodeToCurrentWorkspace(newNode, false, command.AddNewNodeToSelection);
-                CurrentWorkspace.UndoRecorder.RecordCreationForUndo(newNode);
-
-                PortModel inPortModel, outPortModel;
-                if (command.CreateAsDownstreamNode)
-                {
-                    // Connect output port of Existing Node to input port of New node
-                    outPortModel = existingNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = newNode.InPorts[command.InputPortIndex];
-                }
-                else
-                {
-                    // Connect output port of New Node to input port of existing node
-                    outPortModel = newNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = existingNode.InPorts[command.InputPortIndex];
-                }
-
-                var models = GetConnectorsToAddAndDelete(inPortModel, outPortModel);
-
-                foreach (var modelPair in models)
-                {
-                    switch (modelPair.Value)
-                    {
-                        case UndoRedoRecorder.UserAction.Creation:
-                            CurrentWorkspace.UndoRecorder.RecordCreationForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Deletion:
-                            CurrentWorkspace.UndoRecorder.RecordDeletionForUndo(modelPair.Key);
-                            break;
-                    }
-                }
+                CreateAndConnectNodeImplWithUndoRecorder(command);
             }
         }
 
-        private void PlaceAndConnectNodeImpl(PlaceAndConnectNodeCommand command)
+        private void CreateAndConnectNodeImplWithUndoRecorder(CreateAndConnectNodeCommand command)
         {
-            using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
+            var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
+
+            newNode.X = command.X;
+            newNode.Y = command.Y;
+
+            var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
+
+            if (existingNode == null) return;
+
+            AddNodeToCurrentWorkspace(newNode, false, command.AddNewNodeToSelection);
+            CurrentWorkspace.UndoRecorder.RecordCreationForUndo(newNode);
+
+            PortModel inPortModel, outPortModel;
+            if (command.CreateAsDownstreamNode)
             {
-                var newNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(0)) as NodeModel;
-                var existingNode = CurrentWorkspace.GetModelInternal(command.ModelGuids.ElementAt(1)) as NodeModel;
+                // Connect output port of Existing Node to input port of New node
+                outPortModel = existingNode.OutPorts[command.OutputPortIndex];
+                inPortModel = newNode.InPorts[command.InputPortIndex];
+            }
+            else
+            {
+                // Connect output port of New Node to input port of existing node
+                outPortModel = newNode.OutPorts[command.OutputPortIndex];
+                inPortModel = existingNode.InPorts[command.InputPortIndex];
+            }
 
-                if (newNode == null || existingNode == null) return;
+            var models = GetConnectorsToAddAndDelete(inPortModel, outPortModel);
 
-                newNode.X = command.X;
-                newNode.Y = command.Y;
-
-                PortModel inPortModel, outPortModel;
-                if (command.IsDownstreamNode)
+            foreach (var modelPair in models)
+            {
+                switch (modelPair.Value)
                 {
-                    // Connect output port of Existing Node to input port of New node
-                    outPortModel = existingNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = newNode.InPorts[command.InputPortIndex];
+                    case UndoRedoRecorder.UserAction.Creation:
+                        CurrentWorkspace.UndoRecorder.RecordCreationForUndo(modelPair.Key);
+                        break;
+                    case UndoRedoRecorder.UserAction.Deletion:
+                        CurrentWorkspace.UndoRecorder.RecordDeletionForUndo(modelPair.Key);
+                        break;
                 }
-                else
-                {
-                    // Connect output port of New Node to input port of existing node
-                    outPortModel = newNode.OutPorts[command.OutputPortIndex];
-                    inPortModel = existingNode.InPorts[command.InputPortIndex];
-                }
-
-                var models = GetConnectorsToAddAndDelete(inPortModel, outPortModel);
-
-                foreach (var modelPair in models)
-                {
-                    switch (modelPair.Value)
-                    {
-                        case UndoRedoRecorder.UserAction.Creation:
-                            CurrentWorkspace.UndoRecorder.RecordCreationForUndo(modelPair.Key);
-                            break;
-                        case UndoRedoRecorder.UserAction.Deletion:
-                            CurrentWorkspace.UndoRecorder.RecordDeletionForUndo(modelPair.Key);
-                            break;
-                    }
-                }
-
-                
             }
         }
 

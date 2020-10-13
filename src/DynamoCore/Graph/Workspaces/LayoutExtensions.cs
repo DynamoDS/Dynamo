@@ -18,7 +18,7 @@ namespace Dynamo.Graph.Workspaces
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace)
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseRecorder = false)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -32,9 +32,11 @@ namespace Dynamo.Graph.Workspaces
             List<GraphLayout.Graph> layoutSubgraphs;
             List<List<GraphLayout.Node>> subgraphClusters;
 
-            GenerateCombinedGraph(workspace, isGroupLayout,out layoutSubgraphs, out subgraphClusters);
+            GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
-            RecordUndoGraphLayout(workspace, isGroupLayout);
+
+            RecordUndoGraphLayout(workspace, isGroupLayout, reuseRecorder);
+            
 
             // Generate subgraphs separately for each cluster
             subgraphClusters.ForEach(
@@ -194,7 +196,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout)
+        /// <param name="reuseRecorder">Initialize new UndoRedoRecorder if false.</param>
+        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout, bool reuseRecorder)
         {
             List<ModelBase> undoItems = new List<ModelBase>();
 
@@ -221,7 +224,14 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            WorkspaceModel.RecordModelsForModification(undoItems, workspace.UndoRecorder);
+            if (reuseRecorder)
+            {
+                workspace.RecordModelsForModification(undoItems);
+            }
+            else
+            {
+                WorkspaceModel.RecordModelsForModification(undoItems, workspace.UndoRecorder);
+            }
         }
 
         /// <summary>

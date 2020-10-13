@@ -110,6 +110,16 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        internal void RecordModelsForModification(List<ModelBase> models)
+        {
+            if (null == UndoRecorder) return;
+
+            if (!ShouldProceedWithRecording(models)) return;
+
+            foreach (var model in models)
+                UndoRecorder.RecordModificationForUndo(model);
+        }
+
         internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
             if (null == recorder)

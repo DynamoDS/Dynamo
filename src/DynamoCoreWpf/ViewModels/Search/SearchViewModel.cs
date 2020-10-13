@@ -10,6 +10,7 @@ using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -46,8 +47,7 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         private readonly IconServices iconServices;
-        private Tuple<NodeViewModel, PortModel> nodeAutoCompleteParams;
-        private bool onNodeViewReadyHandlerAttached;
+        private IDisposable undoRedoRecorderGroup;
 
         /// <summary>
         /// Position, where canvas was clicked. 
@@ -350,10 +350,12 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
-            if (onNodeViewReadyHandlerAttached)
+            if (undoRedoRecorderGroup != null)
             {
-                dynamoViewModel.NodeViewReady -= PlaceAndConnectNode;
-                onNodeViewReadyHandlerAttached = false;
+                undoRedoRecorderGroup.Dispose();
+                undoRedoRecorderGroup = null;
+
+                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             }
             base.Dispose();
         }
@@ -1069,62 +1071,61 @@ namespace Dynamo.ViewModels
             OnRequestFocusSearch();
         }
 
-        internal void OnRequestConnectToPort(NodeSearchElement nodeSearchElement, PortModel portModel)
+        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
         {
             // Do not auto connect code block node since default code block node do not have output port
-            if (!nodeSearchElement.CreationName.Contains("Code Block"))
+            if (!nodeCreationName.Contains("Code Block"))
             {
-                // Create a new node based on nodeSearchElement 
+                
                 var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
+                var id = Guid.NewGuid();
 
-                var node = nodeSearchElement.CreateNode();
-                var createNodecmd = new DynamoModel.CreateNodeCommand(node, 0, 0, true, true);
-                dynamoViewModel.ExecuteCommand(createNodecmd);
+                var adjustedX = initialNode.X;
 
-                nodeAutoCompleteParams = new Tuple<NodeViewModel, PortModel>(initialNode, portModel);
-
-                if (!onNodeViewReadyHandlerAttached)
+                // Placing the new node based on which input port it is connecting to.
+                if (portModel.PortType == PortType.Input)
                 {
-                    dynamoViewModel.NodeViewReady += PlaceAndConnectNode;
-                    onNodeViewReadyHandlerAttached = true;
+                    // Placing the new node to the left of initial node
+                    adjustedX -= portModel.Owner.Width + 50;
+                }
+                else
+                {
+                    adjustedX += portModel.Owner.Width + 50;
+                }
+
+                if (undoRedoRecorderGroup == null)
+                {
+                    dynamoViewModel.NodeViewReady += AutoLayoutNodes;
+                    undoRedoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+                }
+
+                // Create a new node based on node creation name and connect ports
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
+                    nodeCreationName, 0, portModel.Index, adjustedX, 0, false, false, true));
+
+                // Clear current selections and select all input nodes
+                DynamoSelection.Instance.ClearSelection();
+                var inputNodes = portModel.Owner.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+                foreach (var inputNode in inputNodes)
+                {
+                    DynamoSelection.Instance.Selection.AddUnique(inputNode);
                 }
             }
 
-            OnRequestFocusSearch();
         }
 
-        private void PlaceAndConnectNode(object sender, EventArgs e)
+        private void AutoLayoutNodes(object sender, EventArgs e)
         {
-            if (nodeAutoCompleteParams == null) return;
+            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
 
-            var nodeView = (NodeView)sender;
-            var node = nodeView.ViewModel.NodeModel;
-
-            var initialNode = nodeAutoCompleteParams.Item1;
-            var portModel = nodeAutoCompleteParams.Item2;
-
-            // Placing the new node based on which input port it is connecting to.
-            // The larger index for the input port, the lower the new node will be placed. 60 and 200 and offset we can adjust.
-            var adjustedY = initialNode.Y + (portModel.Index - 1) * node.Height;
-
-            // Placing the new node to the left of initial node
-            var adjustedX = initialNode.X - (initialNode.NodeModel.Width / 2 + node.Width / 2 + 50);
-
-            var id = node.GUID;
-
-            dynamoViewModel.ExecuteCommand(new DynamoModel.PlaceAndConnectNodeCommand(id, portModel.Owner.GUID,
-                0, portModel.Index, adjustedX, adjustedY, false));
-
-            // Clear current selections and select all input nodes
-            DynamoSelection.Instance.ClearSelection();
-            var inputNodes = initialNode.NodeModel.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-
-            foreach (var inputNode in inputNodes)
+            if (undoRedoRecorderGroup != null)
             {
-                DynamoSelection.Instance.Selection.AddUnique(inputNode);
-            }
+                undoRedoRecorderGroup.Dispose();
+                undoRedoRecorderGroup = null;
 
-            dynamoViewModel.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(null);
+                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
+            }
         }
 
         #endregion

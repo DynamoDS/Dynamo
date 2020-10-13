@@ -204,9 +204,6 @@ namespace Dynamo.Models
                     case "CreateAndConnectNodeCommand":
                         command = CreateAndConnectNodeCommand.DeserializeCore(element);
                         break;
-                    case "PlaceAndConnectNodeCommand":
-                        command = PlaceAndConnectNodeCommand.DeserializeCore(element);
-                        break;
                 }
 
                 if (null != command)
@@ -644,8 +641,6 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
-            #region Public Class Methods
-
             private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)
             {
                 X = x;
@@ -653,6 +648,8 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
             }
+
+            #region Public Class Methods
 
             /// <summary>
             /// </summary>
@@ -820,6 +817,38 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
+            private bool reuseUndoRecorder;
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
+            /// </summary>
+            /// <param name="newNodeGuid"></param>
+            /// <param name="existingNodeGuid"></param>
+            /// <param name="newNodeName">The name of node to create</param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            /// <param name="reuseUndoRecorder"></param>
+            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex,
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRecorder)
+                : base(new[] { newNodeGuid, existingNodeGuid })
+            {
+                NewNodeName = newNodeName;
+                OutputPortIndex = outPortIndex;
+                InputPortIndex = inPortIndex;
+                X = x;
+                Y = y;
+
+                CreateAsDownstreamNode = createAsDownstreamNode;
+                AddNewNodeToSelection = addNewNodeToSelection;
+
+                this.reuseUndoRecorder = reuseUndoRecorder;
+            }
 
             #region Public Class Methods
 
@@ -882,7 +911,14 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.CreateAndConnectNodeImpl(this);
+                if (reuseUndoRecorder)
+                {
+                    dynamoModel.CreateAndConnectNodeImplWithUndoRecorder(this);
+                }
+                else
+                {
+                    dynamoModel.CreateAndConnectNodeImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
@@ -920,103 +956,6 @@ namespace Dynamo.Models
 
                 return new CreateAndConnectNodeCommand(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
                     x, y, createAsDownstreamNode, addNewNodeToSelection);
-            }
-
-        }
-
-        /// <summary>
-        /// A command used to create a new upstream/downstream node and connect
-        /// it to an existing node in a single step
-        /// </summary>
-        [DataContract]
-        public class PlaceAndConnectNodeCommand : ModelBasedRecordableCommand
-        {
-
-            #region Public Class Methods
-
-            /// <summary>
-            /// Creates a new PlaceAndConnectNodeCommand with the given inputs
-            /// </summary>
-            /// <param name="newNodeGuid"></param>
-            /// <param name="existingNodeGuid"></param>
-            /// <param name="outPortIndex"></param>
-            /// <param name="inPortIndex"></param>
-            /// <param name="x"></param>
-            /// <param name="y"></param>
-            /// <param name="isDownstreamNode">
-            /// true if new node is created as downstream node wrt the existing node; false otherwise 
-            /// </param>
-            public PlaceAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, int outPortIndex, int inPortIndex,
-                double x, double y, bool isDownstreamNode)
-                : base(new[] { newNodeGuid, existingNodeGuid })
-            {
-                OutputPortIndex = outPortIndex;
-                InputPortIndex = inPortIndex;
-                X = x;
-                Y = y;
-
-                IsDownstreamNode = isDownstreamNode;
-            }
-
-            #endregion
-
-            #region Public Command Properties
-
-            [DataMember]
-            internal int OutputPortIndex { get; private set; }
-
-            [DataMember]
-            internal int InputPortIndex { get; private set; }
-
-            [DataMember]
-            internal double X { get; private set; }
-
-            [DataMember]
-            internal double Y { get; private set; }
-
-            [DataMember]
-            internal bool IsDownstreamNode { get; private set; }
-
-            #endregion
-
-            #region Protected Overridable Methods
-
-            protected override void ExecuteCore(DynamoModel dynamoModel)
-            {
-                dynamoModel.PlaceAndConnectNodeImpl(this);
-            }
-
-            protected override void SerializeCore(XmlElement element)
-            {
-                base.SerializeCore(element);
-
-                var helper = new XmlElementHelper(element);
-                helper.SetAttribute("X", X);
-                helper.SetAttribute("Y", Y);
-                helper.SetAttribute("IsDownstreamNode", IsDownstreamNode);
-
-                helper.SetAttribute("OutPortIndex", OutputPortIndex);
-                helper.SetAttribute("InPortIndex", InputPortIndex);
-            }
-
-            #endregion
-
-            internal static PlaceAndConnectNodeCommand DeserializeCore(XmlElement element)
-            {
-                var helper = new XmlElementHelper(element);
-                double x = helper.ReadDouble("X");
-                double y = helper.ReadDouble("Y");
-                bool isDownstreamNode = helper.ReadBoolean("IsDownstreamNode");
-
-                var guids = DeserializeGuid(element, helper).ToList();
-                var newNodeGuid = guids.ElementAt(0);
-                var existingNodeGuid = guids.ElementAt(1);
-
-                int outPortIndex = helper.ReadInteger("OutPortIndex");
-                int inPortIndex = helper.ReadInteger("InPortIndex");
-
-                return new PlaceAndConnectNodeCommand(newNodeGuid, existingNodeGuid, outPortIndex, inPortIndex,
-                    x, y, isDownstreamNode);
             }
 
         }
