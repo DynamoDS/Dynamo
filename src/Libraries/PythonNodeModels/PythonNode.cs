@@ -48,7 +48,7 @@ namespace PythonNodeModels
                 // This is a first-time case for newly created nodes only
                 if (engine == PythonEngineVersion.Unspecified)
                 {
-                    SetEngineByDefault(ref engine);
+                    SetEngineByDefault();
                 }
                 return engine;
             }
@@ -101,23 +101,23 @@ namespace PythonNodeModels
         /// <summary>
         /// Set the engine to be used by default for this node, based on user and system settings.
         /// </summary>
-        private void SetEngineByDefault(ref PythonEngineVersion eng)
+        private void SetEngineByDefault()
         {
             PythonEngineVersion version;
             var setting = PreferenceSettings.GetDefaultPythonEngine();
             var systemDefault = DynamoModel.DefaultPythonEngine;
             if (!string.IsNullOrEmpty(setting) && Enum.TryParse(setting, out version))
             {
-                eng = version;
+                engine = version;
             }
             else if (!string.IsNullOrEmpty(systemDefault) && Enum.TryParse(systemDefault, out version))
             {
-                eng = version;
+                engine = version;
             }
             else
             {
                 // In the absence of both a setting and system default, default to deserialization default.
-                eng = PythonEngineVersion.IronPython2;
+                engine = PythonEngineVersion.IronPython2;
             }
         }
 
