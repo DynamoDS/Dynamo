@@ -152,6 +152,7 @@ namespace PythonNodeModelsWpf
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             UpdateScript(editText.Text);
+            originalScript = editText.Text;
             nodeModel.Engine = nodeModel.CachedEngine;
         }
 
