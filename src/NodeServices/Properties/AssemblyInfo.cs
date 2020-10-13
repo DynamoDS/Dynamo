@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoCore")]
 [assembly: InternalsVisibleTo("ProtoCore")]
 [assembly: InternalsVisibleTo("ProtoGeometry")]
+[assembly: InternalsVisibleTo("ProtoGeometry.Tests")]
 [assembly: InternalsVisibleTo("LibG.ProtoInterface")]
 [assembly: InternalsVisibleTo("TestServices")]
 [assembly: InternalsVisibleTo("ProtoTestFx")]

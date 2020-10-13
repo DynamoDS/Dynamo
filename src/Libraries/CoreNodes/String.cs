@@ -42,7 +42,7 @@ namespace DSCore
         ///     Concatenates multiple strings into a single string.
         /// </summary>
         /// <param name="strings">List of strings to concatenate.</param>
-        /// <returns name="str">String made from list of strings.</returns>
+        /// <returns name="string">String made from list of strings.</returns>
         /// <search>concatenate,join,combine strings</search>
         public static string Concat(params string[] strings)
         {
@@ -86,7 +86,7 @@ namespace DSCore
         /// </summary>
         /// <param name="separator">String to be inserted between joined strings.</param>
         /// <param name="strings">Strings to be joined into a single string.</param>
-        /// <returns name="str">
+        /// <returns name="string">
         ///     A string made from the list of strings including the separator character.
         /// </returns>
         /// <search>join,separator,build csv,concat,construct</search>
@@ -98,23 +98,23 @@ namespace DSCore
         /// <summary>
         ///     Converts the given string to all uppercase characters.
         /// </summary>
-        /// <param name="str">String to be made uppercase.</param>
-        /// <returns name="str">Uppercase string.</returns>
+        /// <param name="string">String to be made uppercase.</param>
+        /// <returns name="string">Uppercase string.</returns>
         /// <search>2uppercase,to uppercase,touppercase,uppercase</search>
-        public static string ToUpper(string str)
+        public static string ToUpper(string @string)
         {
-            return str.ToUpper();
+            return @string.ToUpper();
         }
 
         /// <summary>
         ///     Converts the given string to all lowercase characters.
         /// </summary>
-        /// <param name="str">String to be made lowercase.</param>
-        /// <returns name="str">Lowercase string.</returns>
+        /// <param name="string">String to be made lowercase.</param>
+        /// <returns name="string">Lowercase string.</returns>
         /// <search>2lowercase,to lowercase,tolowercase,lowercase</search>
-        public static string ToLower(string str)
+        public static string ToLower(string @string)
         {
-            return str.ToLower();
+            return @string.ToLower();
         }
 
         /// <summary>
@@ -222,14 +222,14 @@ namespace DSCore
         /// <summary>
         ///     Replaces all occurrences of text in a string with other text.
         /// </summary>
-        /// <param name="str">String to replace substrings in.</param>
+        /// <param name="string">String to replace substrings in.</param>
         /// <param name="searchFor">Text to be replaced.</param>
         /// <param name="replaceWith">Text to replace with.</param>
-        /// <returns name="str">String with replacements made.</returns>
+        /// <returns name="string">String with replacements made.</returns>
         /// <search>replace,overwrite,override,find and replace</search>
-        public static string Replace(string str, string searchFor, string replaceWith)
+        public static string Replace(string @string, string searchFor, string replaceWith)
         {
-            return str.Replace(searchFor, replaceWith);
+            return @string.Replace(searchFor, replaceWith);
         }
 
         /// <summary>
@@ -261,34 +261,34 @@ namespace DSCore
         /// <summary>
         ///     Removes all whitespace from the start and end of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with beginning and ending whitespaces removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with beginning and ending whitespaces removed.</returns>
         /// <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
-        public static string TrimWhitespace(string str)
+        public static string TrimWhitespace(string @string)
         {
-            return str.Trim();
+            return @string.Trim();
         }
 
         /// <summary>
         ///     Removes all whitespace from the start of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with leading white spaces removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with leading white spaces removed.</returns>
         /// <search>trim string,clean string,trim leading whitespaces,string trim</search>
-        public static string TrimLeadingWhitespace(string str)
+        public static string TrimLeadingWhitespace(string @string)
         {
-            return str.TrimStart();
+            return @string.TrimStart();
         }
 
         /// <summary>
         ///     Removes all whitespace from the end of the given string.
         /// </summary>
-        /// <param name="str">String to trim.</param>
-        /// <returns name="str">String with white spaces at end removed.</returns>
+        /// <param name="string">String to trim.</param>
+        /// <returns name="string">String with white spaces at end removed.</returns>
         /// <search>trim string,clean string,trim trailing whitespaces,string trim</search>
-        public static string TrimTrailingWhitespace(string str)
+        public static string TrimTrailingWhitespace(string @string)
         {
-            return str.TrimEnd();
+            return @string.TrimEnd();
         }
 
         /// <summary>
@@ -310,15 +310,22 @@ namespace DSCore
                     ? StringComparison.InvariantCultureIgnoreCase
                     : StringComparison.InvariantCulture);
         }
-
-        public static int[] AllIndicesOf(string str, string searchFor, bool ignoreCase = false)
+        /// <summary>
+        /// Finds list of indices where sub-string appears inside a string.
+        /// </summary>
+        /// <param name="string">A string to search in.</param>
+        /// <param name="searchFor">Substring to search for.</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <returns name="indexList">List of indices where substring is found (type: int[]) </returns>
+        /// <search>all indices of,find substring,where,search</search>
+        public static int[] AllIndicesOf(string @string, string searchFor, bool ignoreCase = false)
         {
             var indices = new List<int>();
             if (searchFor == System.String.Empty) return indices.ToArray();
 
             for (int index = 0; ; index += searchFor.Length)
             {
-                index = str.IndexOf(searchFor, index, ignoreCase
+                index = @string.IndexOf(searchFor, index, ignoreCase
                     ? StringComparison.InvariantCultureIgnoreCase
                     : StringComparison.InvariantCulture);
                 if (index == -1)
@@ -422,36 +429,35 @@ namespace DSCore
         /// <summary>
         ///     Inserts a string into another string at a given index.
         /// </summary>
-        /// <param name="str">String to insert into.</param>
+        /// <param name="string">String to insert into.</param>
         /// <param name="index">Index to insert at.</param>
         /// <param name="toInsert">String to be inserted.</param>
-        /// <returns name="str">String with inserted substring.</returns>
+        /// <returns name="string">String with inserted substring.</returns>
         /// <search>insertstring,insert string</search>
-        public static string Insert(string str, int index, string toInsert)
+        public static string Insert(string @string, int index, string toInsert)
         {
-            return str.Insert(index, toInsert);
+            return @string.Insert(index, toInsert);
         }
 
         /// <summary>
         ///     Removes characters from a string.
         /// </summary>
-        /// <param name="str">String to remove characters from.</param>
+        /// <param name="string">String to remove characters from.</param>
         /// <param name="startIndex">Index at which to start removal.</param>
         /// <param name="count">
-        ///     Amount of characters to remove, by default will remove all characters from
-        ///     the given startIndex to the end of the string.
+        ///     Amount of characters to remove,
         ///     Note: if the Count is negative, the removal process goes from right to left.
         /// </param>
-        /// <returns name="str">String with characters removed.</returns>
+        /// <returns name="string">String with characters removed.</returns>
 		/// <search>delete,rem,shorten</search>
-        public static string Remove(string str, int startIndex, int? count = null)
+        public static string Remove(string @string, int startIndex, int? count = null)
         {
             if (startIndex < 0)
             {
-                startIndex += str.Length;
+                startIndex += @string.Length;
             }
 
-            var _count = count ?? str.Length - startIndex;
+            var _count = count ?? @string.Length - startIndex;
 
             if (_count < 0)
             {
@@ -463,17 +469,17 @@ namespace DSCore
                 _count *= -1;
             }
             
-            if(_count > str.Length)
+            if(_count > @string.Length)
             {
                 throw new ArgumentOutOfRangeException("count", Properties.Resources.StringRemoveCountOutOfRangeMessage);
             }
 
-            if (startIndex == 0 && str.Length == 0)
+            if (startIndex == 0 && @string.Length == 0)
             {
                 return string.Empty;
             }
 
-            if (startIndex >= str.Length || startIndex < 0) 
+            if (startIndex >= @string.Length || startIndex < 0) 
             {
                 // startIndex of an array must be within the string length. 
                 // If after the conversion of negative startIndex, startIndex is still
@@ -483,7 +489,7 @@ namespace DSCore
 
             }
 
-            return str.Remove(startIndex, _count);
+            return @string.Remove(startIndex, _count);
         }
     }
 }

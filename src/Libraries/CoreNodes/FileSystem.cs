@@ -62,7 +62,8 @@ namespace DSCore.IO
         /// <summary>
         ///     Reads a text file and returns the contents as a string.
         /// </summary>
-        /// <returns name="str">Contents of the text file.</returns>
+        /// <param name="file"> File object to read text from</param>
+        /// <returns name="string">Contents of the text file.</returns>
         /// <search>read file,text,file</search>
         public static string ReadText(FileInfo file)
         {
@@ -117,6 +118,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="filePath">Path to write to</param>
         /// <param name="text">Text content</param>
+        /// <returns name="void">No output</returns>
         /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
@@ -434,6 +436,8 @@ namespace DSCore.IO
         /// Returns the width and height of an image.
         /// </summary>
         /// <param name="image">Image to get dimensions of.</param>
+        /// <returns name="width"> width of image in pixels</returns>
+        /// <returns name="height"> height of image in pixels </returns>
         [MultiReturn("width", "height")]
         public static Dictionary<string, int> Dimensions(Bitmap image)
         {
@@ -449,7 +453,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path"></param>
         /// <param name="image">The image to write</param>
-        /// <returns name="ok">It is successful or not.</returns>
+        /// <returns name="void">No output </returns>
         /// <search>write image,image,file,filepath</search>
         public static void WriteToFile(string path, Bitmap image)
         {
