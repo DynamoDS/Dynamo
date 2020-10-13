@@ -834,19 +834,12 @@ namespace Dynamo.Models
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
             /// <param name="reuseUndoRecorder"></param>
-            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName, int outPortIndex, int inPortIndex,
+            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName,
+                int outPortIndex, int inPortIndex,
                 double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRecorder)
-                : base(new[] { newNodeGuid, existingNodeGuid })
+                : this(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
+                    x, y, createAsDownstreamNode, addNewNodeToSelection)
             {
-                NewNodeName = newNodeName;
-                OutputPortIndex = outPortIndex;
-                InputPortIndex = inPortIndex;
-                X = x;
-                Y = y;
-
-                CreateAsDownstreamNode = createAsDownstreamNode;
-                AddNewNodeToSelection = addNewNodeToSelection;
-
                 this.reuseUndoRecorder = reuseUndoRecorder;
             }
 

@@ -47,7 +47,7 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         private readonly IconServices iconServices;
-        private IDisposable undoRedoRecorderGroup;
+        private IDisposable undoRecorderGroup;
 
         /// <summary>
         /// Position, where canvas was clicked. 
@@ -350,10 +350,10 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
-            if (undoRedoRecorderGroup != null)
+            if (undoRecorderGroup != null)
             {
-                undoRedoRecorderGroup.Dispose();
-                undoRedoRecorderGroup = null;
+                undoRecorderGroup.Dispose();
+                undoRecorderGroup = null;
 
                 dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             }
@@ -1093,10 +1093,10 @@ namespace Dynamo.ViewModels
                     adjustedX += portModel.Owner.Width + 50;
                 }
 
-                if (undoRedoRecorderGroup == null)
+                if (undoRecorderGroup == null)
                 {
                     dynamoViewModel.NodeViewReady += AutoLayoutNodes;
-                    undoRedoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+                    undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
                 }
 
                 // Create a new node based on node creation name and connect ports
@@ -1119,10 +1119,10 @@ namespace Dynamo.ViewModels
         {
             dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
 
-            if (undoRedoRecorderGroup != null)
+            if (undoRecorderGroup != null)
             {
-                undoRedoRecorderGroup.Dispose();
-                undoRedoRecorderGroup = null;
+                undoRecorderGroup.Dispose();
+                undoRecorderGroup = null;
 
                 dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             }

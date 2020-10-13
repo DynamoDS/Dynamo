@@ -196,8 +196,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        /// <param name="reuseRecorder">Initialize new UndoRedoRecorder if false.</param>
-        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout, bool reuseRecorder)
+        /// <param name="reuseUndoRecorder">Initialize new UndoRedoRecorder if false.</param>
+        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout, bool reuseUndoRecorder)
         {
             List<ModelBase> undoItems = new List<ModelBase>();
 
@@ -224,7 +224,7 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            if (reuseRecorder)
+            if (reuseUndoRecorder)
             {
                 workspace.RecordModelsForModification(undoItems);
             }
