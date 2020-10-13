@@ -83,11 +83,16 @@ namespace Dynamo.Models
         {
             using (CurrentWorkspace.UndoRecorder.BeginActionGroup())
             {
-                CreateAndConnectNodeImplWithUndoRecorder(command);
+                CreateAndConnectNodeImplWithUndoGroup(command);
             }
         }
 
-        private void CreateAndConnectNodeImplWithUndoRecorder(CreateAndConnectNodeCommand command)
+        /// <summary>
+        /// This method assumes that there exists an undo-redo action group already
+        /// that can be used to record creation and deletion of models.
+        /// </summary>
+        /// <param name="command"></param>
+        private void CreateAndConnectNodeImplWithUndoGroup(CreateAndConnectNodeCommand command)
         {
             var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
 

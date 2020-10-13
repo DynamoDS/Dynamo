@@ -817,7 +817,7 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
-            private bool reuseUndoRecorder;
+            private readonly bool reuseUndoRedoGroup;
 
             /// <summary>
             /// Creates a new CreateAndConnectNodeCommand with the given inputs
@@ -833,14 +833,14 @@ namespace Dynamo.Models
             /// new node to be created as downstream or upstream node wrt the existing node
             /// </param>
             /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
-            /// <param name="reuseUndoRecorder"></param>
+            /// <param name="reuseUndoRedoGroup">Skip creating new undo action group and reuse existing one if true.</param>
             internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName,
                 int outPortIndex, int inPortIndex,
-                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRecorder)
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRedoGroup)
                 : this(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
                     x, y, createAsDownstreamNode, addNewNodeToSelection)
             {
-                this.reuseUndoRecorder = reuseUndoRecorder;
+                this.reuseUndoRedoGroup = reuseUndoRedoGroup;
             }
 
             #region Public Class Methods
@@ -904,9 +904,9 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                if (reuseUndoRecorder)
+                if (reuseUndoRedoGroup)
                 {
-                    dynamoModel.CreateAndConnectNodeImplWithUndoRecorder(this);
+                    dynamoModel.CreateAndConnectNodeImplWithUndoGroup(this);
                 }
                 else
                 {

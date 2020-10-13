@@ -18,7 +18,9 @@ namespace Dynamo.Graph.Workspaces
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRecorder = false)
+        /// <param name="workspace">Workspace on which graph layout will be performed.</param>
+        /// <param name="reuseUndoRedoGroup">If true, skip initializing new undo action group.</param>
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -35,7 +37,7 @@ namespace Dynamo.Graph.Workspaces
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
 
-            RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRecorder);
+            RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRedoGroup);
             
 
             // Generate subgraphs separately for each cluster
@@ -196,8 +198,8 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
         /// <param name="isGroupLayout">True if all the selected models are groups.</param>
-        /// <param name="reuseUndoRecorder">Initialize new UndoRedoRecorder if false.</param>
-        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout, bool reuseUndoRecorder)
+        /// <param name="reuseUndoRedoGroup">Skip creating new undo action group, reuse existing group if true.</param>
+        private static void RecordUndoGraphLayout(this WorkspaceModel workspace, bool isGroupLayout, bool reuseUndoRedoGroup)
         {
             List<ModelBase> undoItems = new List<ModelBase>();
 
@@ -224,7 +226,7 @@ namespace Dynamo.Graph.Workspaces
                 }
             }
 
-            if (reuseUndoRecorder)
+            if (reuseUndoRedoGroup)
             {
                 workspace.RecordModelsForModification(undoItems);
             }
