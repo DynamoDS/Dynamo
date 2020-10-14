@@ -13,6 +13,8 @@ jobs:
 
     - name: Setup Nuget.exe to use on VM
       uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: latest
       
     - name: Nuget Restore on DynamoMono solution
       run: nuget restore $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
