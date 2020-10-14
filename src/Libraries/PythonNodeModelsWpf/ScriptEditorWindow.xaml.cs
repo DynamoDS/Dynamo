@@ -151,18 +151,18 @@ namespace PythonNodeModelsWpf
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
-            UpdateScript(editText.Text);
             originalScript = editText.Text;
             nodeModel.Engine = nodeModel.CachedEngine;
+            UpdateScript(editText.Text);
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
         {
             if (nodeWasModified)
             {
-                UpdateScript(originalScript);
                 editText.Text = originalScript;
                 nodeModel.CachedEngine = nodeModel.Engine;
+                UpdateScript(originalScript);
             }
         }
 
@@ -179,9 +179,9 @@ namespace PythonNodeModelsWpf
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
-            UpdateScript(editText.Text);
             originalScript = editText.Text;
             nodeModel.Engine = nodeModel.CachedEngine;
+            UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
             {
                 dynamoViewModel.HomeSpace.Run();
