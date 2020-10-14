@@ -97,7 +97,7 @@
                 </Button.Resources>
             </Button>
             <ComboBox ItemsSource="{Binding nodeModel.AvailableEngines, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
-                      SelectedItem="{Binding nodeModel.CachedEngine, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=dww:ModelessChildWindow}}"
+                      SelectedItem="{Binding CachedEngine, Mode=TwoWay}"
                       SelectionChanged="OnEngineChanged"
                       Style="{StaticResource DropDown}"
                       Name="EngineSelectorComboBox"

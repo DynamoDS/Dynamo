@@ -29,6 +29,7 @@ namespace PythonNodeModelsWpf
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
         private string originalScript;
+        public PythonEngineVersion CachedEngine { get; set; }
 
         public ScriptEditorWindow(
             DynamoViewModel dynamoViewModel, 
@@ -46,6 +47,7 @@ namespace PythonNodeModelsWpf
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
+            this.DataContext = this;
 
             if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
             {
@@ -81,7 +83,8 @@ namespace PythonNodeModelsWpf
 
             editText.Text = propValue;
             originalScript = propValue;
-            nodeModel.CachedEngine = nodeModel.Engine;
+            CachedEngine = nodeModel.Engine;
+            EngineSelectorComboBox.SelectedItem = CachedEngine;
         }
 
         #region Autocomplete Event Handlers
@@ -145,14 +148,17 @@ namespace PythonNodeModelsWpf
         {
             originalScript = e.OldCode;
             editText.Text = e.NewCode;
-            if (nodeModel.CachedEngine != PythonEngineVersion.CPython3)
-                nodeModel.CachedEngine = PythonEngineVersion.CPython3;
+            if (CachedEngine != PythonEngineVersion.CPython3)
+            {
+                CachedEngine = PythonEngineVersion.CPython3;
+                EngineSelectorComboBox.SelectedItem = CachedEngine;
+            }
         }
 
         private void OnSaveClicked(object sender, RoutedEventArgs e)
         {
             originalScript = editText.Text;
-            nodeModel.Engine = nodeModel.CachedEngine;
+            nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
         }
 
@@ -161,7 +167,8 @@ namespace PythonNodeModelsWpf
             if (nodeWasModified)
             {
                 editText.Text = originalScript;
-                nodeModel.CachedEngine = nodeModel.Engine;
+                CachedEngine = nodeModel.Engine;
+                EngineSelectorComboBox.SelectedItem = CachedEngine;
                 UpdateScript(originalScript);
             }
         }
@@ -202,7 +209,8 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            editText.Options.ConvertTabsToSpaces = nodeModel.CachedEngine != PythonEngineVersion.IronPython2;
+            if (CachedEngine != nodeModel.Engine || originalScript != editText.Text) { nodeWasModified = true; }
+            editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

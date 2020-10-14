@@ -61,24 +61,6 @@ namespace PythonNodeModels
                 }
             }
         }
-        /// <summary>
-        /// Return the user selected python engine enum.
-        /// </summary>
-        public PythonEngineVersion CachedEngine
-        {
-            get
-            {
-                return cachedEngine;
-            }
-            set
-            {
-                if (cachedEngine != value)
-                {
-                    cachedEngine = value;
-                    RaisePropertyChanged(nameof(CachedEngine));
-                }
-            }
-        }
 
         private static ObservableCollection<PythonEngineVersion> availableEngines;
         /// <summary>
