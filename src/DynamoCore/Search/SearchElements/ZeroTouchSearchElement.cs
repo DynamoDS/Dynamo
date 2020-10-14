@@ -27,7 +27,9 @@ namespace Dynamo.Search.SearchElements
         ///     The full name of entry which consists of assembly name and qualified name for function descriptor.
         /// </summary>
         public override string FullName { get { return fullname; } }
-
+        /// <summary>
+        /// Retrieve undelrying Function Descriptor.
+        /// </summary>
         internal FunctionDescriptor Descriptor => functionDescriptor;
 
         /// <summary>
