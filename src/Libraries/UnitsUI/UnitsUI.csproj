@@ -111,6 +111,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

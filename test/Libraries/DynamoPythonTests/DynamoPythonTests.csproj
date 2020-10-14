@@ -123,7 +123,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit">
-      <Version>4.3.1.9430</Version>
+      <Version>4.3.1.9430</Version>            
+      <IncludeAssets>all</IncludeAssets>
     </PackageReference>
     <PackageReference Include="DynamicLanguageRuntime">
       <Version>1.2.2</Version>

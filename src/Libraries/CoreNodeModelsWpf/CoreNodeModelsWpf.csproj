@@ -211,6 +211,7 @@
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit">
       <Version>3.0.0</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

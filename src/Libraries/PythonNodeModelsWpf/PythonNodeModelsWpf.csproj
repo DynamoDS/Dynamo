@@ -151,16 +151,23 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit">
       <Version>4.3.1.9430</Version>
+      <PrivateAssets>compile</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="DynamicLanguageRuntime">
+      <Version>1.2.2</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
     <PackageReference Include="IronPython">
       <Version>2.7.9</Version>
-      <PrivateAssets>all</PrivateAssets>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Emit">
       <Version>4.3.0</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

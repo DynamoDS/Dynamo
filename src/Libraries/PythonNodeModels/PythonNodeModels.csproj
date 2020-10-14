@@ -97,9 +97,11 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
     <PackageReference Include="System.Reflection.Emit">
       <Version>4.3.0</Version>
+      <ExcludeAssets>compile</ExcludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

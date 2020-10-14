@@ -126,6 +126,7 @@
   <ItemGroup>
     <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
       <Version>*</Version>
+      <PrivateAssets>compile</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
