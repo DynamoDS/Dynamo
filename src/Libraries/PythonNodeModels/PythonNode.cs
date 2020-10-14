@@ -33,7 +33,7 @@ namespace PythonNodeModels
     public abstract class PythonNodeBase : VariableInputNode
     {
         private PythonEngineVersion engine = PythonEngineVersion.Unspecified;
-        private PythonEngineVersion cached_engine = PythonEngineVersion.Unspecified;
+        private PythonEngineVersion cachedEngine = PythonEngineVersion.Unspecified;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
@@ -68,13 +68,13 @@ namespace PythonNodeModels
         {
             get
             {
-                return cached_engine;
+                return cachedEngine;
             }
             set
             {
-                if (cached_engine != value)
+                if (cachedEngine != value)
                 {
-                    cached_engine = value;
+                    cachedEngine = value;
                     RaisePropertyChanged(nameof(CachedEngine));
                 }
             }
