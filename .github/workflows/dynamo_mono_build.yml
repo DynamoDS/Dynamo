@@ -11,6 +11,9 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Setup Nuget.exe to use on VM
       uses: nuget/setup-nuget@v1
       with:
