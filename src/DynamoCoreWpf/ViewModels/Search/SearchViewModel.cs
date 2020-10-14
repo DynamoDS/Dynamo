@@ -1121,6 +1121,7 @@ namespace Dynamo.ViewModels
         {
             dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
 
+            // Close the undo action group once the node is created, connected and placed.
             if (undoRecorderGroup != null)
             {
                 undoRecorderGroup.Dispose();
