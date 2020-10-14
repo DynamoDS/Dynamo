@@ -179,8 +179,6 @@ namespace PythonNodeModelsWpf
 
         private void OnRunClicked(object sender, RoutedEventArgs e)
         {
-            originalScript = editText.Text;
-            nodeModel.Engine = nodeModel.CachedEngine;
             UpdateScript(editText.Text);
             if (dynamoViewModel.HomeSpace.RunSettings.RunType != RunType.Automatic)
             {
@@ -204,7 +202,7 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            editText.Options.ConvertTabsToSpaces = nodeModel.Engine != PythonEngineVersion.IronPython2;
+            editText.Options.ConvertTabsToSpaces = nodeModel.CachedEngine != PythonEngineVersion.IronPython2;
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
