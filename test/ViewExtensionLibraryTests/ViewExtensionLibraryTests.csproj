@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(CefSharp_Wpf)..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props" Condition="Exists('..\..\src\packages\CefSharp.Wpf.65.0.1\build\CefSharp.Wpf.props')" />
-  <Import Project="..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props" Condition="Exists('..\..\src\packages\CefSharp.Common.65.0.1\build\CefSharp.Common.props')" />
-  <Import Project="..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props" Condition="Exists('..\..\src\packages\cef.redist.x86.3.3325.1758\build\cef.redist.x86.props')" />
-  <Import Project="..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props" Condition="Exists('..\..\src\packages\cef.redist.x64.3.3325.1758\build\cef.redist.x64.props')" />
+  <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props')" />
+  <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.props" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.props')" />
+  <Import Project="$(Pkgcef_redist_x86)\build\cef.redist.x86.props" Condition="Exists('$(Pkgcef_redist_x86)\build\cef.redist.x86.props')" />
+  <Import Project="$(Pkgcef_redist_x64)\build\cef.redist.x64.props" Condition="Exists('$(Pkgcef_redist_x64)\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.targets" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.targets')" />
+    <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets')" />
   </ImportGroup>
   <Import Project=".\obj\ViewExtensionLibraryTests.csproj.nuget.g.props" Condition="Exists('.\obj\ViewExtensionLibraryTests.csproj.nuget.g.props')" />
   <PropertyGroup>
