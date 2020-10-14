@@ -27,7 +27,9 @@ namespace Dynamo.Search.SearchElements
         ///     The full name of entry which consists of assembly name and qualified name for function descriptor.
         /// </summary>
         public override string FullName { get { return fullname; } }
-        
+
+        internal FunctionDescriptor Descriptor => functionDescriptor;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ZeroTouchSearchElement"/> class 
         /// with the DesignScript function description
