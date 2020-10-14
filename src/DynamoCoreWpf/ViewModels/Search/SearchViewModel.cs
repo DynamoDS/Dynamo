@@ -1089,20 +1089,25 @@ namespace Dynamo.ViewModels
             }
             else
             {
+                // Placing the new node to the right of initial node
                 adjustedX += portModel.Owner.Width + 50;
             }
 
+            // Initialize a new undo action group before calling 
+            // node CreateAndConnect and AutoLayout commands.
             if (undoRecorderGroup == null)
             {
+                // Node auto layout can be performed correctly only when the positions and sizes
+                // of nodes are known, which is possible only after the node views are ready.
                 dynamoViewModel.NodeViewReady += AutoLayoutNodes;
                 undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
             }
 
-            // Create a new node based on node creation name and connect ports
+            // Create a new node based on node creation name and connection ports
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
                 nodeCreationName, 0, portModel.Index, adjustedX, 0, false, false, true));
 
-            // Clear current selections and select all input nodes
+            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
             DynamoSelection.Instance.ClearSelection();
             var inputNodes = portModel.Owner.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
 

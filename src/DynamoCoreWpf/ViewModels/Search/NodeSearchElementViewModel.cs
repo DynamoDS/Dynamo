@@ -65,6 +65,8 @@ namespace Dynamo.Wpf.ViewModels
                 Clicked -= searchViewModel.OnSearchElementClicked;
                 searchViewModel = null;
             }
+
+            
             base.Dispose();
         }
 

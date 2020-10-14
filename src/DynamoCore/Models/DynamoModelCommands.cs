@@ -96,6 +96,8 @@ namespace Dynamo.Models
         {
             var newNode = CreateNodeFromNameOrType(command.ModelGuid, command.NewNodeName);
 
+            if (newNode == null) return;
+
             newNode.X = command.X;
             newNode.Y = command.Y;
 
