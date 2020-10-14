@@ -33,7 +33,6 @@ namespace PythonNodeModels
     public abstract class PythonNodeBase : VariableInputNode
     {
         private PythonEngineVersion engine = PythonEngineVersion.Unspecified;
-        private PythonEngineVersion cachedEngine = PythonEngineVersion.Unspecified;
 
         [JsonConverter(typeof(StringEnumConverter))]
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Populate)]
