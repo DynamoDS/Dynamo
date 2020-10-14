@@ -1219,9 +1219,36 @@ namespace Dynamo.PackageManager
             catch (Exception e)
             {
                 UploadState = PackageUploadHandle.State.Error;
-                ErrorString = e.Message;
+                ErrorString = TranslatePackageManagerError(e.Message);
                 dynamoViewModel.Model.Logger.Log(e);
             }
+        }
+
+        private static readonly Regex UserIsNotAMaintainerRegex =
+            new Regex("^The user sending the new package version, ([^,]+), is not a maintainer of the package (.*)$");
+        private static readonly Regex PackageAlreadyExistsRegex =
+            new Regex("^A package with the given name and engine already exists\\.$");
+
+        /// <summary>
+        /// Inspects an error message to see if it matches a known Package Manager error message.
+        /// If it does, it returns the equivalent translated resource, otherwise returns the same.
+        /// NOTE: This function is internal for testing purposes only.
+        /// </summary>
+        /// <param name="message">Message to inspect</param>
+        /// <returns>Translated message or same as parameter</returns>
+        internal static string TranslatePackageManagerError(string message)
+        {
+            if (UserIsNotAMaintainerRegex.IsMatch(message))
+            {
+                var match = UserIsNotAMaintainerRegex.Match(message);
+                return string.Format(Properties.Resources.PackageManagerUserIsNotAMaintainer, match.Groups[1], match.Groups[2]);
+            }
+            else if (PackageAlreadyExistsRegex.IsMatch(message))
+            {
+                return Properties.Resources.PackageManagerPackageAlreadyExists;
+            }
+
+            return message;
         }
 
         /// <summary>

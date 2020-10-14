@@ -1110,6 +1110,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A package with the given name already exists..
+        /// </summary>
+        public static string PackageManagerPackageAlreadyExists {
+            get {
+                return ResourceManager.GetString("PackageManagerPackageAlreadyExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current user, &apos;{0}&apos;, is not a maintainer of the package &apos;{1}&apos;..
+        /// </summary>
+        public static string PackageManagerUserIsNotAMaintainer {
+            get {
+                return ResourceManager.GetString("PackageManagerUserIsNotAMaintainer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package is too large!  The package must be less than 15 MB!.
         /// </summary>
         public static string PackageTooLarge {
