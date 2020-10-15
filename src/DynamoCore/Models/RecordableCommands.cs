@@ -641,8 +641,6 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
-            #region Public Class Methods
-
             private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)
             {
                 X = x;
@@ -650,6 +648,8 @@ namespace Dynamo.Models
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
             }
+
+            #region Public Class Methods
 
             /// <summary>
             /// </summary>
@@ -817,6 +817,31 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateAndConnectNodeCommand : ModelBasedRecordableCommand
         {
+            private readonly bool reuseUndoRedoGroup;
+
+            /// <summary>
+            /// Creates a new CreateAndConnectNodeCommand with the given inputs
+            /// </summary>
+            /// <param name="newNodeGuid"></param>
+            /// <param name="existingNodeGuid"></param>
+            /// <param name="newNodeName">The name of node to create</param>
+            /// <param name="outPortIndex"></param>
+            /// <param name="inPortIndex"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="createAsDownstreamNode">
+            /// new node to be created as downstream or upstream node wrt the existing node
+            /// </param>
+            /// <param name="addNewNodeToSelection">select the new node after it is created by default</param>
+            /// <param name="reuseUndoRedoGroup">Skip creating new undo action group and reuse existing one if true.</param>
+            internal CreateAndConnectNodeCommand(Guid newNodeGuid, Guid existingNodeGuid, string newNodeName,
+                int outPortIndex, int inPortIndex,
+                double x, double y, bool createAsDownstreamNode, bool addNewNodeToSelection, bool reuseUndoRedoGroup)
+                : this(newNodeGuid, existingNodeGuid, newNodeName, outPortIndex, inPortIndex,
+                    x, y, createAsDownstreamNode, addNewNodeToSelection)
+            {
+                this.reuseUndoRedoGroup = reuseUndoRedoGroup;
+            }
 
             #region Public Class Methods
 
@@ -879,7 +904,14 @@ namespace Dynamo.Models
 
             protected override void ExecuteCore(DynamoModel dynamoModel)
             {
-                dynamoModel.CreateAndConnectNodeImpl(this);
+                if (reuseUndoRedoGroup)
+                {
+                    dynamoModel.CreateAndConnectNodeImplWithUndoGroup(this);
+                }
+                else
+                {
+                    dynamoModel.CreateAndConnectNodeImpl(this);
+                }
             }
 
             protected override void SerializeCore(XmlElement element)
