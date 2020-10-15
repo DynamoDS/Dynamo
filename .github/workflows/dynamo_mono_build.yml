@@ -11,9 +11,6 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
-
     - name: Setup Nuget.exe to use on VM
       uses: nuget/setup-nuget@v1
       with:
@@ -25,7 +22,7 @@ jobs:
     - name: Build Dynamo with mono xbuild
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
-           xbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
+           dotnet msbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
