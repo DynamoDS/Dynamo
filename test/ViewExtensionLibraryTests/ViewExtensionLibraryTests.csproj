@@ -5,10 +5,10 @@
   <Import Project="$(Pkgcef_redist_x86)\build\cef.redist.x86.props" Condition="Exists('$(Pkgcef_redist_x86)\build\cef.redist.x86.props')" />
   <Import Project="$(Pkgcef_redist_x64)\build\cef.redist.x64.props" Condition="Exists('$(Pkgcef_redist_x64)\build\cef.redist.x64.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.targets" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.targets')" />
+  <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets')" />
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(SolutionDir)Config/CS.props" />
-    <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.targets" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.targets')" />
-    <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.targets')" />
+    <Import Project="$(SolutionDir)Config/CS.props" />    
   </ImportGroup>
   <Import Project=".\obj\ViewExtensionLibraryTests.csproj.nuget.g.props" Condition="Exists('.\obj\ViewExtensionLibraryTests.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -126,8 +126,7 @@
       <Version>3.3325.1758</Version>
     </PackageReference>
     <PackageReference Include="CefSharp.Common" GeneratePathProperty="true">
-      <Version>65.0.1</Version>      
-      <IncludeAssets>all</IncludeAssets>
+      <Version>65.0.1</Version>
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf" GeneratePathProperty="true">
       <Version>65.0.1</Version>
