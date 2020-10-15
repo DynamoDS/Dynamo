@@ -19,7 +19,7 @@ jobs:
     - name: Nuget Restore on DynamoMono solution
       run: nuget restore $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
       
-    - name: Build Dynamo with mono xbuild
+    - name: Build Dynamo with mono msbuild
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
            msbuild $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /p:Configuration=Release /t:Restore
