@@ -22,7 +22,7 @@ jobs:
     - name: Build Dynamo with mono xbuild
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
-           msbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln -target:Restore;Build
+           msbuild /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /t:Restore;Build
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
