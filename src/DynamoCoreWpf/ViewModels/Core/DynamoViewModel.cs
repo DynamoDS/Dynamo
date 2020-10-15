@@ -1924,7 +1924,10 @@ namespace Dynamo.ViewModels
 
         public void DoGraphAutoLayout(object parameter)
         {
-            this.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(parameter);
+            if (CurrentSpaceViewModel.GraphAutoLayoutCommand.CanExecute(parameter))
+            {
+                CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(parameter);
+            }
         }
 
         internal bool CanDoGraphAutoLayout(object parameter)
