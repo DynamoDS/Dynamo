@@ -19,7 +19,7 @@ namespace DSCore
         /// <summary>
         ///     Find the red component of a color, 0 to 255.
         /// </summary>
-        /// <returns name="red">int between 0 and 255 inclusive.</returns>
+        /// <returns name="int">Red value for RGB color model, int between 0 and 255 inclusive.</returns>
         [JsonProperty(PropertyName = "R")]
         public byte Red
         {
@@ -107,10 +107,10 @@ namespace DSCore
         /// <summary>
         /// Returns the saturation value for this color.
         /// </summary>
-        /// <returns name="saturation">double between 0 and 1 inclusive.</returns>
-        public static float Saturation(Color c)
+        /// <returns name="double">Saturation value as double between 0 and 1 inclusive.</returns>
+        public static float Saturation(Color color)
         {
-            return c.color.GetSaturation();
+            return color.color.GetSaturation();
         }
 
         /// <summary>

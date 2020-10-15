@@ -13,10 +13,11 @@ namespace IntegrationTests
         public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
-                    new Version(224, 4, 0),
-                    new Version(224, 0, 1),
-                    new Version(223, 0, 1),
-                    new Version(225, 0, 0) };
+                    
+                    new Version(225, 0, 0),
+                    new Version(226, 0, 0),
+                    new Version(227, 0, 0)
+            };
 
 
             //go get a valid asm path.
@@ -43,8 +44,8 @@ namespace IntegrationTests
                             break;
                         }
                     }
-                //assert that ASM is really loaded from exactly where we specified.
-                Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
+                    //assert that ASM is really loaded from exactly where we specified.
+                    Assert.AreEqual(Path.GetDirectoryName(firstASMmodulePath), locatedPath);
                 });
             }
             finally

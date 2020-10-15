@@ -88,7 +88,10 @@ namespace Dynamo.UI.Controls
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
                 PortViewModel port = ViewModel.PortViewModel;
-                searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
+                {
+                    searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                }
             }
         }
 

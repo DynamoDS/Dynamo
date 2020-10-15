@@ -12,24 +12,24 @@ class List extends DSCore.List
         return __Equals(objectA, objectB);
 	}
 
-	public static def GroupByFunction(list: var[]..[], func: Function)
+	public static def GroupByFunction(list: var[]..[], groupFunction: Function)
 	{
-		return __GroupByFunction(list, func);
+		return __GroupByFunction(list, groupFunction);
 	}
 
-	public static def SortByFunction(list: var[]..[], func: Function)
+	public static def SortByFunction(list: var[]..[], sortFunction: Function)
 	{
-		return __SortByFunction(list, func);
+		return __SortByFunction(list, sortFunction);
 	}
 
-	public static def MaximumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MaximumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MaximumItemByKey(list, keyProjector);
+		return __MaximumItemByKey(list, keyFunction);
 	}
 
-	public static def MinimumItemByKey(list: var[]..[], keyProjector: Function)
+	public static def MinimumItemByKey(list: var[]..[], keyFunction: Function)
 	{
-		return __MinimumItemByKey(list, keyProjector);
+		return __MinimumItemByKey(list, keyFunction);
 	}
 
 	public static def TrueForAll: bool(list: var[]..[], predicate: Function)
