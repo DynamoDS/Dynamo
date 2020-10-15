@@ -110,6 +110,21 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        /// <summary>
+        /// This method assumes an undo-redo action group already exists
+        /// and records in it models that are modified.
+        /// </summary>
+        /// <param name="models"></param>
+        internal void RecordModelsForModification(List<ModelBase> models)
+        {
+            if (null == UndoRecorder) return;
+
+            if (!ShouldProceedWithRecording(models)) return;
+
+            foreach (var model in models)
+                UndoRecorder.RecordModificationForUndo(model);
+        }
+
         internal static void RecordModelsForUndo(Dictionary<ModelBase, UndoRedoRecorder.UserAction> models, UndoRedoRecorder recorder)
         {
             if (null == recorder)

@@ -1,0 +1,288 @@
+{
+  "Uuid": "2bd3467c-92c9-4cc8-b882-19795369f5bd",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "CoordinateSystems",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Sphere.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "768bcc30e5f5469881bb8425806a0a4d",
+      "Inputs": [
+        {
+          "Id": "4fcbd1887c23414ea9a9cf9485bf7094",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "35ba04a4a1fc467cb327d20f88b090bc",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "98b1be855b424cccb3a6ace9464d400b",
+          "Name": "Sphere",
+          "Description": "Sphere",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a Solid Sphere cetered at the input Point, with given radius.\n\nSphere.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Sphere"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Explode",
+      "Id": "6d822a791ff04dfaa04041ff20bfb12a",
+      "Inputs": [
+        {
+          "Id": "6a71d015eb0144b392974b8599397526",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0dc0be41ec5a4804b3eab25fae328843",
+          "Name": "Geometry[]",
+          "Description": "Geometry[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Separates compound or non-separated elements into their component parts.\n\nGeometry.Explode ( ): Geometry[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.CoordinateSystemAtParameter@double,double",
+      "Id": "2134870739934f8aacdc831d1e04881e",
+      "Inputs": [
+        {
+          "Id": "60232f024e57461f80085040a763406f",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "daac0e62e01c406f8acdc509309e5310",
+          "Name": "u",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "451c287099cb4b7eb00bc62ce5f46520",
+          "Name": "v",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "fcd87eeda5f5407ab8b6acad58b8e45d",
+          "Name": "CoordinateSystem",
+          "Description": "CoordinateSystem",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Return a CoordinateSystem aligned with principal curvature directions.\n\nSurface.CoordinateSystemAtParameter (u: double = 0, v: double = 0): CoordinateSystem"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..1..0.1;",
+      "Id": "dbbf66d4af4a4d67b04c51b42c6950ed",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "14f429e25f0b4b66b347e00b4e49d6c2",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "a[0];",
+      "Id": "4dd3ba3f159f40528653f27cd1aa6399",
+      "Inputs": [
+        {
+          "Id": "704d777abe994423bcd8d93ceffb7dab",
+          "Name": "a",
+          "Description": "a",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d8d341be226349549377c0deeac78886",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "98b1be855b424cccb3a6ace9464d400b",
+      "End": "6a71d015eb0144b392974b8599397526",
+      "Id": "1270f84f005445f38f1a2d7433ee652b"
+    },
+    {
+      "Start": "0dc0be41ec5a4804b3eab25fae328843",
+      "End": "704d777abe994423bcd8d93ceffb7dab",
+      "Id": "1804e8e8e274492ab05099ab67c8515c"
+    },
+    {
+      "Start": "0dc0be41ec5a4804b3eab25fae328843",
+      "End": "60232f024e57461f80085040a763406f",
+      "Id": "ee69e640d031440d8ea38a8fa73a491d"
+    },
+    {
+      "Start": "14f429e25f0b4b66b347e00b4e49d6c2",
+      "End": "daac0e62e01c406f8acdc509309e5310",
+      "Id": "654e4d627aae4cdc8bddb73ad6fb2f2e"
+    },
+    {
+      "Start": "14f429e25f0b4b66b347e00b4e49d6c2",
+      "End": "451c287099cb4b7eb00bc62ce5f46520",
+      "Id": "bf1074670bbe44e1872142a4917e55f7"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 10000.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2637",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 2.9708938598632813,
+      "EyeY": -5.51768684387207,
+      "EyeZ": 5.1043548583984375,
+      "LookX": -7.9708938598632813,
+      "LookY": 16.51768684387207,
+      "LookZ": -13.104354858398438,
+      "UpX": 0.447769433259964,
+      "UpY": 0.5075383186340332,
+      "UpZ": 0.73614370822906494
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Sphere.ByCenterPointRadius",
+        "Id": "768bcc30e5f5469881bb8425806a0a4d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 61.0,
+        "Y": 138.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Geometry.Explode",
+        "Id": "6d822a791ff04dfaa04041ff20bfb12a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 391.0,
+        "Y": 172.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Surface.CoordinateSystemAtParameter",
+        "Id": "2134870739934f8aacdc831d1e04881e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 804.5,
+        "Y": 227.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "dbbf66d4af4a4d67b04c51b42c6950ed",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 120.0,
+        "Y": 285.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "4dd3ba3f159f40528653f27cd1aa6399",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 831.0,
+        "Y": 107.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
