@@ -126,6 +126,7 @@
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
+    <Compile Include="UnitsUITests\MeasurementInputBaseTests.cs" />
     <Compile Include="NodeAutoCompleteSearchTests.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
@@ -264,6 +265,10 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
+      <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
+      <Name>UnitsUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj">
       <Project>{51511AFD-F326-4995-8E27-5D711419EF6F}</Project>
       <Name>NodeAutoCompleteViewExtension</Name>
@@ -309,6 +314,10 @@
       <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
       <Name>TestServices</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
+      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
+      <Name>TestUINodes</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

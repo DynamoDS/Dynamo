@@ -47,6 +47,7 @@
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
     <Compile Include="EnumAsStringConcrete.cs" />
+    <Compile Include="MeasurementInputBaseConcrete.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SelectionConcrete.cs" />
     <Compile Include="TestUINodes.cs" />
@@ -61,6 +62,14 @@
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Private>False</Private>
       <Name>DynamoCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
+      <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
+      <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
+      <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
+      <Name>UnitsUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
