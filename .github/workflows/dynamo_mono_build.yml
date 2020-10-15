@@ -22,7 +22,7 @@ jobs:
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
            msbuild $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /p:Configuration=Release /t:Restore
-           pwsh -Command { Get-Content -Path /home/runner/.nuget/packages/dynamovisualprogramming.libg_227_0_0/2.9.0.2817/lib/net48/ProtoGeometry.XML }
+           pwsh -Command "{ Get-Content -Path /home/runner/.nuget/packages/dynamovisualprogramming.libg_227_0_0/2.9.0.2817/lib/net48/ProtoGeometry.XML }"
            msbuild $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /p:Configuration=Release /t:Build
     # look for Dynamo
     - name: Navigate to Dynamo Folder
