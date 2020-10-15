@@ -401,7 +401,7 @@ limitations under the License.
     </PropertyGroup>
     <ItemGroup>
       <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\lib\net48\protogeometry.xml" />
+      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\lib\net48\ProtoGeometry.XML" />
       <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\$(UICulture)\*" />      
       <LibG225 Include="$(PkgDynamoVisualProgramming_LibG_225_0_0)\tools\net48\LibG_225_0_0\*" />
       <LibG226 Include="$(PkgDynamoVisualProgramming_LibG_226_0_0)\tools\net48\LibG_226_0_0\*" />
