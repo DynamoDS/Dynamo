@@ -1230,8 +1230,8 @@ namespace Dynamo.PackageManager
             new Regex("^A package with the given name and engine already exists\\.$");
 
         /// <summary>
-        /// Inspects an error message to see if it matches a known Package Manager error message.
-        /// If it does, it returns the equivalent translated resource, otherwise returns the same.
+        /// Inspects an error message to see if it matches a known Package Manager error message. If it does,
+        /// it returns the equivalent translated resource, otherwise it returns the same message.
         /// NOTE: This function is internal for testing purposes only.
         /// </summary>
         /// <param name="message">Message to inspect</param>
