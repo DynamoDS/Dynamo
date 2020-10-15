@@ -270,7 +270,7 @@ namespace Dynamo.Wpf.ViewModels
             var adjustedX = initialNodeVm.X;
 
             var createAsDownStreamNode = portModel.PortType == PortType.Output;
-            // Placing the new node based on which input port it is connecting to.
+            // Placing the new node based on which port it is connecting to.
             if (createAsDownStreamNode)
             {
                 // Placing the new node to the right of initial node
