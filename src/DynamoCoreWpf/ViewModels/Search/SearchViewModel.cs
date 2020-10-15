@@ -47,7 +47,6 @@ namespace Dynamo.ViewModels
         #region Properties/Fields
 
         private readonly IconServices iconServices;
-        private IDisposable undoRecorderGroup;
 
         /// <summary>
         /// Position, where canvas was clicked. 
@@ -350,13 +349,6 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
-            if (undoRecorderGroup != null)
-            {
-                undoRecorderGroup.Dispose();
-                undoRecorderGroup = null;
-
-                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
-            }
             base.Dispose();
         }
 
@@ -783,7 +775,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        protected void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        internal void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;
@@ -1069,66 +1061,6 @@ namespace Dynamo.ViewModels
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
 
             OnRequestFocusSearch();
-        }
-
-        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
-        {
-            // Do not auto connect code block node since default code block node do not have output port
-            if (nodeCreationName.Contains("Code Block")) return;
-            
-            var initialNode = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == portModel.Owner.GUID);
-            var id = Guid.NewGuid();
-
-            var adjustedX = initialNode.X;
-
-            // Placing the new node based on which input port it is connecting to.
-            if (portModel.PortType == PortType.Input)
-            {
-                // Placing the new node to the left of initial node
-                adjustedX -= portModel.Owner.Width + 50;
-            }
-            else
-            {
-                // Placing the new node to the right of initial node
-                adjustedX += portModel.Owner.Width + 50;
-            }
-
-            // Initialize a new undo action group before calling 
-            // node CreateAndConnect and AutoLayout commands.
-            if (undoRecorderGroup == null)
-            {
-                // Node auto layout can be performed correctly only when the positions and sizes
-                // of nodes are known, which is possible only after the node views are ready.
-                dynamoViewModel.NodeViewReady += AutoLayoutNodes;
-                undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
-            }
-
-            // Create a new node based on node creation name and connection ports
-            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, portModel.Owner.GUID,
-                nodeCreationName, 0, portModel.Index, adjustedX, 0, false, false, true));
-
-            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
-            DynamoSelection.Instance.ClearSelection();
-            var inputNodes = portModel.Owner.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-
-            foreach (var inputNode in inputNodes)
-            {
-                DynamoSelection.Instance.Selection.AddUnique(inputNode);
-            }
-        }
-
-        private void AutoLayoutNodes(object sender, EventArgs e)
-        {
-            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
-
-            // Close the undo action group once the node is created, connected and placed.
-            if (undoRecorderGroup != null)
-            {
-                undoRecorderGroup.Dispose();
-                undoRecorderGroup = null;
-
-                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
-            }
         }
 
         #endregion

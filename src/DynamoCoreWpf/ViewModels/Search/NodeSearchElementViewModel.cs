@@ -5,9 +5,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
+using Dynamo.Selection;
 using Dynamo.ViewModels;
 using FontAwesome.WPF;
 using Microsoft.Practices.Prism.Commands;
@@ -20,6 +24,7 @@ namespace Dynamo.Wpf.ViewModels
 
         private bool isSelected;
         private SearchViewModel searchViewModel;
+        private IDisposable undoRecorderGroup;
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -44,10 +49,9 @@ namespace Dynamo.Wpf.ViewModels
             if (searchViewModel != null)
             {
                 Clicked += searchViewModel.OnSearchElementClicked;
-                CreateAndConnectToPort += searchViewModel.OnRequestConnectToPort;
             }
             ClickedCommand = new DelegateCommand(OnClicked);
-            CreateAndConnectCommand = new DelegateCommand<PortModel>(OnRequestCreateAndConnectToPort);
+            CreateAndConnectCommand = new DelegateCommand<PortModel>(CreateAndConnectToPort, CanCreateAndConnectToPort);
 
             LoadFonts();
         }
@@ -62,9 +66,15 @@ namespace Dynamo.Wpf.ViewModels
             Model.VisibilityChanged -= ModelOnVisibilityChanged;
             if (searchViewModel != null)
             {
+                if (RequestBitmapSource != null)
+                {
+                    RequestBitmapSource -= searchViewModel.SearchViewModelRequestBitmapSource;
+                }
                 Clicked -= searchViewModel.OnSearchElementClicked;
                 searchViewModel = null;
             }
+
+            
             base.Dispose();
         }
 
@@ -233,14 +243,85 @@ namespace Dynamo.Wpf.ViewModels
         /// <summary>
         /// Create the search element as node and connect to target port
         /// </summary>
-        public ICommand CreateAndConnectCommand { get; private set; }
+        public ICommand CreateAndConnectCommand { get; }
 
-        public event Action<string, PortModel> CreateAndConnectToPort;
-        protected virtual void OnRequestCreateAndConnectToPort(PortModel portModel)
+        /// <summary>
+        /// Create new node for search element, connect to port and place using graph auto layout.
+        /// </summary>
+        /// <param name="parameter">Port model to connect to</param>
+        protected virtual void CreateAndConnectToPort(object parameter)
         {
-            if (CreateAndConnectToPort != null)
+            var portModel = (PortModel) parameter;
+            var dynamoViewModel = searchViewModel.dynamoViewModel;
+
+            // Initialize a new undo action group before calling 
+            // node CreateAndConnect and AutoLayout commands.
+            if (undoRecorderGroup == null)
             {
-                CreateAndConnectToPort(Model.CreationName, portModel);
+                undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+
+                // Node auto layout can be performed correctly only when the positions and sizes
+                // of nodes are known, which is possible only after the node views are ready.
+                dynamoViewModel.NodeViewReady += AutoLayoutNodes;
+            }
+
+            var initialNode = portModel.Owner;
+            var initialNodeVm = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == initialNode.GUID);
+            var id = Guid.NewGuid();
+
+            var adjustedX = initialNodeVm.X;
+
+            var createAsDownStreamNode = portModel.PortType == PortType.Output;
+            // Placing the new node based on which input port it is connecting to.
+            if (createAsDownStreamNode)
+            {
+                // Placing the new node to the right of initial node
+                adjustedX += initialNode.Width + 50;
+            }
+            else
+            {
+                // Placing the new node to the left of initial node
+                adjustedX -= initialNode.Width + 50;
+            }
+
+            // Create a new node based on node creation name and connection ports
+            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
+                Model.CreationName, 0, portModel.Index, adjustedX, 0, createAsDownStreamNode, false, true));
+
+            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
+            DynamoSelection.Instance.ClearSelection();
+            var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+            foreach (var inputNode in inputNodes)
+            {
+                DynamoSelection.Instance.Selection.AddUnique(inputNode);
+            }
+        }
+
+        protected virtual bool CanCreateAndConnectToPort(object parameter)
+        {
+            // Do not auto connect code block node since default code block node do not have output port
+            if (Model.CreationName.Contains("Code Block")) return false;
+
+            return true;
+        }
+
+        private void AutoLayoutNodes(object sender, EventArgs e)
+        {
+            var nodeView = (NodeView) sender;
+            var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+
+            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
+
+            DynamoSelection.Instance.ClearSelection();
+
+            // Close the undo action group once the node is created, connected and placed.
+            if (undoRecorderGroup != null)
+            {
+                undoRecorderGroup.Dispose();
+                undoRecorderGroup = null;
+
+                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             }
         }
 
