@@ -121,19 +121,15 @@
   <ItemGroup>
     <PackageReference Include="cef.redist.x64" GeneratePathProperty="true">
       <Version>3.3325.1758</Version>
-      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="cef.redist.x86" GeneratePathProperty="true">
       <Version>3.3325.1758</Version>
-      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CefSharp.Common" GeneratePathProperty="true">
       <Version>65.0.1</Version>
-      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf" GeneratePathProperty="true">
       <Version>65.0.1</Version>
-      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.2.1507.118</Version>
@@ -152,8 +148,19 @@
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  </Target>  
   -->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <CefDeps Include="$(Pkgcef_redist_x64)\CEF\*" Condition=" '$(ProcessorArchitecture)' != 'x86' " />
+      <CefDeps Include="$(Pkgcef_redist_x86)\CEF\*" Condition=" '$(ProcessorArchitecture)' == 'x86' " />
+      <CefSharpWpf Include="$(PkgCefSharp_Wpf)\CefSharp\x64\*" Condition=" '$(ProcessorArchitecture)' != 'x86' " />
+      <CefSharpWpf Include="$(PkgCefSharp_Wpf)\CefSharp\x86\*" Condition=" '$(ProcessorArchitecture)' == 'x86' " />
+      <CefSharpCommon Include="$(PkgCefSharp_Common)\CefSharp\x64\*" Condition=" '$(ProcessorArchitecture)' != 'x86' " />
+      <CefSharpCommon Include="$(PkgCefSharp_Common)\CefSharp\x86\*" Condition=" '$(ProcessorArchitecture)' == 'x86' " />
+    </ItemGroup>   
+    <Copy SourceFiles="@(CefDeps)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+    <Copy SourceFiles="@(CefSharpWpf)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(CefSharpCommon)" DestinationFolder="$(OutputPath)" />
+  </Target>
 </Project>
