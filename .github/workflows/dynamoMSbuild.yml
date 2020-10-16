@@ -18,7 +18,8 @@ jobs:
       run: |
         echo "***Continue with the build, Good luck developer!***"
         cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\"
-           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /t:Restore
+           .\MSBuild.exe $Env:GITHUB_WORKSPACE\Dynamo\src\Dynamo.All.sln /t:Build
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
