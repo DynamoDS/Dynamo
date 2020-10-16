@@ -137,6 +137,7 @@
     <Compile Include="GraphLayoutTests.cs" />
     <Compile Include="NodeToCodeTests.cs" />
     <Compile Include="PackageManagerExtensionLoadingTests.cs" />
+    <Compile Include="PackageManagerUnitTests.cs" />
     <Compile Include="PackageManagerViewExtensionTests.cs" />
     <Compile Include="PresetPromptTests.cs" />
     <Compile Include="AnnotationViewModelTests.cs" />
