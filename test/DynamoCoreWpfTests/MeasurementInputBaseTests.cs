@@ -1,8 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Xml;
 using Dynamo.Graph;
+using Dynamo.Models;
+using Dynamo.Tests;
+using Dynamo.UI.Prompts;
+using Dynamo.Utilities;
+using Dynamo.Wpf.Extensions;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using TestUINodes;
@@ -15,6 +24,7 @@ namespace DynamoCoreWpfTests
     {
         private LengthFromString lengthFromString;
         private MeasurementInputBaseConcrete measurementInputBase;
+        private AssemblyHelper assemblyHelper;
 
         public override void Open(string path)
         {
@@ -77,19 +87,19 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PreferenceSettings_PropertyChangedTest()
+        public void PreferenceSettings_PropertyChanged()
         {
             Open(@"core\UnitsUITests.dyn");
+            ViewModel.HomeSpace.RunSettings.RunType = RunType.Manual;
 
-            var nodeView = NodeViewWithGuid("5705381c-277c-4a86-bf66-50aeda12a468");
+            Run();
+            var node = Model.CurrentWorkspace.NodeFromWorkspace<LengthFromString>("5705381c277c4a86bf6650aeda12a468");
+            Assert.IsFalse(node.IsModified);
 
-            var editMenuItem = nodeView.MainContextMenu
-                .Items;
+            Model.PreferenceSettings.NumberFormat = "0.0";
 
-            //editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-
-            Assert.IsNotNull(null);
+            node = Model.CurrentWorkspace.NodeFromWorkspace<LengthFromString>("5705381c277c4a86bf6650aeda12a468");
+            Assert.IsTrue(node.IsModified);
         }
-
     }
 }

@@ -2,7 +2,7 @@
   "Uuid": "1dd06c71-51e0-489a-afe3-ac8d05600401",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "UnitUITests",
+  "Name": "UnitsUITests",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -11,7 +11,7 @@
   "Nodes": [
     {
       "ConcreteType": "UnitsUI.LengthFromString, UnitsUI",
-      "Value": 0.0,
+      "Value": 0.30480000000121921,
       "NodeType": "ExtensionNode",
       "Id": "5705381c277c4a86bf6650aeda12a468",
       "Inputs": [],
@@ -39,7 +39,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2887",
+      "Version": "2.9.0.2806",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -63,8 +63,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 298.5,
-        "Y": 250.0
+        "X": 121.5,
+        "Y": 120.0
       }
     ],
     "Annotations": [],

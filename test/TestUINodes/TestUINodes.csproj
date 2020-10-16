@@ -66,6 +66,7 @@
     <ProjectReference Include="..\..\src\Libraries\DynamoUnits\Units.csproj">
       <Project>{6E0A079E-85F1-45A1-AD5B-9855E4344809}</Project>
       <Name>Units</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
       <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
