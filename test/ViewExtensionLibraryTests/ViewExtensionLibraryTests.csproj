@@ -121,15 +121,19 @@
   <ItemGroup>
     <PackageReference Include="cef.redist.x64" GeneratePathProperty="true">
       <Version>3.3325.1758</Version>
+      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="cef.redist.x86" GeneratePathProperty="true">
       <Version>3.3325.1758</Version>
+      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CefSharp.Common" GeneratePathProperty="true">
       <Version>65.0.1</Version>
+      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf" GeneratePathProperty="true">
       <Version>65.0.1</Version>
+      <PrivateAssets>none</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.2.1507.118</Version>
