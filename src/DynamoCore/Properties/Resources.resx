@@ -728,4 +728,11 @@ Parameter name: {0}</value>
   <data name="ModelNotFoundError" xml:space="preserve">
     <value>UpdateModelValue: Model not found</value>
   </data>
+  <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
+    <value>A package with the given name already exists.</value>
+  </data>
+  <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
+    <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
+    <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+  </data>
 </root>
