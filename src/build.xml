@@ -20,9 +20,6 @@
 <Target Name="Build"  DependsOnTargets="Restore">
     <MSBuild Projects="@(ProjectToBuild)" Targets="Restore;Build"/>
 </Target>
-<!-- <Target Name="Build" DependsOnTargets="RestorePackages">
-    <MSBuild Projects="@(ProjectToBuild)" Targets="Restore;Build"/>
-</Target> -->
 
 <Target Name="RestorePackages"   >
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
