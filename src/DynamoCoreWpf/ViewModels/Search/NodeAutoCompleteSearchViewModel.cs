@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
@@ -12,6 +11,7 @@ namespace Dynamo.ViewModels
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
         internal PortViewModel PortViewModel { get; set; }
+
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {

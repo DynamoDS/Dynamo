@@ -893,7 +893,7 @@ namespace DynamoCoreWpfTests
             var currentWs = View.ChildOfType<WorkspaceView>();
 
             // Show Node AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(null, ShowHideFlags.Show);
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
             RightClick(currentWs.zoomBorder);
@@ -902,7 +902,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
             // Hide Node AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(null, ShowHideFlags.Hide);
             Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
 

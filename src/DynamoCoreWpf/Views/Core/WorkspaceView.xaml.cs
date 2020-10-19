@@ -161,9 +161,29 @@ namespace Dynamo.Views
             
         }
 
-        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        private void ShowHideNodeAutoCompleteControl(PortViewModel pvm, ShowHideFlags flag)
         {
+            if (flag == ShowHideFlags.Show)
+            {
+                
+                //if (pvm != null && NodeAutoCompleteSearchBar.CustomPopupPlacementCallback == null)
+                //{
+                //    NodeAutoCompleteSearchBar.CustomPopupPlacementCallback += pvm.PlaceNodeAutoCompleteSearchBar;
+                //}
+            }
+            //else
+            //{
+            //    if (pvm != null && NodeAutoCompleteSearchBar.CustomPopupPlacementCallback != null)
+            //    {
+            //        NodeAutoCompleteSearchBar.CustomPopupPlacementCallback -= pvm.PlaceNodeAutoCompleteSearchBar;
+            //        NodeAutoCompleteSearchBar.CustomPopupPlacementCallback = null;
+            //    }
+            //}
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+            if (flag == ShowHideFlags.Show)
+            {
+                ViewModel.OnRequestNodeAutoCompleteWindowPlacement(NodeAutoCompleteSearchBar);
+            }
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -186,6 +206,7 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
+                    
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
@@ -208,7 +229,7 @@ namespace Dynamo.Views
                 // in Dynamo window will forcefully shutdown all the open SearchBars
                 if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
                 {
-                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                    ShowHideNodeAutoCompleteControl(null, ShowHideFlags.Hide);
                     ViewModel.CancelActiveState();
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -217,6 +218,7 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged += _port_PropertyChanged;
             _node.PropertyChanged += _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+            _node.WorkspaceViewModel.RequestNodeAutocompleteWindowPlacement += PlaceNodeAutocompleteWindow;
         }
 
         public override void Dispose()
@@ -224,6 +226,15 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged -= _port_PropertyChanged;
             _node.PropertyChanged -= _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
+            _node.WorkspaceViewModel.RequestNodeAutocompleteWindowPlacement -= PlaceNodeAutocompleteWindow;
+        }
+
+        private void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
+        {
+            var popup = (e as NodeAutocompleteEventArgs).NodeAutocompleteSearchBar;
+            var x = Center.X;
+            var y = Center.Y - PortModel.Height * 0.5;
+            popup.PlacementRectangle = new Rect(x, y, 100, 100);
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -235,6 +246,18 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
+
+        //internal CustomPopupPlacement[] PlaceNodeAutoCompleteSearchBar(Size popupSize,
+        //    Size targetSize, Point offset)
+        //{
+        //    var x = Center.X;
+        //    var y = Center.Y;
+        //    var pt1 = new Point(x, y);
+        //    var placement1 = new CustomPopupPlacement(pt1, PopupPrimaryAxis.None);
+        //    var placement2 = new CustomPopupPlacement(pt1, PopupPrimaryAxis.None);
+
+        //    return new[] {placement1, placement2};
+        //}
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -367,10 +390,10 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
-            var svm = dynamoViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
-            svm.PortViewModel = parameter as PortViewModel;
-            dynamoViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            var wsViewModel = _node.WorkspaceViewModel;
+            var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
+            svm.PortViewModel = this;
+            wsViewModel.OnRequestNodeAutoCompleteSearch(this, ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)

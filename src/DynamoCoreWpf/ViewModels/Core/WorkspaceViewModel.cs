@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Configuration;
@@ -161,12 +162,17 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
-        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<PortViewModel, ShowHideFlags> RequestNodeAutoCompleteSearch;
 
-        internal void OnRequestNodeAutoCompleteSearch(object param)
+        internal void OnRequestNodeAutoCompleteSearch(PortViewModel pvm, ShowHideFlags flag)
         {
-            var flag = (ShowHideFlags)param;
-            RequestNodeAutoCompleteSearch?.Invoke(flag);
+            RequestNodeAutoCompleteSearch?.Invoke(pvm, flag);
+        }
+
+        internal event EventHandler RequestNodeAutocompleteWindowPlacement;
+        internal void OnRequestNodeAutoCompleteWindowPlacement(Popup nodeAutocompletePopup)
+        {
+            RequestNodeAutocompleteWindowPlacement?.Invoke(this, new NodeAutocompleteEventArgs(nodeAutocompletePopup));
         }
 
         #endregion
@@ -1400,6 +1406,17 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
+        }
+
+    }
+
+    internal class NodeAutocompleteEventArgs : EventArgs
+    {
+        internal Popup NodeAutocompleteSearchBar { get; }
+
+        internal NodeAutocompleteEventArgs(Popup nodeAutocompletePopup)
+        {
+            NodeAutocompleteSearchBar = nodeAutocompletePopup;
         }
     }
 
