@@ -33,6 +33,12 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
         }
 
+        public override void Start()
+        {
+            base.Start();
+            Model.AddZeroTouchNodesToSearch(Model.LibraryServices.GetAllFunctionGroups());
+        }
+
 
         [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
@@ -90,7 +96,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
             var suggestions = searchViewModel.GetMatchingNodes();
-            Assert.AreEqual(16, suggestions.Count());
+            Assert.AreEqual(20, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
             var nodes = new[]
@@ -110,7 +116,12 @@ namespace DynamoCoreWpfTests
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyD",
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyE",
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyF",
-                "FFITarget.FFITarget.TestData.GetStringValue"
+                "FFITarget.FFITarget.TestData.GetStringValue",
+                "FFITarget.FFITarget.TestRankReduce.Method",
+                "FFITarget.FFITarget.TestRankReduce.Property",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceMethod",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceProperty"
+
             };
             var expectedNodes = nodes.OrderBy(s => s);
             for (int i = 0; i < 5; i++)
