@@ -165,10 +165,6 @@ namespace Dynamo.Views
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
-            //if (flag == ShowHideFlags.Show)
-            //{
-            //    ViewModel.OnRequestNodeAutoCompleteWindowPlacement(NodeAutoCompleteSearchBar);
-            //}
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)

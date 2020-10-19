@@ -231,8 +231,21 @@ namespace Dynamo.ViewModels
         internal void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
         {
             var popup = sender as NodeAutoCompleteSearchControl;
-            var x = _node.X - popup.ActualWidth;
-            var y = _node.Y + 25 + PortModel.Index * PortModel.Height;
+
+            double x;
+            if (PortModel.PortType == PortType.Input)
+            {
+                // Position node autocomplete UI offset left from X position of node by its width.
+                x = _node.X - popup.ActualWidth;
+            }
+            else
+            {
+                // Position node autocomplete UI offset right from X position of node by node width.
+                x = _node.X + _node.NodeModel.Width;
+            }
+            // Position UI down from the top of the node but offset by the node header and against the respective port.
+            var y = _node.Y + NodeModel.NodeHeaderHeight + PortModel.Index * PortModel.Height;
+
             (popup.Parent as Popup).PlacementRectangle = new Rect(x, y, 0, 0);
         }
 
@@ -381,11 +394,7 @@ namespace Dynamo.ViewModels
             var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = this;
 
-            //wsViewModel.RequestNodeAutocompleteWindowPlacement += PlaceNodeAutocompleteWindow;
-
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
-
-            //wsViewModel.RequestNodeAutocompleteWindowPlacement -= PlaceNodeAutocompleteWindow;
         }
 
         private bool CanAutoComplete(object parameter)
