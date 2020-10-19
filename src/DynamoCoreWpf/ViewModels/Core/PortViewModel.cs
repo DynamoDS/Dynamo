@@ -18,7 +18,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
-        private const double autocompleteUIWidth = 2.5;
+        private const double autocompleteUISpacing = 2.5;
 
         /// <summary>
         /// Port model.
@@ -246,12 +246,12 @@ namespace Dynamo.ViewModels
             if (PortModel.PortType == PortType.Input)
             {
                 // Position node autocomplete UI offset left by its width from X position of node.
-                x = _node.X - (control.ActualWidth + autocompleteUIWidth);
+                x = _node.X - (control.ActualWidth + autocompleteUISpacing);
             }
             else
             {
                 // Position node autocomplete UI offset right by node width from X position of node.
-                x = _node.X + _node.NodeModel.Width + autocompleteUIWidth;
+                x = _node.X + _node.NodeModel.Width + autocompleteUISpacing;
             }
             // Position UI down from the top of the node but offset down by the node header and against the respective port.
             var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
