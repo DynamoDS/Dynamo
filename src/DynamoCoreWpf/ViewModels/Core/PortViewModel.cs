@@ -4,6 +4,7 @@ using System.Windows.Controls.Primitives;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -218,7 +219,6 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged += _port_PropertyChanged;
             _node.PropertyChanged += _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
-            _node.WorkspaceViewModel.RequestNodeAutocompleteWindowPlacement += PlaceNodeAutocompleteWindow;
         }
 
         public override void Dispose()
@@ -226,15 +226,14 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged -= _port_PropertyChanged;
             _node.PropertyChanged -= _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
-            _node.WorkspaceViewModel.RequestNodeAutocompleteWindowPlacement -= PlaceNodeAutocompleteWindow;
         }
 
-        private void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
+        internal void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
         {
-            var popup = (e as NodeAutocompleteEventArgs).NodeAutocompleteSearchBar;
-            var x = Center.X;
-            var y = Center.Y - PortModel.Height * 0.5;
-            popup.PlacementRectangle = new Rect(x, y, 100, 100);
+            var popup = sender as NodeAutoCompleteSearchControl;
+            var x = _node.X - popup.ActualWidth;
+            var y = _node.Y + 25 + PortModel.Index * PortModel.Height;
+            (popup.Parent as Popup).PlacementRectangle = new Rect(x, y, 0, 0);
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -246,18 +245,6 @@ namespace Dynamo.ViewModels
                     break;
             }
         }
-
-        //internal CustomPopupPlacement[] PlaceNodeAutoCompleteSearchBar(Size popupSize,
-        //    Size targetSize, Point offset)
-        //{
-        //    var x = Center.X;
-        //    var y = Center.Y;
-        //    var pt1 = new Point(x, y);
-        //    var placement1 = new CustomPopupPlacement(pt1, PopupPrimaryAxis.None);
-        //    var placement2 = new CustomPopupPlacement(pt1, PopupPrimaryAxis.None);
-
-        //    return new[] {placement1, placement2};
-        //}
 
         void _node_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -393,7 +380,12 @@ namespace Dynamo.ViewModels
             var wsViewModel = _node.WorkspaceViewModel;
             var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = this;
+
+            //wsViewModel.RequestNodeAutocompleteWindowPlacement += PlaceNodeAutocompleteWindow;
+
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+
+            //wsViewModel.RequestNodeAutocompleteWindowPlacement -= PlaceNodeAutocompleteWindow;
         }
 
         private bool CanAutoComplete(object parameter)

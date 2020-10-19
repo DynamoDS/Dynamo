@@ -169,11 +169,11 @@ namespace Dynamo.ViewModels
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
-        internal event EventHandler RequestNodeAutocompleteWindowPlacement;
-        internal void OnRequestNodeAutoCompleteWindowPlacement(Popup nodeAutocompletePopup)
-        {
-            RequestNodeAutocompleteWindowPlacement?.Invoke(this, new NodeAutocompleteEventArgs(nodeAutocompletePopup));
-        }
+        //internal event EventHandler RequestNodeAutocompleteWindowPlacement;
+        //internal void OnRequestNodeAutoCompleteWindowPlacement(Popup nodeAutocompletePopup)
+        //{
+        //    RequestNodeAutocompleteWindowPlacement?.Invoke(this, new NodeAutocompleteEventArgs(nodeAutocompletePopup));
+        //}
 
         #endregion
 
@@ -1410,15 +1410,15 @@ namespace Dynamo.ViewModels
 
     }
 
-    internal class NodeAutocompleteEventArgs : EventArgs
-    {
-        internal Popup NodeAutocompleteSearchBar { get; }
+    //internal class NodeAutocompleteEventArgs : EventArgs
+    //{
+    //    internal Popup NodeAutocompleteSearchBar { get; }
 
-        internal NodeAutocompleteEventArgs(Popup nodeAutocompletePopup)
-        {
-            NodeAutocompleteSearchBar = nodeAutocompletePopup;
-        }
-    }
+    //    internal NodeAutocompleteEventArgs(Popup nodeAutocompletePopup)
+    //    {
+    //        NodeAutocompleteSearchBar = nodeAutocompletePopup;
+    //    }
+    //}
 
     public class ViewModelEventArgs : EventArgs
     {

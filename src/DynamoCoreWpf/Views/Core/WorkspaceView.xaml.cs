@@ -155,6 +155,7 @@ namespace Dynamo.Views
             if (ViewModel != null)
             {
                 removeViewModelsubscriptions(ViewModel);
+                ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
@@ -163,27 +164,11 @@ namespace Dynamo.Views
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
-            if (flag == ShowHideFlags.Show)
-            {
-                
-                //if (pvm != null && NodeAutoCompleteSearchBar.CustomPopupPlacementCallback == null)
-                //{
-                //    NodeAutoCompleteSearchBar.CustomPopupPlacementCallback += pvm.PlaceNodeAutoCompleteSearchBar;
-                //}
-            }
-            //else
-            //{
-            //    if (pvm != null && NodeAutoCompleteSearchBar.CustomPopupPlacementCallback != null)
-            //    {
-            //        NodeAutoCompleteSearchBar.CustomPopupPlacementCallback -= pvm.PlaceNodeAutoCompleteSearchBar;
-            //        NodeAutoCompleteSearchBar.CustomPopupPlacementCallback = null;
-            //    }
-            //}
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
-            if (flag == ShowHideFlags.Show)
-            {
-                ViewModel.OnRequestNodeAutoCompleteWindowPlacement(NodeAutoCompleteSearchBar);
-            }
+            //if (flag == ShowHideFlags.Show)
+            //{
+            //    ViewModel.OnRequestNodeAutoCompleteWindowPlacement(NodeAutoCompleteSearchBar);
+            //}
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
