@@ -36,8 +36,16 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Loaded += ViewModel.PortViewModel.PlaceNodeAutocompleteWindow;
+            Loaded += NodeAutoCompleteSearchControl_Loaded;
             Unloaded += NodeAutoCompleteSearchControl_Unloaded;
+        }
+
+        private void NodeAutoCompleteSearchControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(ViewModel != null && ViewModel.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, null);
+            }
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -46,7 +54,6 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated -= currentApplicationDeactivated;
             }
-            Loaded -= ViewModel.PortViewModel.PlaceNodeAutocompleteWindow;
         }
 
         private void currentApplicationDeactivated(object sender, EventArgs e)
