@@ -393,7 +393,7 @@ namespace Dynamo.ViewModels
             var wsViewModel = _node.WorkspaceViewModel;
             var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = this;
-            wsViewModel.OnRequestNodeAutoCompleteSearch(this, ShowHideFlags.Show);
+            wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
         private bool CanAutoComplete(object parameter)

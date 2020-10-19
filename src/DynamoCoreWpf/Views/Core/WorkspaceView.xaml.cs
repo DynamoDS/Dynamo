@@ -161,7 +161,7 @@ namespace Dynamo.Views
             
         }
 
-        private void ShowHideNodeAutoCompleteControl(PortViewModel pvm, ShowHideFlags flag)
+        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             if (flag == ShowHideFlags.Show)
             {
@@ -229,7 +229,7 @@ namespace Dynamo.Views
                 // in Dynamo window will forcefully shutdown all the open SearchBars
                 if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
                 {
-                    ShowHideNodeAutoCompleteControl(null, ShowHideFlags.Hide);
+                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
                     ViewModel.CancelActiveState();
                 }
             }

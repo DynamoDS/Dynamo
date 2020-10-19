@@ -162,11 +162,11 @@ namespace Dynamo.ViewModels
             RequestShowInCanvasSearch?.Invoke(flag);
         }
 
-        internal event Action<PortViewModel, ShowHideFlags> RequestNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
 
-        internal void OnRequestNodeAutoCompleteSearch(PortViewModel pvm, ShowHideFlags flag)
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
-            RequestNodeAutoCompleteSearch?.Invoke(pvm, flag);
+            RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
         internal event EventHandler RequestNodeAutocompleteWindowPlacement;

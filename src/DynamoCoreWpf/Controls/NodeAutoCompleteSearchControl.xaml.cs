@@ -22,7 +22,7 @@ namespace Dynamo.UI.Controls
     {
         ListBoxItem HighlightedItem;
 
-        internal event Action<PortViewModel, ShowHideFlags> RequestShowNodeAutoCompleteSearch;
+        internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
         public NodeAutoCompleteSearchViewModel ViewModel
         {
@@ -57,7 +57,7 @@ namespace Dynamo.UI.Controls
         {
             if (RequestShowNodeAutoCompleteSearch != null)
             {
-                RequestShowNodeAutoCompleteSearch(null, flags);
+                RequestShowNodeAutoCompleteSearch(flags);
             }
         }
 
