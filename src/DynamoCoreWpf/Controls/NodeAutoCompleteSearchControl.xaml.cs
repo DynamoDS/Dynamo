@@ -42,9 +42,9 @@ namespace Dynamo.UI.Controls
 
         private void NodeAutoCompleteSearchControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if(ViewModel != null && ViewModel.PortViewModel != null)
+            if (ViewModel != null && ViewModel.PortViewModel != null)
             {
-                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, null);
+                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, e);
             }
         }
 

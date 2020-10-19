@@ -146,6 +146,7 @@ namespace Dynamo.Views
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -155,7 +156,6 @@ namespace Dynamo.Views
             if (ViewModel != null)
             {
                 removeViewModelsubscriptions(ViewModel);
-                ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
             }
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
@@ -187,7 +187,6 @@ namespace Dynamo.Views
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
                     popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
-                    
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;
@@ -366,7 +365,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                this.removeViewModelsubscriptions(oldViewModel);
+                removeViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)

@@ -165,7 +165,7 @@ namespace Dynamo.Graph.Nodes
                 double halfHeight = Height * 0.5;
 
                 double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + NodeModel.NodeHeaderHeight + 5 + halfHeight + offset;
+                double y = Owner.Y + NodeModel.HeaderHeight + 5 + halfHeight + offset;
 
                 switch (PortType)
                 {

@@ -18,6 +18,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
+        private const double autocompleteUIWidth = 2.5;
 
         /// <summary>
         /// Port model.
@@ -228,25 +229,34 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
+        /// <summary>
+        /// Places the node autocomplete window relative to the respective port 
+        /// once the control is loaded and when its actual width is known.
+        /// The UI is first placed w.r.t to the X, Y position of the node (to which the port belongs),
+        /// then offset from that based on the port, the width of the UI itself and in some cases, the node width.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         internal void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
         {
-            var popup = sender as NodeAutoCompleteSearchControl;
+            var control = sender as NodeAutoCompleteSearchControl;
+            var popup = control.Parent as Popup;
 
             double x;
             if (PortModel.PortType == PortType.Input)
             {
-                // Position node autocomplete UI offset left from X position of node by its width.
-                x = _node.X - popup.ActualWidth;
+                // Position node autocomplete UI offset left by its width from X position of node.
+                x = _node.X - (control.ActualWidth + autocompleteUIWidth);
             }
             else
             {
-                // Position node autocomplete UI offset right from X position of node by node width.
-                x = _node.X + _node.NodeModel.Width;
+                // Position node autocomplete UI offset right by node width from X position of node.
+                x = _node.X + _node.NodeModel.Width + autocompleteUIWidth;
             }
-            // Position UI down from the top of the node but offset by the node header and against the respective port.
-            var y = _node.Y + NodeModel.NodeHeaderHeight + PortModel.Index * PortModel.Height;
+            // Position UI down from the top of the node but offset down by the node header and against the respective port.
+            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
 
-            (popup.Parent as Popup).PlacementRectangle = new Rect(x, y, 0, 0);
+            popup.PlacementRectangle = new Rect(x, y, 0, 0);
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

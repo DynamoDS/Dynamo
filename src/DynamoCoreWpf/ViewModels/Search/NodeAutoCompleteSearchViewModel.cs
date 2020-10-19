@@ -12,7 +12,6 @@ namespace Dynamo.ViewModels
     {
         internal PortViewModel PortViewModel { get; set; }
 
-
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
             // Do nothing for now, but we may off load some time consuming operation here later
