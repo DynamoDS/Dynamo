@@ -126,7 +126,7 @@
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
-    <Compile Include="MeasurementInputBaseTests.cs" />
+    <Compile Include="UnitsUITests.cs" />
     <Compile Include="NodeAutoCompleteSearchTests.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
     <Compile Include="NoteViewTests.cs" />
@@ -331,9 +331,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UnitsUITests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

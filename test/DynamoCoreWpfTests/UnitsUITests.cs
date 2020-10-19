@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
-using System.Xml;
+﻿using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Models;
 using Dynamo.Tests;
-using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Extensions;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using TestUINodes;
@@ -20,7 +11,7 @@ using UnitsUI;
 namespace DynamoCoreWpfTests
 {
     [TestFixture]
-    public class MeasurementInputBaseTests : DynamoTestUIBase
+    public class UnitsUITests : DynamoTestUIBase
     {
         private LengthFromString lengthFromString;
         private MeasurementInputBaseConcrete measurementInputBase;
@@ -89,7 +80,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void PreferenceSettings_PropertyChanged()
         {
-            Open(@"core\UnitsUITests.dyn");
+            Open(@"UI\UnitsUITests.dyn");
             ViewModel.HomeSpace.RunSettings.RunType = RunType.Manual;
 
             Run();
