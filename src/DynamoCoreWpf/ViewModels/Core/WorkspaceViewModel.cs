@@ -163,9 +163,8 @@ namespace Dynamo.ViewModels
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
 
-        internal void OnRequestNodeAutoCompleteSearch(object param)
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
         {
-            var flag = (ShowHideFlags)param;
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
@@ -1401,6 +1400,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
+
     }
 
     public class ViewModelEventArgs : EventArgs
