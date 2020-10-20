@@ -88,6 +88,14 @@ namespace DynamoCoreWpfTests
             CollectionAssert.AreEqual(expectedAvailableEngines, comboBoxEngines);
             Assert.AreEqual(expectedDefaultEngine, engineBeforeChange);
             Assert.AreEqual(engineSelectorComboBox.SelectedItem, PythonEngineVersion.CPython3);
+            
+            //Assert that selecting an engine from drop-down without saving won't update the engine.
+            Assert.AreEqual(nodeModel.Engine, engineBeforeChange);
+            Assert.AreEqual(scriptWindow.CachedEngine, engineAfterChange);
+
+            //Clicking save button to actually update the engine.
+            var saveButton = scriptWindow.FindName("SaveScriptChangesButton") as Button;
+            saveButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             Assert.AreEqual(nodeModel.Engine, engineAfterChange);
             var engineMenuItem = nodeView.MainContextMenu
                 .Items
@@ -424,7 +432,7 @@ namespace DynamoCoreWpfTests
         /// dropdown selector inside the script editor executes the most up to date code.
         /// </summary>
         [Test]
-        public void ChangingDropdownEngineSavesCodeBeforeRunning()
+        public void ChangingDropdownEngineDoesNotSavesCodeOrRun()
         {
             // Arrange
             var engineChange = PythonNodeModels.PythonEngineVersion.CPython3;
@@ -448,15 +456,12 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
             //modify engine
             engineSelectorComboBox.SelectedItem = engineChange;
-            //theres two executions from modifying the engine.
-            Assert.AreEqual(2, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
+            //theres still one executions from modifying the engine, as changing engines does not trigger a run.
+            Assert.AreEqual(1, (Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
             //assert model code is updated.
-            Assert.AreEqual("OUT = 100", (nodeModel as PythonNode).Script);
-            DispatcherUtil.DoEvents();
-            Assert.AreEqual(100, nodeModel.CachedValue.Data);
-            //still only 2 executions.
-            Assert.AreEqual(2,(Model.CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
+            Assert.AreEqual("ok", (nodeModel as PythonNode).Script);
+
             DispatcherUtil.DoEvents();
         }
 

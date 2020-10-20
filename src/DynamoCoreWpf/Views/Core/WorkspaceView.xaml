@@ -349,8 +349,6 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
-               Placement="MousePoint"
-               HorizontalOffset="-290"
                DataContext="{Binding NodeAutoCompleteSearchViewModel}">
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
