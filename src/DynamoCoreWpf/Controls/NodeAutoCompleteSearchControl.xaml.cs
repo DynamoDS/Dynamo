@@ -67,8 +67,14 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
-            if (ViewModel != null)
-                ViewModel.SearchCommand.Execute(null);
+            if (ViewModel != null) 
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    // SearchTextBox.Focus();
+                    ViewModel.SearchAutoCompleteCandidates(SearchTextBox.Text);
+                }), DispatcherPriority.Loaded);
+            }
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

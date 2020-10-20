@@ -48,6 +48,23 @@ namespace Dynamo.ViewModels
             });
         }
 
+        internal void SearchAutoCompleteCandidates(string input)
+        {
+            if (PortViewModel == null) return;
+
+            var searchElements = GetMatchingNodes();
+            FilteredResults = searchElements.Select(e =>
+            {
+                if (e.Name.Contains(input))
+                { 
+                    var vm = new NodeSearchElementViewModel(e, this);
+                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                    return vm;
+                }
+                return null;
+            });
+        }
+
         /// <summary>
         /// Returns a collection of node search elements for nodes
         /// that output a type compatible with the port type if it's an input port.
