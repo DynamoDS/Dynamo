@@ -246,9 +246,8 @@ namespace Dynamo.ViewModels
             if (PortModel.PortType == PortType.Input)
             {
                 // Position node autocomplete UI offset left by its width from X position of node.
-                // Note: Width property of the control is set to a constant value in the WorkspaceView XAML.
-                // Without setting the Width explicitly control.ActualWidth gives the correct value
-                // except for the first time the control is launched. 
+                // Note: MinWidth property of the control is set to a constant value in the XAML
+                // for the ActualWidth to return a consistent value.
                 x = _node.X - (control.ActualWidth + autocompleteUISpacing);
             }
             else
