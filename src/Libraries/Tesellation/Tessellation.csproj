@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
   <Import Project=".\obj\Tessellation.csproj.nuget.g.props" Condition="Exists('.\obj\Tessellation.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -75,9 +76,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="MIConvexHull">
       <Version>1.1.17.411</Version>
     </PackageReference>

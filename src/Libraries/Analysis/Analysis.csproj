@@ -4,6 +4,7 @@
   <Import Project=".\obj\Analysis.csproj.nuget.g.props" Condition="Exists('.\obj\Analysis.csproj.nuget.g.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -100,9 +101,6 @@
     <EmbeddedResource Include="Properties\Resources.en-US.resx" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
-      <Version>*</Version>
-    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

@@ -4,6 +4,8 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)/Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config/GregReference.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -1258,14 +1260,8 @@
     <PackageReference Include="AvalonEdit">
       <Version>4.3.1.9430</Version>
     </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="FontAwesome.WPF">
       <Version>4.7.0.9</Version>
-    </PackageReference>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
     </PackageReference>
     <PackageReference Include="HelixToolkit">
       <Version>2.11.0</Version>

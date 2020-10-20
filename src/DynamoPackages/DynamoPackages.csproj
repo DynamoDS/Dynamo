@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/GregReference.props" />
   </ImportGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project=".\obj\DynamoPackages.csproj.nuget.g.props" Condition="Exists('.\obj\DynamoPackages.csproj.nuget.g.props')" />
@@ -116,9 +117,6 @@
     <Content Include="PackageManagerExtension_ExtensionDefinition.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
     </PackageReference>

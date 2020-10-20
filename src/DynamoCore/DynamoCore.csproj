@@ -18,6 +18,9 @@ limitations under the License.
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config/GregReference.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
+    <Import Project="$(SolutionDir)Config/LibGSupportedReference.props" />
   </ImportGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project=".\obj\DynamoCore.csproj.nuget.g.props" Condition="Exists('.\obj\DynamoCore.csproj.nuget.g.props')" />
@@ -357,24 +360,6 @@ limitations under the License.
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_225_0_0" GeneratePathProperty="true">
-      <Version>*</Version>
-      <IncludeAssets>all</IncludeAssets>
-      <ExcludeAssets>compile</ExcludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.LibG_226_0_0" GeneratePathProperty="true">
-      <Version>*</Version>
-      <IncludeAssets>all</IncludeAssets>
-      <ExcludeAssets>compile</ExcludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0" GeneratePathProperty="true">
-      <Version>*</Version>
-    </PackageReference>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
     </PackageReference>

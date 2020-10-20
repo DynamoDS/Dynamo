@@ -3,6 +3,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
+    <Import Project="$(SolutionDir)Config/GregReference.props" />
   </ImportGroup>
   <Import Project=".\obj\DynamoCoreWpfTests.csproj.nuget.g.props" Condition="Exists('.\obj\DynamoCoreWpfTests.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -262,9 +263,6 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit">
       <Version>4.3.1.9430</Version>
-    </PackageReference>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
     </PackageReference>
     <PackageReference Include="HelixToolkit">
       <Version>2.11.0</Version>

@@ -3,6 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
   <Import Project=".\obj\GeometryColorTests.csproj.nuget.g.props" Condition="Exists('.\obj\GeometryColorTests.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -90,9 +91,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="NUnit">
       <Version>2.6.3</Version>
     </PackageReference>

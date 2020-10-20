@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
   <Import Project=".\obj\GeometryUI.csproj.nuget.g.props" Condition="Exists('.\obj\GeometryUI.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -98,9 +99,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_227_0_0">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
     </PackageReference>

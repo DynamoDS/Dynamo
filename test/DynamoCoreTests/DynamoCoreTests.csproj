@@ -2,6 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
+    <Import Project="$(SolutionDir)Config/GregReference.props" />
   </ImportGroup>
   <Import Project=".\obj\DynamoCoreTests.csproj.nuget.g.props" Condition="Exists('.\obj\DynamoCoreTests.csproj.nuget.g.props')" />
   <PropertyGroup>
@@ -293,9 +294,6 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
-    </PackageReference>
     <PackageReference Include="Moq">
       <Version>4.2.1507.118</Version>
     </PackageReference>

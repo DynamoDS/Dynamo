@@ -6,7 +6,8 @@
   <Import Project="$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props" Condition="Exists('$(PkgCefSharp_Wpf)\build\CefSharp.Wpf.props')" />
   <Import Project="$(PkgCefSharp_Common)\build\CefSharp.Common.props" Condition="Exists('$(PkgCefSharp_Common)\build\CefSharp.Common.props')" />
   <Import Project="$(Pkgcef_redist_x86)\build\cef.redist.x86.props" Condition="Exists('$(Pkgcef_redist_x86)\build\cef.redist.x86.props')" />
-  <Import Project="$(Pkgcef_redist_x64)\build\cef.redist.x64.props" Condition="Exists('$(Pkgcef_redist_x64)\build\cef.redist.x64.props')" />  
+  <Import Project="$(Pkgcef_redist_x64)\build\cef.redist.x64.props" Condition="Exists('$(Pkgcef_redist_x64)\build\cef.redist.x64.props')" />
+  <Import Project="$(SolutionDir)Config/GregReference.props" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
@@ -223,9 +224,6 @@
     </PackageReference>
     <PackageReference Include="CefSharp.Wpf" GeneratePathProperty="true">
       <Version>65.0.1</Version>
-    </PackageReference>
-    <PackageReference Include="Greg">
-      <Version>*</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>8.0.3</Version>
