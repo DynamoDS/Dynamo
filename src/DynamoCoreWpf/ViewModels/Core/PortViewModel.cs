@@ -19,7 +19,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
         private const double autocompleteUISpacing = 2.5;
-        private const double autocompleteUIWidth = 256;
 
         /// <summary>
         /// Port model.
@@ -247,10 +246,10 @@ namespace Dynamo.ViewModels
             if (PortModel.PortType == PortType.Input)
             {
                 // Position node autocomplete UI offset left by its width from X position of node.
-                // TODO: control.ActualWidth gives the correct value except for the first time the control is launched.
-                // This probably has to do with the autocomplete suggestions not being populated in the 
-                // NodeAutoCompleteSearchViewModel the first time.
-                x = _node.X - (/*control.ActualWidth*/ autocompleteUIWidth + autocompleteUISpacing);
+                // Note: Width property of the control is set to a constant value in the WorkspaceView XAML.
+                // Without setting the Width explicitly control.ActualWidth gives the correct value
+                // except for the first time the control is launched. 
+                x = _node.X - (control.ActualWidth + autocompleteUISpacing);
             }
             else
             {

@@ -346,6 +346,7 @@
         </Popup>
 
         <Popup Name="NodeAutoCompleteSearchBar"
+               Width="256"
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
