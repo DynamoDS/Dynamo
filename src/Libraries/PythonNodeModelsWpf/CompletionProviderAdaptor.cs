@@ -12,7 +12,7 @@ namespace Dynamo.Python
     {
 
         #region Properties and Fields
-        private readonly IExternalCodeCompletionProviderCore providerImplementation;
+        internal readonly IExternalCodeCompletionProviderCore providerImplementation;
 
         internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
         internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0

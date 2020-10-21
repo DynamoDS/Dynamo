@@ -1156,6 +1156,11 @@ namespace DSIronPython
         {
             MessageLogged?.Invoke(LogMessage.Info(message));
         }
+
+        public void Dispose()
+        {
+            // Nothing to dispose for now. 
+        }
         #endregion
 
     }

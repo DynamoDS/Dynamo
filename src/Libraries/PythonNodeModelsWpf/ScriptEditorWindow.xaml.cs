@@ -216,6 +216,7 @@ namespace PythonNodeModelsWpf
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
+            completionProvider.providerImplementation?.Dispose();
         }
 
         #endregion

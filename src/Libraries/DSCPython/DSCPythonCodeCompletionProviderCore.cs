@@ -889,7 +889,7 @@ namespace DSCPython
         }
         private PyScope scope;
 
-        internal static readonly string globalScopeName = "globalScope";
+        internal string globalScopeName = "globalScope";
 
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
@@ -924,7 +924,6 @@ namespace DSCPython
         {
             IEnumerable<DSCPythonCodeCompletionDataCore> items = new List<DSCPythonCodeCompletionDataCore>();
 
-            // Python.Included.Installer.SetupPython().Wait();
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
@@ -1126,6 +1125,8 @@ namespace DSCPython
             ImportedTypes = new Dictionary<string, Type>();
             clrModules = new HashSet<string>();
             BadStatements = new Dictionary<string, int>();
+            Guid globalScopeGUID = Guid.NewGuid();
+            globalScopeName += globalScopeGUID.ToString();
 
             // Special case for python variables defined as null
             ImportedTypes["None"] = null;
@@ -1256,6 +1257,33 @@ clr.setPreload(True)
         private void Log( string message)
         {
             MessageLogged?.Invoke(LogMessage.Info(message));
+        }
+
+        public void Dispose()
+        {
+            if (Scope != null) 
+            {
+                Python.Included.Installer.SetupPython().Wait();
+
+                if (!PythonEngine.IsInitialized)
+                {
+                    PythonEngine.Initialize();
+                    PythonEngine.BeginAllowThreads();
+                }
+
+                IntPtr gs = PythonEngine.AcquireLock();
+                try
+                {
+                    using (Py.GIL())
+                    {
+                        Scope.Dispose();
+                    }
+                }
+                finally
+                {
+                    PythonEngine.ReleaseLock(gs);
+                }
+            }
         }
         #endregion
 
