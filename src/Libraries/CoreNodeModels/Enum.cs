@@ -69,8 +69,18 @@ namespace CoreNodeModels
             RegisterAllPorts();
         }
 
+        protected AllChildrenOfType(string value) : base(value)
+        {
+            RegisterAllPorts();
+        }
+
         [JsonConstructor]
         protected AllChildrenOfType(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
+        {
+        }
+
+        [JsonConstructor]
+        protected AllChildrenOfType(string value, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(value, inPorts, outPorts)
         {
         }
 
