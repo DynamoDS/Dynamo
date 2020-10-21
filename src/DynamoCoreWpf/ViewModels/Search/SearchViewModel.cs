@@ -345,6 +345,7 @@ namespace Dynamo.ViewModels
             }
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
+
             base.Dispose();
         }
 
@@ -771,7 +772,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        protected void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        internal void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;
@@ -1055,18 +1056,6 @@ namespace Dynamo.ViewModels
 
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                 nodeModel, position.X, position.Y, useDeafultPosition, true));
-
-            OnRequestFocusSearch();
-        }
-
-        internal void OnRequestConnectToPort(string nodeCreationName, PortModel portModel)
-        {
-            if (!nodeCreationName.Contains("Code Block"))
-            {
-                // Create a new node based on node creation name and connect ports
-                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(Guid.NewGuid(), portModel.Owner.GUID,
-                    nodeCreationName, 0, portModel.Index, portModel.CenterX - 50, portModel.CenterY + 200, false, false));
-            }
 
             OnRequestFocusSearch();
         }
