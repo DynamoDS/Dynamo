@@ -69,7 +69,10 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// This test method will 
+        /// This test method will validate the next properties from the SliderViewModel class:
+        ///  public T Max
+        ///  public T Min
+        ///  public T Step
         /// </summary>
         [Test]
         public void SliderViewModel_PropertiesTest()
@@ -103,26 +106,28 @@ namespace DynamoCoreWpfTests
             expander.IsExpanded = true;
 
             DispatcherUtil.DoEvents();
+            //Get the current min, max y step values in the TextBoxes
             var textBoxes = expander.ChildrenOfType<DynamoTextBox>();
             var minTextBox = (from textBox in textBoxes where textBox.Name.Equals("MinTb") select textBox).FirstOrDefault();
             var maxTextBox = (from textBox in textBoxes where textBox.Name.Equals("MaxTb") select textBox).FirstOrDefault();
             var stepTextBox = (from textBox in textBoxes where textBox.Name.Equals("StepTb") select textBox).FirstOrDefault();
 
+            //Validate that the TextBoxes have the right value according to the Model
             Assert.IsNotNull(WatchNode);
             Assert.AreEqual("0", minTextBox.Text);
             Assert.AreEqual("200", maxTextBox.Text);
             Assert.AreEqual("10", stepTextBox.Text);
 
+            //Validates the result gotten from the Watch node
             Assert.AreEqual("20", WatchNode.CachedValue.ToString());
         }
 
         /// <summary>
-        /// 
+        /// This test method will validate the "public T Value" property in SliderViewModel.cs
         /// </summary>
         [Test]
         public void SliderViewModel_ValueTest()
         {
-
             Open(@"core\library\NumberSliderNodeTest.dyn");
             Run();
 
@@ -132,6 +137,7 @@ namespace DynamoCoreWpfTests
             DispatcherUtil.DoEvents();
 
             var dynamoSlider = nodeView.grid.ChildrenOfType<DynamoSlider>().FirstOrDefault();
+            //Setting the Value property from the SliderViewModel
             var sliderBaseModel = dynamoSlider.DataContext as SliderViewModel<double>;
             sliderBaseModel.Value = 200.0;//Set the Max value
             sliderBaseModel.Value = -200.0;//Set the Min value
@@ -141,11 +147,13 @@ namespace DynamoCoreWpfTests
             expander.IsExpanded = true;
 
             DispatcherUtil.DoEvents();
+            //Get the current min, max y step values in the TextBoxes
             var textBoxes = expander.ChildrenOfType<DynamoTextBox>();
             var minTextBox = (from textBox in textBoxes where textBox.Name.Equals("MinTb") select textBox).FirstOrDefault();
             var maxTextBox = (from textBox in textBoxes where textBox.Name.Equals("MaxTb") select textBox).FirstOrDefault();
             var stepTextBox = (from textBox in textBoxes where textBox.Name.Equals("StepTb") select textBox).FirstOrDefault();
 
+            //Validates that the max and min values were set correctly when setting the Value property (SliderViewModel)
             Assert.IsNotNull(WatchNode);
             Assert.AreEqual("-200", minTextBox.Text);
             Assert.AreEqual("200", maxTextBox.Text);
