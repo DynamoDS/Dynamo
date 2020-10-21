@@ -60,9 +60,10 @@ namespace CoreNodeModelsWpf
             AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
         }
 
-        [TearDown]
+        [TestFixtureTearDown]
         public void RunAfterAllTests()
         {
+            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
             assemblyHelper = null;
         }
 
