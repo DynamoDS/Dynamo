@@ -889,7 +889,7 @@ namespace DSCPython
         }
         private PyScope scope;
 
-        internal string globalScopeName = "globalScope";
+        internal string uniquePythonScopeName = "uniqueScope";
 
         /// <summary>
         /// The scope used by the engine.  This is where all the loaded symbols
@@ -942,7 +942,7 @@ namespace DSCPython
 
                     if (Scope == null)
                     {
-                        Scope = CreateGlobalScope();
+                        Scope = CreateUniquePythonScope();
                     }
 
                     UpdateImportedTypes(code);
@@ -1125,8 +1125,8 @@ namespace DSCPython
             ImportedTypes = new Dictionary<string, Type>();
             clrModules = new HashSet<string>();
             BadStatements = new Dictionary<string, int>();
-            Guid globalScopeGUID = Guid.NewGuid();
-            globalScopeName += globalScopeGUID.ToString();
+            Guid pythonScopeGUID = Guid.NewGuid();
+            uniquePythonScopeName += pythonScopeGUID.ToString();
 
             // Special case for python variables defined as null
             ImportedTypes["None"] = null;
@@ -1153,7 +1153,7 @@ namespace DSCPython
                 {
                     if (Scope == null)
                     {
-                        Scope = CreateGlobalScope();
+                        Scope = CreateUniquePythonScope();
                     }
 
                     var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -1206,13 +1206,13 @@ namespace DSCPython
 
         #endregion
 
-        private PyScope CreateGlobalScope()
+        private PyScope CreateUniquePythonScope()
         {
-            PyScopeManager.Global.TryGet(globalScopeName, out PyScope Scope);
+            PyScopeManager.Global.TryGet(uniquePythonScopeName, out PyScope Scope);
 
             if (Scope == null)
             {
-                Scope = Py.CreateScope(globalScopeName);
+                Scope = Py.CreateScope(uniquePythonScopeName);
                 Scope.Exec(@"
 import clr
 import sys
