@@ -28,7 +28,7 @@ namespace Dynamo.Search.SearchElements
         /// </summary>
         public override string FullName { get { return fullname; } }
         /// <summary>
-        /// Retrieve undelrying Function Descriptor.
+        /// Retrieve underlying Function Descriptor.
         /// </summary>
         internal FunctionDescriptor Descriptor => functionDescriptor;
 

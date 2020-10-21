@@ -31,7 +31,6 @@ namespace Dynamo.ViewModels
             FilteredResults = searchElements.Select(e =>
             {
                 var vm = new NodeSearchElementViewModel(e, this);
-                //TODO I think this leaks.
                 vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
                 return vm;
             });
@@ -52,11 +51,12 @@ namespace Dynamo.ViewModels
         {
             var elements = new List<NodeSearchElement>();
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
+            var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
             if (inputPortType == null) return elements;
             //if inputPortType is an array, use just the typename
-            var cbn = ParserUtils.ParseWithCore($"dummyName:{ inputPortType};", dynamoViewModel.Model.LibraryServices.LibraryManagementCore);
-            var ast = cbn.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
+            var parseResult = ParserUtils.ParseWithCore($"dummyName:{ inputPortType};", core);
+            var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             inputPortType = ast != null ? ast.datatype.Name : inputPortType;
 
@@ -69,7 +69,7 @@ namespace Dynamo.ViewModels
 
                 var descriptor = ztSearchElement.Descriptor;
                 if ((returnTypeName == inputPortType)
-                    || DerivesFrom(inputPortType, returnTypeName, dynamoViewModel.Model.LibraryServices.LibraryManagementCore))
+                    || DerivesFrom(inputPortType, returnTypeName, core))
                 {
                     elements.Add(ztSearchElement);
                 }
@@ -84,14 +84,15 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            var comparer = new NodeSearchElementComparer(inputPortType, dynamoViewModel.Model.LibraryServices.LibraryManagementCore);
+            var comparer = new NodeSearchElementComparer(inputPortType, core);
 
             //first sort by type distance to input port type
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
+            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
             return elements.OrderBy(x => x.Group);
 
-            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
+           
         }
 
         /// <summary>
@@ -161,7 +162,7 @@ namespace Dynamo.ViewModels
             private int CompareNodeSearchElementByTypeDistance(NodeSearchElement x, NodeSearchElement y, string typeNameToCompareTo, ProtoCore.Core core)
             {
                 /*
-                 * -1	x preceeds y.
+                 * -1	x precedes y.
                  0 x and y are equal
                  1	x is after y.
                  */
@@ -174,6 +175,7 @@ namespace Dynamo.ViewModels
                 {
                     xTypeNames = new string[] { xzt.Descriptor.ReturnType.Name };
                 }
+                // for non ZT nodes, we don't have concrete return types, so we need to parse the typename. 
                 else
                 {
                     //if inputPortType is an array, lets just use the class name to match 
@@ -183,10 +185,10 @@ namespace Dynamo.ViewModels
                 {
                     yTypeNames = new string[] { yzt.Descriptor.ReturnType.Name };
                 }
+                // for non ZT nodes, we don't have concrete return types, so we need to parse the typename. 
                 else
                 {
                     yTypeNames = yTypeNames.Select(type => ParserUtils.ParseWithCore($"dummyName:{ type};", core).CodeBlockNode.Children().ElementAt(0).Name);
-
                 }
 
                 if (xTypeNames.SequenceEqual(yTypeNames))
@@ -211,12 +213,12 @@ namespace Dynamo.ViewModels
                     return -1;
                 }
 
-                // x preceeds y because it contains an exact match
+                // x precedes y because it contains an exact match
                 if (xTypeNames.Any(xType => xType == typeNameToCompareTo))
                 {
                     return -1;
                 }
-                //  y preceeds x because it contains an exact match
+                //  y precedes x because it contains an exact match
                 if (yTypeNames.Any(yType => yType == typeNameToCompareTo))
                 {
                     return 1;
@@ -236,7 +238,7 @@ namespace Dynamo.ViewModels
                     return 0;
                 }
                 // distance2 < distance 1
-                // x preceeds y
+                // x precedes y
                 return -1;
             }
 

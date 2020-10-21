@@ -7,6 +7,7 @@ using Dynamo.Controls;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
+using Dynamo.ViewModels;
 
 namespace DynamoCoreWpfTests
 {
@@ -128,6 +129,13 @@ namespace DynamoCoreWpfTests
             {
                 Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
             }
+        }
+
+        [Test]
+        public void NodeSearchElementComparerSortsBasedOnTypeDistance()
+        {
+            var core = Model.LibraryServices.LibraryManagementCore;
+            var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer("string", core);
         }
     }
 }
