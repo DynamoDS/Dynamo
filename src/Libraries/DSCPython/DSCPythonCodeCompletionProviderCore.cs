@@ -658,7 +658,6 @@ namespace DSCPython
             dynamic type = null;
             try
             {
-                // type = engine.CreateScriptSourceFromString(lookupScr, SourceCodeKind.Expression).Execute(scope);
                 type = ExecutePythonScriptCode(lookupScr);
             }
             catch (Exception e)
@@ -1080,16 +1079,13 @@ namespace DSCPython
             // Determine if the Python Standard Library is available in the DynamoCore path
             if (!String.IsNullOrEmpty(dynamoCorePath))
             {
-              //  pythonLibDir = Path.Combine(dynamoCorePath, IronPythonEvaluator.PythonLibName);
+              // set pythonLibDir path.
             }
 
             // TODO: check if any python libraries for CPython engine has to be imported. 
-
-            // If IronPython.Std folder is excluded from DynamoCore (which could be user mistake or integrator exclusion)
             if (!Directory.Exists(pythonLibDir))
             {
-                // Try to load IronPython from extension package
-               // pythonLibDir = Path.Combine((new DirectoryInfo(Path.GetDirectoryName(executionPath))).Parent.FullName, IronPythonEvaluator.packageExtraFolderName, IronPythonEvaluator.PythonLibName);
+                // import them here if needed. 
             }
 
             if (!String.IsNullOrEmpty(pythonLibDir))
@@ -1098,7 +1094,7 @@ namespace DSCPython
                 try
                 {
                     var pyLibImports = String.Format("import sys\nsys.path.append(r'{0}')\n", pythonLibDir);
-                   // engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
+                    // engine.CreateScriptSourceFromString(pyLibImports, SourceCodeKind.Statements).Execute(scope);
                 }
                 catch (Exception e)
                 {

@@ -153,8 +153,6 @@ namespace DynamoPythonTests
             var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
 
             Assembly.LoadFrom(Path.Combine(moduleRootFolder, "DSCPython.dll"));
-          //  Assembly.LoadFrom(Path.Combine(moduleRootFolder, "Python.Included.dll"));
-          //  Assembly.LoadFrom(Path.Combine(moduleRootFolder, "Python.Runtime.dll"));
 
             var resolutionPaths = new[]
             {
