@@ -17,7 +17,7 @@ namespace Dynamo.ViewModels
         /// a. our algorithm does not return sufficient results
         /// b. the results returned by our algorithm will not be useful for user
         /// </summary>
-        internal IEnumerable<NodeSearchElementViewModel> DefaultSuggestions { get; set; }
+        internal IEnumerable<NodeSearchElementViewModel> DefaultResults { get; set; }
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
@@ -39,17 +39,18 @@ namespace Dynamo.ViewModels
                     candidates.Add(foundNode);
                 }
             }
-            DefaultSuggestions = candidates;
+            DefaultResults = candidates;
         }
 
         internal void PopulateAutoCompleteCandidates()
         {
             if(PortViewModel == null) return;
 
-            var searchElements = GetMatchingNodes();
+            var searchElements = GetMatchingSearchElements();
+            // If node match searchElements found, use default suggestions
             if (searchElements.Count() == 0)
             {
-                FilteredResults = DefaultSuggestions;
+                FilteredResults = DefaultResults;
             }
             else
             {
@@ -72,7 +73,7 @@ namespace Dynamo.ViewModels
         /// The search elements can be made to appear in the node autocomplete search dialog.
         /// </summary>
         /// <returns>collection of node search elements</returns>
-        internal IEnumerable<NodeSearchElement> GetMatchingNodes()
+        internal IEnumerable<NodeSearchElement> GetMatchingSearchElements()
         {
             var elements = new List<NodeSearchElement>();
 

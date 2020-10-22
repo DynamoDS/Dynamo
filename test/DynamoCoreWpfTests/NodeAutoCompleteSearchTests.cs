@@ -53,7 +53,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(5, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -83,7 +83,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(4, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -119,7 +119,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(16, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -168,7 +168,7 @@ namespace DynamoCoreWpfTests
 
             searchViewModel.InitializeDefaultAutoCompleteCandidates();
             // Running the default algorithm should return no suggestions
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
 
             // The initial list will fill the FilteredResults with a few options, List Flatten will be missing
