@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 namespace DSCPython
 {
 
-    internal class DSCPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILogSource
+    internal class DSCPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILogSource, IDisposable
     {
         #region internal constants
         internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";

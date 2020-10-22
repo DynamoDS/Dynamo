@@ -219,7 +219,11 @@ namespace PythonNodeModelsWpf
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
-            completionProvider.providerImplementation?.Dispose();
+
+            if (completionProvider.providerImplementation is IDisposable dis)
+            {
+                dis.Dispose();
+            }
         }
 
         #endregion

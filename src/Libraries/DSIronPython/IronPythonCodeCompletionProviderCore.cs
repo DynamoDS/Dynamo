@@ -15,7 +15,7 @@ using System.Text.RegularExpressions;
 namespace DSIronPython
 {
 
-    internal class IronPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILegacyPythonCompletionCore, ILogSource
+    internal class IronPythonCodeCompletionProviderCore : IExternalCodeCompletionProviderCore, ILegacyPythonCompletionCore, ILogSource, IDisposable
     {
         #region internal constants
         internal static readonly string commaDelimitedVariableNamesRegex = @"(([0-9a-zA-Z_]+,?\s?)+)";
