@@ -12,9 +12,17 @@ namespace Dynamo.ViewModels
     {
         internal PortViewModel PortViewModel { get; set; }
 
+        /// <summary>
+        /// Cache of default node suggestions, use it in case where
+        /// a. our algorithm does not return sufficient results
+        /// b. the results returned by our algorithm will not be useful for user
+        /// </summary>
+        public IEnumerable<NodeSearchElementViewModel> DefaultSuggestions { get; set; }
+
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
-            // Do nothing for now, but we may off load some time consuming operation here later
+            // Off load some time consuming operation here
+            InitializeDefaultAutoCompleteCandidates();
         }
 
         internal void InitializeDefaultAutoCompleteCandidates()
@@ -22,7 +30,7 @@ namespace Dynamo.ViewModels
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are hard copied all time top 7 nodes placed by customers
             // This should be only served as a temporary default case.
-            var queries = new List<string>(){ "Code Block", "Watch", "List Flatten", "List Create", "String", "Double", "Python" };
+            var queries = new List<string>(){ "Code Block", "Watch", "List.Flatten", "List.Create", "String", "Double", "Python" };
             foreach (var query in queries)
             {
                 var foundNode = Search(query).ToList().FirstOrDefault();
@@ -31,7 +39,7 @@ namespace Dynamo.ViewModels
                     candidates.Add(foundNode);
                 }
             }
-            FilteredResults = candidates;
+            DefaultSuggestions = candidates;
         }
 
         internal void PopulateAutoCompleteCandidates()
@@ -39,12 +47,19 @@ namespace Dynamo.ViewModels
             if(PortViewModel == null) return;
 
             var searchElements = GetMatchingNodes();
-            FilteredResults = searchElements.Select(e =>
+            if (searchElements.Count() == 0)
             {
-                var vm  = new NodeSearchElementViewModel(e, this);
-                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                return vm;
-            });
+                FilteredResults = DefaultSuggestions;
+            }
+            else
+            {
+                FilteredResults = searchElements.Select(e =>
+                {
+                    var vm = new NodeSearchElementViewModel(e, this);
+                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                    return vm;
+                });
+            }
         }
 
         /// <summary>
