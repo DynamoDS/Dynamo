@@ -69,7 +69,7 @@ namespace CoreNodeModels
             RegisterAllPorts();
         }
 
-        protected AllChildrenOfType(string value) : base(value)
+        protected AllChildrenOfType(string outputName) : base(outputName)
         {
             RegisterAllPorts();
         }
@@ -80,7 +80,7 @@ namespace CoreNodeModels
         }
 
         [JsonConstructor]
-        protected AllChildrenOfType(string value, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(value, inPorts, outPorts)
+        protected AllChildrenOfType(string outputName, IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(outputName, inPorts, outPorts)
         {
         }
 
