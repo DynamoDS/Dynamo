@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -16,6 +18,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
+        private const double autocompleteUISpacing = 2.5;
 
         /// <summary>
         /// Port model.
@@ -226,6 +229,38 @@ namespace Dynamo.ViewModels
             _node.WorkspaceViewModel.PropertyChanged -= Workspace_PropertyChanged;
         }
 
+        /// <summary>
+        /// Places the node autocomplete window relative to the respective port 
+        /// once the control is loaded and when its actual width is known.
+        /// The UI is first placed w.r.t to the X, Y position of the node (to which the port belongs),
+        /// then offset from that based on the port, the width of the UI itself and in some cases, the node width.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        internal void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
+        {
+            var control = sender as NodeAutoCompleteSearchControl;
+            var popup = control.Parent as Popup;
+
+            double x;
+            if (PortModel.PortType == PortType.Input)
+            {
+                // Position node autocomplete UI offset left by its width from X position of node.
+                // Note: MinWidth property of the control is set to a constant value in the XAML
+                // for the ActualWidth to return a consistent value.
+                x = _node.X - (control.ActualWidth + autocompleteUISpacing);
+            }
+            else
+            {
+                // Position node autocomplete UI offset right by node width from X position of node.
+                x = _node.X + _node.NodeModel.Width + autocompleteUISpacing;
+            }
+            // Position UI down from the top of the node but offset down by the node header and against the respective port.
+            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+
+            popup.PlacementRectangle = new Rect(x, y, 0, 0);
+        }
+
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -364,6 +399,23 @@ namespace Dynamo.ViewModels
             return true;
         }
 
+        // Handler to invoke node Auto Complete
+        private void AutoComplete(object parameter)
+        {
+            var wsViewModel = _node.WorkspaceViewModel;
+            var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
+            svm.PortViewModel = this;
+
+            wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        private bool CanAutoComplete(object parameter)
+        {
+            DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
+            // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
+            return dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input;
+        }
+
         /// <summary>
         /// Handles the Mouse enter event on the port
         /// </summary>
@@ -371,7 +423,9 @@ namespace Dynamo.ViewModels
         private void OnRectangleMouseEnter(object parameter)
         {
             if (MouseEnter != null)
+            {
                 MouseEnter(parameter, null);
+            }
         }
 
         /// <summary>
@@ -411,7 +465,5 @@ namespace Dynamo.ViewModels
         {
             ShowUseLevelMenu = false;
         }
-
-       
     }
 }

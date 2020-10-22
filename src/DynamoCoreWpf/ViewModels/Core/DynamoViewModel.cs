@@ -310,6 +310,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Indicates whether to enabled node Auto Complete feature for port interaction.
+        /// </summary>
+        public bool EnableNodeAutoComplete
+        {
+            get
+            {
+                return PreferenceSettings.EnableNodeAutoComplete;
+            }
+            set
+            {
+                PreferenceSettings.EnableNodeAutoComplete = value;
+            }
+        }
+
         public int LibraryWidth
         {
             get
@@ -1909,7 +1924,10 @@ namespace Dynamo.ViewModels
 
         public void DoGraphAutoLayout(object parameter)
         {
-            this.CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(parameter);
+            if (CurrentSpaceViewModel.GraphAutoLayoutCommand.CanExecute(parameter))
+            {
+                CurrentSpaceViewModel.GraphAutoLayoutCommand.Execute(parameter);
+            }
         }
 
         internal bool CanDoGraphAutoLayout(object parameter)

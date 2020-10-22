@@ -18,7 +18,6 @@ using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels;
-using Microsoft.Practices.Prism.ViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -300,7 +299,7 @@ namespace Dynamo.ViewModels
         }
 
         public NodeSearchModel Model { get; private set; }
-        private readonly DynamoViewModel dynamoViewModel;
+        internal readonly DynamoViewModel dynamoViewModel;
 
         /// <summary>
         /// Class name, that has been clicked in library search view.
@@ -346,6 +345,7 @@ namespace Dynamo.ViewModels
             }
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
+
             base.Dispose();
         }
 
@@ -772,7 +772,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
+        internal void SearchViewModelRequestBitmapSource(IconRequestEventArgs e)
         {
             var warehouse = iconServices.GetForAssembly(e.IconAssembly, e.UseAdditionalResolutionPaths);
             ImageSource icon = null;

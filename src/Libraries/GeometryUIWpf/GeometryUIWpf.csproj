@@ -39,8 +39,8 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.9.0.2615, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2615\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.2744, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2745\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -128,6 +128,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Large.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.ToSolidDef.Small.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">

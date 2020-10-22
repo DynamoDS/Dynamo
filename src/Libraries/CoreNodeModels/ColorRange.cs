@@ -20,7 +20,7 @@ namespace CoreNodeModels
     [NodeSearchTags("ColorRangeSearchTags", typeof(Resources))]
 
     [InPortNames("colors", "indices", "value")]
-    [InPortTypes("Color[]", "double[]", "double")]
+    [InPortTypes("DSCore.Color[]", "double[]", "double")]
     [InPortDescriptions(typeof(Resources),
         "ColorRangePortDataColorsToolTip",
         "ColorRangePortDataIndicesToolTip",

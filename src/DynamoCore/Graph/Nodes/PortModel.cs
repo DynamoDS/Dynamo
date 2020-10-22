@@ -2,9 +2,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Xml;
 using Dynamo.Configuration;
+using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
@@ -160,10 +163,9 @@ namespace Dynamo.Graph.Nodes
             get
             {
                 double halfHeight = Height * 0.5;
-                const double headerHeight = 25;
 
                 double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + headerHeight + 5 + halfHeight + offset;
+                double y = Owner.Y + NodeModel.HeaderHeight + 5 + halfHeight + offset;
 
                 switch (PortType)
                 {
@@ -386,6 +388,55 @@ namespace Dynamo.Graph.Nodes
             return GUID.GetHashCode();
         }
 
+        /// <summary>
+        /// Returns the string representation of the fully qualified typename
+        /// where possible for the port if it's an input port. This method currently
+        /// returns a valid type for only Zero Touch, Builtin and NodeModel nodes,
+        /// and returns null otherwise. The string representation of the type also
+        /// contains the rank information of the type, e.g. Point[], or var[]..[]. 
+        /// </summary>
+        /// <returns>input port type</returns>
+        internal string GetInputPortType()
+        {
+            if (PortType == PortType.Output) return null;
+
+            var ztNode = Owner as DSFunction;
+            if (ztNode != null)
+            {
+                var fd = ztNode.Controller.Definition;
+                string type;
+                // In the case of a node for an instance method, the first port
+                // type is the declaring class type of the method itself.
+                if (fd.Type == FunctionType.InstanceMethod || fd.Type == FunctionType.InstanceProperty)
+                {
+                    if (Index > 0)
+                    {
+                        var param = fd.Parameters.ElementAt(Index - 1);
+                        type = param.Type.ToString();
+                    }
+                    else
+                    {
+                        type = fd.ClassName;
+                    }
+                }
+                else
+                {
+                    var param = fd.Parameters.ElementAt(Index);
+                    type = param.Type.ToString();
+                }
+                return type;
+            }
+
+            var nmNode = Owner as NodeModel;
+            if (nmNode != null)
+            {
+                var classType = nmNode.GetType();
+                var inPortAttribute = classType.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
+
+                return inPortAttribute?.PortTypes.ElementAt(Index);
+            }
+            return null;
+        }
     }
 
     /// <summary>

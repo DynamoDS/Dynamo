@@ -158,9 +158,14 @@ namespace Dynamo.ViewModels
         private void OnRequestShowInCanvasSearch(object param)
         {
             var flag = (ShowHideFlags)param;
+            RequestShowInCanvasSearch?.Invoke(flag);
+        }
 
-            if (RequestShowInCanvasSearch != null)
-                RequestShowInCanvasSearch(flag);
+        internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
+
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
+        {
+            RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
         #endregion
@@ -221,13 +226,19 @@ namespace Dynamo.ViewModels
         /// of Graph.Json.
         /// </summary>
         [JsonProperty("Camera")]
-        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel.GetCameraInformation() ?? new CameraData();
+        public CameraData Camera => DynamoViewModel.BackgroundPreviewViewModel?.GetCameraInformation() ?? new CameraData();
 
         /// <summary>
         /// ViewModel that is used in InCanvasSearch in context menu and called by Shift+DoubleClick.
         /// </summary>
         [JsonIgnore]
         public SearchViewModel InCanvasSearchViewModel { get; private set; }
+
+        /// <summary>
+        /// ViewModel that is used in NodeAutoComplete feature in context menu and called by Shift+DoubleClick.
+        /// </summary>
+        [JsonIgnore]
+        public SearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
@@ -456,8 +467,14 @@ namespace Dynamo.ViewModels
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
-            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel);
-            InCanvasSearchViewModel.Visible = true;
+            InCanvasSearchViewModel = new SearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
+            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
+            {
+                Visible = true
+            };
         }
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
@@ -505,6 +522,7 @@ namespace Dynamo.ViewModels
             Connectors.Clear();
             Errors.Clear();
             InCanvasSearchViewModel.Dispose();
+            NodeAutoCompleteSearchViewModel.Dispose();
         }
 
         internal void ZoomInInternal()
@@ -1382,6 +1400,7 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("AnyNodeVisible");
             RaisePropertyChanged("SelectionArgumentLacing");            
         }
+
     }
 
     public class ViewModelEventArgs : EventArgs

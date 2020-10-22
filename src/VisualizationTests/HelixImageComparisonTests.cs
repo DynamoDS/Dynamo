@@ -196,6 +196,18 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void IsolateCurvesOverMeshGeometryRender()
+        {
+            OpenVisualizationTest(@"imageComparison\200910 dynamo isolate selected visibility.dyn");
+            RunCurrentModel();
+            View.BackgroundPreview.ViewModel.IsolationMode = true;
+            var node1 = ViewModel.CurrentSpace.Nodes.FirstOrDefault(x => x.Name.Contains("Curve.PullOntoPlane"));
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
+        [Test]
         public void VertColorSelectedMeshGeometryRender()
         {
             OpenVisualizationTest(@"imageComparison\spherecolors.dyn");
@@ -254,6 +266,15 @@ namespace WpfVisualizationTests
             var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("sphere2")).FirstOrDefault();
             DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+
+        [Test]
+        public void RenderCoordinateSystemWithGeometryScaling()
+        {
+            // This DYN has the Geometry Scaling set to the "Extra Large" setting.
+            OpenVisualizationTest(@"imageComparison\CoordinateSystems.dyn");
+            RunCurrentModel();
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
 

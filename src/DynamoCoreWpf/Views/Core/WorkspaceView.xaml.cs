@@ -108,6 +108,7 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
@@ -145,6 +146,7 @@ namespace Dynamo.Views
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -158,6 +160,11 @@ namespace Dynamo.Views
 
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
             
+        }
+
+        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        {
+            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
         private void ShowHideInCanvasControl(ShowHideFlags flag)
@@ -195,6 +202,16 @@ namespace Dynamo.Views
             {
                 ShowHideContextMenu(ShowHideFlags.Hide);
                 ShowHideInCanvasControl(ShowHideFlags.Hide);
+            }
+            if (NodeAutoCompleteSearchBar.IsOpen)
+            {
+                // Suppress the mouse action from last 0.2 second otherwise mouse button release 
+                // in Dynamo window will forcefully shutdown all the open SearchBars
+                if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
+                {
+                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                    ViewModel.CancelActiveState();
+                }
             }
         }
 
@@ -348,7 +365,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                this.removeViewModelsubscriptions(oldViewModel);
+                removeViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)
