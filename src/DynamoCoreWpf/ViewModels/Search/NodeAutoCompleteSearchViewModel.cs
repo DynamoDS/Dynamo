@@ -179,7 +179,8 @@ namespace Dynamo.ViewModels
                 else
                 {
                     //if inputPortType is an array, lets just use the class name to match 
-                    xTypeNames = xTypeNames.Select(type => ParserUtils.ParseWithCore($"dummyName:{ type};", core).CodeBlockNode.Children().ElementAt(0).Name);
+                    xTypeNames = xTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{ type};", core).
+                    CodeBlockNode.Children().ElementAt(0) as TypedIdentifierNode).datatype.Name);
                 }
                 if (y is ZeroTouchSearchElement yzt)
                 {
@@ -188,7 +189,8 @@ namespace Dynamo.ViewModels
                 // for non ZT nodes, we don't have concrete return types, so we need to parse the typename. 
                 else
                 {
-                    yTypeNames = yTypeNames.Select(type => ParserUtils.ParseWithCore($"dummyName:{ type};", core).CodeBlockNode.Children().ElementAt(0).Name);
+                    yTypeNames = yTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{ type};", core).
+                    CodeBlockNode.Children().ElementAt(0) as TypedIdentifierNode).datatype.Name);
                 }
 
                 if (xTypeNames.SequenceEqual(yTypeNames))
