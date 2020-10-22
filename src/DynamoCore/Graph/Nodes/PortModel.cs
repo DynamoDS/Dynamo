@@ -163,10 +163,9 @@ namespace Dynamo.Graph.Nodes
             get
             {
                 double halfHeight = Height * 0.5;
-                const double headerHeight = 25;
 
                 double offset = Owner.GetPortVerticalOffset(this);
-                double y = Owner.Y + headerHeight + 5 + halfHeight + offset;
+                double y = Owner.Y + NodeModel.HeaderHeight + 5 + halfHeight + offset;
 
                 switch (PortType)
                 {
@@ -408,7 +407,7 @@ namespace Dynamo.Graph.Nodes
                 string type;
                 // In the case of a node for an instance method, the first port
                 // type is the declaring class type of the method itself.
-                if (fd.Type == FunctionType.InstanceMethod)
+                if (fd.Type == FunctionType.InstanceMethod || fd.Type == FunctionType.InstanceProperty)
                 {
                     if (Index > 0)
                     {

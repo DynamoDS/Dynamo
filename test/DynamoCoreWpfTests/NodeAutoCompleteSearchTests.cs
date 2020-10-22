@@ -94,6 +94,38 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_InputPortZeroTouchNodeForProperty_AreCorrect()
+        {
+            Open(@"UI\ffitarget_property_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("ac15a2a0010a4fef98c13a870ce4c55c").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(1, inPorts.Count());
+
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("FFITarget.ClassFunctionality", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+            var suggestions = searchViewModel.GetMatchingNodes();
+            Assert.AreEqual(4, suggestions.Count());
+
+            var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
+            var nodes = new[] { "FFITarget.FFITarget.ClassFunctionality.ClassFunctionality",
+                "FFITarget.FFITarget.ClassFunctionality.ClassFunctionality",
+                "FFITarget.FFITarget.ClassFunctionality.ClassFunctionality",
+                "FFITarget.FFITarget.ClassFunctionality.Instance" };
+            var expectedNodes = nodes.OrderBy(s => s);
+            for (int i = 0; i < 4; i++)
+            {
+                Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
+            }
+        }
+
+        [Test]
         public void NodeSuggestions_GeometryNodes_SortedBy_NodeGroup_CreateActionQuery()
         {
             var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a curve.
