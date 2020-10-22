@@ -64,6 +64,8 @@ namespace Dynamo.ViewModels
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
             if (inputPortType == null) return elements;
 
+            var skippedInputPorts = new List<string>() { "var", "object", "string", "bool", "int", "double" };
+
             var libraryServices = dynamoViewModel.Model.LibraryServices;
 
             // Builtin functions and zero-touch functions
@@ -74,7 +76,7 @@ namespace Dynamo.ViewModels
 
             foreach (var descriptor in functionDescriptors)
             {
-                if (descriptor.ReturnType.ToString() == inputPortType)
+                if (!skippedInputPorts.Contains(descriptor.ReturnType.ToString()) && descriptor.ReturnType.ToString() == inputPortType)
                 {
                     elements.Add(new ZeroTouchSearchElement(descriptor));
                 }
