@@ -171,9 +171,9 @@ namespace DynamoCoreWpfTests
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
 
-            // The initial list will fill the FilteredResults with a few options, List Flatten will be missing
+            // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(6, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("Code Block", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
     }
