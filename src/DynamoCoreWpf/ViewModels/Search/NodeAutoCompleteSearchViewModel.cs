@@ -80,6 +80,7 @@ namespace Dynamo.ViewModels
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
             if (inputPortType == null) return elements;
 
+            //List of nodes that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputPorts = new List<string>() { "var", "object", "string", "bool", "int", "double" };
 
             var libraryServices = dynamoViewModel.Model.LibraryServices;
@@ -92,7 +93,7 @@ namespace Dynamo.ViewModels
 
             foreach (var descriptor in functionDescriptors)
             {
-                if (!skippedInputPorts.Contains(descriptor.ReturnType.ToString()) && descriptor.ReturnType.ToString() == inputPortType)
+                if (!skippedInputPorts.Any(s => s == descriptor.ReturnType.ToString()) && descriptor.ReturnType.ToString() == inputPortType)
                 {
                     elements.Add(new ZeroTouchSearchElement(descriptor));
                 }

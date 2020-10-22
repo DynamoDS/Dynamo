@@ -176,5 +176,33 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("Code Block", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
+
+        [Test]
+        public void NodeSuggestions_SkippedSuggestions()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("1a0f89fdd3ce4214ba81c08934706452").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(1, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("double", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+
+            searchViewModel.InitializeDefaultAutoCompleteCandidates();
+            // Running the algorithm against skipped nodes should return no suggestions
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(0, suggestions.Count());
+
+            // The initial list will fill the FilteredResults with a list of default options
+            searchViewModel.PopulateAutoCompleteCandidates();
+            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
+        }
     }
 }

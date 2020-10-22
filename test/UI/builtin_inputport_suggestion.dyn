@@ -86,6 +86,36 @@
       ],
       "Replication": "Auto",
       "Description": "Create a ColorRange by supplying lists of colors and UVs.\n\nColorRange.ByColorsAndParameters (colors: Color[], parameters: UV[]): ColorRange"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.Math.Log@double",
+      "Id": "1a0f89fdd3ce4214ba81c08934706452",
+      "Inputs": [
+        {
+          "Id": "353f0248b261405ab58bddbe06d58fa8",
+          "Name": "number",
+          "Description": "Number greater than 0.\n\ndouble",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "575de58425ee4edd99e5ce50761fb8d8",
+          "Name": "double",
+          "Description": "Natural log of the number.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Finds the natural logarithm of a number in the range (0, ∞).\n\nMath.Log (number: double): double"
     }
   ],
   "Connectors": [],
@@ -97,7 +127,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2607",
+      "Version": "2.10.0.2957",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -133,6 +163,16 @@
         "Excluded": false,
         "X": 498.0,
         "Y": 68.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Math.Log",
+        "Id": "1a0f89fdd3ce4214ba81c08934706452",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 504.0,
+        "Y": 452.0
       }
     ],
     "Annotations": [],
