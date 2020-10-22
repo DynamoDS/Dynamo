@@ -17,7 +17,7 @@ namespace Dynamo.ViewModels
         /// a. our algorithm does not return sufficient results
         /// b. the results returned by our algorithm will not be useful for user
         /// </summary>
-        public IEnumerable<NodeSearchElementViewModel> DefaultSuggestions { get; set; }
+        internal IEnumerable<NodeSearchElementViewModel> DefaultSuggestions { get; set; }
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
