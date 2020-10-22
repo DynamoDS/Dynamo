@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Controls;
 using CoreNodeModels;
 using CoreNodeModels.Input;
+using CoreNodeModelsWpf;
 using CoreNodeModelsWpf.Controls;
 using Dynamo.Tests;
 using Dynamo.Utilities;
-using DynamoCoreWpfTests;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
-namespace CoreNodeModelsWpf
+namespace DynamoCoreWpfTests
 {
     [TestFixture]
     public class ConverterViewModelTests : DynamoTestUIBase
     {
-        private AssemblyHelper assemblyHelper;
-
         public override void Open(string path)
         {
             base.Open(path);
@@ -36,35 +31,11 @@ namespace CoreNodeModelsWpf
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            SetupTests();
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
             libraries.Add("DynamoConversions.dll");
             libraries.Add("DynamoUnits.dll");
-            libraries.Add("CoreNodeModelsWpf.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        public void SetupTests()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
-
-            var resolutionPaths = new[]
-            {
-                // The CoreNodeModelsWpf.dll needed is under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
-            };
-
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
-        }
-
-        [TestFixtureTearDown]
-        public void RunAfterAllTests()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve -= assemblyHelper.ResolveAssembly;
-            assemblyHelper = null;
         }
 
         /// <summary>
