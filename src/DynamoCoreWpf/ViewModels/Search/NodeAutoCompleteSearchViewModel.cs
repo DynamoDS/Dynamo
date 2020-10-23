@@ -12,39 +12,55 @@ namespace Dynamo.ViewModels
     {
         internal PortViewModel PortViewModel { get; set; }
 
+        /// <summary>
+        /// Cache of default node suggestions, use it in case where
+        /// a. our algorithm does not return sufficient results
+        /// b. the results returned by our algorithm will not be useful for user
+        /// </summary>
+        internal IEnumerable<NodeSearchElementViewModel> DefaultResults { get; set; }
+
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
-            // Do nothing for now, but we may off load some time consuming operation here later
+            // Off load some time consuming operation here
+            InitializeDefaultAutoCompleteCandidates();
         }
 
-        internal void InitializeDefaultAutoCompleteCandidates()
+        private void InitializeDefaultAutoCompleteCandidates()
         {
             var candidates = new List<NodeSearchElementViewModel>();
-            // TODO: These are hard copied all time top 7 nodes placed by customers
+            // TODO: These are basic input types in Dynamo
             // This should be only served as a temporary default case.
-            var queries = new List<string>(){ "Code Block", "Watch", "List Flatten", "List Create", "String", "Double", "Python" };
+            var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean" };
             foreach (var query in queries)
             {
-                var foundNode = Search(query).ToList().FirstOrDefault();
+                var foundNode = Search(query).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
                 }
             }
-            FilteredResults = candidates;
+            DefaultResults = candidates;
         }
 
         internal void PopulateAutoCompleteCandidates()
         {
             if(PortViewModel == null) return;
 
-            var searchElements = GetMatchingNodes();
-            FilteredResults = searchElements.Select(e =>
+            var searchElements = GetMatchingSearchElements();
+            // If node match searchElements found, use default suggestions
+            if (!searchElements.Any())
             {
-                var vm  = new NodeSearchElementViewModel(e, this);
-                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                return vm;
-            });
+                FilteredResults = DefaultResults;
+            }
+            else
+            {
+                FilteredResults = searchElements.Select(e =>
+                {
+                    var vm = new NodeSearchElementViewModel(e, this);
+                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                    return vm;
+                });
+            }
         }
 
         /// <summary>
@@ -57,7 +73,7 @@ namespace Dynamo.ViewModels
         /// The search elements can be made to appear in the node autocomplete search dialog.
         /// </summary>
         /// <returns>collection of node search elements</returns>
-        internal IEnumerable<NodeSearchElement> GetMatchingNodes()
+        internal IEnumerable<NodeSearchElement> GetMatchingSearchElements()
         {
             var elements = new List<NodeSearchElement>();
 
