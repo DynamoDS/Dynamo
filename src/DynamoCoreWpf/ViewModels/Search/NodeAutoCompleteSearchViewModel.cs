@@ -103,7 +103,7 @@ namespace Dynamo.ViewModels
             //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
             var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
             foreach (var ztSearchElement in ztSearchElements)
-            {                
+            {
                 //for now, remove rank from descriptors
                 var returnTypeName = ztSearchElement.Descriptor.ReturnType.Name;
 
