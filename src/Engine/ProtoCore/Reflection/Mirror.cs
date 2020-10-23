@@ -236,6 +236,12 @@ namespace ProtoCore
                 }
                 set { alias = value; }
             }
+            /// <summary>
+            /// The ID of the underlying ClassNode. This is only valid
+            /// if a known imported type was found in the vm. Returns -1 if there is no
+            /// valid underlying classNode this mirror reflects.
+            /// </summary>
+            public int ClassNodeID => ClassNode != null ? ClassNode.ID : -1;
 
             private LibraryMirror libraryMirror = null;
 
