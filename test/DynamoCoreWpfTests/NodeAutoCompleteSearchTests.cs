@@ -137,7 +137,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = nodeView.ViewModel.InPorts.FirstOrDefault();
 
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(SearchElementGroup.Create, suggestions.FirstOrDefault().Group);
             Assert.AreEqual(SearchElementGroup.Action, suggestions.ElementAt(suggestions.Count()/2).Group);
             Assert.AreEqual(SearchElementGroup.Query, suggestions.LastOrDefault().Group);
@@ -165,7 +165,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(22, suggestions.Count());
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
             var nodes = new[]
@@ -257,7 +257,8 @@ namespace DynamoCoreWpfTests
 
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(0, comparer.Compare(type1, type2));
-
+        }
+        [Test]
         public void NodeSuggestions_DefaultSuggestions()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
