@@ -108,10 +108,12 @@ namespace Dynamo.ViewModels
 
                 var descriptor = ztSearchElement.Descriptor;
                 if (descriptor.ReturnType.ToString() == inputPortType)
+                {
                     if ((returnTypeName == inputPortType)
                     || DerivesFrom(inputPortType, returnTypeName, core))
-                {
-                    elements.Add(ztSearchElement);
+                    {
+                        elements.Add(ztSearchElement);
+                    }
                 }
             }
 
