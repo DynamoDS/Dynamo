@@ -128,7 +128,7 @@ namespace DynamoCoreWpfTests
         [Test]
         public void NodeSuggestions_GeometryNodes_SortedBy_NodeGroup_CreateActionQuery()
         {
-            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a curve.
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("DummyPoint.DirectionTo")).FirstOrDefault(); //returns a dummyPoint.
             var node = type1.CreateNode();
             ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
                node, 0, 0, true, false));
@@ -139,7 +139,7 @@ namespace DynamoCoreWpfTests
 
             var suggestions = searchViewModel.GetMatchingNodes();
             Assert.AreEqual(SearchElementGroup.Create, suggestions.FirstOrDefault().Group);
-            Assert.AreEqual(SearchElementGroup.Action, suggestions.ElementAt(45).Group);
+            Assert.AreEqual(SearchElementGroup.Action, suggestions.ElementAt(suggestions.Count()/2).Group);
             Assert.AreEqual(SearchElementGroup.Query, suggestions.LastOrDefault().Group);
 
         }
