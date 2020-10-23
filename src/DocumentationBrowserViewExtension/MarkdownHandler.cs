@@ -133,9 +133,10 @@ namespace Dynamo.DocumentationBrowser
                 var imageName = image.Url.Split(new string[] { "./" }, StringSplitOptions.None);
                 var dir = Path.GetDirectoryName(mdFilePath);
 
-                var absoluteImagePath = Path.Combine(@"file://localhost/", dir, imageName.Last());
+                var htmlImagePathPrefix = @"file:///";
+                var absoluteImagePath = Path.Combine(dir, imageName.Last());
 
-                image.Url = absoluteImagePath;
+                image.Url = $"{htmlImagePathPrefix}{absoluteImagePath}";
             }
         }
     }

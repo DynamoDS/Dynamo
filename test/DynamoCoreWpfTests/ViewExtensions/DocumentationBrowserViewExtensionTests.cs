@@ -2,6 +2,7 @@
 using Dynamo.DocumentationBrowser;
 using Dynamo.Interfaces;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -25,8 +27,14 @@ namespace DynamoCoreWpfTests
         private const string indexPageHtmlHeader = "<h2>Dynamo Documentation Browser</h2>";
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
+        private const string nodeDocumentationInfoHeader = "<h2>Node Info</h2>";
+        private const string nodeDocumentationInfoNodeType = "<td>Node Type</td>";
+        private const string nodeDocumentationInfoNodeDescription = "<td>Description</td>";
+        private const string nodeDocumentationInfoNodeInputs = "<td>Inputs</td>";
+        private const string nodeDocumentationInfoNodeOutputs = "<td>Outputs</td>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
+        private string PackageToLoadAfterStartup { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgsLoadAfterStartup\PackageWithNodeDocumentation"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
@@ -371,9 +379,10 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(docsEvent.IsRemoteResource);
             Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
             Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(@"<h2 id=""heading"">Division by zero</h2>"));
+            Assert.IsTrue(htmlContent.Contains(@"<h2>Division by zero</h2>"));
             Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
         }
+
         [Test]
         public void DPIScriptExists()
         {
@@ -424,6 +433,97 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("MyPage.en-US.html", result);
         }
 
+        [Test]
+        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithOOTBNodeWithoutAddtionalDocumentaion()
+        {
+            // Arrange
+            RaiseLoadedEvent(this.View);
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+            var nodeName = "+";
+            var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
+            var expectedNodeDocumentationNamespace = "<p><i>.%add</i></p>";
+            var expectedAddtionalNodeDocumentaion = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
+       
+            // Act
+            this.ViewModel.ExecuteCommand(
+                new DynamoModel.CreateNodeCommand(
+                    Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+                );
+
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
+
+            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationTitle));
+            Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationNamespace));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoHeader));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeDescription));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaion));
+        }
+
+        [Test]
+        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithPackageNodeWithAddtionalDocumentaion()
+        {
+            // Arrange
+            RaiseLoadedEvent(this.View);
+            var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
+            var nodeName = "Package.Hello";
+            var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
+            var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
+            var expectedAddtionalNodeDocumentaionHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
+            var expectedAddtionalNodeDocumentaionImage = @"<p><img src=""file:///C:%5CUsers%5CSylvesterKnudsen%5CDocuments%5CGitHub%5CDynamo%5Ctest%5Ccore%5Cdocbrowser%5Cpkgs%5CPackageWithNodeDocumentation%5Cdoc%5Cicon.png"" alt=""Dynamo Icon image"" /></p>";
+
+            // Act
+
+            this.ViewModel.ExecuteCommand(
+                 new DynamoModel.CreateNodeCommand(
+                     Guid.NewGuid().ToString(), nodeName, 0, 0, false, false)
+                 );
+
+            var node = this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault();
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(node, this.ViewModel);
+
+            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            docBrowserviewExtension.HandleRequestOpenDocumentationLink(nodeAnnotationEventArgs);
+            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+            var htmlContent = GetSidebarDocsBrowserContents();
+
+            // Assert
+            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+            Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationTitle));
+            Assert.IsTrue(htmlContent.Contains(expectedNodeDocumentationNamespace));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoHeader));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeDescription));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
+            Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaionHeader));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaionImage));
+        }
+
+        [Test]
+        public void CanGetNodeDocumentaionMarkdownFromPackageDocumentaionManager()
+        {
+            // Arrange
+            var nodeWithDocumentaion = "Package.Package.Hello";
+            var nodeWithoutDocumentaion = "Package.Package.Package";
+
+            // Assert
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentaion));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentaion));
+        }
+
         #region Helpers
 
         private DocumentationBrowserViewExtension SetupNewViewExtension(bool runLoadedMethod = false)
@@ -470,6 +570,16 @@ namespace DynamoCoreWpfTests
         private void ShowDocsBrowser()
         {
             GetDocsMenuItems().First().RaiseEvent(new RoutedEventArgs(MenuItem.CheckedEvent));
+        }
+
+        public static void RaiseLoadedEvent(FrameworkElement element)
+        {
+            MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
+
+            eventMethod.Invoke(element, new object[] { args });
         }
 
         #endregion
