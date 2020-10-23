@@ -166,7 +166,6 @@ namespace DynamoCoreWpfTests
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
 
-            searchViewModel.InitializeDefaultAutoCompleteCandidates();
             // Running the default algorithm should return no suggestions
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
@@ -174,7 +173,7 @@ namespace DynamoCoreWpfTests
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
-            Assert.AreEqual("Code Block", searchViewModel.FilteredResults.FirstOrDefault().Name);
+            Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
     }
 }

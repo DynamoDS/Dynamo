@@ -25,7 +25,7 @@ namespace Dynamo.ViewModels
             InitializeDefaultAutoCompleteCandidates();
         }
 
-        internal void InitializeDefaultAutoCompleteCandidates()
+        private void InitializeDefaultAutoCompleteCandidates()
         {
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are basic input types in Dynamo
@@ -33,7 +33,7 @@ namespace Dynamo.ViewModels
             var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean" };
             foreach (var query in queries)
             {
-                var foundNode = Search(query).ToList().FirstOrDefault();
+                var foundNode = Search(query).FirstOrDefault();
                 if(foundNode != null)
                 {
                     candidates.Add(foundNode);
@@ -48,7 +48,7 @@ namespace Dynamo.ViewModels
 
             var searchElements = GetMatchingSearchElements();
             // If node match searchElements found, use default suggestions
-            if (searchElements.Count() == 0)
+            if (!searchElements.Any())
             {
                 FilteredResults = DefaultResults;
             }
