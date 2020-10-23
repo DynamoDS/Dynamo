@@ -85,15 +85,14 @@ namespace Dynamo.ViewModels
         {
             var elements = new List<NodeSearchElement>();
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
-            if (inputPortType == null) return elements;
 
             //List of nodes that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputPorts = new List<string>() { "var", "object", "string", "bool", "int", "double" };
+          
+            if (inputPortType == null || (skippedInputPorts.Any(s => s == inputPortType.ToString()))) return elements;
 
-            var libraryServices = dynamoViewModel.Model.LibraryServices;
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
-            if (inputPortType == null) return elements;
             //if inputPortType is an array, use just the typename
             var parseResult = ParserUtils.ParseWithCore($"dummyName:{ inputPortType};", core);
             var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
@@ -109,8 +108,7 @@ namespace Dynamo.ViewModels
 
                 var descriptor = ztSearchElement.Descriptor;
                 if (descriptor.ReturnType.ToString() == inputPortType)
-                    if (!skippedInputPorts.Any(s => s == returnTypeName.ToString()) 
-                    && (returnTypeName == inputPortType)
+                    if ((returnTypeName == inputPortType)
                     || DerivesFrom(inputPortType, returnTypeName, core))
                 {
                     elements.Add(ztSearchElement);
