@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes;
+using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.ViewModels;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
@@ -10,11 +13,29 @@ namespace DynamoCoreWpfTests
 {
     class NodeAutoCompleteSearchTests : DynamoTestUIBase
     {
+
+        [NodeDescription("This is test node with multiple output ports and types specified.")]
+        [NodeName("node with multi type outputs")]
+        [InPortNames("input1", "input2")]
+        [InPortTypes("int", "double")]
+        [InPortDescriptions("This is input1", "This is input2")]
+
+        [OutPortNames("output1", "output2")]
+        [OutPortTypes("Curve", "String")]
+        public class MultReturnTypeNode : NodeModel
+        {
+            public MultReturnTypeNode()
+            {
+                RegisterAllPorts();
+            }
+        }
+
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
             libraries.Add("FFITarget.dll");
+            libraries.Add("ProtoGeometry.dll");
         }
 
         public override void Open(string path)
@@ -29,6 +50,12 @@ namespace DynamoCoreWpfTests
             base.Run();
 
             DispatcherUtil.DoEvents();
+        }
+
+        public override void Start()
+        {
+            base.Start();
+            Model.AddZeroTouchNodesToSearch(Model.LibraryServices.GetAllFunctionGroups());
         }
 
 
@@ -99,6 +126,25 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_GeometryNodes_SortedBy_NodeGroup_CreateActionQuery()
+        {
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("DummyPoint.DirectionTo")).FirstOrDefault(); //returns a dummyPoint.
+            var node = type1.CreateNode();
+            ViewModel.ExecuteCommand(new DynamoModel.CreateNodeCommand(
+               node, 0, 0, true, false));
+            DispatcherUtil.DoEvents();
+            var nodeView = NodeViewWithGuid(node.GUID.ToString());
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = nodeView.ViewModel.InPorts.FirstOrDefault();
+
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(SearchElementGroup.Create, suggestions.FirstOrDefault().Group);
+            Assert.AreEqual(SearchElementGroup.Action, suggestions.ElementAt(suggestions.Count()/2).Group);
+            Assert.AreEqual(SearchElementGroup.Query, suggestions.LastOrDefault().Group);
+
+        }
+
+        [Test]
         public void NodeSuggestions_InputPortBuiltInNode_AreCorrect()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
@@ -120,8 +166,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(16, suggestions.Count());
-
+            Assert.AreEqual(22, suggestions.Count());
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
             var nodes = new[]
             {
@@ -140,7 +185,14 @@ namespace DynamoCoreWpfTests
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyD",
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyE",
                 "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyF",
-                "FFITarget.FFITarget.TestData.GetStringValue"
+                "FFITarget.FFITarget.TestData.GetStringValue",
+                "FFITarget.FFITarget.TestRankReduce.Method",
+                "FFITarget.FFITarget.TestRankReduce.Property",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceMethod",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceProperty",
+                "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ExportToSAT",
+                "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ToSolidDef"
+
             };
             var expectedNodes = nodes.OrderBy(s => s);
             for (int i = 0; i < 5; i++)
@@ -149,6 +201,63 @@ namespace DynamoCoreWpfTests
             }
         }
 
+        [Test]
+        public void NodeSearchElementComparerSortsBasedOnTypeDistance()
+        {
+            var core = Model.LibraryServices.LibraryManagementCore;
+            //we'll compare curve to polyCurve and expect the result to be -1 for curve closer to our input type.
+            var inputType = "Autodesk.DesignScript.Geometry.Curve";
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a curve.
+            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+
+            var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
+            Assert.AreEqual(-1, comparer.Compare(type1, type2));
+        }
+
+        [Test]
+        public void NodeSearchElementComparerSortsBasedOnTypeDistance_NonExact()
+        {
+            var core = Model.LibraryServices.LibraryManagementCore;
+            //we'll compare Rect to PolyCurve and expect the result to be 1 for PolyCurve closer to our input type.
+            var inputType = "Autodesk.DesignScript.Geometry.Curve";
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Rectangle.ByWidthLength")).FirstOrDefault(); //returns a Rect.
+            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+
+            var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
+            Assert.AreEqual(1, comparer.Compare(type1, type2));
+        }
+
+        [Test]
+        public void NodeSearchElementComparerSortsBasedOnTypeDistance_MultiReturnNodeModel()
+        {
+            var core = Model.LibraryServices.LibraryManagementCore;
+            //inject our mock node into search model.
+            Model.SearchModel.Add(new NodeModelSearchElement(new TypeLoadData(typeof(MultReturnTypeNode))));
+
+            //we'll compare polyCurve to our mock node and expect the result to be 1 for the mocknode curve output to be closer to our input type.
+            var inputType = "Autodesk.DesignScript.Geometry.Curve";
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
+            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("PolyCurve.ByJoinedCurves")).FirstOrDefault(); //returns a polycurve.
+
+            var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
+            Assert.AreEqual(-1, comparer.Compare(type1, type2));
+        }
+
+        [Test]
+        public void NodeSearchElementComparerSortsBasedOnTypeDistance_MultiReturnNodeModelEqual()
+        {
+            var core = Model.LibraryServices.LibraryManagementCore;
+            //inject our mock node into search model.
+            Model.SearchModel.Add(new NodeModelSearchElement(new TypeLoadData(typeof(MultReturnTypeNode))));
+
+            //we'll compare curve to our mock node and expect the result to be 0 since they both match exactly.
+            var inputType = "Autodesk.DesignScript.Geometry.Curve";
+            var type1 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("MultReturnTypeNode")).FirstOrDefault(); //returns a Curve, and String.
+            var type2 = Model.SearchModel.SearchEntries.Where(x => x.FullName.Contains("Curve.Offset")).FirstOrDefault(); //returns a Curve.
+
+            var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
+            Assert.AreEqual(0, comparer.Compare(type1, type2));
+        }
         [Test]
         public void NodeSuggestions_DefaultSuggestions()
         {
