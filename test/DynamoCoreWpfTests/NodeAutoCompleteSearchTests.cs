@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -82,7 +80,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[1];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(5, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -112,7 +110,7 @@ namespace DynamoCoreWpfTests
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
-            var suggestions = searchViewModel.GetMatchingNodes();
+            var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(4, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
@@ -260,6 +258,33 @@ namespace DynamoCoreWpfTests
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(0, comparer.Compare(type1, type2));
         }
+        [Test]
+        public void NodeSuggestions_DefaultSuggestions()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("77aad5875f124bf59a4ece6b30813d3b").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+
+            // Running the default algorithm should return no suggestions
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(0, suggestions.Count());
+
+            // The initial list will fill the FilteredResults with a few options - all basic input types
+            searchViewModel.PopulateAutoCompleteCandidates();
+            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
+        }
+
         [Test]
         public void NodeSuggestions_DefaultSuggestions()
         {
