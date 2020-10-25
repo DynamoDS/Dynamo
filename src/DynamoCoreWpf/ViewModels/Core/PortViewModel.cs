@@ -18,7 +18,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
-        private const double autocompleteUISpacing = 5.0;
+        private const double autocompleteUISpacing = 2.5;
 
         /// <summary>
         /// Port model.
