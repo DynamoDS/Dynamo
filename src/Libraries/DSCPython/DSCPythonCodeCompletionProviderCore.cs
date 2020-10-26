@@ -721,8 +721,15 @@ namespace DSCPython
 
             foreach (var member in d.Dir())
             {
-                var completionType = d.GetAttr(member.ToString()).ToString().Contains("built-in") ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
-                items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
+                try
+                {
+                    var completionType = d.GetAttr(member.ToString()).ToString().Contains("built-in") ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
+                    items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
+                }
+                catch (Exception ex)
+                {
+                    Log(ex.ToString());
+                }
             }
 
             return items;
