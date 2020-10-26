@@ -88,8 +88,11 @@ namespace Dynamo.ViewModels
 
             //List of nodes that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double" };
-          
-            if (inputPortType == null || (skippedInputTypes.Any(s => s == inputPortType.ToString()))) return elements;
+
+            if (inputPortType == null || (skippedInputTypes.Any(s => s == inputPortType.ToString())))
+            {
+                return elements; 
+            }
 
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
