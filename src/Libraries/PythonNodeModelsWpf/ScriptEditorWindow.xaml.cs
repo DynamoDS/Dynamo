@@ -160,6 +160,7 @@ namespace PythonNodeModelsWpf
             originalScript = editText.Text;
             nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
+            completionProvider = new CompletionProviderAdaptor(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)

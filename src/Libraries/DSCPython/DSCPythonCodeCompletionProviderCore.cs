@@ -330,8 +330,6 @@ namespace DSCPython
         public void UpdateImportedTypes(string code)
         {
             // Detect all lib references prior to attempting to import anything
-            Python.Included.Installer.SetupPython().Wait();
-
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
@@ -1142,7 +1140,6 @@ namespace DSCPython
             BasicVariableTypes.Add(Tuple.Create(LIST_VARIABLE, typeof(PyList)));
             BasicVariableTypes.Add(Tuple.Create(DICT_VARIABLE, typeof(PyDict)));
             
-            Python.Included.Installer.SetupPython().Wait();
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
@@ -1266,8 +1263,6 @@ clr.setPreload(True)
         {
             if (Scope != null) 
             {
-                Python.Included.Installer.SetupPython().Wait();
-
                 if (!PythonEngine.IsInitialized)
                 {
                     PythonEngine.Initialize();
