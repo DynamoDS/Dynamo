@@ -88,8 +88,6 @@ namespace DynamoCoreWpfTests
             Assert.IsFalse(node.IsModified);
 
             Model.PreferenceSettings.NumberFormat = "0.0";
-
-            node = Model.CurrentWorkspace.NodeFromWorkspace<LengthFromString>("5705381c277c4a86bf6650aeda12a468");
             Assert.IsTrue(node.IsModified);
         }
     }
