@@ -89,7 +89,7 @@ namespace Dynamo.ViewModels
             //List of nodes that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double" };
 
-            if (inputPortType == null || (skippedInputTypes.Any(s => s == inputPortType.ToString())))
+            if (inputPortType == null)
             {
                 return elements; 
             }
@@ -101,6 +101,12 @@ namespace Dynamo.ViewModels
             var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
             inputPortType = ast != null ? ast.datatype.Name : inputPortType;
+
+            //check if the input port return type is in the skipped input types list
+            if (skippedInputTypes.Any(s => s == inputPortType.ToString()))
+            {
+                return elements;
+            }
 
             //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
             var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
