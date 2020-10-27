@@ -249,14 +249,14 @@ namespace Dynamo.ViewModels
             double x;
             if (PortModel.PortType == PortType.Input)
             {
-                // Offset popup left by its width from X position of left edge of node.
+                // Offset popup to the left by its width from left edge of node and constant spacing.
                 // Note: MinWidth property of the control is set to a constant value in the XAML
                 // for the ActualWidth to return a consistent value.
                 x = -autocompleteUISpacing - control.ActualWidth / zoom;
             }
             else
             {
-                // Offset popup right by node width from X position of left edge of node.
+                // Offset popup to the right by node width from left edge of node.
                 x = autocompleteUISpacing + PortModel.Owner.Width;
             }
             // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
