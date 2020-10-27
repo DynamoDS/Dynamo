@@ -205,10 +205,10 @@ namespace PythonNodeModelsWpf
                 throw new NullReferenceException(nameof(nodeModel));
 
             UpdateScript(editText.Text);
-            nodeModel.RequestCodeMigration(e);
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations);
+            nodeModel.RequestCodeMigration(e);
         }
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
