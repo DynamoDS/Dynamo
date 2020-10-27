@@ -244,10 +244,11 @@ namespace Dynamo.ViewModels
 
             _node.OnRequestAutoCompletePopupPlacementTarget(popup);
 
-            popup.Placement = PortModel.PortType == PortType.Input ? PlacementMode.Left : PlacementMode.Right;
+            var zoom = _node.WorkspaceViewModel.Zoom;
 
-            popup.HorizontalOffset = -autocompleteUISpacing;
-            popup.VerticalOffset = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            var x = _node.X -autocompleteUISpacing - control.ActualWidth / zoom;
+            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            popup.PlacementRectangle = new Rect(x, y, 0, 0);
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
