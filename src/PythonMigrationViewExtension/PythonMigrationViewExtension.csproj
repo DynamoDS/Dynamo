@@ -147,6 +147,10 @@
       <Name>PythonNodeModels</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+      <Project>{EF879A10-041D-4C68-83E7-3192685F1BAE}</Project>
+      <Name>DynamoServices</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\MigrationAssistantDisclaimer.xaml">

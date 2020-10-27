@@ -1,4 +1,5 @@
-﻿using Dynamo.PythonMigration.MigrationAssistant;
+﻿using Dynamo.Logging;
+using Dynamo.PythonMigration.MigrationAssistant;
 using System.Windows;
 
 namespace Dynamo.PythonMigration.Controls
@@ -52,11 +53,19 @@ namespace Dynamo.PythonMigration.Controls
         {
             ViewModel.ChangeCode();
             this.Close();
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations,
+                "Accept");
         }
 
         private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
         {
             this.Close();
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations,
+                "Reject");
         }
     }
 }
