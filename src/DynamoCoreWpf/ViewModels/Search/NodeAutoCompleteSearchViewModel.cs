@@ -86,7 +86,7 @@ namespace Dynamo.ViewModels
             var elements = new List<NodeSearchElement>();
             var inputPortType = PortViewModel.PortModel.GetInputPortType();
 
-            //List of nodes that are skipped temporarily, and will display list of default suggestions instead.
+            //List of input types that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double" };
 
             if (inputPortType == null)
