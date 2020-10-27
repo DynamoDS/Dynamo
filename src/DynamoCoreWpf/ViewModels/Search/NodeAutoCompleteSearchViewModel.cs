@@ -103,7 +103,7 @@ namespace Dynamo.ViewModels
             inputPortType = ast != null ? ast.datatype.Name : inputPortType;
 
             //check if the input port return type is in the skipped input types list
-            if (skippedInputTypes.Any(s => s == inputPortType.ToString()))
+            if (skippedInputTypes.Any(s => s == inputPortType))
             {
                 return elements;
             }
