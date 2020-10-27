@@ -246,7 +246,15 @@ namespace Dynamo.ViewModels
 
             var zoom = _node.WorkspaceViewModel.Zoom;
 
-            var x = -autocompleteUISpacing - control.ActualWidth / zoom;
+            double x;
+            if (PortModel.PortType == PortType.Input)
+            {
+                x = -autocompleteUISpacing - control.ActualWidth / zoom;
+            }
+            else
+            {
+                x = autocompleteUISpacing + PortModel.Owner.Width;
+            }
             var y = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             popup.PlacementRectangle = new Rect(x, y, 0, 0);
         }
