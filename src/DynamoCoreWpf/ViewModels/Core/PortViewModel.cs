@@ -246,8 +246,8 @@ namespace Dynamo.ViewModels
 
             var zoom = _node.WorkspaceViewModel.Zoom;
 
-            var x = _node.X -autocompleteUISpacing - control.ActualWidth / zoom;
-            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            var x = -autocompleteUISpacing - control.ActualWidth / zoom;
+            var y = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             popup.PlacementRectangle = new Rect(x, y, 0, 0);
         }
 
