@@ -1,5 +1,6 @@
 ﻿using Dynamo.Logging;
 using Dynamo.PythonMigration.MigrationAssistant;
+using System;
 using System.Windows;
 
 namespace Dynamo.PythonMigration.Controls
@@ -53,10 +54,12 @@ namespace Dynamo.PythonMigration.Controls
         {
             ViewModel.ChangeCode();
             this.Close();
+            // Record if changes are accepted and if there are proposed changes
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations,
-                "Accept");
+                "Accept",
+                Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
         }
 
         private void OnRejectButtonClicked(object sender, RoutedEventArgs e)
@@ -65,7 +68,8 @@ namespace Dynamo.PythonMigration.Controls
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Migration,
                 Dynamo.Logging.Categories.PythonOperations,
-                "Reject");
+                "Reject",
+                Convert.ToInt32(ViewModel.CurrentViewModel.HasChanges));
         }
     }
 }

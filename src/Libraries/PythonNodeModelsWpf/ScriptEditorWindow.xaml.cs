@@ -218,15 +218,16 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngine != nodeModel.Engine || originalScript != editText.Text)
+            if (CachedEngine != nodeModel.Engine)
             {
                 nodeWasModified = true;
+                // Cover what switch did user make.
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Switch,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    CachedEngine.ToString());
             }
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Switch,
-                Dynamo.Logging.Categories.PythonOperations,
-                CachedEngine.ToString());
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)

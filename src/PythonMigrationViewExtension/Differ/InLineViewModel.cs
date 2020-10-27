@@ -8,7 +8,7 @@ namespace Dynamo.PythonMigration.Differ
     {
         public ViewMode ViewMode { get; set; }
         public DiffPaneModel DiffModel { get; set; }
-        private bool HasChanges { get { return DiffModel.HasDifferences; } }
+        public bool HasChanges { get { return DiffModel.HasDifferences; } }
 
         private State diffState;
         public State DiffState
