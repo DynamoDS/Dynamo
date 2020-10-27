@@ -48,6 +48,9 @@ namespace DSCPython
 
         internal static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
 
+        private static readonly string inBuiltMethod = "built-in";
+        private static readonly string method = "method";
+
         /// <summary>
         /// A list of short assembly names used with the TryGetTypeFromFullName method
         /// </summary>
@@ -721,7 +724,13 @@ namespace DSCPython
             {
                 try
                 {
-                    var completionType = d.GetAttr(member.ToString()).ToString().Contains("built-in") ? ExternalCodeCompletionType.Method : ExternalCodeCompletionType.Field;
+                    var completionType = ExternalCodeCompletionType.Field;
+
+                    if (d.GetAttr(member.ToString()).ToString().Contains(inBuiltMethod) || d.GetAttr(member.ToString()).ToString().Contains(method)) 
+                    {
+                        completionType = ExternalCodeCompletionType.Method;
+                    }
+
                     items.Add(Tuple.Create((string)member.ToString(), name, false, completionType));
                 }
                 catch (Exception ex)
