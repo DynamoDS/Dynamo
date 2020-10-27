@@ -160,6 +160,9 @@ namespace PythonNodeModelsWpf
             originalScript = editText.Text;
             nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Save,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -191,6 +194,9 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Run,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
@@ -200,6 +206,9 @@ namespace PythonNodeModelsWpf
 
             UpdateScript(editText.Text);
             nodeModel.RequestCodeMigration(e);
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
@@ -209,14 +218,24 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngine != nodeModel.Engine || originalScript != editText.Text) { nodeWasModified = true; }
+            if (CachedEngine != nodeModel.Engine || originalScript != editText.Text)
+            {
+                nodeWasModified = true;
+            }
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Switch,
+                Dynamo.Logging.Categories.PythonOperations,
+                CachedEngine.ToString());
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Close,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         #endregion

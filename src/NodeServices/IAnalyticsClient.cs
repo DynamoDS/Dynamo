@@ -56,6 +56,11 @@ namespace Dynamo.Logging
         /// Events Category related to DesignScript VM
         /// </summary>
         Engine,
+
+        /// <summary>
+        /// Events Category related to Python operations
+        /// </summary>
+        PythonOperations,
     }
 
     /// <summary>
@@ -99,7 +104,7 @@ namespace Dynamo.Logging
         Open,
 
         /// <summary>
-        /// Close Event, such as Close workspace
+        /// Close Event, such as Close workspace, Close Python Editor
         /// </summary>
         Close,
 
@@ -114,7 +119,7 @@ namespace Dynamo.Logging
         Write,
 
         /// <summary>
-        /// Save Event, such as Save workspace
+        /// Save Event, such as Save workspace and save Python code
         /// </summary>
         Save,
 
@@ -152,6 +157,21 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+
+        /// <summary>
+        /// Migration event, such as Python migration or DYN migration
+        /// </summary>
+        Migration,
+
+        /// <summary>
+        /// Switch event, such as Python engine switch, dropdown node switch
+        /// </summary>
+        Switch,
+
+        /// <summary>
+        /// Run event, such as Python node run clicked, Graph run Clicked
+        /// </summary>
+        Run,
     }
 
     /// <summary>
