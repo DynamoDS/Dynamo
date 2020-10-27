@@ -164,9 +164,41 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("string", type);
 
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
-            searchViewModel.PortViewModel = inPorts[0];
+            searchViewModel.PortViewModel = inPorts[1];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(0, suggestions.Count());
+            Assert.AreEqual(22, suggestions.Count());
+            var suggestedNodes = suggestions.Select(s => s.FullName).OrderBy(s => s);
+            var nodes = new[]
+            {
+                "Core.Input.File Path",
+                "Core.String.String from Array",
+                "Core.String.String from Object",
+                "FFITarget.DupTargetTest.Bar",
+                "FFITarget.FFITarget.AtLevelTestClass.sumAndConcat",
+                "FFITarget.FFITarget.AtLevelTestClass.SumAndConcat",
+                "FFITarget.FFITarget.FirstNamespace.AnotherClassWithNameConflict.PropertyA",
+                "FFITarget.FFITarget.FirstNamespace.AnotherClassWithNameConflict.PropertyB",
+                "FFITarget.FFITarget.FirstNamespace.AnotherClassWithNameConflict.PropertyC",
+                "FFITarget.FFITarget.FirstNamespace.ClassWithNameConflict.PropertyA",
+                "FFITarget.FFITarget.FirstNamespace.ClassWithNameConflict.PropertyB",
+                "FFITarget.FFITarget.FirstNamespace.ClassWithNameConflict.PropertyC",
+                "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyD",
+                "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyE",
+                "FFITarget.FFITarget.SecondNamespace.ClassWithNameConflict.PropertyF",
+                "FFITarget.FFITarget.TestData.GetStringValue",
+                "FFITarget.FFITarget.TestRankReduce.Method",
+                "FFITarget.FFITarget.TestRankReduce.Property",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceMethod",
+                "FFITarget.FFITarget.TestRankReduce.RankReduceProperty",
+                "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ExportToSAT",
+                "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ToSolidDef"
+
+            };
+            var expectedNodes = nodes.OrderBy(s => s);
+            for (int i = 0; i < 5; i++)
+            {
+                Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
+            }
         }
 
         [Test]
@@ -248,33 +280,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, suggestions.Count());
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
-            searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
-            Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
-        }
-
-        [Test]
-        public void NodeSuggestions_SkippedSuggestions()
-        {
-            Open(@"UI\builtin_inputport_suggestion.dyn");
-
-            // Get the node view for a specific node in the graph
-            NodeView nodeView = NodeViewWithGuid(Guid.Parse("1a0f89fdd3ce4214ba81c08934706452").ToString());
-
-            var inPorts = nodeView.ViewModel.InPorts;
-            Assert.AreEqual(1, inPorts.Count());
-            var port = inPorts[0].PortModel;
-            var type = port.GetInputPortType();
-            Assert.AreEqual("double", type);
-
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
-            searchViewModel.PortViewModel = inPorts[0];
-
-            // Running the algorithm against skipped nodes should return no suggestions
-            var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(0, suggestions.Count());
-
-            // The initial list will fill the FilteredResults with a list of default options
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
