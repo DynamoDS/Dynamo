@@ -56,6 +56,11 @@ namespace Dynamo.Logging
         /// Events Category related to DesignScript VM
         /// </summary>
         Engine,
+
+        /// <summary>
+        /// Events Category related to Node Auto-Complete
+        /// </summary>
+        NodeAutoCompleteOperations,
     }
 
     /// <summary>
@@ -152,6 +157,11 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+
+        /// <summary>
+        /// Select event, such as node auto-complete suggestion selection
+        /// </summary>
+        Select,
     }
 
     /// <summary>
