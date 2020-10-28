@@ -61,6 +61,11 @@ namespace Dynamo.Logging
         /// Events Category related to Node Auto-Complete
         /// </summary>
         NodeAutoCompleteOperations,
+
+        /// <summary>
+        /// Events Category related to In-Canvas search
+        /// </summary>
+        InCanvasSearchOperations
     }
 
     /// <summary>
