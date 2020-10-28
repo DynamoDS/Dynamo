@@ -103,11 +103,11 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Select,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations,
+                    searchElement.FullName);
                 }
-                Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Select,
-                Dynamo.Logging.Categories.NodeAutoCompleteOperations,
-                searchElement.FullName);
             }
         }
 
