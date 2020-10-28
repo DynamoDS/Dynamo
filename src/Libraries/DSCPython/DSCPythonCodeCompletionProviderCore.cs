@@ -667,7 +667,7 @@ namespace DSCPython
                 Log(e.ToString());
             }
 
-            var foundType = type as Type;
+            var foundType = type;
             if (foundType != null)
             {
                 ImportedTypes[name] = foundType;
@@ -979,7 +979,7 @@ namespace DSCPython
                             // Variable type
                             else if (VariableTypes.TryGetValue(name, out type))
                             {
-                                items = EnumerateMembers(type.Name, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
+                                items = EnumerateMembers(type, name).Select(x => new DSCPythonCodeCompletionDataCore(x.Item1, x.Item2, x.Item3, x.Item4, this));
                             }
                             else
                             {
