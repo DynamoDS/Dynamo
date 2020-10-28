@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
 using CoreNodeModels;
 using CoreNodeModels.Input;
 using CoreNodeModelsWpf;
@@ -40,32 +35,9 @@ namespace DynamoCoreWpfTests
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
-            SetupTests();
             libraries.Add("VMDataBridge.dll");
             libraries.Add("DSCoreNodes.dll");
-            libraries.Add("CoreNodeModelsWpf.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        public void SetupTests()
-        {
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var moduleRootFolder = Path.GetDirectoryName(assemblyPath);
-
-            var resolutionPaths = new[]
-            {
-                // The CoreNodeModelsWpf.dll needed is under "nodes" folder.
-                Path.Combine(moduleRootFolder, "nodes")
-            };
-
-            assemblyHelper = new AssemblyHelper(moduleRootFolder, resolutionPaths);
-            AppDomain.CurrentDomain.AssemblyResolve += assemblyHelper.ResolveAssembly;
-        }
-
-        [TearDown]
-        public void RunAfterAllTests()
-        {
-            assemblyHelper = null;
         }
 
         /// <summary>
