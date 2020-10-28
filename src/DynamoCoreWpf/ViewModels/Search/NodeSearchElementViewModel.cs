@@ -290,10 +290,7 @@ namespace Dynamo.Wpf.ViewModels
             DynamoSelection.Instance.ClearSelection();
             var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
 
-            foreach (var inputNode in inputNodes)
-            {
-                DynamoSelection.Instance.Selection.AddUnique(inputNode);
-            }
+            DynamoSelection.Instance.Selection.AddRange(inputNodes);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
