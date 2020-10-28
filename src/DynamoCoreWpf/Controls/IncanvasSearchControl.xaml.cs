@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -86,6 +87,10 @@ namespace Dynamo.UI.Controls
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
+                Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Select,
+                Dynamo.Logging.Categories.NodeOperations,
+                searchElement.FullName);
             }
         }
 
