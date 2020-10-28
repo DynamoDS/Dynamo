@@ -221,7 +221,7 @@ namespace PythonNodeModelsWpf
             if (CachedEngine != nodeModel.Engine)
             {
                 nodeWasModified = true;
-                // Cover what switch did user make.
+                // Cover what switch did user make. Only track when the new engine option is different with the previous one.
                 Analytics.TrackEvent(
                     Dynamo.Logging.Actions.Switch,
                     Dynamo.Logging.Categories.PythonOperations,
