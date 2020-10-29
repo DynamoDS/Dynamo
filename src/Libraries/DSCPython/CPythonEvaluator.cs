@@ -177,7 +177,7 @@ namespace DSCPython
                 return null;
             }
 
-            Python.Included.Installer.SetupPython().Wait();
+            InstallPython();
 
             if (!PythonEngine.IsInitialized)
             {
@@ -242,6 +242,21 @@ namespace DSCPython
             finally
             {
                 PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        private static bool isPythonInstalled = false;
+        /// <summary>
+        /// Makes sure Python is installed on the system and it's location added to the path.
+        /// NOTE: Calling SetupPython multiple times will add the install location to the path many times,
+        /// potentially causing the environment variable to overflow.
+        /// </summary>
+        private static void InstallPython()
+        {
+            if (!isPythonInstalled)
+            {
+                Python.Included.Installer.SetupPython().Wait();
+                isPythonInstalled = true;
             }
         }
 
