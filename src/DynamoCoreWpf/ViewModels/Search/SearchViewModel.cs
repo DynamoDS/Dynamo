@@ -174,7 +174,7 @@ namespace Dynamo.ViewModels
             set
             {
                 filteredResults = ToggleSelect(value);
-                RaisePropertyChanged(nameof(FilteredResults));
+                RaisePropertyChanged("FilteredResults");
             }
         }
 
@@ -897,7 +897,7 @@ namespace Dynamo.ViewModels
             var elementVM = element != null
                 ? new CustomNodeSearchElementViewModel(element, this)
                 : new NodeSearchElementViewModel(entry, this);
-            //TODO lookout for leak.
+
             elementVM.RequestBitmapSource += SearchViewModelRequestBitmapSource;
             return elementVM;
         }

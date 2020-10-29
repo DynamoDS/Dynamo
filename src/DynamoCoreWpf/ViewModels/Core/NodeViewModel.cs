@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using Dynamo.Configuration;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
@@ -32,8 +31,6 @@ namespace Dynamo.ViewModels
         public delegate void NodeDialogEventHandler(object sender, NodeDialogEventArgs e);
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         public delegate void PreviewPinStatusHandler(bool pinned);
-
-        internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
         #endregion
 
         #region events
@@ -566,14 +563,6 @@ namespace Dynamo.ViewModels
         #endregion
 
         #region events
-
-        internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
-
-        internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
-        {
-            RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
-        }
-
         public event NodeDialogEventHandler RequestShowNodeHelp;
         public virtual void OnRequestShowNodeHelp(Object sender, NodeDialogEventArgs e)
         {

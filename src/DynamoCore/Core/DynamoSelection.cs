@@ -160,7 +160,7 @@ namespace Dynamo.Selection
         {
             foreach (var item in range)
             {
-                Add(item);
+                Items.Add(item);
             }
 
             this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));

@@ -58,7 +58,7 @@ namespace CoreNodeModelsWpf
             get { return dynamoConvertModel.SelectedToConversionSource; }
             set
             {
-                dynamoConvertModel.SelectedToConversionSource = value;             
+                dynamoConvertModel.SelectedFromConversionSource = value;             
             }
         }
 

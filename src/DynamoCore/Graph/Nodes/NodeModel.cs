@@ -64,14 +64,12 @@ namespace Dynamo.Graph.Nodes
         private ObservableCollection<PortModel> inPorts = new ObservableCollection<PortModel>();
         private ObservableCollection<PortModel> outPorts = new ObservableCollection<PortModel>();
 
-        private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
-        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
-
         #endregion
 
-        internal const double HeaderHeight = 25;
-
         #region public members
+
+        private readonly Dictionary<int, Tuple<int, NodeModel>> inputNodes;
+        private readonly Dictionary<int, HashSet<Tuple<int, NodeModel>>> outputNodes;
 
         /// <summary>
         /// The unique name that was created the node by
