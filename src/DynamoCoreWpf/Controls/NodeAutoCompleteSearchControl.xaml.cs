@@ -36,8 +36,16 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
+            Loaded += NodeAutoCompleteSearchControl_Loaded;
             Unloaded += NodeAutoCompleteSearchControl_Unloaded;
+        }
 
+        private void NodeAutoCompleteSearchControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel != null && ViewModel.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, e);
+            }
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -124,7 +132,6 @@ namespace Dynamo.UI.Controls
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox.Focus();
-                //ViewModel.InitializeDefaultAutoCompleteCandidates();
                 ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
         }
