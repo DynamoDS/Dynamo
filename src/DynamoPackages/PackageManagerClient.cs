@@ -137,12 +137,13 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal IEnumerable<string> GetKnownHosts()
         {
-            return FailFunc.TryExecute(() =>
-            {
-                var hosts = new Hosts();
-                var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
-                return hostsResponse.content;
-            }, new List<string>());
+            //return FailFunc.TryExecute(() =>
+            //{
+            //    var hosts = new Hosts();
+            //    var hostsResponse = this.client.ExecuteAndDeserializeWithContent<List<String>>(hosts);
+            //    return hostsResponse.content;
+            //}, new List<string>());
+            return new List<string>();
         }
 
         internal bool GetTermsOfUseAcceptanceStatus()

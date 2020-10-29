@@ -178,7 +178,7 @@ namespace DSCPython
                 return null;
             }
 
-            Python.Included.Installer.SetupPython().Wait();
+            SetupPython();
 
             if (!PythonEngine.IsInitialized)
             {
@@ -243,6 +243,16 @@ namespace DSCPython
             finally
             {
                 PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        private static bool isPythonSetup = false;
+        private static void SetupPython()
+        {
+            if (!isPythonSetup)
+            {
+                Python.Included.Installer.SetupPython();
+                isPythonSetup = true;
             }
         }
 

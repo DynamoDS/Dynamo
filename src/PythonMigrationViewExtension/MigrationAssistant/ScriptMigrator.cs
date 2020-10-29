@@ -19,7 +19,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// <returns></returns>
         internal static string MigrateCode(string code)
         {
-            Installer.SetupPython().Wait();
+            Installer.SetupPython();
 
             if (!PythonEngine.IsInitialized)
             {

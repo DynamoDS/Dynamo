@@ -15,6 +15,7 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Newtonsoft.Json;
+using Python.Included;
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -132,6 +133,7 @@ namespace Dynamo.PackageManager
         public ObservableCollection<PackageAssembly> LoadedAssemblies { get; private set; }
         public ObservableCollection<CustomNodeInfo> LoadedCustomNodes { get; private set; }
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
+        public ObservableCollection<PackageDependency> PythonModules { get; set; }
         public ObservableCollection<PackageFileInfo> AdditionalFiles { get; private set; }
 
         /// <summary>
@@ -159,6 +161,7 @@ namespace Dynamo.PackageManager
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
             Header = PackageUploadBuilder.NewRequestBody(this);
+            PythonModules = new ObservableCollection<PackageDependency>();
         }
 
         public static Package FromDirectory(string rootPath, ILogger logger)
@@ -197,6 +200,14 @@ namespace Dynamo.PackageManager
                 foreach (var dep in body.dependencies)
                     pkg.Dependencies.Add(dep);
 
+                if (body.python_modules != null)
+                {
+                    foreach (var mod in body.python_modules)
+                    {
+                        pkg.PythonModules.Add(mod);
+                    }
+                }
+
                 return pkg;
             }
             catch (Exception e)
@@ -233,6 +244,20 @@ namespace Dynamo.PackageManager
                 return new List<string>();
 
             return Directory.EnumerateFiles(RootDirectory, "*.dll", SearchOption.AllDirectories);
+        }
+
+        /// <summary>
+        /// Performs any install-time action required by the package.
+        /// For now, this only includes the installation of Python modules.
+        /// </summary>
+        public void Install()
+        {
+            Installer.SetupPython();
+            foreach (var module in PythonModules)
+            {
+                // TODO: Can we check the version of the installed module? Reinstall if needed?
+                Installer.PipInstallModule(module.name);
+            }
         }
 
         /// <summary>
