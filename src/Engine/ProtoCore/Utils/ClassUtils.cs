@@ -156,13 +156,14 @@ namespace ProtoCore.Utils
 
         public static List<int> GetAncestorBlockIdsOfBlock(int blockId, List<CodeBlock> codeblockList)
         {
-            if (blockId >= codeblockList.Count || blockId < 0)
-            {
-                return new List<int>();
-            }
-            CodeBlock thisBlock = codeblockList[blockId];
-
             var ancestors = new List<int>();
+
+            CodeBlock thisBlock = CoreUtils.GetCodeBlock(codeblockList, blockId);
+            if (thisBlock == null)
+            {
+                return ancestors;
+            }
+            
             CodeBlock codeBlock = thisBlock.parent;
             while (codeBlock != null)
             {

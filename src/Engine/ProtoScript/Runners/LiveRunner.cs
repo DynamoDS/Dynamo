@@ -315,6 +315,7 @@ namespace ProtoScript.Runners
                 bnode = node as BinaryExpressionNode;
                 if (bnode.RightNode is LanguageBlockNode)
                 {
+                    // Tibi: core.CodeBlockList[0] should be the global scope (should always exist ?)
                     if (core.CodeBlockList[0].children != null)
                     {
                         core.CodeBlockList[0].children.RemoveAll(x => x.guid == bnode.guid);

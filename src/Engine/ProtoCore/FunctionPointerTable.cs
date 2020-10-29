@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoCore.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace ProtoCore.DSASM
@@ -38,7 +39,11 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    procNode = runtimeCore.DSExecutable.CompleteCodeBlocks[blockId].procedureTable.Procedures[functionIndex];
+                    var codeBlock = CoreUtils.GetCodeBlock(runtimeCore.DSExecutable.CompleteCodeBlocks, blockId);
+                    if (codeBlock != null)
+                    {
+                        procNode = codeBlock.procedureTable.Procedures[functionIndex];
+                    }
                 }
 
                 return true;

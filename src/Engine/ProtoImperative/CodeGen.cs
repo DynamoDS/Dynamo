@@ -881,22 +881,22 @@ namespace ProtoImperative
                 if (propogateUpdateGraphNode != null)
                 {
                     propogateUpdateGraphNode.languageBlockId = blockId;
-                    CodeBlock childBlock = core.CompleteCodeBlockList[blockId];
-                    foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
+                    CodeBlock childBlock = CoreUtils.GetCodeBlock(core.CompleteCodeBlockList, blockId);
+                    if (childBlock != null)
                     {
-                        foreach (var depentNode in subGraphNode.dependentList)
+                        foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
                         {
-                            if (depentNode.updateNodeRefList != null 
-                                && depentNode.updateNodeRefList.Count > 0 
-                                && depentNode.updateNodeRefList[0].nodeList != null
-                                && depentNode.updateNodeRefList[0].nodeList.Count > 0)
+                            foreach (var depentNode in subGraphNode.dependentList)
                             {
-                                SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
-                                int symbolBlockId = dependentSymbol.codeBlockId;
-                                if (symbolBlockId != Constants.kInvalidIndex)
+                                if (depentNode.updateNodeRefList != null
+                                    && depentNode.updateNodeRefList.Count > 0
+                                    && depentNode.updateNodeRefList[0].nodeList != null
+                                    && depentNode.updateNodeRefList[0].nodeList.Count > 0)
                                 {
-                                    CodeBlock symbolBlock = core.CompleteCodeBlockList[symbolBlockId];
-                                    if (!symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
+                                    SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
+                                    int symbolBlockId = dependentSymbol.codeBlockId;
+                                    CodeBlock symbolBlock = CoreUtils.GetCodeBlock(core.CompleteCodeBlockList, symbolBlockId);
+                                    if (symbolBlock != null && !symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
                                     {
                                         propogateUpdateGraphNode.PushDependent(depentNode);
                                     }

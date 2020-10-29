@@ -2,13 +2,14 @@
 using System.Linq;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
+using System.Diagnostics;
 
 namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
 
-
+        static Stopwatch timer = Stopwatch.StartNew();
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
@@ -806,6 +807,7 @@ namespace ProtoCore.Utils
         /// <returns></returns>
         public static CodeBlock GetCodeBlock(List<CodeBlock> blockList, int blockId)
         {
+            timer.Start();
             CodeBlock codeblock = null;
             codeblock = blockList.Find(x => x.codeBlockId == blockId);
             if (codeblock == null)
@@ -819,6 +821,9 @@ namespace ProtoCore.Utils
                     }
                 }
             }
+            timer.Stop();
+            var seconds = timer.Elapsed.TotalSeconds;
+            System.Console.WriteLine(seconds);
             return codeblock;
         }
         

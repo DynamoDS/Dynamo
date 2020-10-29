@@ -1513,8 +1513,13 @@ namespace ProtoCore.DSASM
                         // happens. 
                         if (graphNode.isLanguageBlock && currentLangBlock != Constants.kInvalidIndex)
                         {
-                            if (graphNode.languageBlockId == currentLangBlock
-                                || exe.CompleteCodeBlocks[currentLangBlock].IsMyAncestorBlock(graphNode.languageBlockId))
+                            if (graphNode.languageBlockId == currentLangBlock)
+                            {
+                                continue;
+                            }
+
+                            var cb = CoreUtils.GetCodeBlock(exe.CompleteCodeBlocks, currentLangBlock);
+                            if (cb != null && cb.IsMyAncestorBlock(graphNode.languageBlockId))
                             {
                                 continue;
                             }
@@ -2904,6 +2909,11 @@ namespace ProtoCore.DSASM
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
+            CodeBlock codeBlock = CoreUtils.GetCodeBlock(exe.CompleteCodeBlocks, blockId);
+            if (codeBlock == null)
+            {
+                throw new RuntimeException($"Could find CodeBlock with id {blockId}");
+            }
             foreach (CodeBlock cb in exe.CompleteCodeBlocks[blockId].children)
             {
                 if (cb.blockType == CodeBlockType.Construct)
@@ -4409,7 +4419,11 @@ namespace ProtoCore.DSASM
             StackValue op1 = instruction.op1;
             int blockId = op1.BlockIndex;
 
-            CodeBlock codeBlock = exe.CompleteCodeBlocks[blockId];
+            CodeBlock codeBlock = CoreUtils.GetCodeBlock(exe.CompleteCodeBlocks, blockId);
+            if (codeBlock == null)
+            {
+                throw new RuntimeException($"Could find CodeBlock with id {blockId}");
+            }
             runtimeVerify(codeBlock.blockType == CodeBlockType.Construct);
             GCCodeBlock(blockId);
             pc++;
