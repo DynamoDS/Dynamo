@@ -294,6 +294,10 @@ sys.stdout = DynamoStdOut({0})
             if (EvaluationBegin != null)
             {
                 EvaluationBegin(EvaluationState.Begin, engine, scope, code, bindingValues);
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.End,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    "IronPythonEvaluation");
             }
         }
 
@@ -315,6 +319,10 @@ sys.stdout = DynamoStdOut({0})
             {
                 EvaluationEnd( isSuccessful ? EvaluationState.Success : EvaluationState.Failed, 
                     engine, scope, code, bindingValues);
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.End,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    "IronPythonEvaluation");
             }
         }
 
