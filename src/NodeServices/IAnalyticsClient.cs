@@ -57,6 +57,7 @@ namespace Dynamo.Logging
         /// </summary>
         Engine,
 
+        /// <summary>
         /// Events Category related to Node Auto-Complete
         /// </summary>
         NodeAutoCompleteOperations,
