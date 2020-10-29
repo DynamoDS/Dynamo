@@ -168,6 +168,7 @@ namespace Dynamo.Logging
         /// </summary>
         Installed,
         
+        /// <summary>
         /// Select event, such as node auto-complete suggestion selection or in-canvas search selection
         /// </summary>
         Select,
