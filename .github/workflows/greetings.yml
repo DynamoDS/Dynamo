@@ -1,7 +1,9 @@
 name: Greetings
 
-on: [issues]
-
+on: 
+  issues:
+    types: [opened]
+  
 jobs:
   greeting:
     runs-on: ubuntu-latest
