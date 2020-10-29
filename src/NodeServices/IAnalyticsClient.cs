@@ -56,6 +56,16 @@ namespace Dynamo.Logging
         /// Events Category related to DesignScript VM
         /// </summary>
         Engine,
+
+        /// <summary>
+        /// Events Category related to Node Auto-Complete
+        /// </summary>
+        NodeAutoCompleteOperations,
+
+        /// <summary>
+        /// Events Category related to In-Canvas search
+        /// </summary>
+        InCanvasSearchOperations
     }
 
     /// <summary>
@@ -152,6 +162,11 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+
+        /// <summary>
+        /// Select event, such as node auto-complete suggestion selection or in-canvas search selection
+        /// </summary>
+        Select,
     }
 
     /// <summary>

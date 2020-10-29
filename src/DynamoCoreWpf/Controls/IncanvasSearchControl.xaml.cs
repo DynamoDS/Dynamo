@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -34,8 +35,16 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
+            Loaded += InCanvasSearchControl_Loaded;
             Unloaded += InCanvasSearchControl_Unloaded;
 
+        }
+
+        private void InCanvasSearchControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.InCanvasSearchOperations);
         }
 
         private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -86,6 +95,10 @@ namespace Dynamo.UI.Controls
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
+                Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Select,
+                Dynamo.Logging.Categories.InCanvasSearchOperations,
+                searchElement.FullName);
             }
         }
 
