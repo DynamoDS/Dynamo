@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
@@ -262,7 +261,7 @@ namespace DSCPython
         }
 
         /// <summary>
-        /// Creates and initializaes the global Python scope.
+        /// Creates and initializes the global Python scope.
         /// </summary>
         private static PyScope CreateGlobalScope()
         {
@@ -553,6 +552,10 @@ sys.stdout = DynamoStdOut({0})
             if (EvaluationBegin != null)
             {
                 EvaluationBegin(EvaluationState.Begin, scope, code, bindingValues);
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Start,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    "CPythonEvaluation");
             }
         }
 
@@ -572,6 +575,10 @@ sys.stdout = DynamoStdOut({0})
             {
                 EvaluationEnd(isSuccessful ? EvaluationState.Success : EvaluationState.Failed,
                     scope, code, bindingValues);
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.End,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    "CPythonEvaluation");
             }
         }
 
