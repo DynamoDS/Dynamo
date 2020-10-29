@@ -50,6 +50,8 @@ namespace DSCPython
 
         private static readonly string inBuiltMethod = "built-in";
         private static readonly string method = "method";
+        private static readonly string internalType = "Autodesk";
+
 
         /// <summary>
         /// A list of short assembly names used with the TryGetTypeFromFullName method
@@ -753,54 +755,57 @@ namespace DSCPython
             var items = new List<Tuple<string, string, bool, ExternalCodeCompletionType>>();
             var completionsList = new SortedList<string, ExternalCodeCompletionType>();
 
-            var methodInfo = type.GetMethods();
-            var propertyInfo = type.GetProperties();
-            var fieldInfo = type.GetFields();
-
-            foreach (MethodInfo methodInfoItem in methodInfo)
+            if (type.FullName.Contains(internalType))
             {
-                if (methodInfoItem.IsPublic
-                    && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
-                    && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
-                    && (methodInfoItem.Name.IndexOf("__") != 0))
+                var methodInfo = type.GetMethods();
+                var propertyInfo = type.GetProperties();
+                var fieldInfo = type.GetFields();
+
+                foreach (MethodInfo methodInfoItem in methodInfo)
                 {
-                    if (!completionsList.ContainsKey(methodInfoItem.Name))
+                    if (methodInfoItem.IsPublic
+                        && (methodInfoItem.Name.IndexOf("get_") != 0) && (methodInfoItem.Name.IndexOf("set_") != 0)
+                        && (methodInfoItem.Name.IndexOf("add_") != 0) && (methodInfoItem.Name.IndexOf("remove_") != 0)
+                        && (methodInfoItem.Name.IndexOf("__") != 0))
                     {
-                        completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.Method);
+                        if (!completionsList.ContainsKey(methodInfoItem.Name))
+                        {
+                            completionsList.Add(methodInfoItem.Name, ExternalCodeCompletionType.Method);
+                        }
                     }
                 }
-            }
 
-            foreach (PropertyInfo propertyInfoItem in propertyInfo)
-            {
-                if (!completionsList.ContainsKey(propertyInfoItem.Name))
+                foreach (PropertyInfo propertyInfoItem in propertyInfo)
                 {
-                    completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.Property);
-                }
-            }
-
-            foreach (FieldInfo fieldInfoItem in fieldInfo)
-            {
-                if (!completionsList.ContainsKey(fieldInfoItem.Name))
-                {
-                    completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.Field);
-                }
-            }
-
-            if (type.IsEnum)
-            {
-                foreach (string en in type.GetEnumNames())
-                {
-                    if (!completionsList.ContainsKey(en))
+                    if (!completionsList.ContainsKey(propertyInfoItem.Name))
                     {
-                        completionsList.Add(en, ExternalCodeCompletionType.Field);
+                        completionsList.Add(propertyInfoItem.Name, ExternalCodeCompletionType.Property);
                     }
                 }
-            }
 
-            foreach (var completionPair in completionsList)
-            {
-                items.Add(Tuple.Create(completionPair.Key, name, true, completionPair.Value));
+                foreach (FieldInfo fieldInfoItem in fieldInfo)
+                {
+                    if (!completionsList.ContainsKey(fieldInfoItem.Name))
+                    {
+                        completionsList.Add(fieldInfoItem.Name, ExternalCodeCompletionType.Field);
+                    }
+                }
+
+                if (type.IsEnum)
+                {
+                    foreach (string en in type.GetEnumNames())
+                    {
+                        if (!completionsList.ContainsKey(en))
+                        {
+                            completionsList.Add(en, ExternalCodeCompletionType.Field);
+                        }
+                    }
+                }
+
+                foreach (var completionPair in completionsList)
+                {
+                    items.Add(Tuple.Create(completionPair.Key, name, true, completionPair.Value));
+                }
             }
 
             return items;
