@@ -57,6 +57,15 @@ namespace Dynamo.Logging
         /// </summary>
         Engine,
 
+        /// Events Category related to Node Auto-Complete
+        /// </summary>
+        NodeAutoCompleteOperations,
+
+        /// <summary>
+        /// Events Category related to In-Canvas search
+        /// </summary>
+        InCanvasSearchOperations,
+        
         /// <summary>
         /// Events Category related to Python operations
         /// </summary>
@@ -157,6 +166,10 @@ namespace Dynamo.Logging
         /// Update Installed event
         /// </summary>
         Installed,
+        
+        /// Select event, such as node auto-complete suggestion selection or in-canvas search selection
+        /// </summary>
+        Select,
 
         /// <summary>
         /// Migration event, such as Python migration or DYN migration
