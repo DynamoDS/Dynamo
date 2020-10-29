@@ -20,6 +20,7 @@
 | PythonJSONParsing       | 2.1 or later  | Strings, Dictionary, JSON, Python                                             | This graph uses JSON nodes, which were introduced in 2.1 | 
 | TSplinesSrf_to_Mesh     | 2.x           | Points, Meshes                                                                |                                                          | 
 | Vase                    | 2.x           | Curves, Surfaces, Solids, List Operations, Map/Combine                        |                                                          | 
+| CurveParameterAtPointQA_2.7.0_1 | 2.x   | Curve.ParameterAtPoint for PolyCurve                                          |                                                          |
 
 
 
@@ -61,3 +62,6 @@
 
 ### Vase
 ![](images/Vase.PNG)
+
+### CurveParameterAtPoint
+![](images/CurveParameterAtPoint.PNG)
