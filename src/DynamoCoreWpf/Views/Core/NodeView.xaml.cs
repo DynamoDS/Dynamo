@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -17,6 +18,7 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+
 
 namespace Dynamo.Controls
 {
@@ -134,6 +136,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
@@ -209,6 +212,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
@@ -279,6 +283,11 @@ namespace Dynamo.Controls
 
                 previewControl.BindToDataSource();
             }));
+        }
+
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
+        {
+            popup.PlacementTarget = this;
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)

@@ -146,6 +146,7 @@ namespace Dynamo.Views
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -364,7 +365,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                this.removeViewModelsubscriptions(oldViewModel);
+                removeViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)

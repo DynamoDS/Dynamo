@@ -1,0 +1,168 @@
+{
+  "Uuid": "841dedc9-db6f-4484-b84a-8b9fd3c20a9a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "converter_node_test",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.DynamoConvert, CoreNodeModels",
+      "NodeType": "ConvertBetweenUnitsNode",
+      "MeasurementType": "Length",
+      "FromConversion": "Inches",
+      "ToConversion": "Meters",
+      "Id": "b30c51f000ce4fa396cfdd43b0db45a6",
+      "Inputs": [
+        {
+          "Id": "5f7a73fe74ce41b699c2e7f3c682103e",
+          "Name": "",
+          "Description": "A numeric value for conversion.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1afd01292aa64317bc0379cd77e61cd4",
+          "Name": "",
+          "Description": "A converted numeric value.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Convert between units of measure."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "InputValue": 34.0,
+      "Id": "d6b824d37d1741b6ba6b9e15a7bf14ab",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "1fed05ce6e0b482ba88a710f270f4c11",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "6805c0f154474e539b7c7cb0d1bf4de0",
+      "Inputs": [
+        {
+          "Id": "36a3b31ee4a64c6095587398262d6f5b",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "be7393754b774da8acd8d1ecbc83fc93",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "1afd01292aa64317bc0379cd77e61cd4",
+      "End": "36a3b31ee4a64c6095587398262d6f5b",
+      "Id": "51d31a9d2a0f4d03b0527c1514aa18b7"
+    },
+    {
+      "Start": "1fed05ce6e0b482ba88a710f270f4c11",
+      "End": "5f7a73fe74ce41b699c2e7f3c682103e",
+      "Id": "c48e32cd6829465e923ffba4a6042e06"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.9.0.2856",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Convert Between Units",
+        "Id": "b30c51f000ce4fa396cfdd43b0db45a6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 217.5,
+        "Y": 310.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number",
+        "Id": "d6b824d37d1741b6ba6b9e15a7bf14ab",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 45.5,
+        "Y": 216.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "6805c0f154474e539b7c7cb0d1bf4de0",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 757.5,
+        "Y": 230.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
