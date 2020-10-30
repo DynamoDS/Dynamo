@@ -11,6 +11,7 @@
     {
         ViewMode ViewMode { get; }
         State DiffState { get; set; }
+        bool HasChanges { get; }
     }
 
     public enum ViewMode

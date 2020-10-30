@@ -160,6 +160,9 @@ namespace PythonNodeModelsWpf
             originalScript = editText.Text;
             nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Save,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -191,6 +194,9 @@ namespace PythonNodeModelsWpf
             {
                 dynamoViewModel.HomeSpace.Run();
             }
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Run,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         private void OnMigrationAssistantClicked(object sender, RoutedEventArgs e)
@@ -199,6 +205,9 @@ namespace PythonNodeModelsWpf
                 throw new NullReferenceException(nameof(nodeModel));
 
             UpdateScript(editText.Text);
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Migration,
+                Dynamo.Logging.Categories.PythonOperations);
             nodeModel.RequestCodeMigration(e);
         }
 
@@ -209,7 +218,15 @@ namespace PythonNodeModelsWpf
 
         private void OnEngineChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (CachedEngine != nodeModel.Engine || originalScript != editText.Text) { nodeWasModified = true; }
+            if (CachedEngine != nodeModel.Engine)
+            {
+                nodeWasModified = true;
+                // Cover what switch did user make. Only track when the new engine option is different with the previous one.
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Switch,
+                    Dynamo.Logging.Categories.PythonOperations,
+                    CachedEngine.ToString());
+            }
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
         }
 
@@ -217,6 +234,9 @@ namespace PythonNodeModelsWpf
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
+            Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Close,
+                Dynamo.Logging.Categories.PythonOperations);
         }
 
         #endregion
