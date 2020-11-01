@@ -2937,6 +2937,10 @@ namespace ProtoCore.DSASM
             for (int n = 0; n < exe.instrStreamList.Length; ++n)
             {
                 InstructionStream stream = exe.instrStreamList[n];
+                if (stream == null)
+                {
+                    continue;
+                }
                 for (int i = 0; i < stream.dependencyGraph.GraphList.Count; ++i)
                 {
                     AssociativeGraph.GraphNode node = stream.dependencyGraph.GraphList[i];
