@@ -20,6 +20,7 @@ using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
+using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
@@ -186,7 +187,14 @@ namespace Dynamo.Views
                     break;
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
-                    popup.IsOpen = DynamoModel.IsTestMode || IsMouseOver;
+                    var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
+                    if (displayPopup && popup == NodeAutoCompleteSearchBar)
+                    {
+                        ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                    }
+                    popup.IsOpen = displayPopup;
+                    popup.CustomPopupPlacementCallback = null;
+                    
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;

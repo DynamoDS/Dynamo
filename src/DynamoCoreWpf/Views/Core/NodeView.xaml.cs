@@ -288,6 +288,9 @@ namespace Dynamo.Controls
         private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
         {
             popup.PlacementTarget = this;
+
+            ViewModel.ActualHeight = ActualHeight;
+            ViewModel.ActualWidth = ActualWidth;
         }
 
         void ViewModel_RequestsSelection(object sender, EventArgs e)

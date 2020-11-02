@@ -31,7 +31,6 @@ namespace Dynamo.ViewModels
             InitializeDefaultAutoCompleteCandidates();
         }
 
-
         private void InitializeDefaultAutoCompleteCandidates()
         {
             var candidates = new List<NodeSearchElementViewModel>();
