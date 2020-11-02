@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Dynamo.Controls;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.ViewModels
 {
@@ -12,6 +14,7 @@ namespace Dynamo.ViewModels
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
         internal PortViewModel PortViewModel { get; set; }
+        private List<NodeSearchElement> searchElementsCache = new List<NodeSearchElement>();
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
@@ -40,6 +43,14 @@ namespace Dynamo.ViewModels
             if(PortViewModel == null) return;
 
             var searchElements = GetMatchingNodes();
+
+            searchElementsCache.Clear();
+
+            foreach (NodeSearchElement element in searchElements)
+            {
+                searchElementsCache.Add(element);
+            }
+
             FilteredResults = searchElements.Select(e =>
             {
                 var vm  = new NodeSearchElementViewModel(e, this);
@@ -52,17 +63,25 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            var searchElements = GetMatchingNodes();
-            FilteredResults = searchElements.Select(e =>
+            FilteredResults = searchElementsCache.AsEnumerable().Where(e =>
+                                QuerySearchElements(e, input)).Select(e =>
+                                {
+                                      var vm = new NodeSearchElementViewModel(e, this);
+                                      vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                                      return vm;
+                                });
+        }
+
+        private bool QuerySearchElements(NodeSearchElement e, string input) 
+        {
+            StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
+
+            if (e.Name.IndexOf(input, stringComparison) >= 0)
             {
-                if (e.Name.Contains(input))
-                { 
-                    var vm = new NodeSearchElementViewModel(e, this);
-                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                    return vm;
-                }
-                return null;
-            });
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>
