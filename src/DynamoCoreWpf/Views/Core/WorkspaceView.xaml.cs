@@ -16,6 +16,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
@@ -191,10 +192,14 @@ namespace Dynamo.Views
                     if (displayPopup && popup == NodeAutoCompleteSearchBar)
                     {
                         ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+
+                        Analytics.TrackEvent(
+                            Dynamo.Logging.Actions.Open,
+                            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
                     }
                     popup.IsOpen = displayPopup;
                     popup.CustomPopupPlacementCallback = null;
-                    
+
                     ViewModel.InCanvasSearchViewModel.SearchText = string.Empty;
                     ViewModel.InCanvasSearchViewModel.InCanvasSearchPosition = inCanvasSearchPosition;
                     break;

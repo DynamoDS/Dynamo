@@ -5,7 +5,9 @@ using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
@@ -91,6 +93,15 @@ namespace DynamoCoreWpfTests
             {
                 Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
             }
+
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
+            // Hide Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
 
         [Test]
