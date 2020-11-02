@@ -191,6 +191,8 @@ namespace Dynamo.Views
                     var displayPopup = DynamoModel.IsTestMode || IsMouseOver;
                     if (displayPopup && popup == NodeAutoCompleteSearchBar)
                     {
+                        if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+
                         ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
 
                         Analytics.TrackEvent(
