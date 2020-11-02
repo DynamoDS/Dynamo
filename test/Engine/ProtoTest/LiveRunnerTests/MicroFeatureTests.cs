@@ -5984,13 +5984,19 @@ k = i[""a""];
             removed.Add(TestFrameWork.CreateSubTreeFromCode(guidFuncDef, codes[0]));
   
             syncData = new GraphSyncData(removed, null, null);
-            liveRunner.UpdateGraph(syncData);
+            Assert.DoesNotThrow(() =>
+            {
+                liveRunner.UpdateGraph(syncData);
+            });
 
             List<Subtree> undoRemove = new List<Subtree>();
             undoRemove.Add(TestFrameWork.CreateSubTreeFromCode(guidFuncDef, codes[0]));
 
             syncData = new GraphSyncData(null, undoRemove, null);
-            liveRunner.UpdateGraph(syncData);
+            Assert.DoesNotThrow(() =>
+            {
+                liveRunner.UpdateGraph(syncData);
+            });
         }
 
         [Test]
