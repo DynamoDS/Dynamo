@@ -34,10 +34,6 @@ https://github.com/cyotek/Cyotek.Drawing.BitmapFont/blob/master/LICENSE.txt
 https://github.com/mmanela/diffplex/blob/master/License.txt
   (Apache License)
 
-### DirectX
-https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/DirectX SDK EULA.txt
-https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/License Agreements/directx redist.txt
-
 ### Fontawesome
 https://www.nuget.org/packages/FontAwesome.WPF/
 https://github.com/charri/Font-Awesome-WPF/blob/master/LICENSE 
