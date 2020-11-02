@@ -79,11 +79,11 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
+            // Search the filtered results to match the user input.
             if (ViewModel != null) 
             {
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    // SearchTextBox.Focus();
                     ViewModel.SearchAutoCompleteCandidates(SearchTextBox.Text);
                 }), DispatcherPriority.Loaded);
             }
