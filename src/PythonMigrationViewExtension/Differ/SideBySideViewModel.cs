@@ -8,7 +8,7 @@ namespace Dynamo.PythonMigration.Differ
         public SideBySideDiffModel DiffModel { get; set; }
         public DiffPaneModel AfterPane { get { return DiffModel.NewText; } }
         public DiffPaneModel BeforePane { get { return DiffModel.OldText; } }
-        private bool HasChanges { get { return DiffModel.NewText.HasDifferences | DiffModel.OldText.HasDifferences; } }
+        public bool HasChanges { get { return DiffModel.NewText.HasDifferences | DiffModel.OldText.HasDifferences; } }
 
         private State diffState;
         public State DiffState
