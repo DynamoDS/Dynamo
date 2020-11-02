@@ -242,22 +242,25 @@ namespace Dynamo.ViewModels
             var control = sender as NodeAutoCompleteSearchControl;
             var popup = control.Parent as Popup;
 
+            _node.OnRequestAutoCompletePopupPlacementTarget(popup);
+
+            var zoom = _node.WorkspaceViewModel.Zoom;
+
             double x;
             if (PortModel.PortType == PortType.Input)
             {
-                // Position node autocomplete UI offset left by its width from X position of node.
+                // Offset popup to the left by its width from left edge of node and constant spacing.
                 // Note: MinWidth property of the control is set to a constant value in the XAML
                 // for the ActualWidth to return a consistent value.
-                x = _node.X - (control.ActualWidth + autocompleteUISpacing);
+                x = -autocompleteUISpacing - control.ActualWidth / zoom;
             }
             else
             {
-                // Position node autocomplete UI offset right by node width from X position of node.
-                x = _node.X + _node.NodeModel.Width + autocompleteUISpacing;
+                // Offset popup to the right by node width from left edge of node.
+                x = autocompleteUISpacing + PortModel.Owner.Width;
             }
-            // Position UI down from the top of the node but offset down by the node header and against the respective port.
-            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
-
+            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
+            var y = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
             popup.PlacementRectangle = new Rect(x, y, 0, 0);
         }
 

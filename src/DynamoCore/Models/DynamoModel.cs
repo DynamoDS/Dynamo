@@ -2557,7 +2557,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
+        internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             foreach (var funcGroup in functionGroups)
                 AddZeroTouchNodeToSearch(funcGroup);
