@@ -2914,7 +2914,7 @@ namespace ProtoCore.DSASM
             CodeBlock codeBlock = CoreUtils.GetCodeBlock(exe.CompleteCodeBlocks, blockId);
             Validity.Assert(codeBlock != null, $"Could find code block with codeBlockId {blockId}");
 
-            foreach (CodeBlock cb in exe.CompleteCodeBlocks[blockId].children)
+            foreach (CodeBlock cb in codeBlock.children)
             {
                 if (cb.blockType == CodeBlockType.Construct)
                     GCCodeBlock(cb.codeBlockId, functionIndex, classIndex);
