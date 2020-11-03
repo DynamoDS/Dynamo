@@ -194,10 +194,6 @@ namespace Dynamo.Views
                         if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
 
                         ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
-
-                        Analytics.TrackEvent(
-                            Dynamo.Logging.Actions.Open,
-                            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
                     }
                     popup.IsOpen = displayPopup;
                     popup.CustomPopupPlacementCallback = null;
