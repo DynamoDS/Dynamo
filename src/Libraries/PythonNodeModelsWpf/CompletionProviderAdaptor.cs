@@ -8,16 +8,28 @@ using PythonNodeModels;
 
 namespace Dynamo.Python
 {
-    internal class SharedCompletionProvider : LogSourceBase
+    internal class CompletionProviderAdaptor : LogSourceBase
     {
 
         #region Properties and Fields
-        private readonly IExternalCodeCompletionProviderCore providerImplementation;
+        internal readonly IExternalCodeCompletionProviderCore providerImplementation;
+
+        internal static string doubleQuoteStringRegex = "(\"[^\"]*\")"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string singleQuoteStringRegex = "(\'[^\']*\')"; // Replaced w/ quotesStringRegex - Remove in Dynamo 3.0
+        internal static string arrayRegex = "(\\[.*\\])";
+        internal static string spacesOrNone = @"(\s*)";
+        internal static string atLeastOneSpaceRegex = @"(\s+)";
+        internal static string equals = @"(=)"; // Not CLS compliant - replaced with equalsRegex - Remove in Dynamo 3.0
+        internal static string dictRegex = "({.*})";
+        internal static string doubleRegex = @"([-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?)";
+        internal static string intRegex = @"([-+]?\d+)[\s\n]*$";
+        internal static string basicImportRegex = @"(import)";
+        internal static string fromImportRegex = @"^(from)";
 
         #endregion
 
         #region constructors
-        internal SharedCompletionProvider(PythonEngineVersion version ,string dynamoCoreDir)
+        internal CompletionProviderAdaptor(PythonEngineVersion version ,string dynamoCoreDir)
         {
             var versionName = Enum.GetName(typeof(PythonEngineVersion), version);
             var matchingCore = FindMatchingCodeCompletionCore(versionName, this.AsLogger()) ;
@@ -81,11 +93,17 @@ namespace Dynamo.Python
         #endregion
 
         #region Methods
-        internal ICompletionData[] GetCompletionData(string code, bool expand = false)
+        internal ICompletionData[] GetCompletionData(string code, PythonEngineVersion engineVersion, bool expand = false)
         {
-            return this.providerImplementation?.GetCompletionData(code, expand).
-                Select(x => new IronPythonCompletionData(x)).ToArray();
+            if (engineVersion.Equals(PythonEngineVersion.IronPython2) || engineVersion.Equals(PythonEngineVersion.CPython3))
+            {
+                return this.providerImplementation?.GetCompletionData(code, expand).
+                    Select(x => new IronPythonCompletionData(x)).ToArray();
+            }
+
+            return null;
         }
+
         #endregion
     }
 }

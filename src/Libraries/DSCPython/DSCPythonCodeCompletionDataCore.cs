@@ -1,18 +1,18 @@
 ﻿using Autodesk.DesignScript.Interfaces;
 
-namespace DSIronPython
+namespace DSCPython
 {
     /// <summary>
     /// Concrete type that gets returned and converted to an Avalonedit type implementing
-    /// ICompletionData when used from WPF ScriptEditorContorl.
+    /// IExternalCodeCompletionData when used from WPF ScriptEditorControl.
     /// </summary>
-    internal class IronPythonCodeCompletionDataCore : IExternalCodeCompletionData
+    internal class DSCPythonCodeCompletionDataCore : IExternalCodeCompletionData
     {
         private readonly IExternalCodeCompletionProviderCore provider;
         private string description;
 
-        public IronPythonCodeCompletionDataCore(string text, string stub, bool isInstance,
-            ExternalCodeCompletionType completionType, IExternalCodeCompletionProviderCore providerCore)
+        public DSCPythonCodeCompletionDataCore(string text, string stub, bool isInstance,
+                                                ExternalCodeCompletionType completionType, IExternalCodeCompletionProviderCore providerCore)
         {
             Text = text;
             Stub = stub;
@@ -21,8 +21,6 @@ namespace DSIronPython
             CompletionType = completionType;
         }
 
-
-        // Completion data text
         public string Text { get; private set; }
 
         public string Stub { get; private set; }
@@ -35,7 +33,6 @@ namespace DSIronPython
             get { return this.Text; }
         }
 
-        // Completion data description
         public string Description
         {
             get
@@ -51,7 +48,6 @@ namespace DSIronPython
         }
         public double Priority { get { return 0; } }
 
-        // Completion data type.
         public ExternalCodeCompletionType CompletionType { get; private set; }
 
     }

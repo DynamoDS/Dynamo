@@ -77,7 +77,7 @@
     <Compile Include="ScriptEditorWindow.xaml.cs">
       <DependentUpon>ScriptEditorWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SharedCompletionProvider.cs" />
+    <Compile Include="CompletionProviderAdaptor.cs" />
     <Compile Include="ValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>

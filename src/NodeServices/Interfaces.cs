@@ -234,7 +234,6 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         /// <param name="dynamoCorePath"></param>
         void Initialize(string dynamoCorePath);
-
     }
 
 

@@ -24,7 +24,7 @@ namespace PythonNodeModelsWpf
         private Guid boundNodeId = Guid.Empty;
         private Guid boundWorkspaceId = Guid.Empty;
         private CompletionWindow completionWindow = null;
-        private readonly SharedCompletionProvider completionProvider;
+        private CompletionProviderAdaptor completionProvider;
         private readonly DynamoViewModel dynamoViewModel;
         public PythonNode nodeModel { get; set; }
         private bool nodeWasModified = false;
@@ -42,7 +42,7 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new CompletionProviderAdaptor(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
@@ -114,7 +114,7 @@ namespace PythonNodeModelsWpf
                 if (e.Text == ".")
                 {
                     var subString = editText.Text.Substring(0, editText.CaretOffset);
-                    var completions = completionProvider.GetCompletionData(subString, false);
+                    var completions = completionProvider.GetCompletionData(subString, nodeModel.Engine, false);
 
                     if (completions.Length == 0)
                         return;
@@ -160,6 +160,9 @@ namespace PythonNodeModelsWpf
             originalScript = editText.Text;
             nodeModel.Engine = CachedEngine;
             UpdateScript(editText.Text);
+
+            completionProvider = new CompletionProviderAdaptor(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Save,
                 Dynamo.Logging.Categories.PythonOperations);
@@ -228,12 +231,20 @@ namespace PythonNodeModelsWpf
                     CachedEngine.ToString());
             }
             editText.Options.ConvertTabsToSpaces = CachedEngine != PythonEngineVersion.IronPython2;
+            
+            completionProvider = new CompletionProviderAdaptor(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
         }
 
         private void OnScriptEditorWindowClosed(object sender, EventArgs e)
         {
             nodeModel.CodeMigrated -= OnNodeModelCodeMigrated;
             this.Closed -= OnScriptEditorWindowClosed;
+
+            if (completionProvider.providerImplementation is IDisposable dis)
+            {
+                dis.Dispose();
+            }
+
             Analytics.TrackEvent(
                 Dynamo.Logging.Actions.Close,
                 Dynamo.Logging.Categories.PythonOperations);
