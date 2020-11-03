@@ -1,6 +1,5 @@
 ﻿using System.Windows.Media;
 using CoreNodeModelsWpf.Converters;
-using Dynamo.Tests;
 using NUnit.Framework;
 using DSColor = DSCore.Color;
 

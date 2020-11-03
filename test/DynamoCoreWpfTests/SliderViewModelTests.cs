@@ -51,7 +51,8 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\library\NumberSliderNodeTest.dyn");
 
-            var nodeView = NodeViewWithGuid("17ef3a6e-4742-45b6-8a2e-7ec3901e7726");//NodeViewOf<DoubleSlider>();
+            //Getting the view of a DoubleSlider node;
+            var nodeView = NodeViewWithGuid("17ef3a6e-4742-45b6-8a2e-7ec3901e7726");
             var WatchNode = Model.CurrentWorkspace.NodeFromWorkspace<Watch>("213fc6a3f4ff415d95747fdd2d385dfd");
 
             Run();
@@ -103,7 +104,8 @@ namespace DynamoCoreWpfTests
             Open(@"core\library\NumberSliderNodeTest.dyn");
             Run();
 
-            var nodeView = NodeViewWithGuid("17ef3a6e-4742-45b6-8a2e-7ec3901e7726");//NodeViewOf<DoubleSlider>();
+            //Getting the view of a DoubleSlider node;
+            var nodeView = NodeViewWithGuid("17ef3a6e-4742-45b6-8a2e-7ec3901e7726");
             var WatchNode = Model.CurrentWorkspace.NodeFromWorkspace<Watch>("213fc6a3f4ff415d95747fdd2d385dfd");
 
             DispatcherUtil.DoEvents();
