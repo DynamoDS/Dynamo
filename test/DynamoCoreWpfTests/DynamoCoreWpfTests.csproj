@@ -69,6 +69,7 @@
     <Compile Include="InfoBubbleTests.cs" />
     <Compile Include="Libraries\LabelTests.cs" />
     <Compile Include="ListAtLevelTest.cs" />
+    <Compile Include="MediatoDSColorConverterTest.cs" />
     <Compile Include="UnitsUITests.cs" />
     <Compile Include="NodeAutoCompleteSearchTests.cs" />
     <Compile Include="NodeHelpPromptTest.cs" />
@@ -115,9 +116,12 @@
     <Compile Include="RunSettingsTests.cs" />
     <Compile Include="SearchSideEffects.cs" />
     <Compile Include="SearchViewModelTests.cs" />
+    <Compile Include="SelectionButtonContentConverterTest.cs" />
     <Compile Include="SerializationTests.cs" />
     <Compile Include="Setup.cs" />
     <Compile Include="SliderTests.cs" />
+    <Compile Include="SliderViewModelTests.cs" />
+    <Compile Include="StringToDateTimeOffsetConverterTest.cs" />
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
