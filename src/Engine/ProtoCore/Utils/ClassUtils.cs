@@ -69,7 +69,7 @@ namespace ProtoCore.Utils
         // 
         //     2.3 Otherwise, classScope == kInvalidIndex && functionScope == kInvalidIndex
         //         Return public member in derived class, or public member in base classes 
-        public static int GetSymbolIndex(ClassNode classNode, string name, int classScope, int functionScope, int blockId, List<CodeBlock> codeblockList, out bool hasThisSymbol, out ProtoCore.DSASM.AddressType addressType)
+        public static int GetSymbolIndex(ClassNode classNode, string name, int classScope, int functionScope, int blockId, SortedDictionary<int, CodeBlock> codeblocks, out bool hasThisSymbol, out ProtoCore.DSASM.AddressType addressType)
         {
             hasThisSymbol = false;
             addressType = ProtoCore.DSASM.AddressType.Invalid;
@@ -92,7 +92,7 @@ namespace ProtoCore.Utils
                 classNode.ProcTable.Procedures[functionScope].IsStatic;
 
             // Try for member function variables
-            var blocks = GetAncestorBlockIdsOfBlock(blockId, codeblockList);
+            var blocks = GetAncestorBlockIdsOfBlock(blockId, codeblocks);
             blocks.Insert(0, blockId);
 
             Dictionary<int, SymbolNode> symbolOfBlockScope = new Dictionary<int, SymbolNode>();
@@ -154,12 +154,10 @@ namespace ProtoCore.Utils
             return Constants.kInvalidIndex;
         }
 
-        public static List<int> GetAncestorBlockIdsOfBlock(int blockId, List<CodeBlock> codeblockList)
+        public static List<int> GetAncestorBlockIdsOfBlock(int blockId, SortedDictionary<int, CodeBlock> codeblocks)
         {
             var ancestors = new List<int>();
-
-            CodeBlock thisBlock = CoreUtils.GetCodeBlock(codeblockList, blockId);
-            if (thisBlock == null)
+            if (!codeblocks.TryGetValue(blockId, out CodeBlock thisBlock))
             {
                 return ancestors;
             }

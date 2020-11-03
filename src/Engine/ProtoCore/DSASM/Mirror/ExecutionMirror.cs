@@ -332,8 +332,8 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                CodeBlock searchBlock = CoreUtils.GetCodeBlock(runtimeCore.DSExecutable.CompleteCodeBlocks, block);
-                Validity.Assert(searchBlock != null, $"Could not find code block with codeBlockId {block}");
+                bool found = runtimeCore.DSExecutable.CompleteCodeBlocks.TryGetValue(block, out CodeBlock searchBlock);
+                Validity.Assert(found, $"Could not find code block with codeBlockId {block}");
 
                 // To detal with the case that a language block defined in a function
                 //

@@ -39,8 +39,8 @@ namespace ProtoCore.DSASM
                 }
                 else
                 {
-                    var codeBlock = CoreUtils.GetCodeBlock(runtimeCore.DSExecutable.CompleteCodeBlocks, blockId);
-                    Validity.Assert(codeBlock != null, $"Could find code block with codeBlockId {blockId}");
+                    bool found = runtimeCore.DSExecutable.CompleteCodeBlocks.TryGetValue(blockId, out CodeBlock codeBlock);
+                    Validity.Assert(found, $"Could find code block with codeBlockId {blockId}");
 
                     procNode = codeBlock.procedureTable.Procedures[functionIndex];
                 }

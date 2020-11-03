@@ -46,7 +46,7 @@ namespace ProtoCore.DSASM
         public TypeSystem TypeSystem { get; set; }
 
         public List<CodeBlock> CodeBlocks { get; set; }
-        public List<CodeBlock> CompleteCodeBlocks { get; set; }
+        public SortedDictionary<int, CodeBlock> CompleteCodeBlocks { get; set; }
 
         public InstructionStream[] instrStreamList { get; set; } 
         public InstructionStream iStreamCanvas { get; set; }
@@ -156,7 +156,7 @@ namespace ProtoCore.DSASM
 
             isBreakable = isBreakableBlock;
             codeBlockId = core.GetRuntimeTableSize();
-            core.CompleteCodeBlockList.Add(this);
+            core.CompleteCodeBlockList.Add(codeBlockId, this);
 
             symbols.RuntimeIndex = codeBlockId;
 
