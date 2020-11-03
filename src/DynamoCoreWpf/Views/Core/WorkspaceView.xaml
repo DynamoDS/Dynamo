@@ -349,6 +349,7 @@
                StaysOpen="True"
                AllowsTransparency="True"
                IsOpen="False"
+               Placement="Custom"
                DataContext="{Binding NodeAutoCompleteSearchViewModel}">
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>

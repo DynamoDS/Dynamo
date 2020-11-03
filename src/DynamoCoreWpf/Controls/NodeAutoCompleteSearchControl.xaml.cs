@@ -45,10 +45,9 @@ namespace Dynamo.UI.Controls
         {
             if (ViewModel != null && ViewModel.PortViewModel != null)
             {
-                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, e);
                 Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Open,
-                Dynamo.Logging.Categories.NodeAutoCompleteOperations);
+                    Dynamo.Logging.Actions.Open,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations);
             }
         }
 
