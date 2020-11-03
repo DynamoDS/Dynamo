@@ -324,9 +324,9 @@ namespace ProtoScript.Runners
                     core.CodeBlockList.RemoveAll(x => x.guid == bnode.guid);// && x.AstID == bnode.OriginalAstID);
 
                     // Remove from the runtime codeblocks
-                    foreach (var key in core.CompleteCodeBlockList.Where(x => x.Value.guid == bnode.guid).Select(x => x.Key).ToArray())
+                    foreach (var key in core.CompleteCodeBlockDict.Where(x => x.Value.guid == bnode.guid).Select(x => x.Key).ToArray())
                     {
-                        core.CompleteCodeBlockList.Remove(key);
+                        core.CompleteCodeBlockDict.Remove(key);
                     }
                 }
             }

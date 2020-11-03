@@ -1518,7 +1518,7 @@ namespace ProtoCore.DSASM
                                 continue;
                             }
 
-                            bool found = exe.CompleteCodeBlocks.TryGetValue(currentLangBlock, out CodeBlock cb);
+                            bool found = exe.CompleteCodeBlockDict.TryGetValue(currentLangBlock, out CodeBlock cb);
                             Validity.Assert(found, $"Could not find code block with codeBlockId {currentLangBlock}");
 
                             if (cb.IsMyAncestorBlock(graphNode.languageBlockId))
@@ -2715,7 +2715,7 @@ namespace ProtoCore.DSASM
                     SymbolNode node = null;
                     bool isStatic = false;
                     ClassNode classNode = exe.classTable.ClassNodes[type];
-                    int symbolIndex = ClassUtils.GetSymbolIndex(classNode, procName, type, Constants.kGlobalScope, runtimeCore.RunningBlock, exe.CompleteCodeBlocks, out hasThisSymbol, out addressType);
+                    int symbolIndex = ClassUtils.GetSymbolIndex(classNode, procName, type, Constants.kGlobalScope, runtimeCore.RunningBlock, exe.CompleteCodeBlockDict, out hasThisSymbol, out addressType);
 
                     if (Constants.kInvalidIndex != symbolIndex)
                     {
@@ -2911,7 +2911,7 @@ namespace ProtoCore.DSASM
 
         public void ReturnSiteGC(int blockId, int classIndex, int functionIndex)
         {
-            bool found = exe.CompleteCodeBlocks.TryGetValue(blockId, out CodeBlock codeBlock);
+            bool found = exe.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock codeBlock);
             Validity.Assert(found, $"Could find code block with codeBlockId {blockId}");
 
             foreach (CodeBlock cb in codeBlock.children)
@@ -4423,7 +4423,7 @@ namespace ProtoCore.DSASM
             StackValue op1 = instruction.op1;
             int blockId = op1.BlockIndex;
 
-            bool found = exe.CompleteCodeBlocks.TryGetValue(blockId, out CodeBlock codeBlock);
+            bool found = exe.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock codeBlock);
             Validity.Assert(found, $"Could find code block with codeBlockId {blockId}");
 
             runtimeVerify(codeBlock.blockType == CodeBlockType.Construct);

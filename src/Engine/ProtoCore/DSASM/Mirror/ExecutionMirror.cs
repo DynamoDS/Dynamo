@@ -332,7 +332,7 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                bool found = runtimeCore.DSExecutable.CompleteCodeBlocks.TryGetValue(block, out CodeBlock searchBlock);
+                bool found = runtimeCore.DSExecutable.CompleteCodeBlockDict.TryGetValue(block, out CodeBlock searchBlock);
                 Validity.Assert(found, $"Could not find code block with codeBlockId {block}");
 
                 // To detal with the case that a language block defined in a function

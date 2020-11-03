@@ -881,7 +881,7 @@ namespace ProtoImperative
                 if (propogateUpdateGraphNode != null)
                 {
                     propogateUpdateGraphNode.languageBlockId = blockId;
-                    bool foundChild = core.CompleteCodeBlockList.TryGetValue(blockId, out CodeBlock childBlock);
+                    bool foundChild = core.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock childBlock);
                     Validity.Assert(foundChild, $"Could find code block with codeBlockId {blockId}");
 
                     foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
@@ -895,7 +895,7 @@ namespace ProtoImperative
                             {
                                 SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
                                 int symbolBlockId = dependentSymbol.codeBlockId;
-                                if (core.CompleteCodeBlockList.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) && 
+                                if (core.CompleteCodeBlockDict.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) && 
                                     !symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
                                 {
                                     propogateUpdateGraphNode.PushDependent(depentNode);

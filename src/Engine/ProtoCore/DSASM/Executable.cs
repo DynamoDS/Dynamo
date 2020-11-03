@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ProtoCore.AssociativeGraph;
 using ProtoCore.Lang;
 using ProtoFFI;
@@ -46,7 +47,11 @@ namespace ProtoCore.DSASM
         public TypeSystem TypeSystem { get; set; }
 
         public List<CodeBlock> CodeBlocks { get; set; }
-        public SortedDictionary<int, CodeBlock> CompleteCodeBlocks { get; set; }
+        public List<CodeBlock> CompleteCodeBlocks { 
+            get { return CompleteCodeBlockDict.Select(x => x.Value).ToList(); } 
+            set { value.ForEach(x => CompleteCodeBlockDict.Add(x.codeBlockId, x)); }
+        }
+        internal SortedDictionary<int, CodeBlock> CompleteCodeBlockDict { get; set; }
 
         public InstructionStream[] instrStreamList { get; set; } 
         public InstructionStream iStreamCanvas { get; set; }
@@ -94,7 +99,7 @@ namespace ProtoCore.DSASM
             instrStreamList = null;
             iStreamCanvas = null;
             CodeBlocks = null;
-            CompleteCodeBlocks = null;
+            CompleteCodeBlockDict = null;
             ContextDataMngr = null;
             CodeToLocation = null;
             CurrentDSFileName = string.Empty;
@@ -156,7 +161,7 @@ namespace ProtoCore.DSASM
 
             isBreakable = isBreakableBlock;
             codeBlockId = core.GetRuntimeTableSize();
-            core.CompleteCodeBlockList.Add(codeBlockId, this);
+            core.CompleteCodeBlockDict.Add(codeBlockId, this);
 
             symbols.RuntimeIndex = codeBlockId;
 

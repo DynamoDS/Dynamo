@@ -14,4 +14,5 @@ using System.Runtime.CompilerServices;
 [assembly:InternalsVisibleTo("DynamoCore")]
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
-
+[assembly: InternalsVisibleTo("ProtoImperative")]
+[assembly: InternalsVisibleTo("ProtoScript")]
