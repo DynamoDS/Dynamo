@@ -43,9 +43,12 @@ namespace Dynamo.UI.Controls
 
         private void NodeAutoCompleteSearchControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Analytics.TrackEvent(
-                Dynamo.Logging.Actions.Open,
-                Dynamo.Logging.Categories.NodeAutoCompleteOperations);
+            if (ViewModel != null && ViewModel.PortViewModel != null)
+            {
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Open,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations);
+            }
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
