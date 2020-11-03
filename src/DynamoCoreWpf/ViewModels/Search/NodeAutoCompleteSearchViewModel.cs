@@ -53,25 +53,25 @@ namespace Dynamo.ViewModels
         
         internal void PopulateAutoCompleteCandidates()
         {
-            searchElementsCache.Clear();
+            searchElementsCache = new List<NodeSearchElement>();
 
             if (PortViewModel == null) return;
 
-            var searchElements = GetMatchingSearchElements();
-
-            foreach (NodeSearchElement element in searchElements)
-            {
-                searchElementsCache.Add(element);
-            }
+            searchElementsCache = GetMatchingSearchElements().ToList();
 
             // If node match searchElements found, use default suggestions
-            if (!searchElements.Any())
+            if (!searchElementsCache.Any())
             {
+                foreach (NodeSearchElementViewModel element in DefaultResults)
+                {
+                    searchElementsCache.Add(element.Model);
+                }
+
                 FilteredResults = DefaultResults;
             }
             else
             {
-                FilteredResults = searchElements.Select(e =>
+                FilteredResults = searchElementsCache.Select(e =>
                 {
                     var vm = new NodeSearchElementViewModel(e, this);
                     vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
@@ -80,11 +80,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Filters the matching node search elements based on user input in the search field. 
+        /// </summary>
         internal void SearchAutoCompleteCandidates(string input)
         {
             if (PortViewModel == null) return;
 
-            FilteredResults = searchElementsCache.AsEnumerable().Where(e =>
+            FilteredResults = searchElementsCache.Where(e =>
                                 QuerySearchElements(e, input)).Select(e =>
                                 {
                                       var vm = new NodeSearchElementViewModel(e, this);
@@ -93,6 +96,10 @@ namespace Dynamo.ViewModels
                                 });
         }
 
+        /// <summary>
+        /// Returns true if the user input matches the name of the filtered node element. 
+        /// </summary>
+        /// <returns>True or false</returns>
         private bool QuerySearchElements(NodeSearchElement e, string input) 
         {
             StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
