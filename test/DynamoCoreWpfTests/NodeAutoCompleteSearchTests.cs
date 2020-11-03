@@ -5,7 +5,9 @@ using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 
@@ -78,7 +80,7 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("FFITarget.DummyVector", type);
 
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[1];
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(5, suggestions.Count());
@@ -91,6 +93,15 @@ namespace DynamoCoreWpfTests
             {
                 Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
             }
+
+            // Show Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+
+            // Hide Node AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
 
         [Test]
@@ -108,7 +119,7 @@ namespace DynamoCoreWpfTests
             var type = port.GetInputPortType();
             Assert.AreEqual("FFITarget.ClassFunctionality", type);
 
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(4, suggestions.Count());
@@ -134,7 +145,7 @@ namespace DynamoCoreWpfTests
                node, 0, 0, true, false));
             DispatcherUtil.DoEvents();
             var nodeView = NodeViewWithGuid(node.GUID.ToString());
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = nodeView.ViewModel.InPorts.FirstOrDefault();
 
             var suggestions = searchViewModel.GetMatchingSearchElements();
@@ -163,7 +174,7 @@ namespace DynamoCoreWpfTests
             type = port.GetInputPortType();
             Assert.AreEqual("string", type);
 
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
@@ -240,7 +251,7 @@ namespace DynamoCoreWpfTests
             var type = port.GetInputPortType();
             Assert.AreEqual("DSCore.Color[]", type);
 
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[0];
 
             // Running the default algorithm should return no suggestions
@@ -267,7 +278,7 @@ namespace DynamoCoreWpfTests
             var type = port.GetInputPortType();
             Assert.AreEqual("double", type);
 
-            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[0];
 
             // Running the algorithm against skipped nodes should return no suggestions
