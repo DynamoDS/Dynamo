@@ -183,7 +183,6 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
-    <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
