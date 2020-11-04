@@ -65,7 +65,7 @@
 ![](images/Vase.PNG)
 
 ### CurveParameterAtPoint
-![](images/CurveParameterAtPoint.PNG)
+![](images/CurveParameterAtPoint.png)
 
 ### PointPruneDuplicates
-![](images/Point.PruneDuplicates.PNG)
+![](images/Point.PruneDuplicates.png)
