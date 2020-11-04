@@ -226,6 +226,7 @@ namespace DynamoCoreWpfTests
             var comparer = new NodeAutoCompleteSearchViewModel.NodeSearchElementComparer(inputType, core);
             Assert.AreEqual(0, comparer.Compare(type1, type2));
         }
+
         [Test]
         public void NodeSuggestions_DefaultSuggestions()
         {
@@ -251,6 +252,33 @@ namespace DynamoCoreWpfTests
             searchViewModel.PopulateAutoCompleteCandidates();
             Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
+        }
+
+        [Test]
+        public void SearchNodeAutocompletionSuggestions()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("77aad5875f124bf59a4ece6b30813d3b").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
+            searchViewModel.PortViewModel = inPorts[0];
+
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+
+            // Get the matching node elements for the specific node port.
+            searchViewModel.PopulateAutoCompleteCandidates();
+
+            // Filter the node elements using the search field.
+            searchViewModel.SearchAutoCompleteCandidates("ar");
+            Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]
