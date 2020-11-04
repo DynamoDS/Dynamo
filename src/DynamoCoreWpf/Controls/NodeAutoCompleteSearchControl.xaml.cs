@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -44,7 +45,9 @@ namespace Dynamo.UI.Controls
         {
             if (ViewModel != null && ViewModel.PortViewModel != null)
             {
-                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, e);
+                Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Open,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations);
             }
         }
 
@@ -99,6 +102,10 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Select,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations,
+                    searchElement.FullName);
                 }
             }
         }

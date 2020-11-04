@@ -7,8 +7,6 @@ namespace ProtoCore.Utils
 {
     public static class CoreUtils
     {
-
-
         public static void InsertPredefinedAndBuiltinMethods(Core core, CodeBlockNode root)
         {
             if (DSASM.InterpreterMode.Normal == core.Options.RunMode)
