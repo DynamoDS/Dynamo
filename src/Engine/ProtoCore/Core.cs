@@ -214,7 +214,13 @@ namespace ProtoCore
         public List<CodeBlock> CodeBlockList { get; set; }
         // The Complete Code Block list contains all the code blocks
         // unlike the codeblocklist which only stores the outer most code blocks
-        public List<CodeBlock> CompleteCodeBlockList { get; set; }
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public List<CodeBlock> CompleteCodeBlockList
+        {
+            get { return CompleteCodeBlockDict.Select(x => x.Value).ToList(); }
+            set { value.ForEach(x => CompleteCodeBlockDict.Add(x.codeBlockId, x)); }
+        }
+        internal SortedDictionary<int, CodeBlock> CompleteCodeBlockDict { get; set; }
 
         /// <summary>
         /// ForLoopBlockIndex tracks the current number of new for loop blocks created at compile time for every new compile phase
@@ -347,7 +353,7 @@ namespace ProtoCore
                 // Remove codeblock defined in procNode from CodeBlockList and CompleteCodeBlockList
                 foreach (int cbID in procNode.ChildCodeBlocks)
                 {
-                    CompleteCodeBlockList.RemoveAll(x => x.codeBlockId == cbID);
+                    CompleteCodeBlockDict.Remove(cbID);
 
                     foreach (CodeBlock cb in CodeBlockList)
                     {
@@ -438,7 +444,7 @@ namespace ProtoCore
             CodeBlockIndex = 0;
             RuntimeTableIndex = 0;
             CodeBlockList = new List<CodeBlock>();
-            CompleteCodeBlockList = new List<CodeBlock>();
+            CompleteCodeBlockDict = new SortedDictionary<int, CodeBlock>();
             CallsiteGuidMap = new Dictionary<Guid, int>();
 
             AssocNode = null;
@@ -717,9 +723,7 @@ namespace ProtoCore
             // Create the code block list data
             DSExecutable.CodeBlocks = new List<CodeBlock>();
             DSExecutable.CodeBlocks.AddRange(CodeBlockList);
-            DSExecutable.CompleteCodeBlocks = new List<CodeBlock>();
-            DSExecutable.CompleteCodeBlocks.AddRange(CompleteCodeBlockList);
-
+            DSExecutable.CompleteCodeBlockDict = new SortedDictionary<int, CodeBlock>(CompleteCodeBlockDict);
 
             // Retrieve the class table directly since it is a global table
             DSExecutable.classTable = ClassTable;
@@ -770,7 +774,7 @@ namespace ProtoCore
         internal int GetRuntimeTableSize()
         {
             // Due to the way this list is constructed, the largest id is the one of the last block.
-            var lastBlock = CompleteCodeBlockList.LastOrDefault();
+            var lastBlock = CompleteCodeBlockDict.LastOrDefault().Value;
             // If there are no code blocks yet, then the required size for tables is 0.
             // This happens when the first code block is being created and its id is being generated.
             if (lastBlock == null)

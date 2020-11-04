@@ -332,7 +332,8 @@ namespace ProtoCore.DSASM.Mirror
             }
             else
             {
-                CodeBlock searchBlock = runtimeCore.DSExecutable.CompleteCodeBlocks[block];
+                bool found = runtimeCore.DSExecutable.CompleteCodeBlockDict.TryGetValue(block, out CodeBlock searchBlock);
+                Validity.Assert(found, $"Could not find code block with codeBlockId {block}");
 
                 // To detal with the case that a language block defined in a function
                 //
@@ -718,10 +719,15 @@ namespace ProtoCore.DSASM.Mirror
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
-                int index = exe.runtimeSymbols[block].IndexOf(name, Constants.kInvalidIndex, Constants.kGlobalScope);
+                var symbolTable = exe.runtimeSymbols[block];
+                if (symbolTable == null)
+                {
+                    continue;
+                }
+                int index = symbolTable.IndexOf(name, Constants.kInvalidIndex, Constants.kGlobalScope);
                 if (Constants.kInvalidIndex != index)
                 {
-                    SymbolNode symNode = exe.runtimeSymbols[block].symbolList[index];
+                    SymbolNode symNode = symbolTable.symbolList[index];
                     if (symNode.absoluteFunctionIndex == Constants.kGlobalScope)
                     {
                         return MirrorTarget.rmem.GetAtRelative(symNode.index);
@@ -738,11 +744,16 @@ namespace ProtoCore.DSASM.Mirror
 
             for (int block = startBlock; block < exe.runtimeSymbols.Length; block++)
             {
-                int index = exe.runtimeSymbols[block].IndexOf(name, classcope, Constants.kGlobalScope);
+                var symbolTable = exe.runtimeSymbols[block];
+                if (symbolTable == null)
+                {
+                    continue;
+                }
+                int index = symbolTable.IndexOf(name, classcope, Constants.kGlobalScope);
                 if (Constants.kInvalidIndex != index)
                 {
                     //Q(Luke): This seems to imply that the LHS is an array index?
-                    var symbol = exe.runtimeSymbols[block].symbolList[index];
+                    var symbol = symbolTable.symbolList[index];
                     return MirrorTarget.rmem.GetSymbolValue(symbol);
                 }
             }
