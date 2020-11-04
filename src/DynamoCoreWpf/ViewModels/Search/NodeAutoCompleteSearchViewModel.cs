@@ -18,7 +18,7 @@ namespace Dynamo.ViewModels
     {
 
         internal PortViewModel PortViewModel { get; set; }
-        private List<NodeSearchElement> searchElementsCache = new List<NodeSearchElement>();
+        private List<NodeSearchElement> searchElementsCache;
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -62,11 +62,7 @@ namespace Dynamo.ViewModels
             // If node match searchElements found, use default suggestions
             if (!searchElementsCache.Any())
             {
-                foreach (NodeSearchElementViewModel element in DefaultResults)
-                {
-                    searchElementsCache.Add(element.Model);
-                }
-
+                searchElementsCache =  DefaultResults.Select(e => e.Model).ToList();
                 FilteredResults = DefaultResults;
             }
             else
@@ -104,12 +100,7 @@ namespace Dynamo.ViewModels
         {
             StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
 
-            if (e.Name.IndexOf(input, stringComparison) >= 0)
-            {
-                return true;
-            }
-
-            return false;
+            return e.Name.IndexOf(input, stringComparison) >= 0;
         }
 
         /// <summary>
