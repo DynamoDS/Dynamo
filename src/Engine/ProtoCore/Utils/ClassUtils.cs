@@ -179,7 +179,16 @@ namespace ProtoCore.Utils
             return Constants.kInvalidIndex;
         }
 
-        public static List<int> GetAncestorBlockIdsOfBlock(int blockId, SortedDictionary<int, CodeBlock> codeblocks)
+        [Obsolete("Property will be deprecated in Dynamo 3.0")]
+        public static List<int> GetAncestorBlockIdsOfBlock(int blockId, List<CodeBlock> codeblocks)
+        {
+            var dict = new SortedDictionary<int, CodeBlock>();
+            codeblocks.ForEach(x => dict.Add(x.codeBlockId, x));
+
+            return GetAncestorBlockIdsOfBlock(blockId, dict);
+        }
+
+        internal static List<int> GetAncestorBlockIdsOfBlock(int blockId, SortedDictionary<int, CodeBlock> codeblocks)
         {
             var ancestors = new List<int>();
             if (!codeblocks.TryGetValue(blockId, out CodeBlock thisBlock))
