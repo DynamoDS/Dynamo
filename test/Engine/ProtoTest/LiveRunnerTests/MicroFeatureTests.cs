@@ -5931,6 +5931,75 @@ k = i[""a""];
         }
 
         [Test]
+        public void CrashOnUndoDelFuncDef()
+        {
+            List<string> codes = new List<string>()
+            {
+                @"
+                    def foo(a, b)
+                    {
+	                    return [Imperative]
+	                    {
+		                    list = a..b;
+		                    x = [];
+		                    count = 0;
+		                    for(i in list)
+		                    {
+			                    x[count] = i;
+			                    count = count+1;
+		                    }
+		                    return x;
+	                    }
+                    };      
+                ",
+                @"
+                    x = false;
+                    l1 = foo(1, 10);
+                    l2 = foo(10, 20);
+                    [Imperative]
+                    {
+	                    if(x==true)
+	                    {
+		                    return l1;
+	                    }
+	                    else
+	                    {
+		                    return l2;
+	                    }
+                    };      
+                "
+            };
+
+            Guid guidFuncDef = Guid.NewGuid();
+            Guid guidOther = Guid.NewGuid();
+
+            List<Subtree> added = new List<Subtree>();
+            added.Add(TestFrameWork.CreateSubTreeFromCode(guidFuncDef, codes[0]));
+            added.Add(TestFrameWork.CreateSubTreeFromCode(guidOther, codes[1]));
+
+            var syncData = new GraphSyncData(null, added, null);
+            liveRunner.UpdateGraph(syncData);
+
+            List<Subtree> removed = new List<Subtree>();
+            removed.Add(TestFrameWork.CreateSubTreeFromCode(guidFuncDef, codes[0]));
+  
+            syncData = new GraphSyncData(removed, null, null);
+            Assert.DoesNotThrow(() =>
+            {
+                liveRunner.UpdateGraph(syncData);
+            });
+
+            List<Subtree> undoRemove = new List<Subtree>();
+            undoRemove.Add(TestFrameWork.CreateSubTreeFromCode(guidFuncDef, codes[0]));
+
+            syncData = new GraphSyncData(null, undoRemove, null);
+            Assert.DoesNotThrow(() =>
+            {
+                liveRunner.UpdateGraph(syncData);
+            });
+        }
+
+        [Test]
         public void RegressMAGN7759()
         {
             // Tracked in: http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-7759
