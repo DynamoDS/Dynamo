@@ -78,8 +78,14 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
-            if (ViewModel != null)
-                ViewModel.SearchCommand.Execute(null);
+            // Search the filtered results to match the user input.
+            if (ViewModel != null) 
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ViewModel.SearchAutoCompleteCandidates(SearchTextBox.Text);
+                }), DispatcherPriority.Loaded);
+            }
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
