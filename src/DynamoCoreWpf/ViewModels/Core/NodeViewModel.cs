@@ -563,6 +563,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal double ActualHeight { get; set; }
+        internal double ActualWidth { get; set; }
+
         #endregion
 
         #region events

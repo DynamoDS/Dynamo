@@ -238,7 +238,7 @@ namespace Dynamo.ViewModels
         /// ViewModel that is used in NodeAutoComplete feature in context menu and called by Shift+DoubleClick.
         /// </summary>
         [JsonIgnore]
-        public SearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
+        public NodeAutoCompleteSearchViewModel NodeAutoCompleteSearchViewModel { get; private set; }
 
         /// <summary>
         /// Cursor Property Binding for WorkspaceView
