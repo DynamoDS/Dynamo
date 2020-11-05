@@ -126,6 +126,10 @@ namespace Dynamo.UI.Controls
             // Select text in text box.
             SearchTextBox.SelectAll();
 
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.InCanvasSearchOperations);
+
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>

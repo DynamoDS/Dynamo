@@ -37,7 +37,6 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Loaded += NodeAutoCompleteSearchControl_Loaded;
             Unloaded += NodeAutoCompleteSearchControl_Unloaded;
         }
 
@@ -139,6 +138,10 @@ namespace Dynamo.UI.Controls
 
             // When launching this control, always start with clear search term.
             SearchTextBox.Clear();
+
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
