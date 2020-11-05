@@ -53,8 +53,6 @@ namespace Dynamo.ViewModels
         
         internal void PopulateAutoCompleteCandidates()
         {
-            searchElementsCache = new List<NodeSearchElement>();
-
             if (PortViewModel == null) return;
 
             searchElementsCache = GetMatchingSearchElements().ToList();
@@ -67,13 +65,21 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                FilteredResults = searchElementsCache.Select(e =>
-                {
-                    var vm = new NodeSearchElementViewModel(e, this);
-                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                    return vm;
-                });
+                FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
             }
+        }
+
+        /// <summary>
+        /// Returns a IEnumberable of NodeSearchElementViewModel for respective NodeSearchElements.
+        /// </summary>
+        private IEnumerable<NodeSearchElementViewModel> GetViewModelForNodeSearchElements(List<NodeSearchElement> searchElementsCache)
+        {
+            return searchElementsCache.Select(e =>
+            {
+                var vm = new NodeSearchElementViewModel(e, this);
+                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                return vm;
+            });
         }
 
         /// <summary>
@@ -83,13 +89,9 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            FilteredResults = searchElementsCache.Where(e =>
-                                QuerySearchElements(e, input)).Select(e =>
-                                {
-                                      var vm = new NodeSearchElementViewModel(e, this);
-                                      vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                                      return vm;
-                                });
+            var queriedSearchElements = searchElementsCache.Where(e => QuerySearchElements(e, input)).ToList();
+
+            FilteredResults = GetViewModelForNodeSearchElements(queriedSearchElements);
         }
 
         /// <summary>

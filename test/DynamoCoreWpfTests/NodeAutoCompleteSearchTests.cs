@@ -277,7 +277,7 @@ namespace DynamoCoreWpfTests
             searchViewModel.PopulateAutoCompleteCandidates();
 
             // Filter the node elements using the search field.
-            searchViewModel.SearchAutoCompleteCandidates("ar");
+            searchViewModel.SearchAutoCompleteCandidates("der");
             Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
         }
 
