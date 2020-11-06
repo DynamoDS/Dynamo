@@ -421,6 +421,9 @@
     <Compile Include="ViewModels\Preview\Watch3DFullscreenViewModel.cs" />
     <Compile Include="ViewModels\Preview\WatchViewModel.cs" />
     <Compile Include="ViewModels\Core\WorkspaceViewModel.cs" />
+    <Compile Include="Windows\ExtensionWindow.xaml.cs">
+      <DependentUpon>ExtensionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -431,6 +434,10 @@
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\ExtensionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -43,6 +43,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
+using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
@@ -320,6 +321,30 @@ namespace Dynamo.Controls
                 }
                 tabDynamic.SelectedItem = selectedTab;
             }
+        }
+
+        internal void UndockExtensionTab(object sender, RoutedEventArgs e)
+        {
+            var tabName = (sender as Button).DataContext.ToString();
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == tabName);
+            CloseExtensionTab(tabItem);
+
+            // Simple version
+            //var undockedExtension = new Window();
+            //undockedExtension.Owner = this;
+            //undockedExtension.Content = tabItem.Content;
+            //undockedExtension.Title = tabName;
+            //undockedExtension.Show();
+
+            // Custom version
+            var undockedExtension = new ExtensionWindow();
+            undockedExtension.Owner = this;
+            var content = (UIElement)tabItem.Content;
+            // Disconnect from previous parent to avoid error
+            tabItem.Content = null;
+            undockedExtension.ExtensionContent.Child = content;
+            undockedExtension.Title = tabName;
+            undockedExtension.Show();
         }
 
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
