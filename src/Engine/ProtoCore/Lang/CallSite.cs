@@ -1121,8 +1121,7 @@ namespace ProtoCore
             int typeID = svThisPtr.metaData.type;
 
             //Test for exact match
-            List<FunctionEndPoint> exactFeps = null;
-
+            IEnumerable<FunctionEndPoint> exactFeps = null;
             // Is static method call (i.e no this pointer)
             if (svThisPtr.Pointer == Constants.kInvalidIndex)
             {
@@ -1131,16 +1130,16 @@ namespace ProtoCore
                 // because static methods can only be hidden.
                 // In this case we simply select the function that belongs to the calling class.
                 // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
-                exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope).ToList();
+                exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope);
             } else
             {
                 // If we have an instance of a class, then try to match with methods of that class.
-                exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID).ToList();
+                exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
             }
 
-            if (exactFeps.Count == 1)
+            if (exactFeps.Count() == 1)
             {
-                return exactFeps[0];
+                return exactFeps.First();
             }
             
             //Walk the class tree structure to find the method
@@ -1159,15 +1158,15 @@ namespace ProtoCore
 
             foreach (FunctionEndPoint fep in feps)
             {
-                int noArbitraries = 0;
+                int numArbitraryRanks = 0;
 
                 for (int i = 0; i < argumentsList.Count; i++)
                 {
                     if (fep.FormalParams[i].rank == Constants.kArbitraryRank)
-                        noArbitraries++;
+                        numArbitraryRanks++;
                 }
 
-                numberOfArbitraryRanks.Add(noArbitraries);
+                numberOfArbitraryRanks.Add(numArbitraryRanks);
             }
 
             int smallest = Int32.MaxValue;
