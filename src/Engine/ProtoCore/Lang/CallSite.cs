@@ -1121,18 +1121,32 @@ namespace ProtoCore
             int typeID = svThisPtr.metaData.type;
 
             //Test for exact match
-            List<FunctionEndPoint> exactFeps = new List<FunctionEndPoint>();
+            List<FunctionEndPoint> exactFeps = null;
 
-            foreach (FunctionEndPoint fep in feps)
-                if (fep.ClassOwnerIndex == typeID)
-                    exactFeps.Add(fep);
+            // Is static method call (i.e no this pointer)
+            if (svThisPtr.Pointer == Constants.kInvalidIndex)
+            {
+                // Here we will cover the specific case of static method hiding.
+                // We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
+                // because static methods can only be hidden.
+                // In this case we simply select the function that belongs to the calling class.
+                // We also need to check that all function end points in "feps" have the exact same signature.
+                var sig = feps.First().Signature(false/*includeReturnType*/);
+                if (feps.All(x => x.Signature() == sig))
+                {
+                    exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope).ToList();
+                }
+            } else
+            {
+                // If we have an instance of a class, then try to match with methods of that class.
+                exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID).ToList();
+            }
 
             if (exactFeps.Count == 1)
             {
                 return exactFeps[0];
             }
-
-
+            
             //Walk the class tree structure to find the method
 
             while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
@@ -1155,9 +1169,9 @@ namespace ProtoCore
                 {
                     if (fep.FormalParams[i].rank == Constants.kArbitraryRank)
                         noArbitraries++;
-
-                    numberOfArbitraryRanks.Add(noArbitraries);
                 }
+
+                numberOfArbitraryRanks.Add(noArbitraries);
             }
 
             int smallest = Int32.MaxValue;
@@ -1448,7 +1462,9 @@ namespace ProtoCore
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
 
-            // Filter function end point
+            // Filter function end point based on:
+            // 1. If the number of arguments match.
+            // 2. If procedures are not hidden (See details: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier)
             List<FunctionEndPoint> candidatesFeps = new List<FunctionEndPoint>();
             int argumentNumber = arguments.Count;
             foreach (var fep in funcGroup.FunctionEndPoints)
@@ -1456,11 +1472,13 @@ namespace ProtoCore
                 int defaultParamNumber = fep.procedureNode.ArgumentInfos.Count(x => x.IsDefault);
                 int parameterNumber = fep.procedureNode.ArgumentTypes.Count;
 
-                if (argumentNumber <= parameterNumber && parameterNumber - argumentNumber <= defaultParamNumber)
-                {
-                    candidatesFeps.Add(fep);
-                }
+                bool argumentsCountMatch = argumentNumber <= parameterNumber && parameterNumber - argumentNumber <= defaultParamNumber;
+                if (!argumentsCountMatch)
+                    continue;
+
+                candidatesFeps.Add(fep);
             }
+
             funcGroup = new FunctionGroup(candidatesFeps);
 
             #endregion

@@ -69,7 +69,7 @@ namespace Dynamo.Engine.CodeCompletion
                 }
             }
 
-            return members?.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
+            return members?.Distinct(new StaticMirrorSigComparer()).Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
         /// <summary>
@@ -183,7 +183,9 @@ namespace Dynamo.Engine.CodeCompletion
                     candidates = type.GetOverloadsOnInstance(functionName);
                 }
             }
-            return candidates.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
+
+            var hhh = candidates.Distinct(new StaticMirrorSigComparer()).ToList();
+            return candidates.Distinct(new StaticMirrorSigComparer()).Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
         private void AddTypesToCompletionData(string stringToComplete, List<CompletionData> completions, ElementResolver resolver)

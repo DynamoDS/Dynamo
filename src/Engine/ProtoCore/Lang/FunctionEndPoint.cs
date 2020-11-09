@@ -288,13 +288,11 @@ namespace ProtoCore
             return fixedUpVersions;
         }
 
-
-        public override string ToString()
+        internal string Signature(bool includeReturnType = true)
         {
             string name = procedureNode.Name;
-            string returnType = procedureNode.ReturnType.ToString();
-
-            System.Text.StringBuilder sb = new StringBuilder();
+ 
+            StringBuilder sb = new StringBuilder();
 
             sb.Append(name);
             sb.Append("(");
@@ -309,15 +307,21 @@ namespace ProtoCore
                 sb.Append(FormalParams[FormalParams.Length - 1]);
             }
             sb.Append(")");
-            sb.Append("-> ");
-            sb.Append(returnType);
 
+            if (includeReturnType)
+            {
+                string returnType = procedureNode.ReturnType.ToString();
+
+                sb.Append("-> ");
+                sb.Append(returnType);
+            }
             return sb.ToString();
         }
-    
+
+        public sealed override string ToString()
+        {
+            return Signature();
+        }
     }
-
-
-
 }
 

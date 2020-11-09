@@ -213,6 +213,38 @@ namespace ProtoCore
             }
         }
 
+        internal class StaticMirrorSigComparer : IEqualityComparer<StaticMirror>
+        {
+            public bool Equals(StaticMirror x, StaticMirror y)
+            {
+                if (x is MethodMirror && y is MethodMirror)
+                {
+                    var mmX = x as MethodMirror;
+                    var mmY = y as MethodMirror;
+                    return mmX.MethodName == mmY.MethodName && mmX.ArgumentList.Equals(mmY.ArgumentList);
+                }
+                return x.Name == y.ToString();
+            }
+
+            public int GetHashCode(StaticMirror obj)
+            {
+                if (obj is MethodMirror)
+                {
+                    var mmObj = obj as MethodMirror;
+
+                    StringBuilder sb = new StringBuilder();
+
+                    var methodName = mmObj.MethodName;
+                    var argList = mmObj.ArgumentList.Select(x => x.Key + " : " + x.Value);
+                    sb.AppendLine(methodName + " (" +
+                        string.Join(", ", argList.Select(p => p.ToString())) + ')');
+
+                    return sb.ToString().Trim().GetHashCode();
+                }
+                return obj.ToString().GetHashCode();
+            }
+        }
+
         /// <summary>
         ///  A ClassMirror object reflects upon the type of a single designscript variable
         ///  The information here is populated during the code generation phase
@@ -518,6 +550,7 @@ namespace ProtoCore
 
                 members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+
                 return members;
             }
 
