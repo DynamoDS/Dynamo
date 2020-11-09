@@ -184,7 +184,6 @@ namespace Dynamo.Engine.CodeCompletion
                 }
             }
 
-            var hhh = candidates.Distinct(new StaticMirrorSigComparer()).ToList();
             return candidates.Distinct(new StaticMirrorSigComparer()).Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 

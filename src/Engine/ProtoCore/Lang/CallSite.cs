@@ -1130,12 +1130,8 @@ namespace ProtoCore
                 // We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
                 // because static methods can only be hidden.
                 // In this case we simply select the function that belongs to the calling class.
-                // We also need to check that all function end points in "feps" have the exact same signature.
-                var sig = feps.First().Signature(false/*includeReturnType*/);
-                if (feps.All(x => x.Signature() == sig))
-                {
-                    exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope).ToList();
-                }
+                // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
+                exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope).ToList();
             } else
             {
                 // If we have an instance of a class, then try to match with methods of that class.

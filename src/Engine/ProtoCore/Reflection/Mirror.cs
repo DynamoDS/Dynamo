@@ -217,30 +217,11 @@ namespace ProtoCore
         {
             public bool Equals(StaticMirror x, StaticMirror y)
             {
-                if (x is MethodMirror && y is MethodMirror)
-                {
-                    var mmX = x as MethodMirror;
-                    var mmY = y as MethodMirror;
-                    return mmX.MethodName == mmY.MethodName && mmX.ArgumentList.Equals(mmY.ArgumentList);
-                }
-                return x.Name == y.ToString();
+                return x.ToString() == y.ToString();
             }
 
             public int GetHashCode(StaticMirror obj)
             {
-                if (obj is MethodMirror)
-                {
-                    var mmObj = obj as MethodMirror;
-
-                    StringBuilder sb = new StringBuilder();
-
-                    var methodName = mmObj.MethodName;
-                    var argList = mmObj.ArgumentList.Select(x => x.Key + " : " + x.Value);
-                    sb.AppendLine(methodName + " (" +
-                        string.Join(", ", argList.Select(p => p.ToString())) + ')');
-
-                    return sb.ToString().Trim().GetHashCode();
-                }
                 return obj.ToString().GetHashCode();
             }
         }
