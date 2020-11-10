@@ -361,10 +361,13 @@ namespace ProtoCore
             {
                 // TODO: Factor out reflection functionality for both LibraryServices and Mirrors
                 List<StaticMirror> members = new List<StaticMirror>();
-                members.AddRange(this.GetConstructors().GroupBy(x => x.Name).Select(y => y.First()));
-                members.AddRange(this.GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                members.AddRange(this.GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                members.AddRange(GetConstructors().GroupBy(x => x.Name).Select(y => y.First()));
+                members.AddRange(GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                members.AddRange(GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
 
+                // Filter out hidden functions/properties:
+                // Create a set of unique function, property and constructor descriptions.
+                // In this case we use ToString() to get the uniques description of the members (func signature, propety names, constructor names).
                 var derivedClassMembers = new HashSet<string>();
                 members.ForEach(x => derivedClassMembers.Add(x.ToString()));
 
@@ -499,6 +502,9 @@ namespace ProtoCore
                 members.AddRange(this.GetConstructors().Where(x => x.MethodName == methodName));
                 members.AddRange(this.GetFunctions().Where(x => x.IsStatic && x.MethodName == methodName));
 
+                // Filter out hidden functions/properties:
+                // Create a set of unique function and constructor descriptions.
+                // In this case we use ToString() to get the uniques description of the members (func signature, constructor names).
                 var derivedClassMembers = new HashSet<string>();
                 members.ForEach(x => derivedClassMembers.Add(x.ToString()));
 
@@ -542,6 +548,9 @@ namespace ProtoCore
                 members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
                 members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
 
+                // Filter out hidden functions/properties:
+                // Create a set of unique function and property descriptions.
+                // In this case we use ToString() to get the uniques description of the members (func signature, propety names).
                 var derivedClassMembers = new HashSet<string>();
                 members.ForEach(x => derivedClassMembers.Add(x.ToString()));
 
