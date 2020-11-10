@@ -1210,6 +1210,26 @@ namespace Dynamo.Engine.NodeToCode
             }
             #endregion
 
+            #region Step 5 Escape StringInputNodes
+            foreach ((NodeModel nodeModel, IEnumerable<AssociativeNode> astNodes) in allAstNodes)
+            {
+                if (nodeModel.NodeType != "StringInputNode")
+                    continue;
+
+                var astNode = astNodes.First();
+                if (!(astNode is BinaryExpressionNode astBinaryExpressionNode))
+                    continue;
+
+                var rightNode = astBinaryExpressionNode.RightNode;
+                if (!(rightNode is StringNode astStringNode))
+                    continue;
+
+                var escapedString = astStringNode.Value.Replace(@"\", @"\\")
+                    .Replace("\"", "\\\"");
+                astStringNode.Value = escapedString;
+            }
+            #endregion
+
             var result = new NodeToCodeResult(allAstNodes.SelectMany(x => x.Item2), inputMap, outputMap);
             return result;
         }
