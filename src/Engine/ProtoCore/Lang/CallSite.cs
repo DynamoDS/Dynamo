@@ -1131,7 +1131,8 @@ namespace ProtoCore
                 // In this case we simply select the function that belongs to the calling class.
                 // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
                 exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope);
-            } else
+            }
+            else
             {
                 // If we have an instance of a class, then try to match with methods of that class.
                 exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
