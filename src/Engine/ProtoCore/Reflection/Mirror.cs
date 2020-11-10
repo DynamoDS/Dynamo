@@ -367,7 +367,7 @@ namespace ProtoCore
 
                 // Filter out hidden functions/properties:
                 // Create a set of unique function, property and constructor descriptions.
-                // In this case we use ToString() to get the uniques description of the members (func signature, propety names, constructor names).
+                // In this case we use ToString() to get the uniques description of the members (func signature, property names, constructor names).
                 var derivedClassMembers = new HashSet<string>();
                 members.ForEach(x => derivedClassMembers.Add(x.ToString()));
 
@@ -492,7 +492,7 @@ namespace ProtoCore
             /// <summary>
             /// Given a method name, return the matching list of 
             /// constructors or static methods on this type and its base types
-            /// Excludes hidden methods form base types.
+            /// Excludes hidden methods from base types.
             /// </summary>
             /// <param name="methodName"></param>
             /// <returns></returns>
@@ -550,7 +550,7 @@ namespace ProtoCore
 
                 // Filter out hidden functions/properties:
                 // Create a set of unique function and property descriptions.
-                // In this case we use ToString() to get the uniques description of the members (func signature, propety names).
+                // In this case we use ToString() to get the uniques description of the members (func signature, property names).
                 var derivedClassMembers = new HashSet<string>();
                 members.ForEach(x => derivedClassMembers.Add(x.ToString()));
 

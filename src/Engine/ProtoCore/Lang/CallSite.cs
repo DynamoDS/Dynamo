@@ -1118,33 +1118,26 @@ namespace ProtoCore
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
-            int typeID = svThisPtr.metaData.type;
+
+            // We have 2 possible cases here:
+            // 1. Static method call (i.e no this pointer)
+            //    Here we will cover the specific case of static method hiding.
+            //    We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
+            //    because static methods can only be hidden.
+            //    In this case we simply select the function that belongs to the calling class.
+            //    The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
+            // 2. Method call from an instance of a class.
+            //    Try to match with methods of that class.
+            int typeID = svThisPtr.Pointer == Constants.kInvalidIndex ? stackFrame.ClassScope : svThisPtr.metaData.type;
 
             //Test for exact match
-            IEnumerable<FunctionEndPoint> exactFeps = null;
-            // Is static method call (i.e no this pointer)
-            if (svThisPtr.Pointer == Constants.kInvalidIndex)
-            {
-                // Here we will cover the specific case of static method hiding.
-                // We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
-                // because static methods can only be hidden.
-                // In this case we simply select the function that belongs to the calling class.
-                // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
-                exactFeps = feps.Where(x => x.ClassOwnerIndex == stackFrame.ClassScope);
-            }
-            else
-            {
-                // If we have an instance of a class, then try to match with methods of that class.
-                exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
-            }
-
+            IEnumerable<FunctionEndPoint> exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
             if (exactFeps.Count() == 1)
             {
                 return exactFeps.First();
             }
             
             //Walk the class tree structure to find the method
-
             while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
             {
                 typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base;
