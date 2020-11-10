@@ -28,6 +28,9 @@ namespace DSCore
             // Initialize the WebRequest.
             var myRequest = System.Net.WebRequest.Create(uriResult);
 
+            if (myRequest is System.Net.HttpWebRequest httpRequest)
+                httpRequest.UserAgent = "Dynamo";
+
             string responseFromServer;
 
             // Return the response. 
