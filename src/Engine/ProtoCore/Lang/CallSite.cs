@@ -1457,9 +1457,7 @@ namespace ProtoCore
             //If we got here then the function group got resolved
             log.AppendLine("Function group resolved: " + funcGroup);
 
-            // Filter function end point based on:
-            // 1. If the number of arguments match.
-            // 2. If procedures are not hidden (See details: https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/new-modifier)
+            // Filter function end point
             List<FunctionEndPoint> candidatesFeps = new List<FunctionEndPoint>();
             int argumentNumber = arguments.Count;
             foreach (var fep in funcGroup.FunctionEndPoints)
@@ -1467,11 +1465,10 @@ namespace ProtoCore
                 int defaultParamNumber = fep.procedureNode.ArgumentInfos.Count(x => x.IsDefault);
                 int parameterNumber = fep.procedureNode.ArgumentTypes.Count;
 
-                bool argumentsCountMatch = argumentNumber <= parameterNumber && parameterNumber - argumentNumber <= defaultParamNumber;
-                if (!argumentsCountMatch)
-                    continue;
-
-                candidatesFeps.Add(fep);
+                if (argumentNumber <= parameterNumber && parameterNumber - argumentNumber <= defaultParamNumber)
+                {
+                    candidatesFeps.Add(fep);
+                }
             }
 
             funcGroup = new FunctionGroup(candidatesFeps);
