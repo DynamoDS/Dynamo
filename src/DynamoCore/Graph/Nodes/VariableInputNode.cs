@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Graph.Nodes
@@ -173,13 +174,17 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void RemoveInputFromModel()
         {
-            var count = model.InPorts.Count;
-            if (count > 0)
+            int count = model.InPorts.Count;
+            bool countIsDefaultOrFewer = model is DSVarArgFunction dSVarArgFunction && count <= dSVarArgFunction.DefaultNumInputs;
+            if (count == 0 || countIsDefaultOrFewer)
             {
-                var port = model.InPorts[count - 1];
-                port.DestroyConnectors();
-                model.InPorts.Remove(port);
+                MarkNodeDirty();
+                return;
             }
+
+            var port = model.InPorts[count - 1];
+            port.DestroyConnectors();
+            model.InPorts.Remove(port);
 
             MarkNodeDirty();
         }
