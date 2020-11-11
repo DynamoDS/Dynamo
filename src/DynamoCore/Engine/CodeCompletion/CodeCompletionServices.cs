@@ -69,7 +69,7 @@ namespace Dynamo.Engine.CodeCompletion
                 }
             }
 
-            return members?.Distinct(new StaticMirrorNameComparer()).Select(x => CompletionData.ConvertMirrorToCompletionData(x));
+            return members?.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 
         /// <summary>

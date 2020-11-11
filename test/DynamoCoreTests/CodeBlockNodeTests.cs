@@ -2270,9 +2270,21 @@ var06 = g;
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
             Assert.AreEqual(3, completions.Count);
-            Assert.AreEqual("Foo", completions[0].Text);
-            Assert.AreEqual("DupTargetTest", completions[1].Text);
-            Assert.AreEqual("Bar", completions[2].Text);
+            Assert.AreEqual("DupTargetTest", completions[0].Text);
+            Assert.AreEqual("Bar", completions[1].Text);
+            Assert.AreEqual("Foo", completions[2].Text);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestCompletionOnDerivedTypeReturnsNonHiddenBaseMethods()
+        {
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.DerivedTestHiddenMethods").ToList();
+            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual("DerivedTestHiddenMethods", completions[0].Text);
+            Assert.AreEqual("SomeStaticMethod", completions[1].Text);
+            Assert.AreEqual("SomeMethod", completions[2].Text);
         }
 
         [Test]
