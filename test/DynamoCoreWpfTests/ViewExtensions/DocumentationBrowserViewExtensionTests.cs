@@ -34,7 +34,6 @@ namespace DynamoCoreWpfTests
         private const string nodeDocumentationInfoNodeOutputs = "<td>Outputs</td>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
-        private string PackageToLoadAfterStartup { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgsLoadAfterStartup\PackageWithNodeDocumentation"); } }
 
         protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
         {
