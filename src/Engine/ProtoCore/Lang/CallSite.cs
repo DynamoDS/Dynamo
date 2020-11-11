@@ -1119,18 +1119,28 @@ namespace ProtoCore
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
 
-            // We have 2 possible cases here:
-            // 1. Static method call (i.e no this pointer)
-            //    Here we will cover the specific case of static method hiding.
+            // We have multiple possible scopes for the function call:
+            // 1. Static method call - no this pointer
+            // ex: ClassA.Method();
+            //    Hidden static methods generate multiple feps.
             //    We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
             //    because static methods can only be hidden.
-            //    In this case we simply select the function that belongs to the calling class.
-            //    The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
-            // 2. Method call from an instance of a class.
-            //    Try to match with methods of that class.
-            int typeID = svThisPtr.Pointer == Constants.kInvalidIndex ? stackFrame.ClassScope : svThisPtr.metaData.type;
+            // 2. Method call from an instance of a class - valid this pointer.
+            // ex: classAInstance.method();
+            // 3. Function from the global scope - no this pointer and no class scope.
+            //    In this case the svThisPtr.metaData.type will hold the global 
+            // ex: SomeGlobalFunction();
+            //
+            // All 3 cases will run through the same matching steps.
 
-            //Test for exact match
+            // A static function call has an invalid this pointer and a valid class scope;
+            bool isValidStaticFuncCall = svThisPtr.Pointer == Constants.kInvalidIndex && stackFrame.ClassScope != Constants.kInvalidIndex;
+
+            int typeID = isValidStaticFuncCall ? stackFrame.ClassScope : svThisPtr.metaData.type;
+
+            // Try to match with feps belonging to the class scope (most derived class should have priority).
+            // In this case we simply select the function that belongs to the calling class.
+            // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
             IEnumerable<FunctionEndPoint> exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
             if (exactFeps.Count() == 1)
             {
