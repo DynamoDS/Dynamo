@@ -206,6 +206,14 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void Callsite_ElementBinding_CustomNodes_ShouldReturnUniqueIds()
+        {
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(0, 6).ToList());
+        }
+
+        [Test]
         public void Callsite_ElementBinding_Timing()
         {
             //This graph loads trace data for 1500 "WrapperObjects" in Manual run mode.
