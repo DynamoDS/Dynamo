@@ -4,26 +4,26 @@ namespace FFITarget
 {
     public class BaseTestHiddenMethods
     {
-        public static int SomeVariable = 100;
+        public static int SomeVariable = 50;
         public BaseTestHiddenMethods()
         {
         }
 
-        public static int SomeStaticMethod()
+        public static string SomeStaticMethod()
         {
-            return 100;
+            return "Base";
         }
-        public static int SomeStaticMethod(int[] x)
+        public static string SomeStaticMethod(int[] x)
         {
-            return 100;
+            return "Base";
         }
-        public static int SomeStaticMethod(int[] x, int[] y)
+        public static string SomeStaticMethod(int[] x, int[] y)
         {
-            return 100;
+            return "Base";
         }
-        public static int SomeMethod()
+        public static string SomeMethod()
         {
-            return 100;
+            return "Base";
         }
     }
 
@@ -33,21 +33,21 @@ namespace FFITarget
         public DerivedTestHiddenMethods()
         {
         }
-        public static new int SomeStaticMethod()
+        public static new string SomeStaticMethod()
         {
-            return 200;
+            return "Derived";
         }
-        public static new int SomeStaticMethod(int[] x)
+        public static new string SomeStaticMethod(int[] x)
         {
-            return 200;
+            return "Derived";
         }
-        public static new int SomeStaticMethod(int[] x, int[] y)
+        public static new string SomeStaticMethod(int[] x, int[] y)
         {
-            return 200;
+            return "Derived";
         }
-        public static new int SomeMethod()
+        public static new string SomeMethod()
         {
-            return 200;
+            return "Derived";
         }
     }
 }

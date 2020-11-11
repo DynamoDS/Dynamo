@@ -1318,6 +1318,24 @@ var06 = g;
             AssertPreviewValue(mathCeiling.AstIdentifierGuid, long.MinValue);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestStaticHiddenFunctionCallResolution()
+        {
+            const string libraryPath = "FFITarget.dll";
+
+            CompilerUtils.TryLoadAssemblyIntoCore(
+                CurrentDynamoModel.LibraryServices.LibraryManagementCore, libraryPath);
+
+            var codeBlockNodeDerived = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeDerived, "DerivedTestHiddenMethods.SomeStaticMethod();");
+            AssertPreviewValue(codeBlockNodeDerived.GUID.ToString(), "Derived");
+
+            var codeBlockNodeBase = CreateCodeBlockNode();
+            UpdateCodeBlockNodeContent(codeBlockNodeBase, "BaseTestHiddenMethods.SomeStaticMethod();");
+            AssertPreviewValue(codeBlockNodeBase.GUID.ToString(), "Base");
+        }
+
         #region CodeBlockUtils Specific Tests
         [Test]
         [Category("UnitTests")]
