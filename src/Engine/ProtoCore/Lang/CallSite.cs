@@ -1128,7 +1128,6 @@ namespace ProtoCore
             // 2. Method call from an instance of a class - valid this pointer.
             // ex: classAInstance.method();
             // 3. Function from the global scope - no this pointer and no class scope.
-            //    In this case the svThisPtr.metaData.type will hold the global 
             // ex: SomeGlobalFunction();
             //
             // All 3 cases will run through the same matching steps.

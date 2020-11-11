@@ -183,7 +183,6 @@ namespace Dynamo.Engine.CodeCompletion
                     candidates = type.GetOverloadsOnInstance(functionName);
                 }
             }
-
             return candidates.Select(x => CompletionData.ConvertMirrorToCompletionData(x));
         }
 

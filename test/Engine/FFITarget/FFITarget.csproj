@@ -77,7 +77,6 @@
     <Compile Include="ProtoFFITests.cs" />
     <Compile Include="RegressionTargets.cs" />
     <Compile Include="TestDefaultArgumentAttributes.cs" />
-    <Compile Include="TestHiddenMethods.cs" />
     <Compile Include="TestMessageLog.cs" />
     <Compile Include="TestMethodOverload.cs" />
     <Compile Include="TestNamespaceConflict.cs" />

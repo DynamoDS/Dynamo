@@ -1328,12 +1328,12 @@ var06 = g;
                 CurrentDynamoModel.LibraryServices.LibraryManagementCore, libraryPath);
 
             var codeBlockNodeDerived = CreateCodeBlockNode();
-            UpdateCodeBlockNodeContent(codeBlockNodeDerived, "DerivedTestHiddenMethods.SomeStaticMethod();");
-            AssertPreviewValue(codeBlockNodeDerived.GUID.ToString(), "Derived");
+            UpdateCodeBlockNodeContent(codeBlockNodeDerived, "HidesMethodFromClassA.Baz();");
+            AssertPreviewValue(codeBlockNodeDerived.GUID.ToString(), 23);
 
             var codeBlockNodeBase = CreateCodeBlockNode();
-            UpdateCodeBlockNodeContent(codeBlockNodeBase, "BaseTestHiddenMethods.SomeStaticMethod();");
-            AssertPreviewValue(codeBlockNodeBase.GUID.ToString(), "Base");
+            UpdateCodeBlockNodeContent(codeBlockNodeBase, "ClassA.Baz();");
+            AssertPreviewValue(codeBlockNodeBase.GUID.ToString(), 234);
         }
 
         #region CodeBlockUtils Specific Tests
@@ -2298,11 +2298,12 @@ var06 = g;
         public void TestCompletionOnDerivedTypeReturnsNonHiddenBaseMethods()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
-            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.DerivedTestHiddenMethods").ToList();
-            Assert.AreEqual(3, completions.Count);
-            Assert.AreEqual("DerivedTestHiddenMethods", completions[0].Text);
-            Assert.AreEqual("SomeStaticMethod", completions[1].Text);
-            Assert.AreEqual("SomeMethod", completions[2].Text);
+            var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.HidesMethodFromClassA").ToList();
+            Assert.AreEqual(4, completions.Count);
+            Assert.AreEqual("HidesMethodFromClassA", completions[0].Text);
+            Assert.AreEqual("Baz", completions[1].Text);
+            Assert.AreEqual("Bar", completions[2].Text);
+            Assert.AreEqual("Foo", completions[3].Text);
         }
 
         [Test]
