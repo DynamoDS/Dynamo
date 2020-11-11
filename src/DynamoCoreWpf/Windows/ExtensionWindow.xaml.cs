@@ -8,6 +8,8 @@ namespace Dynamo.Wpf.Windows
     /// </summary>
     public partial class ExtensionWindow : ModelessChildWindow
     {
+        public bool DockRequested { get; private set; }
+
         public ExtensionWindow()
         {
             InitializeComponent();
@@ -15,49 +17,44 @@ namespace Dynamo.Wpf.Windows
 
         private void OnDockButtonClick(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            DockRequested = true;
+            Close();
         }
 
         private void OnMaximizeRestoreButtonClick(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
-                this.WindowState = WindowState.Normal;
+                WindowState = WindowState.Normal;
             }
             else
             {
-                this.WindowState = WindowState.Maximized;
+                WindowState = WindowState.Maximized;
             }
         }
 
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void RefreshMaximizeRestoreButton()
         {
-            if (this.WindowState == WindowState.Maximized)
+            if (WindowState == WindowState.Maximized)
             {
-                this.maximizeButton.Visibility = Visibility.Collapsed;
-                this.restoreButton.Visibility = Visibility.Visible;
+                maximizeButton.Visibility = Visibility.Collapsed;
+                restoreButton.Visibility = Visibility.Visible;
             }
             else
             {
-                this.maximizeButton.Visibility = Visibility.Visible;
-                this.restoreButton.Visibility = Visibility.Collapsed;
+                maximizeButton.Visibility = Visibility.Visible;
+                restoreButton.Visibility = Visibility.Collapsed;
             }
         }
 
-        private void Window_StateChanged(object sender, EventArgs e)
+        private void ExtensionWindow_StateChanged(object sender, EventArgs e)
         {
-            this.RefreshMaximizeRestoreButton();
-        }
-
-        private void ExtensionWindow_Closed(object sender, EventArgs e)
-        {
-            // Release content
-            ExtensionContent.Child = null;
+            RefreshMaximizeRestoreButton();
         }
     }
 }
