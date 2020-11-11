@@ -881,25 +881,24 @@ namespace ProtoImperative
                 if (propogateUpdateGraphNode != null)
                 {
                     propogateUpdateGraphNode.languageBlockId = blockId;
-                    CodeBlock childBlock = core.CompleteCodeBlockList[blockId];
+                    bool foundChild = core.CompleteCodeBlockDict.TryGetValue(blockId, out CodeBlock childBlock);
+                    Validity.Assert(foundChild, $"Could find code block with codeBlockId {blockId}");
+
                     foreach (var subGraphNode in childBlock.instrStream.dependencyGraph.GraphList)
                     {
                         foreach (var depentNode in subGraphNode.dependentList)
                         {
-                            if (depentNode.updateNodeRefList != null 
-                                && depentNode.updateNodeRefList.Count > 0 
+                            if (depentNode.updateNodeRefList != null
+                                && depentNode.updateNodeRefList.Count > 0
                                 && depentNode.updateNodeRefList[0].nodeList != null
                                 && depentNode.updateNodeRefList[0].nodeList.Count > 0)
                             {
                                 SymbolNode dependentSymbol = depentNode.updateNodeRefList[0].nodeList[0].symbol;
                                 int symbolBlockId = dependentSymbol.codeBlockId;
-                                if (symbolBlockId != Constants.kInvalidIndex)
+                                if (core.CompleteCodeBlockDict.TryGetValue(symbolBlockId, out CodeBlock symbolBlock) && 
+                                    !symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
                                 {
-                                    CodeBlock symbolBlock = core.CompleteCodeBlockList[symbolBlockId];
-                                    if (!symbolBlock.IsMyAncestorBlock(codeBlock.codeBlockId))
-                                    {
-                                        propogateUpdateGraphNode.PushDependent(depentNode);
-                                    }
+                                    propogateUpdateGraphNode.PushDependent(depentNode);
                                 }
                             }
                         }

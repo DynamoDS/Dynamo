@@ -1,6 +1,6 @@
 <Project
     xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
-    ToolsVersion="4.0"
+    ToolsVersion="15.0"
     DefaultTargets="Build">
 <PropertyGroup>
     <Solution>Dynamo.All.sln</Solution>
@@ -13,11 +13,15 @@
     </ProjectToBuild>
 </ItemGroup>
 
-<Target Name="Build" DependsOnTargets="RestorePackages">
-    <MSBuild Projects="@(ProjectToBuild)" Targets="Rebuild"/>
+<Target Name="Restore" DependsOnTargets="RestorePackages">
+    <MSBuild Projects="@(ProjectToBuild)" Targets="Restore" />
 </Target>
 
-<Target Name="RestorePackages">
+<Target Name="Build"  DependsOnTargets="Restore">
+    <MSBuild Projects="@(ProjectToBuild)" Targets="Restore;Build"/>
+</Target>
+
+<Target Name="RestorePackages"   >
   <Exec Condition="!Exists($(NuGetPath))" Command="powershell.exe -ExecutionPolicy ByPass -Command Invoke-WebRequest -Uri https://dist.nuget.org/win-x86-commandline/latest/nuget.exe -OutFile $(NuGetPath)" />
   <Exec Command="$(NuGetPath) restore $(Solution)"/>
 </Target>

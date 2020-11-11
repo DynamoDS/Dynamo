@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -36,16 +37,7 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Loaded += NodeAutoCompleteSearchControl_Loaded;
             Unloaded += NodeAutoCompleteSearchControl_Unloaded;
-        }
-
-        private void NodeAutoCompleteSearchControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel != null && ViewModel.PortViewModel != null)
-            {
-                ViewModel.PortViewModel.PlaceNodeAutocompleteWindow(this, e);
-            }
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -75,8 +67,14 @@ namespace Dynamo.UI.Controls
             if (binding != null)
                 binding.UpdateSource();
 
-            if (ViewModel != null)
-                ViewModel.SearchCommand.Execute(null);
+            // Search the filtered results to match the user input.
+            if (ViewModel != null) 
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ViewModel.SearchAutoCompleteCandidates(SearchTextBox.Text);
+                }), DispatcherPriority.Loaded);
+            }
         }
 
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -99,6 +97,10 @@ namespace Dynamo.UI.Controls
                 if (searchElement.CreateAndConnectCommand.CanExecute(port.PortModel))
                 {
                     searchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                    Analytics.TrackEvent(
+                    Dynamo.Logging.Actions.Select,
+                    Dynamo.Logging.Categories.NodeAutoCompleteOperations,
+                    searchElement.FullName);
                 }
             }
         }
@@ -126,6 +128,10 @@ namespace Dynamo.UI.Controls
 
             // When launching this control, always start with clear search term.
             SearchTextBox.Clear();
+
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.

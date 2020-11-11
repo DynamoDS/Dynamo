@@ -18,7 +18,7 @@ namespace Dynamo.ViewModels
         private readonly NodeViewModel _node;
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
-        private const double autocompleteUISpacing = 2.5;
+        private const double autocompletePopupSpacing = 2.5;
 
         /// <summary>
         /// Port model.
@@ -230,35 +230,40 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Places the node autocomplete window relative to the respective port 
-        /// once the control is loaded and when its actual width is known.
-        /// The UI is first placed w.r.t to the X, Y position of the node (to which the port belongs),
-        /// then offset from that based on the port, the width of the UI itself and in some cases, the node width.
+        /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        internal void PlaceNodeAutocompleteWindow(object sender, EventArgs e)
+        /// <param name="popup">Node autocomplete popup.</param>
+        internal void SetupNodeAutocompleteWindowPlacement(Popup popup)
         {
-            var control = sender as NodeAutoCompleteSearchControl;
-            var popup = control.Parent as Popup;
+            _node.OnRequestAutoCompletePopupPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
+        }
+
+        private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
+        {
+            var zoom = _node.WorkspaceViewModel.Zoom;
 
             double x;
+            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / _node.ActualWidth;
             if (PortModel.PortType == PortType.Input)
             {
-                // Position node autocomplete UI offset left by its width from X position of node.
-                // Note: MinWidth property of the control is set to a constant value in the XAML
-                // for the ActualWidth to return a consistent value.
-                x = _node.X - (control.ActualWidth + autocompleteUISpacing);
+                // Offset popup to the left by its width from left edge of node and spacing.
+                x = -scaledSpacing - popupSize.Width;
             }
             else
             {
-                // Position node autocomplete UI offset right by node width from X position of node.
-                x = _node.X + _node.NodeModel.Width + autocompleteUISpacing;
+                // Offset popup to the right by node width and spacing from left edge of node.
+                x = scaledSpacing + targetSize.Width;
             }
-            // Position UI down from the top of the node but offset down by the node header and against the respective port.
-            var y = _node.Y + NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
+            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
+            var scaledHeight = targetSize.Height / _node.ActualHeight;
+            var absoluteHeight = NodeModel.HeaderHeight + PortModel.Index * PortModel.Height;
+            var y = absoluteHeight * scaledHeight;
 
-            popup.PlacementRectangle = new Rect(x, y, 0, 0);
+            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
+
+            return new[] { placement }; 
         }
 
         private void Workspace_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -403,7 +408,7 @@ namespace Dynamo.ViewModels
         private void AutoComplete(object parameter)
         {
             var wsViewModel = _node.WorkspaceViewModel;
-            var svm = wsViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel;
+            var svm = wsViewModel.NodeAutoCompleteSearchViewModel;
             svm.PortViewModel = this;
 
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
