@@ -321,14 +321,15 @@ namespace DSOffice
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <param name="overWrite"></param>
+        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings.</param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
         [IsVisibleInDynamoLibrary(false)]
-        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
             WorkBook wb = new WorkBook(filePath);
             WorkSheet ws = new WorkSheet(wb, sheetName, overWrite);
-            ws = ws.WriteData(startRow, startCol, data);
+            ws = ws.WriteData(startRow, startCol, data, writeAsString);
             return ws.Data;
         }
     }
@@ -522,8 +523,9 @@ namespace DSOffice
         /// <param name="startRow"></param>
         /// <param name="startColumn"></param>
         /// <param name="data"></param>
+        /// <param name="writeAsString"></param>
         /// <returns></returns>
-        internal WorkSheet WriteData(int startRow, int startColumn, object[][] data)
+        internal WorkSheet WriteData(int startRow, int startColumn, object[][] data, bool writeAsString = false)
         {
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);
@@ -537,6 +539,8 @@ namespace DSOffice
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
             var range = ws.Range[c1, c2];
+            if(writeAsString)
+                range.NumberFormat = "@";
             range.Value = rangeData;
 
             wb.Save();
@@ -831,11 +835,12 @@ namespace DSOffice
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <param name="overWrite"></param>
+        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings.</param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
+        public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
-            return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite);
+            return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite, writeAsString);
         }
     }
 }
