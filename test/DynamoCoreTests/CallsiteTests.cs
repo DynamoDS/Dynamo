@@ -10,6 +10,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using FFITarget;
 using NUnit.Framework;
 using static ProtoCore.CallSite;
 
@@ -210,7 +211,16 @@ namespace Dynamo.Tests
         {
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
             BeginRun();
-            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(0, 6).ToList());
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_ShouldReturnUniqueIds()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "nonNestedWorking_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("a74679f905fc4883bb017851d94ac074", Enumerable.Range(1, 6).ToList());
         }
 
         [Test]

@@ -1,9 +1,8 @@
 {
-  "Uuid": "a50ee530-041a-4ba9-a382-51693fffe016",
-  "IsCustomNode": true,
-  "Category": "tests",
-  "Description": "some custom node that creates elements",
-  "Name": "createObjectWrapperTrace",
+  "Uuid": "bd58dfcf-ee21-4be6-9301-34437b60a4d1",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "nonNestedWorking_replication",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -14,10 +13,10 @@
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
       "FunctionSignature": "FFITarget.WrapperObject.WrapperObject@int",
-      "Id": "b347b5043a314b2a825bcfd3d57229eb",
+      "Id": "1e4d4b71effc4e959fe7f28b0e879674",
       "Inputs": [
         {
-          "Id": "0808d7a0a1874c40879426a5e2783532",
+          "Id": "884b32a22be2402881cf6fbe605dca07",
           "Name": "x",
           "Description": "int",
           "UsingDefaultValue": false,
@@ -28,7 +27,7 @@
       ],
       "Outputs": [
         {
-          "Id": "1380782fd1b54e899c32deee8a8ec3f6",
+          "Id": "c5844ef3539948f7995b2fe9b2d3a894",
           "Name": "WrapperObject",
           "Description": "WrapperObject",
           "UsingDefaultValue": false,
@@ -41,22 +40,16 @@
       "Description": "WrapperObject.WrapperObject (x: int): WrapperObject"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Symbol, DynamoCore",
-      "NodeType": "InputNode",
-      "Parameter": {
-        "Name": "x",
-        "TypeName": "int",
-        "TypeRank": 0,
-        "DefaultValue": null,
-        "Description": ""
-      },
-      "Id": "2fd2cc23e77a4faa8cfdb153e727c51f",
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "0..5;",
+      "Id": "57a5a90fa0d7460aa4fc03c3489f309e",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "6b3d841510cb4c38ab247267b6eb433a",
+          "Id": "6a96d9ddf1a84115bdc5925cf0c8520d",
           "Name": "",
-          "Description": "Symbol",
+          "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,40 +57,49 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "A function parameter, use with custom nodes.\r\n\r\nYou can specify the type and default value for parameter. E.g.,\r\n\r\ninput : var[]..[]\r\nvalue : bool = false"
+      "Description": "Allows for DesignScript code to be authored directly"
     },
     {
-      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
-      "NodeType": "OutputNode",
-      "ElementResolver": null,
-      "Symbol": "WrapperObject",
-      "Id": "3a61306073e242698c2dde9670d84f03",
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.WrapperObject.ID",
+      "Id": "a74679f905fc4883bb017851d94ac074",
       "Inputs": [
         {
-          "Id": "298d472959544e1cbc20b572915e6f33",
-          "Name": "",
-          "Description": "",
+          "Id": "53b70c092c8f4317a4b6068a22d8f7e1",
+          "Name": "wrapperObject",
+          "Description": "FFITarget.WrapperObject",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Outputs": [],
-      "Replication": "Disabled",
-      "Description": "A function output, use with custom nodes"
+      "Outputs": [
+        {
+          "Id": "6dcf926a2dab473fb552136510a983a2",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "WrapperObject.ID: int"
     }
   ],
   "Connectors": [
     {
-      "Start": "1380782fd1b54e899c32deee8a8ec3f6",
-      "End": "298d472959544e1cbc20b572915e6f33",
-      "Id": "d67a9d7fe7c34a198f10ad1b13e2e5b7"
+      "Start": "c5844ef3539948f7995b2fe9b2d3a894",
+      "End": "53b70c092c8f4317a4b6068a22d8f7e1",
+      "Id": "b7194f080b0349ff8faef9c5b3e34b8d"
     },
     {
-      "Start": "6b3d841510cb4c38ab247267b6eb433a",
-      "End": "0808d7a0a1874c40879426a5e2783532",
-      "Id": "9f5a6907ff1e462d9b54e1f465d35be8"
+      "Start": "6a96d9ddf1a84115bdc5925cf0c8520d",
+      "End": "884b32a22be2402881cf6fbe605dca07",
+      "Id": "f4dfcb6db0ed4ec5aa52fa8768601778"
     }
   ],
   "Dependencies": [],
@@ -106,10 +108,10 @@
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
+      "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.10.0.3136",
-      "RunType": "Manual",
+      "Version": "2.10.0.3150",
+      "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
@@ -128,37 +130,37 @@
       {
         "ShowGeometry": true,
         "Name": "WrapperObject.WrapperObject",
-        "Id": "b347b5043a314b2a825bcfd3d57229eb",
+        "Id": "1e4d4b71effc4e959fe7f28b0e879674",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 250.0,
-        "Y": 0.0
+        "X": 330.5,
+        "Y": 424.75
       },
       {
         "ShowGeometry": true,
-        "Name": "Input",
-        "Id": "2fd2cc23e77a4faa8cfdb153e727c51f",
+        "Name": "Code Block",
+        "Id": "57a5a90fa0d7460aa4fc03c3489f309e",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 0.0,
-        "Y": 0.0
+        "X": 130.0,
+        "Y": 532.0
       },
       {
         "ShowGeometry": true,
-        "Name": "Output",
-        "Id": "3a61306073e242698c2dde9670d84f03",
+        "Name": "WrapperObject.ID",
+        "Id": "a74679f905fc4883bb017851d94ac074",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 544.0,
-        "Y": 0.0
+        "X": 608.5,
+        "Y": 425.75
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
+    "X": -32.0,
+    "Y": -28.0,
     "Zoom": 1.0
   }
 }

@@ -76,7 +76,7 @@ namespace ProtoCore
 
                     if (HasData)
                         return true;
-                    
+
                     //Not empty, and doesn't have data so test recursive
                     Validity.Assert(NestedData != null,
                         "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
@@ -245,10 +245,10 @@ namespace ProtoCore
                 var assemblyNameObj = new AssemblyName(assemblyName);
                 //find matching assemblies by name, version is not used.
                 var matchingAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == assemblyNameObj.Name);
-                if(matchingAssembly!= null)
+                if (matchingAssembly != null)
                 {
-                   var matchingType = matchingAssembly.GetType(typeName);
-                    if(matchingType != null)
+                    var matchingType = matchingAssembly.GetType(typeName);
+                    if (matchingType != null)
                     {
                         return matchingType;
                     }
@@ -708,9 +708,11 @@ namespace ProtoCore
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="core"></param>
-        private void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
+        internal void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
         {
+
             invokeCount = 0;
+            Debug.WriteLine("resetting callsite invoke count");
 
             /*
             if (core.EnableCallsiteExecutionState)
@@ -907,7 +909,7 @@ namespace ProtoCore
                             if (replicationInstructions == null ||
                                 IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                             {
-                                resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                                resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                                 replicationInstructions = replicationOption;
                                 matchFound = true;
                             }
@@ -948,7 +950,7 @@ namespace ProtoCore
                         if (replicationInstructions == null ||
                             IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
-                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
                             matchFound = true;
                         }
@@ -1406,10 +1408,9 @@ namespace ProtoCore
             DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            // Update the CallsiteExecutionState with 
-            // TODO: Replace this with the real data
-            UpdateCallsiteExecutionState(null, runtimeCore);
 
+
+            //TODO reuse this.
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -1702,7 +1703,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1775,7 +1776,7 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     List<StackValue> newFormalParams = formalParameters.ToList();
 
@@ -1794,7 +1795,7 @@ namespace ProtoCore
                         newFormalParams[cartIndex] = parameters[i];
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1931,7 +1932,7 @@ namespace ProtoCore
             var finalFormalParameters = new List<StackValue>();
 
             foreach (var formalParameter in formalParameters)
-            { 
+            {
                 //expand array if required to compare inputs
                 if (formalParameter.IsArray)
                 {
@@ -1942,7 +1943,7 @@ namespace ProtoCore
                     {
                         case 0:
                             //set function result false and exit due to empty list
-                            return new Tuple<bool, List<StackValue>> (false, null);
+                            return new Tuple<bool, List<StackValue>>(false, null);
                         case 1:
                             //Add single sample parameter to pass for evaluation in SelectFinalFep
                             finalFormalParameters.Add(flatParameters[0]);
