@@ -820,6 +820,56 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Determines if any item in the given list is a boolean and has a true value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether any item is true.</param>
+        /// <returns name="bool">Whether any item is true.</returns>
+        /// <search>test,any,true,istrue</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static bool AnyTrue(IList list)
+        {
+            bool result = false;
+            foreach (object obj in list)
+            {
+                if (obj is IList subList)
+                {
+                    result = AnyTrue(subList);
+                }
+                else if (obj is bool boolObj && boolObj)
+                {
+                    result = true;
+                }
+                if (result) break;
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Determines if any item in the given list is a boolean and has a false value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether any item is false.</param>
+        /// <returns name="bool">Whether any item is false.</returns>
+        /// <search>test,any,false,isfalse</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static bool AnyFalse(IList list)
+        {
+            bool result = false;
+            foreach (object obj in list)
+            {
+                if (obj is IList subList)
+                {
+                    result = AnyFalse(subList);
+                }
+                else if(obj is bool boolObj && !boolObj)
+                {
+                    result = true;
+                }
+                if (result) break;
+            }
+            return result;
+        }
+
+        /// <summary>
         ///     Returns the number of items stored in the given list.
         /// </summary>
         /// <param name="list">List to get the item count of.</param>
