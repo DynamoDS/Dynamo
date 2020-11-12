@@ -127,6 +127,7 @@ namespace Dynamo.DocumentationBrowser
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
             (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
+            pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
             PackageDocumentationManager.Instance.Dispose();
         }
 
