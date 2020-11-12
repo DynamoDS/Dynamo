@@ -502,6 +502,29 @@ sum;
         }
 
         [Test]
+        public void TestStaticHiddenFunctionCallResolution()
+        {
+            string code = @"
+                            b = HidesMethodFromClassA.Baz();
+                            ";
+
+            Type dummy = typeof(FFITarget.HidesMethodFromClassA);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            Console.WriteLine(code);
+            ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = 23, BlockIndex = 0 } };
+            ExecuteAndVerify(code, data);
+
+            code = @"
+                        b = ClassA.Baz();
+                    ";
+            dummy = typeof(FFITarget.ClassA);
+            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
+            Console.WriteLine(code);
+            ValidationData[] data1 = { new ValidationData { ValueName = "b", ExpectedValue = 234, BlockIndex = 0 } };
+            ExecuteAndVerify(code, data1);
+        }
+
+        [Test]
         public void TestInheritanceCtorsVirtualMethods2()
         {
             string code = @"
