@@ -505,23 +505,17 @@ sum;
         public void TestStaticHiddenFunctionCallResolution()
         {
             string code = @"
-                            b = HidesMethodFromClassA.Baz();
+                            d = HidesMethodFromClassA.Baz();
+                            b = ClassA.Baz();
                             ";
 
             Type dummy = typeof(FFITarget.HidesMethodFromClassA);
             code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
             Console.WriteLine(code);
-            ValidationData[] data = { new ValidationData { ValueName = "b", ExpectedValue = 23, BlockIndex = 0 } };
+            ValidationData[] data = { new ValidationData { ValueName = "d", ExpectedValue = 23, BlockIndex = 0 },
+                                      new ValidationData { ValueName = "b", ExpectedValue = 234, BlockIndex = 0 }
+                                    };
             ExecuteAndVerify(code, data);
-
-            code = @"
-                        b = ClassA.Baz();
-                    ";
-            dummy = typeof(FFITarget.ClassA);
-            code = string.Format("import(\"{0}\");\r\n{1}", dummy.AssemblyQualifiedName, code);
-            Console.WriteLine(code);
-            ValidationData[] data1 = { new ValidationData { ValueName = "b", ExpectedValue = 234, BlockIndex = 0 } };
-            ExecuteAndVerify(code, data1);
         }
 
         [Test]
