@@ -89,7 +89,6 @@
                    Width="22"
                    Height="22"
                    Margin="4" />
-                   <!--Source="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />-->
 
             <TextBlock Grid.Column="1"
                        Margin="4 0 0 0"

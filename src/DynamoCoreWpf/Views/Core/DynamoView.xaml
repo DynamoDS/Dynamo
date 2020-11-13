@@ -1774,11 +1774,6 @@
                             <!-- Undock -->
                             <Button Name="UndockButton" Style="{StaticResource CloseButtonStyle}" DockPanel.Dock="Right" Click="UndockExtensionTab"
                                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}}, Path=Name}">
-                                <!--<Path Width="14"
-                                      Height="14"
-                                      Data="M 6,6 H 13 V 11 H 6 Z M 5,5 1,1 M 4,1 H 1 M 1,4 V 1"
-                                      Stroke="Gray"
-                                      StrokeThickness="1" />-->
                                 <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                     <Image.Style>
                                         <Style TargetType="{x:Type Image}">

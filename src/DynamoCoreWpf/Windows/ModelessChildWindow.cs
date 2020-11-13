@@ -22,8 +22,15 @@ namespace Dynamo.Wpf.Windows
             public double Height;
         }
 
+        /// <summary>
+        /// Gets the window rectangle (location + size)
+        /// </summary>
         public WindowRect SavedWindowRect { get; private set; }
 
+        /// <summary>
+        /// Creates a window with an initially empty window rectangle.
+        /// Note: This constructor assumes Owner is set externally.
+        /// </summary>
         public ModelessChildWindow()
         {
             InitWindowRect(null);
