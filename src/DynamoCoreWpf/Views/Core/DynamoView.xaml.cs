@@ -220,6 +220,14 @@ namespace Dynamo.Controls
         /// <returns>The tab item if it was added, otherwise null</returns>
         internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
         {
+            // If the extension is showing as a window, shift focus there.
+            if (ExtensionWindows.ContainsKey(viewExtension.Name))
+            {
+                var window = ExtensionWindows[viewExtension.Name];
+                window.Focus();
+                return null;
+            }
+
             var tab = FindExtensionTab(viewExtension);
             if (tab == null)
             {
@@ -401,6 +409,7 @@ namespace Dynamo.Controls
             var content = ext.ExtensionContent.Content as ContentControl;
             // Release content from window
             ext.ExtensionContent.Content = null;
+            ExtensionWindows.Remove(extName);
             if (ext.DockRequested)
             {
                 AddExtensionTabItem((IViewExtension)ext.Tag, content);
@@ -409,8 +418,6 @@ namespace Dynamo.Controls
             {
                 CloseExtension?.Invoke(extName);
             }
-
-            ExtensionWindows.Remove(extName);
         }
 
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.

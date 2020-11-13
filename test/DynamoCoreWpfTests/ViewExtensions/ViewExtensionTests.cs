@@ -181,6 +181,35 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, View.ExtensionWindows.Count);
         }
 
+        [Test]
+        public void ExtensionCannotBeAddedAsBothWindowAndTab()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension 
+            View.UndockExtension(viewExtension.Name);
+
+            // Extension is no longer in the side bar (now collapsed)
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            // Extension is in a window now
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Attempt to open the extension in the side bar when it's open as a window
+            View.AddExtensionTabItem(viewExtension, new UserControl());
+
+            // Extension is not added to the sidebar
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+        }
+
         public static void RaiseLoadedEvent(FrameworkElement element)
         {
             MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
