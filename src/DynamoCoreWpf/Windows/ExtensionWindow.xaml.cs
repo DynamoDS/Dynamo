@@ -8,7 +8,11 @@ namespace Dynamo.Wpf.Windows
     /// </summary>
     public partial class ExtensionWindow : ModelessChildWindow
     {
-        public bool DockRequested { get; private set; }
+        /// <summary>
+        /// Indicates whether the window was closed using the dock button.
+        /// Note: Setter is internal for testing purposes only.
+        /// </summary>
+        public bool DockRequested { get; internal set; }
 
         public ExtensionWindow()
         {
@@ -55,6 +59,12 @@ namespace Dynamo.Wpf.Windows
         private void ExtensionWindow_StateChanged(object sender, EventArgs e)
         {
             RefreshMaximizeRestoreButton();
+        }
+
+        private void ExtensionWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // This can't be done using markup, so we do it here.
+            iconImage.Source = Icon;
         }
     }
 }

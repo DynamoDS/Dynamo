@@ -8,7 +8,8 @@
                            mc:Ignorable="d" 
                            d:DesignHeight="450" d:DesignWidth="800"
                            WindowStyle="None"
-                           StateChanged="ExtensionWindow_StateChanged">
+                           StateChanged="ExtensionWindow_StateChanged"
+                           Loaded="ExtensionWindow_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
     </WindowChrome.WindowChrome>
@@ -84,10 +85,11 @@
 
             <!-- First row is just for the title bar -->
             <Image Grid.Column="0"
+                   x:Name="iconImage"
                    Width="22"
                    Height="22"
-                   Margin="4"
-                   Source="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />
+                   Margin="4" />
+                   <!--Source="/DynamoCoreWpf;component/UI/Images/tabs_button_normal.png" />-->
 
             <TextBlock Grid.Column="1"
                        Margin="4 0 0 0"
@@ -108,11 +110,10 @@
 
             <Button Grid.Column="2"
                     Click="OnDockButtonClick"
-                    RenderOptions.EdgeMode="Aliased"
                     Style="{StaticResource TitleBarButtonStyle}">
                 <Path Width="46"
                       Height="32"
-                      Data="M 18,15 H 28"
+                      Data="M 24,12.5 H 27.5 V 19.5 H 20.5 V 16 M 17.5,9.5 23,15 M 18.5,14 23,14.5 M 22,10.5 22.5,15"
                       Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}"
                       StrokeThickness="1" />
             </Button>

@@ -1309,6 +1309,8 @@
     <Content Include="sharpdx_direct3d11_effects_x86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="UI\Images\undock_hover.png" />
+    <Resource Include="UI\Images\undock_normal.png" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\CommonBuffers.hlsl" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\DataStructs.hlsl" />
