@@ -465,7 +465,7 @@ namespace DSCore
             var pairs = list.Cast<object>()
                     .Zip(keys.Cast<object>(), (item, key) => new { item, key });
 
-            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float);
+            var numberKeyPairs = pairs.Where(pair => pair.key is double || pair.key is int || pair.key is float || pair.key is long);
             // We don't use Except, because Except doesn't return duplicates.
             var keyPairs = pairs.Where(
                 pair =>

@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.ViewModels;
@@ -86,6 +87,10 @@ namespace Dynamo.UI.Controls
             {
                 searchElement.Position = ViewModel.InCanvasSearchPosition;
                 searchElement.ClickedCommand.Execute(null);
+                Analytics.TrackEvent(
+                Dynamo.Logging.Actions.Select,
+                Dynamo.Logging.Categories.InCanvasSearchOperations,
+                searchElement.FullName);
             }
         }
 
@@ -112,6 +117,10 @@ namespace Dynamo.UI.Controls
 
             // Select text in text box.
             SearchTextBox.SelectAll();
+
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.InCanvasSearchOperations);
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.

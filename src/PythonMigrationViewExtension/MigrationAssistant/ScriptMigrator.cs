@@ -19,7 +19,7 @@ namespace Dynamo.PythonMigration.MigrationAssistant
         /// <returns></returns>
         internal static string MigrateCode(string code)
         {
-            Installer.SetupPython().Wait();
+            InstallPython();
 
             if (!PythonEngine.IsInitialized)
             {
@@ -67,6 +67,21 @@ namespace Dynamo.PythonMigration.MigrationAssistant
             finally
             {
                 PythonEngine.ReleaseLock(gs);
+            }
+        }
+
+        private static bool isPythonInstalled = false;
+        /// <summary>
+        /// Makes sure Python is installed on the system and it's location added to the path.
+        /// NOTE: Calling SetupPython multiple times will add the install location to the path many times,
+        /// potentially causing the environment variable to overflow.
+        /// </summary>
+        private static void InstallPython()
+        {
+            if (!isPythonInstalled)
+            {
+                Installer.SetupPython().Wait();
+                isPythonInstalled = true;
             }
         }
 

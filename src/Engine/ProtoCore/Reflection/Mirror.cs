@@ -335,26 +335,27 @@ namespace ProtoCore
             }
 
             /// <summary>
-            /// Returns the constructors and static methods and properties 
-            /// belonging to the type and its base types
+            /// Returns a list of constructors and static methods and properties 
+            /// belonging to the type and its base types. Filters out repeating names.
             /// </summary>
             /// <returns></returns>
             public IEnumerable<StaticMirror> GetMembers()
             {
                 // TODO: Factor out reflection functionality for both LibraryServices and Mirrors
                 List<StaticMirror> members = new List<StaticMirror>();
+                members.AddRange(GetConstructors());
+                members.AddRange(GetFunctions().Where(m => m.IsStatic));
+                members.AddRange(GetProperties().Where(m => m.IsStatic));
 
-                IEnumerable<ClassMirror> baseClasses = this.GetClassHierarchy();
+                IEnumerable<ClassMirror> baseClasses = GetClassHierarchy();
                 foreach (var baseClass in baseClasses)
                 {
-                    members.AddRange(baseClass.GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                    members.AddRange(baseClass.GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                    members.AddRange(baseClass.GetFunctions().Where(m => m.IsStatic));
+                    members.AddRange(baseClass.GetProperties().Where(m => m.IsStatic));
                 }
 
-                members.AddRange(this.GetConstructors().GroupBy(x => x.Name).Select(y => y.First()));
-                members.AddRange(this.GetFunctions().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                members.AddRange(this.GetProperties().Where(m => m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                return members;
+                // Return a list of members with unique names.
+                return members.GroupBy(x => x.Name).Select(x => x.First()).ToList();
             }
 
             /// <summary>
@@ -468,20 +469,28 @@ namespace ProtoCore
             /// <summary>
             /// Given a method name, return the matching list of 
             /// constructors or static methods on this type and its base types
+            /// Excludes hidden methods from base types.
             /// </summary>
             /// <param name="methodName"></param>
             /// <returns></returns>
             public IEnumerable<MethodMirror> GetOverloadsOnType(string methodName)
             {
                 List<MethodMirror> members = new List<MethodMirror>();
-                IEnumerable<ClassMirror> baseClasses = this.GetClassHierarchy();
+                members.AddRange(GetConstructors().Where(x => x.MethodName == methodName));
+                members.AddRange(GetFunctions().Where(x => x.IsStatic && x.MethodName == methodName));
+
+                // Filter out hidden functions/properties:
+                // Create a set of unique function and constructor descriptions.
+                // In this case we use ToString() to get the unique description of the members (func signature, constructor names).
+                var derivedClassMembers = new HashSet<string>();
+                members.ForEach(x => derivedClassMembers.Add(x.ToString()));
+
+                IEnumerable<ClassMirror> baseClasses = GetClassHierarchy();
                 foreach (var baseClass in baseClasses)
                 {
-                    members.AddRange(baseClass.GetFunctions().Where(x => x.IsStatic && x.MethodName == methodName));
+                    members.AddRange(baseClass.GetFunctions().Where(x => x.IsStatic && x.MethodName == methodName && !derivedClassMembers.Contains(x.ToString())));
                 }
-
-                members.AddRange(this.GetConstructors().Where(x => x.MethodName == methodName));
-                members.AddRange(this.GetFunctions().Where(x => x.IsStatic && x.MethodName == methodName));
+      
                 return members;
             }
 
@@ -494,31 +503,37 @@ namespace ProtoCore
             public IEnumerable<MethodMirror> GetOverloadsOnInstance(string methodName)
             {
                 List<MethodMirror> members = new List<MethodMirror>();
-                IEnumerable<ClassMirror> baseClasses = this.GetClassHierarchy();
+                IEnumerable<ClassMirror> baseClasses = GetClassHierarchy();
                 foreach (var baseClass in baseClasses)
                 {
                     members.AddRange(baseClass.GetFunctions().Where(x => !x.IsStatic && x.MethodName == methodName));
                 }
 
-                members.AddRange(this.GetFunctions().Where(x => !x.IsStatic && x.MethodName == methodName));
+                members.AddRange(GetFunctions().Where(x => !x.IsStatic && x.MethodName == methodName));
                 return members;
             }
 
+            /// <summary>
+            /// Returns the instance methods and properties 
+            /// belonging to the type and its base types. Filters out repeating names.
+            /// </summary>
             public IEnumerable<StaticMirror> GetInstanceMembers()
             {
                 // TODO: Factor out reflection functionality for both LibraryServices and Mirrors
-                List<StaticMirror> members = new List<StaticMirror>();
 
-                IEnumerable<ClassMirror> baseClasses = this.GetClassHierarchy();
+                List<StaticMirror> members = new List<StaticMirror>();
+                members.AddRange(GetFunctions().Where(m => !m.IsStatic));
+                members.AddRange(GetProperties().Where(m => !m.IsStatic));
+
+                IEnumerable<ClassMirror> baseClasses = GetClassHierarchy();
                 foreach (var baseClass in baseClasses)
                 {
-                    members.AddRange(baseClass.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                    members.AddRange(baseClass.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
+                    members.AddRange(baseClass.GetFunctions().Where(m => !m.IsStatic));
+                    members.AddRange(baseClass.GetProperties().Where(m => !m.IsStatic));
                 }
 
-                members.AddRange(this.GetFunctions().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                members.AddRange(this.GetProperties().Where(m => !m.IsStatic).GroupBy(x => x.Name).Select(y => y.First()));
-                return members;
+                // Return a list of members with unique names.
+                return members.GroupBy(x => x.Name).Select(y => y.First()).ToList();
             }
 
             public ClassAttributes GetClassAttributes()
