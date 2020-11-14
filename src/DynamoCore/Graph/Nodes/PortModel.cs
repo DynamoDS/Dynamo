@@ -202,7 +202,7 @@ namespace Dynamo.Graph.Nodes
         public AssociativeNode DefaultValue
         {
             get;
-            internal set;
+            set;
         }
 
         /// <summary>
