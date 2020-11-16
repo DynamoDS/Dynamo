@@ -26,9 +26,11 @@ PSInput main(VSInput input)
     bool requiresPerVertexColoration = flags & 32;
      
     float4 inputp;
+    float3 inputn;
     float3 nudge = normalize(input.n) * 0.0001;
 
     inputp = input.p;
+    inputn = input.n;
     if (requiresPerVertexColoration)
     {
         // Nudge the vertex out slightly along its normal a tiny bit.
@@ -41,6 +43,19 @@ PSInput main(VSInput input)
         inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
     }
     
+    // compose instance matrix
+    if (bHasInstances)
+    {
+        matrix mInstance =
+        {
+            input.mr0,
+            input.mr1,
+            input.mr2,
+            input.mr3
+        };
+        inputp = mul(input.p, mInstance);
+        inputn = mul(inputn, (float3x3) mInstance);
+    }
 
     //set position into world space
     output.p = mul(inputp, mWorld);
@@ -53,7 +68,7 @@ PSInput main(VSInput input)
     output.c = input.c;
 
     //set normal for interpolation	
-    output.n = normalize(mul(input.n, (float3x3)mWorld));
+    output.n = normalize(mul(inputn, (float3x3)mWorld));
 
     return output;
 }
