@@ -280,11 +280,11 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This method will close a tab item in the right side bar based on passed extension
+        /// This method will close an extension control, whether it's on the side bar or undocked as a window.
         /// </summary>
         /// <param name="viewExtension">Extension to be closed</param>
         /// <returns></returns>
-        internal void CloseExtensionTabItem(IViewExtension viewExtension)
+        internal void CloseExtensionControl(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
