@@ -117,7 +117,7 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void CloseExtensioninInSideBar(IViewExtension viewExtension)
         {
-            dynamoView.CloseExtensionTabItem(viewExtension);
+            dynamoView.CloseExtensionControl(viewExtension);
         }
 
         public void AddSeparator(MenuBarType type, Separator separatorObj, int index = -1)
