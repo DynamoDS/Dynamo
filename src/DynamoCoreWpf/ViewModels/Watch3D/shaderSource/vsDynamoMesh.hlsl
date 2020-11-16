@@ -53,7 +53,7 @@ PSInput main(VSInput input)
             input.mr2,
             input.mr3
         };
-        inputp = mul(input.p, mInstance);
+        inputp = mul(inputp, mInstance);
         inputn = mul(inputn, (float3x3) mInstance);
     }
 
