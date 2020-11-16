@@ -407,13 +407,13 @@ limitations under the License.
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\InstrumentationConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />
+    <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(LibGProtoGeometryXml)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Copy SourceFiles="@(LibGProtoGeometryUICulture)" DestinationFolder="$(OutputPath)\$(UICulture)" />
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
     <Copy SourceFiles="@(LibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
-    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />
-    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />    
+    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />   
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />
