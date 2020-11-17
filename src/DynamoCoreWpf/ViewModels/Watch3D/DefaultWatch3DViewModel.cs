@@ -254,7 +254,32 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             ToggleIsolationModeCommand = new DelegateCommand(ToggleIsolationMode, CanToggleIsolationMode);
             ZoomToFitCommand = new DelegateCommand(ZoomToFit, CanZoomToFit);
             CanBeActivated = true;
+            ViewCameraChanged += RedrawOnCameraChange;
         }
+
+        private void RedrawOnCameraChange(object arg1, RoutedEventArgs arg2)
+        {
+            var hs = dynamoModel.Workspaces.FirstOrDefault(i => i is HomeWorkspaceModel);
+            IEnumerable<NodeModel> nodesToRender = null;
+            if (hs != null)
+            {
+                nodesToRender = hs.Nodes;
+            }
+
+            if (nodesToRender == null)
+            {
+                return;
+            }
+
+            var cameraPosition = GetCameraPosition();
+            renderPackageFactory.TessellationParameters.CameraPosition = 
+                new Autodesk.DesignScript.Interfaces.TessellationParameters.Point(cameraPosition.Value.X, cameraPosition.Value.Y, cameraPosition.Value.Z);
+            foreach (var node in nodesToRender)
+            {
+                node.RequestVisualUpdateAsync(scheduler, engineManager.EngineController, renderPackageFactory, true);
+            }
+        }
+
 
         /// <summary>
         /// Call setup to establish the visualization context for the
@@ -715,6 +740,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // Override in derived classes.
         }
 
+        
         internal virtual void ExportToSTL(string path, string modelName)
         {
             // Override in derived classes
@@ -802,6 +828,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         public void Dispose()
         {
+            ViewCameraChanged -= RedrawOnCameraChange;
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }
