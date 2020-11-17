@@ -83,15 +83,15 @@ limitations under the License.
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="ProtoGeometry, Version=2.9.0.2744, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2745\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.9.0.3090, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3090\lib\net48\ProtoGeometry.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core"/>
+    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
@@ -387,7 +387,7 @@ limitations under the License.
       <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-<LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG.Interface.dll" />
+      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG.Interface.dll" />
       <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_227_0_0*\lib\net48\protogeometry.xml" />
       <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\$(UICulture)\*" />
       <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0*\tools\net48\LibG_225_0_0\*" />
@@ -415,7 +415,7 @@ limitations under the License.
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
     <Copy SourceFiles="@(LibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
-    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />   
+    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

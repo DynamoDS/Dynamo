@@ -40,7 +40,7 @@
       <HintPath>..\..\..\src\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="ProtoGeometry, Version=2.9.0.2744, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.2745\lib\net48\ProtoGeometry.dll</HintPath>
+      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3090\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
