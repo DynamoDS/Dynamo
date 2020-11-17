@@ -59,6 +59,7 @@
     <Compile Include="DataMarshaler.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Guid.cs" />
+    <Compile Include="MD2HTML.cs" />
     <Compile Include="ModifierKeys.cs" />
     <Compile Include="Option.cs" />
     <Compile Include="OrderedSet.cs" />
