@@ -55,7 +55,7 @@ namespace Dynamo.Wpf.Extensions
     /// <summary>
     /// Base class for View Extension.
     /// </summary>
-    public abstract class IViewExtensionBaseClass : IViewExtension
+    public abstract class ViewExtensionBaseClass : IViewExtension
     {
         /// <summary>
         /// A unique id for this extension instance.  

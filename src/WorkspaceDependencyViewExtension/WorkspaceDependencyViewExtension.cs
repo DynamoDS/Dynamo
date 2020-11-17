@@ -16,7 +16,7 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtensionBaseClass, IViewExtension, ILogSource
+    public class WorkspaceDependencyViewExtension : ViewExtensionBaseClass, IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
         private readonly String extensionName = Properties.Resources.ExtensionName;

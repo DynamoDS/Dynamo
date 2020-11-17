@@ -289,7 +289,7 @@ namespace Dynamo.Controls
             string tabName = viewExtension.Name;
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
 
-            var viewExtensionBaseClass = (IViewExtensionBaseClass) viewExtension;
+            var viewExtensionBaseClass = (ViewExtensionBaseClass) viewExtension;
             viewExtensionBaseClass.OnViewExtensionClosed(tabName);
             CloseExtensionTab(tabitem);
             CloseExtensionWindow(tabName);
@@ -306,7 +306,7 @@ namespace Dynamo.Controls
             string tabName = (sender as Button).DataContext.ToString();
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
 
-            var viewExtensionBaseClass = (IViewExtensionBaseClass) tabitem.Tag;
+            var viewExtensionBaseClass = (ViewExtensionBaseClass) tabitem.Tag;
             viewExtensionBaseClass.OnViewExtensionClosed(tabName);
             CloseExtensionTab(tabitem);
         }
@@ -418,7 +418,7 @@ namespace Dynamo.Controls
             }
             else
             {
-                var viewExtensionBaseClass = (IViewExtensionBaseClass)ext.Tag;
+                var viewExtensionBaseClass = (ViewExtensionBaseClass)ext.Tag;
                 viewExtensionBaseClass.OnViewExtensionClosed(extName);
             }
         }
