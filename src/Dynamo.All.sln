@@ -235,6 +235,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonMigrationViewExtensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NodeAutoCompleteViewExtension", "NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj", "{51511AFD-F326-4995-8E27-5D711419EF6F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MD2HTML", "Tools\MD2HTML\MD2HTML.csproj", "{0893F745-CB1A-427A-8E87-CA927273039A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -859,6 +861,14 @@ Global
 		{51511AFD-F326-4995-8E27-5D711419EF6F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{51511AFD-F326-4995-8E27-5D711419EF6F}.Release|x64.ActiveCfg = Release|x64
 		{51511AFD-F326-4995-8E27-5D711419EF6F}.Release|x64.Build.0 = Release|x64
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Debug|x64.Build.0 = Debug|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|x64.ActiveCfg = Release|Any CPU
+		{0893F745-CB1A-427A-8E87-CA927273039A}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -935,6 +945,7 @@ Global
 		{182FCA4E-B6EF-451F-9EC4-7BF2C622F4F7} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{10AF430D-0D3A-49CE-A63D-848912959745} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{51511AFD-F326-4995-8E27-5D711419EF6F} = {88D45B00-E564-41DB-B57C-9509646CAA49}
+		{0893F745-CB1A-427A-8E87-CA927273039A} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}
