@@ -14,7 +14,7 @@ namespace Dynamo.DocumentationBrowser
     /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
     /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
-    public class DocumentationBrowserViewExtension : ViewExtensionBaseClass, IViewExtension, ILogSource
+    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
