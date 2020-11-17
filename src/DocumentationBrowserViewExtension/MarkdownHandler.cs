@@ -1,6 +1,12 @@
 ﻿using System;
 using System.IO;
-using Dynamo.Utilities;
+using System.Linq;
+using Dynamo.PackageManager;
+using Markdig;
+using Markdig.Parsers;
+using Markdig.Renderers;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -11,7 +17,7 @@ namespace Dynamo.DocumentationBrowser
     {
         private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
         private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
-        private readonly MD2HTML converter = new MD2HTML();
+        private readonly MarkdownPipeline pipeline;
 
 
         private static MarkdownHandler instance;
@@ -26,6 +32,10 @@ namespace Dynamo.DocumentationBrowser
 
         private MarkdownHandler()
         {
+            var pipelineBuilder = new MarkdownPipelineBuilder();
+            pipeline = pipelineBuilder
+                .UseAdvancedExtensions()
+                .Build();
         }
 
         /// <summary>
@@ -76,11 +86,17 @@ namespace Dynamo.DocumentationBrowser
             }
             scriptTagsRemoved = false;
 
-            converter.ParseToHtml(ref writer, mdString, mdFilePath);
+            var renderer = new HtmlRenderer(writer);
+            pipeline.Setup(renderer);
 
+            var document = MarkdownParser.Parse(mdString, pipeline);
+            ConvertRelativeLocalImagePathsToAbsolute(mdFilePath, document);
+
+            renderer.Render(document);
             // inject the syntax highlighting script at the bottom at the document.
             writer.WriteLine(DocumentationBrowserUtils.GetDPIScript());
             writer.WriteLine(GetSyntaxHighlighting());
+
             return scriptTagsRemoved;
         }
 
@@ -95,6 +111,33 @@ namespace Dynamo.DocumentationBrowser
                 return string.Empty;
 
             return syntaxHighlightingContent;
+        }
+
+        /// <summary>
+        /// For markdown local images needs to be in the same folder as the md file
+        /// referencing it with a relative path "./image.png", when we convert to html
+        /// we need the full path. This method finds relative image paths and converts them to absolute paths.
+        /// </summary>
+        private static void ConvertRelativeLocalImagePathsToAbsolute(string mdFilePath, MarkdownDocument document)
+        {
+            var imageLinks = document.Descendants<ParagraphBlock>()
+                .SelectMany(x => x.Inline.Descendants<LinkInline>())
+                .Where(x => x.IsImage)
+                .Select(x => x).ToList();
+
+            foreach (var image in imageLinks)
+            {
+                if (!image.Url.StartsWith("./"))
+                    continue;
+
+                var imageName = image.Url.Split(new string[] { "./" }, StringSplitOptions.None);
+                var dir = Path.GetDirectoryName(mdFilePath);
+
+                var htmlImagePathPrefix = @"file:///";
+                var absoluteImagePath = Path.Combine(dir, imageName.Last());
+
+                image.Url = $"{htmlImagePathPrefix}{absoluteImagePath}";
+            }
         }
     }
 }
