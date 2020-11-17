@@ -111,5 +111,6 @@
     <ItemGroup>
       <PythonStdLib Include="$(ProjectDir)..\..\packages\IronPython.StdLib.2.7.9\contentFiles\any\any\Lib\**\*.*" />
     </ItemGroup>
+    <Copy SourceFiles="@(PythonStdLib)" DestinationFiles="@(PythonStdLib->'$(TargetDir)IronPython.StdLib.2.7.9\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
 </Project>
