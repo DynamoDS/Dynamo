@@ -8,16 +8,6 @@
       <FilesToDelete Include="$(OutputPath)nodes\SharpDX*"/>
       <FilesToDelete Include="$(OutputPath)nodes\HelixToolkit*"/>
       <FilesToDelete Include="$(OutputPath)nodes\Cyotek*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\Newtonsoft.Json*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\nunit.framework*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\ProtoGeometry*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\ICSharpCode.AvalonEdit*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\IronPython*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\Microsoft*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\Moq*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\RestSharp*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\System.Collections.Immutable*"/>
-      <FilesToDelete Include="$(OutputPath)nodes\Xceed*"/>
     </ItemGroup> 
     <Delete Files="@(FilesToDelete)"/>
   </Target>

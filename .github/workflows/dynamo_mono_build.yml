@@ -13,17 +13,14 @@ jobs:
 
     - name: Setup Nuget.exe to use on VM
       uses: nuget/setup-nuget@v1
-      with:
-        nuget-version: latest
       
     - name: Nuget Restore on DynamoMono solution
       run: nuget restore $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
       
-    - name: Build Dynamo with mono msbuild
+    - name: Build Dynamo with mono xbuild
       run: |
         echo "***Continue with the build, Good luck mono developer!***"
-           msbuild $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /p:Configuration=Release /t:Restore
-           msbuild $GITHUB_WORKSPACE/src/Dynamo.Mono.sln /p:Configuration=Release /t:Build
+        build /p:Configuration=Release $GITHUB_WORKSPACE/src/Dynamo.Mono.sln
     # look for Dynamo
     - name: Navigate to Dynamo Folder
       run: |
