@@ -28,7 +28,7 @@ namespace DynamoInstallDetective
                 lock (mutex)
                 {
                     cacheEnabled = false;
-                    cachedRecords.Clear();
+                    cachedRecords?.Clear();
                     cachedRecords = null;
                 }
             }
