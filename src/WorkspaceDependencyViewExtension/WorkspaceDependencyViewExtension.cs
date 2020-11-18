@@ -113,7 +113,7 @@ namespace Dynamo.WorkspaceDependency
             viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
         }
 
-        public override void OnViewExtensionClosed(string extensionTabName)
+        public override void Closed()
         {
             this.workspaceReferencesMenuItem.IsChecked = false;
         }

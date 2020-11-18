@@ -171,7 +171,7 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        public override void OnViewExtensionClosed(string extensionTabName)
+        public override void Closed()
         {
             this.documentationBrowserMenuItem.IsChecked = false;
         }

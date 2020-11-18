@@ -130,7 +130,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// This test will verify that the OnViewExtensionClosed function will be triggered on the extension that is closed. 
+        /// This test will verify that the Closed() will be triggered on the extension that is closed. 
         /// </summary>
         [Test]
         public void OnViewExtensionClosedTest()
@@ -148,7 +148,7 @@ namespace DynamoCoreWpfTests
             // Assert that the workspace references menu item is checked.
             Assert.IsTrue(workspaceDependencyViewExtension.workspaceReferencesMenuItem.IsChecked);
 
-            // Closing the view extension side bar should trigger the OnViewExtensionClosed() on the workspace dependency view extension.
+            // Closing the view extension side bar should trigger the Closed() on the workspace dependency view extension.
             // This will un-check the workspace references menu item.
             loadedParams.CloseExtensioninInSideBar(workspaceDependencyViewExtension);
 

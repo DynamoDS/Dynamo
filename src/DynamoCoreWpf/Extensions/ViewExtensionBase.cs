@@ -76,7 +76,7 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Action to be invoked when the view extenion is closed. 
         /// </summary>
-        public virtual void OnViewExtensionClosed(String extensionTabName)
+        public virtual void Closed()
         {
 
         }
