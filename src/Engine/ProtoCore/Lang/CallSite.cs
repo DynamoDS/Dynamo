@@ -373,7 +373,7 @@ namespace ProtoCore
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
-        private int invokeCount; //Number of times the callsite has been executed within this run
+        internal int invokeCount; //Number of times the callsite has been executed within this run
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
@@ -710,9 +710,10 @@ namespace ProtoCore
         /// <param name="core"></param>
         internal void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
         {
-
+        
+            Debug.WriteLine($"resetting callsite invoke count for {this.methodName}");
             invokeCount = 0;
-            Debug.WriteLine("resetting callsite invoke count");
+            
 
             /*
             if (core.EnableCallsiteExecutionState)
@@ -1409,6 +1410,11 @@ namespace ProtoCore
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
 
+            if(runtimeCore.FunctionCallDepth < 2)
+            {
+                UpdateCallsiteExecutionState(null, runtimeCore);
+            }
+           
 
             //TODO reuse this.
             Stopwatch sw = new Stopwatch();
