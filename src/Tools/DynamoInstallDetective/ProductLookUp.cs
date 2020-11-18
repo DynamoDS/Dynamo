@@ -78,7 +78,7 @@ namespace DynamoInstallDetective
                     var prodKey = key.OpenSubKey(s);
                     var displayName = GetDisplayName(prodKey);
                     var installLocation = GetInstallLocation(prodKey);
-                    if (displayName.Length > 0 && installLocation.Length > 0)
+                    if (!string.IsNullOrEmpty(displayName) && !string.IsNullOrEmpty(installLocation))
                     {
                         productInfo.Add(s, Tuple.Create(displayName, installLocation));
                     }
@@ -175,7 +175,7 @@ namespace DynamoInstallDetective
         IInstalledProduct GetProductFromProductCode(string productCode);
 
         /// <summary>
-        /// Returns product name list using on lookup criteria based on product names.
+        /// Returns product name list using lookup criteria based on product names.
         /// </summary>
         /// <returns>Product name list</returns>
         IEnumerable<string> GetProductNameList();
