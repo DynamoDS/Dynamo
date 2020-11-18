@@ -74,7 +74,7 @@ namespace Dynamo.Wpf.Extensions
         }
 
         /// <summary>
-        /// Action to be invoked when the view extenion is closed. 
+        /// Action to be invoked when the view extension is closed. 
         /// </summary>
         public virtual void Closed()
         {
