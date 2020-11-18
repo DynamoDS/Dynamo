@@ -123,7 +123,7 @@ namespace Dynamo.Tests
 
             CurrentDynamoModel.TraceReconciliationProcessor = new TestTraceReconciliationProcessor(3);
 
-            var traceNode = ws.Nodes.Where(n=>n is DSFunction).FirstOrDefault(f=>f.Name == "TraceExampleWrapper.ByString");
+            var traceNode = ws.Nodes.Where(n => n is DSFunction).FirstOrDefault(f => f.Name == "TraceExampleWrapper.ByString");
             Assert.NotNull(traceNode);
 
             ws.RemoveAndDisposeNode(traceNode);
@@ -209,10 +209,60 @@ namespace Dynamo.Tests
         [Test]
         public void Callsite_ElementBinding_CustomNodes_ShouldReturnUniqueIds()
         {
+            WrapperObject.ResetNextID();
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
             BeginRun();
             AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
         }
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes2dReplication_ShouldReturnUniqueIds()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication2d.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", new int[][] {
+               new int[] {1},
+               new int[] {2,3 },
+               new int[]{4,5,6 },
+               new int[]{7,8,9,10 },
+               new int[]{11,12,13,14,15 },
+               new int[]{16,17,18,19,20,21 }
+            });
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_CustomNodes_MultipleRunsShouldResetInvocationCount()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+            //force a re execution and if binding succeeds then data should be unchanged.
+            ws.Nodes.OfType<CodeBlockNodeModel>().First().SetCodeContent("5..10", ws.ElementResolver);
+            AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+            //assert invocation count of callsite is correct
+
+        }
+
+        [Test]
+        public void Callsite_ElementBinding_Functions_UniqueIds_ForReplicationOfInnerAndOuterFunction()
+        {
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, " func_nested_replication.dyn");
+            BeginRun();
+            AssertPreviewValue("22e0f3229b314aa48914e8f6b925872c", Enumerable.Range(0, 2).ToList());
+            AssertPreviewValue("74cd0ca6d4964ec2b500fbe96139d28c", new int[][] {
+               new int[] {3},
+               new int[] {4,5 },
+               new int[]{6,7,8 },
+               new int[]{9,10,11,12 }
+            });
+        }
+
+        //TODO add previous test with multiple executions
+
+       
 
         [Test]
         public void Callsite_ElementBinding_ShouldReturnUniqueIds()
