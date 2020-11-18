@@ -84,7 +84,9 @@ namespace DynamoInstallDetective
                     }
                 }
                 catch (Exception)
-                { }
+                {
+                    // Do nothing
+                }
             }
 
             lock (mutex)
