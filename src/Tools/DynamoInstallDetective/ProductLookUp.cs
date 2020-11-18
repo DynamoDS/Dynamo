@@ -57,6 +57,7 @@ namespace DynamoInstallDetective
             return string.Empty;
         }
 
+        // Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
         public static Dictionary<string, Tuple<string, string>> GetInstalledProducts()
         {
             lock (mutex)
