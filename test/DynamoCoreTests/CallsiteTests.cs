@@ -249,14 +249,14 @@ namespace Dynamo.Tests
         public void Callsite_ElementBinding_Functions_UniqueIds_ForReplicationOfInnerAndOuterFunction()
         {
             WrapperObject.ResetNextID();
-            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, " func_nested_replication.dyn");
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "func_nested_replication.dyn");
             BeginRun();
-            AssertPreviewValue("22e0f3229b314aa48914e8f6b925872c", Enumerable.Range(0, 2).ToList());
+            AssertPreviewValue("22e0f3229b314aa48914e8f6b925872c", Enumerable.Range(1, 3).ToList());
             AssertPreviewValue("74cd0ca6d4964ec2b500fbe96139d28c", new int[][] {
-               new int[] {3},
-               new int[] {4,5 },
-               new int[]{6,7,8 },
-               new int[]{9,10,11,12 }
+               new int[] {4},
+               new int[] {5,6 },
+               new int[]{7,8,9 },
+               new int[]{10,11,12,13 }
             });
         }
 
