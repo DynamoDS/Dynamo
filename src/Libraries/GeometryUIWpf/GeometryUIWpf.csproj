@@ -2,9 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config/CS.props" />
-    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
-  <Import Project=".\obj\GeometryUIWpf.csproj.nuget.g.props" Condition="Exists('.\obj\GeometryUIWpf.csproj.nuget.g.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -41,6 +39,10 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoGeometry, Version=2.9.0.3090, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3090\lib\net48\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -125,8 +127,7 @@
     <EmbeddedResource Include="ProtoGeometryImages.resx" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\Autodesk.DesignScript.Geometry.Geometry.FromSolidDef.Large.png" />
   </ItemGroup>
   <ItemGroup>
