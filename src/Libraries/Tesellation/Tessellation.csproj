@@ -2,9 +2,7 @@
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS.props" />
-    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
   </ImportGroup>
-  <Import Project=".\obj\Tessellation.csproj.nuget.g.props" Condition="Exists('.\obj\Tessellation.csproj.nuget.g.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -39,6 +37,17 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MIConvexHull.NET Standard, Version=1.0.17.411, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MIConvexHull.1.1.17.0411\lib\netstandard1.0\MIConvexHull.NET Standard.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ProtoGeometry, Version=2.9.0.3090, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3090\lib\net48\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="StarMath, Version=2.0.14.1114, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\StarMath.2.0.14.1114\lib\portable-net45+sl5+wp8+win8\StarMath.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +71,7 @@
     <Compile Include="Voronoi.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="MIConvexHull.xml" />
     <Content Include="StarMath.XML" />
     <Content Include="Tessellation_DynamoCustomization.xml" />
   </ItemGroup>
@@ -76,12 +86,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MIConvexHull">
-      <Version>1.1.17.411</Version>
-    </PackageReference>
-    <PackageReference Include="StarMath">
-      <Version>2.0.14.1114</Version>
-    </PackageReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">
