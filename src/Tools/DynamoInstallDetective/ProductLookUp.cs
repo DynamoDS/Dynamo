@@ -39,7 +39,7 @@ namespace DynamoInstallDetective
 
         // Cached data from windows registry. Consists of a dictionary that maps The product name/code to Display Name (Tuple.item1) and Install Path(Tuple.item2)
         // Dictionary<ProductCode, (DisplayName, InstallPath)>
-        private static Dictionary<string, Tuple<string, string>> cachedRecords;
+        private static Dictionary<string, (string DisplayName, string InstallLocation)> cachedRecords;
         private static bool cacheEnabled = false;
 
         private static readonly object mutex = new object();
@@ -66,7 +66,7 @@ namespace DynamoInstallDetective
         }
 
         // Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
-        public static Dictionary<string, Tuple<string, string>> GetInstalledProducts()
+        public static Dictionary<string, (string DisplayName, string InstallLocation)> GetInstalledProducts()
         {
             lock (mutex)
             {
@@ -76,7 +76,7 @@ namespace DynamoInstallDetective
                 }
             }
 
-            var productInfo = new Dictionary<string, Tuple<string, string>>();
+            var productInfo = new Dictionary<string, (string displayName, string installLocation)>();
 
             var key = OpenKey(REG_KEY64);
             foreach(string s in key.GetSubKeyNames())
@@ -88,7 +88,7 @@ namespace DynamoInstallDetective
                     var installLocation = GetInstallLocation(prodKey);
                     if (!string.IsNullOrEmpty(displayName) && !string.IsNullOrEmpty(installLocation))
                     {
-                        productInfo.Add(s, Tuple.Create(displayName, installLocation));
+                        productInfo.Add(s, (displayName, installLocation));
                     }
                 }
                 catch (Exception)
@@ -101,7 +101,7 @@ namespace DynamoInstallDetective
             {
                 if (cacheEnabled)
                 {
-                    cachedRecords = new Dictionary<string, Tuple<string, string>>(productInfo);
+                    cachedRecords = new Dictionary<string, (string DisplayName, string InstallLocation)>(productInfo);
                 }
             }
             return productInfo;
@@ -281,7 +281,7 @@ namespace DynamoInstallDetective
 
         public virtual IEnumerable<string> GetProductNameList()
         {
-            return RegUtils.GetInstalledProducts().Select(s => s.Value.Item1).Where(s => {
+            return RegUtils.GetInstalledProducts().Select(s => s.Value.DisplayName).Where(s => {
                 return s?.Contains(ProductLookUpName) ?? false;
             });
         }
