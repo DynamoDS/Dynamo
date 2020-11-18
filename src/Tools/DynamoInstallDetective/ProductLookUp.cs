@@ -17,12 +17,20 @@ namespace DynamoInstallDetective
         {
             public RegistryCacher()
             {
-                EnableCache();
+                lock (mutex)
+                {
+                    cacheEnabled = true;
+                }
             }
 
             public void Dispose()
             {
-                DisableCache();
+                lock (mutex)
+                {
+                    cacheEnabled = false;
+                    cachedRecords.Clear();
+                    cachedRecords = null;
+                }
             }
         }
 
@@ -102,24 +110,6 @@ namespace DynamoInstallDetective
         public static IDisposable StartCache()
         {
             return new RegistryCacher();
-        }
-
-        public static void EnableCache()
-        {
-            lock (mutex)
-            {
-                cacheEnabled = true;
-            }
-        }
-
-        public static void DisableCache()
-        {
-            lock (mutex)
-            {
-                cacheEnabled = false;
-                cachedRecords.Clear();
-                cachedRecords = null;
-            }
         }
     }
 
