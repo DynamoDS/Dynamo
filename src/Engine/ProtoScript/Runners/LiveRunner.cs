@@ -1352,22 +1352,8 @@ namespace ProtoScript.Runners
         {
             ApplyUpdate();
             HandleWarnings();
-            //reset callsite invocation count after run.
-            ResetCallsiteExecutionState();
         }
 
-        /// <summary>
-        /// Resets Callsites Execution state - does not reset trace data.
-        /// </summary>
-        private void ResetCallsiteExecutionState()
-        {
-            //TODO what about other ds runners?
-            //TODO move to internal function in RuntimeData object.
-            runtimeCore.RuntimeData.CallsiteCache.Values.ToList().ForEach(x =>
-            {
-                x.UpdateCallsiteExecutionState(null, runtimeCore);
-            });
-        }
 
         /// <summary>
         /// Handle warnings that will be reported to the frontend

@@ -1409,14 +1409,18 @@ namespace ProtoCore
             DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-
-            if(runtimeCore.FunctionCallDepth < 2)
+           
+            // if the last dispatched callsite is this callsite then we are repeatedly making calls
+            // to this same callsite (for example replicating over an outer function that contains this callsite)
+            // and should not reset the invoke count.
+            if (runtimeCore.LastDispatchedCallSite != this)
             {
                 UpdateCallsiteExecutionState(null, runtimeCore);
             }
-           
+            runtimeCore.LastDispatchedCallSite = this;
 
-            //TODO reuse this.
+
+            //TODO reuse this when we have time to profile it.
             Stopwatch sw = new Stopwatch();
             sw.Start();
 

@@ -223,6 +223,11 @@ namespace ProtoCore
 #endregion 
         
         private Dictionary<Guid, List<StackValue>> callsiteGCRoots = new Dictionary<Guid, List<StackValue>>();
+        /// <summary>
+        /// This field is used to keep track of the last dispatched callsite 
+        /// to detect when a different callsite is dispatched to.
+        /// </summary>
+        internal CallSite LastDispatchedCallSite;
 
         public IEnumerable<StackValue> CallSiteGCRoots
         {
