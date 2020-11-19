@@ -475,12 +475,17 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             RaiseLoadedEvent(this.View);
+
+            var testDirectory = GetTestDirectory(this.ExecutingDirectory);
+            var localImagePath = Path.Combine(testDirectory, @"core\docbrowser\pkgs\PackageWithNodeDocumentation\doc\icon.png");
+            var localImagePathHtml = localImagePath.Replace("\\", @"%5C");
+            
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "Package.Hello";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentaionHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
-            var expectedAddtionalNodeDocumentaionImage = @"<p><img src=""file:///C:%5CUsers%5CSylvesterKnudsen%5CDocuments%5CGitHub%5CDynamo%5Ctest%5Ccore%5Cdocbrowser%5Cpkgs%5CPackageWithNodeDocumentation%5Cdoc%5Cicon.png"" alt=""Dynamo Icon image"" /></p>";
+            var expectedAddtionalNodeDocumentaionImage = String.Format(@"<p><img src=""file:///{0}"" alt=""Dynamo Icon image"" /></p>",localImagePathHtml);
 
             // Act
 
