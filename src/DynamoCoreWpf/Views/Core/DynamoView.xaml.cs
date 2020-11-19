@@ -354,6 +354,9 @@ namespace Dynamo.Controls
         {
             var tabName = (sender as Button).DataContext.ToString();
             UndockExtension(tabName);
+            Logging.Analytics.TrackEvent(
+               Actions.Undock,
+               Categories.ViewExtensionOperations, tabName);
         }
 
         /// <summary>
@@ -413,6 +416,9 @@ namespace Dynamo.Controls
             if (ext.DockRequested)
             {
                 AddExtensionTabItem((IViewExtension)ext.Tag, content);
+                Logging.Analytics.TrackEvent(
+                   Actions.Dock,
+                   Categories.ViewExtensionOperations, extName);
             }
             else
             {
