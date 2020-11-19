@@ -708,7 +708,7 @@ namespace ProtoCore
         /// </summary>
         /// <param name="methodName"></param>
         /// <param name="core"></param>
-        internal void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
+        private void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
         {
         
             Debug.WriteLine($"resetting callsite invoke count for {this.methodName}");

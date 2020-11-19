@@ -238,11 +238,18 @@ namespace Dynamo.Tests
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
             BeginRun();
             AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+            
+            //grab the inner callsite inside the custom node
+            var callsite = this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.
+                Where(kv => kv.Key.Contains("WrapperObject")).FirstOrDefault().Value;
+            //should have executed 6 times
+            Assert.AreEqual(callsite.invokeCount, 6);
+
             //force a re execution and if binding succeeds then data should be unchanged.
             ws.Nodes.OfType<CodeBlockNodeModel>().First().SetCodeContent("5..10", ws.ElementResolver);
             AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
-            //assert invocation count of callsite is correct
-
+            //count should have been reset and invoked 6 more times
+            Assert.AreEqual(callsite.invokeCount,6);
         }
 
         [Test]
