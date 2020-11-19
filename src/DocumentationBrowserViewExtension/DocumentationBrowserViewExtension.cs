@@ -173,7 +173,10 @@ namespace Dynamo.DocumentationBrowser
 
         public override void Closed()
         {
-            this.documentationBrowserMenuItem.IsChecked = false;
+            if (this.documentationBrowserMenuItem != null)
+            {
+                this.documentationBrowserMenuItem.IsChecked = false;
+            }
         }
     }
 }

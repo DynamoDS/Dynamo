@@ -115,7 +115,10 @@ namespace Dynamo.WorkspaceDependency
 
         public override void Closed()
         {
-            this.workspaceReferencesMenuItem.IsChecked = false;
+            if (this.workspaceReferencesMenuItem != null) 
+            { 
+                this.workspaceReferencesMenuItem.IsChecked = false;
+            }
         }
     }
 }
