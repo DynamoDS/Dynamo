@@ -1022,7 +1022,7 @@ namespace ProtoCore
 
                 bool hasThisSymbol;
                 AddressType addressType;
-                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, currentCodeBlock.codeBlockId, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
+                symbolIndex = ClassUtils.GetSymbolIndex(thisClass, name, classScope, functionScope, currentCodeBlock.codeBlockId, core.CompleteCodeBlockDict, out hasThisSymbol, out addressType);
                 if (Constants.kInvalidIndex != symbolIndex)
                 {
                     // It is static member, then get node from code block
@@ -1080,7 +1080,7 @@ namespace ProtoCore
             ProtoCore.DSASM.AddressType addressType;
             ProtoCore.DSASM.ClassNode classnode = core.ClassTable.ClassNodes[globalClassIndex];
 
-            int symbolIndex = ClassUtils.GetSymbolIndex(classnode, name, globalClassIndex, globalProcIndex, 0, core.CompleteCodeBlockList, out hasThisSymbol, out addressType);
+            int symbolIndex = ClassUtils.GetSymbolIndex(classnode, name, globalClassIndex, globalProcIndex, 0, core.CompleteCodeBlockDict, out hasThisSymbol, out addressType);
             if (symbolIndex == ProtoCore.DSASM.Constants.kInvalidIndex)
             {
                 return false;
