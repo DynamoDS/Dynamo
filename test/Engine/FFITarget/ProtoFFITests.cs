@@ -432,7 +432,7 @@ namespace FFITarget
         /// <returns name="wt">weight</returns>
         /// <returns name="ok">okay</returns>
         [MultiReturn("color", "dict", "nums", "weight", "ok")]
-        public static IDictionary ReturnNestedDictionary()
+        public static Dictionary<string, object> ReturnNestedDictionary()
         {
             return new Dictionary<string, object>() 
             {
