@@ -1,0 +1,29 @@
+name: Check for missing information
+on: 
+  issues:
+    types: [opened]
+jobs: 
+  checkIssueInformation:
+    name: Check for missing information
+    runs-on: ubuntu-latest
+    env:
+      issue_incomplete: 'False'
+      issue_label: needs more info
+      issue_comment: This issue is missing information. Please, make sure to fill in all the necessary fields.
+    steps:
+      - uses: actions/checkout@v2
+      - name: Remove conflicting chars
+        uses: frabert/replace-string-action@v1.2
+        id: remove_quotations
+        with:
+          pattern: "\""
+          string: ${{ github.event.issue.body }}
+          replace-with: 'anyValue'
+      - name: Check Information
+        id: check-info
+        run: echo "issue_incomplete=$(pwsh .\\.github\\scripts\\CheckIssueContent.ps1 "${{ steps.remove_quotations.outputs.replaced }}")" >> $GITHUB_ENV
+      - name: Label and comment issue
+        if: env.issue_incomplete == 'True'
+        run: |
+          curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -d '{"labels": ["${{env.issue_label}}"]}' ${{ github.event.issue.url }}/labels
+          curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -d '{"body": "${{env.issue_comment}}"}' ${{ github.event.issue.url }}/comments
