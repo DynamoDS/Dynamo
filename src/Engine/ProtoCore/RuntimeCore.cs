@@ -112,6 +112,7 @@ namespace ProtoCore
             SetProperties(compileCore.Options, compileCore.DSExecutable, compileCore.DebuggerProperties, null, compileCore.ExprInterpreterExe);
             RegisterDllTypes(compileCore.DllTypesToLoad);
             NotifyExecutionEvent(ProtoCore.ExecutionStateEventArgs.State.ExecutionBegin);
+            LastDispatchedCallSite = null;
         }
 
         public void SetProperties(Options runtimeOptions, Executable executable, DebugProperties debugProps = null, ProtoCore.Runtime.Context context = null, Executable exprInterpreterExe = null)
