@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using CoreNodeModels.Input;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -213,6 +214,29 @@ namespace Dynamo.Tests
             var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "element_binding_customNodes_replication.dyn");
             BeginRun();
             AssertPreviewValue("3cab31e7c7e646cfb11f6145edf1d8c3", Enumerable.Range(1, 6).ToList());
+        }
+
+        [Test]
+        public void Single_CallSite_Should_Rebind()
+        {
+
+            WrapperObject.ResetNextID();
+            var ws = Open<HomeWorkspaceModel>(TestDirectory, callsiteDir, "single_callsite.dyn");
+            //assert there is only one callsite
+            Assert.AreEqual(1, this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys.Count);
+            var callsite = this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.FirstOrDefault().Value;
+            Assert.AreEqual(1, callsite.invokeCount);
+            var traceid = Guid.Parse("08278f9e8ae64c72b86313e04cdde709");
+            var traceNode = CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == traceid).FirstOrDefault();
+            var firstresult = (traceNode.CachedValue.Data as WrapperObject).ID;
+
+            //run the graph again.
+            ws.Nodes.OfType<CodeBlockNodeModel>().First().SetCodeContent("2", ws.ElementResolver);
+            Assert.AreEqual(1, this.CurrentDynamoModel.EngineController.LiveRunnerRuntimeCore.RuntimeData.CallsiteCache.Keys.Count);
+            Assert.AreEqual(1, callsite.invokeCount);
+            var secondResult = (traceNode.CachedValue.Data as WrapperObject).ID;
+            Assert.AreEqual(firstresult,secondResult);
+
         }
 
         [Test]
