@@ -28,5 +28,14 @@ namespace DSCoreNodesTests
         {
             Assert.Throws<ArgumentException>(() => Web.WebRequestByUrl(""));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WebRequest_GitHubAPI()
+        {
+            string url = "https://api.github.com/repos/DynamoDS/Dynamo/issues?page=0&state=closed&per_page=10";
+            string result = Web.WebRequestByUrl(url);
+            Assert.IsNotNullOrEmpty(result);
+        }
     }
 }
