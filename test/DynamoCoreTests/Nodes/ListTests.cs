@@ -2102,6 +2102,46 @@ namespace Dynamo.Tests
 
 		#endregion
 
+        #region Test AnyTrue
+
+        [Test]
+        public void AnyTrue_SimpleTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\AnyTrue_SimpleTest.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            AssertPreviewValue("eb32799e0a26444081185a072e5c1c44", true);
+            AssertPreviewValue("dfc0430372ea40cb9b57c34551da69a6", false);
+            AssertPreviewValue("3391f6711c8d482eab224c881d512f73", true);
+            AssertPreviewValue("cfdc4008ae544881b80b0d2b807770e7", true);
+            AssertPreviewValue("2f20ee45e15149859b9e2d4548673079", true);
+		}
+
+		#endregion
+
+        #region Test AnyFalse
+
+        [Test]
+        public void AnyFalse_SimpleTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\AnyFalse_SimpleTest.dyn");
+            RunModel(openPath);
+
+            // check all the nodes and connectors are loaded
+            Assert.AreEqual(6, CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(5, CurrentDynamoModel.CurrentWorkspace.Connectors.Count());
+            AssertPreviewValue("d18e50739b14411fac8b3115698ec655", false);
+            AssertPreviewValue("23e3c4f0a0ca429fab26a54515d98e7a", true);
+            AssertPreviewValue("e02a84cc887a43b8b8fa31db4553ae84", false);
+            AssertPreviewValue("7830af415719453a98b40538ced2144b", true);
+            AssertPreviewValue("a4478dae1ecb4a879456f590c7717a8d", true);
+		}
+
+        #endregion
+
 		#region Test Join List -PartiallyDone
 
 		[Test]
