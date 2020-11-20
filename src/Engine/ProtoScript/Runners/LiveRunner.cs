@@ -1354,7 +1354,6 @@ namespace ProtoScript.Runners
             HandleWarnings();
         }
 
-
         /// <summary>
         /// Handle warnings that will be reported to the frontend
         /// </summary>
