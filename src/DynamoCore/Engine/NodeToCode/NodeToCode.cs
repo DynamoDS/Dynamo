@@ -1107,7 +1107,9 @@ namespace Dynamo.Engine.NodeToCode
             //   4. Generate short name for long name variables. Typically they
             //      are from output ports from other nodes.
             //
-            //   5. Do constant progation to optimize the generated code.
+            //      Do constant progation to optimize the generated code.
+            //
+            //   5. Escape any \ characters in StringInputNode values
             #region Step 1 AST compilation
 
             AstBuilder builder = new AstBuilder(null);
