@@ -4633,6 +4633,22 @@
       "keywords": "test, all, false"
     },
     {
+      "fullyQualifiedName": "DSCore.List.AnyTrue",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyTrue.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyTrue@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, true"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.AnyFalse",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyFalse.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyFalse@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, false"
+    },
+    {
       "fullyQualifiedName": "DSCore.List.Count",
       "iconUrl": "http://localhost/icons/DSCore.List.Count.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.Count@var[]..[]",
