@@ -71,6 +71,16 @@ namespace Dynamo.Logging
         /// Events Category related to Python operations
         /// </summary>
         PythonOperations,
+
+        /// <summary>
+        /// Events Category related to Extensions operations
+        /// </summary>
+        ExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to View Extensions operations
+        /// </summary>
+        ViewExtensionOperations,
     }
 
     /// <summary>
@@ -187,6 +197,21 @@ namespace Dynamo.Logging
         /// Run event, such as Python node run clicked, Graph run Clicked
         /// </summary>
         Run,
+
+        /// <summary>
+        /// Load event, such as extensions loaded
+        /// </summary>
+        Load,
+
+        /// <summary>
+        /// Dock event, such as docking view extension
+        /// </summary>
+        Dock,
+
+        /// <summary>
+        /// Undock event, such as undocking view extension
+        /// </summary>
+        Undock,
     }
 
     /// <summary>

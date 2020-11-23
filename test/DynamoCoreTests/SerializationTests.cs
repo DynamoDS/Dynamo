@@ -779,6 +779,7 @@ namespace Dynamo.Tests
         [Test, TestCaseSource("FindWorkspaces"), Category("JsonTestExclude")]
         public void SerializationTest(string filePath)
         {
+            modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
                 serializationTestUtils.SaveWorkspaceComparisonData);

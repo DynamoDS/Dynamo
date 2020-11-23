@@ -18,12 +18,7 @@ limitations under the License.
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
-    <Import Project="$(SolutionDir)Config/GregReference.props" />
-    <Import Project="$(SolutionDir)Config/LibGMainReference.props" />
-    <Import Project="$(SolutionDir)Config/LibGSupportedReference.props" />
   </ImportGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project=".\obj\DynamoCore.csproj.nuget.g.props" Condition="Exists('.\obj\DynamoCore.csproj.nuget.g.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -79,10 +74,24 @@ limitations under the License.
     <Reference Include="Analytics.NET.Google">
       <HintPath>..\..\extern\Analytics.NET\Analytics.NET.Google.dll</HintPath>
     </Reference>
+    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ProtoGeometry, Version=2.9.0.3090, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.9.0.3090\lib\net48\ProtoGeometry.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Core"/>
+    <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
@@ -297,6 +306,7 @@ limitations under the License.
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -359,14 +369,6 @@ limitations under the License.
   <ItemGroup>
     <Resource Include="BuiltInAndOperators\BuiltIn.Migrations.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>8.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="RestSharp">
-      <Version>105.2.3</Version>
-    </PackageReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Choose>
     <When Condition=" '$(OS)' != 'Unix' ">
@@ -382,15 +384,15 @@ limitations under the License.
   </Choose>
   <Target Name="BeforeBuild">
     <PropertyGroup>
-      <LibGProtoGeometryLibGLocale>$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
+      <LibGProtoGeometryLibGLocale>$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\libg_locale</LibGProtoGeometryLibGLocale>
     </PropertyGroup>
     <ItemGroup>
-      <LibGInterface Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG.Interface.dll" />
-      <LibGProtoGeometryXml Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\lib\net48\ProtoGeometry.XML" />
-      <LibGProtoGeometryUICulture Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\$(UICulture)\*" />      
-      <LibG225 Include="$(PkgDynamoVisualProgramming_LibG_225_0_0)\tools\net48\LibG_225_0_0\*" />
-      <LibG226 Include="$(PkgDynamoVisualProgramming_LibG_226_0_0)\tools\net48\LibG_226_0_0\*" />
-      <LibG227 Include="$(PkgDynamoVisualProgramming_LibG_227_0_0)\tools\net48\LibG_227_0_0\*" />
+      <LibGInterface Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG.Interface.dll" />
+      <LibGProtoGeometryXml Include="$(solutiondir)\packages\dynamovisualprogramming.libg_227_0_0*\lib\net48\protogeometry.xml" />
+      <LibGProtoGeometryUICulture Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\$(UICulture)\*" />
+      <LibG225 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_225_0_0*\tools\net48\LibG_225_0_0\*" />
+      <LibG226 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_226_0_0*\tools\net48\LibG_226_0_0\*" />
+      <LibG227 Include="$(SolutionDir)\packages\DynamoVisualProgramming.LibG_227_0_0*\tools\net48\LibG_227_0_0\*" />
       <ExternSimplexNoise Include="$(SolutionDir)..\extern\SimplexNoise\*" />
       <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
       <GalleryFiles Include="$(SolutionDir)..\extern\gallery\**\*.*" />
@@ -413,7 +415,7 @@ limitations under the License.
     <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command Copy-Item -Path $(LibGProtoGeometryLibGLocale) -Destination $(OutputPath) -Recurse -Force" />
     <Copy SourceFiles="@(LibG225)" DestinationFolder="$(OutputPath)libg_225_0_0\" />
     <Copy SourceFiles="@(LibG226)" DestinationFolder="$(OutputPath)libg_226_0_0\" />
-    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />   
+    <Copy SourceFiles="@(LibG227)" DestinationFolder="$(OutputPath)libg_227_0_0\" />
     <Copy SourceFiles="@(ExternSimplexNoise)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(ExternAnalytics)" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="@(SampleFiles)" DestinationFolder="$(OutputPath)samples\%(RecursiveDir)" />

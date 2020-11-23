@@ -663,6 +663,31 @@ namespace Dynamo.Tests
 			SelectivelyAssertPreviewValues("9e2c84e6-b9b8-4bdf-b82e-868b2436b865", validationData1);
 
 		}
+
+        [Test]
+        public void SortByKey_SimpleTest()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\list\ListSortByKey.dyn");
+            RunModel(openPath);
+
+            // First and last element in the list before sorting
+            var validationData = new []
+            {
+                "Zack",
+				"Ian",
+				"Anna",
+				"Neal"
+            };
+            AssertPreviewValue("aaf179d9-71a5-4c30-b603-e41cee521dff", validationData);
+
+            // First and last element in the list after sorting
+            var validationData1 = new object[]
+            {
+                -3, 1.6, 5, "abc"
+            };
+            AssertPreviewValue("ef7368e4-5fe4-426d-9c58-27f250a1b040", validationData1);
+
+        }
 		#endregion
 
 		#region Reverse Test Cases  

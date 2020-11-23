@@ -70,6 +70,26 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CloseViewExtensionTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var extensionManager = View.viewExtensionManager;
+
+            var initialNum = View.ExtensionTabItems.Count;
+
+            // Adding a dummy extension will add a new tab in the extensions side bar
+            extensionManager.Add(viewExtension);
+            Assert.AreEqual(initialNum + 1, View.ExtensionTabItems.Count);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+
+            // Closing the view extension using the CloseExtensioninInSideBar API should close the view extension.
+            loadedParams.CloseExtensioninInSideBar(this.viewExtension);
+            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
+        }
+
+        [Test]
         public void ExtensionSideBarIsUncollapsedOnActivation()
         {
             RaiseLoadedEvent(this.View);
@@ -118,6 +138,98 @@ namespace DynamoCoreWpfTests
             Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpfTests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
         }
 
+        [Test]
+        public void ExtensionUndockRedock()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension 
+            View.UndockExtension(viewExtension.Name);
+
+            // Extension is no longer in the side bar (now collapsed)
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            // Extension is in a window now
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Dock the window
+            var window = View.ExtensionWindows[viewExtension.Name];
+            window.DockRequested = true;
+            window.Close();
+
+            // Extension is in the sidebar again and the window is gone
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
+        }
+
+        [Test]
+        public void ExtensionUndockClose()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension 
+            View.UndockExtension(viewExtension.Name);
+
+            // Extension is no longer in the side bar (now collapsed)
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            // Extension is in a window now
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Close the window without docking
+            var window = View.ExtensionWindows[viewExtension.Name];
+            window.Close();
+
+            // Extension is not in the sidebar nor as a window
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
+        }
+
+        [Test]
+        public void ExtensionCannotBeAddedAsBothWindowAndTab()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension 
+            View.UndockExtension(viewExtension.Name);
+
+            // Extension is no longer in the side bar (now collapsed)
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            // Extension is in a window now
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Attempt to open the extension in the side bar when it's open as a window
+            View.AddExtensionTabItem(viewExtension, new UserControl());
+
+            // Extension is not added to the sidebar
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+        }
+
         public static void RaiseLoadedEvent(FrameworkElement element)
         {
             MethodInfo eventMethod = typeof(FrameworkElement).GetMethod("OnLoaded",
@@ -158,6 +270,7 @@ namespace DynamoCoreWpfTests
             };
 
             var window = new Window();
+            window.Content = new TextBlock() { Text = "Dummy" };
             window.Closed += (sender, args) =>
             {
                 WindowClosed = true;

@@ -16,7 +16,7 @@ namespace Dynamo.DocumentationBrowser
     /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
     /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
-    public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
+    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
@@ -45,6 +45,7 @@ namespace Dynamo.DocumentationBrowser
         #region ILogSource
 
         public event Action<ILogMessage> MessageLogged;
+
         internal void OnMessageLogged(ILogMessage msg)
         {
             MessageLogged?.Invoke(msg);
@@ -71,8 +72,6 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowserMenuItem.Checked += MenuItemCheckHandler;
             this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
             this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
-
-            DynamoView.CloseExtension += OnCloseExtension;
 
             // subscribe to the documentation open request event from Dynamo
             this.viewLoadedParamsReference.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
@@ -119,7 +118,6 @@ namespace Dynamo.DocumentationBrowser
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
-            DynamoView.CloseExtension -= OnCloseExtension;
             this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
             this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
             documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
@@ -163,14 +161,6 @@ namespace Dynamo.DocumentationBrowser
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
         }
 
-        private void OnCloseExtension(String extensionTabName)
-        {
-            if (extensionTabName.Equals(Name))
-            {
-                this.documentationBrowserMenuItem.IsChecked = false;
-            }
-        }
-
         private void OnViewModelMessageLogged(ILogMessage msg)
         {
             OnMessageLogged(msg);
@@ -204,6 +194,14 @@ namespace Dynamo.DocumentationBrowser
             if (dynamoViewModel != null && e.PropertyName == nameof(DynamoViewModel.ShowStartPage))
             {
                 ViewModel.ShowBrowser = !dynamoViewModel.ShowStartPage;
+            }
+        }
+
+        public override void Closed()
+        {
+            if (this.documentationBrowserMenuItem != null)
+            {
+                this.documentationBrowserMenuItem.IsChecked = false;
             }
         }
     }

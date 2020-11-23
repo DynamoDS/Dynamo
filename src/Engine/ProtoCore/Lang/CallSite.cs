@@ -76,7 +76,7 @@ namespace ProtoCore
 
                     if (HasData)
                         return true;
-                    
+
                     //Not empty, and doesn't have data so test recursive
                     Validity.Assert(NestedData != null,
                         "Invalid recursion logic, this is a VM bug, please report to the Dynamo Team");
@@ -245,10 +245,10 @@ namespace ProtoCore
                 var assemblyNameObj = new AssemblyName(assemblyName);
                 //find matching assemblies by name, version is not used.
                 var matchingAssembly = assemblies.FirstOrDefault(x => x.GetName().Name == assemblyNameObj.Name);
-                if(matchingAssembly!= null)
+                if (matchingAssembly != null)
                 {
-                   var matchingType = matchingAssembly.GetType(typeName);
-                    if(matchingType != null)
+                    var matchingType = matchingAssembly.GetType(typeName);
+                    if (matchingType != null)
                     {
                         return matchingType;
                     }
@@ -373,7 +373,7 @@ namespace ProtoCore
         private int classScope;
         private string methodName;
         private readonly FunctionTable globalFunctionTable;
-        private int invokeCount; //Number of times the callsite has been executed within this run
+        internal int invokeCount; //Number of times the callsite has been executed within this run
         private List<ISerializable> beforeFirstRunSerializables = new List<ISerializable>();
 
         //TODO(Luke): This should be loaded from the attribute
@@ -710,7 +710,10 @@ namespace ProtoCore
         /// <param name="core"></param>
         private void UpdateCallsiteExecutionState(Object callsiteData, RuntimeCore runtimeCore)
         {
+        
+            Debug.WriteLine($"resetting callsite invoke count for {this.methodName}");
             invokeCount = 0;
+            
 
             /*
             if (core.EnableCallsiteExecutionState)
@@ -907,7 +910,7 @@ namespace ProtoCore
                             if (replicationInstructions == null ||
                                 IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                             {
-                                resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                                resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                                 replicationInstructions = replicationOption;
                                 matchFound = true;
                             }
@@ -948,7 +951,7 @@ namespace ProtoCore
                         if (replicationInstructions == null ||
                             IsSimilarOptionButOfHigherRank(replicationInstructions, replicationOption))
                         {
-                            resolvedFeps = new List<FunctionEndPoint>() {compliantTarget};
+                            resolvedFeps = new List<FunctionEndPoint>() { compliantTarget };
                             replicationInstructions = replicationOption;
                             matchFound = true;
                         }
@@ -1118,23 +1121,35 @@ namespace ProtoCore
             Validity.Assert(svThisPtr.IsPointer,
                             "this pointer wasn't a pointer. {89635B06-AD53-4170-ADA5-065EB2AE5858}");
 
-            int typeID = svThisPtr.metaData.type;
 
-            //Test for exact match
-            List<FunctionEndPoint> exactFeps = new List<FunctionEndPoint>();
+            // We have multiple possible scopes for the function call:
+            // 1. Static method call - no this pointer
+            // ex: ClassA.Method();
+            //    Hidden static methods generate multiple feps.
+            //    We do not need to check actually if the method has the "IsHideBySig" (https://docs.microsoft.com/en-us/dotnet/api/system.reflection.methodbase.ishidebysig)
+            //    because static methods can only be hidden.
+            // 2. Method call from an instance of a class - valid this pointer.
+            // ex: classAInstance.method();
+            // 3. Function from the global scope - no this pointer and no class scope.
+            // ex: SomeGlobalFunction();
+            //
+            // All 3 cases will run through the same matching steps.
 
-            foreach (FunctionEndPoint fep in feps)
-                if (fep.ClassOwnerIndex == typeID)
-                    exactFeps.Add(fep);
+            // A static function call has an invalid this pointer and a valid class scope;
+            bool isValidStaticFuncCall = svThisPtr.Pointer == Constants.kInvalidIndex && stackFrame.ClassScope != Constants.kInvalidIndex;
 
-            if (exactFeps.Count == 1)
+            int typeID = isValidStaticFuncCall ? stackFrame.ClassScope : svThisPtr.metaData.type;
+
+            // Try to match with feps belonging to the class scope (most derived class should have priority).
+            // In this case we simply select the function that belongs to the calling class.
+            // The assumption here is that all function end points in "feps" have already been checked that they have the same signature.
+            IEnumerable<FunctionEndPoint> exactFeps = feps.Where(x => x.ClassOwnerIndex == typeID);
+            if (exactFeps.Count() == 1)
             {
-                return exactFeps[0];
+                return exactFeps.First();
             }
-
-
+            
             //Walk the class tree structure to find the method
-
             while (runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base != Constants.kInvalidIndex)
             {
                 typeID = runtimeCore.DSExecutable.classTable.ClassNodes[typeID].Base;
@@ -1149,15 +1164,15 @@ namespace ProtoCore
 
             foreach (FunctionEndPoint fep in feps)
             {
-                int noArbitraries = 0;
+                int numArbitraryRanks = 0;
 
                 for (int i = 0; i < argumentsList.Count; i++)
                 {
                     if (fep.FormalParams[i].rank == Constants.kArbitraryRank)
-                        noArbitraries++;
-
-                    numberOfArbitraryRanks.Add(noArbitraries);
+                        numArbitraryRanks++;
                 }
+
+                numberOfArbitraryRanks.Add(numArbitraryRanks);
             }
 
             int smallest = Int32.MaxValue;
@@ -1406,10 +1421,18 @@ namespace ProtoCore
             DominantListStructure domintListStructure,
             StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            // Update the CallsiteExecutionState with 
-            // TODO: Replace this with the real data
-            UpdateCallsiteExecutionState(null, runtimeCore);
+           
+            // if the last dispatched callsite is this callsite then we are repeatedly making calls
+            // to this same callsite (for example replicating over an outer function that contains this callsite)
+            // and should not reset the invoke count.
+            if (runtimeCore.LastDispatchedCallSite != this)
+            {
+                UpdateCallsiteExecutionState(null, runtimeCore);
+            }
+            runtimeCore.LastDispatchedCallSite = this;
 
+
+            //TODO reuse this when we have time to profile it.
             Stopwatch sw = new Stopwatch();
             sw.Start();
 
@@ -1461,6 +1484,7 @@ namespace ProtoCore
                     candidatesFeps.Add(fep);
                 }
             }
+
             funcGroup = new FunctionGroup(candidatesFeps);
 
             #endregion
@@ -1702,7 +1726,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1775,7 +1799,7 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     List<StackValue> newFormalParams = formalParameters.ToList();
 
@@ -1794,7 +1818,7 @@ namespace ProtoCore
                         newFormalParams[cartIndex] = parameters[i];
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count-1);
+                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
                     SingleRunTraceData lastExecTrace;
 
@@ -1931,7 +1955,7 @@ namespace ProtoCore
             var finalFormalParameters = new List<StackValue>();
 
             foreach (var formalParameter in formalParameters)
-            { 
+            {
                 //expand array if required to compare inputs
                 if (formalParameter.IsArray)
                 {
@@ -1942,7 +1966,7 @@ namespace ProtoCore
                     {
                         case 0:
                             //set function result false and exit due to empty list
-                            return new Tuple<bool, List<StackValue>> (false, null);
+                            return new Tuple<bool, List<StackValue>>(false, null);
                         case 1:
                             //Add single sample parameter to pass for evaluation in SelectFinalFep
                             finalFormalParameters.Add(flatParameters[0]);

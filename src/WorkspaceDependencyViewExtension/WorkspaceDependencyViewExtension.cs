@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -15,7 +16,7 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
+    public class WorkspaceDependencyViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
         private readonly String extensionName = Properties.Resources.ExtensionName;
@@ -55,7 +56,6 @@ namespace Dynamo.WorkspaceDependency
         /// </summary>
         public void Dispose()
         {
-            DependencyView.OnExtensionTabClosed -= OnCloseExtension;
             DependencyView.Dispose();
         }
 
@@ -82,14 +82,6 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
-        internal void OnCloseExtension(String extensionTabName)
-        {
-            if (extensionTabName.Equals(extensionName))
-            {
-                this.workspaceReferencesMenuItem.IsChecked = false;
-            }  
-        }
-
         public void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
@@ -100,8 +92,6 @@ namespace Dynamo.WorkspaceDependency
             {
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
             };
-
-            DependencyView.OnExtensionTabClosed += OnCloseExtension;
 
             // Adding a button in view menu to refresh and show manually
             workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
@@ -119,10 +109,16 @@ namespace Dynamo.WorkspaceDependency
                     viewLoadedParams.CloseExtensioninInSideBar(this);
                     workspaceReferencesMenuItem.IsChecked = false;
                 }
-
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
         }
 
+        public override void Closed()
+        {
+            if (this.workspaceReferencesMenuItem != null) 
+            { 
+                this.workspaceReferencesMenuItem.IsChecked = false;
+            }
+        }
     }
 }

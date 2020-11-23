@@ -22,7 +22,19 @@ namespace Dynamo.Wpf.Windows
             public double Height;
         }
 
-        private WindowRect SavedWindowRect;
+        /// <summary>
+        /// Gets the window rectangle (location + size)
+        /// </summary>
+        public WindowRect SavedWindowRect { get; private set; }
+
+        /// <summary>
+        /// Creates a window with an initially empty window rectangle.
+        /// Note: This constructor assumes Owner is set externally.
+        /// </summary>
+        public ModelessChildWindow()
+        {
+            InitWindowRect(null);
+        }
 
         /// <summary>
         /// Construct a ModelessChildWindow.
@@ -32,8 +44,12 @@ namespace Dynamo.Wpf.Windows
         public ModelessChildWindow(DependencyObject viewParent, ref WindowRect rect)
         {
             Owner = WpfUtilities.FindUpVisualTree<DynamoView>(viewParent);
-            Owner.Closing += OwnerWindow_Closing;
-            
+
+            rect = InitWindowRect(rect);
+        }
+
+        private WindowRect InitWindowRect(WindowRect rect)
+        {
             if (rect == null || !IsRectVisibleOnScreen(rect, Owner))
             {
                 rect = new WindowRect();
@@ -49,16 +65,7 @@ namespace Dynamo.Wpf.Windows
             }
 
             SavedWindowRect = rect;
-        }
-
-        private void OwnerWindow_Closing(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
-        private void ChildWindow_Closing(object sender, EventArgs e)
-        {
-            Owner.Closing -= OwnerWindow_Closing;
+            return rect;
         }
 
         private bool IsRectVisibleOnScreen(WindowRect windowRect, Window w)

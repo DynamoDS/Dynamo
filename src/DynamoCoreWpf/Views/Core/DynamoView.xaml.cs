@@ -43,6 +43,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
+using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
@@ -79,6 +80,11 @@ namespace Dynamo.Controls
         /// </summary>
         internal static event Action<String> CloseExtension;
         internal ObservableCollection<TabItem> ExtensionTabItems { set; get; } = new ObservableCollection<TabItem>();
+        /// <summary>
+        /// Extensions currently displayed as windows.
+        /// Made internal for testing purposes only.
+        /// </summary>
+        internal Dictionary<string, ExtensionWindow> ExtensionWindows { get; set; } = new Dictionary<string, ExtensionWindow>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
@@ -214,6 +220,14 @@ namespace Dynamo.Controls
         /// <returns>The tab item if it was added, otherwise null</returns>
         internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
         {
+            // If the extension is showing as a window, shift focus there.
+            if (ExtensionWindows.ContainsKey(viewExtension.Name))
+            {
+                var window = ExtensionWindows[viewExtension.Name];
+                window.Focus();
+                return null;
+            }
+
             var tab = FindExtensionTab(viewExtension);
             if (tab == null)
             {
@@ -222,7 +236,7 @@ namespace Dynamo.Controls
                 // creates a new tab item
                 tab = new TabItem();
                 tab.Header = viewExtension.Name;
-                tab.Tag = viewExtension.GetType();
+                tab.Tag = viewExtension;
                 tab.Uid = viewExtension.UniqueId;
                 tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
 
@@ -234,7 +248,10 @@ namespace Dynamo.Controls
                 }
                 else
                 {
-                    tab.Content = contentControl.Content;
+                    if (contentControl != null)
+                    {
+                        tab.Content = contentControl.Content;
+                    }
                     var extensionWindow = contentControl as Window;
                     if (extensionWindow != null)
                     {
@@ -263,16 +280,22 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This method will close a tab item in the right side bar based on passed extension
+        /// This method will close an extension control, whether it's on the side bar or undocked as a window.
         /// </summary>
         /// <param name="viewExtension">Extension to be closed</param>
         /// <returns></returns>
-        internal void CloseExtensionTabItem(IViewExtension viewExtension)
+        internal void CloseExtensionControl(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
-            CloseExtension?.Invoke(tabName);
+
+            if (viewExtension is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
+            CloseExtensionWindow(tabName);
         }
  
         /// <summary>
@@ -284,10 +307,13 @@ namespace Dynamo.Controls
         internal void CloseExtensionTab(object sender, RoutedEventArgs e)
         {
             string tabName = (sender as Button).DataContext.ToString();
-
-            CloseExtension?.Invoke(tabName);
-
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+
+            if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
         }
 
@@ -302,7 +328,7 @@ namespace Dynamo.Controls
             // get the selected tab
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
-            if (tabToBeRemoved != null)
+            if (tabToBeRemoved != null && ExtensionTabItems.Count > 0)
             {
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
@@ -322,6 +348,95 @@ namespace Dynamo.Controls
             }
         }
 
+        private void CloseExtensionWindow(string name)
+        {
+            if (ExtensionWindows.ContainsKey(name))
+            {
+                var extension = ExtensionWindows[name];
+                extension.Close();
+                ExtensionWindows.Remove(name);
+            }
+        }
+
+        internal void UndockExtensionTab(object sender, RoutedEventArgs e)
+        {
+            var tabName = (sender as Button).DataContext.ToString();
+            UndockExtension(tabName);
+            Logging.Analytics.TrackEvent(
+               Actions.Undock,
+               Categories.ViewExtensionOperations, tabName);
+        }
+
+        /// <summary>
+        /// Undocks the extension with the given name.
+        /// Made internal for testing purposes only.
+        /// </summary>
+        /// <param name="name">Name of the extension</param>
+        internal void UndockExtension(string name)
+        {
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
+            CloseExtensionTab(tabItem);
+
+            var ext = new ExtensionWindow();
+            // Icon is passed from DynamoView (respecting Host integrator icon)
+            SetApplicationIcon();
+            ext.Icon = this.Icon;
+            ext.Owner = this;
+            var content = tabItem.Content as ContentControl;
+            // Disconnect from previous parent to avoid error
+            tabItem.Content = null;
+            ext.ExtensionContent.Content = content;
+            ext.Title = name;
+            ext.Tag = tabItem.Tag;
+            ext.Uid = tabItem.Uid;
+            ext.Closed += ExtensionWindow_Closed;
+            ext.Show();
+
+            ExtensionWindows.Add(name, ext);
+        }
+
+        /// <summary>
+        /// Sets DynamoView icon to that of the currently running application. This is set for reuse
+        /// in custom child windows rather than for the main window itself, which is not customized.
+        /// </summary>
+        private void SetApplicationIcon()
+        {
+            if (this.Icon == null && !DynamoModel.IsTestMode)
+            {
+                var icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
+                var bmp = icon.ToBitmap();
+                MemoryStream stream = new MemoryStream();
+                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                stream.Seek(0, SeekOrigin.Begin);
+                PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                this.Icon = pngDecoder.Frames[0];
+            }
+        }
+
+        private void ExtensionWindow_Closed(object sender, EventArgs e)
+        {
+            var ext = sender as ExtensionWindow;
+            var extName = ext.Title;
+            var content = ext.ExtensionContent.Content as ContentControl;
+            // Release content from window
+            ext.ExtensionContent.Content = null;
+            ExtensionWindows.Remove(extName);
+            if (ext.DockRequested)
+            {
+                AddExtensionTabItem((IViewExtension)ext.Tag, content);
+                Logging.Analytics.TrackEvent(
+                   Actions.Dock,
+                   Categories.ViewExtensionOperations, extName);
+            }
+            else
+            {
+                if (ext.Tag is ViewExtensionBase viewExtensionBase)
+                {
+                    viewExtensionBase.Closed();
+                }
+            }
+        }
+
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -330,7 +445,7 @@ namespace Dynamo.Controls
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
         {
-            return ExtensionTabItems.FirstOrDefault(tab => tab.Tag.Equals(viewExtension.GetType()));
+            return ExtensionTabItems.FirstOrDefault(tab => ((IViewExtension)tab.Tag).GetType().Equals(viewExtension.GetType()));
         }
 
         private void OnRequestReturnFocusToView()
