@@ -338,13 +338,6 @@ namespace Dynamo.Controls
             settings.WindowSettings.Top = (int)window.SavedWindowRect.Top;
             settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
             settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
-            // Find screen currently showing the extension
-            var screens = System.Windows.Forms.Screen.AllScreens;
-            var currentScreen = screens.FirstOrDefault(s => window.Left >= s.WorkingArea.Left && window.Left < s.WorkingArea.Right);
-            if (currentScreen != null)
-            {
-                settings.WindowSettings.Screen = currentScreen.DeviceName;
-            }
         }
 
         private TabItem AddExtensionTab(IViewExtension viewExtension, ContentControl contentControl)

@@ -48,10 +48,6 @@
     public class WindowSettings
     {
         /// <summary>
-        /// Identifier of the screen where this extension is shown.
-        /// </summary>
-        public string Screen { get; set; }
-        /// <summary>
         /// Status of the window, i.e. whether it is maximized.
         /// </summary>
         public WindowStatus Status { get; set; }
