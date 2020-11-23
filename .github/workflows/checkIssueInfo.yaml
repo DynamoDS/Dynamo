@@ -7,6 +7,9 @@ jobs:
     name: Check for missing information
     runs-on: ubuntu-latest
     env:
+      #The 'issue_incomplete' variable is used to store the script response on step one, 
+      #and then checked on step two to know if adding the label and comment is necessary.
+      #The initial 'False' value will be overridden when the script runs.
       issue_incomplete: 'False'
       issue_label: needs more info
       issue_comment: This issue is missing information. Please, make sure to fill in all the necessary fields marked as (Fill in here) to help our team digest the issue.
