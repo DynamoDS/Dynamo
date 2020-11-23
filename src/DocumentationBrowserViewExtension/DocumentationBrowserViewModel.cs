@@ -20,7 +20,6 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
-        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
         #endregion
 
         #region Properties
@@ -114,6 +113,7 @@ namespace Dynamo.DocumentationBrowser
         protected virtual void Dispose(bool disposing)
         {
             this.content = null;
+            markdownHandler.Dispose();
         }
 
         public void Dispose()

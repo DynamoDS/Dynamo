@@ -1,7 +1,5 @@
 ﻿using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using Ganss.XSS;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -39,7 +37,6 @@ namespace Dynamo.DocumentationBrowser
         }
         adaptDPI() 
         </script>";
-        private static HtmlSanitizer htmlSanitizer = new HtmlSanitizer();
 
         /// <summary>
         /// Clean up possible dangerous HTML content from the content string.
@@ -48,7 +45,7 @@ namespace Dynamo.DocumentationBrowser
         /// <returns>Returns true if any content was removed from the content string</returns>
         internal static bool RemoveScriptTagsFromString(ref string content)
         {
-            var sanitizedContent = htmlSanitizer.Sanitize(content);
+            var sanitizedContent = MarkdownHandler.Instance.SanitizeHtml(content);
             if (content.Equals(sanitizedContent))
                 return false;
 

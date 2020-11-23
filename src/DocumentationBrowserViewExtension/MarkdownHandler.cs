@@ -1,26 +1,24 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using Dynamo.PackageManager;
-using Markdig;
-using Markdig.Parsers;
-using Markdig.Renderers;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
+using Dynamo.Utilities;
 
 namespace Dynamo.DocumentationBrowser
 {
     /// <summary>
     /// Handles markdown files by converting them to Html, so they can display in the doc browser.
+    /// This class is a singleton that is instantiated at first use by using the Instance property.
     /// </summary>
-    internal class MarkdownHandler
+    internal class MarkdownHandler : IDisposable
     {
         private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
         private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
-        private readonly MarkdownPipeline pipeline;
+        private readonly Md2Html converter = new Md2Html();
 
 
         private static MarkdownHandler instance;
+        /// <summary>
+        /// Gets MarkdownHandler instance
+        /// </summary>
         internal static MarkdownHandler Instance
         {
             get
@@ -30,19 +28,36 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         private MarkdownHandler()
         {
-            var pipelineBuilder = new MarkdownPipelineBuilder();
-            pipeline = pipelineBuilder
-                .UseAdvancedExtensions()
-                .Build();
+        }
+
+        /// <summary>
+        /// Kill the CLI tool, if still running
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            converter.Dispose();
+        }
+
+        /// <summary>
+        /// Kill the CLI tool, if still running
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
         /// Converts a markdown string into Html.
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="mdFilePath"></param>
+        /// <param name="nodeNamespace"></param>
         /// <returns>Returns true if any script tags was removed from the string</returns>
         internal bool ParseToHtml(ref StringWriter writer, string nodeNamespace)
         {
@@ -52,7 +67,7 @@ namespace Dynamo.DocumentationBrowser
             var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace);
 
             string mdString;
-            bool scriptTagsRemoved;
+            bool scriptTagsRemoved = false;
 
             if (string.IsNullOrWhiteSpace(mdFilePath) ||
                 !File.Exists(mdFilePath))
@@ -84,20 +99,25 @@ namespace Dynamo.DocumentationBrowser
                 if (DocumentationBrowserUtils.RemoveScriptTagsFromString(ref mdString))
                     scriptTagsRemoved = true;
             }
-            scriptTagsRemoved = false;
 
-            var renderer = new HtmlRenderer(writer);
-            pipeline.Setup(renderer);
+            var html = converter.ParseMd2Html(mdString, mdFilePath);
+            writer.WriteLine(html);
 
-            var document = MarkdownParser.Parse(mdString, pipeline);
-            ConvertRelativeLocalImagePathsToAbsolute(mdFilePath, document);
-
-            renderer.Render(document);
             // inject the syntax highlighting script at the bottom at the document.
             writer.WriteLine(DocumentationBrowserUtils.GetDPIScript());
             writer.WriteLine(GetSyntaxHighlighting());
 
             return scriptTagsRemoved;
+        }
+
+        /// <summary>
+        /// Sanitize Html
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns>Returns Sanitized Html</returns>
+        internal string SanitizeHtml(string content)
+        {
+            return converter.SanitizeHtml(content);
         }
 
         /// <summary>
@@ -111,33 +131,6 @@ namespace Dynamo.DocumentationBrowser
                 return string.Empty;
 
             return syntaxHighlightingContent;
-        }
-
-        /// <summary>
-        /// For markdown local images needs to be in the same folder as the md file
-        /// referencing it with a relative path "./image.png", when we convert to html
-        /// we need the full path. This method finds relative image paths and converts them to absolute paths.
-        /// </summary>
-        private static void ConvertRelativeLocalImagePathsToAbsolute(string mdFilePath, MarkdownDocument document)
-        {
-            var imageLinks = document.Descendants<ParagraphBlock>()
-                .SelectMany(x => x.Inline.Descendants<LinkInline>())
-                .Where(x => x.IsImage)
-                .Select(x => x).ToList();
-
-            foreach (var image in imageLinks)
-            {
-                if (!image.Url.StartsWith("./"))
-                    continue;
-
-                var imageName = image.Url.Split(new string[] { "./" }, StringSplitOptions.None);
-                var dir = Path.GetDirectoryName(mdFilePath);
-
-                var htmlImagePathPrefix = @"file:///";
-                var absoluteImagePath = Path.Combine(dir, imageName.Last());
-
-                image.Url = $"{htmlImagePathPrefix}{absoluteImagePath}";
-            }
         }
     }
 }
