@@ -175,17 +175,13 @@ namespace Dynamo.Graph.Nodes
         public virtual void RemoveInputFromModel()
         {
             int count = model.InPorts.Count;
-            bool countIsDefaultOrFewer = model is DSVarArgFunction dSVarArgFunction && count <= dSVarArgFunction.DefaultNumInputs;
-            if (count == 0 || countIsDefaultOrFewer)
+            bool countIsGreaterThanDefault = model is DSVarArgFunction dSVarArgFunction && count > dSVarArgFunction.DefaultNumInputs;
+            if (count != 0 && countIsGreaterThanDefault)
             {
-                MarkNodeDirty();
-                return;
+                var port = model.InPorts[count - 1];
+                port.DestroyConnectors();
+                model.InPorts.Remove(port);
             }
-
-            var port = model.InPorts[count - 1];
-            port.DestroyConnectors();
-            model.InPorts.Remove(port);
-
             MarkNodeDirty();
         }
 
