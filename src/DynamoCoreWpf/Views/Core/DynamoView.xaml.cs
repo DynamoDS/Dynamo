@@ -290,13 +290,14 @@ namespace Dynamo.Controls
                 window = new ExtensionWindow(this, ref windowRect);
                 if (windowSettings.Status == WindowStatus.Maximized)
                 {
-                    var screen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(s => s.DeviceName == windowSettings.Screen);
-                    if (screen != null)
-                    {
-                        windowRect.Left = screen.WorkingArea.Left + 10;
-                        windowRect.Top = screen.WorkingArea.Top + 10;
-                    }
-                    window.WindowState = WindowState.Maximized;
+                    //var screen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(s => s.DeviceName == windowSettings.Screen);
+                    //if (screen != null)
+                    //{
+                    //    windowRect.Left = screen.WorkingArea.Left + 10;
+                    //    windowRect.Top = screen.WorkingArea.Top + 10;
+                    //}
+                    //window.WindowState = WindowState.Maximized;
+                    window.ShouldMaximize = true;
                 }
             }
             
@@ -337,12 +338,12 @@ namespace Dynamo.Controls
             settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
             settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
             // Find screen currently showing the extension
-            var screens = System.Windows.Forms.Screen.AllScreens;
-            var currentScreen = screens.FirstOrDefault(s => window.Left >= s.WorkingArea.Left && window.Left < s.WorkingArea.Right);
-            if (currentScreen != null)
-            {
-                settings.WindowSettings.Screen = currentScreen.DeviceName;
-            }
+            //var screens = System.Windows.Forms.Screen.AllScreens;
+            //var currentScreen = screens.FirstOrDefault(s => window.Left >= s.WorkingArea.Left && window.Left < s.WorkingArea.Right);
+            //if (currentScreen != null)
+            //{
+            //    settings.WindowSettings.Screen = currentScreen.DeviceName;
+            //}
         }
 
         private TabItem AddExtensionTab(IViewExtension viewExtension, ContentControl contentControl)

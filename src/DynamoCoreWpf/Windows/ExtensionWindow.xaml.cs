@@ -13,6 +13,10 @@ namespace Dynamo.Wpf.Windows
         /// Note: Setter is internal for testing purposes only.
         /// </summary>
         public bool DockRequested { get; internal set; }
+        /// <summary>
+        /// Indicates if the window should be maximized when it is loaded.
+        /// </summary>
+        public bool ShouldMaximize { get; set; }
 
         public ExtensionWindow()
         {
@@ -71,6 +75,10 @@ namespace Dynamo.Wpf.Windows
         {
             // This can't be done using markup, so we do it here.
             iconImage.Source = Icon;
+            if (ShouldMaximize)
+            {
+                WindowState = WindowState.Maximized;
+            }
             RefreshMaximizeRestoreButton();
         }
     }
