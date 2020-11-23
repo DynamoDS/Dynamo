@@ -24,13 +24,8 @@ namespace Dynamo.ViewModels
         /// Cache of default node suggestions, use it in case where
         /// a. our algorithm does not return sufficient results
         /// b. the results returned by our algorithm will not be useful for user
-        /// Note: These are updated based on the input type
         /// </summary>
         internal IEnumerable<NodeSearchElementViewModel> DefaultResults { get; set; }
-        /// <summary>
-        /// Copy of default node suggestions, these are not updated based on the skipped input types
-        /// </summary>
-        internal IEnumerable<NodeSearchElementViewModel> AllDefaultResults { get; set; }
 
         internal NodeAutoCompleteSearchViewModel(DynamoViewModel dynamoViewModel) : base(dynamoViewModel)
         {
@@ -53,7 +48,7 @@ namespace Dynamo.ViewModels
                     candidates.Add(foundNode);
                 }
             }
-            AllDefaultResults = DefaultResults = candidates;
+            DefaultResults = candidates;
         }
         
         internal void PopulateAutoCompleteCandidates()
@@ -131,7 +126,6 @@ namespace Dynamo.ViewModels
 
             if (inputPortType == null)
             {
-                DefaultResults = AllDefaultResults;
                 return elements; 
             }
 
@@ -146,28 +140,7 @@ namespace Dynamo.ViewModels
             //check if the input port return type is in the skipped input types list
             if (skippedInputTypes.Any(s => s == inputPortType))
             {
-                switch (inputPortType)
-                {
-                    case "int":
-                        DefaultResults = AllDefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                        break;
-                    case "double":
-                        DefaultResults = AllDefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                        break;
-                    case "string":
-                        DefaultResults = AllDefaultResults.Where(e => e.Name == "String").ToList();
-                        break;
-                    case "bool":
-                        DefaultResults = AllDefaultResults.Where(e => e.Name == "Boolean").ToList();
-                        break;
-                    default:
-                        DefaultResults = AllDefaultResults;
-                        break;
-                }
                 return elements;
-            }
-            else {
-                DefaultResults = AllDefaultResults;
             }
 
             //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
