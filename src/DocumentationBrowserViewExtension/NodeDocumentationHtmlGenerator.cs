@@ -2,6 +2,7 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
@@ -35,8 +36,8 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateHeader(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Format("<h1>{0}</h1>", e.Type));
-            sb.AppendLine(string.Format("<p><i>{0}</i></p>", e.MinimumQualifiedName));
+            sb.AppendLine($"<h1>{e.Type}</h1>");
+            sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
             sb.AppendLine("<hr>");
 
             return sb.ToString();
@@ -45,35 +46,37 @@ namespace Dynamo.DocumentationBrowser
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<h2>Node Info</h2>");
+            sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeInfo}</h2>");
             sb.AppendLine("<table class=\"table--noborder\">");
             sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Node Type"));
-            sb.AppendLine(string.Format("<td>{0}</td>", e.Type));
+            sb.AppendLine($"<td>{Resources.NodeDocumentationNodeType}</td>");
+            sb.AppendLine($"<td>{e.Type}</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Description"));
-            sb.AppendLine(string.Format("<td>{0}</td>", Regex.Replace(e.Description, @"\r\n?|\n", "<br>")));
+            sb.AppendLine($"<td>{Resources.NodeDocumentationDescription}</td>");
+            sb.AppendLine($"<td>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Category"));
-            sb.AppendLine(string.Format("<td>{0}</td>", e.Category));
+            sb.AppendLine($"<td>{Resources.NodeDocumentationCategory}</td>");
+            sb.AppendLine($"<td>{e.Category}</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Inputs"));
+            sb.AppendLine($"<td>{Resources.NodeDocumentationInputs}</td>");
             sb.AppendLine("<td>");
             for (int i = 0; i < e.InputNames.Count(); i++)
             {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.InputNames.ElementAt(i), Regex.Replace(e.InputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")));
+                sb.AppendLine(
+                    $"<li style=\"margin-bottom: 5px\"><b><u>{e.InputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.InputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
             }
             sb.AppendLine("</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
-            sb.AppendLine(string.Format("<td>{0}</td>", "Outputs"));
+            sb.AppendLine($"<td>{Resources.NodeDocumentationOutputs}</td>");
             sb.AppendLine("<td>");
             for (int i = 0; i < e.OutputNames.Count(); i++)
             {
-                sb.AppendLine(string.Format("<li style=\"margin-bottom: 5px\"><b><u>{0}</u></b><br>{1}</li>", e.OutputNames.ElementAt(i), Regex.Replace(e.OutputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")));
+                sb.AppendLine(
+                    $"<li style=\"margin-bottom: 5px\"><b><u>{e.OutputNames.ElementAt(i)}</u></b><br>{Regex.Replace(e.OutputDescriptions.ElementAt(i), @"\r\n?|\n", "<br>")}</li>");
             }
             sb.AppendLine("</td>");
             sb.AppendLine("</tr>");
