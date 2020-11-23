@@ -113,7 +113,64 @@ namespace Dynamo.Tests
             AssertPreviewCount(nodeIds[1].ToString(), 2);
             AssertPreviewCount(nodeIds[2].ToString(), 2);
         }
+        
+        [Test]
+        public void VerifyLacingStrategyForCodeBlockNodes()
+        {
+            var openPath = Path.Combine(TestDirectory, @"core\visualization\LacingStrategyCodeBlockNodes.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
 
+            var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            workspace.RunSettings.RunType = RunType.Automatic;
+
+            Guid codeBlockNodeId = Guid.Parse("5a35517215434699afe122bc51aeff7d");
+            Guid otherNodeId = Guid.Parse("ab8afb7c1dfe4dd0994662f3306fc530");
+            var codeBlockNode = workspace.NodeFromWorkspace(codeBlockNodeId);
+            var otherNode = workspace.NodeFromWorkspace(otherNodeId);
+
+            // Verify initial lacing state is Auto and nodes return correct number of results
+            AssertPreviewCount(codeBlockNodeId.ToString(), 2);
+            AssertPreviewCount(otherNodeId.ToString(), 2);
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.Auto, otherNode.ArgumentLacing);
+
+            // Modify lacing strategy to Longest
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.Longest, otherNode.ArgumentLacing);
+            AssertPreviewCount(codeBlockNodeId.ToString(), 2);
+            AssertPreviewCount(otherNodeId.ToString(), 10);
+
+            // Modify lacing strategy to Auto
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Auto.ToString());
+
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.Auto, otherNode.ArgumentLacing);
+            AssertPreviewCount(codeBlockNodeId.ToString(), 2);
+            AssertPreviewCount(otherNodeId.ToString(), 2);
+
+            // Modify lacing strategy to CrossProduct
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.CrossProduct.ToString());
+
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.CrossProduct, otherNode.ArgumentLacing);
+            AssertPreviewCount(codeBlockNodeId.ToString(), 2);
+            AssertPreviewCount(otherNodeId.ToString(), 10);
+
+            // Change lacing back to Shortest
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Shortest.ToString());
+
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNode.ArgumentLacing);
+            Assert.AreEqual(LacingStrategy.Shortest, otherNode.ArgumentLacing);
+            AssertPreviewCount(codeBlockNodeId.ToString(), 2);
+            AssertPreviewCount(otherNodeId.ToString(), 2);
+        }
+        
         [Test]
         public void AreGlobalLacingStrategiesInMenu()
         {
