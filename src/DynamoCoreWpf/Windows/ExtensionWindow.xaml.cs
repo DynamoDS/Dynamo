@@ -19,6 +19,12 @@ namespace Dynamo.Wpf.Windows
             InitializeComponent();
         }
 
+        public ExtensionWindow(DependencyObject viewParent, ref WindowRect rect)
+            : base(viewParent, ref rect)
+        {
+            InitializeComponent();
+        }
+
         private void OnDockButtonClick(object sender, RoutedEventArgs e)
         {
             DockRequested = true;
@@ -65,6 +71,7 @@ namespace Dynamo.Wpf.Windows
         {
             // This can't be done using markup, so we do it here.
             iconImage.Source = Icon;
+            RefreshMaximizeRestoreButton();
         }
     }
 }

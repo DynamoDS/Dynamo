@@ -86,7 +86,7 @@ namespace DynamoCoreWpfTests
 
             // Simulate the extension activating the tab content again.
             // The content here should not matter because it won't be used.
-            View.AddExtensionTabItem(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
 
             // Extension bar is shown
             Assert.IsFalse(View.ExtensionsCollapsed);
@@ -203,7 +203,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionWindows.Count);
 
             // Attempt to open the extension in the side bar when it's open as a window
-            View.AddExtensionTabItem(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
 
             // Extension is not added to the sidebar
             Assert.AreEqual(0, View.ExtensionTabItems.Count);

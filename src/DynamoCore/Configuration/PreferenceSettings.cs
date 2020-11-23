@@ -370,6 +370,11 @@ namespace Dynamo.Configuration
         [XmlIgnore]
         public bool NamespacesToExcludeFromLibrarySpecified { get; set; }
 
+        /// <summary>
+        /// Settings that apply to view extensions.
+        /// </summary>
+        public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
+
         #endregion
 
         /// <summary>
@@ -415,6 +420,7 @@ namespace Dynamo.Configuration
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = false;
             DefaultPythonEngine = string.Empty;
+            ViewExtensionSettings = new List<ViewExtensionSettings>();
         }
 
         /// <summary>
