@@ -444,7 +444,7 @@ namespace DSCore
         /// <returns name="sortedList">type: var[]..[]</returns>
         /// <returns name="sortedKeys">type: var[]..[]</returns>
         /// <search>sort;key</search>
-        [MultiReturn(new[] { "sorted list", "sorted keys" })]
+        [MultiReturn("sortedList", "sortedKeys")]
         [IsVisibleInDynamoLibrary(true)]
         public static IDictionary SortByKey(IList list, IList keys)
         {
@@ -484,8 +484,8 @@ namespace DSCore
 
             return new Dictionary<object, object>
             {
-                { "sorted list", sortedList },
-                { "sorted keys", sortedKeys }
+                { "sortedList", sortedList },
+                { "sortedKeys", sortedKeys }
             };
         }
 

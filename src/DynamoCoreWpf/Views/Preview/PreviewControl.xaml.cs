@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -368,8 +369,17 @@ namespace Dynamo.UI.Controls
             RunOnSchedulerSync(
                 () =>
                 {
-                    var preferredDictionaryOrdering = 
-                    nodeViewModel.NodeModel.OutPorts.Select(p => p.Name).Where(n => !String.IsNullOrEmpty(n));
+                    IEnumerable<string> preferredDictionaryOrdering;
+                    if (nodeViewModel.NodeModel is DSFunction dsFunction)
+                    {
+                        preferredDictionaryOrdering = dsFunction.Controller.ReturnKeys;
+                    }
+                    else
+                    {
+                        preferredDictionaryOrdering =
+                            nodeViewModel.NodeModel.OutPorts.Select(p => p.Name).Where(n => !string.IsNullOrEmpty(n));
+                    }
+
                     newViewModel = nodeViewModel.DynamoViewModel.WatchHandler.GenerateWatchViewModelForData(
                         nodeViewModel.NodeModel.CachedValue, preferredDictionaryOrdering,
                         null, nodeViewModel.NodeModel.AstIdentifierForPreview.Name, false);
