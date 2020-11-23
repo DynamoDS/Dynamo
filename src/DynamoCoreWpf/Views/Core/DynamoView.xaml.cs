@@ -290,10 +290,12 @@ namespace Dynamo.Controls
                 window = new ExtensionWindow(this, ref windowRect);
                 if (windowSettings.Status == WindowStatus.Maximized)
                 {
-                    // In case the window was maximized, its width and height will be max. That makes restore pretty
-                    // useless so instead we set the size to 0 which means to restore to the default size.
-                    //windowRect.Width = 0;
-                    //windowRect.Height = 0;
+                    var screen = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(s => s.DeviceName == windowSettings.Screen);
+                    if (screen != null)
+                    {
+                        windowRect.Left = screen.WorkingArea.Left + 10;
+                        windowRect.Top = screen.WorkingArea.Top + 10;
+                    }
                     window.WindowState = WindowState.Maximized;
                 }
             }
@@ -335,12 +337,12 @@ namespace Dynamo.Controls
             settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
             settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
             // Find screen currently showing the extension
-            //var screens = System.Windows.Forms.Screen.AllScreens;
-            //var currentScreen = screens.FirstOrDefault(s => window.Left >= s.WorkingArea.Left && window.Left < s.WorkingArea.Right);
-            //if (currentScreen != null)
-            //{
-            //    settings.WindowSettings.Screen = currentScreen.DeviceName;
-            //}
+            var screens = System.Windows.Forms.Screen.AllScreens;
+            var currentScreen = screens.FirstOrDefault(s => window.Left >= s.WorkingArea.Left && window.Left < s.WorkingArea.Right);
+            if (currentScreen != null)
+            {
+                settings.WindowSettings.Screen = currentScreen.DeviceName;
+            }
         }
 
         private TabItem AddExtensionTab(IViewExtension viewExtension, ContentControl contentControl)
