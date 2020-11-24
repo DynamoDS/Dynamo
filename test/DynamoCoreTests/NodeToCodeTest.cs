@@ -1194,31 +1194,31 @@ namespace Dynamo.Tests
         [Test]
         public void TestNodeToCodeStringInputEscaping()
         {
+            // Arrange
             OpenModel(@"core\node2code\stringNodesInNeedOfEscaping.dyn");
             var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
             var engine = CurrentDynamoModel.EngineController;
-            var result = engine.ConvertNodesToCode(nodes, nodes);
-            Assert.IsNotNull(result.AstNodes);
 
-            var assignment = result.AstNodes.FirstOrDefault();
-            Assert.IsNotNull(assignment);
+            // Act
+            var nodesToCode = engine.ConvertNodesToCode(nodes, nodes);
+            var results = nodesToCode.AstNodes.OfType<BinaryExpressionNode>()
+                .Where((x, i) => i < 8)
+                .Select(x => x.RightNode.ToString())
+                .ToList();
 
-            var binaryExpr = assignment as BinaryExpressionNode;
-            Assert.IsNotNull(binaryExpr);
-
+            // Assert
             var expect = new List<string>
             {
-                "C:\\",
-                "4\"",
-                "\"Hello, world.\"",
-                "Hello\\r\\nWorld",
-                "\\tHello World",
-                "\\u33A1",
-                "\\u00B2",
-                "\\SERVER\\PATH"
+                "\"C:\\\\\"",                // "C:\\"
+                "\"4\\\"\"",                 // "4\"
+                "\"\\\"Hello, world.\\\"\"", // "\"Hello, world.\""
+                "\"Hello\\\\r\\\\nWorld\"",  // "Hello\\r\\nWorld"
+                "\"\\\\tHello World\"",      // "\\tHello World"
+                "\"\\\\u33A1\"",             // "\\u33A1"
+                "\"\\\\u00B2\"",             // "\\u00B2"
+                "\"\\\\\\\\SERVER\\\\PATH\"" // "\\\\SERVER\\PATH"
             };
-
-            AssertPreviewValue("42e2eb91b2be48b6abcf33dbb4d756e2", expect);
+            Assert.AreEqual(expect, results);
         }
 
         [Test]
