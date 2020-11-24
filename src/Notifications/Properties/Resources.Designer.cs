@@ -61,6 +61,24 @@ namespace Dynamo.Notifications.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Details.
+        /// </summary>
+        public static string ButtonDetails {
+            get {
+                return ResourceManager.GetString("ButtonDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string ButtonOK {
+            get {
+                return ResourceManager.GetString("ButtonOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dismiss All Notifications.
         /// </summary>
         public static string Dismiss {

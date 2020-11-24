@@ -70,6 +70,26 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CloseViewExtensionTest()
+        {
+            RaiseLoadedEvent(this.View);
+
+            var extensionManager = View.viewExtensionManager;
+
+            var initialNum = View.ExtensionTabItems.Count;
+
+            // Adding a dummy extension will add a new tab in the extensions side bar
+            extensionManager.Add(viewExtension);
+            Assert.AreEqual(initialNum + 1, View.ExtensionTabItems.Count);
+
+            var loadedParams = new ViewLoadedParams(View, ViewModel);
+
+            // Closing the view extension using the CloseExtensioninInSideBar API should close the view extension.
+            loadedParams.CloseExtensioninInSideBar(this.viewExtension);
+            Assert.AreEqual(initialNum, View.ExtensionTabItems.Count);
+        }
+
+        [Test]
         public void ExtensionSideBarIsUncollapsedOnActivation()
         {
             RaiseLoadedEvent(this.View);

@@ -382,7 +382,12 @@ namespace Dynamo.Controls
         {
             string tabName = viewExtension.Name;
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
-            CloseExtension?.Invoke(tabName);
+
+            if (viewExtension is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
             CloseExtensionWindow(tabName);
         }
@@ -396,10 +401,13 @@ namespace Dynamo.Controls
         internal void CloseExtensionTab(object sender, RoutedEventArgs e)
         {
             string tabName = (sender as Button).DataContext.ToString();
-
-            CloseExtension?.Invoke(tabName);
-
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+
+            if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
         }
 
@@ -414,7 +422,7 @@ namespace Dynamo.Controls
             // get the selected tab
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
-            if (tabToBeRemoved != null)
+            if (tabToBeRemoved != null && ExtensionTabItems.Count > 0)
             {
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
@@ -451,6 +459,9 @@ namespace Dynamo.Controls
         {
             var tabName = (sender as Button).DataContext.ToString();
             UndockExtension(tabName);
+            Logging.Analytics.TrackEvent(
+               Actions.Undock,
+               Categories.ViewExtensionOperations, tabName);
         }
 
         /// <summary>
@@ -495,17 +506,22 @@ namespace Dynamo.Controls
             // Release content from window
             window.ExtensionContent.Content = null;
             ExtensionWindows.Remove(extName);
+            var extension = window.Tag as IViewExtension;
             if (window.DockRequested)
             {
-                var extension = window.Tag as IViewExtension;
                 AddExtensionTab(extension, content);
 
                 var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
                 settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
+
+                Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
             }
             else
             {
-                CloseExtension?.Invoke(extName);
+                if (extension is ViewExtensionBase viewExtensionBase)
+                {
+                    viewExtensionBase.Closed();
+                }
             }
         }
 
