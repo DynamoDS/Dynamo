@@ -19,6 +19,7 @@ namespace Dynamo.ViewModels
 
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElement> searchElementsCache;
+        private Dictionary<string, NodeSearchElement> FilteredDefaultResults = new Dictionary<string, NodeSearchElement>();
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -50,7 +51,7 @@ namespace Dynamo.ViewModels
             }
             DefaultResults = candidates;
         }
-        
+
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
@@ -60,8 +61,25 @@ namespace Dynamo.ViewModels
             // If node match searchElements found, use default suggestions
             if (!searchElementsCache.Any())
             {
-                searchElementsCache =  DefaultResults.Select(e => e.Model).ToList();
-                FilteredResults = DefaultResults;
+                searchElementsCache = DefaultResults.Select(e => e.Model).ToList();
+                switch (PortViewModel.PortModel.GetInputPortType())
+                {
+                    case "int":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "double":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "string":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
+                        break;
+                    case "bool":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
+                        break;
+                    default:
+                        FilteredResults = DefaultResults;
+                        break;
+                }
             }
             else
             {
