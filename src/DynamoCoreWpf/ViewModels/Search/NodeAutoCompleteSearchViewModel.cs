@@ -19,7 +19,6 @@ namespace Dynamo.ViewModels
 
         internal PortViewModel PortViewModel { get; set; }
         private List<NodeSearchElement> searchElementsCache;
-        private Dictionary<string, NodeSearchElement> FilteredDefaultResults = new Dictionary<string, NodeSearchElement>();
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -51,7 +50,7 @@ namespace Dynamo.ViewModels
             }
             DefaultResults = candidates;
         }
-
+        
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
