@@ -202,6 +202,16 @@ namespace Dynamo.Logging
         /// Load event, such as extensions loaded
         /// </summary>
         Load,
+
+        /// <summary>
+        /// Dock event, such as docking view extension
+        /// </summary>
+        Dock,
+
+        /// <summary>
+        /// Undock event, such as undocking view extension
+        /// </summary>
+        Undock,
     }
 
     /// <summary>
