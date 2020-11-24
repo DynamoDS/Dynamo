@@ -173,7 +173,7 @@ namespace Dynamo.ViewModels
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
             //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
-            return elements.OrderBy(x => x.Group);
+            return elements.OrderBy(x => x.Group).ThenBy(x => x.Name);
 
            
         }
