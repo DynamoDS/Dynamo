@@ -42,6 +42,7 @@ namespace Dynamo.DocumentationBrowser
         protected virtual void Dispose(bool disposing)
         {
             converter.Dispose();
+            instance = null;
         }
 
         /// <summary>

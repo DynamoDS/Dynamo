@@ -47,18 +47,20 @@ namespace Md2Html
             if (string.IsNullOrWhiteSpace(mdString))
                 return string.Empty;
 
-            var writer = new StringWriter();
+            using (var writer = new StringWriter())
+            {
+                // Remove scripts from user content for security reasons.
+                var renderer = new HtmlRenderer(writer);
+                pipeline.Setup(renderer);
 
-            // Remove scripts from user content for security reasons.
-            var renderer = new HtmlRenderer(writer);
-            pipeline.Setup(renderer);
+                var document = MarkdownParser.Parse(mdString, pipeline);
+                ConvertRelativeLocalImagePathsToAbsolute(mdPath, document);
 
-            var document = MarkdownParser.Parse(mdString, pipeline);
-            ConvertRelativeLocalImagePathsToAbsolute(mdPath, document);
+                renderer.Render(document);
 
-            renderer.Render(document);
+                return writer.ToString();
+            }
 
-            return writer.ToString();
         }
 
         /// <summary>

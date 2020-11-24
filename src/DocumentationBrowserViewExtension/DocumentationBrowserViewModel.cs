@@ -241,15 +241,22 @@ namespace Dynamo.DocumentationBrowser
         private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
         {
             var writer = new StringWriter();
-            // Write the Node info section to the string writer
-            writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
+            try
+            {
+                // Write the Node info section to the string writer
+                writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
 
-            // Convert the markdown file to html and remove script tags if any
-            if (markdownHandler.ParseToHtml(ref writer, e.MinimumQualifiedName))
-                LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                // Convert the markdown file to html and remove script tags if any
+                if (markdownHandler.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
 
-            writer.Flush();
-            return writer.ToString();
+                writer.Flush();
+                return writer.ToString();
+            }
+            finally
+            {
+                writer?.Dispose();
+            }
         }
 
         #endregion

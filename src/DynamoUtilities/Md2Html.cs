@@ -133,35 +133,37 @@ namespace Dynamo.Utilities
         /// </summary>
         private string GetData()
         {
-            var writer = new StringWriter();
-            var done = false;
-
-            while (!done)
+            using (var writer = new StringWriter())
             {
-                try
-                {
-                    var line = process.StandardOutput.ReadLine();
+                var done = false;
 
-                    if (line == null || line == @"<<<<<Eod>>>>>")
+                while (!done)
+                {
+                    try
                     {
-                        done = true;
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrWhiteSpace(line))
+                        var line = process.StandardOutput.ReadLine();
+
+                        if (line == null || line == @"<<<<<Eod>>>>>")
                         {
-                            writer.WriteLine(line);
+                            done = true;
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                writer.WriteLine(line);
+                            }
                         }
                     }
+                    catch (Exception e) when (e is IOException || e is OutOfMemoryException)
+                    {
+                        KillProcess();
+                        return GetCantCommunicateErrorMessage();
+                    }
                 }
-                catch (Exception e) when (e is IOException || e is OutOfMemoryException)
-                {
-                    KillProcess();
-                    return GetCantCommunicateErrorMessage();
-                }
-            }
 
-            return writer.ToString();
+                return writer.ToString();
+            }
         }
 
 

@@ -61,19 +61,20 @@ namespace Md2Html
 
         static string GetData()
         {
-            StringWriter data = new StringWriter();
-
-            while (true)
+            using (StringWriter data = new StringWriter())
             {
-                var line = Console.ReadLine();
-                if (line == @"<<<<<Eod>>>>>")
+                while (true)
                 {
-                    break;
+                    var line = Console.ReadLine();
+                    if (line == @"<<<<<Eod>>>>>")
+                    {
+                        break;
+                    }
+                    data.WriteLine(line);
                 }
-                data.WriteLine(line);
-            }
 
-            return data.ToString();
+                return data.ToString();
+            }
         }
 
         static bool CheckForHelp(string[] args)
