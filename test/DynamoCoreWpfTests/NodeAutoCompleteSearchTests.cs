@@ -315,7 +315,7 @@ namespace DynamoCoreWpfTests
 
             // The initial list will fill the FilteredResults with a list of default options
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(2, searchViewModel.FilteredResults.Count());
             Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
     }
