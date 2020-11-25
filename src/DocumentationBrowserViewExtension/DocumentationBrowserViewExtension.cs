@@ -146,17 +146,17 @@ namespace Dynamo.DocumentationBrowser
             {
                 this.pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
             }
-
             PackageDocumentationManager.Instance.Dispose();
         }
 
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+            base.Dispose();
         }
 
         #endregion

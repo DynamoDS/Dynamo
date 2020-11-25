@@ -111,7 +111,7 @@ namespace Dynamo.DocumentationBrowser
 
         protected virtual void Dispose(bool disposing)
         {
-            this.content = null;
+            //this.content = "";
             markdownHandler?.Dispose();
         }
 

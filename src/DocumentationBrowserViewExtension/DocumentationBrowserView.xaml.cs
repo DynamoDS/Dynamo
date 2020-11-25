@@ -99,7 +99,10 @@ namespace Dynamo.DocumentationBrowser
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            this.documentationBrowser.Dispose();
+            if (!disposing)
+            {
+                this.documentationBrowser.Dispose();
+            }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
         }
 
