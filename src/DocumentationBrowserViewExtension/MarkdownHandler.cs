@@ -14,24 +14,10 @@ namespace Dynamo.DocumentationBrowser
         private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
         private readonly Md2Html converter = new Md2Html();
 
-
-        private static MarkdownHandler instance;
-        /// <summary>
-        /// Gets MarkdownHandler instance
-        /// </summary>
-        internal static MarkdownHandler Instance
-        {
-            get
-            {
-                if (instance is null) { instance = new MarkdownHandler(); }
-                return instance;
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private MarkdownHandler()
+        internal MarkdownHandler()
         {
         }
 
@@ -42,7 +28,6 @@ namespace Dynamo.DocumentationBrowser
         protected virtual void Dispose(bool disposing)
         {
             converter.Dispose();
-            instance = null;
         }
 
         /// <summary>
@@ -97,7 +82,7 @@ namespace Dynamo.DocumentationBrowser
                     return false;
 
                 // Remove scripts from user content for security reasons.
-                if (DocumentationBrowserUtils.RemoveScriptTagsFromString(ref mdString))
+                if (RemoveScriptTagsFromString(ref mdString))
                     scriptTagsRemoved = true;
             }
 
@@ -120,6 +105,22 @@ namespace Dynamo.DocumentationBrowser
         {
             return converter.SanitizeHtml(content);
         }
+
+        /// <summary>
+        /// Clean up possible dangerous HTML content from the content string.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns>Returns true if any content was removed from the content string</returns>
+        internal bool RemoveScriptTagsFromString(ref string content)
+        {
+            var sanitizedContent = SanitizeHtml(content);
+            if (content.Equals(sanitizedContent))
+                return false;
+
+            content = sanitizedContent;
+            return true;
+        }
+
 
         /// <summary>
         /// Inject syntax highlighting into a html string.

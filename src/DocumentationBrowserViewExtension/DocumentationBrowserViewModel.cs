@@ -3,11 +3,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
@@ -26,7 +24,7 @@ namespace Dynamo.DocumentationBrowser
 
         private bool shouldLoadDefaultContent;
         private readonly PackageDocumentationManager packageManagerDoc;
-        private readonly MarkdownHandler markdownHandler;
+        private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
 
         /// <summary>
@@ -56,6 +54,8 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
 
         private string content;
+
+        private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
         /// <summary>
@@ -107,13 +107,12 @@ namespace Dynamo.DocumentationBrowser
             // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
             packageManagerDoc = PackageDocumentationManager.Instance;
-            markdownHandler = MarkdownHandler.Instance;
         }
 
         protected virtual void Dispose(bool disposing)
         {
             this.content = null;
-            markdownHandler.Dispose();
+            markdownHandler?.Dispose();
         }
 
         public void Dispose()
@@ -247,7 +246,7 @@ namespace Dynamo.DocumentationBrowser
                 writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
 
                 // Convert the markdown file to html and remove script tags if any
-                if (markdownHandler.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                if (MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName))
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
 
                 writer.Flush();
@@ -384,7 +383,7 @@ namespace Dynamo.DocumentationBrowser
 
             // Clean up possible script tags from document
             if (removeScriptTags &&
-                DocumentationBrowserUtils.RemoveScriptTagsFromString(ref result))
+                MarkdownHandlerInstance.RemoveScriptTagsFromString(ref result))
             {
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
             }

@@ -1,5 +1,4 @@
-﻿using Dynamo.Controls;
-using Dynamo.DocumentationBrowser.Properties;
+﻿using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.ViewModels;
@@ -118,14 +117,36 @@ namespace Dynamo.DocumentationBrowser
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
-            this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
-            this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
-            documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
-            documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            if (this.viewLoadedParamsReference != null)
+            {
+                this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            }
+
+            if (this.ViewModel != null)
+            {
+                this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
+            }
+
+            if (this.documentationBrowserMenuItem != null)
+            {
+                this.documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
+                this.documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
+
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
-            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
-            pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
+
+            if (this.viewLoadedParamsReference != null)
+            {
+                (this.viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -=
+                    HandleStartPageVisibilityChange;
+            }
+
+            if (this.pmExtension != null)
+            {
+                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
+            }
+
             PackageDocumentationManager.Instance.Dispose();
         }
 
