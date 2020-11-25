@@ -98,17 +98,18 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var externalEvent = new OpenDocumentationLinkEventArgs(new Uri(externalLink));
-            var viewExtension = SetupNewViewExtension();
+            using (var viewExtension = SetupNewViewExtension())
+            {
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(externalEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-
-            // Assert
-            Assert.IsTrue(externalEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(0, tabsAfterExternalEventTrigger);
+                // Assert
+                Assert.IsTrue(externalEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(0, tabsAfterExternalEventTrigger);
+            }
         }
 
         [Test]
@@ -116,19 +117,20 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(localDocsFileLink, UriKind.Relative));
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
-
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains(excelDocsFileHtmlHeader));
+            }
         }
 
         [Test]
@@ -155,69 +157,74 @@ namespace DynamoCoreWpfTests
         {
             // Arrange
             var docsEvent = new OpenDocumentationLinkEventArgs(new Uri("missingFile.html", UriKind.Relative));
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
-
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+            }
         }
 
         [Test]
         public void DisplaysHtmlEmbeddedInLoadedAssemblies()
         {
             // Arrange
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "DocumentationBrowserViewExtension";
+                var fileName = "ArgumentNullException.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-            // Reference an embedded HTML file in a loaded assembly
-            var assemblyName = "DocumentationBrowserViewExtension";
-            var fileName = "ArgumentNullException.html";
-            var uri = $"{assemblyName};{fileName}";
-            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains("<h2>Value cannot be null</h2>"));
+            }
 
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains("<h2>Value cannot be null</h2>"));
         }
 
         [Test]
         public void Displays404PageWhenLinkPointsToAssemblyThatCannotBeFound()
         {
             // Arrange
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
 
-            // Reference an embedded HTML file in a loaded assembly
-            var assemblyName = "NonExisting";
-            var fileName = "Whatever.html";
-            var uri = $"{assemblyName};{fileName}";
-            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = "NonExisting";
+                var fileName = "Whatever.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains(fileMissingHtmlHeader));
+            }
         }
 
         /// <summary>
@@ -230,9 +237,10 @@ namespace DynamoCoreWpfTests
             // Arrange
             var originalCulture = CultureInfo.CurrentUICulture;
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en-us");
+            var viewExtension = SetupNewViewExtension(true);
+
             try
             {
-                var viewExtension = SetupNewViewExtension(true);
 
                 // Reference an embedded HTML file in a loaded assembly
                 var assemblyName = "SpecificCultureDocs";
@@ -250,6 +258,7 @@ namespace DynamoCoreWpfTests
             finally
             {
                 CultureInfo.CurrentUICulture = originalCulture;
+                viewExtension.Dispose();
             }
         }
 
@@ -264,10 +273,9 @@ namespace DynamoCoreWpfTests
             // Arrange
             var originalCulture = CultureInfo.CurrentUICulture;
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("es-uy");
+            var viewExtension = SetupNewViewExtension(true);
             try
             {
-                var viewExtension = SetupNewViewExtension(true);
-
                 // Reference an embedded HTML file in a loaded assembly
                 var assemblyName = "NeutralCultureDocs";
                 var fileName = "DivisionByZero.html";
@@ -284,6 +292,7 @@ namespace DynamoCoreWpfTests
             finally
             {
                 CultureInfo.CurrentUICulture = originalCulture;
+                viewExtension.Dispose();
             }
         }
 
@@ -298,10 +307,9 @@ namespace DynamoCoreWpfTests
             // Arrange
             var originalCulture = CultureInfo.CurrentUICulture;
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("en");
+            var viewExtension = SetupNewViewExtension(true);
             try
             {
-                var viewExtension = SetupNewViewExtension(true);
-
                 // Reference an embedded HTML file in a loaded assembly
                 var assemblyName = "SpecificCultureDocs";
                 var fileName = "DivisionByZero.html";
@@ -318,6 +326,7 @@ namespace DynamoCoreWpfTests
             finally
             {
                 CultureInfo.CurrentUICulture = originalCulture;
+                viewExtension.Dispose();
             }
         }
 
@@ -333,10 +342,9 @@ namespace DynamoCoreWpfTests
             // Arrange
             var originalCulture = CultureInfo.CurrentUICulture;
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo("fr-ca");
+            var viewExtension = SetupNewViewExtension(true);
             try
             {
-                var viewExtension = SetupNewViewExtension(true);
-
                 // Reference an embedded HTML file in a loaded assembly
                 var assemblyName = "InvariantCultureDocs";
                 var fileName = "DivisionByZero.html";
@@ -353,6 +361,7 @@ namespace DynamoCoreWpfTests
             finally
             {
                 CultureInfo.CurrentUICulture = originalCulture;
+                viewExtension.Dispose();
             }
         }
 
@@ -360,52 +369,54 @@ namespace DynamoCoreWpfTests
         public void RemovesScriptTagsFromLoadedHtml()
         {
             // Arrange
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = GetType().Assembly.GetName().Name;
+                var fileName = "DocumentationBrowserScriptsTest.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-            // Reference an embedded HTML file in a loaded assembly
-            var assemblyName = GetType().Assembly.GetName().Name;
-            var fileName = "DocumentationBrowserScriptsTest.html";
-            var uri = $"{assemblyName};{fileName}";
-            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
-
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(@"<h2>Division by zero</h2>"));
-            Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains(@"<h2>Division by zero</h2>"));
+                Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
+            }
         }
 
         [Test]
         public void DPIScriptExists()
         {
             // Arrange
-            var viewExtension = SetupNewViewExtension(true);
+            using (var viewExtension = SetupNewViewExtension(true))
+            {
+                // Reference an embedded HTML file in a loaded assembly
+                var assemblyName = GetType().Assembly.GetName().Name;
+                var fileName = "DocumentationBrowserScriptsTest.html";
+                var uri = $"{assemblyName};{fileName}";
+                var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
 
-            // Reference an embedded HTML file in a loaded assembly
-            var assemblyName = GetType().Assembly.GetName().Name;
-            var fileName = "DocumentationBrowserScriptsTest.html";
-            var uri = $"{assemblyName};{fileName}";
-            var docsEvent = new OpenDocumentationLinkEventArgs(new Uri(uri, UriKind.Relative));
+                // Act
+                var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
+                var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
+                var htmlContent = GetSidebarDocsBrowserContents();
 
-            // Act
-            var tabsBeforeExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            viewExtension.HandleRequestOpenDocumentationLink(docsEvent);
-            var tabsAfterExternalEventTrigger = this.View.ExtensionTabItems.Count;
-            var htmlContent = GetSidebarDocsBrowserContents();
-
-            // Assert
-            Assert.IsFalse(docsEvent.IsRemoteResource);
-            Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
-            Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-            Assert.IsTrue(htmlContent.Contains(@"<script> function getDPIScale()"));
-            Assert.IsTrue(htmlContent.Contains(@"function adaptDPI()"));
+                // Assert
+                Assert.IsFalse(docsEvent.IsRemoteResource);
+                Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
+                Assert.AreEqual(1, tabsAfterExternalEventTrigger);
+                Assert.IsTrue(htmlContent.Contains(@"<script> function getDPIScale()"));
+                Assert.IsTrue(htmlContent.Contains(@"function adaptDPI()"));
+            }
         }
 
         [Test]
@@ -433,7 +444,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithOOTBNodeWithoutAddtionalDocumentaion()
+        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithOOTBNodeWithoutAddtionalDocumentation()
         {
             // Arrange
             RaiseLoadedEvent(this.View);
@@ -441,7 +452,7 @@ namespace DynamoCoreWpfTests
             var nodeName = "+";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = "<p><i>.%add</i></p>";
-            var expectedAddtionalNodeDocumentaion = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
+            var expectedAddtionalNodeDocumentation = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
        
             // Act
             this.ViewModel.ExecuteCommand(
@@ -467,11 +478,11 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
-            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaion));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentation));
         }
 
         [Test]
-        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithPackageNodeWithAddtionalDocumentaion()
+        public void CanCreateNodeDocumenationHtmlFromNodeAnnotationEventArgsWithPackageNodeWithAddtionalDocumentation()
         {
             // Arrange
             RaiseLoadedEvent(this.View);
@@ -484,8 +495,8 @@ namespace DynamoCoreWpfTests
             var nodeName = "Package.Hello";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
             var expectedNodeDocumentationNamespace = $"<p><i>Package.{nodeName}</i></p>";
-            var expectedAddtionalNodeDocumentaionHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
-            var expectedAddtionalNodeDocumentaionImage = String.Format(@"<p><img src=""file:///{0}"" alt=""Dynamo Icon image"" /></p>",localImagePathHtml);
+            var expectedAddtionalNodeDocumentationHeader = @"<h1 id=""hello-dynamo"">Hello Dynamo!</h1>";
+            var expectedAddtionalNodeDocumentationImage = String.Format(@"<p><img src=""file:///{0}"" alt=""Dynamo Icon image"" /></p>",localImagePathHtml);
 
             // Act
 
@@ -512,20 +523,20 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeType));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeInputs));
             Assert.IsTrue(htmlContent.Contains(nodeDocumentationInfoNodeOutputs));
-            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaionHeader));
-            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentaionImage));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentationHeader));
+            Assert.IsTrue(htmlContent.Contains(expectedAddtionalNodeDocumentationImage));
         }
 
         [Test]
-        public void CanGetNodeDocumentaionMarkdownFromPackageDocumentaionManager()
+        public void CanGetNodeDocumentationMarkdownFromPackageDocumentationManager()
         {
             // Arrange
-            var nodeWithDocumentaion = "Package.Package.Hello";
-            var nodeWithoutDocumentaion = "Package.Package.Package";
+            var nodeWithDocumentation = "Package.Package.Hello";
+            var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
-            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentaion));
-            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentaion));
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentation));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentation));
         }
 
         #region Helpers
