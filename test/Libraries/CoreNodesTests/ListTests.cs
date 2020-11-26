@@ -1097,8 +1097,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "item2", "item1" } },
-                { "sorted keys", new object[] { "key1", "key2" } }
+                { "sortedList", new object[] { "item2", "item1" } },
+                { "sortedKeys", new object[] { "key1", "key2" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1142,8 +1142,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" } },
-                { "sorted keys", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" } }
+                { "sortedList", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" } },
+                { "sortedKeys", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1165,8 +1165,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "Zack", "Ian", "Anna", "Neal" } },
-                { "sorted keys", new object[] { -3, 1.6, 5, "abc" } }
+                { "sortedList", new object[] { "Zack", "Ian", "Anna", "Neal" } },
+                { "sortedKeys", new object[] { -3, 1.6, 5, "abc" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1182,8 +1182,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { 2, 3, 1 }},
-                { "sorted keys", new object[] { 1.20, 1.2001, 1.21 } }
+                { "sortedList", new object[] { 2, 3, 1 }},
+                { "sortedKeys", new object[] { 1.20, 1.2001, 1.21 } }
             };
 
             Assert.AreEqual(expected, result);
