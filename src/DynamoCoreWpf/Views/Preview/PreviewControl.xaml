@@ -63,7 +63,13 @@
               Grid.Row="1"
               Name="centralizedGrid"
               Visibility="Hidden"
-              VerticalAlignment="Top">
+              VerticalAlignment="Top"
+              Background="Transparent">
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy To Clipboard" Click="OnCopyToClipboardClick"/>
+                </ContextMenu>
+            </Grid.ContextMenu>
             <Border Background="White"
                     BorderThickness="1"
                     BorderBrush="{StaticResource BubblePreviewBorderColor}" />
