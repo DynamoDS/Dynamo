@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 using Microsoft.Practices.Prism.ViewModel;
@@ -273,6 +274,42 @@ namespace Dynamo.ViewModels
         public void CountLevels()
         {
             Levels = maxListLevel > 0 ? Enumerable.Range(1, maxListLevel).Reverse().Select(x => x).ToList() : Enumerable.Empty<int>();
+        }
+
+        /// <summary>
+        /// Get the NodeLabel for this WatchViewModel and any children.
+        /// Each level of children will be indented by 2 spaces.
+        /// </summary>
+        /// <param name="model">The WatchViewModel to process.</param>
+        /// <param name="depth">The number of levels of indentation.</param>
+        /// <param name="includeKey">If true the list or dictionary key will be included in the string.</param>
+        /// <returns></returns>
+        public static string GetNodeLabelTree(WatchViewModel model, int depth = 0, bool includeKey = false)
+        {
+            string indent = new string(' ', depth * 2);
+            var str = new StringBuilder();
+            if (depth != 0) str.AppendLine();
+            str.Append(indent);
+            if (model.Children.Count == 0)
+            {
+                if (includeKey) str.Append($"{model.ViewPath.Trim()}: ");
+                str.Append(model.NodeLabel);
+            }
+            else if (model.NodeLabel == WatchViewModel.DICTIONARY)
+            {
+                IEnumerable<string> labels = model.Children.Select(x => GetNodeLabelTree(x, depth + 1, true));
+                str.Append("{");
+                str.AppendLine(string.Join(",", labels));
+                str.Append($"{indent}}}");
+            }
+            else
+            {
+                IEnumerable<string> labels = model.Children.Select(x => GetNodeLabelTree(x, depth + 1, includeKey));
+                str.Append("[");
+                str.AppendLine(string.Join(",", labels));
+                str.Append($"{indent}]");
+            }
+            return str.ToString();
         }
     }
 }

@@ -725,46 +725,9 @@ namespace Dynamo.UI.Controls
 
         private void OnCopyToClipboardClick(object sender, RoutedEventArgs e)
         {
-            WatchViewModel model = this.cachedLargeContent;
-            string content = GetWatchViewModelLabels(model);
-            if (!string.IsNullOrEmpty(content))
-                Clipboard.SetText(content);
-        }
-
-        /// <summary>
-        /// Recursively traverse a WatchViewModel and its children to create a string representing the object values.
-        /// Each level is indented with 2 spaces.
-        /// </summary>
-        /// <param name="model">The WatchViewModel to process.</param>
-        /// <param name="depth">The number of levels of indentation.</param>
-        /// <param name="includeKey">If true the list or dictionary key will be included in the string.</param>
-        /// <returns></returns>
-        private static string GetWatchViewModelLabels(WatchViewModel model, int depth = 0, bool includeKey = false)
-        {
-            string indent = new string(' ', depth * 2);
-            var str = new StringBuilder();
-            if (depth != 0) str.AppendLine();
-            str.Append(indent);
-            if (model.Children.Count == 0)
-            {
-                if (includeKey) str.Append($"{model.ViewPath.Trim()}: ");
-                str.Append(model.NodeLabel);
-            }
-            else if (model.NodeLabel == WatchViewModel.DICTIONARY)
-            {
-                IEnumerable<string> labels = model.Children.Select(x => GetWatchViewModelLabels(x, depth + 1, true));
-                str.Append("{");
-                str.AppendLine(string.Join(",", labels));
-                str.Append($"{indent}}}");
-            }
-            else
-            {
-                IEnumerable<string> labels = model.Children.Select(x => GetWatchViewModelLabels(x, depth + 1, includeKey));
-                str.Append("[");
-                str.AppendLine(string.Join(",", labels));
-                str.Append($"{indent}]");
-            }
-            return str.ToString();
+            WatchViewModel model = cachedLargeContent;
+            string content = WatchViewModel.GetNodeLabelTree(model);
+            if (!string.IsNullOrEmpty(content)) Clipboard.SetText(content);
         }
 
         #endregion
