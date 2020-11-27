@@ -280,31 +280,30 @@ namespace Dynamo.ViewModels
         /// Get the NodeLabel for this WatchViewModel and any children.
         /// Each level of children will be indented by 2 spaces.
         /// </summary>
-        /// <param name="model">The WatchViewModel to process.</param>
         /// <param name="depth">The number of levels of indentation.</param>
         /// <param name="includeKey">If true the list or dictionary key will be included in the string.</param>
         /// <returns></returns>
-        public static string GetNodeLabelTree(WatchViewModel model, int depth = 0, bool includeKey = false)
+        public string GetNodeLabelTree(int depth = 0, bool includeKey = false)
         {
             string indent = new string(' ', depth * 2);
             var str = new StringBuilder();
             if (depth != 0) str.AppendLine();
             str.Append(indent);
-            if (model.Children.Count == 0)
+            if (Children.Count == 0)
             {
-                if (includeKey) str.Append($"{model.ViewPath.Trim()}: ");
-                str.Append(model.NodeLabel);
+                if (includeKey) str.Append($"{ViewPath.Trim()}: ");
+                str.Append(NodeLabel);
             }
-            else if (model.NodeLabel == WatchViewModel.DICTIONARY)
+            else if (NodeLabel == WatchViewModel.DICTIONARY)
             {
-                IEnumerable<string> labels = model.Children.Select(x => GetNodeLabelTree(x, depth + 1, true));
+                IEnumerable<string> labels = Children.Select(x => x.GetNodeLabelTree(depth + 1, true));
                 str.Append("{");
                 str.AppendLine(string.Join(",", labels));
                 str.Append($"{indent}}}");
             }
             else
             {
-                IEnumerable<string> labels = model.Children.Select(x => GetNodeLabelTree(x, depth + 1, includeKey));
+                IEnumerable<string> labels = Children.Select(x => x.GetNodeLabelTree(depth + 1, includeKey));
                 str.Append("[");
                 str.AppendLine(string.Join(",", labels));
                 str.Append($"{indent}]");

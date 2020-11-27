@@ -262,7 +262,7 @@ namespace CoreNodeModelsWpf.Nodes
 
         private void OnCopyToClipboardClick(object sender, RoutedEventArgs e)
         {
-            string content = WatchViewModel.GetNodeLabelTree(rootWatchViewModel);
+            string content = rootWatchViewModel.GetNodeLabelTree();
             if (!string.IsNullOrEmpty(content)) Clipboard.SetText(content);
         }
     }
