@@ -303,7 +303,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
-                IEnumerable<string> labels = Children.Select(x => x.GetNodeLabelTree(depth + 1, includeKey));
+                IEnumerable<string> labels = Children.Select(x => x.GetNodeLabelTree(depth + 1, false));
                 str.Append("[");
                 str.AppendLine(string.Join(",", labels));
                 str.Append($"{indent}]");
