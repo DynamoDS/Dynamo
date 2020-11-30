@@ -38,6 +38,7 @@ namespace DynamoCoreWpfTests
             libraries.Add("BuiltIn.ds");
             libraries.Add("FFITarget.dll");
             libraries.Add("ProtoGeometry.dll");
+            libraries.Add("DSCoreNodes.dll");
         }
 
         public override void Open(string path)
@@ -152,7 +153,6 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(SearchElementGroup.Create, suggestions.FirstOrDefault().Group);
             Assert.AreEqual(SearchElementGroup.Action, suggestions.ElementAt(suggestions.Count()/2).Group);
             Assert.AreEqual(SearchElementGroup.Query, suggestions.LastOrDefault().Group);
-
         }
 
         [Test]
@@ -239,7 +239,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void NodeSuggestions_DefaultSuggestions()
+        public void NodeSuggestionsAreSortedBasedOnGroupAndAlphabetically()
         {
             Open(@"UI\builtin_inputport_suggestion.dyn");
 
@@ -251,6 +251,40 @@ namespace DynamoCoreWpfTests
             var port = inPorts[0].PortModel;
             var type = port.GetInputPortType();
             Assert.AreEqual("DSCore.Color[]", type);
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = inPorts[0];
+
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(6, suggestions.Count());
+
+            var suggestedNodes = suggestions.Select(s => s.FullName);
+            var expectedNodes = new[] { "DSCoreNodes.DSCore.Color.Add",
+                "DSCoreNodes.DSCore.Color.ByARGB",
+                "DSCoreNodes.DSCore.Color.Divide",
+                "DSCoreNodes.DSCore.Color.Multiply",
+                "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
+                "DSCoreNodes.DSCore.IO.Image.Pixels"};
+
+            for (int i = 0; i < 6; i++)
+            {
+                Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
+            }
+        }
+
+        [Test]
+        public void NodeSuggestions_DefaultSuggestions()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("b6cb6ceb21df4c7fb6b186e6ff399afc").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("var[]..[]", type);
 
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[0];
@@ -282,13 +316,11 @@ namespace DynamoCoreWpfTests
             var searchViewModel = (ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel as NodeAutoCompleteSearchViewModel);
             searchViewModel.PortViewModel = inPorts[0];
 
-            var suggestions = searchViewModel.GetMatchingSearchElements();
-
             // Get the matching node elements for the specific node port.
             searchViewModel.PopulateAutoCompleteCandidates();
 
             // Filter the node elements using the search field.
-            searchViewModel.SearchAutoCompleteCandidates("der");
+            searchViewModel.SearchAutoCompleteCandidates("ar");
             Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
         }
 
