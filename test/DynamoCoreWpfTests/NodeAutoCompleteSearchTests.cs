@@ -131,10 +131,7 @@ namespace DynamoCoreWpfTests
                 "FFITarget.FFITarget.ClassFunctionality.ClassFunctionality",
                 "FFITarget.FFITarget.ClassFunctionality.Instance" };
             var expectedNodes = nodes.OrderBy(s => s);
-            for (int i = 0; i < 4; i++)
-            {
-                Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
-            }
+            Assert.IsTrue(expectedNodes.SequenceEqual(suggestedNodes));
         }
 
         [Test]
@@ -266,10 +263,8 @@ namespace DynamoCoreWpfTests
                 "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
                 "DSCoreNodes.DSCore.IO.Image.Pixels"};
 
-            for (int i = 0; i < 6; i++)
-            {
-                Assert.AreEqual(expectedNodes.ElementAt(i), suggestedNodes.ElementAt(i));
-            }
+            Assert.IsTrue(expectedNodes.SequenceEqual(suggestedNodes));
+            
         }
 
         [Test]
