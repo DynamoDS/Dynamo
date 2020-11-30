@@ -206,7 +206,6 @@ namespace DynamoCoreWpfTests
             // Arrange
             using (var viewExtension = SetupNewViewExtension(true))
             {
-
                 // Reference an embedded HTML file in a loaded assembly
                 var assemblyName = "NonExisting";
                 var fileName = "Whatever.html";
