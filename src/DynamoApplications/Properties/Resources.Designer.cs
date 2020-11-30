@@ -59,5 +59,41 @@ namespace DynamoApplications.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It is likely one of the following assemblies loaded the incompatible version:.
+        /// </summary>
+        public static string MismatchedAssemblyList {
+            get {
+                return ResourceManager.GetString("MismatchedAssemblyList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state..
+        /// </summary>
+        public static string MismatchedAssemblyVersion {
+            get {
+                return ResourceManager.GetString("MismatchedAssemblyVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider..
+        /// </summary>
+        public static string MismatchedAssemblyVersionShortMessage {
+            get {
+                return ResourceManager.GetString("MismatchedAssemblyVersionShortMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error Loading A Dependency.
+        /// </summary>
+        public static string MismatchedAssemblyVersionTitle {
+            get {
+                return ResourceManager.GetString("MismatchedAssemblyVersionTitle", resourceCulture);
+            }
+        }
     }
 }

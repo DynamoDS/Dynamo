@@ -768,12 +768,6 @@ namespace Dynamo.Models
                 };
             };
 
-            // when dynamo is ready, show assembly conflict warnings
-            DynamoReady += (readyParams) =>
-            {
-                AssemblyConflictNotifier.LogExceptions(this);
-            };
-
             Loader = new NodeModelAssemblyLoader();
             Loader.MessageLogged += LogMessage;
 
@@ -853,7 +847,6 @@ namespace Dynamo.Models
             StartBackupFilesTimer();
 
             TraceReconciliationProcessor = this;
-
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
         }
