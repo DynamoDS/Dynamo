@@ -735,4 +735,16 @@ Parameter name: {0}</value>
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
   </data>
+  <data name="MismatchedAssemblyList" xml:space="preserve">
+    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+  </data>
+  <data name="MismatchedAssemblyVersion" xml:space="preserve">
+    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+  </data>
+   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
+    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+  </data>
+   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
+    <value>Error Loading A Dependency</value>
+  </data>
 </root>
