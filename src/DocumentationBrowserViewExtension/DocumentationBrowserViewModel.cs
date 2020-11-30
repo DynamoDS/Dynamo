@@ -111,7 +111,10 @@ namespace Dynamo.DocumentationBrowser
 
         protected virtual void Dispose(bool disposing)
         {
-            //this.content = "";
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                this.content = "";
+            }
             markdownHandler?.Dispose();
         }
 

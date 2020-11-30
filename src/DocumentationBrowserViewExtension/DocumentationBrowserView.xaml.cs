@@ -99,7 +99,7 @@ namespace Dynamo.DocumentationBrowser
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            if (!disposing)
+            if (!Models.DynamoModel.IsTestMode)
             {
                 this.documentationBrowser.Dispose();
             }
