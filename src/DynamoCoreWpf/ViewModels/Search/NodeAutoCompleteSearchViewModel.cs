@@ -189,8 +189,8 @@ namespace Dynamo.ViewModels
             //first sort by type distance to input port type
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
-            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
-            return elements.OrderBy(x => x.Group);
+            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types and then sorted by name.
+            return elements.OrderBy(x => x.Group).ThenBy(x => x.Name);
 
            
         }
