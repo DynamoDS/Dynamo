@@ -12,8 +12,6 @@ namespace Dynamo.DocumentationBrowser
     /// </summary>
     internal static class NodeDocumentationHtmlGenerator
     {
-        private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
-
         /// <summary>
         /// Creates the Node information section which all nodes have
         /// even if they dont have additional markdown documentation.
@@ -26,7 +24,6 @@ namespace Dynamo.DocumentationBrowser
                 throw new ArgumentNullException(nameof(e));
 
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
             sb.AppendLine(CreateHeader(e));
             sb.AppendLine(CreateNodeInfo(e));
 

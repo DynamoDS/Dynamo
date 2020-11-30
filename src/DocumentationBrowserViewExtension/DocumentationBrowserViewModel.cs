@@ -18,6 +18,8 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
+        private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
+
         #endregion
 
         #region Properties
@@ -245,12 +247,22 @@ namespace Dynamo.DocumentationBrowser
             var writer = new StringWriter();
             try
             {
-                // Write the Node info section to the string writer
-                writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+
+                // Get the Node info section and remove script tags if any
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
+                if (MarkdownHandlerInstance.RemoveScriptTagsFromString(ref nodeDocumentation))
+                {
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
+
+                writer.WriteLine(nodeDocumentation);
 
                 // Convert the markdown file to html and remove script tags if any
                 if (MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
 
                 writer.Flush();
                 return writer.ToString();
