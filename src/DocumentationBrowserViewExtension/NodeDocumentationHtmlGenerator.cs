@@ -35,7 +35,7 @@ namespace Dynamo.DocumentationBrowser
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h1>{e.Type}</h1>");
             sb.AppendLine($"<p><i>{e.MinimumQualifiedName}</i></p>");
-            sb.AppendLine("<hr>");
+            sb.Append("<hr>");
 
             return sb.ToString();
         }
@@ -44,7 +44,8 @@ namespace Dynamo.DocumentationBrowser
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine($"<h2>{Resources.NodeDocumentationNodeInfo}</h2>");
-            sb.AppendLine("<table class=\"table--noborder\">");
+            sb.AppendLine("<table>");
+            sb.AppendLine("<tbody>");
             sb.AppendLine("<tr>");
             sb.AppendLine($"<td>{Resources.NodeDocumentationNodeType}</td>");
             sb.AppendLine($"<td>{e.Type}</td>");
@@ -77,8 +78,9 @@ namespace Dynamo.DocumentationBrowser
             }
             sb.AppendLine("</td>");
             sb.AppendLine("</tr>");
+            sb.AppendLine("</tbody>");
             sb.AppendLine("</table>");
-            sb.AppendLine("<hr>");
+            sb.Append("<hr>");
 
             return sb.ToString();
         }

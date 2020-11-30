@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Ganss.XSS;
 using Markdig;
 using Markdig.Parsers;
 using Markdig.Renderers;
@@ -16,9 +15,8 @@ namespace Md2Html
     internal class Md2Html
     {
         private readonly MarkdownPipeline pipeline;
-
-
         private static Md2Html instance;
+
         internal static Md2Html Instance
         {
             get
@@ -90,16 +88,23 @@ namespace Md2Html
             }
         }
 
-        private static readonly HtmlSanitizer HtmlSanitizer = new HtmlSanitizer();
+        private static readonly Md2HtmlSanitizer HtmlSanitizer = new Md2HtmlSanitizer();
 
         /// <summary>
         /// Clean up possible dangerous HTML content from the content string.
         /// </summary>
         /// <param name="content"></param>
-        /// <returns>return sanitized content string</returns>
+        /// <returns>return sanitized content string or an empty string if no sanitizing happened</returns>
         internal static string Sanitize(string content)
         {
-           return HtmlSanitizer.Sanitize(content);
+            HtmlSanitizer.Changed = false;
+            var output = HtmlSanitizer.Sanitize(content);
+            if (HtmlSanitizer.Changed)
+            {
+                return output;
+            }
+
+            return string.Empty;
         }
     }
 }

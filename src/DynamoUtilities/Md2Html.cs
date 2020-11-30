@@ -102,7 +102,7 @@ namespace Dynamo.Utilities
         /// Sanitize Html
         /// </summary>
         /// <param name="content"></param>
-        /// <returns>Returns Sanitized Html</returns>
+        /// <returns>Returns Sanitized Html or the content string if no sanitization was needed</returns>
         internal string SanitizeHtml(string content)
         {
             if (!started)
@@ -123,6 +123,11 @@ namespace Dynamo.Utilities
             }
 
             var output = GetData();
+
+            if (string.IsNullOrEmpty(output))
+            {
+                return content;
+            }
 
             return output;
         }
