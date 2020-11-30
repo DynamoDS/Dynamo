@@ -106,7 +106,7 @@ namespace DynamoCoreWpfTests
 
             // Simulate the extension activating the tab content again.
             // The content here should not matter because it won't be used.
-            View.AddExtensionTabItem(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
 
             // Extension bar is shown
             Assert.IsFalse(View.ExtensionsCollapsed);
@@ -223,11 +223,76 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionWindows.Count);
 
             // Attempt to open the extension in the side bar when it's open as a window
-            View.AddExtensionTabItem(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
 
             // Extension is not added to the sidebar
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
             Assert.IsTrue(View.ExtensionsCollapsed);
+        }
+
+        [Test]
+        public void ExtensionLocationIsRemembered()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension
+            View.viewExtensionManager.Add(viewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension 
+            View.UndockExtension(viewExtension.Name);
+
+            // Extension is no longer in the side bar (now collapsed)
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            // Extension is in a window now
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Close the window without docking
+            var window = View.ExtensionWindows[viewExtension.Name];
+            window.Close();
+
+            // Extension is not in the sidebar nor as a window
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
+
+            // Re-open the extension
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
+
+            // Extension is remembered to be opened as a window
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // Dock the extension to the sidebar
+            window = View.ExtensionWindows[viewExtension.Name];
+            window.DockRequested = true;
+            window.Close();
+
+            // Extension is in the sidebar now
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
+
+            // Close the extension tab in the sidebar
+            View.CloseExtensionControl(viewExtension);
+
+            // Extension is closed
+            Assert.AreEqual(0, View.ExtensionTabItems.Count);
+            Assert.IsTrue(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
+
+            // Re-open the extension again
+            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
+
+            // Extension is remembered to be opened in the sidebar
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+            Assert.AreEqual(0, View.ExtensionWindows.Count);
         }
 
         public static void RaiseLoadedEvent(FrameworkElement element)
