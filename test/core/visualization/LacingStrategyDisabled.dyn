@@ -2,7 +2,7 @@
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
   "Description": "",
-  "Name": "DYN-2381 CBN Lacing Multiplication",
+  "Name": "LacingStrategyDisabled",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -126,6 +126,38 @@
       ],
       "Replication": "Disabled",
       "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# The inputs to this node will be stored as a list in the IN variables.\r\ndataEnteringNode = IN\r\n\r\n# Place your code below this line\r\n\r\n# Assign your output to the OUT variable.\r\nOUT = 0",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "cd679ac2203f42c18b30e44bb6c5238e",
+      "Inputs": [
+        {
+          "Id": "dfdfb4ccd98144ce9c2fe4e0df0e7b5b",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "71f838eee0e44ddcbedaf5623e447614",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
     }
   ],
   "Connectors": [
@@ -138,6 +170,11 @@
       "Start": "4e373052d56644dc93483c5a4138cdbb",
       "End": "c926eafa523143eba0a5b186828cdc0f",
       "Id": "f1f8c13bcb9b456cbf1b39fa466f7945"
+    },
+    {
+      "Start": "4e373052d56644dc93483c5a4138cdbb",
+      "End": "dfdfb4ccd98144ce9c2fe4e0df0e7b5b",
+      "Id": "70a4225c53e94be0a0eaa875206bc740"
     },
     {
       "Start": "d5d76f7e2f5946ed922f32b38298252a",
@@ -158,7 +195,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.8.0.2471",
+      "Version": "2.10.0.3355",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -214,6 +251,16 @@
         "Excluded": false,
         "X": 699.0,
         "Y": 513.2
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "cd679ac2203f42c18b30e44bb6c5238e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 696.00000000000023,
+        "Y": 667.19999999999993
       }
     ],
     "Annotations": [],

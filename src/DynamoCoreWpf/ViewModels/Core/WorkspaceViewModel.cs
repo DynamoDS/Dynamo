@@ -1128,7 +1128,7 @@ namespace Dynamo.ViewModels
         {
             var modelGuids = DynamoSelection.Instance.Selection
                 .OfType<NodeModel>()
-                .Where(n => !(n is CodeBlockNodeModel))
+                .Where(n => n.ArgumentLacing != LacingStrategy.Disabled)
                 .Select(n => n.GUID);
 
             if (!modelGuids.Any())
