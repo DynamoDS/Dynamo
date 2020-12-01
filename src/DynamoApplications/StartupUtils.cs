@@ -211,7 +211,7 @@ namespace Dynamo.Applications
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="hostName">Dynamo variation identified by host.</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, string asmPath, string hostName)
+        public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
             //get sandbox executing location - this is where libG will be located.
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -251,6 +251,7 @@ namespace Dynamo.Applications
         /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <returns></returns>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
         public static DynamoModel MakeModel(bool CLImode, string asmPath)
         {
             //get sandbox executing location - this is where libG will be located.
@@ -283,7 +284,9 @@ namespace Dynamo.Applications
             return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
 
         }
+
         //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
         public static DynamoModel MakeModel(bool CLImode)
         {
             var geometryFactoryPath = string.Empty;
