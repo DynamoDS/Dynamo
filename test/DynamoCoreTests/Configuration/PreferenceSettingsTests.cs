@@ -59,6 +59,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
+            Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
 
             // Save
             settings.Save(tempPath);
@@ -72,6 +73,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
+            Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
 
             // Change setting values
             settings.SetIsBackgroundPreviewActive("MyBackgroundPreview", false);
@@ -81,6 +83,20 @@ namespace Dynamo.Tests.Configuration
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
             settings.EnableNodeAutoComplete = true;
+            settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
+            {
+                Name = "MyExtension",
+                UniqueId = "1234",
+                DisplayMode = ViewExtensionDisplayMode.FloatingWindow,
+                WindowSettings = new WindowSettings()
+                {
+                    Left = 123,
+                    Top = 456,
+                    Height = 321,
+                    Width = 654,
+                    Status = WindowStatus.Maximized
+                }
+            });
 
             // Save
             settings.Save(tempPath);
@@ -94,6 +110,18 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
+            var extensionSettings = settings.ViewExtensionSettings[0];
+            Assert.AreEqual(extensionSettings.Name, "MyExtension");
+            Assert.AreEqual(extensionSettings.UniqueId, "1234");
+            Assert.AreEqual(extensionSettings.DisplayMode, ViewExtensionDisplayMode.FloatingWindow);
+            Assert.IsNotNull(extensionSettings.WindowSettings);
+            var windowSettings = extensionSettings.WindowSettings;
+            Assert.AreEqual(windowSettings.Left, 123);
+            Assert.AreEqual(windowSettings.Top, 456);
+            Assert.AreEqual(windowSettings.Height, 321);
+            Assert.AreEqual(windowSettings.Width, 654);
+            Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
         }
     }
 }

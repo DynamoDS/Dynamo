@@ -300,7 +300,7 @@ namespace Dynamo.Applications
         /// <summary>
         /// The white list of dependencies to be ignored.
         /// </summary>
-        private static String[] assemblyNamesToIgnore = { "Newtonsoft.Json" };
+        private static String[] assemblyNamesToIgnore = { "Newtonsoft.Json", "RevitAPI.dll", "RevitAPIUI.dll" };
 
         /// <summary>
         /// Checks that an assembly does not have any dependencies that have already been loaded into the 
