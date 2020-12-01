@@ -98,10 +98,17 @@ namespace Dynamo.Applications
                 // dll paths we'll import before running a graph 
                 var importPaths = new List<string>() ;
 
+                // Local ASM binaries path
                 var asmPath = string.Empty;
 
+                // Allow loaded extensions to control the process lifetime
+                // and issue commands until the extension calls model.Shutdown().
                 bool keepAlive = false;
                 bool showHelp = false;
+
+                // Allow Dynamo launcher to identify Dynamo variation for log purpose like analytics, e.g. Dynamo Revit
+                var hostname = string.Empty;
+
                 var optionsSet = new OptionSet().Add("o=|O=", "OpenFilePath, Instruct Dynamo to open headless and run a dyn file at this path", o => openfilepath = o)
                 .Add("c=|C=", "CommandFilePath, Instruct Dynamo to open a commandfile and run the commands it contains at this path," +
                 "this option is only supported when run from DynamoSandbox", c => commandFilePath = c)
@@ -115,6 +122,7 @@ namespace Dynamo.Applications
                 " - if you wish to import multiple dlls - use this flag multiple times: -i 'assembly1.dll' -i 'assembly2.dll' ", i => importPaths.Add(i))
                 .Add("gp=|GP=|geometrypath=|GeometryPath=", "relative or absolute path to a directory containing ASM. When supplied, instead of searching the hard disk for ASM, it will be loaded directly from this path.", gp => asmPath = gp)
                 .Add("k|K|keepalive", "Keepalive mode, leave the Dynamo process running until a loaded extension shuts it down.", k => keepAlive = k != null)
+                .Add("hn=|HN=|hostname", "Identify Dynamo variation associated with host", hn => hostname = hn)
                 ;
                 optionsSet.Parse(args);
 
@@ -138,7 +146,8 @@ namespace Dynamo.Applications
                     GeometryFilePath = geometryFilePath,
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
-                    KeepAlive = keepAlive
+                    KeepAlive = keepAlive,
+                    HostName = hostname,
                 };
             }
 
@@ -157,6 +166,7 @@ namespace Dynamo.Applications
             public IEnumerable<String> ImportedPaths { get; set; }
             public string ASMPath { get; set; }
             public bool KeepAlive { get; set; }
+            public string HostName { get; set; }
         }
 
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
@@ -190,9 +200,48 @@ namespace Dynamo.Applications
             return um;
         }
 
-        
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host name is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <param name="hostName">Dynamo variation identified by host.</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, string asmPath, string hostName)
+        {
+            //get sandbox executing location - this is where libG will be located.
+            var exePath = Assembly.GetExecutingAssembly().Location;
+            var rootFolder = Path.GetDirectoryName(exePath);
+            //defaults - these will fail.
+            var preloaderLocation = "libg_0_0_0";
+            var geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+            try
+            {
+                if (!Directory.Exists(asmPath))
+                {
+                    throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
+                }
+                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
+
+                //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
+                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(asmBinariesVersion, rootFolder);
+                geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+
+                //load asm and libG.
+                DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("A problem occured while trying to load ASM or LibG");
+                Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
+            }
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, hostName);
+
+        }
 
         /// <summary>
+        /// TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
         /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
         /// </summary>
         /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
@@ -247,7 +296,7 @@ namespace Dynamo.Applications
             return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
         }
 
-        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation)
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, string hostName = "")
         {
             var config = new DynamoModel.DefaultStartConfiguration()
             {
@@ -256,6 +305,7 @@ namespace Dynamo.Applications
             };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager();
+            config.UpdateManager.HostName = hostName;
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
