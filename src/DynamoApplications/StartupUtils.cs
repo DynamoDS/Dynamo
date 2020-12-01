@@ -193,7 +193,7 @@ namespace Dynamo.Applications
         ///which if we are running on mac os or *nix will use different logic then SandboxLookup
         /// <paramref name="hostName"/> Dynamo variation identified by host.</param>
         /// </summary>
-        private static IUpdateManager InitializeUpdateManager(string hostName)
+        private static IUpdateManager InitializeUpdateManager(string hostName = "")
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
             var um = new Dynamo.Updates.UpdateManager(cfg)
