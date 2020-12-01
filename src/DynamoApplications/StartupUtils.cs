@@ -190,12 +190,16 @@ namespace Dynamo.Applications
         /// <summary>
         ///if we are building a model for CLI mode, then we don't want to start an updateManager
         ///for now, building an updatemanager instance requires finding Dynamo install location
-        ///which if we are running on mac os or *nix will use different logic then SandboxLookup 
+        ///which if we are running on mac os or *nix will use different logic then SandboxLookup
+        /// <paramref name="hostName"/> Dynamo variation identified by host.</param>
         /// </summary>
-        private static IUpdateManager InitializeUpdateManager()
+        private static IUpdateManager InitializeUpdateManager(string hostName)
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
-            var um = new Dynamo.Updates.UpdateManager(cfg);
+            var um = new Dynamo.Updates.UpdateManager(cfg)
+            {
+                HostName = hostName
+            };
             Debug.Assert(cfg.DynamoLookUp != null);
             return um;
         }
@@ -304,8 +308,7 @@ namespace Dynamo.Applications
                 ProcessMode = TaskProcessMode.Asynchronous
             };
 
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager();
-            config.UpdateManager.HostName = hostName;
+            config.UpdateManager = CLImode ? null : InitializeUpdateManager(hostName);
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 
