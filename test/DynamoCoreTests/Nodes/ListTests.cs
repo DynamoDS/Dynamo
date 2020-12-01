@@ -2118,9 +2118,9 @@ namespace Dynamo.Tests
             AssertPreviewValue("3391f6711c8d482eab224c881d512f73", true);
             AssertPreviewValue("cfdc4008ae544881b80b0d2b807770e7", true);
             AssertPreviewValue("2f20ee45e15149859b9e2d4548673079", true);
-		}
+        }
 
-		#endregion
+        #endregion
 
         #region Test AnyFalse
 
@@ -2138,7 +2138,7 @@ namespace Dynamo.Tests
             AssertPreviewValue("e02a84cc887a43b8b8fa31db4553ae84", false);
             AssertPreviewValue("7830af415719453a98b40538ced2144b", true);
             AssertPreviewValue("a4478dae1ecb4a879456f590c7717a8d", true);
-		}
+        }
 
         #endregion
 
