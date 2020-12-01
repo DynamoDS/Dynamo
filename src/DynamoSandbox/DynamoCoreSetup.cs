@@ -52,7 +52,7 @@ namespace DynamoSandbox
                 }
                 else
                 {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(false, hostName);
+                    model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, hostName);
                 }
 
                 viewModel = DynamoViewModel.Start(

@@ -213,12 +213,55 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
-            //get sandbox executing location - this is where libG will be located.
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-            //defaults - these will fail.
-            var preloaderLocation = "libg_0_0_0";
-            var geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
+            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, hostName);
+
+        }
+
+        /// <summary>
+        /// TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <returns></returns>
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
+        public static DynamoModel MakeModel(bool CLImode, string asmPath)
+        {
+            PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+        }
+
+        //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
+        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
+        public static DynamoModel MakeModel(bool CLImode)
+        {
+            PreloadASM(string.Empty, out string geometryFactoryPath, out string preloaderLocation);
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
+        }
+
+        private static void PreloadASM(string asmPath, out string geometryFactoryPath, out string preloaderLocation )
+        {
+            if (string.IsNullOrEmpty(asmPath))
+            {
+                geometryFactoryPath = string.Empty;
+                preloaderLocation = string.Empty;
+                try
+                {
+                    PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
+                }
+                catch (Exception e)
+                {
+                    ASMPreloadFailure?.Invoke(e.Message);
+                }
+                return;
+            }
+
+            // get sandbox executing location - this is where libG will be located.
+            var rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            // defaults - preload these will fail.
+            preloaderLocation = "libg_0_0_0";
+            geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
 
             try
             {
@@ -240,67 +283,6 @@ namespace Dynamo.Applications
                 Console.WriteLine("A problem occured while trying to load ASM or LibG");
                 Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
             }
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, hostName);
-
-        }
-
-        /// <summary>
-        /// TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
-        /// Use this overload to construct a DynamoModel when the location of ASM to use is known.
-        /// </summary>
-        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
-        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
-        /// <returns></returns>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
-        public static DynamoModel MakeModel(bool CLImode, string asmPath)
-        {
-            //get sandbox executing location - this is where libG will be located.
-            var exePath = Assembly.GetExecutingAssembly().Location;
-            var rootFolder = Path.GetDirectoryName(exePath);
-            //defaults - these will fail.
-            var preloaderLocation = "libg_0_0_0";
-            var geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
-
-            try
-            {
-                if (!Directory.Exists(asmPath))
-                {
-                    throw new FileNotFoundException($"{nameof(asmPath)}:{asmPath}");
-                }
-                Version asmBinariesVersion = DynamoShapeManager.Utilities.GetVersionFromPath(asmPath);
-
-                //get version of libG that matches the asm version that was supplied from geometryLibraryPath.
-                preloaderLocation = DynamoShapeManager.Utilities.GetLibGPreloaderLocation(asmBinariesVersion, rootFolder);
-                geometryFactoryPath = Path.Combine(preloaderLocation, DynamoShapeManager.Utilities.GeometryFactoryAssembly);
-
-                //load asm and libG.
-                DynamoShapeManager.Utilities.PreloadAsmFromPath(preloaderLocation, asmPath);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("A problem occured while trying to load ASM or LibG");
-                Console.WriteLine($"{e?.Message} : {e?.StackTrace}");
-            }
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
-
-        }
-
-        //TODO (DYN-2118) remove this method in 3.0 and unify this method with the overload above.
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the version with more parameters")]
-        public static DynamoModel MakeModel(bool CLImode)
-        {
-            var geometryFactoryPath = string.Empty;
-            var preloaderLocation = string.Empty;
-            try
-            {
-                PreloadShapeManager(ref geometryFactoryPath, ref preloaderLocation);
-            }
-            catch(Exception e)
-            {
-                ASMPreloadFailure?.Invoke(e.Message);
-            }
-
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation);
         }
 
         private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, string hostName = "")
