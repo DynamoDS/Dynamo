@@ -86,6 +86,18 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanSetHostNameWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var hostName = "DynamoFormIt";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /hn {hostName}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostName, "DynamoFormIt");
+        }
+
+        [Test]
         public void ImportingAnAssemblyDoesNotEffectCustomNodePaths()
         {
             //load a graph which requires first loading FFITarget.dll
