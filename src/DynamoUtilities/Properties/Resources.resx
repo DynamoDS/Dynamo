@@ -117,46 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
-    <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
+  <data name="Md2HtmlCantCommunicateError" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't communicate with {0}.&lt;/b&gt;&lt;/p&gt;</value>
+    <comment>Internal error, please report:  Can't comminicate with C:\Dynamo\Md2Html.exe</comment>
   </data>
-  <data name="ExtensionName" xml:space="preserve">
-    <value>Documentation Browser</value>
-  </data>
-  <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
-    <value>No further details available for this error.</value>
-  </data>
-  <data name="InvalidDocumentationLink" xml:space="preserve">
-    <value>Documentation link is not a valid URI.</value>
-  </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>Show Documentation Browser</value>
-  </data>
-  <data name="NodeDocumentationCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="NodeDocumentationDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Info</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="NodeDocumentationNodeType" xml:space="preserve">
-    <value>Node Type</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="NodeDocumentationOutputs" xml:space="preserve">
-    <value>Outputs</value>
-    <comment>Header in Node Info table</comment>
-  </data>
-  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
-    <value>Script tags detected in the help document have been removed.</value>
+  <data name="Md2HtmlCantStartError" xml:space="preserve">
+    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't start {0}.&lt;/b&gt;&lt;/p&gt;</value>
+    <comment>Internal error, please report:  Can't start C:\Dynamo\Md2Html.exe</comment>
   </data>
 </root>
