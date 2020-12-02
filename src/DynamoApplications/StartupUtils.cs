@@ -169,6 +169,11 @@ namespace Dynamo.Applications
             public string HostName { get; set; }
         }
 
+        /// <summary>
+        /// Attempts to load the geometry library binaries using the location params.
+        /// </summary>
+        /// <param name="geometryFactoryPath">libG ProtoInterface path</param>
+        /// <param name="preloaderLocation">libG folder path</param>
         public static void PreloadShapeManager(ref string geometryFactoryPath, ref string preloaderLocation)
         {
             var exePath = Assembly.GetExecutingAssembly().Location;
@@ -188,11 +193,12 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        ///if we are building a model for CLI mode, then we don't want to start an updateManager
-        ///for now, building an updatemanager instance requires finding Dynamo install location
-        ///which if we are running on mac os or *nix will use different logic then SandboxLookup
-        /// <paramref name="hostName"/> Dynamo variation identified by host.</param>
+        /// if we are building a model for CLI mode, then we don't want to start an updateManager
+        /// for now, building an updatemanager instance requires finding Dynamo install location
+        /// which if we are running on mac os or *nix will use different logic then SandboxLookup
         /// </summary>
+        /// <param name="hostName">Dynamo variation identified by host.</param>
+        /// <returns></returns>
         private static IUpdateManager InitializeUpdateManager(string hostName = "")
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
@@ -207,7 +213,7 @@ namespace Dynamo.Applications
         /// <summary>
         /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host name is known.
         /// </summary>
-        /// <param name="CLImode">CLI mode starts the model in test mode and uses a seperate path resolver.</param>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="hostName">Dynamo variation identified by host.</param>
         /// <returns></returns>

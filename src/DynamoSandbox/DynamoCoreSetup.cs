@@ -46,14 +46,7 @@ namespace DynamoSandbox
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                if (!String.IsNullOrEmpty(ASMPath))
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath, hostName);
-                }
-                else
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, hostName);
-                }
+                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, hostName);
 
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
