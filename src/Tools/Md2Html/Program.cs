@@ -119,7 +119,7 @@ namespace Md2Html
             Console.WriteLine(@"<<<<<Eod>>>>>");
             Console.WriteLine(@"");
             Console.WriteLine(@"Output will be:");
-            Console.WriteLine(@"Sanitized Html data");
+            Console.WriteLine(@"Sanitized Html data or empty if no sanitization was needed");
             Console.WriteLine(@"<<<<<Eod>>>>>");
             Console.WriteLine(@"");
             Console.WriteLine(@"");

@@ -39,21 +39,6 @@ namespace Dynamo.DocumentationBrowser
         </script>";
 
         /// <summary>
-        /// Clean up possible dangerous HTML content from the content string.
-        /// </summary>
-        /// <param name="content"></param>
-        /// <returns>Returns true if any content was removed from the content string</returns>
-        internal static bool RemoveScriptTagsFromString(ref string content)
-        {
-            var sanitizedContent = MarkdownHandler.Instance.SanitizeHtml(content);
-            if (content.Equals(sanitizedContent))
-                return false;
-
-            content = sanitizedContent;
-            return true;
-        }
-
-        /// <summary>
         /// Returns the DPIScript
         /// </summary>
         /// <param name="content"></param>

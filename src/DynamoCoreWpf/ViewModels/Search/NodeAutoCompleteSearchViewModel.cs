@@ -60,8 +60,25 @@ namespace Dynamo.ViewModels
             // If node match searchElements found, use default suggestions
             if (!searchElementsCache.Any())
             {
-                searchElementsCache =  DefaultResults.Select(e => e.Model).ToList();
-                FilteredResults = DefaultResults;
+                searchElementsCache = DefaultResults.Select(e => e.Model).ToList();
+                switch (PortViewModel.PortModel.GetInputPortType())
+                {
+                    case "int":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "double":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "string":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
+                        break;
+                    case "bool":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
+                        break;
+                    default:
+                        FilteredResults = DefaultResults;
+                        break;
+                }
             }
             else
             {
@@ -172,8 +189,8 @@ namespace Dynamo.ViewModels
             //first sort by type distance to input port type
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
-            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
-            return elements.OrderBy(x => x.Group);
+            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types and then sorted by name.
+            return elements.OrderBy(x => x.Group).ThenBy(x => x.Name);
 
            
         }

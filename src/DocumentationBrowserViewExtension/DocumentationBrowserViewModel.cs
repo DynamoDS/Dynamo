@@ -3,11 +3,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using Dynamo.Core;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
-using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
@@ -20,13 +18,15 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
+        private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
+
         #endregion
 
         #region Properties
 
         private bool shouldLoadDefaultContent;
         private readonly PackageDocumentationManager packageManagerDoc;
-        private readonly MarkdownHandler markdownHandler;
+        private MarkdownHandler markdownHandler;
         private FileSystemWatcher markdownFileWatcher;
 
         /// <summary>
@@ -56,6 +56,8 @@ namespace Dynamo.DocumentationBrowser
         private Uri link;
 
         private string content;
+
+        private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
         /// <summary>
@@ -107,13 +109,15 @@ namespace Dynamo.DocumentationBrowser
             // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
             packageManagerDoc = PackageDocumentationManager.Instance;
-            markdownHandler = MarkdownHandler.Instance;
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            this.content = null;
-            markdownHandler.Dispose();
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                this.content = "";
+            }
+            markdownHandler?.Dispose();
         }
 
         public void Dispose()
@@ -243,12 +247,22 @@ namespace Dynamo.DocumentationBrowser
             var writer = new StringWriter();
             try
             {
-                // Write the Node info section to the string writer
-                writer.WriteLine(NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e));
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+
+                // Get the Node info section and remove script tags if any
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
+                if (MarkdownHandlerInstance.SanitizeHtml(ref nodeDocumentation))
+                {
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
+
+                writer.WriteLine(nodeDocumentation);
 
                 // Convert the markdown file to html and remove script tags if any
-                if (markdownHandler.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                if (MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
 
                 writer.Flush();
                 return writer.ToString();
@@ -384,7 +398,7 @@ namespace Dynamo.DocumentationBrowser
 
             // Clean up possible script tags from document
             if (removeScriptTags &&
-                DocumentationBrowserUtils.RemoveScriptTagsFromString(ref result))
+                MarkdownHandlerInstance.SanitizeHtml(ref result))
             {
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
             }

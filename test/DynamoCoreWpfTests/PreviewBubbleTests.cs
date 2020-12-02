@@ -32,6 +32,7 @@ namespace DynamoCoreWpfTests
         {
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 
@@ -335,6 +336,30 @@ namespace DynamoCoreWpfTests
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
             var nodeView = NodeViewWithGuid("7828a9dd-88e6-49f4-9ed3-72e355f89bcc");
+
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            Assert.IsTrue(previewBubble.IsCondensed, "Compact preview bubble should be shown");
+            Assert.AreEqual(Visibility.Collapsed, previewBubble.bubbleTools.Visibility, "Pin icon should not be shown");
+
+            // hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            Assert.AreEqual(Visibility.Visible, previewBubble.bubbleTools.Visibility, "Pin icon should be shown");
+
+            // expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+            Assert.IsTrue(previewBubble.IsExpanded, "Expanded preview bubble should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_ShowExpandedPreview_MultiReturnNode()
+        {
+            Open(@"core\multireturnnode_preview.dyn");
+            var nodeView = NodeViewWithGuid("587d7494-e764-41fb-8b5d-a4229f7294ee");
 
             var previewBubble = nodeView.PreviewControl;
             previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));

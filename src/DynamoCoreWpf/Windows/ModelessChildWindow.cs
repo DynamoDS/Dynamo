@@ -115,8 +115,11 @@ namespace Dynamo.Wpf.Windows
 
         private void ModelessChildWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            SavedWindowRect.Width = e.NewSize.Width;
-            SavedWindowRect.Height = e.NewSize.Height;
+            if (WindowState != WindowState.Maximized)
+            {
+                SavedWindowRect.Width = e.NewSize.Width;
+                SavedWindowRect.Height = e.NewSize.Height;
+            }
         }
 
         private void ModelessChildWindow_LocationChanged(object sender, EventArgs e)
