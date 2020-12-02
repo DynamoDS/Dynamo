@@ -9,14 +9,6 @@ namespace DSCoreNodesTests
     {
         [Test]
         [Category("UnitTests")]
-        public void WebRequest_ValidArgs()
-        {
-            var result = Web.WebRequestByUrl("http://www.google.com");
-            Assert.IsNotNullOrEmpty(result);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void WebRequest_BadArgs()
         {
             Assert.Throws<UriFormatException>(()=>Web.WebRequestByUrl("ThisIsNotAUrl"));
@@ -33,7 +25,7 @@ namespace DSCoreNodesTests
         [Category("UnitTests")]
         public void WebRequest_GitHubAPI()
         {
-            string url = "https://api.github.com/repos/DynamoDS/Dynamo/issues?page=0&state=closed&per_page=10";
+            string url = "https://api.github.com/rate_limit";
             string result = Web.WebRequestByUrl(url);
             Assert.IsNotNullOrEmpty(result);
         }
