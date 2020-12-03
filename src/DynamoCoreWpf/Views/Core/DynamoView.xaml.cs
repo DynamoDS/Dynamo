@@ -216,9 +216,9 @@ namespace Dynamo.Controls
         /// The control may be added as a window or a tab in the extension bar depending on settings.
         /// </summary>
         /// <param name="viewExtension">View extension adding the content</param>
-        /// <param name="contentControl">Control being added</param>
+        /// <param name="content">Control being added</param>
         /// <returns>True if the control was added, false if it already existed</returns>
-        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, ContentControl contentControl)
+        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
             var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
@@ -241,11 +241,11 @@ namespace Dynamo.Controls
 
                 if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
                 {
-                    window = AddExtensionWindow(viewExtension, contentControl, settings.WindowSettings);
+                    window = AddExtensionWindow(viewExtension, content, settings.WindowSettings);
                 }
                 else
                 {
-                    tab = AddExtensionTab(viewExtension, contentControl);
+                    tab = AddExtensionTab(viewExtension, content);
                 }
             }
             else
@@ -270,7 +270,7 @@ namespace Dynamo.Controls
             return addExtensionControl;
         }
 
-        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, ContentControl contentControl, WindowSettings windowSettings)
+        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
         {
             ExtensionWindow window;
             if (windowSettings == null)
@@ -299,7 +299,12 @@ namespace Dynamo.Controls
             // Icon is passed from DynamoView (respecting Host integrator icon)
             SetApplicationIcon();
             window.Icon = this.Icon;
-            window.ExtensionContent.Content = contentControl;
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                container.Owner = this;
+            }
+            window.ExtensionContent.Content = content;
             window.Title = viewExtension.Name;
             window.Tag = viewExtension;
             window.Uid = viewExtension.UniqueId;
@@ -334,7 +339,7 @@ namespace Dynamo.Controls
             settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
         }
 
-        private TabItem AddExtensionTab(IViewExtension viewExtension, ContentControl contentControl)
+        private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
         {
             tabDynamic.DataContext = null;
 
@@ -347,22 +352,13 @@ namespace Dynamo.Controls
 
             // setting the extension UI to the current tab content 
             // based on whether it is a UserControl element or window element. 
-            if (contentControl is UserControl)
+            if (content is Window container)
             {
-                tab.Content = contentControl;
+                content = container.Content as UIElement;
+                // Make sure the extension window closes with Dynamo
+                container.Owner = this;
             }
-            else
-            {
-                if (contentControl != null)
-                {
-                    tab.Content = contentControl.Content;
-                }
-                if (contentControl is Window contentContainer)
-                {
-                    // Make sure the extension window closes with Dynamo
-                    contentContainer.Owner = this;
-                }
-            }
+            tab.Content = content;
 
             //Insert the tab at the end
             ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
@@ -472,7 +468,7 @@ namespace Dynamo.Controls
         internal void UndockExtension(string name)
         {
             var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
-            var content = tabItem.Content as ContentControl;
+            var content = tabItem.Content as UIElement;
             CloseExtensionTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
@@ -502,7 +498,7 @@ namespace Dynamo.Controls
         {
             var window = sender as ExtensionWindow;
             var extName = window.Title;
-            var content = window.ExtensionContent.Content as ContentControl;
+            var content = window.ExtensionContent.Content as UIElement;
             // Release content from window
             window.ExtensionContent.Content = null;
             ExtensionWindows.Remove(extName);
