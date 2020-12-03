@@ -488,13 +488,21 @@ namespace Dynamo.Controls
         {
             if (this.Icon == null && !DynamoModel.IsTestMode)
             {
-                var icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
-                var bmp = icon.ToBitmap();
-                MemoryStream stream = new MemoryStream();
-                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                stream.Seek(0, SeekOrigin.Begin);
-                PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                this.Icon = pngDecoder.Frames[0];
+                var applicationPath = Process.GetCurrentProcess().MainModule.FileName;
+                try
+                {
+                    var icon = System.Drawing.Icon.ExtractAssociatedIcon(applicationPath);
+                    var bmp = icon.ToBitmap();
+                    MemoryStream stream = new MemoryStream();
+                    bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                    this.Icon = pngDecoder.Frames[0];
+                }
+                catch (Exception ex)
+                {
+                    Log(string.Format(Dynamo.Wpf.Properties.Resources.ErrorLoadingIcon, ex.Message));
+                }
             }
         }
 
