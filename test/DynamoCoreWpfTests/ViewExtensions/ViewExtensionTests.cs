@@ -150,6 +150,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
+            // The content is in the extension tab
+            var content = View.ExtensionTabItems[0].Content as TextBlock;
+            Assert.IsNotNull(content);
+            Assert.AreEqual("Dummy", content.Text);
+
             // Undock extension 
             View.UndockExtension(viewExtension.Name);
 
@@ -158,6 +163,11 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // The content is in the extension window
+            content = View.ExtensionWindows[viewExtension.Name].ExtensionContent.Content as TextBlock;
+            Assert.IsNotNull(content);
+            Assert.AreEqual("Dummy", content.Text);
 
             // Dock the window
             var window = View.ExtensionWindows[viewExtension.Name];
@@ -168,6 +178,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
             Assert.AreEqual(0, View.ExtensionWindows.Count);
+
+            // The content is in the extension tab
+            content = View.ExtensionTabItems[0].Content as TextBlock;
+            Assert.IsNotNull(content);
+            Assert.AreEqual("Dummy", content.Text);
         }
 
         [Test]
@@ -182,6 +197,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
             Assert.IsFalse(View.ExtensionsCollapsed);
 
+            // The content is in the extension tab
+            var content = View.ExtensionTabItems[0].Content as TextBlock;
+            Assert.IsNotNull(content);
+            Assert.AreEqual("Dummy", content.Text);
+
             // Undock extension 
             View.UndockExtension(viewExtension.Name);
 
@@ -190,6 +210,11 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(View.ExtensionsCollapsed);
             // Extension is in a window now
             Assert.AreEqual(1, View.ExtensionWindows.Count);
+
+            // The content is in the extension window
+            content = View.ExtensionWindows[viewExtension.Name].ExtensionContent.Content as TextBlock;
+            Assert.IsNotNull(content);
+            Assert.AreEqual("Dummy", content.Text);
 
             // Close the window without docking
             var window = View.ExtensionWindows[viewExtension.Name];
@@ -223,7 +248,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1, View.ExtensionWindows.Count);
 
             // Attempt to open the extension in the side bar when it's open as a window
-            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is not added to the sidebar
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
@@ -261,7 +286,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
             // Re-open the extension
-            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is remembered to be opened as a window
             Assert.AreEqual(0, View.ExtensionTabItems.Count);
@@ -287,7 +312,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, View.ExtensionWindows.Count);
 
             // Re-open the extension again
-            View.AddOrFocusExtensionControl(viewExtension, new UserControl());
+            View.AddOrFocusExtensionControl(viewExtension, viewExtension.Content);
 
             // Extension is remembered to be opened in the sidebar
             Assert.AreEqual(1, View.ExtensionTabItems.Count);
@@ -308,9 +333,10 @@ namespace DynamoCoreWpfTests
 
     public class DummyViewExtension : IViewExtension
     {
-        public int Counter { get; set; }
+        public int Counter { get; private set; }
         public bool SetOwner { get; set; } = true;
-        public bool WindowClosed { get; set; }
+        public bool WindowClosed { get; private set; }
+        public Window Content { get; private set; }
 
         public string UniqueId
         {
@@ -344,6 +370,7 @@ namespace DynamoCoreWpfTests
             {
                 window.Owner = p.DynamoWindow;
             }
+            Content = window;
 
             p.AddToExtensionsSideBar(this, window);
         }
