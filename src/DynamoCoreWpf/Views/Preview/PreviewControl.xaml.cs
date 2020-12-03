@@ -725,7 +725,8 @@ namespace Dynamo.UI.Controls
 
         private void OnCopyToClipboardClick(object sender, RoutedEventArgs e)
         {
-            string content = cachedLargeContent.GetNodeLabelTree();
+            string content = cachedLargeContent?.GetNodeLabelTree();
+            if (string.IsNullOrEmpty(content)) content = cachedSmallContent?.NodeLabel;
             if (!string.IsNullOrEmpty(content)) Clipboard.SetText(content);
         }
 
