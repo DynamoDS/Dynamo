@@ -175,7 +175,9 @@ namespace Dynamo.Graph.Nodes
         public virtual void RemoveInputFromModel()
         {
             int count = model.InPorts.Count;
-            bool countIsGreaterThanDefault = model is DSVarArgFunction dSVarArgFunction && count > dSVarArgFunction.DefaultNumInputs;
+            // Do not remove input port if there aren't any
+            // or if the node is a DSVarArgFunction and doing so would remove a default port
+            bool countIsGreaterThanDefault = !(model is DSVarArgFunction dSVarArgFunction) || count > dSVarArgFunction.DefaultNumInputs;
             if (count != 0 && countIsGreaterThanDefault)
             {
                 var port = model.InPorts[count - 1];
