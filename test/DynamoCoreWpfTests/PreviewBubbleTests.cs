@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -366,6 +367,41 @@ namespace DynamoCoreWpfTests
             // open preview bubble
             RaiseMouseEnterOnNode(nodeView);
             Assert.IsFalse(nodeView.PreviewControl.IsHidden, "Preview bubble for color range should be shown");
+        }
+
+        [Test]
+        public void PreviewBubble_CopyToClipboard()
+        {
+            // Arrange
+            Open(@"core\watch\WatchViewModelGetNodeLabelTree.dyn");
+            string singleItemTreeExpected = "Hello, world!";
+            var nodeView = NodeViewWithGuid("d653b1b0-ac60-4e26-b73c-627a39c5694a");
+            Clipboard.SetText($"Resetting clipboard for {nameof(PreviewBubble_CopyToClipboard)} test");
+
+            // Act
+            var previewBubble = nodeView.PreviewControl;
+            previewBubble.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            previewBubble.bubbleTools.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+            // Open preview bubble
+            RaiseMouseEnterOnNode(nodeView);
+            // Hover preview bubble to see pin icon
+            RaiseMouseEnterOnNode(previewBubble);
+            // Expand preview bubble
+            RaiseMouseEnterOnNode(previewBubble.bubbleTools);
+
+            // Find the MenuItem for Copy in the context menu
+            var grid = previewBubble.bubbleTools.Parent as Grid;
+            var menuItem = grid.ContextMenu.Items
+                .OfType<MenuItem>()
+                .First(x => x.Header.ToString() == Dynamo.Wpf.Properties.Resources.ContextMenuCopy);
+            
+            // Click the MenuItem
+            menuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            DispatcherUtil.DoEvents();
+            string clipboardContent = Clipboard.GetText();
+
+            // Assert
+            Assert.AreEqual(singleItemTreeExpected, clipboardContent);
         }
 
         private bool ElementIsInContainer(FrameworkElement element, FrameworkElement container, int offset)
