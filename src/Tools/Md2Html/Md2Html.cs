@@ -97,8 +97,17 @@ namespace Md2Html
         /// <returns>return sanitized content string or an empty string if no sanitizing happened</returns>
         internal static string Sanitize(string content)
         {
+            string output;
             HtmlSanitizer.ContentWasUpdated = false;
-            var output = HtmlSanitizer.Sanitize(content);
+            if (content.Contains(@"<body "))
+            {
+                output = HtmlSanitizer.SanitizeDocument(content);
+
+            }
+            else
+            {
+                output = HtmlSanitizer.Sanitize(content);
+            }
             if (HtmlSanitizer.ContentWasUpdated)
             {
                 return output;
