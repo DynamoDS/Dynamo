@@ -61,6 +61,36 @@ namespace DynamoCoreWpfTests
             Model.AddZeroTouchNodesToSearch(Model.LibraryServices.GetAllFunctionGroups());
         }
 
+        [Test]
+        public void NodeSuggestions_CanAutoCompleteInCustomNodeWorkspace()
+        {
+            Open(@"pkgs\EvenOdd2\dyf\EvenOdd.dyf");
+
+            // Pick the % node
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("1ddf4b4cc39f42acadd578db42bcb6d3").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+
+            var port = inPorts[0].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("var[]..[]", type);
+
+            port = inPorts[1].PortModel;
+            type = port.GetInputPortType();
+            Assert.AreEqual("var[]..[]", type);
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = inPorts[1];
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            // No matching search elements should be found
+            Assert.AreEqual(0, suggestions.Count());
+
+            // Show Node AutoCompleteSearchBar in custom node workspace
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            var currentWs = View.ChildOfType<WorkspaceView>();
+            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+        }
 
         [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
