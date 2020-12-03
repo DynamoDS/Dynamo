@@ -116,6 +116,7 @@
     <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="AssemblyConflictCheckerTest.cs" />
     <Compile Include="CallsiteRegen.cs" />
     <Compile Include="DynamoApplicationTests.cs" />
     <Compile Include="ExecutionEventsObserver.cs" />
