@@ -1107,9 +1107,7 @@ namespace Dynamo.Engine.NodeToCode
             //   4. Generate short name for long name variables. Typically they
             //      are from output ports from other nodes.
             //
-            //      Do constant progation to optimize the generated code.
-            //
-            //   5. Escape any \ characters in StringInputNode values
+            //   5. Do constant progation to optimize the generated code.
             #region Step 1 AST compilation
 
             AstBuilder builder = new AstBuilder(null);
@@ -1209,26 +1207,6 @@ namespace Dynamo.Engine.NodeToCode
                     }
                     ShortNameMapping(core, astNode, outputMap, nameGenerator, mappedVariables, typeHints);
                 }
-            }
-            #endregion
-
-            #region Step 5 Escape StringInputNodes
-            foreach ((NodeModel nodeModel, IEnumerable<AssociativeNode> astNodes) in allAstNodes)
-            {
-                if (nodeModel.NodeType != "StringInputNode")
-                    continue;
-
-                var astNode = astNodes.First();
-                if (!(astNode is BinaryExpressionNode astBinaryExpressionNode))
-                    continue;
-
-                var rightNode = astBinaryExpressionNode.RightNode;
-                if (!(rightNode is StringNode astStringNode))
-                    continue;
-
-                var escapedString = astStringNode.Value.Replace(@"\", @"\\")
-                    .Replace("\"", "\\\"");
-                astStringNode.Value = escapedString;
             }
             #endregion
 

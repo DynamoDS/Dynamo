@@ -1210,7 +1210,7 @@ namespace Dynamo.Tests
             var expect = new List<string>
             {
                 "\"C:\\\\\"",                // "C:\\"
-                "\"4\\\"\"",                 // "4\"
+                "\"4\\\"\"",                 // "4\""
                 "\"\\\"Hello, world.\\\"\"", // "\"Hello, world.\""
                 "\"Hello\\\\r\\\\nWorld\"",  // "Hello\\r\\nWorld"
                 "\"\\\\tHello World\"",      // "\\tHello World"
