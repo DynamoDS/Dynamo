@@ -2259,6 +2259,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An error occurred when loading the application icon: {0}.
+        /// </summary>
+        public static string ErrorLoadingIcon {
+            get {
+                return ResourceManager.GetString("ErrorLoadingIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {
