@@ -1192,6 +1192,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestNodeToCodeStringInputEscaping()
+        {
+            // Arrange
+            OpenModel(@"core\node2code\stringNodesInNeedOfEscaping.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            // Act
+            var nodesToCode = engine.ConvertNodesToCode(nodes, nodes);
+            var results = nodesToCode.AstNodes.OfType<BinaryExpressionNode>()
+                .Where((x, i) => i < 8)
+                .Select(x => x.RightNode.ToString())
+                .ToList();
+
+            // Assert
+            var expect = new List<string>
+            {
+                "\"C:\\\\\"",                // "C:\\"
+                "\"4\\\"\"",                 // "4\""
+                "\"\\\"Hello, world.\\\"\"", // "\"Hello, world.\""
+                "\"Hello\\\\r\\\\nWorld\"",  // "Hello\\r\\nWorld"
+                "\"\\\\tHello World\"",      // "\\tHello World"
+                "\"\\\\u33A1\"",             // "\\u33A1"
+                "\"\\\\u00B2\"",             // "\\u00B2"
+                "\"\\\\\\\\SERVER\\\\PATH\"" // "\\\\SERVER\\PATH"
+            };
+            Assert.AreEqual(expect, results);
+        }
+
+        [Test]
         public void TestUINode_String()
         {
             OpenModel(@"core\node2code\stringNode.dyn");
