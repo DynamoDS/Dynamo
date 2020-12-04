@@ -17,7 +17,7 @@ namespace DSCore
     public static class Math
     {
         /// <summary>
-        ///     Generates a random double in the range of [0, 1).
+        ///     Generates a random double in the range of [0, 1].
         /// </summary>
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">Random number between 0 and 1.</returns>
@@ -29,7 +29,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a random number in the range [lower_number, higher_number).
+        ///     Produce a random number in the range [lower_number, higher_number].
         /// </summary>
         /// <param name="value1">One end of the range for the random number.</param>
         /// <param name="value2">One end of the range for the random number.</param>
@@ -57,7 +57,7 @@ namespace DSCore
 
         /// <summary>
         ///     Produces a list containing the given amount of random doubles
-        ///     in the range of [0, 1).
+        ///     in the range of [0, 1].
         /// </summary>
         /// <param name="amount">Amount of random numbers the result list will contain.</param>
         /// <returns name="number">List of random numbers between 0 and 1.</returns>
