@@ -1257,8 +1257,7 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static IList Shuffle(IList list)
         {
-            var rng = new Random();
-            return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
+            return list.Cast<object>().OrderBy(_ => mRandom.Next()).ToList();
         }
 
         /// <summary>
@@ -1369,6 +1368,9 @@ namespace DSCore
         #endregion
 
         #region private helper methods
+
+        private static readonly Random mRandom = new Random();
+
         /// <summary>
         ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
         ///     the item is contained in the list if the item is an array. Returns the index if found, 
