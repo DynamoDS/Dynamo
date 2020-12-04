@@ -28,6 +28,10 @@ namespace DSCore
             // Initialize the WebRequest.
             var myRequest = System.Net.WebRequest.Create(uriResult);
 
+            // Set the User-Agent header required by some APIs
+            if (myRequest is System.Net.HttpWebRequest httpRequest)
+                httpRequest.UserAgent = "Dynamo";
+
             string responseFromServer;
 
             // Return the response. 
