@@ -2277,4 +2277,8 @@ Uninstall the following packages: {0}?</value>
     <value>Enable Node Auto Complete</value>
     <comment>Setting menu | Experimental | Enable Node Auto Complete</comment>
   </data>
+  <data name="ErrorLoadingIcon" xml:space="preserve">
+    <value>An error occurred when loading the application icon: {0}</value>
+    <comment>{0} = detailed error message</comment>
+  </data>
 </root>

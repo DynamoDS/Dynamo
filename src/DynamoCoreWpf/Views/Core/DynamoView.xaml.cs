@@ -212,71 +212,161 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// Adds a tab item to the extension bar and sets the extension window/control as the tab
-        /// content. It also makes sure the extension is visible.
+        /// Adds an extension control or if it already exists it makes sure it is focused.
+        /// The control may be added as a window or a tab in the extension bar depending on settings.
         /// </summary>
         /// <param name="viewExtension">View extension adding the content</param>
-        /// <param name="contentControl">Control being added to the extension bar</param>
-        /// <returns>The tab item if it was added, otherwise null</returns>
-        internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        /// <param name="content">Control being added</param>
+        /// <returns>True if the control was added, false if it already existed</returns>
+        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
         {
-            // If the extension is showing as a window, shift focus there.
-            if (ExtensionWindows.ContainsKey(viewExtension.Name))
-            {
-                var window = ExtensionWindows[viewExtension.Name];
-                window.Focus();
-                return null;
-            }
-
+            var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
             var tab = FindExtensionTab(viewExtension);
-            if (tab == null)
+            var addExtensionControl = window == null && tab == null;
+
+            if (addExtensionControl)
             {
-                tabDynamic.DataContext = null;
-
-                // creates a new tab item
-                tab = new TabItem();
-                tab.Header = viewExtension.Name;
-                tab.Tag = viewExtension;
-                tab.Uid = viewExtension.UniqueId;
-                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
-
-                // setting the extension UI to the current tab content 
-                // based on whether it is a UserControl element or window element. 
-                if (contentControl is UserControl)
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+                // Create default settings if they do not currently exist
+                if (settings == null)
                 {
-                    tab.Content = contentControl;
+                    settings = new ViewExtensionSettings()
+                    {
+                        Name = viewExtension.Name,
+                        UniqueId = viewExtension.UniqueId,
+                        DisplayMode = ViewExtensionDisplayMode.DockRight
+                    };
+                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+                }
+
+                if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
+                {
+                    window = AddExtensionWindow(viewExtension, content, settings.WindowSettings);
                 }
                 else
                 {
-                    if (contentControl != null)
-                    {
-                        tab.Content = contentControl.Content;
-                    }
-                    var extensionWindow = contentControl as Window;
-                    if (extensionWindow != null)
-                    {
-                        // Make sure the extension window closes with Dynamo
-                        extensionWindow.Owner = this;
-                    }
+                    tab = AddExtensionTab(viewExtension, content);
                 }
-
-                //Insert the tab at the end
-                ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
-
-                tabDynamic.DataContext = ExtensionTabItems;
-                tabDynamic.SelectedItem = tab;
-
-                return tab;
             }
-
-            // Make sure the extension bar is visible
-            if (ExtensionsCollapsed)
+            else
             {
-                ToggleExtensionBarCollapseStatus();
+                // Set focus on the existing control
+                if (window != null)
+                {
+                    window.Focus();
+                }
+                else if (tab != null)
+                {
+                    // Make sure the extension bar is visible
+                    if (ExtensionsCollapsed)
+                    {
+                        ToggleExtensionBarCollapseStatus();
+                    }
+
+                    tabDynamic.SelectedItem = tab;
+                }
             }
 
+            return addExtensionControl;
+        }
+
+        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
+        {
+            ExtensionWindow window;
+            if (windowSettings == null)
+            {
+                window = new ExtensionWindow();
+                window.Owner = this;
+            }
+            else
+            {
+                var windowRect = new ModelessChildWindow.WindowRect()
+                {
+                    Left = windowSettings.Left,
+                    Top = windowSettings.Top,
+                    Width = windowSettings.Width,
+                    Height = windowSettings.Height
+                };
+                window = new ExtensionWindow(this, ref windowRect);
+                if (windowSettings.Status == WindowStatus.Maximized)
+                {
+                    // Rather than setting the WindowState here, this is delayed to the Loaded event.
+                    // This helps overcome a bug which makes the window appear always on the primary screen.
+                    window.ShouldMaximize = true;
+                }
+            }
+            
+            // Icon is passed from DynamoView (respecting Host integrator icon)
+            SetApplicationIcon();
+            window.Icon = this.Icon;
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                container.Owner = this;
+            }
+            window.ExtensionContent.Content = content;
+            window.Title = viewExtension.Name;
+            window.Tag = viewExtension;
+            window.Uid = viewExtension.UniqueId;
+            window.Closing += ExtensionWindow_Closing;
+            window.Closed += ExtensionWindow_Closed;
+
+            window.Show();
+
+            ExtensionWindows.Add(viewExtension.Name, window);
+
+            return window;
+        }
+
+        private void ExtensionWindow_Closing(object sender, CancelEventArgs e)
+        {
+            var window = sender as ExtensionWindow;
+            SaveExtensionWindowSettings(window);
+        }
+
+        private void SaveExtensionWindowSettings(ExtensionWindow window)
+        {
+            var extension = window.Tag as IViewExtension;
+            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
+            if (settings.WindowSettings == null)
+            {
+                settings.WindowSettings = new WindowSettings();
+            }
+            settings.WindowSettings.Status = window.WindowState == WindowState.Maximized ? WindowStatus.Maximized : WindowStatus.Normal;
+            settings.WindowSettings.Left = (int)window.SavedWindowRect.Left;
+            settings.WindowSettings.Top = (int)window.SavedWindowRect.Top;
+            settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
+            settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
+        }
+
+        private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
+        {
+            tabDynamic.DataContext = null;
+
+            // creates a new tab item
+            var tab = new TabItem();
+            tab.Header = viewExtension.Name;
+            tab.Tag = viewExtension;
+            tab.Uid = viewExtension.UniqueId;
+            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+
+            // setting the extension UI to the current tab content 
+            // based on whether it is a UserControl element or window element. 
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                // Make sure the extension window closes with Dynamo
+                container.Owner = this;
+            }
+            tab.Content = content;
+
+            //Insert the tab at the end
+            ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
+
+            tabDynamic.DataContext = ExtensionTabItems;
             tabDynamic.SelectedItem = tab;
-            return null;
+
+            return tab;
         }
 
         /// <summary>
@@ -333,7 +423,8 @@ namespace Dynamo.Controls
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
                 ExtensionTabItems.Remove(tabToBeRemoved);
-                ExtensionTabItems = ExtensionTabItems;
+                // Disconnect content from tab to allow it to be moved.
+                tabToBeRemoved.Content = null;
                 tabDynamic.DataContext = ExtensionTabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
@@ -354,6 +445,8 @@ namespace Dynamo.Controls
             {
                 var extension = ExtensionWindows[name];
                 extension.Close();
+                // Disconnect content to allow it to be moved.
+                extension.ExtensionContent.Content = null;
                 ExtensionWindows.Remove(name);
             }
         }
@@ -375,24 +468,12 @@ namespace Dynamo.Controls
         internal void UndockExtension(string name)
         {
             var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
+            var content = tabItem.Content as UIElement;
             CloseExtensionTab(tabItem);
-
-            var ext = new ExtensionWindow();
-            // Icon is passed from DynamoView (respecting Host integrator icon)
-            SetApplicationIcon();
-            ext.Icon = this.Icon;
-            ext.Owner = this;
-            var content = tabItem.Content as ContentControl;
-            // Disconnect from previous parent to avoid error
-            tabItem.Content = null;
-            ext.ExtensionContent.Content = content;
-            ext.Title = name;
-            ext.Tag = tabItem.Tag;
-            ext.Uid = tabItem.Uid;
-            ext.Closed += ExtensionWindow_Closed;
-            ext.Show();
-
-            ExtensionWindows.Add(name, ext);
+            var extension = tabItem.Tag as IViewExtension;
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            AddExtensionWindow(extension, content, settings.WindowSettings);
+            settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
         }
 
         /// <summary>
@@ -403,34 +484,45 @@ namespace Dynamo.Controls
         {
             if (this.Icon == null && !DynamoModel.IsTestMode)
             {
-                var icon = System.Drawing.Icon.ExtractAssociatedIcon(System.Reflection.Assembly.GetEntryAssembly().Location);
-                var bmp = icon.ToBitmap();
-                MemoryStream stream = new MemoryStream();
-                bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
-                stream.Seek(0, SeekOrigin.Begin);
-                PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
-                this.Icon = pngDecoder.Frames[0];
+                var applicationPath = Process.GetCurrentProcess().MainModule.FileName;
+                try
+                {
+                    var icon = System.Drawing.Icon.ExtractAssociatedIcon(applicationPath);
+                    var bmp = icon.ToBitmap();
+                    MemoryStream stream = new MemoryStream();
+                    bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                    this.Icon = pngDecoder.Frames[0];
+                }
+                catch (Exception ex)
+                {
+                    Log(string.Format(Dynamo.Wpf.Properties.Resources.ErrorLoadingIcon, ex.Message));
+                }
             }
         }
 
         private void ExtensionWindow_Closed(object sender, EventArgs e)
         {
-            var ext = sender as ExtensionWindow;
-            var extName = ext.Title;
-            var content = ext.ExtensionContent.Content as ContentControl;
+            var window = sender as ExtensionWindow;
+            var extName = window.Title;
+            var content = window.ExtensionContent.Content as UIElement;
             // Release content from window
-            ext.ExtensionContent.Content = null;
+            window.ExtensionContent.Content = null;
             ExtensionWindows.Remove(extName);
-            if (ext.DockRequested)
+            var extension = window.Tag as IViewExtension;
+            if (window.DockRequested)
             {
-                AddExtensionTabItem((IViewExtension)ext.Tag, content);
-                Logging.Analytics.TrackEvent(
-                   Actions.Dock,
-                   Categories.ViewExtensionOperations, extName);
+                AddExtensionTab(extension, content);
+
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+                settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
+
+                Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
             }
             else
             {
-                if (ext.Tag is ViewExtensionBase viewExtensionBase)
+                if (extension is ViewExtensionBase viewExtensionBase)
                 {
                     viewExtensionBase.Closed();
                 }
@@ -1404,6 +1496,8 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            SaveExtensionWindowsState();
+
             if (!PerformShutdownSequenceOnViewModel() && !DynamoModel.IsTestMode)
             {
                 e.Cancel = true;
@@ -1411,6 +1505,18 @@ namespace Dynamo.Controls
             else
             {
                 isPSSCalledOnViewModelNoCancel = true;
+            }
+        }
+
+        /// <summary>
+        /// Saves the state of currently displayed extension windows. This is needed because the closing event is
+        /// not called on child windows: https://docs.microsoft.com/en-us/dotnet/api/system.windows.window.closing
+        /// </summary>
+        private void SaveExtensionWindowsState()
+        {
+            foreach (var window in ExtensionWindows.Values)
+            {
+                SaveExtensionWindowSettings(window);
             }
         }
 

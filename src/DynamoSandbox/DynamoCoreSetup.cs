@@ -20,9 +20,10 @@ namespace DynamoSandbox
     {
         private SettingsMigrationWindow migrationWindow;
         private DynamoViewModel viewModel = null;
-        private string commandFilePath;
+        private readonly string commandFilePath;
         private Stopwatch startupTimer = Stopwatch.StartNew();
-        private string ASMPath;
+        private readonly string ASMPath;
+        private readonly string hostName;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
 
         [DllImport("msvcrt.dll")]
@@ -35,6 +36,7 @@ namespace DynamoSandbox
             _putenv(locale);
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
+            hostName = cmdLineArgs.HostName;
         }
 
         public void RunApplication(Application app)
@@ -44,24 +46,17 @@ namespace DynamoSandbox
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                if (!String.IsNullOrEmpty(ASMPath))
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(false,ASMPath);
-                }
-                else
-                {
-                    model = Dynamo.Applications.StartupUtils.MakeModel(false);
-                }
-                
+                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, hostName);
+
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()
                     {
                         CommandFilePath = commandFilePath,
                         DynamoModel = model,
-                        Watch3DViewModel = 
+                        Watch3DViewModel =
                             HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
                                 null,
-                                new Watch3DViewModelStartupParams(model), 
+                                new Watch3DViewModelStartupParams(model),
                                 model.Logger),
                         ShowLogin = true
                     });
@@ -104,22 +99,24 @@ namespace DynamoSandbox
                     {
                         //show a message dialog box with the exception so the user
                         //can effectively report the issue.
-                        var shortStackTrace = String.Join(Environment.NewLine,e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
+                        var shortStackTrace = String.Join(Environment.NewLine, e.StackTrace.Split(Environment.NewLine.ToCharArray()).Take(10));
 
                         var result = MessageBox.Show($"{Resources.SandboxCrashMessage} {Environment.NewLine} {e.Message}" +
                             $"  {Environment.NewLine} {e.InnerException?.Message} {Environment.NewLine} {shortStackTrace} {Environment.NewLine} " +
                              Environment.NewLine + string.Format(Resources.SandboxBuildsPageDialogMessage, sandboxWikiPage),
 
                             "DynamoSandbox",
-                            MessageBoxButton.YesNo,MessageBoxImage.Error);
+                            MessageBoxButton.YesNo, MessageBoxImage.Error);
 
-                        if(result == MessageBoxResult.Yes)
+                        if (result == MessageBoxResult.Yes)
                         {
                             System.Diagnostics.Process.Start(sandboxWikiPage);
                         }
                     }
                 }
-                catch {
+                catch
+                {
+                    // Do nothing for now.
                 }
 
                 Debug.WriteLine(e.Message);

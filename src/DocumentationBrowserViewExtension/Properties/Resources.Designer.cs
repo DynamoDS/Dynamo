@@ -106,6 +106,60 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Category.
+        /// </summary>
+        public static string NodeDocumentationCategory {
+            get {
+                return ResourceManager.GetString("NodeDocumentationCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string NodeDocumentationDescription {
+            get {
+                return ResourceManager.GetString("NodeDocumentationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inputs.
+        /// </summary>
+        public static string NodeDocumentationInputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationInputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Info.
+        /// </summary>
+        public static string NodeDocumentationNodeInfo {
+            get {
+                return ResourceManager.GetString("NodeDocumentationNodeInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Type.
+        /// </summary>
+        public static string NodeDocumentationNodeType {
+            get {
+                return ResourceManager.GetString("NodeDocumentationNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Outputs.
+        /// </summary>
+        public static string NodeDocumentationOutputs {
+            get {
+                return ResourceManager.GetString("NodeDocumentationOutputs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Script tags detected in the help document have been removed..
         /// </summary>
         public static string ScriptTagsRemovalWarning {
