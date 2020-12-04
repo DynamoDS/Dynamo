@@ -1897,7 +1897,7 @@
         SHU345HqboZLPJE1QRBclZQOraYkwvlEHIcAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSCore.List.Shuffle.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.List.Shuffle.varN.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAIVSURBVHhe7dnBbcJAEIVhSqCElJIcI+WQElJCSqAD
@@ -1912,7 +1912,7 @@
         GgoAAAAAAAAAAAAAAAAAAAAAI1it/gE8ed1mIvP3GAAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.List.Shuffle.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.List.Shuffle.varN.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC9SURBVFhH7ZPRCYMwFEUziiN0hPpZ6EdHcJTO0IXE
@@ -3062,7 +3062,7 @@
         GPPnCI8hwcOfCL/weGw2P0rpAHRz/E9pAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="DSCore.Math.RandomList.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.RandomList.int.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ4SURBVHhe7dBRrt0gEIPhs7VusbvraloJ+QGN5s8F
@@ -3079,7 +3079,7 @@
         +QejayHb//DAFwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSCore.Math.RandomList.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSCore.Math.RandomList.int.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAACZSURBVFhH7Y4BCoAwDAP3Nb/o73yNUmlghtXOjYnM
