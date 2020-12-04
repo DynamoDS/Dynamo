@@ -15,9 +15,16 @@ namespace Md2Html
 
         internal Md2HtmlSanitizer()
         {
+            AllowedTags.Add(@"meta");
+            AllowedTags.Add(@"style");
+
+            AllowedAttributes.Add(@"content");
+            AllowedAttributes.Add(@"http-equiv");
+
+            AllowedCssProperties.Add(@"src");
+
             RemovingAtRule += ChangedEvent;
             RemovingAttribute += ChangedEvent;
-            RemovingComment += ChangedEvent;
             RemovingCssClass += ChangedEvent;
             RemovingStyle += ChangedEvent;
             RemovingTag += ChangedEvent;
