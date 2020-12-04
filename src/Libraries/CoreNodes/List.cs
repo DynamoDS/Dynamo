@@ -1212,6 +1212,20 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Shuffles a list, randomizing the order of its items based on an intial seed value.
+        /// </summary>
+        /// <param name="list">List to shuffle.</param>
+        /// <param name="seed">Seed value for the random number generator.</param>
+        /// <returns name="list">Randomized list.</returns>
+        /// <search>random,randomize,shuffle,jitter,randomness</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList Shuffle(IList list, [DefaultArgument("1")] int seed)
+        {
+            var rng = new Random(seed);
+            return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
+        }
+
+        /// <summary>
         ///     Produces all permutations of the given length of a given list.
         /// </summary>
         /// <param name="list">List to permute.</param>
