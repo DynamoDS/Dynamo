@@ -9,14 +9,6 @@ namespace DSCoreNodesTests
     {
         [Test]
         [Category("UnitTests")]
-        public void WebRequest_ValidArgs()
-        {
-            var result = Web.WebRequestByUrl("http://www.google.com");
-            Assert.IsNotNullOrEmpty(result);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void WebRequest_BadArgs()
         {
             Assert.Throws<UriFormatException>(()=>Web.WebRequestByUrl("ThisIsNotAUrl"));
@@ -27,6 +19,15 @@ namespace DSCoreNodesTests
         public void WebRequest_EmptyUrl()
         {
             Assert.Throws<ArgumentException>(() => Web.WebRequestByUrl(""));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void WebRequest_GitHubAPI()
+        {
+            string url = "https://api.github.com/rate_limit";
+            string result = Web.WebRequestByUrl(url);
+            Assert.IsNotNullOrEmpty(result);
         }
     }
 }
