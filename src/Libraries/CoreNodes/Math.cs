@@ -17,7 +17,7 @@ namespace DSCore
     public static class Math
     {
         /// <summary>
-        ///     Generates a random double in the range of [0, 1].
+        ///     Generates a random double in the range of [0, 1).
         /// </summary>
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">Random number between 0 and 1.</returns>
@@ -29,7 +29,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a random number in the range [lower_number, higher_number].
+        ///     Produce a random number in the range [lower_number, higher_number).
         /// </summary>
         /// <param name="value1">One end of the range for the random number.</param>
         /// <param name="value2">One end of the range for the random number.</param>
@@ -42,13 +42,13 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a random number in the range [lower_number, higher_number] based on an intial seed value.
+        ///     Produce a random number in the range [lower_number, higher_number) based on an intial seed value.
         /// </summary>
         /// <param name="value1">One end of the range for the random number.</param>
         /// <param name="value2">One end of the range for the random number.</param>
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
-        /// <search>random,numberrange</search>
+        /// <search>random,numberrange,seed</search>
         public static double Random(double value1, double value2, [DefaultArgument("1")] int seed)
         {
             double result = Min(value1, value2) + Abs(value2 - value1) * new Random(seed).NextDouble();
@@ -57,7 +57,7 @@ namespace DSCore
 
         /// <summary>
         ///     Produces a list containing the given amount of random doubles
-        ///     in the range of [0, 1].
+        ///     in the range of [0, 1).
         /// </summary>
         /// <param name="amount">Amount of random numbers the result list will contain.</param>
         /// <returns name="number">List of random numbers between 0 and 1.</returns>
@@ -74,14 +74,14 @@ namespace DSCore
 
         /// <summary>
         ///     Produces a list containing the given amount of random doubles
-        ///     in the deffined range of [0, 1] based on an intial seed value.
+        ///     in the deffined range of [0, 1) based on an intial seed value.
         /// </summary>
         /// <param name="amount">Amount of random numbers the result list will contain.</param>
         /// <param name="value1">One end of the range for the random number.</param>
         /// <param name="value2">One end of the range for the random number.</param>
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">List of random numbers in the range.</returns>
-        /// <search>random,listcontains</search>
+        /// <search>random,listcontains,seed</search>
         public static IList RandomList(int amount, [DefaultArgument("0.0")] double value1, [DefaultArgument("1.0")] double value2, [DefaultArgument("1")] int seed)
         {
             var result = new ArrayList();

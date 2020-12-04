@@ -1266,7 +1266,7 @@ namespace DSCore
         /// <param name="list">List to shuffle.</param>
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="list">Randomized list.</returns>
-        /// <search>random,randomize,shuffle,jitter,randomness</search>
+        /// <search>random,randomize,shuffle,jitter,randomness,seed</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Shuffle(IList list, [DefaultArgument("1")] int seed)
         {
