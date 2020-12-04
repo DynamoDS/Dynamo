@@ -25,7 +25,7 @@ You can learn more about developing libraries for Dynamo on the [Dynamo wiki](ht
 ### Build Dynamo from Source ###
 You will need the following to build the latest Dynamo on Windows:
 
-- [Microsoft Visual Studio 2019 2019.16.8](https://visualstudio.microsoft.com/downloads/) (any edition)
+- [Microsoft Visual Studio 2019.16.8](https://visualstudio.microsoft.com/downloads/) (any edition)
 - Microsoft .NET Framework 4.8 (included with Visual Studio 2019)
 - [GitHub for Windows](https://windows.github.com/)
 
