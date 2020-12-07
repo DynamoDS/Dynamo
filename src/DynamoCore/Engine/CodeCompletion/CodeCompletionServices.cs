@@ -144,7 +144,7 @@ namespace Dynamo.Engine.CodeCompletion
         internal IEnumerable<CompletionData> GetFunctionSignatures(string code, string functionName, string functionPrefix,
             ElementResolver resolver = null)
         {
-            IEnumerable<MethodMirror> candidates = null;
+            IEnumerable<StaticMirror> candidates = null;
 
             // if function is global, search for function in Built-ins
             if (string.IsNullOrEmpty(functionPrefix))
@@ -169,6 +169,7 @@ namespace Dynamo.Engine.CodeCompletion
             if (type != null)
             {
                 candidates = type.GetOverloadsOnType(functionName);
+                candidates = candidates.Concat(type.GetProperties().Where(x => x.IsStatic && x.PropertyName == functionName));
             }
             // If not of class type
             else
@@ -298,7 +299,10 @@ namespace Dynamo.Engine.CodeCompletion
             if (property != null)
             {
                 string propertyName = property.PropertyName;
-                return new CompletionData(propertyName, CompletionType.Property);
+                return new CompletionData(propertyName, CompletionType.Property)
+                {
+                    Stub = property.ToString()
+                };
             }
             var classMirror = mirror as ClassMirror;
             if (classMirror != null)
