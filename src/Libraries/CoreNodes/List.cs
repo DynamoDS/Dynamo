@@ -1268,7 +1268,7 @@ namespace DSCore
         /// <returns name="list">Randomized list.</returns>
         /// <search>random,randomize,shuffle,jitter,randomness,seed</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static IList Shuffle(IList list, int seed = 1)
+        public static IList Shuffle(IList list, int seed)
         {
             var rng = new Random(seed);
             return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
