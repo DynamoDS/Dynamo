@@ -49,7 +49,7 @@ namespace DSCore
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">Random number in the range [lowValue, highValue).</returns>
         /// <search>random,numberrange,seed</search>
-        public static double Random(double value1, double value2, [DefaultArgument("1")] int seed)
+        public static double Random(double value1 = 0, double value2 = 1, int seed = 1)
         {
             double result = Min(value1, value2) + Abs(value2 - value1) * new Random(seed).NextDouble();
             return result;
@@ -82,7 +82,7 @@ namespace DSCore
         /// <param name="seed">Seed value for the random number generator.</param>
         /// <returns name="number">List of random numbers in the range.</returns>
         /// <search>random,listcontains,seed</search>
-        public static IList RandomList(int amount, [DefaultArgument("0.0")] double value1, [DefaultArgument("1.0")] double value2, [DefaultArgument("1")] int seed)
+        public static IList RandomList(int amount, double value1 = 0, double value2 = 1, int seed = 1)
         {
             var result = new ArrayList();
             var random = new Random(seed);
