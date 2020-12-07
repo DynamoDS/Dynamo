@@ -2098,6 +2098,28 @@ var06 = g;
 
         [Test]
         [Category("UnitTests")]
+        public void TestPropertySignatureCompletion()
+        {
+            string ffiTargetClass = "ClassFunctionality";
+            string functionName = "IntVal";
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            // Expected 3 "CodeCompletionClass" ctor overloads
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("IntVal : int (this : ClassFunctionality)", overloads.ElementAt(0).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void TestMethodSignatureCompletion()
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);

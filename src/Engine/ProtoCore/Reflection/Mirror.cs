@@ -672,6 +672,14 @@ namespace ProtoCore
                 }
             }
 
+            /// <summary>
+            /// For an instance property of a class, called "Property"
+            /// this returns the string
+            /// "Property : 'return type' (this : 'class type')."
+            /// For a static property of a class,  this returns
+            /// "Property : 'return type'."
+            /// </summary>
+            /// <returns></returns>
             public override string ToString()
             {
                 var sb = new StringBuilder();

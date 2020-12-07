@@ -133,7 +133,8 @@ namespace Dynamo.Engine.CodeCompletion
         }
 
         /// <summary>
-        /// Returns the list of function signatures of all overloads of a given method
+        /// Returns the list of function signatures of all overloads of a given method 
+        /// or getter method equivalent of a property.
         /// </summary>
         /// <param name="code"> code being typed in code block </param>
         /// <param name="functionName"> given method name for which signature is queried </param>
