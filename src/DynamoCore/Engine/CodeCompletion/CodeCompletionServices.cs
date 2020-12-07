@@ -150,14 +150,8 @@ namespace Dynamo.Engine.CodeCompletion
             // if function is global, search for function in Built-ins
             if (string.IsNullOrEmpty(functionPrefix))
             {
-                return StaticMirror.GetOverloadsOnBuiltIns(core, functionName).
-                    Select(x =>
-                    {
-                        return new CompletionData(x.MethodName, CompletionData.CompletionType.Method)
-                        {
-                            Stub = x.ToString()
-                        };
-                    });
+                return StaticMirror.GetOverloadsOnBuiltIns(core, functionName).Select(x =>
+                    new CompletionData(x.MethodName, CompletionData.CompletionType.Method, x.ToString()));
             }
 
             // Determine if the function prefix is a class name
@@ -281,6 +275,11 @@ namespace Dynamo.Engine.CodeCompletion
             this.Type = type;
         }
 
+        internal CompletionData(string text, CompletionType type, string stub) : this(text, type)
+        {
+            Stub = stub;
+        }
+
 
         internal static CompletionData ConvertMirrorToCompletionData(StaticMirror mirror, bool useShorterName = false, 
             ElementResolver resolver = null)
@@ -291,19 +290,13 @@ namespace Dynamo.Engine.CodeCompletion
                 string methodName = method.MethodName;
                 string signature = method.ToString();
                 CompletionType type = method.IsConstructor ? CompletionType.Constructor : CompletionType.Method;
-                return new CompletionData(methodName, type)
-                {
-                    Stub = signature
-                };
+                return new CompletionData(methodName, type, signature);
             }
             var property = mirror as PropertyMirror;
             if (property != null)
             {
                 string propertyName = property.PropertyName;
-                return new CompletionData(propertyName, CompletionType.Property)
-                {
-                    Stub = property.ToString()
-                };
+                return new CompletionData(propertyName, CompletionType.Property, property.ToString());
             }
             var classMirror = mirror as ClassMirror;
             if (classMirror != null)
@@ -311,8 +304,8 @@ namespace Dynamo.Engine.CodeCompletion
                 string className = useShorterName ? GetShortClassName(classMirror, resolver) : classMirror.Alias;
                 return new CompletionData(className, CompletionType.Class);
             }
-            else
-                throw new ArgumentException("Invalid argument");
+
+            throw new ArgumentException("Invalid argument");
         }
 
         private static string GetShortClassName(ClassMirror mirror, ElementResolver resolver)

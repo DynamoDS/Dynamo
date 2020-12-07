@@ -660,14 +660,18 @@ namespace ProtoCore
                 this.isSetter = isSetter;
             }
 
+            /// <summary>
+            /// E.g. For an instance property, Prop of ClassA, this is:
+            /// (this : ClassA) otherwise for a static property it is an empty string.
+            /// </summary>
             private string Argument
             {
                 get
                 {
                     var args = procNode.ArgumentInfos.Any()
-                        ? " (" + string.Join(", ",
-                                    thisArgName + " : " + procNode.ArgumentTypes[0].ToString().Split('.').Last())
-                               + ')' : "";
+                        ? " (" +
+                          thisArgName + " : " + procNode.ArgumentTypes[0].ToString().Split('.').Last()
+                          + ')' : "";
                     return args;
                 }
             }
