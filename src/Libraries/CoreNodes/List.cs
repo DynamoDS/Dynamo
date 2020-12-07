@@ -1257,7 +1257,20 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static IList Shuffle(IList list)
         {
-            var rng = new Random();
+            return list.Cast<object>().OrderBy(_ => mRandom.Next()).ToList();
+        }
+
+        /// <summary>
+        ///     Shuffles a list, randomizing the order of its items based on an intial seed value.
+        /// </summary>
+        /// <param name="list">List to shuffle.</param>
+        /// <param name="seed">Seed value for the random number generator.</param>
+        /// <returns name="list">Randomized list.</returns>
+        /// <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList Shuffle(IList list, int seed = 1)
+        {
+            var rng = new Random(seed);
             return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
         }
 
@@ -1355,6 +1368,9 @@ namespace DSCore
         #endregion
 
         #region private helper methods
+
+        private static readonly Random mRandom = new Random();
+
         /// <summary>
         ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
         ///     the item is contained in the list if the item is an array. Returns the index if found, 
