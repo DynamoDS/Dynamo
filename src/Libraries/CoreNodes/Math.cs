@@ -29,11 +29,11 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a random number in the range (lower_number, higher_number).
+        ///     Produce a random number in the range [lower_number, higher_number).
         /// </summary>
         /// <param name="value1">Lower end of the range for the random number.</param>
         /// <param name="value2">Higher end of the range for the random number.</param>
-        /// <returns name="number">Random number in the range (lower_number, higher_number).</returns>
+        /// <returns name="number">Random number in the range [lower_number, higher_number).</returns>
         /// <search>random,numberrange</search>
         public static double Random(double value1, double value2)
         {
@@ -42,12 +42,12 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Produce a random number in the range (lower_number, higher_number) based on an initial seed value.
+        ///     Produce a random number in the range [lower_number, higher_number) based on an initial seed value.
         /// </summary>
         /// <param name="value1">Lower end of the range for the random number.</param>
         /// <param name="value2">Higher end of the range for the random number.</param>
         /// <param name="seed">Seed value for the random number generator.</param>
-        /// <returns name="number">Random number in the range (lower_number, higher_number).</returns>
+        /// <returns name="number">Random number in the range [lower_number, higher_number).</returns>
         /// <search>random,numberrange,seed</search>
         public static double Random(double value1, double value2, int seed)
         {
@@ -74,13 +74,13 @@ namespace DSCore
 
         /// <summary>
         ///     Produces a list containing the given amount of random doubles
-        ///     in the defined range of (lower_number, higher_number) based on an initial seed value.
+        ///     in the defined range of [lower_number, higher_number) based on an initial seed value.
         /// </summary>
         /// <param name="amount">Amount of random numbers the result list will contain.</param>
         /// <param name="value1">Lower end of the range for the random number.</param>
         /// <param name="value2">Higher end of the range for the random number.</param>
         /// <param name="seed">Seed value for the random number generator.</param>
-        /// <returns name="number">List of random numbers in the range (lower_number, higher_number).</returns>
+        /// <returns name="number">List of random numbers in the range [lower_number, higher_number).</returns>
         /// <search>random,listcontains,seed</search>
         public static IList RandomList(int amount, double value1, double value2, int seed)
         {
