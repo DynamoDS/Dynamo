@@ -116,6 +116,7 @@ namespace DynamoSandbox
                 }
                 catch
                 {
+                    // Do nothing for now.
                 }
 
                 Debug.WriteLine(e.Message);
