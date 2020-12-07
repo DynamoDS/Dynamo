@@ -99,14 +99,9 @@ namespace Md2Html
         {
             string output;
             HtmlSanitizer.ContentWasUpdated = false;
-            if (content.Contains(@"<body "))
-            {
-                output = HtmlSanitizer.SanitizeDocument(content);
-            }
-            else
-            {
-                output = HtmlSanitizer.Sanitize(content);
-            }
+
+            output = HtmlSanitizer.SanitizeDocument(content);
+
             if (HtmlSanitizer.ContentWasUpdated)
             {
                 return output;

@@ -1,4 +1,5 @@
 ﻿using System;
+using AngleSharp.Css.Dom;
 using Ganss.XSS;
 
 namespace Md2Html
@@ -20,8 +21,24 @@ namespace Md2Html
 
             AllowedAttributes.Add(@"content");
             AllowedAttributes.Add(@"http-equiv");
+            AllowedAttributes.Add(@"id");
 
             AllowedCssProperties.Add(@"src");
+            AllowedCssProperties.Add(@"word-break");
+            AllowedCssProperties.Add(@"word-wrap");
+            AllowedCssProperties.Add(@"-moz-tab-size");
+            AllowedCssProperties.Add(@"-o-tab-size");
+            AllowedCssProperties.Add(@"tab-size");
+            AllowedCssProperties.Add(@"-webkit-hyphens");
+            AllowedCssProperties.Add(@"-moz-hyphens");
+            AllowedCssProperties.Add(@"-ms-hyphens");
+            AllowedCssProperties.Add(@"hyphens");
+            AllowedCssProperties.Add(@"background-position-x");
+            AllowedCssProperties.Add(@"background-position-y");
+
+            AllowedSchemes.Add(@"file");
+
+            AllowedAtRules.Add(CssRuleType.Media);
 
             RemovingAtRule += ChangedEvent;
             RemovingAttribute += ChangedEvent;
