@@ -2108,7 +2108,6 @@ var06 = g;
             string code = "";
             var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
 
-            // Expected 3 "CodeCompletionClass" ctor overloads
             Assert.AreEqual(1, overloads.Count());
 
             foreach (var overload in overloads)
