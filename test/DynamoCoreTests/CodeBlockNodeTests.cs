@@ -1942,7 +1942,7 @@ var06 = g;
 
             var members = type.GetMembers();
 
-            var expected = new[] { "AddWithValueContainer", "CodeCompletionClass", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
+            var expected = new[] { "AddWithValueContainer", "ClassProperty", "CodeCompletionClass", "IntVal", "IsEqualTo", "OverloadedAdd", "StaticFunction", "StaticProp"};
             AssertCompletions(members, expected);
         }
 
@@ -2094,6 +2094,27 @@ var06 = g;
                 Assert.AreEqual(functionName, overload.Text);
             }
             Assert.AreEqual("CodeCompletionClass (i1 : int, i2 : int, i3 : int)", overloads.ElementAt(2).Stub);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestPropertySignatureCompletion()
+        {
+            string ffiTargetClass = "ClassFunctionality";
+            string functionName = "IntVal";
+
+            var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
+
+            string code = "";
+            var overloads = codeCompletionServices.GetFunctionSignatures(code, functionName, ffiTargetClass);
+
+            Assert.AreEqual(1, overloads.Count());
+
+            foreach (var overload in overloads)
+            {
+                Assert.AreEqual(functionName, overload.Text);
+            }
+            Assert.AreEqual("IntVal : int (this : ClassFunctionality)", overloads.ElementAt(0).Stub);
         }
 
         [Test]
@@ -2251,7 +2272,7 @@ var06 = g;
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("", "CodeCompletionClass");
-            Assert.AreEqual(6, completions.Count());
+            Assert.AreEqual(8, completions.Count());
         }
 
         [Test]
@@ -2269,10 +2290,11 @@ var06 = g;
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("", "DupTargetTest").ToList();
-            Assert.AreEqual(3, completions.Count);
+            Assert.AreEqual(4, completions.Count);
             Assert.AreEqual("DupTargetTest", completions[0].Text);
             Assert.AreEqual("Bar", completions[1].Text);
             Assert.AreEqual("Foo", completions[2].Text);
+            Assert.AreEqual("Prop", completions[3].Text);
         }
 
         [Test]
@@ -2294,9 +2316,10 @@ var06 = g;
         {
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
             var completions = codeCompletionServices.GetCompletionsOnType("", "FFITarget.C.B.DupTargetTest").ToList();
-            Assert.AreEqual(2, completions.Count);
+            Assert.AreEqual(3, completions.Count);
             Assert.AreEqual("DupTargetTest", completions[0].Text);
             Assert.AreEqual("Foo", completions[1].Text);
+            Assert.AreEqual("Prop", completions[2].Text);
         }
 
         [Test]
