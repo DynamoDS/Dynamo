@@ -50,30 +50,35 @@ namespace Dynamo.Wpf.Utilities
         internal static string BuildMarkdownContent(string dynamoVersion, string stackTrace)
         {
             return
-            "# Issue Description" + Environment.NewLine +
-            "Please fill in the following information to help us reproduce the issue:" + Environment.NewLine + Environment.NewLine +
+                "# Issue Description" + Environment.NewLine +
+                "Please fill in the following information to help us reproduce the issue:" + Environment.NewLine +
+                Environment.NewLine +
 
-            "### What did you do?" + Environment.NewLine +
-            "(Fill in here)" + Environment.NewLine + Environment.NewLine +
+                "## Dynamo version" + Environment.NewLine +
+                "Dynamo: " + "`" + dynamoVersion + "`" + Environment.NewLine + Environment.NewLine +
 
-            "### What did you expect to see?" + Environment.NewLine +
-            "(Fill in here)" + Environment.NewLine + Environment.NewLine +
+                "## Operating system" + Environment.NewLine +
+                "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine + Environment.NewLine +
 
-            "### What did you see instead?" + Environment.NewLine +
-            "(Fill in here)" + Environment.NewLine + Environment.NewLine +
+                "## What did you do?" + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
 
-            "### What packages or external references (if any) were used?" + Environment.NewLine +
-            "(Fill in here)" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
+                "## What did you expect to see?" + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
 
-            "### Stack Trace" + Environment.NewLine +
-            "```" + Environment.NewLine +
-            "(From the Dynamo crash window select 'Details' -> 'Copy' and paste here)" + Environment.NewLine +
-            "```" + Environment.NewLine + Environment.NewLine +
+                "## What did you see instead?" + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
 
-            "---" + Environment.NewLine +
-            "OS: " + "`" + Environment.OSVersion + "`" + Environment.NewLine +
-            "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine +
-            "Dynamo: " + "`" + dynamoVersion + "`" + Environment.NewLine;
+                "## What packages or external references (if any) were used?" + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
+
+                "## Stack Trace" + Environment.NewLine +
+                "```" + Environment.NewLine +
+                "(From the Dynamo crash window select 'Details' -> 'Copy' and paste here)" + Environment.NewLine +
+                "```" + Environment.NewLine + Environment.NewLine +
+
+                "---" + Environment.NewLine +
+                "CLR: " + "`" + Environment.Version + "`" + Environment.NewLine;
         }
     }
 }
