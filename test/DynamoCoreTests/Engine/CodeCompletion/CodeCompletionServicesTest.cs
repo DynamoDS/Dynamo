@@ -64,7 +64,7 @@ namespace Dynamo.Tests.Engine.CodeCompletion
             CompletionData.ConvertMirrorToCompletionData(new ClassMirror(ffiTargetClass, libraryServicesCore), true, new ElementResolver());
 
             //Assert
-            Assert.AreEqual(6, completions.Count());
+            Assert.AreEqual(8, completions.Count());
         }
 
         /// <summary>

@@ -344,11 +344,8 @@ namespace Dynamo.Controls
 
             e.Handled = true;
 
-            var helpDialog = new NodeHelpPrompt(e.Model);
-            helpDialog.Owner = Window.GetWindow(this);
-
-            helpDialog.Show();
-
+            var nodeAnnotationEventArgs = new OpenNodeAnnotationEventArgs(viewModel.NodeModel, viewModel.DynamoViewModel);
+            ViewModel.DynamoViewModel.OpenDocumentationLink(nodeAnnotationEventArgs);
         }
 
         void NodeLogic_DispatchedToUI(object sender, UIDispatcherEventArgs e)

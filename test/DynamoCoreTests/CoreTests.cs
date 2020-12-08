@@ -1136,5 +1136,28 @@ namespace Dynamo.Tests
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Annotations.Count());
             Assert.AreEqual(1, this.CurrentDynamoModel.CurrentWorkspace.Notes.Count());
         }
+
+        [Test]
+        public void CannotRemoveDefaultDSVarArgFunctionPorts()
+        {
+            // Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\dsfunction\StringSplit.dyn");
+            OpenModel(openPath);
+            var nodeGuid = Guid.Parse("c969eca6005a4273aee4ed8ddd73f3ab");
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace<DSVarArgFunction>(nodeGuid);
+            int portCountBefore = node.InPorts.Count;
+
+            // Act
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.ModelEventCommand(nodeGuid, "AddInPort", 1));
+            int portCountAfterAdd = node.InPorts.Count;
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.ModelEventCommand(nodeGuid, "RemoveInPort", 1));
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.ModelEventCommand(nodeGuid, "RemoveInPort", 1));
+            int portCountAfterRemove = node.InPorts.Count;
+
+            // Assert
+            Assert.AreEqual(2, portCountBefore);
+            Assert.AreEqual(3, portCountAfterAdd);
+            Assert.AreEqual(2, portCountAfterRemove);
+        }
     }
 }

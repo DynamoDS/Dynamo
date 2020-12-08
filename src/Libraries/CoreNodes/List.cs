@@ -444,7 +444,7 @@ namespace DSCore
         /// <returns name="sortedList">type: var[]..[]</returns>
         /// <returns name="sortedKeys">type: var[]..[]</returns>
         /// <search>sort;key</search>
-        [MultiReturn(new[] { "sorted list", "sorted keys" })]
+        [MultiReturn("sortedList", "sortedKeys")]
         [IsVisibleInDynamoLibrary(true)]
         public static IDictionary SortByKey(IList list, IList keys)
         {
@@ -484,8 +484,8 @@ namespace DSCore
 
             return new Dictionary<object, object>
             {
-                { "sorted list", sortedList },
-                { "sorted keys", sortedKeys }
+                { "sortedList", sortedList },
+                { "sortedKeys", sortedKeys }
             };
         }
 
@@ -815,6 +815,56 @@ namespace DSCore
                     if ((obj is bool) && !(bool)obj) continue;
                     else return false;
                 }
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Determines if any item in the given list is a boolean and has a true value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether any item is true.</param>
+        /// <returns name="bool">Whether any item is true.</returns>
+        /// <search>test,any,true,istrue</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static bool AnyTrue(IList list)
+        {
+            bool result = false;
+            foreach (object obj in list)
+            {
+                if (obj is IList subList)
+                {
+                    result = AnyTrue(subList);
+                }
+                else if (obj is bool boolObj && boolObj)
+                {
+                    result = true;
+                }
+                if (result) break;
+            }
+            return result;
+        }
+
+        /// <summary>
+        ///     Determines if any item in the given list is a boolean and has a false value.
+        /// </summary>
+        /// <param name="list">List to be checked on whether any item is false.</param>
+        /// <returns name="bool">Whether any item is false.</returns>
+        /// <search>test,any,false,isfalse</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static bool AnyFalse(IList list)
+        {
+            bool result = false;
+            foreach (object obj in list)
+            {
+                if (obj is IList subList)
+                {
+                    result = AnyFalse(subList);
+                }
+                else if(obj is bool boolObj && !boolObj)
+                {
+                    result = true;
+                }
+                if (result) break;
             }
             return result;
         }
@@ -1207,7 +1257,20 @@ namespace DSCore
         [IsVisibleInDynamoLibrary(true)]
         public static IList Shuffle(IList list)
         {
-            var rng = new Random();
+            return list.Cast<object>().OrderBy(_ => mRandom.Next()).ToList();
+        }
+
+        /// <summary>
+        ///     Shuffles a list, randomizing the order of its items based on an intial seed value.
+        /// </summary>
+        /// <param name="list">List to shuffle.</param>
+        /// <param name="seed">Seed value for the random number generator.</param>
+        /// <returns name="list">Randomized list.</returns>
+        /// <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList Shuffle(IList list, int seed)
+        {
+            var rng = new Random(seed);
             return list.Cast<object>().OrderBy(_ => rng.Next()).ToList();
         }
 
@@ -1305,6 +1368,9 @@ namespace DSCore
         #endregion
 
         #region private helper methods
+
+        private static readonly Random mRandom = new Random();
+
         /// <summary>
         ///     An alternative to using IList.Contains which uses Enumerable.SequenceEqual to check if
         ///     the item is contained in the list if the item is an array. Returns the index if found, 

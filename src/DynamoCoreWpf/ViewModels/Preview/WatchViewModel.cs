@@ -63,7 +63,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The string lable visibile in the watch.
+        /// The string label visible in the watch.
         /// </summary>
         public string NodeLabel
         {

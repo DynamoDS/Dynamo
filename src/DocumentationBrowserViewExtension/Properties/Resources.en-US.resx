@@ -132,6 +132,30 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Show Documentation Browser</value>
   </data>
+  <data name="NodeDocumentationCategory" xml:space="preserve">
+    <value>Category</value>
+    <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationDescription" xml:space="preserve">
+    <value>Description</value>
+    <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationInputs" xml:space="preserve">
+    <value>Inputs</value>
+    <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationNodeInfo" xml:space="preserve">
+    <value>Node Info</value>
+    <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationNodeType" xml:space="preserve">
+    <value>Node Type</value>
+    <comment>Header in Node Info table</comment>
+  </data>
+  <data name="NodeDocumentationOutputs" xml:space="preserve">
+    <value>Outputs</value>
+    <comment>Header in Node Info table</comment>
+  </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
     <value>Script tags detected in the help document have been removed.</value>
   </data>

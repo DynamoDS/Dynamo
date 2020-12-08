@@ -25,6 +25,12 @@
                   "path": "DSCoreNodes.DSCore.List.AllTrue"
                 },
                 {
+                  "path": "DSCoreNodes.DSCore.List.AnyFalse"
+                },
+                {
+                  "path": "DSCoreNodes.DSCore.List.AnyTrue"
+                },
+                {
                   "path": "DSCoreNodes.DSCore.List.SetIntersection"
                 },
                 {
