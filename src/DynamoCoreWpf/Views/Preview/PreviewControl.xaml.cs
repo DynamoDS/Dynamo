@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -730,6 +731,13 @@ namespace Dynamo.UI.Controls
         private void PreviewControl_MouseLeave(object sender, MouseEventArgs e)
         {
             bubbleTools.Visibility = Visibility.Collapsed;
+        }
+
+        private void OnCopyToClipboardClick(object sender, RoutedEventArgs e)
+        {
+            string content = cachedLargeContent?.GetNodeLabelTree();
+            if (string.IsNullOrEmpty(content)) content = cachedSmallContent?.NodeLabel;
+            if (!string.IsNullOrEmpty(content)) Clipboard.SetText(content);
         }
 
         #endregion
