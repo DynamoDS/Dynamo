@@ -7,6 +7,8 @@
                            xmlns:ui="clr-namespace:Dynamo.UI"
                            mc:Ignorable="d" 
                            d:DesignHeight="450" d:DesignWidth="800"
+                           MinHeight="32"
+                           MinWidth="160"
                            WindowStyle="None"
                            StateChanged="ExtensionWindow_StateChanged"
                            Loaded="ExtensionWindow_Loaded">

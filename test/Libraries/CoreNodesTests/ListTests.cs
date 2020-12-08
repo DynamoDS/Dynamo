@@ -583,6 +583,46 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ListAnyTrue()
+        {
+            var oneTrue = new List<object> {true};
+            var oneFalse = new List<object> {false};
+            var subListsAllTrue = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, true, new List<object> {true}, true}}}, true};
+            var subListsAllFalse = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, false};
+            var subListsOneTrue = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, true};
+            var subListsOneFalse = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, false, new List<object> {true}, true}}}, true};
+
+            Assert.IsFalse(List.AnyTrue(List.Empty));
+            Assert.IsTrue(List.AnyTrue(oneTrue));
+            Assert.IsFalse(List.AnyTrue(oneFalse));
+            Assert.IsTrue(List.AnyTrue(subListsAllTrue));
+            Assert.IsFalse(List.AnyTrue(subListsAllFalse));
+            Assert.IsTrue(List.AnyTrue(subListsOneTrue));
+            Assert.IsTrue(List.AnyTrue(subListsOneFalse));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListAnyFalse()
+        {
+            var oneTrue = new List<object> {true};
+            var oneFalse = new List<object> {false};
+            var subListsAllTrue = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, true, new List<object> {true}, true}}}, true};
+            var subListsAllFalse = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, false};
+            var subListsOneTrue = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, true};
+            var subListsOneFalse = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, false, new List<object> {true}, true}}}, true};
+
+            Assert.IsFalse(List.AnyFalse(List.Empty));
+            Assert.IsFalse(List.AnyFalse(oneTrue));
+            Assert.IsTrue(List.AnyFalse(oneFalse));
+            Assert.IsFalse(List.AnyFalse(subListsAllTrue));
+            Assert.IsTrue(List.AnyFalse(subListsAllFalse));
+            Assert.IsTrue(List.AnyFalse(subListsOneTrue));
+            Assert.IsTrue(List.AnyFalse(subListsOneFalse));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void JoinLists()
         {
             Assert.AreEqual(

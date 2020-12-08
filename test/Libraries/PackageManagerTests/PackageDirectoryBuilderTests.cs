@@ -32,7 +32,7 @@ namespace Dynamo.PackageManager.Tests
 
             db.BuildDirectory(pkg, pkgsDir, files);
 
-            Assert.AreEqual(4, fs.DirectoriesCreated.Count());
+            Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
             Assert.AreEqual(2, fs.DeletedFiles.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
@@ -56,11 +56,13 @@ namespace Dynamo.PackageManager.Tests
             var binDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.BinaryDirectoryName);
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
             var extraDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.ExtraDirectoryName);
+            var docDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
 
             Assert.IsTrue(fs.DirectoriesCreated.Any(x => x.FullName == rootDir));
             Assert.IsTrue(fs.DirectoriesCreated.Any(x => x.FullName == dyfDir));
             Assert.IsTrue(fs.DirectoriesCreated.Any(x => x.FullName == binDir));
             Assert.IsTrue(fs.DirectoriesCreated.Any(x => x.FullName == extraDir));
+            Assert.IsTrue(fs.DirectoriesCreated.Any(x => x.FullName == docDir));
         }
 
         [Test]
@@ -134,6 +136,7 @@ namespace Dynamo.PackageManager.Tests
             var binDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.BinaryDirectoryName);
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
             var extraDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.ExtraDirectoryName);
+            var docDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.DocumentationDirectoryName);
 
             // The package itself is updated
 
@@ -141,6 +144,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual(binDir, pkg.BinaryDirectory);
             Assert.AreEqual(dyfDir, pkg.CustomNodeDirectory);
             Assert.AreEqual(extraDir, pkg.ExtraDirectory);
+            Assert.AreEqual(docDir, pkg.NodeDocumentaionDirectory);
         }
 
         [Test]
@@ -215,13 +219,13 @@ namespace Dynamo.PackageManager.Tests
             var pkgsDir = @"C:\dynamopackages";
             db.BuildDirectory(pkg, pkgsDir, files);
 
-            Assert.AreEqual(4, fs.DirectoriesCreated.Count());
+            Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
             Assert.AreEqual(3, fs.DeletedFiles.Count());
             Assert.AreEqual(2, fs.DeletedDirectories.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
-        
+
         #endregion
 
         #region CopyFilesIntoPackageDirectory
@@ -229,9 +233,9 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void CopyFilesIntoPackageDirectory_DoesNotMoveFilesAlreadyWithinDirectory()
         {
-            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf", 
-                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll", 
-                @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo" };
+            var files = new[] { @"C:\foo/dyf\file1.dyf", @"C:\\foo\dyf\file2.dyf", @"C:\\foo\dyf\file3.dyf",
+                @"C:\foo/bin\file1.dll", @"C:\\foo\bin\file2.dll", @"C:\\foo\bin\file3.dll",
+                @"C:\foo/extra\file1.pdf", @"C:\\foo\extra\file2.rvt", @"C:\\foo\extra\file3.poo", @"C:\\foo\doc\file1.md", @"C:\\foo\doc\file2.png" };
 
             var fs = new RecordedFileSystem((fn) => files.Contains(fn), (dn) => true);
             var f = new PackageDirectoryBuilder(fs, new Mock<IPathRemapper>().Object);
@@ -245,7 +249,10 @@ namespace Dynamo.PackageManager.Tests
             var extra = new Mock<IDirectoryInfo>();
             extra.SetupGet((i) => i.FullName).Returns(() => "C:/foo/extra");
 
-            f.CopyFilesIntoPackageDirectory(files, dyf.Object, bin.Object, extra.Object);
+            var doc = new Mock<IDirectoryInfo>();
+            doc.SetupGet((i) => i.FullName).Returns(() => "C:/foo/doc");
+
+            f.CopyFilesIntoPackageDirectory(files, dyf.Object, bin.Object, extra.Object, doc.Object);
 
             // no files should be copied, they are all already within their intended directory
             Assert.IsEmpty(fs.CopiedFiles);

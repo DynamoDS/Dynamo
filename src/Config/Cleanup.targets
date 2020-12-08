@@ -8,6 +8,7 @@
       <FilesToDelete Include="$(OutputPath)nodes\SharpDX*"/>
       <FilesToDelete Include="$(OutputPath)nodes\HelixToolkit*"/>
       <FilesToDelete Include="$(OutputPath)nodes\Cyotek*"/>
+      <FilesToDelete Include="$(OutputPath)nodes\ProtoGeometry*"/>
     </ItemGroup> 
     <Delete Files="@(FilesToDelete)"/>
   </Target>
