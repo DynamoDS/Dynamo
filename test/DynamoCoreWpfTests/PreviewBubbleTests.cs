@@ -395,6 +395,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void PreviewBubble_CopyToClipboard()
         {
             // Arrange
