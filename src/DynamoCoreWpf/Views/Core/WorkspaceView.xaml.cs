@@ -16,12 +16,10 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.UI;
@@ -392,6 +390,7 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+                ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
 
                 ViewModel.Loaded();
             }

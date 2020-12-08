@@ -34,7 +34,7 @@
         <Begin>/*</Begin>
         <End>*/</End>
       </Span>
-      <Span name="String" stopateol="true" color="#885D3B" escapecharacter="\">
+      <Span name="String" stopateol="false" color="#885D3B" escapecharacter="\">
         <Begin>"</Begin>
         <End>"</End>
       </Span>

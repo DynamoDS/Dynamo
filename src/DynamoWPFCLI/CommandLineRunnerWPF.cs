@@ -40,6 +40,11 @@ namespace DynamoWPFCLI
                 Console.WriteLine("commandFilePath option is only available when running DynamoSandbox, not DynamoWPFCLI");
             }
 
+            if (!(string.IsNullOrEmpty(cmdLineArgs.HostName)))
+            {
+                viewModel.Model.HostName = cmdLineArgs.HostName;
+            }
+
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(viewModel.Model, path);

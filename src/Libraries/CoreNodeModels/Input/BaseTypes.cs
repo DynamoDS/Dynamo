@@ -99,7 +99,13 @@ namespace CoreNodeModels.Input
 
         internal override IEnumerable<AssociativeNode> BuildAst(List<AssociativeNode> inputAstNodes, CompilationContext context)
         {
-            var rhs = AstFactory.BuildStringNode(Value);
+            string value = Value;
+            if (context == CompilationContext.NodeToCode)
+            {
+                value = value.Replace(@"\", @"\\")
+                    .Replace("\"", "\\\"");
+            }
+            var rhs = AstFactory.BuildStringNode(value);
             var assignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs);
 
             return new[] { assignment };

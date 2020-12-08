@@ -1126,8 +1126,10 @@ namespace Dynamo.ViewModels
 
         private void SetArgumentLacing(object parameter)
         {
-            var modelGuids = DynamoSelection.Instance.Selection.
-                OfType<NodeModel>().Select(n => n.GUID);
+            var modelGuids = DynamoSelection.Instance.Selection
+                .OfType<NodeModel>()
+                .Where(n => n.ArgumentLacing != LacingStrategy.Disabled)
+                .Select(n => n.GUID);
 
             if (!modelGuids.Any())
                 return;

@@ -113,7 +113,74 @@ namespace Dynamo.Tests
             AssertPreviewCount(nodeIds[1].ToString(), 2);
             AssertPreviewCount(nodeIds[2].ToString(), 2);
         }
+        
+        [Test]
+        public void VerifyLacingStrategyDisabledCantBeChanged()
+        {
+            // Arrange
+            var openPath = Path.Combine(TestDirectory, @"core\visualization\LacingStrategyDisabled.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            var workspace = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
+            Guid codeBlockNodeId = Guid.Parse("5a35517215434699afe122bc51aeff7d");
+            Guid pythonNodeId = Guid.Parse("cd679ac2203f42c18b30e44bb6c5238e");
+            Guid typicalNodeId = Guid.Parse("ab8afb7c1dfe4dd0994662f3306fc530");
+            var codeBlockNode = workspace.NodeFromWorkspace(codeBlockNodeId);
+            var pythonNode = workspace.NodeFromWorkspace(pythonNodeId);
+            var typicalNode = workspace.NodeFromWorkspace(typicalNodeId);
 
+            // Verify initial lacing state is Auto
+            var codeBlockNodeLacingStart = codeBlockNode.ArgumentLacing;
+            var pythonNodeLacingStart = pythonNode.ArgumentLacing;
+            var typicalNodeLacingStart = typicalNode.ArgumentLacing;
+
+            // Act
+
+            // Modify lacing strategy to Longest
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Longest.ToString());
+            var codeBlockNodeLacingLongest = codeBlockNode.ArgumentLacing;
+            var pythonNodeLacingLongest = pythonNode.ArgumentLacing;
+            var typicalNodeLacingLongest = typicalNode.ArgumentLacing;
+
+            // Modify lacing strategy to Auto
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Auto.ToString());
+            var codeBlockNodeLacingAuto = codeBlockNode.ArgumentLacing;
+            var pythonNodeLacingAuto = pythonNode.ArgumentLacing;
+            var typicalNodeLacingAuto = typicalNode.ArgumentLacing;
+
+            // Modify lacing strategy to CrossProduct
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.CrossProduct.ToString());
+            var codeBlockNodeLacingCross = codeBlockNode.ArgumentLacing;
+            var pythonNodeLacingCross = pythonNode.ArgumentLacing;
+            var typicalNodeLacingCross = typicalNode.ArgumentLacing;
+
+            // Change lacing back to Shortest
+            ViewModel.CurrentSpaceViewModel.SelectAllCommand.Execute(null);
+            ViewModel.CurrentSpaceViewModel.SetArgumentLacingCommand.Execute(LacingStrategy.Shortest.ToString());
+            var codeBlockNodeLacingShortest = codeBlockNode.ArgumentLacing;
+            var pythonNodeLacingShortest = pythonNode.ArgumentLacing;
+            var typicalNodeLacingShortest = typicalNode.ArgumentLacing;
+
+            // Assert
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNodeLacingStart);
+            Assert.AreEqual(LacingStrategy.Disabled, pythonNodeLacingStart);
+            Assert.AreEqual(LacingStrategy.Auto, typicalNodeLacingStart);
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNodeLacingLongest);
+            Assert.AreEqual(LacingStrategy.Disabled, pythonNodeLacingLongest);
+            Assert.AreEqual(LacingStrategy.Longest, typicalNodeLacingLongest);
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNodeLacingAuto);
+            Assert.AreEqual(LacingStrategy.Disabled, pythonNodeLacingAuto);
+            Assert.AreEqual(LacingStrategy.Auto, typicalNodeLacingAuto);
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNodeLacingCross);
+            Assert.AreEqual(LacingStrategy.Disabled, pythonNodeLacingCross);
+            Assert.AreEqual(LacingStrategy.CrossProduct, typicalNodeLacingCross);
+            Assert.AreEqual(LacingStrategy.Disabled, codeBlockNodeLacingShortest);
+            Assert.AreEqual(LacingStrategy.Disabled, pythonNodeLacingShortest);
+            Assert.AreEqual(LacingStrategy.Shortest, typicalNodeLacingShortest);
+        }
+        
         [Test]
         public void AreGlobalLacingStrategiesInMenu()
         {
