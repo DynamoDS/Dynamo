@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        Title="{x:Static p:Resources.CustomNodePropertyWindowTitle}" Height="410" Width="400" WindowStartupLocation="CenterOwner"
+        Title="{x:Static p:Resources.CustomNodePropertyWindowTitle}" Height="440" Width="400" WindowStartupLocation="CenterOwner"
         Style="{DynamicResource DynamoWindowStyle}">
 
     <Window.Resources>
@@ -39,7 +39,7 @@
                     <TextBlock Text="{x:Static p:Resources.CustomNodePromptDescriptionTooltip}" />
                 </Label.ToolTip>
             </Label>
-            <TextBox Style="{DynamicResource SDarkTextBox}" MaxHeight="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
+            <TextBox Style="{DynamicResource SDarkTextBox}" Height="64" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" 
                      Name="DescriptionInput" Padding="5" MinLines="3" TextWrapping="Wrap" AcceptsReturn="True" Tag="{x:Static p:Resources.CustomNodePropertyWindowDescriptionHint}"/>
 
             <Label Content="{x:Static p:Resources.CustomNodePropertyWindowCategory}" Foreground="DarkGray" Height="28" HorizontalAlignment="Stretch" Name="label2"  />

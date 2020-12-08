@@ -64,6 +64,11 @@ http://opensource.org/licenses/apache2.0.php
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL
 
+### Markdig
+https://github.com/lunet-io/markdig
+https://github.com/lunet-io/markdig/blob/master/license.txt
+  (BSD 2-Clause "Simplified" License)
+
 ### MiConvexHull
 http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license

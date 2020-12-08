@@ -53,6 +53,14 @@ namespace Dynamo.PackageManager
             get { return Path.Combine(RootDirectory, "extra"); }
         }
 
+        /// <summary>
+        /// Directory path to where node documentation markdown files should be placed.
+        /// </summary>
+        public string NodeDocumentaionDirectory
+        {
+            get { return Path.Combine(RootDirectory, "doc"); }
+        }
+
         public bool Loaded { get; internal set; }
 
         private bool typesVisibleInManager;

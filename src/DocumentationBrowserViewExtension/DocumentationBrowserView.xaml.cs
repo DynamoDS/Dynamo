@@ -88,7 +88,10 @@ namespace Dynamo.DocumentationBrowser
         /// <param name="link"></param>
         public void NavigateToPage(Uri link)
         {
-            this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                this.documentationBrowser.NavigateToString(this.viewModel.GetContent());
+            }));
         }
 
         protected virtual void Dispose(bool disposing)
@@ -96,7 +99,13 @@ namespace Dynamo.DocumentationBrowser
             // Cleanup
             this.viewModel.LinkChanged -= NavigateToPage;
             this.documentationBrowser.Navigating -= ShouldAllowNavigation;
-            this.documentationBrowser.Dispose();
+            // Note to test writers
+            // Disposing the document browser will cause future tests
+            // that uses the Browser component to crash
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                this.documentationBrowser.Dispose();
+            }
             this.documentationBrowser.DpiChanged -= DocumentationBrowser_DpiChanged;
         }
 

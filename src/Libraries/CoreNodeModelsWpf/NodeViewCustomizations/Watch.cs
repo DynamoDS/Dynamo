@@ -100,6 +100,13 @@ namespace CoreNodeModelsWpf.Nodes
             };
             rawDataMenuItem.SetBinding(MenuItem.IsCheckedProperty, checkedBinding);
             nodeView.MainContextMenu.Items.Add(rawDataMenuItem);
+
+            var copyToClipboardMenuItem = new MenuItem
+            {
+                Header = Dynamo.Wpf.Properties.Resources.ContextMenuCopy
+            };
+            copyToClipboardMenuItem.Click += OnCopyToClipboardClick;
+            nodeView.MainContextMenu.Items.Add(copyToClipboardMenuItem);
         }
 
         private void Subscribe()
@@ -251,6 +258,12 @@ namespace CoreNodeModelsWpf.Nodes
         {
             ResetWatch();
             astBeingComputed = watch.InPorts[0].Connectors[0].Start.Owner.AstIdentifierForPreview;
+        }
+
+        private void OnCopyToClipboardClick(object sender, RoutedEventArgs e)
+        {
+            string content = rootWatchViewModel.GetNodeLabelTree();
+            if (!string.IsNullOrEmpty(content)) Clipboard.SetText(content);
         }
     }
 }

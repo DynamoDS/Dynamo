@@ -98,9 +98,9 @@ namespace Dynamo.Wpf.Extensions
         /// <returns></returns>
         public void AddToExtensionsSideBar(IViewExtension viewExtension, ContentControl contentControl)
         {
-            TabItem tabItem  = dynamoView.AddExtensionTabItem(viewExtension, contentControl);
+            bool added  = dynamoView.AddOrFocusExtensionControl(viewExtension, contentControl);
 
-            if (tabItem != null)
+            if (added)
             {
                 dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
             }

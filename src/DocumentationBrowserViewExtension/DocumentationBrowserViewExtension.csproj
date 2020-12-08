@@ -40,6 +40,7 @@
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -54,8 +55,12 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="DocumentationBrowserUtils.cs" />
     <Compile Include="DocumentationBrowserViewExtension.cs" />
     <Compile Include="DocumentationBrowserViewModel.cs" />
+    <Compile Include="MarkdownHandler.cs" />
+    <Compile Include="NodeDocumentationHtmlGenerator.cs" />
+    <Compile Include="PackageDocumentationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -85,6 +90,14 @@
     <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
       <Project>{47533B7C-0E1A-44A4-8511-B438645F052A}</Project>
       <Name>DynamoPackages</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +166,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Docs\IntegerOverflow.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\MarkdownStyling.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\NodeAnnotationNotFound.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\syntaxHighlight.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
