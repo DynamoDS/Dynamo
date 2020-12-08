@@ -148,6 +148,19 @@ namespace Dynamo.Models
         }
 
         /// <summary>
+        /// Occurs when a workspace is about to be saved to a file.
+        /// </summary>
+        public event WorkspaceSaveHandler WorkspaceSaving;
+        internal void OnWorkspaceSaving(WorkspaceModel workspace, SaveContext saveContext)
+        {
+            if (WorkspaceSaving != null)
+            {
+                WorkspaceSaving(workspace, saveContext);
+                HandleStorageExtensionsOnWorkspaceSaveing(workspace, saveContext);
+            }
+        }
+
+        /// <summary>
         /// Occurs when a workspace is scheduled to be saved to a backup file.
         /// </summary>
         public event Action<string, bool> RequestWorkspaceBackUpSave;
@@ -170,6 +183,19 @@ namespace Dynamo.Models
         {
             var handler = WorkspaceOpening;
             if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// Occurs when a workspaces is opened
+        /// </summary>
+        public event WorkspaceHandler WorkspaceOpened;
+        internal void OnWorkspaceOpend(WorkspaceModel workspace)
+        {
+            if(WorkspaceOpened != null)
+            {
+                WorkspaceOpened?.Invoke(workspace);
+                HandleStorageExtensionsOnWorkspaceOpened(workspace);
+            }
         }
 
         /// <summary>
@@ -928,6 +954,52 @@ namespace Dynamo.Models
             var logSource = ext as ILogSource;
             if (logSource != null)
                 logSource.MessageLogged -= LogMessage;
+        }
+
+
+        private void HandleStorageExtensionsOnWorkspaceOpened(WorkspaceModel workspace)
+        {
+            if (!extensionManager.StorageAccessesExtensions.Any())
+                return;
+
+            foreach (var extension in extensionManager.StorageAccessesExtensions)
+            {
+                var ext = extension as IExtension;
+                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, ext.UniqueId);
+            }
+        }
+
+        private void HandleStorageExtensionsOnWorkspaceSaveing(WorkspaceModel workspace, SaveContext saveContext)
+        {
+            if (!extensionManager.StorageAccessesExtensions.Any())
+                return;
+
+            foreach (var extension in extensionManager.StorageAccessesExtensions)
+            {
+                var ext = extension as IExtension;
+                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, ext.UniqueId, ext.Name, saveContext);
+            }
+        }
+
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId)
+        {
+            workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            var extensionDataCopy = new Dictionary<string, string>(data);
+            extension.OnWorkspaceOpen(extensionDataCopy);
+        }
+
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId, string extensionName, SaveContext saveContext)
+        {
+            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            extension.OnWorkspaceSaving(data, saveContext);
+
+            if (hasMatchingExtensionData)
+            {
+                workspace.UpdateExtensionData(uniqueId, data);
+                return;
+            }
+
+            workspace.CreateNewExtensionData(uniqueId, extensionName, data);
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
@@ -1704,7 +1776,9 @@ namespace Dynamo.Models
 
             AddWorkspace(ws);
             CurrentWorkspace = ws;
+            OnWorkspaceOpend(ws);
         }
+
 
         private void SetPeriodicEvaluation(WorkspaceModel ws)
         {
@@ -2589,6 +2663,8 @@ namespace Dynamo.Models
 
             Action savedHandler = () => OnWorkspaceSaved(workspace);
             workspace.Saved += savedHandler;
+            Action<SaveContext> savingHandler = (c) => OnWorkspaceSaving(workspace,c);
+            workspace.WorkspaceSaving += savingHandler;
             workspace.MessageLogged += LogMessage;
             workspace.PropertyChanged += OnWorkspacePropertyChanged;
             workspace.Disposed += () =>
