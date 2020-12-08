@@ -22,6 +22,7 @@ namespace Md2Html
             AllowedAttributes.Add(@"content");
             AllowedAttributes.Add(@"http-equiv");
             AllowedAttributes.Add(@"id");
+            AllowedAttributes.Add(@"class");
 
             AllowedCssProperties.Add(@"src");
             AllowedCssProperties.Add(@"word-break");
@@ -35,10 +36,18 @@ namespace Md2Html
             AllowedCssProperties.Add(@"hyphens");
             AllowedCssProperties.Add(@"background-position-x");
             AllowedCssProperties.Add(@"background-position-y");
+            AllowedCssProperties.Add(@"transition-property");
+            AllowedCssProperties.Add(@"transition-duration");
+            AllowedCssProperties.Add(@"transition-timing-function");
+            AllowedCssProperties.Add(@"transition-delay");
+            AllowedCssProperties.Add(@"box-shadow");
 
             AllowedSchemes.Add(@"file");
+            AllowedSchemes.Add(@"data");
 
             AllowedAtRules.Add(CssRuleType.Media);
+            AllowedAtRules.Add(CssRuleType.Keyframe);
+            AllowedAtRules.Add(CssRuleType.Keyframes);
 
             RemovingAtRule += ChangedEvent;
             RemovingAttribute += ChangedEvent;
