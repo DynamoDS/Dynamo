@@ -4,7 +4,7 @@
 #issueContent: Body of the issue to be analyzed
 #acceptableEmptyFields: Amount of fields from the template that can be missing information
 #                       in the issue (1 if unspecified)
-param([string]$issueTemplateFile, [string]$issueContent, [int]$acceptableEmptyFields=1)
+param([string]$issueTemplateFile, [string]$issueContent, [int]$acceptableEmptyFields = 1)
 
 #Loads the requiered functions
 . .\.github\scripts\issue_comparator.ps1
@@ -25,16 +25,24 @@ $analysis_result = " "
 
 #Checks for missing content on the comparator result and loads
 #$analysis_result with the corresponding section title
-foreach ($Section in $comparation_result)
-{
-    if(($Section.ContentStatus -eq "Empty") -or ($Section.ContentStatus -eq "NotFound")){
-        $script:analysis_result = "$($script:analysis_result) \n- $($Section.Title)"
-        $script:missingFields = $script:missingFields + 1
+$FullyEmpty = "True"
+foreach ($Section in $comparation_result) {
+
+    if ($Section.TitleStatus -ne "New") {
+        if (($Section.ContentStatus -eq "Empty") -or ($Section.ContentStatus -eq "NotFound")) {
+            $script:analysis_result = "$($script:analysis_result) \n- $($Section.Title)"
+            $script:missingFields = $script:missingFields + 1
+        }
+        else {
+            $FullyEmpty = "False"
+        }
     }
 }
 
+if($FullyEmpty -eq "True") { $analysis_result = "Empty" }
+
 #If no missing information was found then the issue is Valid
-if(($analysis_result -eq " ") -or ($missingFields -le $acceptableEmptyFields)) {$analysis_result = "Valid"}
+if (($analysis_result -eq " ") -or ($missingFields -le $acceptableEmptyFields)) { $analysis_result = "Valid" }
 
 #--Output--
 #"Valid" if the issue has the necessary information
