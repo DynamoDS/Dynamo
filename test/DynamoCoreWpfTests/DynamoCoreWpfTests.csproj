@@ -183,7 +183,6 @@
     <Compile Include="Utility\DispatcherUtil.cs" />
     <Compile Include="Utility\ViewExtensions.cs" />
     <Compile Include="UpdateManagerUITests.cs" />
-    <Compile Include="ViewExtensions\NodeAutoCompleteViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\PythonMigrationViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\ViewExtensionTests.cs" />
     <Compile Include="ViewExtensions\DocumentationBrowserViewExtensionTests.cs" />
@@ -275,10 +274,6 @@
       <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
       <Name>UnitsUI</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj">
-      <Project>{51511AFD-F326-4995-8E27-5D711419EF6F}</Project>
-      <Name>NodeAutoCompleteViewExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
       <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
