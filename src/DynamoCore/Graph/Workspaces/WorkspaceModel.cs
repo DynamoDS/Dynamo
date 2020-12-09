@@ -2119,32 +2119,37 @@ namespace Dynamo.Graph.Workspaces
             return deterministicGuid;
         }
 
-        internal bool GetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        internal bool GetMatchingWorkspaceData(string uniqueId, string version, out Dictionary<string, string> data)
         {
             data = new Dictionary<string, string>();
             if (!ExtensionData.Any())
                 return false;
 
-            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId).FirstOrDefault();
-            if (extensionData is null)
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId && x.Version == version)
+                .FirstOrDefault();
+
+            if (extensionData is null || extensionData.Version != version)
                 return false;
 
             data = extensionData.Data;
             return true;
         }
 
-        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
+        internal void UpdateExtensionData(string uniqueId, string version, Dictionary<string, string> data)
         {
-            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId).FirstOrDefault();
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId && x.Version == version)
+                .FirstOrDefault();
+
             if (extensionData is null)
                 return;
+
             extensionData.Data = data;
         }
 
-        internal void CreateNewExtensionData(string uniqueId, string name, Dictionary<string, string> data)
+        internal void CreateNewExtensionData(string uniqueId, string name, string version, Dictionary<string, string> data)
         {
             // TODO: Figure out how to add extension version when creating new ExtensionData 
-            var extensionData = new ExtensionData(uniqueId, name, "NotSureHowWeShouldDoThis...", data);
+            var extensionData = new ExtensionData(uniqueId, name, version, data);
             ExtensionData.Add(extensionData);
         }
     }

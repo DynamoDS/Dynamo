@@ -983,23 +983,29 @@ namespace Dynamo.Models
 
         internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId)
         {
-            workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
+            var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
+
+            workspace.GetMatchingWorkspaceData(uniqueId, version, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
             extension.OnWorkspaceOpen(extensionDataCopy);
         }
 
         internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId, string extensionName, SaveContext saveContext)
         {
-            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
-            extension.OnWorkspaceSaving(data, saveContext);
+            var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
+            var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
+            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, version, out Dictionary<string, string> data);
+            extension.OnWorkspaceSaving(data, saveContext);
+            
             if (hasMatchingExtensionData)
             {
-                workspace.UpdateExtensionData(uniqueId, data);
+                workspace.UpdateExtensionData(uniqueId, version, data);
                 return;
             }
 
-            workspace.CreateNewExtensionData(uniqueId, extensionName, data);
+            workspace.CreateNewExtensionData(uniqueId, extensionName, version, data);
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
