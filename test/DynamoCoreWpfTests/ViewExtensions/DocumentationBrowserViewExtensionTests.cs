@@ -2,7 +2,6 @@
 using Dynamo.DocumentationBrowser;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -14,8 +13,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo;
 
 namespace DynamoCoreWpfTests
 {
@@ -594,6 +595,69 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
+        }
+
+        #endregion
+    }
+
+    public class DocumentationBrowserViewExtensionContentTests : UnitTestBase
+    {
+        [Test, TestCaseSource(nameof(htmlResources))]
+        public void CheckThatEmbeddedHtmlContentDoesNotSanitize(string htmlResource)
+        {
+            // Arrange
+            var content = File.ReadAllText(htmlResource, Encoding.UTF8);
+
+            // Don't test scripts
+            if (content.StartsWith(@"<script>"))
+            {
+                return;
+            }
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var output = converter.SanitizeHtml(content);
+
+                // Assert
+                Assert.IsNullOrEmpty(output);
+            }
+        }
+
+        [Test, TestCaseSource(nameof(mdResources))]
+        public void CheckThatEmbeddedMdContentDoesNotSanitize(string resource)
+        {
+            // Arrange
+            var content = File.ReadAllText(resource, Encoding.UTF8);
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var html = converter.ParseMd2Html(content, ExecutingDirectory);
+                var output = converter.SanitizeHtml(html);
+
+                // Assert
+                Assert.IsNullOrEmpty(output);
+            }
+        }
+
+        #region Helpers
+        private string[] htmlResources()
+        {
+            return getContentFiles(@"*.html");
+        }
+
+        private string[] mdResources()
+        {
+            return getContentFiles(@"*.md");
+        }
+
+        private string[] getContentFiles(string wildcard)
+        {
+            var directory = new DirectoryInfo(ExecutingDirectory);
+            var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
+
+            return Directory.GetFiles(docsDirectory, wildcard);
         }
 
         #endregion
