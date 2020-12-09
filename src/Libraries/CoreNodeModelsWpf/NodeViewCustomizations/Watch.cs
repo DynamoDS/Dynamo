@@ -44,8 +44,6 @@ namespace CoreNodeModelsWpf.Nodes
             rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
 
             // Fix the maximum width/height of watch node.
-            nodeView.PresentationGrid.MaxWidth = Configurations.MaxWatchNodeWidth;
-            nodeView.PresentationGrid.MaxHeight = Configurations.MaxWatchNodeHeight;
             nodeView.PresentationGrid.Children.Add(watchTree);
             nodeView.PresentationGrid.Visibility = Visibility.Visible;
             // disable preview control

@@ -5,13 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="161"
-             d:DesignWidth="410"
+             Width="300"
+             Height="300"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             BorderBrush="Black"
-             MaxHeight="300">
+             BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,6 +19,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <Style x:Key="BorderlessButton"
                    TargetType="{x:Type Button}">
                 <Setter Property="Padding"
@@ -240,8 +242,8 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
 
+    <Grid Name ="inputGrid" MinHeight="100" MinWidth="100">
         <Grid.RowDefinitions>
             <RowDefinition Height ="*" />
             <RowDefinition Height="Auto" />
@@ -385,7 +387,15 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </Grid>
+
+            <Thumb Name ="resizeThumb" Grid.Column ="1"
+               Width="10" Height="10" 
+               HorizontalAlignment="Right" 
+               VerticalAlignment="Bottom" 
+               Margin="5"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"/>
+          </Grid>
         </Border>
     </Grid>
 </UserControl>

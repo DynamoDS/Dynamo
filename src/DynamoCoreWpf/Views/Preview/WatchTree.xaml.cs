@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
@@ -99,6 +100,21 @@ namespace Dynamo.Controls
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
             {
                 _vm.FindNodeForPathCommand.Execute(node.Path);
+            }
+        }
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            if (xAdjust >= inputGrid.MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= inputGrid.MinHeight)
+            {
+                Height = yAdjust;
             }
         }
     }
