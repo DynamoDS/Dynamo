@@ -2125,7 +2125,7 @@ namespace Dynamo.Graph.Workspaces
             if (!ExtensionData.Any())
                 return false;
 
-            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId && x.Version == version)
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
             if (extensionData is null || extensionData.Version != version)
@@ -2137,7 +2137,7 @@ namespace Dynamo.Graph.Workspaces
 
         internal void UpdateExtensionData(string uniqueId, string version, Dictionary<string, string> data)
         {
-            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId && x.Version == version)
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
             if (extensionData is null)
