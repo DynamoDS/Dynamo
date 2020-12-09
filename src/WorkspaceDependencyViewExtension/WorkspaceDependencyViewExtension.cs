@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Controls;
-using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
@@ -32,7 +31,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
+        public override string Name
         {
             get
             {
@@ -43,7 +42,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
+        public override string UniqueId
         {
             get
             {
@@ -54,7 +53,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             DependencyView.Dispose();
         }
@@ -65,12 +64,7 @@ namespace Dynamo.WorkspaceDependency
         {
         }
 
-        public void Shutdown()
-        {
-            // Do nothing for now
-        }
-
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
@@ -82,7 +76,7 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
