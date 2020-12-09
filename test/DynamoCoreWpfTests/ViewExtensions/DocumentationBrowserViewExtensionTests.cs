@@ -29,10 +29,10 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
         private const string nodeDocumentationInfoHeader = "<h2>Node Info</h2>";
-        private const string nodeDocumentationInfoNodeType = "<td>Node Type</td>";
-        private const string nodeDocumentationInfoNodeDescription = "<td>Description</td>";
-        private const string nodeDocumentationInfoNodeInputs = "<td>Inputs</td>";
-        private const string nodeDocumentationInfoNodeOutputs = "<td>Outputs</td>";
+        private const string nodeDocumentationInfoNodeType = "<td class=\"table--noborder\">Node Type</td>";
+        private const string nodeDocumentationInfoNodeDescription = "<td class=\"table--noborder\">Description</td>";
+        private const string nodeDocumentationInfoNodeInputs = "<td class=\"table--noborder\">Inputs</td>";
+        private const string nodeDocumentationInfoNodeOutputs = "<td class=\"table--noborder\">Outputs</td>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
 
