@@ -1,12 +1,11 @@
-﻿using Dynamo.Controls;
+﻿using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
 using Dynamo.DocumentationBrowser.Properties;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -24,12 +23,12 @@ namespace Dynamo.DocumentationBrowser
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name => Properties.Resources.ExtensionName;
+        public override string Name => Properties.Resources.ExtensionName;
 
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
+        public override string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
         public DocumentationBrowserViewExtension()
         {
@@ -50,12 +49,12 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
             // Do nothing for now
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
@@ -86,11 +85,6 @@ namespace Dynamo.DocumentationBrowser
             AddToSidebar(true);
         }
 
-        public void Shutdown()
-        {
-            // Do nothing for now
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
@@ -106,7 +100,7 @@ namespace Dynamo.DocumentationBrowser
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
