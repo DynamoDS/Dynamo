@@ -335,7 +335,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             
             <!-- Shows counts of all items in List -->
@@ -388,10 +388,9 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Thumb Name ="resizeThumb" Grid.Column ="1"
+            <Thumb Name ="resizeThumb" Grid.Column ="3"
                Width="10" Height="10" 
-               HorizontalAlignment="Right" 
-               VerticalAlignment="Bottom" 
+               HorizontalAlignment="Right"
                Margin="5"
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"
                Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"/>
