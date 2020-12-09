@@ -658,7 +658,7 @@ namespace Dynamo.Graph.Workspaces
 
             return ws;
         }
-                        //{ ExtensionData = GetExtensionData(serializer, obj) };
+
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
         {
             if (!obj.TryGetValue("ExtensionWorkspaceData", StringComparison.OrdinalIgnoreCase, out JToken extensionData))
@@ -682,6 +682,7 @@ namespace Dynamo.Graph.Workspaces
     public class WorkspaceWriteConverter : JsonConverter
     {
         private EngineController engine;
+        private const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
 
         public WorkspaceWriteConverter(EngineController engine = null)
         {
@@ -774,7 +775,7 @@ namespace Dynamo.Graph.Workspaces
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
 
             // ExtensionData
-            writer.WritePropertyName("ExtensionWorkspaceData");
+            writer.WritePropertyName(EXTENSION_WORKSPACE_DATA);
             serializer.Serialize(writer, ws.ExtensionData);
 
             if (engine != null)

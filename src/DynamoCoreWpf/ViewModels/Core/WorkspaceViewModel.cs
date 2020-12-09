@@ -555,7 +555,7 @@ namespace Dynamo.ViewModels
 
             try
             {
-                if(!isBackup)
+                if (!isBackup)
                     Model.OnSaving(saveContext);
 
                 //set the name before serializing model.

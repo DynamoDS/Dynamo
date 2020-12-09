@@ -189,7 +189,7 @@ namespace Dynamo.Models
         /// Occurs when a workspaces is opened
         /// </summary>
         public event WorkspaceHandler WorkspaceOpened;
-        internal void OnWorkspaceOpend(WorkspaceModel workspace)
+        internal void OnWorkspaceOpened(WorkspaceModel workspace)
         {
             if(WorkspaceOpened != null)
             {
@@ -1776,7 +1776,7 @@ namespace Dynamo.Models
 
             AddWorkspace(ws);
             CurrentWorkspace = ws;
-            OnWorkspaceOpend(ws);
+            OnWorkspaceOpened(ws);
         }
 
 

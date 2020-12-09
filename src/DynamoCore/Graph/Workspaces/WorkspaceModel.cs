@@ -1170,6 +1170,9 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
+                if (!isBackup)
+                    OnSaving(SaveContext.Save);
+
                 //set the name before serializing model.
                 setNameBasedOnFileName(filePath, isBackup);
 
@@ -1177,7 +1180,6 @@ namespace Dynamo.Graph.Workspaces
                 var json = this.ToJson(engine);
 
                 // Stage 2: Save
-                OnSaving(SaveContext.None);
                 File.WriteAllText(filePath, json);
 
                 // Handle Workspace or CustomNodeWorkspace related non-serialization internal logic
