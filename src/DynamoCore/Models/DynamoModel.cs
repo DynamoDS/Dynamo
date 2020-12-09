@@ -983,10 +983,7 @@ namespace Dynamo.Models
 
         internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId)
         {
-            var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
-            var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
-
-            workspace.GetMatchingWorkspaceData(uniqueId, version, out Dictionary<string, string> data);
+            workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
             extension.OnWorkspaceOpen(extensionDataCopy);
         }
@@ -996,12 +993,12 @@ namespace Dynamo.Models
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
-            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, version, out Dictionary<string, string> data);
+            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
             extension.OnWorkspaceSaving(data, saveContext);
             
             if (hasMatchingExtensionData)
             {
-                workspace.UpdateExtensionData(uniqueId, version, data);
+                workspace.UpdateExtensionData(uniqueId, data);
                 return;
             }
 
@@ -2676,6 +2673,7 @@ namespace Dynamo.Models
             workspace.Disposed += () =>
             {
                 workspace.Saved -= savedHandler;
+                workspace.WorkspaceSaving -= savingHandler;
                 workspace.MessageLogged -= LogMessage;
                 workspace.PropertyChanged -= OnWorkspacePropertyChanged;
             };

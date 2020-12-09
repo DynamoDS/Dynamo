@@ -1523,7 +1523,7 @@ namespace Dynamo.ViewModels
                 if (this.CurrentSpace.IsReadOnly)
                     ShowSaveDialogAndSaveResult(parameter);
                 else
-                    SaveAs(Model.CurrentWorkspace.FileName, SaveContext.Save);      
+                    InternalSaveAs(Model.CurrentWorkspace.FileName, SaveContext.Save);      
             }
                 
         }
@@ -1544,7 +1544,7 @@ namespace Dynamo.ViewModels
                 return;
 
             var fi = new FileInfo(filePath);
-            SaveAs(fi.FullName, SaveContext.SaveAs);
+            InternalSaveAs(fi.FullName, SaveContext.SaveAs);
         }
 
         internal bool CanSaveAs(object parameters)
@@ -1552,43 +1552,7 @@ namespace Dynamo.ViewModels
             return (parameters != null);
         }
 
-        /// <summary>
-        /// Save the current workspace to a specific file path. If the file path is null or empty, an
-        /// exception is written to the console.
-        /// </summary>
-        /// <param name="path">The path to the file.</param>
-        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
-        /// <exception cref="IOException"></exception>
-        /// <exception cref="UnauthorizedAccessException"></exception>
-        [Obsolete("Please use the SaveAs method with the saveContext argument.")]
-        public void SaveAs(string path, bool isBackup = false)
-        {
-            try
-            {
-                Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController);
-                if(!isBackup) AddToRecentFiles(path);
-            }
-            catch (Exception ex)
-            {
-                Model.Logger.Log(ex.Message);
-                Model.Logger.Log(ex.StackTrace);
-
-                if (ex is IOException || ex is UnauthorizedAccessException)
-                    System.Windows.MessageBox.Show(String.Format(ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Warning));
-            }
-        }
-
-        /// <summary>
-        /// Save the current workspace to a specific file path. If the file path is null or empty, an
-        /// exception is written to the console.
-        /// </summary>
-        /// <param name="path">The path to the file.</param>
-        /// <param name="saveContext">The context of the save operation.</param>
-        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
-        /// <exception cref="IOException"></exception>
-        /// <exception cref="UnauthorizedAccessException"></exception>
-        public void SaveAs(string path, SaveContext saveContext, bool isBackup = false)
+        private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
             {
@@ -1610,10 +1574,39 @@ namespace Dynamo.ViewModels
         /// Save the current workspace to a specific file path. If the file path is null or empty, an
         /// exception is written to the console.
         /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        [Obsolete("Please use the SaveAs method with the saveContext argument.")]
+        public void SaveAs(string path, bool isBackup = false)
+        {
+            InternalSaveAs(path, SaveContext.SaveAs, isBackup: isBackup);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="saveContext">The context of the save operation.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        public void SaveAs(string path, SaveContext saveContext, bool isBackup = false)
+        {
+            InternalSaveAs(path, saveContext, isBackup);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
         /// <param name="id">Indicate the id of target workspace view model instead of defaulting to 
         /// current workspace view model. This is critical in crash cases.</param>
         /// <param name="path">The path to the file.</param>
         /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
+        /// <param name="saveContext">The context of the save operation.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
         internal void SaveAs(Guid id, string path, bool isBackup = false, SaveContext saveContext = SaveContext.None)

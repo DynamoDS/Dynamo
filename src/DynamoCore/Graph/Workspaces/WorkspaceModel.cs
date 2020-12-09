@@ -2119,7 +2119,7 @@ namespace Dynamo.Graph.Workspaces
             return deterministicGuid;
         }
 
-        internal bool GetMatchingWorkspaceData(string uniqueId, string version, out Dictionary<string, string> data)
+        internal bool GetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
         {
             data = new Dictionary<string, string>();
             if (!ExtensionData.Any())
@@ -2128,14 +2128,14 @@ namespace Dynamo.Graph.Workspaces
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
 
-            if (extensionData is null || extensionData.Version != version)
+            if (extensionData is null)
                 return false;
 
             data = extensionData.Data;
             return true;
         }
 
-        internal void UpdateExtensionData(string uniqueId, string version, Dictionary<string, string> data)
+        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
         {
             var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
                 .FirstOrDefault();
