@@ -246,7 +246,7 @@
         iSEfHhakbMcyxna498AH3YQBxduwKF1FUTJE0REZ3Pv1glXtwQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DSOffice.Data.ExportExcelAsString.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSOffice.Data.ExportToExcel.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAALWSURBVHhe7doxbhRBEIVhH8FH8BE4AkfwEQgJCRER
@@ -264,7 +264,7 @@
         o2rhujmqFq6bo2rhujmqAgAAAAAAAAAAAAAAAAAAAACSk5M/qVE78xNHtssAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="DSOffice.Data.ExportExcelAsString.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="DSOffice.Data.ExportToExcel.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADISURBVFhH7ZGxDcIwEEUzQkZhFEagpEyJqCjTMULW
