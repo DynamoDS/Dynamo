@@ -65,5 +65,20 @@ namespace Dynamo.DocumentationBrowser
 
             return result;
         }
+
+        private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
+
+        /// <summary>
+        /// Inject syntax highlighting into a html string.
+        /// </summary>
+        /// <param name="content"></param>
+        internal static string GetSyntaxHighlighting()
+        {
+            var syntaxHighlightingContent = DocumentationBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
+            if (string.IsNullOrWhiteSpace(syntaxHighlightingContent))
+                return string.Empty;
+
+            return syntaxHighlightingContent;
+        }
     }
 }

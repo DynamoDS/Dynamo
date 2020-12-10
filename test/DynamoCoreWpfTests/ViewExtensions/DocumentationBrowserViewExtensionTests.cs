@@ -2,7 +2,6 @@
 using Dynamo.DocumentationBrowser;
 using Dynamo.Interfaces;
 using Dynamo.Models;
-using Dynamo.PackageManager;
 using Dynamo.Scheduler;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -14,8 +13,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo;
 
 namespace DynamoCoreWpfTests
 {
@@ -28,10 +29,10 @@ namespace DynamoCoreWpfTests
         private const string excelDocsFileHtmlHeader = "<h2>Excel not installed </h2>";
         private const string fileMissingHtmlHeader = "<h3>Error 404</h3>";
         private const string nodeDocumentationInfoHeader = "<h2>Node Info</h2>";
-        private const string nodeDocumentationInfoNodeType = "<td>Node Type</td>";
-        private const string nodeDocumentationInfoNodeDescription = "<td>Description</td>";
-        private const string nodeDocumentationInfoNodeInputs = "<td>Inputs</td>";
-        private const string nodeDocumentationInfoNodeOutputs = "<td>Outputs</td>";
+        private const string nodeDocumentationInfoNodeType = "<td class=\"table--noborder\">Node Type</td>";
+        private const string nodeDocumentationInfoNodeDescription = "<td class=\"table--noborder\">Description</td>";
+        private const string nodeDocumentationInfoNodeInputs = "<td class=\"table--noborder\">Inputs</td>";
+        private const string nodeDocumentationInfoNodeOutputs = "<td class=\"table--noborder\">Outputs</td>";
 
         private string PackagesDirectory { get { return Path.Combine(GetTestDirectory(this.ExecutingDirectory), @"core\docbrowser\pkgs"); } }
 
@@ -386,7 +387,7 @@ namespace DynamoCoreWpfTests
                 Assert.IsFalse(docsEvent.IsRemoteResource);
                 Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
                 Assert.AreEqual(1, tabsAfterExternalEventTrigger);
-                Assert.IsTrue(htmlContent.Contains(@"<h2>Division by zero</h2>"));
+                Assert.IsTrue(htmlContent.Contains("<h2 id=\"heading\">Division by zero</h2>"));
                 Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"));
             }
         }
@@ -594,6 +595,69 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
+        }
+
+        #endregion
+    }
+
+    public class DocumentationBrowserViewExtensionContentTests : UnitTestBase
+    {
+        [Test, TestCaseSource(nameof(htmlResources))]
+        public void CheckThatEmbeddedHtmlContentDoesNotSanitize(string htmlResource)
+        {
+            // Arrange
+            var content = File.ReadAllText(htmlResource, Encoding.UTF8);
+
+            // Don't test scripts
+            if (content.StartsWith(@"<script>"))
+            {
+                return;
+            }
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var output = converter.SanitizeHtml(content);
+
+                // Assert
+                Assert.IsNullOrEmpty(output);
+            }
+        }
+
+        [Test, TestCaseSource(nameof(mdResources))]
+        public void CheckThatEmbeddedMdContentDoesNotSanitize(string resource)
+        {
+            // Arrange
+            var content = File.ReadAllText(resource, Encoding.UTF8);
+
+            using (var converter = new Md2Html())
+            {
+                // Act
+                var html = converter.ParseMd2Html(content, ExecutingDirectory);
+                var output = converter.SanitizeHtml(html);
+
+                // Assert
+                Assert.IsNullOrEmpty(output);
+            }
+        }
+
+        #region Helpers
+        private string[] htmlResources()
+        {
+            return getContentFiles(@"*.html");
+        }
+
+        private string[] mdResources()
+        {
+            return getContentFiles(@"*.md");
+        }
+
+        private string[] getContentFiles(string wildcard)
+        {
+            var directory = new DirectoryInfo(ExecutingDirectory);
+            var docsDirectory = Path.Combine(directory.Parent.Parent.Parent.FullName, @"src\DocumentationBrowserViewExtension\Docs");
+
+            return Directory.GetFiles(docsDirectory, wildcard);
         }
 
         #endregion
