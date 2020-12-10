@@ -321,6 +321,29 @@ namespace DSOffice
         /// </param>
         /// <param name="data">Data to write to the spreadsheet.</param>
         /// <param name="overWrite"></param>
+        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
+        [IsVisibleInDynamoLibrary(false)]
+        public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
+        {
+            return WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite, default);
+        }
+
+        /// <summary>
+        ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
+        ///     with sublists to be written in successive rows. Rows and columns are
+        ///     zero-indexed; for example, the value in the data list at [0,0] will
+        ///     be written to cell A1. Null values and empty lists are written to Excel 
+        ///     as empty cells. This node requires Microsoft Excel to be installed. 
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the workseet to write data to.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startCol">
+        ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
+        /// </param>
+        /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
         /// <param name="writeAsString">Toggle to switch between writing Excel file as strings.</param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
