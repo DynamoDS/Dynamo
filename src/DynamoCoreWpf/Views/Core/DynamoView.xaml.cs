@@ -215,9 +215,6 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if (!viewExtensionManager.StorageAccessesViewExtensions.Any())
-                return;
-
             foreach (var extension in viewExtensionManager.StorageAccessesViewExtensions)
             {
                 var ext = extension as IViewExtension;
@@ -227,9 +224,6 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
-            if (!viewExtensionManager.StorageAccessesViewExtensions.Any())
-                return;
-
             foreach (var extension in viewExtensionManager.StorageAccessesViewExtensions)
             {
                 var ext = extension as IViewExtension;

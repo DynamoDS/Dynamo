@@ -2119,7 +2119,7 @@ namespace Dynamo.Graph.Workspaces
             return deterministicGuid;
         }
 
-        internal bool GetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
         {
             data = new Dictionary<string, string>();
             if (!ExtensionData.Any())

@@ -959,9 +959,6 @@ namespace Dynamo.Models
 
         private void HandleStorageExtensionsOnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if (!extensionManager.StorageAccessesExtensions.Any())
-                return;
-
             foreach (var extension in extensionManager.StorageAccessesExtensions)
             {
                 var ext = extension as IExtension;
@@ -971,9 +968,6 @@ namespace Dynamo.Models
 
         private void HandleStorageExtensionsOnWorkspaceSaveing(WorkspaceModel workspace, SaveContext saveContext)
         {
-            if (!extensionManager.StorageAccessesExtensions.Any())
-                return;
-
             foreach (var extension in extensionManager.StorageAccessesExtensions)
             {
                 var ext = extension as IExtension;
@@ -983,7 +977,7 @@ namespace Dynamo.Models
 
         internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId)
         {
-            workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            workspace.TryGetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
             extension.OnWorkspaceOpen(extensionDataCopy);
         }
@@ -993,7 +987,7 @@ namespace Dynamo.Models
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
-            var hasMatchingExtensionData = workspace.GetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            var hasMatchingExtensionData = workspace.TryGetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
             extension.OnWorkspaceSaving(data, saveContext);
             
             if (hasMatchingExtensionData)
