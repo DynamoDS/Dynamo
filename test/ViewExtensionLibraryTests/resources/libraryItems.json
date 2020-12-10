@@ -5649,9 +5649,9 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSOffice.Data.ExportExcel",
-      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportExcel.Small?path=DSOffice.dll",
-      "contextData": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
+      "fullyQualifiedName": "DSOffice.Data.ExportToExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.ExportToExcel@string,string,int,int,var[][],bool,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
