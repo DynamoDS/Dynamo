@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 using Autodesk.DesignScript.Runtime;
 
 namespace DesignScript
@@ -102,6 +104,28 @@ namespace DesignScript
             public object ValueAtKey(string key)
             {
                 return D[key];
+            }
+
+            /// <summary>
+            /// Returns a friendly string representation of the dictionary.
+            /// </summary>
+            /// <returns>String representation of the dictionary.</returns>
+            public override string ToString()
+            {
+                var result = new StringBuilder();
+                result.Append("{");
+                foreach (var key in D.Keys)
+                {
+                    result.Append($"{key}:{D[key]},");
+                }
+
+                if (D.Any())
+                {
+                    result.Length -= 1;
+                }
+
+                result.Append("}");
+                return result.ToString();
             }
         }
     }
