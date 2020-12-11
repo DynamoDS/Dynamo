@@ -11,7 +11,6 @@ namespace Dynamo.DocumentationBrowser
     internal class MarkdownHandler : IDisposable
     {
         private const string NODE_ANNOTATION_NOT_FOUND = "Dynamo.DocumentationBrowser.Docs.NodeAnnotationNotFound.md";
-        private const string SYNTAX_HIGHLIGHTING = "Dynamo.DocumentationBrowser.Docs.syntaxHighlight.html";
         private readonly Md2Html converter = new Md2Html();
 
         /// <summary>
@@ -44,8 +43,7 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="nodeNamespace"></param>
-        /// <returns>Returns true if any script tags was removed from the string</returns>
-        internal bool ParseToHtml(ref StringWriter writer, string nodeNamespace)
+        internal void ParseToHtml(ref StringWriter writer, string nodeNamespace)
         {
             if (writer is null)
                 throw new ArgumentNullException(nameof(writer));
@@ -53,7 +51,6 @@ namespace Dynamo.DocumentationBrowser
             var mdFilePath = PackageDocumentationManager.Instance.GetAnnotationDoc(nodeNamespace);
 
             string mdString;
-            bool scriptTagsRemoved = false;
 
             if (string.IsNullOrWhiteSpace(mdFilePath) ||
                 !File.Exists(mdFilePath))
@@ -79,21 +76,11 @@ namespace Dynamo.DocumentationBrowser
                 }
 
                 if (string.IsNullOrWhiteSpace(mdString))
-                    return false;
-
-                // Remove scripts from user content for security reasons.
-                if (SanitizeHtml(ref mdString))
-                    scriptTagsRemoved = true;
+                    return;
             }
 
             var html = converter.ParseMd2Html(mdString, mdFilePath);
             writer.WriteLine(html);
-
-            // inject the syntax highlighting script at the bottom at the document.
-            writer.WriteLine(DocumentationBrowserUtils.GetDPIScript());
-            writer.WriteLine(GetSyntaxHighlighting());
-
-            return scriptTagsRemoved;
         }
 
         /// <summary>
@@ -112,19 +99,6 @@ namespace Dynamo.DocumentationBrowser
 
             content = sanitizedContent;
             return true;
-        }
-
-        /// <summary>
-        /// Inject syntax highlighting into a html string.
-        /// </summary>
-        /// <param name="content"></param>
-        private static string GetSyntaxHighlighting()
-        {
-            var syntaxHighlightingContent = DocumentationBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
-            if (string.IsNullOrWhiteSpace(syntaxHighlightingContent))
-                return string.Empty;
-
-            return syntaxHighlightingContent;
         }
     }
 }

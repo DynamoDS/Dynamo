@@ -17,20 +17,17 @@ namespace Dynamo.Wpf.Extensions
         /// There may be multiple instances of the same type, but the application 
         /// will *not* allow two instances to coexist with the same id.
         /// </summary>
-        public virtual string UniqueId { get; }
+        public abstract string UniqueId { get; }
 
         /// <summary>
         /// A name for the extension instance.  This is used for more user-readable logging.
         /// </summary>
-        public virtual string Name { get; }
+        public abstract string Name { get; }
 
         /// <summary>
         /// Dispose method for the view extension.
         /// </summary>
-        public virtual void Dispose()
-        {
-
-        }
+        public abstract void Dispose();
 
         /// <summary>
         /// Action to be invoked when DynamoView begins to start up.  This is guaranteed to happen

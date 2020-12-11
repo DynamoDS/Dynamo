@@ -249,23 +249,27 @@ namespace Dynamo.DocumentationBrowser
             {
                 writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
 
-                // Get the Node info section and remove script tags if any
+                // Get the Node info section
                 var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
-                if (MarkdownHandlerInstance.SanitizeHtml(ref nodeDocumentation))
-                {
-                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
-                }
-
                 writer.WriteLine(nodeDocumentation);
 
-                // Convert the markdown file to html and remove script tags if any
-                if (MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName))
+                // Convert the markdown file to html
+                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName);
+
+                writer.Flush();
+                var output = writer.ToString();
+
+                // Sanitize html and warn if any changes where made
+                if (MarkdownHandlerInstance.SanitizeHtml(ref output))
                 {
                     LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
                 }
 
-                writer.Flush();
-                return writer.ToString();
+                // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetDPIScript();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+
+                return output;
             }
             finally
             {
