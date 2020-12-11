@@ -58,12 +58,12 @@ namespace ProtoTest.TD.MultiLangTests
 		b = __ToStringFromArray(a);
 		return = b;
 	}
-    def testToStringFromObject()
-    {
-        a = {""a"":1};
+	def testToStringFromObject()
+	{
+		a = {""a"":1};
 		b = __ToStringFromObject(a);
 		return = b;
-    }
+	}
 	def testTranspose()
 	{
 		a = [[3,-4],[4,5]];
