@@ -112,7 +112,7 @@ namespace DSCore
         ///     Averages a list of numbers.
         /// </summary>
         /// <param name="numbers">List of numbers to be averaged.</param>
-        /// <returns name="average">Average of the list of numbers.</returns>
+        /// <returns name="double">Average of the list of numbers.</returns>
         /// <search>avg,mean</search>
         public static double Average(IList<double> numbers)
         {
@@ -231,8 +231,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the absolute value of a number.
         /// </summary>
-        /// <param name="number">A number.</param>
-        /// <returns name="absoluteValue">Absolute value of the number.</returns>
+        /// <param name="number">Number to find absolute value</param>
+        /// <returns name="double">Absolute value of the number.</returns>
         /// <search>absolute value,magnitude</search>
         public static double Abs(double number)
         {
@@ -314,7 +314,7 @@ namespace DSCore
         ///     Returns the first integer greater than the number
         /// </summary>
         /// <param name="number">Number to round up.</param>
-        /// <returns name="integer">First integer greater than the number.</returns>
+        /// <returns name="int">First integer greater than the number.</returns>
         /// <search>ceiling,round</search>
         public static long Ceiling(double number)
         {
@@ -394,8 +394,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the first integer smaller than the number.
         /// </summary>
-        /// <param name="number">Number to round up.</param>
-        /// <returns name="integer">First integer smaller than the number.</returns>
+        /// <param name="number">Number to round</param>
+        /// <returns name="int">First integer smaller than the number.</returns>
         /// <search>round</search>
         public static long Floor(double number)
         {
@@ -528,7 +528,7 @@ namespace DSCore
         /// <summary>
         /// Rounds a number to a specified number of fractional digits. 
         /// </summary>
-        /// <param name="number">Number to be rounded.</param>
+        /// <param name="number">Number to round</param>
         /// <param name="digits">Number of fractional digits in the return value.</param>
         /// <returns name="number">The number nearest to value that contains a number of fractional digits equal to digits.</returns>
         public static double Round(double number, int digits)
@@ -539,8 +539,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="number">A number.</param>
-        /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
+        /// <param name="number">Number to find sign</param>
+        /// <returns name="int">The sign of the number: -1, 0, or 1.</returns>
         public static long Sign(double number)
         {
             return CSMath.Sign(number);
@@ -549,11 +549,11 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="integer">A number.</param>
-        /// <returns name="sign">The sign of the number: -1, 0, or 1.</returns>
-        public static long Sign(long integer)
+        /// <param name="int">Integer to find sign</param>
+        /// <returns name="int">The sign of the number: -1, 0, or 1.</returns>
+        public static long Sign(long @int)
         {
-            return CSMath.Sign(integer);
+            return CSMath.Sign(@int);
         }
 
         /// <summary>
@@ -592,8 +592,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the tangent of an angle.
         /// </summary>
-        /// <param name="angle">Angle in degrees to take the tangent of.</param>
-        /// <returns name="tan">Tangent of the angle.</returns>
+        /// <param name="angle">Angle in radians</param>
+        /// <returns name="double">Tangent of the angle.</returns>
         /// <search>tangent</search>
         public static double Tan(double angle)
         {
@@ -606,8 +606,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the hyperbolic tangent of an angle (radians).
         /// </summary>
-        /// <param name="angle">An angle in radians.</param>
-        /// <returns name="tanh">Hyperbolic tangent of the angle.</returns>
+        /// <param name="angle">Angle in radians</param>
+        /// <returns name="double">Hyperbolic tangent of the angle</returns>
         /// <search>hyperbolic,tanh</search>
         public static double Tanh(double angle)
         {
@@ -624,8 +624,8 @@ namespace DSCore
         /// <summary>
         ///      Find the sum of a series of numbers
         /// </summary>
-        /// <param name="values">The numbers to sum</param>
-        /// <returns name="sum">The sum of the values</returns>
+        /// <param name="values">Numbers to add to sum</param>
+        /// <returns name="double">The sum of the values</returns>
         /// <search>mass addition,massadd</search>
         public static double Sum(IEnumerable<double> values)
         {
@@ -636,7 +636,7 @@ namespace DSCore
         ///     Finds the factorial result of a positive integer.
         /// </summary>
         /// <param name="number">A positive integer.</param>
-        /// <returns name="number!">The factorial result of the integer.</returns>
+        /// <returns name="number">The factorial result of the integer.</returns>
         /// <search>!</search>
         public static long Factorial(long number)
         {
@@ -673,13 +673,13 @@ namespace DSCore
         /// <summary>
         ///     Boolean XOR: Returns true if and only if exactly one of the inputs is true.
         /// </summary>
-        /// <param name="a">A boolean.</param>
-        /// <param name="b">A boolean.</param>
+        /// <param name="bool">First boolean.</param>
+        /// <param name="otherBool">Second boolean.</param>
         /// <returns name="bool">Boolean result.</returns>
         /// <search>xor,exclusive,or</search>
-        public static bool Xor(bool a, bool b)
+        public static bool Xor(bool @bool, bool otherBool)
         {
-            return a ^ b;
+            return @bool ^ otherBool;
         }
 
         private static readonly Random mRandom = new Random();
