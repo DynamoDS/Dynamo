@@ -112,7 +112,7 @@ namespace Dynamo.Extensions
                 }
 
                 if (extension is IExtensionStorageAccess storageAccess &&
-                    storageAccessExtensions.Find(x => (x as IExtension).UniqueId == extension.UniqueId) is null)
+                    storageAccessExtensions.Find(x => x.UniqueId == extension.UniqueId) is null)
                 {
                     storageAccessExtensions.Add(storageAccess);
                 }
@@ -147,7 +147,7 @@ namespace Dynamo.Extensions
             }
 
             if (extension is IExtensionStorageAccess storageAccess &&
-                storageAccessExtensions.Find(x => (x as IExtension).UniqueId == extension.UniqueId) is null)
+                storageAccessExtensions.Find(x => x.UniqueId == extension.UniqueId) is null)
             {
                 storageAccessExtensions.Remove(storageAccess);
             }

@@ -10,6 +10,20 @@ namespace Dynamo.Extensions
     public interface IExtensionStorageAccess
     {
         /// <summary>
+        /// A unique id for this extension instance. 
+        /// 
+        /// The id will be equivalent to the extension that implements this interface id.
+        /// </summary>
+        string UniqueId { get; }
+
+        /// <summary>
+        /// A name for the Extension.
+        /// 
+        /// The name will be equivalent to the extension that implements this interface name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         /// Action to be invoked when the workspace is opened. The passed extensionData dictionary is a copy of the <see cref="ExtensionData"/> data dictionary.
         /// Modifying the extensionData from this action will not modify the stored <see cref="ExtensionData"/>.
         /// To modify the stored <see cref="ExtensionData"/> data dictionary use the <see cref="OnWorkspaceSaving(Dictionary{string, string}, SaveContext)"/>.

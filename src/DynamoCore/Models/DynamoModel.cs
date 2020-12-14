@@ -961,8 +961,7 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessesExtensions)
             {
-                var ext = extension as IExtension;
-                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, ext.UniqueId);
+                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
             }
         }
 
@@ -970,33 +969,32 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessesExtensions)
             {
-                var ext = extension as IExtension;
-                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, ext.UniqueId, ext.Name, saveContext);
+                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId)
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension)
         {
-            workspace.TryGetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
             extension.OnWorkspaceOpen(extensionDataCopy);
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, string uniqueId, string extensionName, SaveContext saveContext)
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
         {
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
-            var hasMatchingExtensionData = workspace.TryGetMatchingWorkspaceData(uniqueId, out Dictionary<string, string> data);
+            var hasMatchingExtensionData = workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             extension.OnWorkspaceSaving(data, saveContext);
             
             if (hasMatchingExtensionData)
             {
-                workspace.UpdateExtensionData(uniqueId, data);
+                workspace.UpdateExtensionData(extension.UniqueId, data);
                 return;
             }
 
-            workspace.CreateNewExtensionData(uniqueId, extensionName, version, data);
+            workspace.CreateNewExtensionData(extension.UniqueId, extension.Name, version, data);
         }
 
         private void EngineController_TraceReconcliationComplete(TraceReconciliationEventArgs obj)
