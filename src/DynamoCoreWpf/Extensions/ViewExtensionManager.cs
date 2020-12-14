@@ -134,7 +134,7 @@ namespace Dynamo.Wpf.Extensions
             }
 
             if (extension is IExtensionStorageAccess storageAccess &&
-                storageAccessViewExtensions.Find(x => (x as IViewExtension).UniqueId == extension.UniqueId) is null)
+                storageAccessViewExtensions.Contains(storageAccess))
             {
                 storageAccessViewExtensions.Remove(storageAccess);
             }

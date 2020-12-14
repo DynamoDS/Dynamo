@@ -147,7 +147,7 @@ namespace Dynamo.Extensions
             }
 
             if (extension is IExtensionStorageAccess storageAccess &&
-                storageAccessExtensions.Find(x => x.UniqueId == extension.UniqueId) is null)
+                storageAccessExtensions.Contains(storageAccess))
             {
                 storageAccessExtensions.Remove(storageAccess);
             }

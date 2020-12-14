@@ -30,6 +30,9 @@ namespace Dynamo.Tests
             storageExt.SetupGet(x => x.UniqueId).Returns(MOCK_EXTENSION_GUID);
             storageExt.SetupGet(x => x.Name).Returns(MOCK_EXTENSION_NAME);
 
+            extensionMock.SetupGet(x => x.UniqueId).Returns(MOCK_EXTENSION_GUID);
+            extensionMock.SetupGet(x => x.Name).Returns(MOCK_EXTENSION_NAME);
+
             model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
                 {
@@ -51,6 +54,36 @@ namespace Dynamo.Tests
         {
             // Assert
             Assert.IsTrue(extensionManager.StorageAccessesExtensions.Contains(storageExt.Object));
+        }
+
+
+        [Test]
+        public void StorageExtensionIsRemoveWhenExtensionThatImplementsItIsRemoved()
+        {
+            // Arrange
+            var otherExtensionGuid = "afd79e28-40b6-4114-9b95-5193264dc566";
+            var otherExtensionName = "OtherExtension";
+
+            var otherStorageExt = new Mock<IExtensionStorageAccess>();
+            var otherExtensionMock = otherStorageExt.As<IExtension>();
+
+            otherStorageExt.SetupGet(x => x.UniqueId).Returns(otherExtensionGuid);
+            otherStorageExt.SetupGet(x => x.Name).Returns(otherExtensionName);
+
+            otherExtensionMock.SetupGet(x => x.UniqueId).Returns(otherExtensionGuid);
+            otherExtensionMock.SetupGet(x => x.Name).Returns(otherExtensionName);
+
+            extensionManager.Add(otherExtensionMock.Object);
+
+            var storageExtensionsBeforeRemove = extensionManager.StorageAccessesExtensions.Count();
+
+            // Act
+            extensionManager.Remove(extensionMock.Object);
+
+            // Assert
+            Assert.IsTrue(extensionManager.StorageAccessesExtensions.Count() != storageExtensionsBeforeRemove);
+            Assert.IsTrue(extensionManager.StorageAccessesExtensions.Contains(otherStorageExt.Object));
+            Assert.IsFalse(extensionManager.StorageAccessesExtensions.Contains(storageExt.Object));
         }
 
         [Test]
