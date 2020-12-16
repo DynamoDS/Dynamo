@@ -23,8 +23,8 @@ namespace DSCore
         /// <summary>
         ///     Converts a string to an integer or a double.
         /// </summary>
-        /// <param name="string">String to be converted.</param>
-        /// <returns name="number">Integer or double-type number.</returns>
+        /// <param name="string">String to be converted</param>
+        /// <returns name="number">Integer or double-type number</returns>
         /// <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
         public static object ToNumber(string @string)
         {
@@ -52,8 +52,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of characters contained in the given string.
         /// </summary>
-        /// <param name="string">String to find the length of.</param>
-        /// <returns name="int">Number of characters in the string.</returns>
+        /// <param name="string">String to find the length of</param>
+        /// <returns name="int">Number of characters in the string</returns>
         /// <search>count,size,characters,chars,length,sizeof</search>
         public static int Length(string @string)
         {
@@ -64,11 +64,11 @@ namespace DSCore
         ///     Divides a single string into a list of strings, with divisions
         ///     determined by the given separator strings.
         /// </summary>
-        /// <param name="string">String to split up.</param>
+        /// <param name="string">String to split up</param>
         /// <param name="separators">
         ///     Strings that, if present, determine the end and start of a split.
         /// </param>
-        /// <returns name="strings">List of strings made from the input string.</returns>
+        /// <returns name="strings">List of strings made from the input string</returns>
         /// <search>divide,separator,delimiter,cut,csv,comma,</search>
         public static string[] Split(string @string, params string[] separators)
         {
@@ -98,8 +98,8 @@ namespace DSCore
         /// <summary>
         ///     Converts the given string to all uppercase characters.
         /// </summary>
-        /// <param name="string">String to be made uppercase.</param>
-        /// <returns name="string">Uppercase string.</returns>
+        /// <param name="string">String to be made uppercase</param>
+        /// <returns name="string">Uppercase string</returns>
         /// <search>2uppercase,to uppercase,touppercase,uppercase</search>
         public static string ToUpper(string @string)
         {
@@ -109,8 +109,8 @@ namespace DSCore
         /// <summary>
         ///     Converts the given string to all lowercase characters.
         /// </summary>
-        /// <param name="string">String to be made lowercase.</param>
-        /// <returns name="string">Lowercase string.</returns>
+        /// <param name="string">String to be made lowercase</param>
+        /// <returns name="string">Lowercase string</returns>
         /// <search>2lowercase,to lowercase,tolowercase,lowercase</search>
         public static string ToLower(string @string)
         {
@@ -120,8 +120,8 @@ namespace DSCore
         /// <summary>
         ///     Converts the given string to title case.
         /// </summary>
-        /// <param name="str">String to be made title case.</param>
-        /// <returns name="str">Title case string.</returns>
+        /// <param name="str">String to be made title case</param>
+        /// <returns name="str">Title case string</returns>
         /// <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
         public static string ToTitle(string str)
         {
@@ -150,12 +150,12 @@ namespace DSCore
         ///     Retrieves a substring from the given string. The substring starts at the given
         ///     character position and has the given length.
         /// </summary>
-        /// <param name="string">String to take substring of.</param>
+        /// <param name="string">String to take substring of</param>
         /// <param name="startIndex">
-        ///     Starting character position of the substring in the original string.
+        ///     Starting character position of the substring in the original string
         /// </param>
-        /// <param name="length">Number of characters in the substring.</param>
-        /// <returns name="string">Substring made from the original string.</returns>
+        /// <param name="length">Number of characters in the substring</param>
+        /// <returns name="string">Substring made from the original string</returns>
 		///  <search>subset,get string,part,smaller string</search>
         public static string Substring(string @string, int startIndex, int length)
         {
@@ -177,10 +177,10 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given string contains the given substring.
         /// </summary>
-        /// <param name="string">String to search in.</param>
-        /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        /// <returns name="bool">Whether the string contains the substring.</returns>
+        /// <param name="string">String to search in</param>
+        /// <param name="searchFor">Substring to search for</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account</param>
+        /// <returns name="bool">Whether the string contains the substring</returns>
         /// <search>test,within,in,is in,part of</search>
         public static bool Contains(string @string, string searchFor, bool ignoreCase = false)
         {
@@ -190,10 +190,10 @@ namespace DSCore
         /// <summary>
         ///     Counts the number of non-overlapping occurrences of a substring inside a given string.
         /// </summary>
-        /// <param name="string">String to search in.</param>
-        /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        /// <returns name="int">Number of non-overlapping occurrences of the substring in the string.</returns>
+        /// <param name="string">String to search in</param>
+        /// <param name="searchFor">Substring to search for</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account</param>
+        /// <returns name="int">Number of non-overlapping occurrences of the substring in the string</returns>
         /// <search>count,substring,count occurrences,numberof,search,find,within</search>
         public static int CountOccurrences(string @string, string searchFor, bool ignoreCase = false)
         {
@@ -295,11 +295,11 @@ namespace DSCore
         ///     Finds the zero-based index of the first occurrence of a sub-string inside a string.
         ///     Returns -1 if no index could be found.
         /// </summary>
-        /// <param name="string">String to search in.</param>
-        /// <param name="searchFor">Substring to search for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
+        /// <param name="string">String to search in</param>
+        /// <param name="searchFor">Substring to search for</param>
+        /// <param name="ignoreCase">Whether or not comparison takes case into account</param>
         /// <returns name="int">
-        ///     Index of the first occurrence of the substring or -1 if not found.
+        ///     Index of the first occurrence of the substring or -1 if not found
         /// </returns>
         /// <search>index of,find substring,where,search</search>
         public static int IndexOf(string @string, string searchFor, bool ignoreCase = false)
@@ -359,9 +359,9 @@ namespace DSCore
         ///     Right-aligns the characters in the given string by padding them with spaces on the left,
         ///     for a specified total length.
         /// </summary>
-        /// <param name="string">String to pad.</param>
-        /// <param name="newLength">Total length of the string after padding.</param>
-        /// <param name="padChars">Character to pad with, defaults to space.</param>
+        /// <param name="string">String to pad</param>
+        /// <param name="newLength">Total length of the string after padding</param>
+        /// <param name="padChars">Character to pad with, defaults to space</param>
         /// <returns name="string">
         ///     Strings right-aligned by padding with leading whitespaces for a specified total length.
         /// </returns>
@@ -375,11 +375,11 @@ namespace DSCore
         ///     Left-aligns the characters in the given string by padding them with spaces on the right,
         ///     for a specified total length.
         /// </summary>
-        /// <param name="string">String to pad.</param>
-        /// <param name="newLength">Total length of the string after padding.</param>
-        /// <param name="padChars">Character to pad with, defaults to space.</param>
+        /// <param name="string">String to pad</param>
+        /// <param name="newLength">Total length of the string after padding</param>
+        /// <param name="padChars">Character to pad with, defaults to space</param>
         /// <returns name="string">
-        ///     Strings left-aligned by padding with trailing whitespaces for a specified total length.
+        ///     Strings left-aligned by padding with trailing whitespaces for a specified total length
         /// </returns>
         /// <search>pad right,left align,left-align,pad string space,whitespace</search>
         public static string PadRight(string @string, int newLength, string padChars = " ")
@@ -391,9 +391,9 @@ namespace DSCore
         /// <summary>
         ///     Increases the length of a string by encasing the original characters with spaces on either side.
         /// </summary>
-        /// <param name="string">String to center.</param>
-        /// <param name="newLength">Total length of the string after centering.</param>
-        /// <param name="padChars">Character to center with, defaults to space.</param>
+        /// <param name="string">String to center</param>
+        /// <param name="newLength">Total length of the string after centering</param>
+        /// <param name="padChars">Character to center with, defaults to space</param>
         /// <returns name="string">
         ///     Strings center-aligned by padding them with leading and trailing
         ///     whitespaces for a specified total length.
