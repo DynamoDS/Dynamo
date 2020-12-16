@@ -98,7 +98,7 @@ namespace DSCore
         /// <summary>
         ///     Pi Constant Multiplied by 2
         /// </summary>
-        /// <returns name="2pi">2 times PI.</returns>
+        /// <returns name="double">2 times PI.</returns>
         /// <search>2pi,2*pi,twopi,two*pi</search>
         public static double PiTimes2
         {
@@ -188,21 +188,21 @@ namespace DSCore
         /// <summary>
         ///     The mathematical constant Pi, 3.14159...
         /// </summary>
-        /// <returns name="pi">double. The constant Pi.</returns>
+        /// <returns name="double">The constant Pi.</returns>
         /// <search>3.141592653589793</search>
         public static double PI { get { return 3.141592653589793; } }
 
         /// <summary>
         ///     The mathematical constant e, 2.71828...
         /// </summary>
-        /// <returns name="e">double. The constant e.</returns>
+        /// <returns name="double">The constant e.</returns>
         /// <search>exp,2.718281828459045</search>
         public static double E { get { return 2.718281828459045; } }
 
         /// <summary>
         ///     The golden ratio, (1 + sqrt(5))/2 = 1.61803...
         /// </summary>
-        /// <returns name="phi">double. The golden ratio.</returns>
+        /// <returns name="double">The golden ratio.</returns>
         /// <search>golden,ratio,divine,phi,tau,1.61803398875</search>
         public static double GoldenRatio { get { return 1.61803398875; } }
 
