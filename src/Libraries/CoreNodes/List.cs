@@ -21,7 +21,7 @@ namespace DSCore
         /// <summary>
         ///     Returns an Empty List.
         /// </summary>
-        /// <returns name="list">Empty list.</returns>
+        /// <returns name="list">Empty list</returns>
         /// <search>empty list, emptylist,[]</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Empty
@@ -32,8 +32,8 @@ namespace DSCore
         /// <summary>
         ///     Creates a new list containing all unique items in the given list.
         /// </summary>
-        /// <param name="list">List to filter duplicates out of.</param>
-        /// <returns name="list">Filtered list.</returns>
+        /// <param name="list">List to filter duplicates out of</param>
+        /// <returns name="list">Filtered list</returns>
         /// <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList UniqueItems(IList list)
@@ -44,8 +44,8 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given list contains the given item. This function searches through the sublists contained in it.
         /// </summary>
-        /// <param name="list">List to search in.</param>
-        /// <param name="item">Item to look for.</param>
+        /// <param name="list">List to search in</param>
+        /// <param name="item">Item to look for</param>
         /// <returns name="bool">Whether list contains the given item.</returns>
         /// <search>item,search,in,listcontains</search>
         [IsVisibleInDynamoLibrary(true)]
@@ -165,9 +165,9 @@ namespace DSCore
         /// <summary>
         ///     Returns the index of the element in the given list.
         /// </summary>
-        /// <param name="list">The list to find the element in.</param>
-        /// <param name="element">The element whose index is to be returned.</param>
-        /// <returns name="int">The index of the element in the list.</returns>
+        /// <param name="list">The list to find the element in</param>
+        /// <param name="element">The element whose index is to be returned</param>
+        /// <returns name="int">The index of the element in the list</returns>
         /// <search>index,indexof</search>
         [IsVisibleInDynamoLibrary(true)]
         public static int IndexOf(IList list, object element)
@@ -178,8 +178,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of false boolean values in the given list.
         /// </summary>
-        /// <param name="list">The list find the false boolean values.</param>
-        /// <returns name="int">The number of false boolean values in the list.</returns>
+        /// <param name="list">The list find the false boolean values</param>
+        /// <returns name="int">The number of false boolean values in the list</returns>
         /// <search>false,count</search>
         [IsVisibleInDynamoLibrary(true)]
         public static int CountFalse(IList list)
@@ -190,8 +190,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of true boolean values in the given list.
         /// </summary>
-        /// <param name="list">The list find the true boolean values.</param>
-        /// <returns name="int">The number of true boolean values in the list.</returns>
+        /// <param name="list">The list find the true boolean values</param>
+        /// <returns name="int">The number of true boolean values in the list</returns>
         /// <search>true,count</search>
         [IsVisibleInDynamoLibrary(true)]
         public static int CountTrue(IList list)
@@ -202,10 +202,10 @@ namespace DSCore
         /// <summary>
         ///     Inserts an element into a list at specified index.
         /// </summary>
-        /// <param name="list">The list the element will be inserted to.</param>
-        /// <param name="element">The element to be inserted.</param>
-        /// <param name="index">Specifies the location in the list of the element to be inserted.</param>
-        /// <returns name="list">The list with the element inserted.</returns>
+        /// <param name="list">The list the element will be inserted to</param>
+        /// <param name="element">The element to be inserted</param>
+        /// <param name="index">Specifies the location in the list of the element to be inserted</param>
+        /// <returns name="list">The list with the element inserted</returns>
         /// <search>insert,add</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Insert(IList list, [ArbitraryDimensionArrayImport] object element, int index)
@@ -217,9 +217,9 @@ namespace DSCore
         /// <summary>
         ///     Reorders the input list based on the given list of indices.
         /// </summary>
-        /// <param name="list">The list to be reordered.</param>
+        /// <param name="list">The list to be reordered</param>
         /// <param name="indices">The indices used to reorder the items in the list.</param>
-        /// <returns name="list">The reordered list.</returns>
+        /// <returns name="list">The reordered list</returns>
         /// <search>reorder,index,indices</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Reorder(IList list, IList indices)
@@ -260,9 +260,9 @@ namespace DSCore
         /// <summary>
         ///     Returns multidimensional list according the rank given.
         /// </summary>
-        /// <param name="list">The list whose depth is to be normalized according to the rank.</param>
+        /// <param name="list">The list whose depth is to be normalized according to the rank</param>
         /// <param name="rank">The rank the list is to be normalized to. Default value is 1.</param>
-        /// <returns name="list">The list with the normalized rank.</returns>
+        /// <returns name="list">The list with the normalized rank</returns>
         /// <search>depth,normalize</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList NormalizeDepth(IList list, int rank = 1)
@@ -291,8 +291,8 @@ namespace DSCore
         /// <summary>
         ///     Creates a new list containing the items of the given list but in reverse order.
         /// </summary>
-        /// <param name="list">List to be reversed.</param>
-        /// <returns name="list">New list.</returns>
+        /// <param name="list">List to be reversed</param>
+        /// <returns name="list">New list</returns>
         /// <search>flip,listcontains</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Reverse(IList list)
@@ -360,8 +360,8 @@ namespace DSCore
         /// <summary>
         ///     Sorts a list using the built-in natural ordering.
         /// </summary>
-        /// <param name="list">List to be sorted.</param>
-        /// <returns name="list">Sorted list.</returns>
+        /// <param name="list">List to be sorted</param>
+        /// <returns name="list">Sorted list</returns>
         /// <search>sort,order,sorted</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Sort(IEnumerable<object> list)
@@ -397,10 +397,10 @@ namespace DSCore
         ///     Filters a sequence by looking up corresponding indices in a separate list of
         ///     booleans.
         /// </summary>
-        /// <param name="list">List to filter.</param>
-        /// <param name="mask">List of booleans representing a mask.</param>
-        /// <returns name="in">Items whose mask index is true.</returns>
-        /// <returns name="out">Items whose mask index is false.</returns>
+        /// <param name="list">List to filter</param>
+        /// <param name="mask">List of booleans representing a mask</param>
+        /// <returns name="in">Items whose mask index is true</returns>
+        /// <returns name="out">Items whose mask index is false</returns>
         /// <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
         [MultiReturn(new[] { "in", "out" })]
         [IsVisibleInDynamoLibrary(true)]
@@ -495,7 +495,7 @@ namespace DSCore
         /// <param name="list">List of items to group as sublists</param>
         /// <param name="keys">Key values, one per item in the input list, used for grouping the items</param>
         /// <returns name="groups">list of sublists, with items grouped by like key values</returns>
-        /// <returns name="unique keys">key value corresponding to each group</returns>
+        /// <returns name="uniqueKeys">key value corresponding to each group</returns>
         /// <search>list;group;groupbykey;</search>
         [MultiReturn(new[] { "groups", "unique keys" })]
         [IsVisibleInDynamoLibrary(true)]
@@ -576,11 +576,11 @@ namespace DSCore
         ///     Removes an amount of items from the start of the list. If the amount is a negative value,
         ///     items are removed from the end of the list.
         /// </summary>
-        /// <param name="list">List to remove items from.</param>
+        /// <param name="list">List to remove items from</param>
         /// <param name="amount">
         ///     Amount of items to remove. If negative, items are removed from the end of the list.
         /// </param>
-        /// <returns name="list">List of remaining items.</returns>
+        /// <returns name="list">List of remaining items</returns>
         /// <search>drop,remove,shorten</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList DropItems(IList list, int amount)
@@ -592,11 +592,11 @@ namespace DSCore
         /// <summary>
         ///     Shifts indices in the list to the right by the given amount.
         /// </summary>
-        /// <param name="list">List to be shifted.</param>
+        /// <param name="list">List to be shifted</param>
         /// <param name="amount">
         ///     Amount to shift indices by. If negative, indices will be shifted to the left.
         /// </param>
-        /// <returns name="list">Shifted list.</returns>
+        /// <returns name="list">Shifted list</returns>
         /// <search>shift,offset</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList ShiftIndices(IList list, int amount)
@@ -632,10 +632,10 @@ namespace DSCore
         /// <summary>
         ///     Replace an item from the given list that's located at the specified index.
         /// </summary>
-        /// <param name="list">List to replace an item in.</param>
-        /// <param name="index">Index of the item to be replaced.</param>
-        /// <param name="item">The item to insert.</param>
-        /// <returns name="list">A new list with the item replaced.</returns>
+        /// <param name="list">List to replace an item in</param>
+        /// <param name="index">Index of the item to be replaced</param>
+        /// <param name="item">The item to insert</param>
+        /// <returns name="list">A new list with the item replaced</returns>
         /// <search>replace,switch</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList ReplaceItemAtIndex(IList list, int index, [ArbitraryDimensionArrayImport] object item)
@@ -660,13 +660,13 @@ namespace DSCore
         ///     Returns a single sub-list from the given list, based on starting index, ending index,
         ///     and a step amount.
         /// </summary>
-        /// <param name="list">List to take a slice of.</param>
-        /// <param name="start">Index to start the slice from.</param>
-        /// <param name="end">Index to end the slice at.</param>
+        /// <param name="list">List to take a slice of</param>
+        /// <param name="start">Index to start the slice from</param>
+        /// <param name="end">Index to end the slice at</param>
         /// <param name="step">
-        ///     Amount the indices of the items are separate by in the original list.
+        ///     Amount the indices of the items are separate by in the original list
         /// </param>
-        /// <returns name="items">Items in the slice of the given list.</returns>
+        /// <returns name="items">Items in the slice of the given list</returns>
         /// <search>list,sub,sublist,subrange,get sublist</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Slice(IList list, int? start = null, int? end = null, int step = 1)
@@ -710,9 +710,9 @@ namespace DSCore
         /// <summary>
         ///     Removes an item from the given list at the specified index.
         /// </summary>
-        /// <param name="list">List to remove an item or items from.</param>
-        /// <param name="indices">Index or indices of the item(s) to be removed.</param>
-        /// <returns name="list">List with items removed.</returns>
+        /// <param name="list">List to remove an item or items from</param>
+        /// <param name="indices">Index or indices of the item(s) to be removed</param>
+        /// <returns name="list">List with items removed</returns>
         /// <search>index,indices,cull,remove,item</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList RemoveItemAtIndex(IList list, int[] indices)
@@ -741,7 +741,7 @@ namespace DSCore
         ///     Fetches items from the given list at indices that are multiples
         ///     of the given value, after the given offset.
         /// </summary>
-        /// <param name="list">List to take items from.</param>
+        /// <param name="list">List to take items from</param>
         /// <param name="n">
         ///     Indices that are multiples of this number (after the offset)
         ///     will be fetched.
@@ -749,7 +749,7 @@ namespace DSCore
         /// <param name="offset">
         ///     Amount of items to be ignored from the start of the list.
         /// </param>
-        /// <returns name="items">Items from the list.</returns>
+        /// <returns name="items">Items from the list</returns>
         /// <search>fetch,take,every,nth</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList TakeEveryNthItem(IList list, int n, int offset = 0)
@@ -772,8 +772,8 @@ namespace DSCore
         /// <summary>
         ///     Determines if all items in the given list is a boolean and has a true value.
         /// </summary>
-        /// <param name="list">List to be checked on whether all items are true.</param>
-        /// <returns name="bool">Whether all items are true.</returns>
+        /// <param name="list">List to be checked on whether all items are true</param>
+        /// <returns name="bool">Whether all items are true</returns>
         /// <search>test,all,true,istrue</search>
         [IsVisibleInDynamoLibrary(true)]
         public static bool AllTrue(IList list)
@@ -872,8 +872,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the number of items stored in the given list.
         /// </summary>
-        /// <param name="list">List to get the item count of.</param>
-        /// <returns name="count">List length.</returns>
+        /// <param name="list">List to get the item count of</param>
+        /// <returns name="count">List length</returns>
         /// <search>listlength,list length,count,size,sizeof</search>
         [IsVisibleInDynamoLibrary(true)]
         public static int Count(IList list)
@@ -884,8 +884,8 @@ namespace DSCore
         /// <summary>
         ///     Concatenates all given lists into a single list.
         /// </summary>
-        /// <param name="lists">Lists to join into one.</param>
-        /// <returns name="list">Joined list.</returns>
+        /// <param name="lists">Lists to join into one</param>
+        /// <returns name="list">Joined list</returns>
         /// <search>join lists,merge,concatenate</search>
         [IsLacingDisabled]
         [IsVisibleInDynamoLibrary(true)]
@@ -900,8 +900,8 @@ namespace DSCore
         /// <summary>
         ///     Returns the first item in a list.
         /// </summary>
-        /// <param name="list">List to get the first item from.</param>
-        /// <returns name="item">First item in the list.</returns>
+        /// <param name="list">List to get the first item from</param>
+        /// <returns name="item">First item in the list</returns>
         /// <search>get,fetch,first,item,start</search>
         [IsVisibleInDynamoLibrary(true)]
         public static object FirstItem(IList list)
@@ -912,8 +912,8 @@ namespace DSCore
         /// <summary>
         ///     Removes the first item from the given list.
         /// </summary>
-        /// <param name="list">List to get the rest of.</param>
-        /// <returns name="rest">Rest of the list.</returns>
+        /// <param name="list">List to get the rest of</param>
+        /// <returns name="rest">Rest of the list</returns>
         /// <search>get,fetch,rest,end,rest of list</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList RestOfItems(IList list)
@@ -980,9 +980,9 @@ namespace DSCore
         /// <summary>
         ///     List elements along each diagonal in the matrix from the lower left to the top right.
         /// </summary>
-        /// <param name="list">A flat list</param>
-        /// <param name="subLength">Length of each new sub-list.</param>
-        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <param name="list">List to get diagonal</param>
+        /// <param name="subLength">Length of each new sub-list</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals</returns>
         /// <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList DiagonalRight([ArbitraryDimensionArrayImport] IList list, int subLength)
@@ -1040,9 +1040,9 @@ namespace DSCore
         /// <summary>
         ///     List elements along each diagonal in the matrix from the top left to the lower right.
         /// </summary>
-        /// <param name="list">A flat list.</param>
-        /// <param name="rowLength">Length of each new sib-list.</param>
-        /// <returns name="diagonals">Lists of elements along matrix diagonals.</returns>
+        /// <param name="list">List to get diagonal</param>
+        /// <param name="rowLength">Length of each new sib-list</param>
+        /// <returns name="diagonals">Lists of elements along matrix diagonals</returns>
         /// <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList DiagonalLeft(IList list, int rowLength)
@@ -1236,8 +1236,8 @@ namespace DSCore
         /// <summary>
         ///     Retrieves the last item in a list.
         /// </summary>
-        /// <param name="list">List to get the last item of.</param>
-        /// <returns name="last">Last item in the list.</returns>
+        /// <param name="list">List to get the last item of</param>
+        /// <returns name="last">Last item in the list</returns>
         /// <search>get,fetch,last,item,end of list</search>
         [IsVisibleInDynamoLibrary(true)]
         public static object LastItem(IList list)
@@ -1251,8 +1251,8 @@ namespace DSCore
         /// <summary>
         ///     Shuffles a list, randomizing the order of its items.
         /// </summary>
-        /// <param name="list">List to shuffle.</param>
-        /// <returns name="list">Randomized list.</returns>
+        /// <param name="list">List to shuffle</param>
+        /// <returns name="list">Randomized list</returns>
         /// <search>random,randomize,shuffle,jitter,randomness</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Shuffle(IList list)
@@ -1293,13 +1293,13 @@ namespace DSCore
         /// <summary>
         ///     Produces all combinations of the given length of a given list.
         /// </summary>
-        /// <param name="list">List to generate combinations of.</param>
-        /// <param name="length">Length of each combination.</param>
+        /// <param name="list">List to generate combinations of</param>
+        /// <param name="length">Length of each combination</param>
         /// <param name="replace">
         ///     Whether or not items are removed once selected for combination, defaults
         ///     to false.
         /// </param>
-        /// <returns name="comb">Combinations of the list of the given length.</returns>
+        /// <returns name="lists">Combinations of the list of the given length</returns>
         /// <search>combo</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Combinations(IList list, int length, bool replace = false)
@@ -1317,7 +1317,7 @@ namespace DSCore
         /// <param name="list">
         ///     List to search in. If this argument is null, -1 is returned.
         /// </param>
-        /// <param name="item">Item to look for.</param>
+        /// <param name="item">Item to look for</param>
         /// <returns>Zero-based index of the item in the list, or -1 if it is not found.
         /// </returns>
         [IsVisibleInDynamoLibrary(true)]
