@@ -19,7 +19,6 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <Style x:Key="BorderlessButton"
                    TargetType="{x:Type Button}">
