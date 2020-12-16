@@ -44,8 +44,8 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given list contains the given item. This function searches through the sublists contained in it.
         /// </summary>
-        /// <param name="list">List to search in.</param>
-        /// <param name="item">Item to look for.</param>
+        /// <param name="list">List to search in</param>
+        /// <param name="item">Item to look for</param>
         /// <returns name="bool">True if list contains item, false if it doesn’t</returns>
         /// <search>item,search,in,listcontains</search>
         [IsVisibleInDynamoLibrary(true)]
@@ -126,9 +126,9 @@ namespace DSCore
         /// <summary>
         ///     Returns a new list that includes objects in List1 but excludes objects in List2.
         /// </summary>
-        /// <param name="list1">List of objects to be included in the new list.</param>
-        /// <param name="list2">List of objects to be excluded in the new list.</param>
-        /// <returns name="list">The new list that contains objects in List1 but not in List2.</returns>
+        /// <param name="list1">List of objects to be included in the new list</param>
+        /// <param name="list2">List of objects to be excluded in the new list</param>
+        /// <returns name="list">The new list that contains objects in List1 but not in List2</returns>
         /// <search>difference,setdifference,set</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList SetDifference(IList<object> list1, IList<object> list2)
@@ -139,9 +139,9 @@ namespace DSCore
         /// <summary>
         ///     Returns a new list that includes objects that are present in both List1 and List2.
         /// </summary>
-        /// <param name="list1">List of objects to be compared with list2.</param>
-        /// <param name="list2">List of objects to be compared with list1.</param>
-        /// <returns name="list">The new list that contains objects that are in both List1 and List2.</returns>
+        /// <param name="list1">List of objects to be compared with list2</param>
+        /// <param name="list2">List of objects to be compared with list1</param>
+        /// <returns name="list">The new list that contains objects that are in both List1 and List2</returns>
         /// <search>intersection,setintersection,set,overlap</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList SetIntersection(IList<object> list1, IList<object> list2)
@@ -152,9 +152,9 @@ namespace DSCore
         /// <summary>
         ///     Returns a new list that includes objects that are present in either List1 or List2.
         /// </summary>
-        /// <param name="list1">List of objects to be included.</param>
-        /// <param name="list2">List of objects to be included to List1.</param>
-        /// <returns name="list">The new list that contains objects that are either in List1 or List2.</returns>
+        /// <param name="list1">List of objects to be included</param>
+        /// <param name="list2">List of objects to be included to List1</param>
+        /// <returns name="list">The new list that contains objects that are either in List1 or List2</returns>
         /// <search>union,setunion,set</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList SetUnion(IList<object> list1, IList<object> list2)
@@ -202,9 +202,9 @@ namespace DSCore
         /// <summary>
         ///     Inserts an element into a list at specified index.
         /// </summary>
-        /// <param name="list">The list the element will be inserted to.</param>
-        /// <param name="element">The element to be inserted.</param>
-        /// <param name="index">Specifies the location in the list of the element to be inserted.</param>
+        /// <param name="list">The list the element will be inserted to</param>
+        /// <param name="element">The element to be inserted</param>
+        /// <param name="index">Specifies the location in the list of the element to be inserted</param>
         /// <returns name="list">List with the element inserted</returns>
         /// <search>insert,add</search>
         [IsVisibleInDynamoLibrary(true)]
@@ -217,9 +217,9 @@ namespace DSCore
         /// <summary>
         ///     Reorders the input list based on the given list of indices.
         /// </summary>
-        /// <param name="list">The list to be reordered.</param>
-        /// <param name="indices">The indices used to reorder the items in the list.</param>
-        /// <returns name="list">Reordered list.</returns>
+        /// <param name="list">The list to be reordered</param>
+        /// <param name="indices">The indices used to reorder the items in the list</param>
+        /// <returns name="list">Reordered list</returns>
         /// <search>reorder,index,indices</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Reorder(IList list, IList indices)
@@ -1238,8 +1238,8 @@ namespace DSCore
         /// <summary>
         ///     Retrieves the last item in a list.
         /// </summary>
-        /// <param name="list">List to get the last item of.</param>
-        /// <returns name="item">Last item in the list.</returns>
+        /// <param name="list">List to get the last item of</param>
+        /// <returns name="item">Last item in the list</returns>
         /// <search>get,fetch,last,item,end of list</search>
         [IsVisibleInDynamoLibrary(true)]
         public static object LastItem(IList list)
@@ -1295,13 +1295,13 @@ namespace DSCore
         /// <summary>
         ///     Produces all combinations of the given length of a given list.
         /// </summary>
-        /// <param name="list">List to generate combinations of.</param>
-        /// <param name="length">Length of each combination.</param>
+        /// <param name="list">List to generate combinations of</param>
+        /// <param name="length">Length of each combination</param>
         /// <param name="replace">
         ///     Whether or not items are removed once selected for combination, defaults
         ///     to false.
         /// </param>
-        /// <returns name="lists">Combinations of the list of the given length.</returns>
+        /// <returns name="lists">Combinations of the list of the given length</returns>
         /// <search>combo</search>
         [IsVisibleInDynamoLibrary(true)]
         public static IList Combinations(IList list, int length, bool replace = false)
