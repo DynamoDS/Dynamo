@@ -1049,11 +1049,12 @@ namespace Dynamo.Models
                                 // Send analytics for each of modified nodes so they are counted individually
                                 foreach (var node in updateTask.ModifiedNodes)
                                 {
-                                    // Notice the executionTimeSpan is still for the whole delta computation
-                                    Dynamo.Logging.Analytics.TrackTimedEvent(
-                                        Categories.Performance,
-                                        e.Task.GetType().Name,
-                                        executionTimeSpan, node.GetOriginalName());
+                                    // Starting from Dynamo 2.11.0, tracking node execution as generic event so
+                                    // it is distinguished with the previous aggregated performance event
+                                    Dynamo.Logging.Analytics.TrackEvent(
+                                        Actions.Run, 
+                                        Categories.NodeOperations,
+                                        node.GetOriginalName());
                                 }
                             }
                         }
