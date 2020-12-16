@@ -231,8 +231,8 @@ namespace DSCore
         /// <summary>
         ///     Finds the absolute value of a number.
         /// </summary>
-        /// <param name="number">Number to find absolute value</param>
-        /// <returns name="double">Absolute value of the number.</returns>
+        /// <param name="number">Number to get absolute value from</param>
+        /// <returns name="number">Absolute value of the number.</returns>
         /// <search>absolute value,magnitude</search>
         public static double Abs(double number)
         {
@@ -539,7 +539,7 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="number">Number to find sign</param>
+        /// <param name="number">Number to get sign from</param>
         /// <returns name="int">The sign of the number: -1, 0, or 1.</returns>
         public static long Sign(double number)
         {
@@ -549,7 +549,7 @@ namespace DSCore
         /// <summary>
         ///     Returns the sign of the number: -1, 0, or 1.
         /// </summary>
-        /// <param name="int">Integer to find sign</param>
+        /// <param name="int">Integer to get sign from</param>
         /// <returns name="int">The sign of the number: -1, 0, or 1.</returns>
         public static long Sign(long @int)
         {
