@@ -11,8 +11,8 @@
   "Nodes": [
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
-      "HintPath": "C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\StudioLEDynamo\\test\\core\\excel\\WriteFile.xlsx",
-      "InputValue": "..\\Documents\\GitHub\\StudioLEDynamo\\test\\core\\excel\\WriteFile.xlsx",
+      "HintPath": "..\\..\\..\\test\\core\\excel\\ExportToExcelAsString.xlsx",
+      "InputValue": "..\\..\\..\\test\\core\\excel\\ExportToExcelAsString.xlsx",
       "NodeType": "ExtensionNode",
       "Id": "29dc0142e4344db5a14bf0a9683abe87",
       "Inputs": [],
