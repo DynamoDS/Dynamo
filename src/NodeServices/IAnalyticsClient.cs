@@ -199,7 +199,7 @@ namespace Dynamo.Logging
         Switch,
 
         /// <summary>
-        /// Run event, such as Python node run clicked, Graph run Clicked
+        /// Run event, such as Python node run clicked, Graph run Clicked, generic node run during graph execution
         /// </summary>
         Run,
 
