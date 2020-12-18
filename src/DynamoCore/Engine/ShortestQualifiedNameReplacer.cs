@@ -106,7 +106,7 @@ namespace Dynamo.Engine
             // return IdentifierNode if identifier string is not separated by '.'
             if (strIdentList.Length == 1)
             {
-                return new IdentifierNode(strIdentList[0]);
+                return node;
             }
 
             // create IdentifierListNode from string such that
