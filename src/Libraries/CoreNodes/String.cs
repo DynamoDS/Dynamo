@@ -235,27 +235,27 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given string ends with the given substring.
         /// </summary>
-        /// <param name="str">String to search the end of.</param>
-        /// <param name="searchFor">Substring to search the end for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        /// <returns name="bool">Whether the string ends with the substring.</returns>
+        /// <param name="string">String to search the end of</param>
+        /// <param name="searchFor">Substring to search the end for</param>
+        /// <param name="ignoreCase">True to ignore case in comparison, false to take case into account</param>
+        /// <returns name="bool">True if string starts with substring, false if it doesn’t</returns>
         /// <search>test,does end,last,str end,terminated</search>
-        public static bool EndsWith(string str, string searchFor, bool ignoreCase = false)
+        public static bool EndsWith(string @string, string searchFor, bool ignoreCase = false)
         {
-            return str.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+            return @string.EndsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
         ///     Determines if the given string starts with the given substring.
         /// </summary>
-        /// <param name="str">String to search the start of.</param>
+        /// <param name="string">String to search the start of</param>
         /// <param name="searchFor">Substring to search the start for.</param>
-        /// <param name="ignoreCase">Whether or not comparison takes case into account.</param>
-        /// <returns name="bool">Whether the string starts with the substring.</returns>
+        /// <param name="ignoreCase">True to ignore case in comparison, false to take case into account</param>
+        /// <returns name="bool">True if string starts with substring, false if it doesn’t</returns>
         /// <search>test,beginswith,start,string start,front</search>
-        public static bool StartsWith(string str, string searchFor, bool ignoreCase = false)
+        public static bool StartsWith(string @string, string searchFor, bool ignoreCase = false)
         {
-            return str.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
+            return @string.StartsWith(searchFor, ignoreCase, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
