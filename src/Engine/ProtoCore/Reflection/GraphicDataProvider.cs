@@ -141,8 +141,19 @@ namespace ProtoCore.Mirror
             return null;
         }
 
+        //Store marshaler for repeated calls to GetCLRObject.  Use these to short-circuit repeated calls of the same same stack value type. 
+        private static int previousStackValueType;
+        private static Interpreter interpreter;
+        private static ProtoFFI.FFIObjectMarshaler marshaler;
+        
         internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
         {
+            //short-circuit creation of new marshaller object for repeated calls of the same same stack value type.
+            if (svData.metaData.type == previousStackValueType && marshaler != null)
+            {
+                return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
+            }
+            
             if (null == runtimeCore.DSExecutable.classTable)
                 return null;
 
@@ -156,13 +167,15 @@ namespace ProtoCore.Mirror
 
             try
             {
-                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
+                interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
                 var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
-                var marshaler = helper.GetMarshaler(runtimeCore);
+                marshaler = helper.GetMarshaler(runtimeCore);
+                previousStackValueType = svData.metaData.type;
                 return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
             }
             catch (System.Exception)
             {
+                marshaler = null;
                 return null;
             }
         }
