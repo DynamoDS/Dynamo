@@ -1599,6 +1599,11 @@ namespace ProtoCore
                 return ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
 
+            if (finalFunctionEndPoint == null && functionEndPoints.Count == 1)
+            {
+                finalFunctionEndPoint = SelectFinalFep(c, functionEndPoints, formalParameters, stackFrame, runtimeCore);
+            }
+
             //Get the replication instruction that this call will deal with
             ReplicationInstruction ri = replicationInstructions[0];
 
