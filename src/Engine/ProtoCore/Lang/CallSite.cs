@@ -1771,7 +1771,7 @@ namespace ProtoCore
                 StackValue[] retSVs = new StackValue[retSize];
 
                 SingleRunTraceData retTrace = newTraceData;
-                retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
+                retTrace.NestedData = new List<SingleRunTraceData>(retSize); //this will shadow the SVs as they are created
 
                 //Populate out the size of the list with default values
                 //@TODO:Luke perf optimisation here
