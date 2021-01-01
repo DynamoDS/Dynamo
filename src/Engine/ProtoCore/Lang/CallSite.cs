@@ -1629,15 +1629,6 @@ namespace ProtoCore
                         throw new ReplicationCaseNotCurrentlySupported(Resources.AlgorithmNotSupported);
                 }
 
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                var isHomogeneous = homogeneousReturn.Item1;
-                if (isHomogeneous)
-                {
-                    var finalFormalParameters = homogeneousReturn.Item2;
-                    finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
-                }
-
                 bool hasEmptyArg = false;
                 foreach (int repIndex in repIndecies)
                 {
@@ -1755,18 +1746,6 @@ namespace ProtoCore
 
                 //We will call the subsequent reductions n times
                 int cartIndex = ri.CartesianIndex;
-
-                //We determine if the input parameters are of homogeneous types to set the final function endpoint once
-                if (cartIndex == 0)
-                {
-                    var homogeneousReturn = AreParametersHomogeneousTypes(formalParameters, runtimeCore);
-                    var isHomogeneous = homogeneousReturn.Item1;
-                    if (isHomogeneous)
-                    {
-                        var finalFormalParameters = homogeneousReturn.Item2;
-                        finalFunctionEndPoint = SelectFinalFep(c, functionEndPoint, finalFormalParameters, stackFrame, runtimeCore);
-                    }
-                }
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
@@ -1943,62 +1922,6 @@ namespace ProtoCore
 
             return ret;
         }
-
-        /// <summary>
-        /// Determine if the formalParameters are homogeneous types and initialize a flat list of final formalParameters
-        /// </summary>
-        /// <param name="formalParameters"></param>
-        /// <param name="runtimeCore"></param>
-        /// <returns>item1: true if the formalParameters are homogeneous, item2: finalformalParameters</returns>
-        private static Tuple<bool, List<StackValue>> AreParametersHomogeneousTypes(List<StackValue> formalParameters, RuntimeCore runtimeCore)
-        {
-            var finalFormalParameters = new List<StackValue>();
-
-            foreach (var formalParameter in formalParameters)
-            {
-                //expand array if required to compare inputs
-                if (formalParameter.IsArray)
-                {
-                    var array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameter);
-                    var flatParameters = array.Values.ToArray();
-
-                    switch (flatParameters.Length)
-                    {
-                        case 0:
-                            //set function result false and exit due to empty list
-                            return new Tuple<bool, List<StackValue>>(false, null);
-                        case 1:
-                            //Add single sample parameter to pass for evaluation in SelectFinalFep
-                            finalFormalParameters.Add(flatParameters[0]);
-                            break;
-                        default:
-                            for (int j = 0; j < flatParameters.Length - 1; j++)
-                            {
-                                //Compare the type data for subsequent items
-                                if (flatParameters[j].optype != flatParameters[j + 1].optype ||
-                                    flatParameters[j].metaData.type != flatParameters[j + 1].metaData.type)
-                                {
-                                    //set function result false and exit due to dissimilar function parameters
-                                    return new Tuple<bool, List<StackValue>>(false, null);
-                                }
-                            }
-
-                            //Add single sample parameter to pass for evaluation in SelectFinalFep
-                            finalFormalParameters.Add(flatParameters[0]);
-                            break;
-                    }
-                }
-                else
-                {
-                    //For single parameter add it to pass for evaluation in SelectFinalFep
-                    finalFormalParameters.Add(formalParameter);
-                }
-            }
-
-            //formalParameteres evaluated as homogeneous
-            return new Tuple<bool, List<StackValue>>(true, finalFormalParameters);
-        }
-
 
         /// <summary>
         /// If all the arguments that have rep guides are single values, then strip the rep guides
