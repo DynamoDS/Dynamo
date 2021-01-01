@@ -1530,7 +1530,7 @@ namespace ProtoCore
 
 
         private StackValue Execute(
-            List<FunctionEndPoint> functionEndPoint,
+            List<FunctionEndPoint> functionEndPoints,
             Context c,
             List<StackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions,
@@ -1544,12 +1544,12 @@ namespace ProtoCore
             if (replicationInstructions.Count == 0)
             {
                 c.IsReplicating = false;
-                ret = ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
+                ret = ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
             else //replicated call
             {
                 c.IsReplicating = true;
-                ret = ExecWithRISlowPath(functionEndPoint, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
+                ret = ExecWithRISlowPath(functionEndPoints, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
 
             //Do a trace save here
@@ -1569,7 +1569,7 @@ namespace ProtoCore
         /// <summary>
         /// Execute an arbitrary depth replication using the full slow path algorithm
         /// </summary>
-        /// <param name="functionEndPoint"></param>
+        /// <param name="functionEndPoints"></param>
         /// <param name="c"></param>
         /// <param name="formalParameters"></param>
         /// <param name="replicationInstructions"></param>
@@ -1580,7 +1580,7 @@ namespace ProtoCore
         /// <param name="finalFunctionEndPoint"></param>
         /// <returns></returns>
         private StackValue ExecWithRISlowPath(
-            List<FunctionEndPoint> functionEndPoint,
+            List<FunctionEndPoint> functionEndPoints,
             Context c,
             List<StackValue> formalParameters,
             List<ReplicationInstruction> replicationInstructions,
@@ -1596,7 +1596,7 @@ namespace ProtoCore
             //Recursion base case
             if (replicationInstructions.Count == 0)
             {
-                return ExecWithZeroRI(functionEndPoint, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
+                return ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
 
             //Get the replication instruction that this call will deal with
@@ -1721,7 +1721,7 @@ namespace ProtoCore
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
@@ -1782,7 +1782,7 @@ namespace ProtoCore
 
                     List<StackValue> newFormalParams = formalParameters.ToList();
 
-                    return ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
+                    return ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
 
                 //Now iterate over each of these options
@@ -1823,7 +1823,7 @@ namespace ProtoCore
                     //previousTraceData = lastExecTrace;
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
-                    retSVs[i] = ExecWithRISlowPath(functionEndPoint, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
+                    retSVs[i] = ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, lastExecTrace, cleanRetTrace, finalFunctionEndPoint);
 
                     runtimeCore.AddCallSiteGCRoot(CallSiteID, retSVs[i]);
 
