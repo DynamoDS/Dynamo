@@ -141,7 +141,7 @@ namespace ProtoCore.Mirror
             return null;
         }
 
-        //Store marshaler for repeated calls to GetCLRObject.  Use these to short-circuit repeated calls of the same same stack value type. 
+        //Store marshaller for repeated calls to GetCLRObject.  Used for short-circuit of re-allocation of marshaller / interpreter object.
         private static int previousStackValueType;
         private static Interpreter interpreter;
         private static ProtoFFI.FFIObjectMarshaler marshaler;
