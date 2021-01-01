@@ -1755,13 +1755,12 @@ namespace ProtoCore
                 //this will hold the heap elements for all the arrays that are going to be replicated over
                 bool supressArray = false;
                 int retSize;
-                StackValue[] parameters = null;
+                DSArray array = null;
 
                 if (formalParameters[cartIndex].IsArray)
                 {
-                    DSArray array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
-                    parameters = array.Values.ToArray();
-                    retSize = parameters.Length;
+                    array = runtimeCore.Heap.ToHeapObject<DSArray>(formalParameters[cartIndex]);
+                    retSize = array.Count;
                 }
                 else
                 {
@@ -1794,12 +1793,8 @@ namespace ProtoCore
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
                 {
-
-                    if (parameters != null)
-                    {
-                        //It was an array pack the arg with the current value
-                        newFormalParams[cartIndex] = parameters[i];
-                    }
+                    //It was an array pack the arg with the current value
+                    newFormalParams[cartIndex] = array.GetValueFromIndex(i, runtimeCore);
 
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
 
