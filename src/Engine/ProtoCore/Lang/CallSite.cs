@@ -1781,11 +1781,12 @@ namespace ProtoCore
                     retTrace.NestedData.Add(new SingleRunTraceData());
                 }
 
+                //Build the call
+                List<StackValue> newFormalParams = formalParameters.ToList();
+
                 if (supressArray)
                 {
                     List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
-
-                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     return ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
@@ -1793,8 +1794,6 @@ namespace ProtoCore
                 //Now iterate over each of these options
                 for (int i = 0; i < retSize; i++)
                 {
-                    //Build the call
-                    List<StackValue> newFormalParams = formalParameters.ToList();
 
                     if (parameters != null)
                     {
