@@ -25,7 +25,6 @@ namespace Dynamo.Graph.Nodes
         selectionInput
     };
 
-
     /// <summary>
     /// Represents a node which acts as a UI input for the graph
     /// - may also hold a value for that input
@@ -82,6 +81,11 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
+        /// <summary>
+        /// Specifies how the input control should be rendered.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string ControlType { get; set; }
 
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {
