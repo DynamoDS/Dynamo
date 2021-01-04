@@ -47,22 +47,28 @@ namespace CoreNodeModels.Input
             }
         }
 
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
             get
             {
+                if(inputData is null)
+                {
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+
+                        Type = NodeInputTypes.colorInput,
+                        Description = this.Description
+                    };
+                }
+
                 //this object which we'll convert to a json string matches the format the schema expects for colors
                 var colorObj = new { Red = Convert.ToInt32(DsColor.Red), Blue = Convert.ToInt32(DsColor.Blue), Green = Convert.ToInt32(DsColor.Green), Alpha = Convert.ToInt32(DsColor.Alpha) };
+                inputData.Value = JsonConvert.SerializeObject(colorObj);
 
-                return new NodeInputData()
-                {
-                    Id = this.GUID,
-                    Name = this.Name,
-
-                    Type = NodeInputTypes.colorInput,
-                    Description = this.Description,
-                    Value = JsonConvert.SerializeObject(colorObj),
-                };
+                return inputData;
             }
         }
         /// <summary>

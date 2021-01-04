@@ -41,24 +41,30 @@ namespace CoreNodeModels.Input
                 return "Double";
             }
         }
+
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
             get
             {
-                return new NodeInputData()
+                if(inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    Type = NodeInputTypes.numberInput,
-                    Description = this.Description,
-                    Value = Value.ToString(CultureInfo.InvariantCulture),
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        Type = NodeInputTypes.numberInput,
+                        NumberType = this.NumberType,
+                        Description = this.Description
+                    };
+                }
 
-                    MinimumValue = this.Min,
-                    MaximumValue = this.Max,
-                    StepValue = this.Step,
-                    NumberType = this.NumberType,
+                inputData.Value = Value.ToString(CultureInfo.InvariantCulture);
+                inputData.MinimumValue = this.Min;
+                inputData.MaximumValue = this.Max;
+                inputData.StepValue = this.Step;
 
-                };
+                return inputData;
             }
         }
 

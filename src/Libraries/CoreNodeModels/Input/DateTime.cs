@@ -30,19 +30,26 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
             get
             {
-                return new NodeInputData()
+                if (inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
-                    Description = this.Description,
-                    //format dateTime with swagger spec in mind:  ISO 8601.
-                    Value = Value.ToString("o", CultureInfo.InvariantCulture),
-                };
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        Type = NodeInputData.getNodeInputTypeFromType(typeof(System.DateTime)),
+                        Description = this.Description
+                    };
+                }
+
+                //format dateTime with swagger spec in mind:  ISO 8601.
+                inputData.Value = Value.ToString("o", CultureInfo.InvariantCulture);
+
+                return inputData;
             }
         }
 

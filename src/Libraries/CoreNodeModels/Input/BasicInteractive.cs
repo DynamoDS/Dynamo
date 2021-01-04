@@ -36,21 +36,29 @@ namespace CoreNodeModels.Input
                 }               
             }
         }
+
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
            
             get
             {
-                return new NodeInputData()
+                if (inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    //use the <T> type to convert to the correct nodeTypeString defined by
-                    //the schema
-                    Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
-                    Description = this.Description,
-                    Value = Value.ToString(),
-                };
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        //use the <T> type to convert to the correct nodeTypeString defined by
+                        //the schema
+                        Type = NodeInputData.getNodeInputTypeFromType(typeof(T)),
+                        Description = this.Description
+                    };
+                }
+
+                inputData.Value = Value.ToString();
+
+                return inputData;
             }
         }
 

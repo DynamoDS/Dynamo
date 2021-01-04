@@ -41,19 +41,25 @@ namespace CoreNodeModels.Input
             return base.UpdateValueCore(updateValueParams);
         }
 
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
-
             get
             {
-                return new NodeInputData()
+                if (inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
-                    Description = this.Description,
-                    Value = Value.ToString().ToLower(),
-                };
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        Type = NodeInputData.getNodeInputTypeFromType(typeof(System.Boolean)),
+                        Description = this.Description
+                    };
+                }
+
+                inputData.Value = Value.ToString().ToLower();
+
+                return inputData;
             }
         }
 

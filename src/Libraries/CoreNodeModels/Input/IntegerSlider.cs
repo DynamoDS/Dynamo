@@ -46,24 +46,30 @@ namespace CoreNodeModels.Input
                 return "Integer";
             }
         }
+
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
             get
             {
-                return new NodeInputData()
+                if (inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    Type = NodeInputTypes.numberInput,
-                    Description = this.Description,
-                    Value = Value.ToString(CultureInfo.InvariantCulture),
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        Type = NodeInputTypes.numberInput,
+                        NumberType = this.NumberType,
+                        Description = this.Description
+                    };
+                }
 
-                    MinimumValue = this.Min,
-                    MaximumValue = this.Max,
-                    StepValue = this.Step,
-                    NumberType = this.NumberType,
+                inputData.Value = Value.ToString(CultureInfo.InvariantCulture);
+                inputData.MinimumValue = this.Min;
+                inputData.MaximumValue = this.Max;
+                inputData.StepValue = this.Step;
 
-                };
+                return inputData;
             }
         }
 
@@ -241,27 +247,31 @@ namespace CoreNodeModels.Input
             }
         }
 
+        private NodeInputData inputData;
         public override NodeInputData InputData
         {
-           get
+            get
             {
-                return new NodeInputData()
+                if (inputData is null)
                 {
-                    Id = this.GUID,
-                    Name = this.Name,
-                    Type = NodeInputTypes.numberInput,
-                    Description = this.Description,
-                    Value = Value.ToString(CultureInfo.InvariantCulture),
+                    inputData = new NodeInputData()
+                    {
+                        Id = this.GUID,
+                        Name = this.Name,
+                        Type = NodeInputTypes.numberInput,
+                        NumberType = this.NumberType,
+                        Description = this.Description
+                    };
+                }
 
-                    MinimumValue = this.Min,
-                    MaximumValue = this.Max,
-                    StepValue = this.Step,
-                    NumberType = this.NumberType,
-
-                };
+                inputData.Value = Value.ToString(CultureInfo.InvariantCulture);
+                inputData.MinimumValue = this.Min;
+                inputData.MaximumValue = this.Max;
+                inputData.StepValue = this.Step;
+               
+                return inputData;
             }
         }
-
 
         [JsonConstructor]
         private IntegerSlider64Bit(IEnumerable<PortModel> inPorts,
