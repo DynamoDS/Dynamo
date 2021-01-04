@@ -511,6 +511,8 @@ namespace Dynamo.Graph.Workspaces
                     {
                         matchingNode.IsSetAsInput = true;
                         matchingNode.Name = inputData.Name;
+                        if (!(matchingNode is DummyNode))
+                            matchingNode.InputData.Description = inputData.Description;
                     }
                 }
             }
@@ -528,6 +530,7 @@ namespace Dynamo.Graph.Workspaces
                     {
                         matchingNode.IsSetAsOutput = true;
                         matchingNode.Name = outputData.Name;
+                        matchingNode.OutputData.Description = outputData.Description;
                     }
                 }
             }
@@ -732,6 +735,18 @@ namespace Dynamo.Graph.Workspaces
             var outputNodeDatas = ws.Nodes.Where((node) => node.IsSetAsOutput == true && node.OutputData != null)
                 .Select(outputNode => outputNode.OutputData).ToList();
             serializer.Serialize(writer, outputNodeDatas);
+
+            // Thumbnail
+            writer.WritePropertyName("Thumbnail");
+            serializer.Serialize(writer, ws.Thumbnail);
+
+            // Validation
+            writer.WritePropertyName("Validation");
+            serializer.Serialize(writer, ws.Validation.ToString());
+
+            // Helplink
+            writer.WritePropertyName("HelpLink");
+            serializer.Serialize(writer, ws.HelpLink);
 
             // Nodes
             writer.WritePropertyName("Nodes");
