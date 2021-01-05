@@ -37,17 +37,21 @@ namespace Dynamo.Wpf.Rendering
     /// A Helix-specifc IRenderPackage implementation.
     /// </summary>
     [Obsolete("Do not use! This will be moved to a new project in a future version of Dynamo.")]
-    public class HelixRenderPackage : IRenderPackage, ITransformable
+    public class HelixRenderPackage : IRenderPackage, ITransformable, IRenderLabels, IRenderPackageSupplement
     {
         #region private members
 
         private PointGeometry3D points;
         private LineGeometry3D lines;
         private MeshGeometry3D mesh;
+        internal readonly List<Tuple<string, Vector3>> labelData = new List<Tuple<string, Vector3>>();
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
-        
+        private List< byte[]> colorsList = new List<byte[]>();
+        private List<int> colorStrideList = new List<int>();
+        private List<Tuple<int, int>> colorsMeshVerticesRange = new List<Tuple<int, int>>();
+
         #endregion
 
         #region constructors
@@ -202,6 +206,10 @@ namespace Dynamo.Wpf.Rendering
             DisplayLabels = false;
 
             colors = null;
+
+            colorsList.Clear();
+            colorStrideList.Clear();
+            colorsMeshVerticesRange.Clear();
         }
 
         /// <summary>
@@ -303,28 +311,6 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Apply a color to a sequence of point vertices.
-        /// </summary>
-        //public void ApplyPointVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        //{
-        //    var message = string.Empty;
-        //    if (!HasValidStartEnd(startIndex, endIndex, points, out message))
-        //    {
-        //        if (!string.IsNullOrEmpty(message))
-        //        {
-        //            throw new Exception(message);
-        //        }
-
-        //        return;
-        //    }
-
-        //    for (var i = startIndex; i <= endIndex; i++)
-        //    {
-        //        points.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-        //    }
-        //}
-
-        /// <summary>
         /// Apply a color to each point vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
@@ -340,28 +326,6 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Apply a color to a sequence of line vertices.
-        /// </summary>
-        //public void ApplyLineVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        //{
-        //    var message = string.Empty;
-        //    if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
-        //    {
-        //        if (!string.IsNullOrEmpty(message))
-        //        {
-        //            throw new Exception(message);
-        //        }
-
-        //        return;
-        //    }
-
-        //    for (var i = startIndex; i <= endIndex; i++)
-        //    {
-        //        lines.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-        //    }
-        //}
-
-        /// <summary>
         /// Apply a color to each line vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
@@ -375,28 +339,6 @@ namespace Dynamo.Wpf.Rendering
             lines.Colors = null;
             lines.Colors = colors.ToColor4Collection();
         }
-
-        /// <summary>
-        /// Apply a color to a sequence of mesh vertices.
-        /// </summary>
-        //public void ApplyMeshVertexColors(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
-        //{
-        //    var message = string.Empty;
-        //    if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
-        //    {
-        //        if (!string.IsNullOrEmpty(message))
-        //        {
-        //            throw new Exception(message);
-        //        }
-
-        //        return;
-        //    }
-
-        //    for (var i = startIndex; i <= endIndex; i++)
-        //    {
-        //        mesh.Colors[i] = Color4FromBytes(red, green, blue, alpha);
-        //    }
-        //}
 
         /// <summary>
         /// Apply a color to each mesh vertex.
@@ -561,6 +503,232 @@ namespace Dynamo.Wpf.Rendering
         }
 
         public int ColorsStride { get; set; }
+
+        #endregion
+
+        #region IRenderLabels implementation
+
+        public List<Tuple<string, float[]>> LabelData
+        {
+            get
+            {
+                var list = new List<Tuple<string, float[]>>();
+                foreach (var tuple in labelData)
+                {
+                    list.Add(new Tuple<string, float[]>(tuple.Item1, tuple.Item2.ToArray()));
+                }
+                
+                return list;
+            }
+        }
+
+        /// <summary>
+        /// Add a label position to the render package.
+        /// </summary>
+        public void AddLabel(string label, VertexType vertexType, int index)
+        {
+            Vector3 position;
+            switch (vertexType)
+            {
+                case VertexType.Point:
+                    if (index > points.Positions.Count) {return;}
+                    position = points.Positions[index-1];
+                    break;
+                case VertexType.Line:
+                    if (index > lines.Positions.Count) { return; }
+                    position = lines.Positions[index - 1];
+                    break;
+                case VertexType.Mesh:
+                    if (index > mesh.Positions.Count) { return; }
+                    position = Mesh.Positions[index - 1];
+                    break;
+                default:
+                    return;
+            }
+            labelData.Add(new Tuple<string, Vector3>(label,position));
+        }
+
+        /// <summary>
+        /// Add a label position to the render package.
+        /// </summary>
+        public void AddLabel(string label, double x, double y, double z)
+        {
+            labelData.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
+        }
+
+        /// <summary>
+        /// Clear all label data from the render package.
+        /// </summary>
+        public void ClearLabels()
+        {
+            labelData.Clear();
+        }
+
+        #endregion
+
+        #region IRenderPackageSupplement implementation
+
+        /// <summary>
+        /// Insert a color to a range of point vertices.
+        /// </summary>
+        public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, points, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                points.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+            }
+        }
+
+        /// <summary>
+        /// Append a color range for point vertices.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendPointVertexColorRange(byte[] colors)
+        {
+            if (colors.Count() / 4 != points.Colors.Count + points.Positions.Count)
+            {
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
+            }
+
+            points.Colors.AddRange(colors.ToColor4Collection());
+        }
+
+        /// <summary>
+        /// Insert a color to a range of line vertices.
+        /// </summary>
+        public void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                lines.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+            }
+        }
+
+        /// <summary>
+        /// Append a color range for line vertices.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendLineVertexColorRange(byte[] colors)
+        {
+            if (colors.Count() / 4 != lines.Colors.Count + lines.Positions.Count)
+            {
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
+            }
+
+            lines.Colors.AddRange(colors.ToColor4Collection());
+        }
+
+        /// <summary>
+        /// Insert a color to a range of of mesh vertices.
+        /// </summary>
+        public void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                mesh.Colors[i] = Color4FromBytes(red, green, blue, alpha);
+            }
+        }
+
+        /// <summary>
+        /// Append a color range for mesh vertex.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendMeshVertexColorRange(byte[] colors)
+        {
+            if (colors.Count() / 4 != mesh.Colors.Count + mesh.Positions.Count)
+            {
+                throw new Exception("The number of colors specified must be equal to the number of vertices.");
+            }
+
+            mesh.Colors.AddRange(colors.ToColor4Collection());
+        }
+
+        /// <summary>
+        /// A List containing arrays of bytes representing RGBA colors.
+        /// These arrays can be used to populate textures for mapping onto specific meshes
+        /// </summary>
+        public List<byte[]> ColorsList
+        {
+            get { return colorsList; }
+        }
+
+        /// <summary>
+        /// A list containing the size of one dimension of the associated Colors list.
+        /// </summary>
+        public List<int> ColorsStrideList
+        {
+            get { return colorStrideList; }
+        }
+
+        /// <summary>
+        /// A list of mesh vertices ranges that have associated texture maps
+        /// </summary>
+        public List<Tuple<int, int>> ColorsMeshVerticesRange
+        {
+            get { return colorsMeshVerticesRange; }
+        }
+
+        /// <summary>
+        /// Set a color map for a range of mesh vertices
+        /// </summary>
+        public void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride)
+        {
+            var message = string.Empty;
+            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    throw new Exception(message);
+                }
+
+                return;
+            }
+            
+            foreach (var r in colorsMeshVerticesRange)
+            {
+                if (startIndex >= r.Item1 && startIndex <= r.Item2 || endIndex >= r.Item1 && endIndex <= r.Item2)
+                {
+                    throw new Exception("The start and end indices must not overlap previously defined ranges.");
+                }
+            }
+            
+            colorsMeshVerticesRange.Add(new Tuple<int, int>(startIndex, endIndex));
+            colorsList.Add(colors);
+            colorStrideList.Add(stride);
+        }
 
         #endregion
 
