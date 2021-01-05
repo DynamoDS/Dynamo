@@ -275,28 +275,28 @@ namespace DSOffice
         [IsVisibleInDynamoLibrary(false)]
         public static object[][] ReadFromFile(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
-        	object[][] data;
-        	
-        	if(!showExcel)
-        	{
-        		ExcelInterop.ShowOnStartup = false;
-        	}
-        	WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
+            object[][] data;
+
+            if (!showExcel)
+            {
+                ExcelInterop.ShowOnStartup = false;
+            }
+            WorkBook wb = WorkBook.ReadExcelFile(file.FullName);
             WorkSheet ws = wb.GetWorksheetByName(sheetName);
             if (readAsStrings)
             {
-            	data = ws.GetData(true);
+                data = ws.GetData(true);
             }
             else
             {
-            	data = ws.Data;
+                data = ws.Data;
             }
-            if(!showExcel)
+            if (!showExcel)
             {
-            	wb.CloseHidden();
-            	ExcelInterop.ShowOnStartup = true;
+                wb.CloseHidden();
+                ExcelInterop.ShowOnStartup = true;
             }
-            
+
             return data;
         }
 
@@ -326,9 +326,14 @@ namespace DSOffice
         [IsVisibleInDynamoLibrary(false)]
         public static object[][] WriteToFile(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
+            return WriteData(filePath, sheetName, startRow, startCol, data, overWrite);
+        }
+
+        internal static object[][] WriteData(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false, bool writeAsString = false)
+        {
             WorkBook wb = new WorkBook(filePath);
             WorkSheet ws = new WorkSheet(wb, sheetName, overWrite);
-            ws = ws.WriteData(startRow, startCol, data);
+            ws = ws.WriteData(startRow, startCol, data, writeAsString);
             return ws.Data;
         }
     }
@@ -522,8 +527,9 @@ namespace DSOffice
         /// <param name="startRow"></param>
         /// <param name="startColumn"></param>
         /// <param name="data"></param>
+        /// <param name="writeAsString"></param>
         /// <returns></returns>
-        internal WorkSheet WriteData(int startRow, int startColumn, object[][] data)
+        internal WorkSheet WriteData(int startRow, int startColumn, object[][] data, bool writeAsString = false)
         {
             startRow = Math.Max(0, startRow);
             startColumn = Math.Max(0, startColumn);
@@ -537,6 +543,8 @@ namespace DSOffice
             var c1 = (Range)ws.Cells[startRow + 1, startColumn + 1];
             var c2 = (Range)ws.Cells[startRow + numRows, startColumn + numColumns];
             var range = ws.Range[c1, c2];
+            if(writeAsString)
+                range.NumberFormat = "@";
             range.Value = rangeData;
 
             wb.Save();
@@ -833,9 +841,33 @@ namespace DSOffice
         /// <param name="overWrite"></param>
         /// <returns name="data">Data written to the spreadsheet.</returns>
         /// <search>office,excel,spreadsheet</search>
+        [Obsolete("Use ExportToExcel instead.")] 
         public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
         {
-            return Excel.WriteToFile(filePath, sheetName, startRow, startCol, data, overWrite);
+            return Excel.WriteData(filePath, sheetName, startRow, startCol, data, overWrite);
+        }
+
+        /// <summary>
+        ///     Write data to a Microsoft Excel spreadsheet. Data is written by row
+        ///     with sublists to be written in successive rows. Rows and columns are
+        ///     zero-indexed; for example, the value in the data list at [0,0] will
+        ///     be written to cell A1. Null values and empty lists are written to Excel 
+        ///     as empty cells. This node requires Microsoft Excel to be installed. 
+        /// </summary>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
+        /// <param name="sheetName">Name of the worksheet to write data to.</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startCol">
+        ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
+        /// </param>
+        /// <param name="data">Data to write to the spreadsheet.</param>
+        /// <param name="overWrite"></param>
+        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings.</param>
+        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <search>office,excel,spreadsheet</search>
+        public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false, bool writeAsString = false)
+        {
+            return Excel.WriteData(filePath, sheetName, startRow, startCol, data, overWrite, writeAsString);
         }
     }
 }

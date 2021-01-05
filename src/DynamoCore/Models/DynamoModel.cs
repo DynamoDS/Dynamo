@@ -1044,18 +1044,19 @@ namespace Dynamo.Models
 
                         if (Logging.Analytics.ReportingAnalytics)
                         {
-                            var modifiedNodes = "";
                             if (updateTask.ModifiedNodes != null && updateTask.ModifiedNodes.Any())
                             {
-                                modifiedNodes = updateTask.ModifiedNodes
-                                    .Select(n => n.GetOriginalName())
-                                    .Aggregate((x, y) => string.Format("{0}, {1}", x, y));
+                                // Send analytics for each of modified nodes so they are counted individually
+                                foreach (var node in updateTask.ModifiedNodes)
+                                {
+                                    // Tracking node execution as generic event
+                                    // it is distinguished with the legacy aggregated performance event
+                                    Dynamo.Logging.Analytics.TrackEvent(
+                                        Actions.Run, 
+                                        Categories.NodeOperations,
+                                        node.GetOriginalName());
+                                }
                             }
-
-                            Dynamo.Logging.Analytics.TrackTimedEvent(
-                                Categories.Performance,
-                                e.Task.GetType().Name,
-                                executionTimeSpan, modifiedNodes);
                         }
 
                         Debug.WriteLine(String.Format(Resources.EvaluationCompleted, executionTimeSpan));

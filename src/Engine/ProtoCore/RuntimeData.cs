@@ -147,7 +147,7 @@ namespace ProtoCore
 
         /// <summary>
         /// This API is used by host integrations such as for Revit and C3D.
-        /// It is used to gets the trace data list for all nodes binding to elements in the host.
+        /// It is used to get the trace data list for all nodes binding to elements in the host.
         /// </summary>
         /// <param name="nodeGuids"></param>
         /// <param name="executable"></param>

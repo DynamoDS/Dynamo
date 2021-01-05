@@ -4633,6 +4633,22 @@
       "keywords": "test, all, false"
     },
     {
+      "fullyQualifiedName": "DSCore.List.AnyTrue",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyTrue.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyTrue@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, true"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.AnyFalse",
+      "iconUrl": "http://localhost/icons/DSCore.List.AnyFalse.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.AnyFalse@var[]..[]",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "test, any, false"
+    },
+    {
       "fullyQualifiedName": "DSCore.List.Count",
       "iconUrl": "http://localhost/icons/DSCore.List.Count.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.Count@var[]..[]",
@@ -4730,11 +4746,19 @@
     },
     {
       "fullyQualifiedName": "DSCore.List.Shuffle",
-      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.Small?path=DSCoreNodes.dll",
+      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.varN.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.List.Shuffle@var[]..[]",
       "parameters": null,
       "itemType": "action",
       "keywords": "random, randomize, shuffle, jitter, randomness"
+    },
+    {
+      "fullyQualifiedName": "DSCore.List.Shuffle",
+      "iconUrl": "http://localhost/icons/DSCore.List.Shuffle.varN-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.List.Shuffle@var[]..[],int",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "random, randomize, shuffle, jitter, randomness, seed"
     },
     {
       "fullyQualifiedName": "DSCore.List.Permutations",
@@ -4793,12 +4817,28 @@
       "keywords": "random, numberrange"
     },
     {
+      "fullyQualifiedName": "DSCore.Math.Random",
+      "iconUrl": "http://localhost/icons/DSCore.Math.Random.double-double-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.Math.Random@double,double,int",
+      "parameters": "(value1, value2, seed)",
+      "itemType": "action",
+      "keywords": "random, numberrange, seed"
+    },
+    {
       "fullyQualifiedName": "DSCore.Math.RandomList",
-      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.Small?path=DSCoreNodes.dll",
+      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.int.Small?path=DSCoreNodes.dll",
       "contextData": "DSCore.Math.RandomList@int",
       "parameters": null,
       "itemType": "action",
       "keywords": "random, listcontains"
+    },
+    {
+      "fullyQualifiedName": "DSCore.Math.RandomList",
+      "iconUrl": "http://localhost/icons/DSCore.Math.RandomList.int-double-double-int.Small?path=DSCoreNodes.dll",
+      "contextData": "DSCore.Math.RandomList@int,double,double,int",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": "random, listcontains, seed"
     },
     {
       "fullyQualifiedName": "DSCore.Math.PiTimes2",
@@ -5609,9 +5649,9 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSOffice.Data.ExportExcel",
-      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportExcel.Small?path=DSOffice.dll",
-      "contextData": "DSOffice.Data.ExportExcel@string,string,int,int,var[][],bool",
+      "fullyQualifiedName": "DSOffice.Data.ExportToExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.ExportToExcel@string,string,int,int,var[][],bool,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""

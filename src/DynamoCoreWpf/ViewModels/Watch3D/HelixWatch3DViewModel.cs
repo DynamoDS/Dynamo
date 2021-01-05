@@ -1891,7 +1891,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var manipulator = model as DynamoGeometryModel3D;
                     if (null == manipulator)
                     {
-                        manipulator = CreateDynamoGeometryModel3D(rp);
+                        manipulator = CreateDynamoGeometryModel3D(rp, false);
                         AttachedProperties.SetIsSpecialRenderPackage(manipulator, true);
                     }
                     
@@ -1912,7 +1912,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var centerline = model as DynamoLineGeometryModel3D;
                     if (null == centerline)
                     {
-                        centerline = CreateLineGeometryModel3D(rp, 0.3);
+                        centerline = CreateLineGeometryModel3D(rp, 0.3, false);
                         AttachedProperties.SetIsSpecialRenderPackage(centerline, true);
                     }
                     centerline.Geometry = rp.Lines;
@@ -1922,7 +1922,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var plane = model as DynamoLineGeometryModel3D;
                     if (null == plane)
                     {
-                        plane = CreateLineGeometryModel3D(rp, 0.7);
+                        plane = CreateLineGeometryModel3D(rp, 0.7, false);
                         AttachedProperties.SetIsSpecialRenderPackage(plane, true);
                     }
                     plane.Geometry = rp.Lines;
@@ -2029,14 +2029,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                pt + defaultLabelOffset));
         }
 
-        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp)
+        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true)
         {
           
             var meshGeometry3D = new DynamoGeometryModel3D()
             {
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Material = WhiteMaterial,
-                IsHitTestVisible = true,
+                IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
             };
 
@@ -2070,7 +2070,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return meshGeometry3D;
         }
 
-        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp, double thickness = 1.0)
+        private DynamoLineGeometryModel3D CreateLineGeometryModel3D(HelixRenderPackage rp, double thickness = 1.0, 
+            bool isHitTestVisible = true)
         {
             var lineGeometry3D = new DynamoLineGeometryModel3D()
             {
@@ -2078,7 +2079,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Transform = new MatrixTransform3D(rp.Transform.ToMatrix3D()),
                 Color = Colors.White,
                 Thickness = thickness,
-                IsHitTestVisible = true,
+                IsHitTestVisible = isHitTestVisible,
                 IsSelected = rp.IsSelected
             };
             return lineGeometry3D;
