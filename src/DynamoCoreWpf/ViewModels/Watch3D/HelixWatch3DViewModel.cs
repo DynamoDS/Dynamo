@@ -1757,54 +1757,104 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     id = baseId + MeshKey;
 
-                    Element3D element3D;
-                    DynamoGeometryModel3D meshGeometry3D;
-                    if (Element3DDictionary.TryGetValue(id, out element3D))
+                    //if we require texture coloration then we need to create a new Geometry3d object.
+                    if (rp.ColorsMeshVerticesRange.Any())
                     {
-                        meshGeometry3D = element3D as DynamoGeometryModel3D;
-                    }
-                    else
-                    {
-                        meshGeometry3D = CreateDynamoGeometryModel3D(rp);
-                        Element3DDictionary.Add(id, meshGeometry3D);
-                    }
+                        var countTotal = 0;
+                        for (var j = 0; j < rp.ColorsMeshVerticesRange.Count; j++)
+                        {
+                            var range = rp.ColorsMeshVerticesRange[j];
+                            var i = range.Item1;
+                            var c = range.Item2 - range.Item1 + 1;
+                            AddMeshData(baseId + ":" + j + MeshKey, rp, m.Positions.GetRange(i,c), m.Colors.GetRange(i,c), 
+                                m.Normals.GetRange(i,c), m.TextureCoordinates.GetRange(i,c),
+                                m.Indices.GetRange(i,c), drawDead, baseId, rp.ColorsList[j], rp.ColorsStrideList[j]);
 
-                    var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() 
-                        : meshGeometry3D.Geometry as MeshGeometry3D;
-                    var idxCount = mesh.Positions.Count;
+                            countTotal+= c;
+                        }
 
-                    mesh.Positions.AddRange(m.Positions);
+                        //If all the mesh regions had texture map data then we can exit
+                        if (countTotal == m.Positions.Count)
+                        { continue;}
 
-  
-                    // If we are in a custom node, and the current
-                    // package's id is NOT one of the output ids of custom nodes
-                    // in the graph, then draw the geometry with transparency.
-                    if (drawDead)
-                    {
-                        meshGeometry3D.RequiresPerVertexColoration = true;
-                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
-                    }
-                    else
-                    {
-                        mesh.Colors.AddRange(m.Colors);
+                        //Otherwise, clean up the remaining mesh data to exclude the regions already generated.
+                        //First sort the range data
+                        var sortedVerticesRange = new List<Tuple<int, int>>();
+                        sortedVerticesRange.AddRange(rp.ColorsMeshVerticesRange);
+                        sortedVerticesRange.Reverse();
                         
+                        foreach (var range in sortedVerticesRange)
+                        {
+                            var i = range.Item1;
+                            var c = range.Item2 - range.Item1 + 1;
+                            m.Positions.RemoveRange(i,c);
+                            m.Colors.RemoveRange(i, c);
+                            m.Normals.RemoveRange(i, c);
+                            m.TextureCoordinates.RemoveRange(i, c);
+                        }
+
+                        var sequence = Enumerable.Range(0, m.Positions.Count);
+                        var newIndices = new IntCollection();
+                        newIndices.AddRange(sequence);
+                        m.Indices = newIndices;
                     }
 
-                    mesh.Normals.AddRange(m.Normals);
-                    mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
-                    mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
-
-                    if (mesh.Colors.Any(c => c.Alpha < 1.0))
-                    {
-                        AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
-                    }
-
-                    meshGeometry3D.Geometry = mesh;
-                    meshGeometry3D.Name = baseId;
-
+                    AddMeshData(id, rp, m.Positions, m.Colors, m.Normals, m.TextureCoordinates, m.Indices, drawDead, baseId, rp.Colors, rp.ColorsStride);
                 }
-
             }
+        }
+
+        private void AddMeshData(string id, HelixRenderPackage rp, FastList<Vector3> mPositions,
+            FastList<Color4> mColors, FastList<Vector3> mNormals, FastList<Vector2> mTextureCoordinates, 
+            FastList<int> mIndices, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
+        {
+            Element3D element3D;
+            DynamoGeometryModel3D meshGeometry3D;
+            if (Element3DDictionary.TryGetValue(id, out element3D))
+            {
+                meshGeometry3D = element3D as DynamoGeometryModel3D;
+            }
+            else
+            {
+                meshGeometry3D = CreateDynamoGeometryModel3D(rp, true, colors, stride);
+                Element3DDictionary.Add(id, meshGeometry3D);
+            }
+
+            var mesh = meshGeometry3D.Geometry == null
+                ? HelixRenderPackage.InitMeshGeometry()
+                : meshGeometry3D.Geometry as MeshGeometry3D;
+            var previousPositionCount = mesh.Positions.Count;
+
+            mesh.Positions.AddRange(mPositions);
+
+
+            // If we are in a custom node, and the current
+            // package's id is NOT one of the output ids of custom nodes
+            // in the graph, then draw the geometry with transparency.
+            if (drawDead)
+            {
+                meshGeometry3D.RequiresPerVertexColoration = true;
+                mesh.Colors.AddRange(mColors.Select(c => new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
+            }
+            else
+            {
+                mesh.Colors.AddRange(mColors);
+            }
+
+            mesh.Normals.AddRange(mNormals);
+            mesh.TextureCoordinates.AddRange(mTextureCoordinates);
+
+            var adjustment = previousPositionCount - mIndices[0];
+            
+            mesh.Indices.AddRange(mIndices.Select(i => i + adjustment));
+
+            if (mesh.Colors.Any(c => c.Alpha < 1.0))
+            {
+                AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
+            }
+
+            meshGeometry3D.Geometry = mesh;
+            meshGeometry3D.Name = baseId;
         }
 
         /// <summary>
@@ -2030,7 +2080,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true)
+        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true, IEnumerable<byte> colors = null, int colorStride = 0)
         {
           
             var meshGeometry3D = new DynamoGeometryModel3D()
@@ -2041,14 +2091,14 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
             };
 
-            if (rp.Colors != null)
+            if (colors != null)
             {
                 var pf = PixelFormats.Bgra32;
-                var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
+                var stride = (colorStride / 4 * pf.BitsPerPixel + 7) / 8;
                 try
                 {
-                    var diffMap = BitmapSource.Create(rp.ColorsStride / 4, rp.Colors.Count() / rp.ColorsStride, 96.0, 96.0, pf, null,
-                        rp.Colors.ToArray(), stride);
+                    var diffMap = BitmapSource.Create(colorStride / 4, colors.Count() / colorStride, 96.0, 96.0, pf, null,
+                        colors.ToArray(), stride);
                     var diffMat = new PhongMaterial
                     {
                         Name = "White",
