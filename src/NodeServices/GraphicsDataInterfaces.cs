@@ -197,6 +197,65 @@ namespace Autodesk.DesignScript.Interfaces
     }
 
     /// <summary>
+    /// This interface provides additional methods adding for color information to a render package.
+    /// </summary>
+    public interface IRenderPackageSupplement
+    {
+        /// <summary>
+        /// Insert a color to a range of point vertices.
+        /// </summary>
+        void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+        
+        /// <summary>
+        /// Append a color range for point vertices.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        void AppendPointVertexColorRange(byte[] colors);
+
+        /// <summary>
+        /// Insert a color to a range of line vertices.
+        /// </summary>
+        void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+
+        /// <summary>
+        /// Append a color range for line vertices.
+        /// </summary>
+        void AppendLineVertexColorRange(byte[] colors);
+
+        /// <summary>
+        /// Insert a color to a range of of mesh vertices.
+        /// </summary>
+        void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+
+        /// <summary>
+        /// Append a color range for mesh vertex.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        void AppendMeshVertexColorRange(byte[] colors);
+
+        /// <summary>
+        /// A List containing arrays of bytes representing RGBA colors.
+        /// These arrays can be used to populate textures for mapping onto specific meshes
+        /// </summary>
+        List<byte[]> ColorsList { get; }
+
+        /// <summary>
+        /// A list containing the size of one dimension of the associated Colors list.
+        /// </summary>
+        List<int> ColorsStrideList { get; }
+
+        /// <summary>
+        /// A list of mesh vertices ranges that have associated texture maps
+        /// </summary>
+        List<Tuple<int,int>> ColorsMeshVerticesRange { get; }
+
+        /// <summary>
+        /// Set a color map for a range of mesh vertices
+        /// </summary>
+        void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride);
+    }
+    
+    /// <summary>
     /// Represents a graphics item object, that can provide tesselated data
     /// into the given render package.
     /// </summary>
