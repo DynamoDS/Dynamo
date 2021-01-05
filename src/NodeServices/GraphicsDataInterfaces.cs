@@ -256,6 +256,39 @@ namespace Autodesk.DesignScript.Interfaces
     }
     
     /// <summary>
+    /// Represents labels and positions
+    /// </summary>
+    public interface IRenderLabels
+    {
+        ///// <summary>
+        ///// Get label data; label string and associated position
+        ///// </summary>
+        List<Tuple<string, float[]>> LabelData { get; }
+
+        /// <summary>
+        /// Add a label position to the render package with reference to a geometry vertex.
+        /// </summary>
+        void AddLabel(string label, VertexType vertexType, int index);
+
+        /// <summary>
+        /// Add a label position to the render package.
+        /// </summary>
+        void AddLabel(string label, double x, double y, double z);
+
+        /// <summary>
+        /// Clear all label data from the render package.
+        /// </summary>
+        void ClearLabels();
+    }
+
+    public enum VertexType
+    {
+        Point,
+        Line,
+        Mesh
+    }
+
+    /// <summary>
     /// Represents a graphics item object, that can provide tesselated data
     /// into the given render package.
     /// </summary>
