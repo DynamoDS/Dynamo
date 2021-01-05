@@ -1631,19 +1631,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 foreach (var rp in packages)
                 {
-                    // Each node can produce multiple render packages. We want all the geometry of the
-                    // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
-                    // We strip the unique identifier for the package (i.e. the bit after the `:` in var12345:0), and replace it
-                    // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
-                    // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
-                    // to those geometry objects.
-
                     var baseId = rp.Description;
-                    if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
-                    {
-                        baseId = baseId.Split(':')[0];
-                    }
-                    
+
                     //If this render package belongs to special render package, then create
                     //and update the corresponding GeometryModel. Special renderpackage are
                     //defined based on its description containing one of the constants from
@@ -1653,12 +1642,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
 
+                    if (rp.LabelData.Any())
+                    {
+                        AddLabelPlace(baseId, rp.labelData, rp);
+                    }
+
                     string id;
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        //if we require a custom transform then we need to create a new Geometry3d object.
-                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + PointsKey;
+                        id = baseId + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1694,7 +1687,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //(ie updating colors from this method).
                         colorCache[id] = points.Colors;
                       
-                        AddLabelPlace(baseId, p.Positions[0], rp);
                         if (pointGeometry3D.Geometry == null)
                         {
                             pointGeometry3D.Geometry = points;
@@ -1710,8 +1702,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        //if we require a custom transform then we need to create a new Geometry3d object.
-                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + LinesKey;
+                        id = baseId + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1751,7 +1742,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
-                        AddLabelPlace(baseId, lineSet.Positions[startIdx], rp);
                         if(lineGeometry3D.Geometry == null)
                         {
                             lineGeometry3D.Geometry = lineSet;
@@ -1765,8 +1755,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    //if we require a custom transform or vertex coloration then we need to create a new Geometry3d object.
-                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null || rp.RequiresCustomTransform) ? rp.Description : baseId) + MeshKey;
+                    id = baseId + MeshKey;
 
                     Element3D element3D;
                     DynamoGeometryModel3D meshGeometry3D;
@@ -1810,7 +1799,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
                     }
 
-                    AddLabelPlace(baseId, mesh.Positions[idxCount], rp);
                     meshGeometry3D.Geometry = mesh;
                     meshGeometry3D.Name = baseId;
 
@@ -1842,7 +1830,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return result;
         }
 
-        private void AddLabelPlace(string nodeId, Vector3 pos, IRenderPackage rp)
+        private void AddLabelPlace(string nodeId, List<Tuple<string, Vector3>> labelData, IRenderPackage rp)
         {
             if (!labelPlaces.ContainsKey(nodeId))
             {
@@ -1850,20 +1838,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             //if the renderPackage also implements ITransformable then 
-            // use the transform property to transform the text labels
-           
-            SharpDX.Vector3 transformedPos = pos;
-            if (rp is HelixRenderPackage && rp is Autodesk.DesignScript.Interfaces.ITransformable)
+            // use the transform property to transform the text label positions
+            if (rp is HelixRenderPackage hrp && rp is Autodesk.DesignScript.Interfaces.ITransformable)
             {
-                transformedPos = (rp as Autodesk.DesignScript.Interfaces.ITransformable)
-                   .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
+                List<Tuple<string, Vector3>> transformedLabelData = new List<Tuple<string, Vector3>>();
+                foreach (var labelInstance in labelData)
+                {
+                    var transformedPos = hrp.Transform.ToMatrix3D().Transform(labelInstance.Item2.ToPoint3D()).ToVector3();
+                    transformedLabelData.Add(new Tuple<string, Vector3>(labelInstance.Item1, transformedPos));
+                }
+
+                labelPlaces[nodeId].AddRange(transformedLabelData);
+            }
+            else
+            {
+                labelPlaces[nodeId].AddRange(labelData);
             }
             
 
-            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)
             {
-                CreateOrUpdateText(nodeId, transformedPos, rp);
+                CreateOrUpdateDisplayLabels(nodeId);
             }
         }
 
@@ -2007,9 +2002,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void CreateOrUpdateText(string baseId, Vector3 pt, IRenderPackage rp)
+        private void CreateOrUpdateDisplayLabels(string nodeId)
         {
-            var textId = baseId + TextKey;
+            if(!labelPlaces.TryGetValue(nodeId, out var nodeLabelData))
+            { return;}            
+            
+            var textId = nodeId + TextKey;
             BillboardTextModel3D bbText;
             if (Element3DDictionary.ContainsKey(textId))
             {
@@ -2024,9 +2022,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Element3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
-           
-            geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-               pt + defaultLabelOffset));
+
+            foreach (var labelData  in nodeLabelData)
+            {
+                geom.TextInfo.Add(new TextInfo(labelData.Item1,
+                    labelData.Item2 + defaultLabelOffset));
+            }
         }
 
         private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true)
