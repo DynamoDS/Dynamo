@@ -45,7 +45,7 @@ for %%f in (%1\*.nuspec) do (
   :: Check if nuspec file name containing "Symbols"
   echo %%f|find "Symbols" >nul
   :: When nuget pack symbols, set to release path where the symbol files live
-  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%) else (nuget pack %%f -basepath %releasePath% -properties Version=%version%)
+  if errorlevel 1 ( nuget pack %%f -basepath %harvestPath% -properties Version=%version%) else (nuget pack %%f -basepath %releasePath% -SymbolPackageFormat snupkg -properties Version=%version%)
   if not exist %%~nf.%version%.nupkg (
     exit /b 1
   )
