@@ -1582,7 +1582,7 @@ namespace Dynamo.Graph.Workspaces
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.File)))
+                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.Save)))
                     elementList.AppendChild(dynEl);
 
                 //write only the output connectors
@@ -1616,7 +1616,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
-                    var note = n.Serialize(xmlDoc, SaveContext.File);
+                    var note = n.Serialize(xmlDoc, SaveContext.Save);
                     noteList.AppendChild(note);
                 }
 
@@ -1625,7 +1625,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(annotationList);
                 foreach (var n in annotations)
                 {
-                    var annotation = n.Serialize(xmlDoc, SaveContext.File);
+                    var annotation = n.Serialize(xmlDoc, SaveContext.Save);
                     annotationList.AppendChild(annotation);
                 }
 
@@ -1634,7 +1634,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(presetsElement);
                 foreach (var preset in Presets)
                 {
-                    var presetState = preset.Serialize(xmlDoc, SaveContext.File);
+                    var presetState = preset.Serialize(xmlDoc, SaveContext.Save);
                     presetsElement.AppendChild(presetState);
                 }
 

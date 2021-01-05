@@ -395,7 +395,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Save);
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");

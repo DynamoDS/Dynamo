@@ -2201,7 +2201,9 @@ namespace Dynamo.Graph.Nodes
                 helper.SetAttribute("nodeState", state.ToString());
             }
 
-            if (context == SaveContext.File)
+            if (context == SaveContext.File ||
+                context == SaveContext.Save ||
+                context == SaveContext.SaveAs)
                 OnSave();
         }
 

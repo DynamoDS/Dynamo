@@ -67,7 +67,10 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 }
             }
 
-            if (context == SaveContext.File && !string.IsNullOrEmpty(assembly))
+            if (!string.IsNullOrEmpty(assembly) &&
+                context == SaveContext.File ||
+                context == SaveContext.Save ||
+                context == SaveContext.SaveAs)
             {
                 var document = nodeElement.OwnerDocument;
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
