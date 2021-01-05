@@ -149,6 +149,27 @@ namespace Dynamo.Scheduler
                 return;
             }
 
+            var package = factory.CreateRenderPackage();
+            package.DisplayLabels = displayLabels;
+            package.Description = tag;
+            package.IsSelected = isNodeSelected;
+
+            GetRenderPackagesFromMirrorDataImp(mirrorData, package, tag);
+
+            if (package.MeshVertexColors.Any())
+            {
+                package.RequiresPerVertexColoration = true;
+            }
+
+            renderPackageCache.Add(package, outputPortId);
+        }
+
+        private void GetRenderPackagesFromMirrorDataImp(
+            MirrorData mirrorData,
+            IRenderPackage package,
+            string labelKey)
+        {
+
             if (mirrorData.IsCollection)
             {
                 int count = 0;
@@ -156,69 +177,29 @@ namespace Dynamo.Scheduler
                 {
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
-                        string newTag = tag + ":" + count;
-                        GetRenderPackagesFromMirrorData(outputPortId, el, newTag, displayLabels);
+                        string newLabel = labelKey + ":" + count;
+                        GetRenderPackagesFromMirrorDataImp(el, package, newLabel);
                     }
-                    count = count + 1;
+                    count += 1;
                 }
             }
             else
             {
-                var graphicItem = mirrorData.Data as IGraphicItem;
-                if (graphicItem == null)
+                if (!(mirrorData.Data is IGraphicItem graphicItem))
                 {
                     return;
                 }
 
-                var package = factory.CreateRenderPackage();
                 var packageWithTransform = package as ITransformable;
-                package.Description = tag;
 
                 try
                 {
-                    graphicItem.Tessellate(package, factory.TessellationParameters);
-                    if (package.MeshVertexColors.Any())
-                    {
-                        package.RequiresPerVertexColoration = true;
-                    }
+                    var previousPointVertexCount = package.PointVertexCount;
+                    var previousLineVertexCount = package.LineVertexCount;
+                    var previousMeshVertexCount = package.MeshVertexCount;
 
-                    //If the package has a transform that is not the identity matrix
-                    //then set requiresCustomTransform to true.
-                    if (packageWithTransform != null && packageWithTransform.Transform.SequenceEqual(
-                        new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }) == false)
-                    {
-                        (packageWithTransform).RequiresCustomTransform = true;
-                    }
-
-                    if (factory.TessellationParameters.ShowEdges)
-                    {
-                        var topology = graphicItem as Topology;
-                        if (topology != null)
-                        {
-                            var surf = graphicItem as Surface;
-                            if (surf != null)
-                            {
-                                foreach (var curve in surf.PerimeterCurves())
-                                {
-                                    curve.Tessellate(package, factory.TessellationParameters);
-                                    curve.Dispose();
-                                }
-                            }
-                            else
-                            {
-                                var edges = topology.Edges;
-                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
-                                {
-                                    geom.Tessellate(package, factory.TessellationParameters);
-                                    geom.Dispose();
-                                }
-                                edges.ForEach(x => x.Dispose());
-                            }
-                        }
-                    }
-                    
-                    var plane = graphicItem as Plane;
-                    if (plane != null)
+                    //Plane tessellation needs to be handled here vs in LibG currently
+                    if (graphicItem is Plane plane)
                     {
                         package.RequiresPerVertexColoration = true;
 
@@ -229,9 +210,7 @@ namespace Dynamo.Scheduler
                         var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
                         var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
                         var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
-
-                        // Get rid of the original plane geometry.
-                        package.Clear();
+                        //Todo Dispose cs, a, b, c, d?
 
                         package.AddTriangleVertex(a.X, a.Y, a.Z);
                         package.AddTriangleVertex(b.X, b.Y, b.Z);
@@ -263,67 +242,81 @@ namespace Dynamo.Scheduler
                         var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
                         package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-                        for (var i = 0; i < package.LineVertexCount / 2; i++)
+                        for (var i = 0; i < 5; i++)
                         {
                             package.AddLineStripVertexCount(2);
-                        }
-
-                        for (var i = 0; i < package.LineVertexCount; i ++)
-                        {
+                            package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                             package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                         }
 
-                        for (var i = 0; i < package.MeshVertexCount; i++)
+                        for (var i = 0; i < 6; i++)
                         {
                             package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
-                        }
-
-                        for (var i = 0; i < package.MeshVertexCount; i++)
-                        {
                             package.AddTriangleVertexColor(0, 0, 0, 10);
                         }
                     }
-
-                    // The default color coming from the geometry library for
-                    // curves is 255,255,255,255 (White). Because we want a default
-                    // color of 0,0,0,255 (Black), we adjust the color components here.
-                    if (graphicItem is Curve || graphicItem is Surface || graphicItem is Solid || graphicItem is Point)
+                    else
                     {
-                        if (package.LineVertexCount > 0 && !package.LineStripVertexColors.Any())
-                        {
-                            package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, DefR, DefG, DefB, DefA));
-                        }
+                        graphicItem.Tessellate(package, factory.TessellationParameters);
+                    }
 
-                        if (package.PointVertexCount > 0 && !package.PointVertexColors.Any())
+                    //If the package has a transform that is not the identity matrix
+                    //then set requiresCustomTransform to true.
+                    if (packageWithTransform != null && !packageWithTransform.RequiresCustomTransform && packageWithTransform.Transform.SequenceEqual(
+                        new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }) == false)
+                    {
+                        (packageWithTransform).RequiresCustomTransform = true;
+                    }
+
+                    if (factory.TessellationParameters.ShowEdges)
+                    {
+                        if (graphicItem is Topology topology)
                         {
-                            package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, DefR, DefG, DefB, DefA));
+                            if (graphicItem is Surface surf)
+                            {
+                                foreach (var curve in surf.PerimeterCurves())
+                                {
+                                    curve.Tessellate(package, factory.TessellationParameters);
+                                    curve.Dispose();
+                                }
+                            }
+                            else
+                            {
+                                var edges = topology.Edges;
+                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                {
+                                    geom.Tessellate(package, factory.TessellationParameters);
+                                    geom.Dispose();
+                                }
+                                edges.ForEach(x => x.Dispose());
+                            }
                         }
                     }
+
+                    if (!package.DisplayLabels && package is IRenderLabels packageLabels)
+                    {
+                        if (package.MeshVertexCount > previousMeshVertexCount)
+                        {
+                            packageLabels.AddLabel(labelKey,VertexType.Mesh, package.MeshVertexCount);
+                        }
+                        else if (package.LineVertexCount > previousLineVertexCount)
+                        {
+                            packageLabels.AddLabel(labelKey, VertexType.Line, package.LineVertexCount);
+                        }
+                        else if (package.PointVertexCount > previousPointVertexCount)
+                        {
+                            packageLabels.AddLabel(labelKey, VertexType.Point, package.PointVertexCount);
+                        }
+                    }
+                    
+                    //Todo Do we need to validate that vertex color counts match vertex counts?
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
-
-                package.DisplayLabels = displayLabels;
-                package.IsSelected = isNodeSelected;
-
-                renderPackageCache.Add(package, outputPortId);
             }
-        }
-
-        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
-        {
-            var arr = new byte[size * 4];
-            for (var i = 0; i < arr.Count(); i += 4)
-            {
-                arr[i] = red;
-                arr[i + 1] = green;
-                arr[i + 2] = blue;
-                arr[i + 3] = alpha;
-            }
-            return arr;
         }
 
         protected override void HandleTaskCompletionCore()
