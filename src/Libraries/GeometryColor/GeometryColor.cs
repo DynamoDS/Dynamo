@@ -241,7 +241,9 @@ namespace Modifiers
         private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
         {
             const byte gray = 80;
- 
+            var previousMeshVertexCount = package.MeshVertexCount;
+            var previousLineVertexCount = package.LineVertexCount;
+
             geometry.Tessellate(package, parameters);
 
             var colorBytes = new List<byte>();
@@ -257,20 +259,28 @@ namespace Modifiers
                 }
             }
 
-            package.SetColors(colorBytes.ToArray());
-            package.ColorsStride = colorMap.First().Length * 4;
-
             TessellateEdges(package, parameters);
 
-            if (package.LineVertexCount > 0)
+            if (package is IRenderPackageSupplement packageSupplement)
             {
-                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, gray, gray,
-                    gray, 255));
+                packageSupplement.AddColorsForMeshVerticesRange(previousMeshVertexCount, package.MeshVertexCount - 1, colorBytes.ToArray(),
+                    colorMap.First().Length * 4);
+
+                if (package.LineVertexCount > previousLineVertexCount)
+                {
+                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1,
+                        gray, gray,
+                        gray, 255);
+                }
             }
         }
 
         private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
         {
+            var previousPointVertexCount = package.PointVertexCount;
+            var previousLineVertexCount = package.LineVertexCount;
+            var previousMeshVertexCount = package.MeshVertexCount;
+
             package.RequiresPerVertexColoration = true;
 
             // As you add more data to the render package, you need
@@ -280,24 +290,31 @@ namespace Modifiers
             geometry.Tessellate(package, parameters);
 
             TessellateEdges(package, parameters);
-
-            if (package.LineVertexCount > 0)
+            if (package is IRenderPackageSupplement packageSupplement)
             {
-                package.ApplyLineVertexColors(CreateColorByteArrayOfSize(package.LineVertexCount, color.Red, color.Green,
-                    color.Blue, color.Alpha));
-            }
+                if (package.LineVertexCount > previousLineVertexCount)
+                {
+                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1, color.Red, color.Green,
+                        color.Blue, color.Alpha);
+                }
 
-            if (package.PointVertexCount > 0)
-            {
-                package.ApplyPointVertexColors(CreateColorByteArrayOfSize(package.PointVertexCount, color.Red, color.Green,
-                    color.Blue, color.Alpha));
-            }
+                if (package.PointVertexCount > previousPointVertexCount)
+                {
+                    packageSupplement.InsertPointVertexColorRange( previousPointVertexCount, package.PointVertexCount - 1, color.Red, color.Green,
+                        color.Blue, color.Alpha);
+                }
 
-            if (package.MeshVertexCount > 0)
-            {
-                package.ApplyMeshVertexColors(CreateColorByteArrayOfSize(package.MeshVertexCount, color.Red, color.Green,
-                    color.Blue, color.Alpha));
+                if (package.MeshVertexCount > previousMeshVertexCount)
+                {
+                    packageSupplement.InsertMeshVertexColorRange(previousMeshVertexCount, package.MeshVertexCount - 1, color.Red, color.Green,
+                        color.Blue, color.Alpha);
+                }
             }
+            else
+            {
+                //todo support 
+            }
+            
         }
 
         private void TessellateEdges(IRenderPackage package, TessellationParameters parameters)
