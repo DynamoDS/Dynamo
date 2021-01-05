@@ -401,10 +401,8 @@ namespace Dynamo.Graph.Nodes
         {
             XmlElement originalElement = OriginalXmlNodeContent;
 
-            if (originalElement != null &&
-                context == SaveContext.File ||
-                context == SaveContext.Save ||
-                context == SaveContext.SaveAs)
+            if ((context == SaveContext.File || context == SaveContext.Save || context == SaveContext.SaveAs) &&
+                originalElement != null)
             {
                 XmlElement originalNode = xmlDocument.CreateElement(originalElement.Name);
                 return originalNode;
