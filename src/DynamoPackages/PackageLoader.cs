@@ -76,9 +76,20 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
+        // The standard library directory is located in the same directory as the DynamoPackages.dll
+        private string StandardLibraryDirectory =>
+            Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
+                @"Standard Library", @"Packages");
+
         public PackageLoader(string overridePackageDirectory)
-            : this(new[] { overridePackageDirectory })
         {
+            if (overridePackageDirectory == null)
+                throw new ArgumentNullException("overridePackageDirectory");
+
+            packagesDirectories.Add(overridePackageDirectory);
+            this.packagesDirectories.Add(StandardLibraryDirectory);
+
+            this.packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
         }
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
@@ -87,10 +98,14 @@ namespace Dynamo.PackageManager
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);
+            this.packagesDirectories.Add(StandardLibraryDirectory);
+            
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
 
             if (error != null)
                 Log(error);
+
+            this.packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
         }
 
         /// <summary>
@@ -99,11 +114,22 @@ namespace Dynamo.PackageManager
         /// <param name="packagesDirectories">Default package directories</param>
         /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
         public PackageLoader(IEnumerable<string> packagesDirectories, IEnumerable<string> packageDirectoriesToVerify)
-            : this(packagesDirectories)
         {
+            if (packagesDirectories == null)
+                throw new ArgumentNullException("packagesDirectories");
+
             if (packageDirectoriesToVerify == null)
                 throw new ArgumentNullException("packageDirectoriesToVerify");
 
+            this.packagesDirectories.AddRange(packagesDirectories);
+            this.packagesDirectories.Add(StandardLibraryDirectory);
+
+            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
+
+            if (error != null)
+                Log(error);
+
+            this.packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
             this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
