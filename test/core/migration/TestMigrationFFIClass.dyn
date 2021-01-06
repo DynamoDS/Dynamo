@@ -202,6 +202,83 @@
       ],
       "Replication": "Disabled",
       "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "FFITarget.ClassWithMigratedMembers.AnOverloadedMember@string,string",
+      "Id": "1f6cc70ac940407c844c096e235bd53b",
+      "Inputs": [
+        {
+          "Id": "f61a8216a3d04a199884731d8275a4a2",
+          "Name": "classWithMigratedMembers",
+          "Description": "FFITarget.ClassWithMigratedMembers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7384e3d4c3a949598270bbaeacff4837",
+          "Name": "a",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cb1c8b0a0e614a4c8cb756ca31a65bf8",
+          "Name": "b",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "93033c1429ce48efa89b18bdb83769f0",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "ClassWithMigratedMembers.AnOverloadedMember (a: string, b: string): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "df483e75085340b2a8c359a59dc8ea7a",
+      "Inputs": [
+        {
+          "Id": "721bceecdcde4932a642fb938086ad44",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "86660c1a71454595a0d7e2c0be5f13b4",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
     }
   ],
   "Connectors": [
@@ -214,6 +291,11 @@
       "Start": "c42e788235c84766942b6e8dc026006f",
       "End": "1a387533a91b4614b20601080e77b77e",
       "Id": "adea9c2f1fd24455a8cd42580efb9638"
+    },
+    {
+      "Start": "c42e788235c84766942b6e8dc026006f",
+      "End": "f61a8216a3d04a199884731d8275a4a2",
+      "Id": "edb6d3b1b9624890a4b9409ff0dd160e"
     },
     {
       "Start": "89a8a3c58f564e89a3bb9f6660f77090",
@@ -236,9 +318,24 @@
       "Id": "3cf410c133cb4f59b795ed7f445c12e0"
     },
     {
+      "Start": "719ae5b6dc0c4b7abf85a2e541378a3a",
+      "End": "7384e3d4c3a949598270bbaeacff4837",
+      "Id": "6ff489120ec64551a9465c250e85e3cc"
+    },
+    {
       "Start": "010e634b76e94f99a733f085188714bc",
       "End": "2dcce8cdb6284b6d8503e8d816a94d96",
       "Id": "b3ff1f354d6e435b8402dc4be8216d2d"
+    },
+    {
+      "Start": "010e634b76e94f99a733f085188714bc",
+      "End": "cb1c8b0a0e614a4c8cb756ca31a65bf8",
+      "Id": "179c4e5e8df44a179ce348a84758f80e"
+    },
+    {
+      "Start": "93033c1429ce48efa89b18bdb83769f0",
+      "End": "721bceecdcde4932a642fb938086ad44",
+      "Id": "db2e626a5b224c7b8742d7bea57c8e29"
     }
   ],
   "Dependencies": [],
@@ -325,11 +422,31 @@
         "Excluded": false,
         "X": 1119.5,
         "Y": 415.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "ClassWithMigratedMembers.AnOverloadedMember",
+        "Id": "1f6cc70ac940407c844c096e235bd53b",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 535.967531313184,
+        "Y": 606.98434755081746
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "overload",
+        "Id": "df483e75085340b2a8c359a59dc8ea7a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1136.5271900692419,
+        "Y": 601.80741696785833
       }
     ],
     "Annotations": [],
-    "X": -325.0,
-    "Y": -98.0,
-    "Zoom": 1.0
+    "X": -108.79247816228667,
+    "Y": -37.402943935960707,
+    "Zoom": 0.8033215934625979
   }
 }

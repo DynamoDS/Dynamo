@@ -2280,10 +2280,10 @@ namespace Dynamo.Tests
             var legacyGraph = Path.Combine(TestDirectory, "core","migration","TestMigrationFFIClass.dyn");
             TestMigration(legacyGraph);
 
-            // Verify all 4 nodes exist in the workspace and were properly loaded/opened from above
-            Assert.AreEqual(6, this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
+            Assert.AreEqual(8, this.CurrentDynamoModel.CurrentWorkspace.Nodes.Count());
             AssertPreviewValue("408bd6b17f7f43b28a29175bf12fb01f", "hello");
             AssertPreviewValue("013bd08a0f574e85b1d9676ba7004990", "migrated");
+            AssertPreviewValue("df483e75085340b2a8c359a59dc8ea7a", "migrated");
         }
         #endregion
 

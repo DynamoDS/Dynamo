@@ -8,4 +8,8 @@
     <oldName>FFITarget.ClassWithMigratedMembers.AMemberWithTwoParams@string,string</oldName>
     <newName>FFITarget.ClassWithMigratedMembers.AMemberWithThreeParams@string,string,string</newName>
   </priorNameHint>
+  <priorNameHint>
+    <oldName>FFITarget.ClassWithMigratedMembers.AnOverloadedMember@string,string</oldName>
+    <newName>FFITarget.ClassWithMigratedMembers.AnOverloadedMember@string,string,string</newName>
+  </priorNameHint>
 </migrations>

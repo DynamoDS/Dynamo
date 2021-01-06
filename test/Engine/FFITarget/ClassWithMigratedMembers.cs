@@ -23,6 +23,14 @@ namespace FFITarget
         {
             return "migrated";
         }
+        public string AnOverloadedMember(string a, string b)
+        {
+            return "original";
+        }
+        public string AnOverloadedMember(string a, string b, string c = "abc")
+        {
+            return "migrated";
+        }
 
         //we test a file that uses the node AMemberWithAChangedName0
         public string AMemberWithAChangedName2(string a)
