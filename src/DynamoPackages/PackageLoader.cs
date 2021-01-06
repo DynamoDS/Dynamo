@@ -99,7 +99,7 @@ namespace Dynamo.PackageManager
             if (error != null)
                 Log(error);
 
-            this.packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
+            packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace Dynamo.PackageManager
             if (packageDirectoriesToVerify == null)
                 throw new ArgumentNullException("packageDirectoriesToVerify");
 
-            this.packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
+            packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -134,9 +134,9 @@ namespace Dynamo.PackageManager
 
         internal void Add(Package pkg)
         {
-            if (!this.localPackages.Contains(pkg))
+            if (!localPackages.Contains(pkg))
             {
-                this.localPackages.Add(pkg);
+                localPackages.Add(pkg);
                 pkg.MessageLogged += OnPackageMessageLogged;
                 OnPackageAdded(pkg);
             }
@@ -144,9 +144,9 @@ namespace Dynamo.PackageManager
 
         internal void Remove(Package pkg)
         {
-            if (this.localPackages.Contains(pkg))
+            if (localPackages.Contains(pkg))
             {
-                this.localPackages.Remove(pkg);
+                localPackages.Remove(pkg);
                 pkg.MessageLogged -= OnPackageMessageLogged;
                 OnPackageRemoved(pkg);
             }
@@ -187,7 +187,7 @@ namespace Dynamo.PackageManager
         /// <param name="package"></param>
         internal void TryLoadPackageIntoLibrary(Package package)
         {
-            this.Add(package);
+            Add(package);
 
             // Prevent duplicate loads
             if (package.Loaded) return;
@@ -225,11 +225,11 @@ namespace Dynamo.PackageManager
                     {
                         RequestAddExtension?.Invoke(extension);
                     }
-                    this.requestedExtensions.Add(extension);
+                    requestedExtensions.Add(extension);
                 }
 
                 package.Loaded = true;
-                this.PackgeLoaded?.Invoke(package);
+                PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
             {
@@ -325,9 +325,9 @@ namespace Dynamo.PackageManager
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
                 customNodeManager.AddUninitializedCustomNodesInPath(path, false, false);
-                if (!this.packagesDirectories.Contains(path))
+                if (!packagesDirectories.Contains(path))
                 {
-                    this.packagesDirectories.Add(path);
+                    packagesDirectories.Add(path);
                 }
             }
             LoadAll(loadPackageParams);
@@ -360,7 +360,7 @@ namespace Dynamo.PackageManager
                         return;
                     }
 
-                    this.Log(string.Format(Resources.InvalidPackageFolderWarning, root));
+                    Log(string.Format(Resources.InvalidPackageFolderWarning, root));
                     return;
                 }
 
@@ -424,7 +424,7 @@ namespace Dynamo.PackageManager
                 // prevent duplicates
                 if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
                 {
-                    this.Add(discoveredPkg);
+                    Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
                 throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
