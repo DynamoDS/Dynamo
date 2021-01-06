@@ -230,12 +230,7 @@ namespace Dynamo.Graph.Workspaces
             else if (typeof(DSFunctionBase).IsAssignableFrom(type))
             {
                 var mangledName = obj["FunctionSignature"].Value<string>();
-                var hintSignature = libraryServices.FunctionSignatureFromFunctionSignatureHint(mangledName);
-                var lookupSignature = mangledName;
-                if(hintSignature != null)
-                {
-                    lookupSignature = hintSignature;
-                }
+                var lookupSignature = libraryServices.GetFunctionSignatureFromFunctionSignatureHint(mangledName) ?? mangledName;
                 var functionDescriptor = libraryServices.GetFunctionDescriptor(lookupSignature);
 
                 // Use the functionDescriptor to try and restore the proper node if possible

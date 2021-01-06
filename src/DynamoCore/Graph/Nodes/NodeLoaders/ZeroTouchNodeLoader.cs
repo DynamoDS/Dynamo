@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
-                    libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+                    libraryServices.GetFunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
                 if (hintedSigniture != null)
                 {
