@@ -861,7 +861,7 @@ namespace DSOffice
         ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
         /// </param>
         /// <param name="data">Data to write to the spreadsheet</param>
-        /// <param name="overWrite">True to overwrite file, false not to overwrite file</param>
+        /// <param name="overWrite">True to overwrite other cells in same sheet which are not included in the data, false to keep these cells the same</param>
         /// <param name="writeAsString">True to write data as strings,false to keep data type</param>
         /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
