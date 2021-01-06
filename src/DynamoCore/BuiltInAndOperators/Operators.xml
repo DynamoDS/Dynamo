@@ -8,32 +8,36 @@
             <summary>
                 Adds x to y.
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">The sum of the two input numbers</returns>
             <search>add, plus, addition, +</search>
         </member>
 		<member name="%sub">
             <summary>
-                x subtract y.
+                x minus y
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">Result of the y input subtracted from the x input</returns>
             <search>sub, subtract, difference, -</search>
         </member>		
 		<member name="%mul">
             <summary>
-                Multiplies x by y.
+                Multiplies x by y
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">The product of the two input numbers</returns>
             <search>mul, multiply, product, times, *, x</search>
         </member>
 		<member name="%div">
             <summary>
-                Divides x by y.
+                Divides x by y
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="double">Result of division</returns>
             <search>div, divide, product</search>
         </member>
 		<member name="%eq">
@@ -48,64 +52,72 @@
             <summary>
                 x greater or equals y?
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">True if x is equal or greater than y, false if its not</returns>
             <search>greater,equal</search>
         </member>
 		<member name="%gt">
             <summary>
                 x greater y?
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">True if x is greater than y, false if its not</returns>
             <search>greater</search>
         </member>
 		<member name="%mod">
             <summary>
-                Finds the remainder of x/y
+               Modulo: Finds the remainder of x/y
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="number">Remainder of the x input after being divided by the y input</returns>
             <search>mod, modulo, remainder</search>
         </member>
 		<member name="%le">
             <summary>
-                x less or equals y?
+              If the x input is less than the y input, or if the two values are equal, it will return true. If x is greater than y, this operator will return false.
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
             <search>less,equal</search>
         </member>
 		<member name="%lt">
             <summary>
-                x less y?
+              If the x input is less than the y input, it will return true. If x is greater than y, or if the two value are equal, this operator will return false.
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
             <search>less</search>
         </member>
 		<member name="%and">
             <summary>
-                x and y?
+                It takes two boolean values as input and returns true if both values are true.
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">A boolean to check if true</param>
+            <param name="y">Another boolean to check if true</param>
+            <returns name="bool">Result of check</returns>
             <search>and</search>
         </member>
 		<member name="%or">
             <summary>
-                x || y?
+              Logical OR operator
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="bool">Possible boolean to check if true</param>
+            <param name="otherBool">Other possible boolean to check if true</param>
+            <returns name="bool">True if either of booleans are true</returns>
             <search>or</search>
         </member>
 		<member name="%nq">
             <summary>
-                x doesn't equal y.
+                It takes two input values and returns true if the two values are not equal to each other and returns false if the two values are equal.
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of check</returns>
             <search>equal</search>
         </member>
 		<member name="%Not">
