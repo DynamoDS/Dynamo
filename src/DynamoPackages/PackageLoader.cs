@@ -77,7 +77,7 @@ namespace Dynamo.PackageManager
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
         // The standard library directory is located in the same directory as the DynamoPackages.dll
-        private string StandardLibraryDirectory =>
+        internal string StandardLibraryDirectory =>
             Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
                 @"Standard Library", @"Packages");
 
