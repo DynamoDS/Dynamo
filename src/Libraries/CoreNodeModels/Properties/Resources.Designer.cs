@@ -133,7 +133,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of colors to include in the range..
+        ///   Looks up a localized string similar to List of colors to include in the range.
         /// </summary>
         public static string ColorRangePortDataColorsToolTip {
             get {
@@ -142,7 +142,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0 which position the input colors along the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0 which position the input colors along the range.
         /// </summary>
         public static string ColorRangePortDataIndicesToolTip {
             get {
@@ -151,7 +151,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected colors..
+        ///   Looks up a localized string similar to Selected colors.
         /// </summary>
         public static string ColorRangePortDataResultToolTip {
             get {
@@ -160,7 +160,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0. These values are used to look up the color within the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0. These values are used to look up the color within the range..
         /// </summary>
         public static string ColorRangePortDataValueToolTip {
             get {
@@ -1349,7 +1349,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content of a webpage as a string..
+        ///   Looks up a localized string similar to Content of a web request as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {
