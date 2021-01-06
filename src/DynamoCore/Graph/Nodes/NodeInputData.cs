@@ -22,7 +22,9 @@ namespace Dynamo.Graph.Nodes
         [EnumMember(Value = "date")]
         dateInput,
         [EnumMember(Value = "selection")]
-        selectionInput
+        selectionInput,
+        [EnumMember(Value = "itemSelection")]
+        itemSelection
     };
 
 

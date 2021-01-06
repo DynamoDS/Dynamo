@@ -63,13 +63,24 @@ namespace CoreNodeModels
                 RaisePropertyChanged("Items");
             }
         }
+
         public override NodeInputData InputData
         {
             //TODO There is not yet an appropriate input type
             //defined in the cogs graph schema to support dropdowns
             //which return arbitrary objects at some index - implement this
             //when that exists.
-            get { return null; }
+            get
+            {
+                return new NodeInputData
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputTypes.itemSelection,
+                    Description = this.Description,
+                    Value = this.SelectedString
+                };
+            }
         }
 
         private int selectedIndex = -1;

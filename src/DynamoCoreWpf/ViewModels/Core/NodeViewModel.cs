@@ -566,6 +566,11 @@ namespace Dynamo.ViewModels
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
+        /// <summary>
+        /// Node description defined by the user.
+        /// </summary>
+        public string UserDescription { get; set; }
+
         #endregion
 
         #region events
