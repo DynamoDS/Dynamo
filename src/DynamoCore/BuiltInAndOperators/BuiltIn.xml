@@ -6,7 +6,7 @@
   <members>
     <member name="List.Rank">
       <summary>Returns the deepest depth of the list</summary>
-      <param name="list">list of values</param>
+      <param name="list">List from which to query rank</param>
       <returns name="int">Deepest depth of the list</returns>
       <search>rank,depth,nesting,ranks</search>
     </member>
@@ -147,7 +147,7 @@
     </member>
     <member name="List.TrueForAll">
       <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
-      <param name="list">list of values</param>
+      <param name="list">List from which to evaluate items by query function</param>
       <param name="queryFunction">Function to evaluate list</param>
       <returns name="bool">Returns true for all of the items in the list compared to the query function</returns>
       <search>true,all</search>
