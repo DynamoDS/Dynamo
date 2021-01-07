@@ -5,13 +5,13 @@ namespace DynamoUnits
     public class Location
     {
         /// <summary>
-        /// The Location's name.
+        /// Gets the name value from a location
         /// </summary>
-        /// <returns name="name">string</returns>
+        /// <returns name="name">Name of location</returns>
         public string Name { get; set; }
 
         /// <summary>
-        /// The Location's latitude in degrees between -90.0 and 90.0;
+        /// The Location's latitude in degrees between -90.0 and 90.0
         /// </summary>
         /// <returns name="latitude">double</returns>
         public double Latitude { get; set; }
@@ -32,9 +32,10 @@ namespace DynamoUnits
         /// <summary>
         /// Create a Location object by specifying a latitude and a longitude.
         /// </summary>
-        /// <param name="latitude">An angle, in degrees, between -90.0 and 90.0</param>
-        /// <param name="longitude">An angle, in degrees, between -180.0 and 180.0.</param>
-        /// <param name="name">A name for the location.</param>
+        /// <param name="latitude">Angle, in degrees, between -90.0 and 90.0</param>
+        /// <param name="longitude">Angle, in degrees, between -180.0 and 180.0</param>
+        /// <param name="name">A name for the location</param>
+        /// <returns name="location">Location object</returns>
         public static Location ByLatitudeAndLongitude(double latitude, double longitude, string name = null)
         {
             if (latitude < -90.0 || latitude > 90.0)
