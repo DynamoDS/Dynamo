@@ -107,8 +107,8 @@
             <summary>
               Logical OR operator
             </summary>
-            <param name="bool">Possible boolean to check if true</param>
-            <param name="otherBool">Other possible boolean to check if true</param>
+            <param name="bool">Boolean to check if true</param>
+            <param name="otherBool">Other boolean to check if true</param>
             <returns name="bool">True if either of booleans are true</returns>
             <search>or</search>
         </member>
