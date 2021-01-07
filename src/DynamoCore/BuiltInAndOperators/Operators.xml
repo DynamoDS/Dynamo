@@ -55,7 +55,7 @@
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
-            <returns name="bool">True if x is equal or greater than y, false if its not</returns>
+            <returns name="bool">True if x is equal or greater than y, false if not</returns>
             <search>greater,equal</search>
         </member>
 		<member name="%gt">
@@ -64,7 +64,7 @@
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
-            <returns name="bool">True if x is greater than y, false if its not</returns>
+            <returns name="bool">True if x is greater than y, false if not</returns>
             <search>greater</search>
         </member>
 		<member name="%mod">
