@@ -32,7 +32,7 @@ namespace FFITarget
             return "migrated";
         }
 
-        //we test a file that uses the node AMemberWithAChangedName0
+        //we test a file that uses the node AMemberWithAChangedName1
         public string AMemberWithAChangedName2(string a)
         {
             return a;
