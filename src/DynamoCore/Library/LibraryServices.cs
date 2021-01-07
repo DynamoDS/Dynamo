@@ -305,7 +305,7 @@ namespace Dynamo.Engine
             return splitted[splitted.Length - 2] + "." + splitted[splitted.Length - 1];
         }
 
-        internal string FunctionSignatureFromFunctionSignatureHint(string functionSignature)
+        internal string GetFunctionSignatureFromFunctionSignatureHint(string functionSignature)
         {
             // if the hint is explicit, we can simply return the mapped function
             if (priorNameHints.ContainsKey(functionSignature))
