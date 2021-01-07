@@ -1032,7 +1032,7 @@
                   "path": "DSOffice.DSOffice.Data.ImportExcel"
                 },
                 {
-                  "path": "DSOffice.DSOffice.Data.ExportExcel"
+                  "path": "DSOffice.DSOffice.Data.ExportToExcel"
                 },
                 {
                   "path": "DSOffice.DSOffice.Data.ImportCSV"
