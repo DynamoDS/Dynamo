@@ -6,7 +6,7 @@
     <members>
         <member name="%add">
             <summary>
-                Adds x to y.
+                Returns addition of x and y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -15,7 +15,7 @@
         </member>
 		<member name="%sub">
             <summary>
-                x minus y
+                Returns subtraction of x minus y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -24,7 +24,7 @@
         </member>		
 		<member name="%mul">
             <summary>
-                Multiplies x by y
+                Returns multiplication of x times y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -33,7 +33,7 @@
         </member>
 		<member name="%div">
             <summary>
-                Divides x by y
+                Returns division of x over y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -42,7 +42,7 @@
         </member>
 		<member name="%eq">
             <summary>
-                Equal x to y?
+                Compares if x and y are equal
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -51,7 +51,7 @@
         </member>
 		<member name="%ge">
             <summary>
-                x greater or equals y?
+                Compares if x is greater or equals to y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -60,7 +60,7 @@
         </member>
 		<member name="%gt">
             <summary>
-                x greater y?
+                Compares if x is greater than y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
