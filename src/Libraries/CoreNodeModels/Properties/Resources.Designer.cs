@@ -412,7 +412,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tolerance
+        ///   Looks up a localized string similar to Tolerance permited for equality check
         ///Default value: {0}.
         /// </summary>
         public static string EqualsWithToleranceTooltip {
