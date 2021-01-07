@@ -7,7 +7,7 @@ namespace DynamoUnits
         /// <summary>
         /// Gets the name value from a location
         /// </summary>
-        /// <returns name="name">Name of location</returns>
+        /// <returns name="string">Name of location</returns>
         public string Name { get; set; }
 
         /// <summary>
