@@ -109,7 +109,7 @@
             </summary>
             <param name="bool">Boolean to check if true</param>
             <param name="otherBool">Other boolean to check if true</param>
-            <returns name="bool">True if either of booleans are true</returns>
+            <returns name="bool">True if any of the inputs are true</returns>
             <search>or</search>
         </member>
 		<member name="%nq">
