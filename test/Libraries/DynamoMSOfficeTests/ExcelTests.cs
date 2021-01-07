@@ -1180,6 +1180,40 @@ namespace Dynamo.Tests
             Assert.IsTrue(wb.WorkSheets.Length == 1);
         }
 
+
+        [Test, Category("ExcelTest")]
+        public void CanExportToExcelAsString()
+        {
+            // Arrange
+            string openPath = Path.Combine(TestDirectory, @"core\excel\ExportToExcelAsString.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            var filename = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<Filename>();
+
+            // Act
+            // remap the filename as Excel requires an absolute path
+            filename.Value = filename.HintPath.Replace(@"..\..\..\test", TestDirectory);
+
+            ViewModel.HomeSpace.Run();
+
+            // Codeblock that holds the data that will be exported (value = 12)
+            var dataCodeBlock = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("8070c45660c349d5bbc143febd22cfcf") as CodeBlockNodeModel;           
+            var wb = Excel.ReadExcelFile(filename.Value);
+
+            // Running the graph exports the value 12 to excel, 
+            // getting that value here so we can check that the value has been converted to a string.
+            var excelExportDataType = wb.WorkSheets
+                .FirstOrDefault()
+                .Data
+                .FirstOrDefault()
+                .FirstOrDefault()
+                .GetType();
+
+            // Assert
+            Assert.AreEqual(typeof(Int64), dataCodeBlock.CachedValue.Data.GetType());
+            Assert.AreEqual(typeof(string), excelExportDataType);
+        }
+
         #endregion
 
         #region Saving

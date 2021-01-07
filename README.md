@@ -28,6 +28,7 @@ You will need the following to build the latest Dynamo on Windows:
 - [Microsoft Visual Studio 2019](https://visualstudio.microsoft.com/downloads/) (any edition)
 - Microsoft .NET Framework 4.8 (included with Visual Studio 2019)
 - [GitHub for Windows](https://windows.github.com/)
+- For runnning Dynamo tests within Visual Studio -[NUnit Test Adapter 2](https://marketplace.visualstudio.com/items?itemName=NUnitDevelopers.NUnitTestAdapter)
 
 If you are working on legacy branches, you may need to install legacy .NET Framework versions through Visual Studio `Tools > Get Tools and Features...` or downloading from [the archive here](https://www.microsoft.com/net/download/archives).
 

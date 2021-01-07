@@ -1399,6 +1399,24 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestNodeToCodeWithBuiltInAddMethod()
+        {
+            OpenModel(@"core\node2code\builtinAddNode.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, 49);
+        }
+
+        [Test]
         [Category("RegressionTests")]
         public void TestMultioutputNode()
         {
