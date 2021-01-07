@@ -608,4 +608,10 @@
     <value>Tolerance
 Default value: {0}</value>
   </data>
+  <data name="DirectoryPathOutputDescription" xml:space="preserve">
+    <value>Directory path</value>
+  </data>
+  <data name="FilePathOutputDescription" xml:space="preserve">
+    <value>File Path</value>
+  </data>
 </root>

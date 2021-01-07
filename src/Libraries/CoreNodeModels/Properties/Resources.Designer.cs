@@ -313,6 +313,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory path.
+        /// </summary>
+        public static string DirectoryPathOutputDescription {
+            get {
+                return ResourceManager.GetString("DirectoryPathOutputDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to directorypath;filepath;.
         /// </summary>
         public static string DirectoryPathSearchTags {
@@ -472,6 +481,15 @@ namespace CoreNodeModels.Properties {
         public static string FilePathDescription {
             get {
                 return ResourceManager.GetString("FilePathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Path.
+        /// </summary>
+        public static string FilePathOutputDescription {
+            get {
+                return ResourceManager.GetString("FilePathOutputDescription", resourceCulture);
             }
         }
         
