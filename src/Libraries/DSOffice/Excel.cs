@@ -739,7 +739,7 @@ namespace DSOffice
         ///     transpose it if needed.
         /// </summary>
         /// <param name="filePath">CSV file to be converted into a list</param>
-        /// <param name="transpose">True to transpose list, false not to transpose list</param>
+        /// <param name="transpose">Toggle to transpose the imported data</param>
         /// <returns name="list">List containing the items in the CSV file</returns>
         /// <search>import,csv,comma,file,list,separate,transpose</search>
         public static IList ImportCSV(string filePath, bool transpose = false)
@@ -813,10 +813,10 @@ namespace DSOffice
         ///     for example, the value in cell A1 will appear in the data list at [0,0].
         ///     This node requires Microsoft Excel to be installed.
         /// </summary>
-        /// <param name="file">File representing the Microsoft Excel spreadsheet</param>
-        /// <param name="sheetName">Name of the worksheet containing the data</param>
-        /// <param name="readAsStrings">True if you want to read cells as strings, false if you don't want to read cells as strings</param>
-        /// <param name="showExcel">True to show excel's main window, false not to show excel's main window</param>
+        /// <param name="file">File representing the Excel spreadsheet</param>
+        /// <param name="sheetName">Name of the spreadsheet containing data</param>
+        /// <param name="readAsStrings">Toggle to read cells as strings</param>
+        /// <param name="showExcel">Toggle to show excel's main window</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
@@ -854,15 +854,15 @@ namespace DSOffice
         ///     be written to cell A1. Null values and empty lists are written to Excel 
         ///     as empty cells. This node requires Microsoft Excel to be installed. 
         /// </summary>
-        /// <param name="filePath">File path to the Microsoft Excel spreadsheet</param>
-        /// <param name="sheetName">Name of the worksheet to write data to</param>
+        /// <param name="filePath">File path to the Excel spreadsheet</param>
+        /// <param name="sheetName">Name of the spreadsheet to write data to</param>
         /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
         /// <param name="startColumn">
         ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
         /// </param>
         /// <param name="data">Data to write to the spreadsheet</param>
-        /// <param name="overWrite">True to overwrite other cells in same sheet which are not included in the data, false to keep these cells the same</param>
-        /// <param name="writeAsString">True to write data as strings,false to keep data type</param>
+        /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
+        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
         /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
