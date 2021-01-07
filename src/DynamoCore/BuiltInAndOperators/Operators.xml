@@ -44,8 +44,9 @@
             <summary>
                 Equal x to y?
             </summary>
-            <param name="x">x value.</param>
-            <param name="y">y value.</param>
+            <param name="x">Integer or double value</param>
+            <param name="y">Integer or double value</param>
+            <returns name="bool">Result of equality check</returns>
             <search>eq, equal, =</search>
         </member>
 		<member name="%ge">
