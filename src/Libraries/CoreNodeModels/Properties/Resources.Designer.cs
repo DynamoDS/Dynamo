@@ -530,7 +530,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Result of math computation.
+        ///   Looks up a localized string similar to Result from formula.
         /// </summary>
         public static string FormulaPortDataResultToolTip {
             get {
@@ -1349,7 +1349,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content of a webpage as a string..
+        ///   Looks up a localized string similar to Content of a web request as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {
