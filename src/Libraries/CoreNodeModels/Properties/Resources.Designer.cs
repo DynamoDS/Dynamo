@@ -160,7 +160,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to List of values between 0.0 and 1.0. These values are used to look up the color within the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list..
         /// </summary>
         public static string ColorRangePortDataValueToolTip {
             get {

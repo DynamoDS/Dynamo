@@ -149,7 +149,7 @@
     <value>List of colors to include in the range</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0. These values are used to look up the color within the range.</value>
+    <value>List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
     <value>Function to use as combinator</value>
