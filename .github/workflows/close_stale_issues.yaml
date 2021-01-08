@@ -10,7 +10,9 @@ jobs:
       uses: actions/stale@v3
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
-        #This message is requiered but never used.
+        #By default the action will leave a message when marking the issue as stale and another-one when closing the issue. 
+        #As we only want the message to be added when the issue is closed, the "skip-stale-issue-message" parameter was set to true 
+        #but the action wont work if the "stale-issue-message" doesn't have a value.
         stale-issue-message: "."
         skip-stale-issue-message: true
         close-issue-message: "Given that there has been no additional information added, 
