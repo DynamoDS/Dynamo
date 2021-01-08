@@ -37,6 +37,7 @@ using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Matrix = SharpDX.Matrix;
 using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -1629,6 +1630,45 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             lock (element3DDictionaryMutex)
             {
+                // Instancing
+                var pkgs = packages.ToList();
+                if (pkgs.Count > 1)
+                {
+                    var p = pkgs[0];
+                    if (p.Mesh != null && p.Mesh.Positions.Any())
+                    {
+                        var baseId = p.Description;
+                        if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
+                        {
+                            baseId = baseId.Split(':')[0];
+                        }
+                        var id = ((p.RequiresPerVertexColoration || p.Colors != null || p.RequiresCustomTransform)
+                            ? p.Description : baseId) + MeshKey;
+
+                        InstancingMeshGeometryModel3D instancingModel;
+                        if (Element3DDictionary.TryGetValue(id, out var element3D))
+                        {
+                            instancingModel = element3D as InstancingMeshGeometryModel3D;
+                        }
+                        else
+                        {
+                            instancingModel =  new InstancingMeshGeometryModel3D();
+                            Element3DDictionary.Add(id, instancingModel);
+                        }
+                        instancingModel.Instances = new List<Matrix>(pkgs.Count);
+                        foreach (var rp in packages)
+                        {
+                            var m = new SharpDX.Matrix(rp.Transform.Select(x => (float)x).ToArray());
+                            instancingModel.Instances.Add(m);
+                        }
+
+                        instancingModel.IsHitTestVisible = true;
+                        instancingModel.Geometry = p.Mesh;
+                        instancingModel.Name = baseId;
+                        return;
+                    }
+                }
+
                 foreach (var rp in packages)
                 {
                     // Each node can produce multiple render packages. We want all the geometry of the
