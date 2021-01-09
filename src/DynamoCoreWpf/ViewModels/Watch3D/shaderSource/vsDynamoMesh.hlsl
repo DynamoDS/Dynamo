@@ -34,13 +34,6 @@ PSInput main(VSInput input)
         // Nudge the vertex out slightly along its normal a tiny bit.
         inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
     }
-    if (isSelected)
-    {
-        // Nudge the vertex out slightly along its normal a bit more.
-        nudge  = nudge * 100;
-        inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
-    }
-    
 
     //set position into world space
     output.p = mul(inputp, mWorld);
