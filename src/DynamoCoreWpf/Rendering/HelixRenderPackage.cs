@@ -44,7 +44,6 @@ namespace Dynamo.Wpf.Rendering
         private PointGeometry3D points;
         private LineGeometry3D lines;
         private MeshGeometry3D mesh;
-        internal readonly List<Tuple<string, Vector3>> labelData = new List<Tuple<string, Vector3>>();
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
@@ -508,12 +507,15 @@ namespace Dynamo.Wpf.Rendering
 
         #region IRenderLabels implementation
 
+        ///// <summary>
+        ///// Get label data; label string and associated position
+        ///// </summary>
         public List<Tuple<string, float[]>> LabelData
         {
             get
             {
                 var list = new List<Tuple<string, float[]>>();
-                foreach (var tuple in labelData)
+                foreach (var tuple in LabelPlaces)
                 {
                     list.Add(new Tuple<string, float[]>(tuple.Item1, tuple.Item2.ToArray()));
                 }
@@ -545,7 +547,7 @@ namespace Dynamo.Wpf.Rendering
                 default:
                     return;
             }
-            labelData.Add(new Tuple<string, Vector3>(label,position));
+            LabelPlaces.Add(new Tuple<string, Vector3>(label,position));
         }
 
         /// <summary>
@@ -553,7 +555,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void AddLabel(string label, double x, double y, double z)
         {
-            labelData.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
+            LabelPlaces.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
         }
 
         /// <summary>
@@ -561,7 +563,7 @@ namespace Dynamo.Wpf.Rendering
         /// </summary>
         public void ClearLabels()
         {
-            labelData.Clear();
+            LabelPlaces.Clear();
         }
 
         #endregion
@@ -764,6 +766,8 @@ namespace Dynamo.Wpf.Rendering
                 return points;
             }
         }
+
+        public List<Tuple<string, Vector3>> LabelPlaces { get; } = new List<Tuple<string, Vector3>>();
 
         internal static LineGeometry3D InitLineGeometry()
         {

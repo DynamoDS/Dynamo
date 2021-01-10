@@ -1644,7 +1644,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     if (rp.LabelData.Any())
                     {
-                        AddLabelPlace(baseId, rp.labelData, rp);
+                        AddLabelPlace(baseId, rp.LabelPlaces, rp);
                     }
 
                     string id;
