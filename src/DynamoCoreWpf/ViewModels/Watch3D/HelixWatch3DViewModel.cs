@@ -1631,7 +1631,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 foreach (var rp in packages)
                 {
+                    // Each node can produce multiple render packages. We want all the geometry of the
+                    // same kind stored inside a RenderPackage to be pushed into one GeometryModel3D object.
+                    // We strip the unique identifier for the package (i.e. the bit after the `:` in var12345:0), and replace it
+                    // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
+                    // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
+                    // to those geometry objects.
+                    
                     var baseId = rp.Description;
+                    if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
+                    {
+                        baseId = baseId.Split(':')[0];
+                    }
 
                     //If this render package belongs to special render package, then create
                     //and update the corresponding GeometryModel. Special renderpackage are
@@ -1755,7 +1766,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    id = baseId + MeshKey;
+                    //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
+                    id = (rp.Colors.Any() ? rp.Description : baseId) + MeshKey;
 
                     //if we require texture coloration then we need to create a new Geometry3d object.
                     if (rp.ColorsMeshVerticesRange.Any())

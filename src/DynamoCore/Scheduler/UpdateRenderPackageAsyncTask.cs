@@ -154,7 +154,16 @@ namespace Dynamo.Scheduler
             package.Description = tag;
             package.IsSelected = isNodeSelected;
 
-            GetRenderPackagesFromMirrorDataImp(mirrorData, package, tag);
+            //Initialize the package here assuming we will only generate a single renderPackage for this node
+            //We set the AllowLegacyColorOperations so that we can catch tessellation implementations which 
+            //use the deprecated calls.  At that point we will roll back the changes to the renderPackage
+            //and call tessellate with a new renderPackage object with AllowLegacyColorOperations set to true.
+            if (package is IRenderPackageSupplement packageSupplement)
+            {
+                packageSupplement.AllowLegacyColorOperations = false;
+            }
+
+            GetRenderPackagesFromMirrorDataImp(outputPortId, mirrorData, package, tag);
 
             if (package.MeshVertexColors.Any())
             {
@@ -165,6 +174,7 @@ namespace Dynamo.Scheduler
         }
 
         private void GetRenderPackagesFromMirrorDataImp(
+            Guid outputPortId,
             MirrorData mirrorData,
             IRenderPackage package,
             string labelKey)
@@ -178,7 +188,7 @@ namespace Dynamo.Scheduler
                     if (el.IsCollection || el.Data is IGraphicItem)
                     {
                         string newLabel = labelKey + ":" + count;
-                        GetRenderPackagesFromMirrorDataImp(el, package, newLabel);
+                        GetRenderPackagesFromMirrorDataImp(outputPortId, el, package, newLabel);
                     }
                     count += 1;
                 }
@@ -190,84 +200,119 @@ namespace Dynamo.Scheduler
                     return;
                 }
 
-                var packageWithTransform = package as ITransformable;
+                GetRenderPackageFromGraphicItem(outputPortId, graphicItem, package, labelKey);
+            }
+        }
 
-                try
+        private void GetRenderPackageFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, IRenderPackage package, string labelKey)
+        {
+            var packageWithTransform = package as ITransformable;
+
+            try
+            {
+                var previousPointVertexCount = package.PointVertexCount;
+                var previousLineVertexCount = package.LineVertexCount;
+                var previousMeshVertexCount = package.MeshVertexCount;
+
+                //Plane tessellation needs to be handled here vs in LibG currently
+                if (graphicItem is Plane plane)
                 {
-                    var previousPointVertexCount = package.PointVertexCount;
-                    var previousLineVertexCount = package.LineVertexCount;
-                    var previousMeshVertexCount = package.MeshVertexCount;
-
-                    //Plane tessellation needs to be handled here vs in LibG currently
-                    if (graphicItem is Plane plane)
-                    {
-                        CreatePlaneTessellation(package, plane);
-                    }
-                    else
+                    CreatePlaneTessellation(package, plane);
+                }
+                else
+                {
+                    try
                     {
                         graphicItem.Tessellate(package, factory.TessellationParameters);
+                    }
+                    catch (LegacyRenderPackageMethodException)
+                    {
+                        //At this point we have detected an implementation of Tessellate which is using legacy color methods
+                        //We roll back the primary renderPackage to it previous state before calling tessellation.
+                        package = RollBackPackage(package, previousPointVertexCount, previousLineVertexCount,
+                            previousMeshVertexCount);
 
-                        //Now we validate that tessellation call has added colors for each new vertex.
-                        //If any vertex colors previously existed, this will ensure the vertex color and vertex counts stays in sync.
-                        //If no pixel colors exist we leave the color array empty.  A default value will applied when the render package is displayed.
-                        EnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount, previousMeshVertexCount);
+                        //Now we create a renderPackage object that will allow legacy color methods
+                        var legacyPackage = factory.CreateRenderPackage();
+                        legacyPackage.DisplayLabels = displayLabels;
+                        legacyPackage.Description = labelKey;
+                        legacyPackage.IsSelected = isNodeSelected;
 
-                        if (factory.TessellationParameters.ShowEdges)
+                        //Use it to get fill the tessellation data and add it to the render cache.
+                        GetRenderPackageFromGraphicItem(outputPortId, graphicItem, legacyPackage, labelKey);
+
+                        if (legacyPackage.MeshVertexColors.Any())
                         {
-                            if (graphicItem is Topology topology)
+                            legacyPackage.RequiresPerVertexColoration = true;
+                        }
+
+                        renderPackageCache.Add(legacyPackage, outputPortId);
+                        
+                        return;
+                    }
+
+                    //Now we validate that tessellation call has added colors for each new vertex.
+                    //If any vertex colors previously existed, this will ensure the vertex color and vertex counts stays in sync.
+                    //If no pixel colors exist we leave the color array empty.  A default value will applied when the render package is displayed.
+                    EnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount,
+                        previousMeshVertexCount);
+
+                    if (factory.TessellationParameters.ShowEdges)
+                    {
+                        if (graphicItem is Topology topology)
+                        {
+                            if (graphicItem is Surface surf)
                             {
-                                if (graphicItem is Surface surf)
+                                foreach (var curve in surf.PerimeterCurves())
                                 {
-                                    foreach (var curve in surf.PerimeterCurves())
-                                    {
-                                        curve.Tessellate(package, factory.TessellationParameters);
-                                        curve.Dispose();
-                                    }
-                                }
-                                else
-                                {
-                                    var edges = topology.Edges;
-                                    foreach (var geom in edges.Select(edge => edge.CurveGeometry))
-                                    {
-                                        geom.Tessellate(package, factory.TessellationParameters);
-                                        geom.Dispose();
-                                    }
-                                    edges.ForEach(x => x.Dispose());
+                                    curve.Tessellate(package, factory.TessellationParameters);
+                                    curve.Dispose();
                                 }
                             }
-                        }
+                            else
+                            {
+                                var edges = topology.Edges;
+                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                {
+                                    geom.Tessellate(package, factory.TessellationParameters);
+                                    geom.Dispose();
+                                }
 
-                    }
-
-                    //If the package has a transform that is not the identity matrix
-                    //then set requiresCustomTransform to true.
-                    if (packageWithTransform != null && !packageWithTransform.RequiresCustomTransform && packageWithTransform.Transform.SequenceEqual(
-                        new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 }) == false)
-                    {
-                        (packageWithTransform).RequiresCustomTransform = true;
-                    }
-
-                    if (package is IRenderLabels packageLabels)
-                    {
-                        if (package.MeshVertexCount > previousMeshVertexCount)
-                        {
-                            packageLabels.AddLabel(labelKey,VertexType.Mesh, package.MeshVertexCount);
-                        }
-                        else if (package.LineVertexCount > previousLineVertexCount)
-                        {
-                            packageLabels.AddLabel(labelKey, VertexType.Line, package.LineVertexCount);
-                        }
-                        else if (package.PointVertexCount > previousPointVertexCount)
-                        {
-                            packageLabels.AddLabel(labelKey, VertexType.Point, package.PointVertexCount);
+                                edges.ForEach(x => x.Dispose());
+                            }
                         }
                     }
                 }
-                catch (Exception e)
+
+                //If the package has a transform that is not the identity matrix
+                //then set requiresCustomTransform to true.
+                if (packageWithTransform != null && !packageWithTransform.RequiresCustomTransform &&
+                    packageWithTransform.Transform.SequenceEqual(
+                        new double[] {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1}) == false)
                 {
-                    Debug.WriteLine(
-                        "PushGraphicItemIntoPackage: " + e);
+                    (packageWithTransform).RequiresCustomTransform = true;
                 }
+
+                if (package is IRenderLabels packageLabels)
+                {
+                    if (package.MeshVertexCount > previousMeshVertexCount)
+                    {
+                        packageLabels.AddLabel(labelKey, VertexType.Mesh, package.MeshVertexCount);
+                    }
+                    else if (package.LineVertexCount > previousLineVertexCount)
+                    {
+                        packageLabels.AddLabel(labelKey, VertexType.Line, package.LineVertexCount);
+                    }
+                    else if (package.PointVertexCount > previousPointVertexCount)
+                    {
+                        packageLabels.AddLabel(labelKey, VertexType.Point, package.PointVertexCount);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(
+                    "PushGraphicItemIntoPackage: " + e);
             }
         }
 
@@ -414,6 +459,111 @@ namespace Dynamo.Scheduler
             return arr;
         }
 
+        private IRenderPackage RollBackPackage(IRenderPackage package, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
+        {
+            var newPackage = factory.CreateRenderPackage();
+
+            newPackage.Description = package.Description;
+            newPackage.IsSelected = package.IsSelected;
+            newPackage.DisplayLabels = package.DisplayLabels;
+            
+            
+
+            var ptVertices = package.PointVertices.ToArray();
+            for (var i = 0; i < previousPointVertexCount * 3 && i < ptVertices.Length; i += 3)
+            {
+                newPackage.AddPointVertex(ptVertices[i], ptVertices[i+1],ptVertices[i+2]);
+            }
+
+            var ptColors = package.PointVertexColors.ToArray();
+            for (var i = 0; i < previousPointVertexCount * 4 && i < ptColors.Length; i += 4)
+            {
+                newPackage.AddPointVertexColor(ptColors[i], ptColors[i + 1], ptColors[i + 2], ptColors[i + 3]);
+            }
+
+            var lineVertices = package.LineStripVertices.ToArray();
+            for (var i = 0; i < previousLineVertexCount * 3 && i < lineVertices.Length; i += 3)
+            {
+                newPackage.AddLineStripVertex(lineVertices[i], lineVertices[i + 1], lineVertices[i + 2]);
+            }
+
+            var lineColors = package.LineStripVertexColors.ToArray();
+            for (var i = 0; i < previousLineVertexCount * 4 && i < lineColors.Length; i += 4)
+            {
+                newPackage.AddLineStripVertexColor(lineColors[i], lineColors[i + 1], lineColors[i + 2], lineColors[i + 3]);
+            }
+
+            var lineVerticesCounts = package.LineStripVertexCounts.ToArray();
+            var count = 0;
+            var index = 0;
+            while (count < lineVerticesCounts.Length && count < previousLineVertexCount)
+            {
+                newPackage.AddLineStripVertexCount(lineVerticesCounts[index]);
+                count += lineVerticesCounts[index];
+                index++;
+            }
+
+            var meshVertices = package.MeshVertices.ToArray();
+            for (var i = 0; i < previousMeshVertexCount * 3 && i < meshVertices.Length; i += 3)
+            {
+                newPackage.AddTriangleVertex(meshVertices[i], meshVertices[i + 1], meshVertices[i + 2]);
+            }
+
+            var meshNormals = package.MeshNormals.ToArray();
+            for (var i = 0; i < previousMeshVertexCount * 3 && i < meshNormals.Length; i += 3)
+            {
+                newPackage.AddTriangleVertexNormal(meshNormals[i], meshNormals[i + 1], meshNormals[i + 2]);
+            }
+
+            var meshUV = package.MeshTextureCoordinates.ToArray();
+            for (var i = 0; i < previousMeshVertexCount * 2 && i < meshUV.Length; i += 2)
+            {
+                newPackage.AddTriangleVertexUV(meshUV[i], meshUV[i + 1]);
+            }
+
+            var meshColors = package.MeshVertexColors.ToArray();
+            for (var i = 0; i < previousMeshVertexCount * 4 && i < meshColors.Length; i += 4)
+            {
+                newPackage.AddTriangleVertexColor(meshColors[i], meshColors[i + 1], meshColors[i + 2], meshColors[i + 3]);
+            }
+            
+            //Todo Need to obsolete ITransformable
+            if(package is ITransformable transformable && newPackage is ITransformable newTransformable)
+            {
+                newTransformable.RequiresCustomTransform = transformable.RequiresCustomTransform;
+                var t = transformable.Transform;
+                if (t.Length == 16)
+                {
+                    newTransformable.SetTransform(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7], t[8], t[9], t[10], t[11], t[12], t[13], t[14], t[15]);
+                }
+            }
+            
+            if(package is IRenderPackageSupplement packageSupplement  && newPackage is IRenderPackageSupplement newPackageSupplement)
+            {
+                var colorsList = packageSupplement.ColorsList;
+                var colorsStrideList = packageSupplement.ColorsStrideList;
+                var colorsMeshVerticesRange = packageSupplement.ColorsMeshVerticesRange;
+                packageSupplement.AllowLegacyColorOperations = false;
+
+                for (var i = 0; i < colorsList.Count; i++)
+                {
+                    newPackageSupplement.AddColorsForMeshVerticesRange(colorsMeshVerticesRange[i].Item1, colorsMeshVerticesRange[i].Item2, colorsList[i], colorsStrideList[i]);
+                }
+            }
+
+            if (package is IRenderLabels renderLabels && newPackage is IRenderLabels newRenderLabels)
+            {
+                var labelData = renderLabels.LabelData;
+
+                foreach (var (label, pt) in labelData)
+                {
+                    newRenderLabels.AddLabel(label, pt[0], pt[1], pt[2]);
+                }
+            }
+
+            return newPackage;
+        }
+        
         protected override void HandleTaskCompletionCore()
         {
         }
