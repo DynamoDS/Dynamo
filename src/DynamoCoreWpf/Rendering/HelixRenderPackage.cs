@@ -181,6 +181,7 @@ namespace Dynamo.Wpf.Rendering
 
         #region IRenderPackage implementation
 
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public void SetColors(byte[] colors)
         {
             this.colors = colors;
@@ -313,6 +314,7 @@ namespace Dynamo.Wpf.Rendering
         /// Apply a color to each point vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyPointVertexColors(byte[] colors)
         {
             if (colors.Count()/4 != points.Positions.Count)
@@ -328,6 +330,7 @@ namespace Dynamo.Wpf.Rendering
         /// Apply a color to each line vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyLineVertexColors(byte[] colors)
         {
             if (colors.Count() / 4 != lines.Positions.Count)
@@ -343,6 +346,7 @@ namespace Dynamo.Wpf.Rendering
         /// Apply a color to each mesh vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyMeshVertexColors(byte[] colors)
         {
             if (colors.Count() / 4 != mesh.Positions.Count)
@@ -496,11 +500,13 @@ namespace Dynamo.Wpf.Rendering
             get { return points.Indices.ToArray(); }
         }
 
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public IEnumerable<byte> Colors
         {
             get { return colors; }
         }
 
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public int ColorsStride { get; set; }
 
         #endregion

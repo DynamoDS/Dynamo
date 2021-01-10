@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
 
@@ -154,6 +155,7 @@ namespace Dynamo.Visualization
         /// Apply a color to each point vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyPointVertexColors(byte[] colors)
         {
             pointColors.Clear();
@@ -163,6 +165,7 @@ namespace Dynamo.Visualization
         /// <summary>
         /// Apply a color to a sequence of line vertices.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyLineVertexColors(byte[] colors)
         {
             lineColors.Clear();
@@ -173,6 +176,7 @@ namespace Dynamo.Visualization
         /// Apply a color to each mesh vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyMeshVertexColors(byte[] colors)
         {
             meshColors.Clear();
@@ -183,6 +187,7 @@ namespace Dynamo.Visualization
         /// Sets an array of bytes that is used as a color map.
         /// </summary>
         /// <param name="colors"></param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public void SetColors(byte[] colors)
         {
             this.colors = colors;
@@ -370,11 +375,13 @@ namespace Dynamo.Visualization
         /// for mapping onto surfaces. Use the ColorsStride property to define the
         /// size of one dimension of the collection.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public IEnumerable<byte> Colors { get; private set; }
 
         /// <summary>
         /// The size of one dimension of the Colors collection.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public int ColorsStride { get; set; }
     }
 }

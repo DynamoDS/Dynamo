@@ -115,11 +115,13 @@ namespace Autodesk.DesignScript.Interfaces
         /// for mapping onto surfaces. Use the ColorsStride property to define the
         /// size of one dimension of the collection.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         IEnumerable<byte> Colors { get; }
- 
+
         /// <summary>
         /// The size of one dimension of the Colors collection.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         int ColorsStride { get; set; }
  
         /// <summary>
@@ -171,23 +173,27 @@ namespace Autodesk.DesignScript.Interfaces
         /// Apply a color to each point vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         void ApplyPointVertexColors(byte[] colors);
 
         /// <summary>
         /// Apply a color to a sequence of line vertices.
         /// </summary>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         void ApplyLineVertexColors(byte[] colors);
 
         /// <summary>
         /// Apply a color to each mesh vertex.
         /// </summary>
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         void ApplyMeshVertexColors(byte[] colors);
 
         /// <summary>
         /// Set a an array of bytes to be used as a color map.
         /// </summary>
         /// <param name="colors"></param>
+        [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         void SetColors(byte[] colors);
 
         /// <summary>
