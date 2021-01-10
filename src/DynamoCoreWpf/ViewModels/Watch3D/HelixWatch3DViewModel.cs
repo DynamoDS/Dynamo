@@ -2075,8 +2075,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             foreach (var labelData  in nodeLabelData)
             {
-                geom.TextInfo.Add(new TextInfo(labelData.Item1,
-                    labelData.Item2 + defaultLabelOffset));
+                string labelText = labelData.Item1;
+                if (labelData.Item1.Split(':')[0] == nodeId)
+                {
+                    labelText = HelixRenderPackage.CleanTag(labelData.Item1);
+                }
+                
+                geom.TextInfo.Add(new TextInfo(labelText, labelData.Item2 + defaultLabelOffset));
             }
         }
 

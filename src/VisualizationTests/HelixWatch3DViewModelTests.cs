@@ -1189,7 +1189,7 @@ namespace WpfVisualizationTests
             return views.Last();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void GeometryPreviewWhenClickingArrayItemInPreview()
         {
             OpenVisualizationTest("magn_10809.dyn");
