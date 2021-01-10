@@ -206,6 +206,37 @@ namespace Dynamo.Scheduler
                     else
                     {
                         graphicItem.Tessellate(package, factory.TessellationParameters);
+
+                        //Now we validate that tessellation call has added colors for each new vertex.
+                        //If any vertex colors previously existed, this will ensure the vertex color and vertex counts stays in sync.
+                        //If no pixel colors exist we leave the color array empty.  A default value will applied when the render package is displayed.
+                        EnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount, previousMeshVertexCount);
+
+                        if (factory.TessellationParameters.ShowEdges)
+                        {
+                            if (graphicItem is Topology topology)
+                            {
+                                if (graphicItem is Surface surf)
+                                {
+                                    foreach (var curve in surf.PerimeterCurves())
+                                    {
+                                        curve.Tessellate(package, factory.TessellationParameters);
+                                        curve.Dispose();
+                                    }
+                                }
+                                else
+                                {
+                                    var edges = topology.Edges;
+                                    foreach (var geom in edges.Select(edge => edge.CurveGeometry))
+                                    {
+                                        geom.Tessellate(package, factory.TessellationParameters);
+                                        geom.Dispose();
+                                    }
+                                    edges.ForEach(x => x.Dispose());
+                                }
+                            }
+                        }
+
                     }
 
                     //If the package has a transform that is not the identity matrix
@@ -216,32 +247,7 @@ namespace Dynamo.Scheduler
                         (packageWithTransform).RequiresCustomTransform = true;
                     }
 
-                    if (factory.TessellationParameters.ShowEdges)
-                    {
-                        if (graphicItem is Topology topology)
-                        {
-                            if (graphicItem is Surface surf)
-                            {
-                                foreach (var curve in surf.PerimeterCurves())
-                                {
-                                    curve.Tessellate(package, factory.TessellationParameters);
-                                    curve.Dispose();
-                                }
-                            }
-                            else
-                            {
-                                var edges = topology.Edges;
-                                foreach (var geom in edges.Select(edge => edge.CurveGeometry))
-                                {
-                                    geom.Tessellate(package, factory.TessellationParameters);
-                                    geom.Dispose();
-                                }
-                                edges.ForEach(x => x.Dispose());
-                            }
-                        }
-                    }
-
-                    if (!package.DisplayLabels && package is IRenderLabels packageLabels)
+                    if (package is IRenderLabels packageLabels)
                     {
                         if (package.MeshVertexCount > previousMeshVertexCount)
                         {
@@ -256,8 +262,6 @@ namespace Dynamo.Scheduler
                             packageLabels.AddLabel(labelKey, VertexType.Point, package.PointVertexCount);
                         }
                     }
-                    
-                    //Todo Do we need to validate that vertex color counts match vertex counts?
                 }
                 catch (Exception e)
                 {
@@ -322,6 +326,92 @@ namespace Dynamo.Scheduler
                 package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
                 package.AddTriangleVertexColor(0, 0, 0, 10);
             }
+        }
+
+        private static void EnsureColorExistsPerVertex(IRenderPackage package, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
+        {
+            var packageSupplement = package as IRenderPackageSupplement;
+            
+            //Use legacy slow path if package does not implement IRenderPackageSupplement
+            if (packageSupplement == null)
+            {
+                LegacyPackageEnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount, previousMeshVertexCount);
+                return;
+            }
+            
+            if (package.PointVertexCount > previousPointVertexCount)
+            {
+                var count = package.PointVertexCount - packageSupplement.PointVertexColorCount;
+                if (count > 0)
+                {
+                    packageSupplement.AppendPointVertexColorRange(CreateColorByteArrayOfSize(count, DefR, DefG, DefB, DefA));
+                }
+                
+            }
+
+            if (package.LineVertexCount > previousLineVertexCount)
+            {
+                var count = package.LineVertexCount - packageSupplement.LineVertexColorCount;
+                if (count > 0)
+                {
+                    packageSupplement.AppendLineVertexColorRange(CreateColorByteArrayOfSize(count, DefR, DefG, DefB, DefA));
+                }
+            }
+
+            if (package.MeshVertexCount > previousMeshVertexCount)
+            {
+                var count = package.MeshVertexCount - packageSupplement.MeshVertexColorCount;
+                if (count > 0)
+                {
+                    packageSupplement.AppendMeshVertexColorRange(CreateColorByteArrayOfSize(count, DefR, DefG, DefB, DefA));
+                }
+            }
+        }
+
+        private static void LegacyPackageEnsureColorExistsPerVertex(IRenderPackage pkg, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
+        {
+            if (pkg.PointVertexCount > previousPointVertexCount
+                && pkg.PointVertexColors.Any()
+                && pkg.PointVertexColors.Count() / 4 > pkg.PointVertexCount)
+            {
+                for (var i = pkg.PointVertexColors.Count() / 4; i < pkg.PointVertexCount; i++)
+                {
+                    pkg.AddPointVertexColor(DefR, DefG, DefB, DefA);
+                }
+            }
+
+            if (pkg.LineVertexCount > previousLineVertexCount
+                && pkg.LineStripVertexColors.Any()
+                && pkg.LineStripVertexColors.Count() / 4 > pkg.LineVertexCount)
+            {
+                for (var i = pkg.LineStripVertexColors.Count() / 4; i < pkg.LineVertexCount; i++)
+                {
+                    pkg.AddLineStripVertexColor(DefR, DefG, DefB, DefA);
+                }
+            }
+
+            if (pkg.MeshVertexCount > previousMeshVertexCount
+                && pkg.MeshVertexColors.Any()
+                && pkg.MeshVertexColors.Count() / 4 > pkg.MeshVertexCount)
+            {
+                for (var i = pkg.MeshVertexColors.Count() / 4; i < pkg.MeshVertexCount; i++)
+                {
+                    pkg.AddTriangleVertexColor(DefR, DefG, DefB, DefA);
+                }
+            }
+        }
+
+        private static byte[] CreateColorByteArrayOfSize(int size, byte red, byte green, byte blue, byte alpha)
+        {
+            var arr = new byte[size * 4];
+            for (var i = 0; i < arr.Count(); i += 4)
+            {
+                arr[i] = red;
+                arr[i + 1] = green;
+                arr[i + 2] = blue;
+                arr[i + 3] = alpha;
+            }
+            return arr;
         }
 
         protected override void HandleTaskCompletionCore()

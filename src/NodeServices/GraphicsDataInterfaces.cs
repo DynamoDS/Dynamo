@@ -202,6 +202,21 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IRenderPackageSupplement
     {
         /// <summary>
+        /// The number of point vertices colors in the package.
+        /// </summary>
+        int PointVertexColorCount { get; }
+
+        /// <summary>
+        /// The number of line vertices colors in the package.
+        /// </summary>
+        int LineVertexColorCount { get; }
+
+        /// <summary>
+        /// The number of mesh vertices colors in the package.
+        /// </summary>
+        int MeshVertexColorCount { get; }
+        
+        /// <summary>
         /// Insert a color to a range of point vertices.
         /// </summary>
         void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);

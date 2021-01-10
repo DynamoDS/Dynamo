@@ -569,6 +569,21 @@ namespace Dynamo.Wpf.Rendering
         #region IRenderPackageSupplement implementation
 
         /// <summary>
+        /// The number of point vertices colors in the package.
+        /// </summary>
+        public int PointVertexColorCount => points.Colors.Count;
+
+        /// <summary>
+        /// The number of line vertices colors in the package.
+        /// </summary>
+        public int LineVertexColorCount => lines.Colors.Count;
+
+        /// <summary>
+        /// The number of mesh vertices colors in the package.
+        /// </summary>
+        public int MeshVertexColorCount => mesh.Colors.Count;
+
+        /// <summary>
         /// Insert a color to a range of point vertices.
         /// </summary>
         public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
