@@ -201,59 +201,7 @@ namespace Dynamo.Scheduler
                     //Plane tessellation needs to be handled here vs in LibG currently
                     if (graphicItem is Plane plane)
                     {
-                        package.RequiresPerVertexColoration = true;
-
-                        var s = 2.5;
-
-                        var cs = CoordinateSystem.ByPlane(plane);
-                        var a = Point.ByCartesianCoordinates(cs, s, s, 0);
-                        var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
-                        var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
-                        var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
-                        //Todo Dispose cs, a, b, c, d?
-
-                        package.AddTriangleVertex(a.X, a.Y, a.Z);
-                        package.AddTriangleVertex(b.X, b.Y, b.Z);
-                        package.AddTriangleVertex(c.X, c.Y, c.Z);
-
-                        package.AddTriangleVertex(c.X, c.Y, c.Z);
-                        package.AddTriangleVertex(d.X, d.Y, d.Z);
-                        package.AddTriangleVertex(a.X, a.Y, a.Z);
-
-                        package.AddTriangleVertexUV(0, 0);
-                        package.AddTriangleVertexUV(0, 0);
-                        package.AddTriangleVertexUV(0, 0);
-                        package.AddTriangleVertexUV(0, 0);
-                        package.AddTriangleVertexUV(0, 0);
-                        package.AddTriangleVertexUV(0, 0);
-
-                        // Draw plane edges
-                        package.AddLineStripVertex(a.X, a.Y, a.Z);
-                        package.AddLineStripVertex(b.X, b.Y, b.Z);
-                        package.AddLineStripVertex(b.X, b.Y, b.Z);
-                        package.AddLineStripVertex(c.X, c.Y, c.Z);
-                        package.AddLineStripVertex(c.X, c.Y, c.Z);
-                        package.AddLineStripVertex(d.X, d.Y, d.Z);
-                        package.AddLineStripVertex(d.X, d.Y, d.Z);
-                        package.AddLineStripVertex(a.X, a.Y, a.Z);
-
-                        // Draw normal
-                        package.AddLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
-                        var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
-                        package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
-
-                        for (var i = 0; i < 5; i++)
-                        {
-                            package.AddLineStripVertexCount(2);
-                            package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
-                            package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
-                        }
-
-                        for (var i = 0; i < 6; i++)
-                        {
-                            package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
-                            package.AddTriangleVertexColor(0, 0, 0, 10);
-                        }
+                        CreatePlaneTessellation(package, plane);
                     }
                     else
                     {
@@ -316,6 +264,63 @@ namespace Dynamo.Scheduler
                     Debug.WriteLine(
                         "PushGraphicItemIntoPackage: " + e);
                 }
+            }
+        }
+
+        private static void CreatePlaneTessellation(IRenderPackage package, Plane plane)
+        {
+            package.RequiresPerVertexColoration = true;
+
+            var s = 2.5;
+
+            var cs = CoordinateSystem.ByPlane(plane);
+            var a = Point.ByCartesianCoordinates(cs, s, s, 0);
+            var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
+            var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
+            var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
+            //Todo Dispose cs, a, b, c, d?
+
+            package.AddTriangleVertex(a.X, a.Y, a.Z);
+            package.AddTriangleVertex(b.X, b.Y, b.Z);
+            package.AddTriangleVertex(c.X, c.Y, c.Z);
+
+            package.AddTriangleVertex(c.X, c.Y, c.Z);
+            package.AddTriangleVertex(d.X, d.Y, d.Z);
+            package.AddTriangleVertex(a.X, a.Y, a.Z);
+
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+            package.AddTriangleVertexUV(0, 0);
+
+            // Draw plane edges
+            package.AddLineStripVertex(a.X, a.Y, a.Z);
+            package.AddLineStripVertex(b.X, b.Y, b.Z);
+            package.AddLineStripVertex(b.X, b.Y, b.Z);
+            package.AddLineStripVertex(c.X, c.Y, c.Z);
+            package.AddLineStripVertex(c.X, c.Y, c.Z);
+            package.AddLineStripVertex(d.X, d.Y, d.Z);
+            package.AddLineStripVertex(d.X, d.Y, d.Z);
+            package.AddLineStripVertex(a.X, a.Y, a.Z);
+
+            // Draw normal
+            package.AddLineStripVertex(plane.Origin.X, plane.Origin.Y, plane.Origin.Z);
+            var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
+            package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
+
+            for (var i = 0; i < 5; i++)
+            {
+                package.AddLineStripVertexCount(2);
+                package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
+                package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
+            }
+
+            for (var i = 0; i < 6; i++)
+            {
+                package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                package.AddTriangleVertexColor(0, 0, 0, 10);
             }
         }
 
