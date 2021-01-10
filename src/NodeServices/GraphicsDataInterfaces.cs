@@ -274,6 +274,12 @@ namespace Autodesk.DesignScript.Interfaces
         /// Set a color map for a range of mesh vertices
         /// </summary>
         void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride);
+
+        /// <summary>
+        /// Allow legacy usage of the color methods in IRenderPackage
+        /// </summary>
+        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        bool AllowLegacyColorOperations { get; set; }
     }
     
     /// <summary>
@@ -509,4 +515,9 @@ namespace Autodesk.DesignScript.Interfaces
         /// </summary>
         bool RequiresPerVertexColoration { get; }
     }
+
+    /// <summary>
+    /// Exception used to catch usage of Legacy IRenderPackage color APIs
+    /// </summary>
+    public class LegacyRenderPackageMethodException : Exception { }
 }

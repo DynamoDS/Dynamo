@@ -47,6 +47,7 @@ namespace Dynamo.Wpf.Rendering
         private bool hasData;
         private List<int> lineStripVertexCounts;
         private byte[] colors;
+        private int colorStride;
         private List< byte[]> colorsList = new List<byte[]>();
         private List<int> colorStrideList = new List<int>();
         private List<Tuple<int, int>> colorsMeshVerticesRange = new List<Tuple<int, int>>();
@@ -184,6 +185,11 @@ namespace Dynamo.Wpf.Rendering
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public void SetColors(byte[] colors)
         {
+            if (!AllowLegacyColorOperations)
+            {
+                throw new LegacyRenderPackageMethodException();
+            }
+            
             this.colors = colors;
         }
 
@@ -317,6 +323,11 @@ namespace Dynamo.Wpf.Rendering
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyPointVertexColors(byte[] colors)
         {
+            if (!AllowLegacyColorOperations)
+            {
+                throw new LegacyRenderPackageMethodException();
+            }
+            
             if (colors.Count()/4 != points.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -333,6 +344,11 @@ namespace Dynamo.Wpf.Rendering
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyLineVertexColors(byte[] colors)
         {
+            if (!AllowLegacyColorOperations)
+            {
+                throw new LegacyRenderPackageMethodException();
+            }
+            
             if (colors.Count() / 4 != lines.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -349,6 +365,11 @@ namespace Dynamo.Wpf.Rendering
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add ranges of vertex colors.")]
         public void ApplyMeshVertexColors(byte[] colors)
         {
+            if (!AllowLegacyColorOperations)
+            {
+                throw new LegacyRenderPackageMethodException();
+            }
+            
             if (colors.Count() / 4 != mesh.Positions.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
@@ -507,7 +528,18 @@ namespace Dynamo.Wpf.Rendering
         }
 
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
-        public int ColorsStride { get; set; }
+        public int ColorsStride
+        {
+            get => colorStride;
+            set
+            {
+                if (!AllowLegacyColorOperations)
+                {
+                    throw new LegacyRenderPackageMethodException();
+                }
+                colorStride = value;
+            }
+        }
 
         #endregion
 
@@ -752,6 +784,12 @@ namespace Dynamo.Wpf.Rendering
             colorsList.Add(colors);
             colorStrideList.Add(stride);
         }
+
+        /// <summary>
+        /// Allow legacy usage of the color methods in IRenderPackage
+        /// </summary>
+        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        public bool AllowLegacyColorOperations { get; set; } = true;
 
         #endregion
 
