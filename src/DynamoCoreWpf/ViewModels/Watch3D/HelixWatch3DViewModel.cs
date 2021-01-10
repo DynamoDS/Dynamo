@@ -1769,32 +1769,36 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
                     id = (rp.Colors.Any() ? rp.Description : baseId) + MeshKey;
 
-                    //if we require texture coloration then we need to create a new Geometry3d object.
+                    //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D object for each texture map and associated mesh geometry.  
+                    //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
                     if (rp.ColorsMeshVerticesRange.Any())
                     {
-                        var countTotal = 0;
+                        //For each range of mesh vertices add the mesh data and texture map to the scene
+                        var meshVertexCountTotal = 0;
                         for (var j = 0; j < rp.ColorsMeshVerticesRange.Count; j++)
                         {
                             var range = rp.ColorsMeshVerticesRange[j];
-                            var i = range.Item1;
-                            var c = range.Item2 - range.Item1 + 1;
-                            AddMeshData(baseId + ":" + j + MeshKey, rp, m.Positions.GetRange(i,c), m.Colors.GetRange(i,c), 
-                                m.Normals.GetRange(i,c), m.TextureCoordinates.GetRange(i,c),
-                                m.Indices.GetRange(i,c), drawDead, baseId, rp.ColorsList[j], rp.ColorsStrideList[j]);
+                            var index = range.Item1; //Start mesh vertex index
+                            var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
+                            var uniqueId = baseId + ":" + j + MeshKey;
+                            
+                            AddMeshData(uniqueId, rp,index,count, drawDead, baseId, rp.ColorsList[j], rp.ColorsStrideList[j]);
 
-                            countTotal+= c;
+                            //Track cumulative total of mesh vertices added.
+                            meshVertexCountTotal+= count;
                         }
 
-                        //If all the mesh regions had texture map data then we can exit
-                        if (countTotal == m.Positions.Count)
+                        //If all the mesh regions had texture map data then we are done with mesh data.
+                        if (meshVertexCountTotal == m.Positions.Count)
                         { continue;}
 
-                        //Otherwise, clean up the remaining mesh data to exclude the regions already generated.
+                        //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
                         //First sort the range data
-                        var sortedVerticesRange = new List<Tuple<int, int>>();
-                        sortedVerticesRange.AddRange(rp.ColorsMeshVerticesRange);
+                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.ColorsMeshVerticesRange);
+                        sortedVerticesRange.Sort();
                         sortedVerticesRange.Reverse();
                         
+                        //Remove already generated mesh geometry from render package
                         foreach (var range in sortedVerticesRange)
                         {
                             var i = range.Item1;
@@ -1805,21 +1809,44 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             m.TextureCoordinates.RemoveRange(i, c);
                         }
 
+                        //Regenerate Indices data
                         var sequence = Enumerable.Range(0, m.Positions.Count);
                         var newIndices = new IntCollection();
                         newIndices.AddRange(sequence);
                         m.Indices = newIndices;
                     }
 
-                    AddMeshData(id, rp, m.Positions, m.Colors, m.Normals, m.TextureCoordinates, m.Indices, drawDead, baseId, rp.Colors, rp.ColorsStride);
+                    AddMeshData(id, rp, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride);
                 }
             }
         }
 
-        private void AddMeshData(string id, HelixRenderPackage rp, FastList<Vector3> mPositions,
-            FastList<Color4> mColors, FastList<Vector3> mNormals, FastList<Vector2> mTextureCoordinates, 
-            FastList<int> mIndices, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
+        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
         {
+            FastList<Vector3> mPositions;
+            FastList<Color4> mColors;
+            FastList<Vector3> mNormals;
+            FastList<Vector2> mTextureCoordinates;
+            FastList<int> mIndices;
+
+            var m = rp.Mesh;
+            if (index == 0 && count == rp.Mesh.Positions.Count)
+            {
+                mPositions = m.Positions;
+                mColors = m.Colors;
+                mNormals = m.Normals;
+                mTextureCoordinates = m.TextureCoordinates;
+                mIndices = m.TriangleIndices;
+            }
+            else
+            {
+                mPositions = m.Positions.GetRange(index, count);
+                mColors = m.Colors.GetRange(index, count);
+                mNormals = m.Normals.GetRange(index, count);
+                mTextureCoordinates = m.TextureCoordinates.GetRange(index, count);
+                mIndices = m.TriangleIndices.GetRange(index, count);
+            }
+            
             Element3D element3D;
             DynamoGeometryModel3D meshGeometry3D;
             if (Element3DDictionary.TryGetValue(id, out element3D))
