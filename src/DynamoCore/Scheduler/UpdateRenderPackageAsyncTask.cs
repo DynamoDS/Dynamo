@@ -170,7 +170,10 @@ namespace Dynamo.Scheduler
                 package.RequiresPerVertexColoration = true;
             }
 
-            renderPackageCache.Add(package, outputPortId);
+            if (package.HasRenderingData)
+            {
+                renderPackageCache.Add(package, outputPortId);
+            }
         }
 
         private void GetRenderPackagesFromMirrorDataImp(
@@ -228,7 +231,7 @@ namespace Dynamo.Scheduler
                     catch (LegacyRenderPackageMethodException)
                     {
                         //At this point we have detected an implementation of Tessellate which is using legacy color methods
-                        //We roll back the primary renderPackage to it previous state before calling tessellation.
+                        //We roll back the primary renderPackage to it previous state before calling tessellation again.
                         package = RollBackPackage(package, previousPointVertexCount, previousLineVertexCount,
                             previousMeshVertexCount);
 
