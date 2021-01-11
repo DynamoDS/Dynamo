@@ -39,7 +39,7 @@ namespace Dynamo.Visualization
     /// Example implementation of IRenderPackage.
     /// DefaultRenderPackage can be used as package for your visualization.
     /// </summary>
-    public class DefaultRenderPackage : IRenderPackage
+    public class DefaultRenderPackage : IRenderPackage, IRenderPackageSupplement
     {
         private List<double> pointVertices = new List<double>();
         private List<byte> pointColors = new List<byte>();
@@ -57,6 +57,10 @@ namespace Dynamo.Visualization
 
         private List<int> lineStripVertexCounts = new List<int>();
         private byte[] colors;
+
+        private List<byte[]> colorsList = new List<byte[]>();
+        private List<int> colorStrideList = new List<int>();
+        private List<Tuple<int, int>> colorsMeshVerticesRange = new List<Tuple<int, int>>();
 
         /// <summary>
         /// Add a point vertex to the render package.
@@ -219,6 +223,10 @@ namespace Dynamo.Visualization
             IsSelected = false;
             RequiresPerVertexColoration = false;
             DisplayLabels = false;
+
+            colorsList.Clear();
+            colorStrideList.Clear();
+            colorsMeshVerticesRange.Clear();
         }
 
         /// <summary>
@@ -383,5 +391,139 @@ namespace Dynamo.Visualization
         /// </summary>
         [Obsolete("Do not use! Use the methods in IRenderPackageSupplement to add mesh texture maps.")]
         public int ColorsStride { get; set; }
+
+        #region IRenderPackageSupplement implementation
+
+        /// <summary>
+        /// The number of point vertices colors in the package.
+        /// </summary>
+        public int PointVertexColorCount => pointColors.Count / 4;
+
+        /// <summary>
+        /// The number of line vertices colors in the package.
+        /// </summary>
+        public int LineVertexColorCount => lineColors.Count / 4;
+
+        /// <summary>
+        /// The number of mesh vertices colors in the package.
+        /// </summary>
+        public int MeshVertexColorCount => meshColors.Count / 4;
+
+        /// <summary>
+        /// Insert a color to a range of point vertices.
+        /// </summary>
+        public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                var j = i * 4;
+                pointColors[j] = red;
+                pointColors[j + 1] = green;
+                pointColors[j + 2] = blue;
+                pointColors[j + 3] = alpha;
+            }
+        }
+
+        /// <summary>
+        /// Append a color range for point vertices.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendPointVertexColorRange(byte[] colors)
+        {
+            pointColors.AddRange(colors);
+        }
+
+        /// <summary>
+        /// Insert a color to a range of line vertices.
+        /// </summary>
+        public void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                var j = i * 4;
+                lineColors[j] = red;
+                lineColors[j + 1] = green;
+                lineColors[j + 2] = blue;
+                lineColors[j + 3] = alpha;
+            }
+        }
+
+        /// <summary>
+        /// Append a color range for line vertices.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendLineVertexColorRange(byte[] colors)
+        {
+            lineColors.AddRange(colors);
+        }
+
+        /// <summary>
+        /// Insert a color to a range of of mesh vertices.
+        /// </summary>
+        public void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        {
+            for (var i = startIndex; i <= endIndex; i++)
+            {
+                var j = i* 4;
+                meshColors[j] = red;
+                meshColors[j + 1] = green;
+                meshColors[j + 2] = blue;
+                meshColors[j + 3] = alpha;
+            }
+            RequiresPerVertexColoration = true;
+        }
+
+        /// <summary>
+        /// Append a color range for mesh vertex.
+        /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
+        public void AppendMeshVertexColorRange(byte[] colors)
+        {
+            meshColors.AddRange(colors);
+            RequiresPerVertexColoration = true;
+        }
+
+        /// <summary>
+        /// A List containing arrays of bytes representing RGBA colors.
+        /// These arrays can be used to populate textures for mapping onto specific meshes
+        /// </summary>
+        public List<byte[]> ColorsList
+        {
+            get { return colorsList; }
+        }
+
+        /// <summary>
+        /// A list containing the size of one dimension of the associated Colors list.
+        /// </summary>
+        public List<int> ColorsStrideList
+        {
+            get { return colorStrideList; }
+        }
+
+        /// <summary>
+        /// A list of mesh vertices ranges that have associated texture maps
+        /// </summary>
+        public List<Tuple<int, int>> ColorsMeshVerticesRange
+        {
+            get { return colorsMeshVerticesRange; }
+        }
+
+        /// <summary>
+        /// Set a color map for a range of mesh vertices
+        /// </summary>
+        public void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride)
+        {
+            colorsMeshVerticesRange.Add(new Tuple<int, int>(startIndex, endIndex));
+            colorsList.Add(colors);
+            colorStrideList.Add(stride);
+        }
+
+        /// <summary>
+        /// Allow legacy usage of the color methods in IRenderPackage
+        /// </summary>
+        [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
+        public bool AllowLegacyColorOperations { get; set; } = true;
+
+        #endregion
     }
 }
