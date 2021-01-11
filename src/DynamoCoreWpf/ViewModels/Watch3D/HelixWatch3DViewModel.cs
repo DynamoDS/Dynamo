@@ -1767,7 +1767,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     if (!m.Positions.Any()) continue;
 
                     //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
-                    id = (rp.Colors.Any() ? rp.Description : baseId) + MeshKey;
+                    id = (rp.Colors != null ? rp.Description : baseId) + MeshKey;
 
                     //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D object for each texture map and associated mesh geometry.  
                     //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
