@@ -184,6 +184,9 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.001;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
+        private const int DepthBiasVertexColors = 10;
+        private const int DepthBiasNormalMesh = 100;
+        private const int DepthBiasSelectedMesh = 0;
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
         private ObservableElement3DCollection sceneItems;
@@ -1123,7 +1126,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             {
                 AttachedProperties.SetShowSelected(element, isSelected);
             }
-            SetDepthBias(isSelected, items);
+            SetDepthBiasBasedOnSelection(isSelected, items);
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
@@ -1146,23 +1149,34 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         AttachedProperties.SetShowSelected(model, isSelected);
                     }
 
-                    SetDepthBias(isSelected, geometryModels);
+                    SetDepthBiasBasedOnSelection(isSelected, geometryModels);
                 }
             }
         }
 
-        private static void SetDepthBias(bool isSelected, IEnumerable<Element3D> element3Ds)
+        private static void SetDepthBiasBasedOnSelection(bool isSelected, IEnumerable<Element3D> element3Ds)
         {
-            var depth = 0;
-            if (!isSelected)
-            {
-                depth = 100000;
-            }
+            //selected should be lowest depth
+            var newDepth = DepthBiasSelectedMesh;
             foreach (var element in element3Ds)
             {
-                if (element is GeometryModel3D geom)
+                if (element is DynamoGeometryModel3D geom)
                 {
-                    geom.DepthBias = depth;
+                    
+                    if (!isSelected)
+                    {
+                        //reset depth to default
+                        if (geom.RequiresPerVertexColoration)
+                        {
+                            newDepth = DepthBiasVertexColors;
+                        }
+                        else
+                        {
+                            newDepth = DepthBiasNormalMesh;
+                        }
+                    }
+
+                    geom.DepthBias = newDepth;
                 }
             }
         }
@@ -2062,6 +2076,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Material = WhiteMaterial,
                 IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                DepthBias = rp.RequiresPerVertexColoration ? DepthBiasVertexColors : DepthBiasNormalMesh
             };
 
             if (rp.Colors != null)

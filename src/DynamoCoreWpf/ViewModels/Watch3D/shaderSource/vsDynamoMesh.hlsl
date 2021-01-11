@@ -29,11 +29,6 @@ PSInput main(VSInput input)
     float3 nudge = normalize(input.n) * 0.0001;
 
     inputp = input.p;
-    if (requiresPerVertexColoration)
-    {
-        // Nudge the vertex out slightly along its normal a tiny bit.
-        inputp = float4(inputp.x + nudge.x, inputp.y + nudge.y, inputp.z + nudge.z, inputp.w);
-    }
 
     //set position into world space
     output.p = mul(inputp, mWorld);
