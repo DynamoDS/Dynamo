@@ -184,6 +184,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.001;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
+
+        //see https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
+        private const int DepthBiasVertexColors = 10;
+        private const int DepthBiasNormalMesh = 100;
+        private const int DepthBiasSelectedMesh = 0;
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
         private ObservableElement3DCollection sceneItems;
@@ -743,20 +748,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // labels are still displayed in the preview, but the highlighting has been switched off.
                     // In order to prevent this unintuitive UX behavior, the nodes will first be checked if they are in the 
                     // nodesSelected dictionary - if they are, they will not be switched off.
-                    var geometryModels = new Dictionary<string, Element3D>();
+                    var geometryModels = new List<Element3D>();
                     foreach (var model in Element3DDictionary)
                     {
                         var nodePath = model.Key.Contains(':') ? model.Key.Remove(model.Key.IndexOf(':')) : model.Key;
                         if (model.Value is GeometryModel3D && !nodesSelected.ContainsKey(nodePath))
                         {
-                            geometryModels.Add(model.Key, model.Value);
+                            geometryModels.Add(model.Value);
                         }
                     }
 
-                    foreach (var geometryModel in geometryModels)
-                    {
-                        AttachedProperties.SetShowSelected(geometryModel.Value, false);
-                    }
+                    SetSelection(geometryModels, false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -1068,7 +1070,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnSceneItemsChanged()
         {
             UpdateSceneItems();
-            RaisePropertyChanged("SceneItems");
+            RaisePropertyChanged(nameof(SceneItems));
             OnRequestViewRefresh();
         }
    
@@ -1119,26 +1121,64 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private void SetSelection(IEnumerable<Element3D> items, bool isSelected)
+        {
+         
+            foreach (var element in items)
+            {
+                AttachedProperties.SetShowSelected(element, isSelected);
+            }
+            SetDepthBiasBasedOnSelection(isSelected, items);
+        }
+
         private void SetSelection(IEnumerable items, bool isSelected)
         {
             foreach (var item in items)
             {
-                var node = item as NodeModel;
-                if (node == null)
+                if (item is NodeModel node)
                 {
-                    continue;
+
+                    var element3ds = FindAllGeometryModel3DsForNode(node);
+
+                    if (!element3ds.Any())
+                    {
+                        continue;
+                    }
+
+                    var geometryModels = element3ds.Where(x => x.Value is GeometryModel3D).Select(x=>x.Value);
+                    foreach (var model in geometryModels)
+                    {
+                        AttachedProperties.SetShowSelected(model, isSelected);
+                    }
+
+                    SetDepthBiasBasedOnSelection(isSelected, geometryModels);
                 }
+            }
+        }
 
-                var geometryModels = FindAllGeometryModel3DsForNode(node);
-
-                if (!geometryModels.Any())
+        private static void SetDepthBiasBasedOnSelection(bool isSelected, IEnumerable<Element3D> element3Ds)
+        {
+            //selected should be lowest depth
+            var newDepth = DepthBiasSelectedMesh;
+            foreach (var element in element3Ds)
+            {
+                if (element is DynamoGeometryModel3D geom)
                 {
-                    continue;
-                }
+                    
+                    if (!isSelected)
+                    {
+                        //reset depth to default
+                        if (geom.RequiresPerVertexColoration)
+                        {
+                            newDepth = DepthBiasVertexColors;
+                        }
+                        else
+                        {
+                            newDepth = DepthBiasNormalMesh;
+                        }
+                    }
 
-                foreach (var model in geometryModels)
-                {
-                    AttachedProperties.SetShowSelected(model.Value, isSelected);
+                    geom.DepthBias = newDepth;
                 }
             }
         }
@@ -2038,6 +2078,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Material = WhiteMaterial,
                 IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                DepthBias = rp.RequiresPerVertexColoration ? DepthBiasVertexColors : DepthBiasNormalMesh
             };
 
             if (rp.Colors != null)
