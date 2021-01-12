@@ -715,6 +715,16 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Node description that can be customized by the user.
+        /// </summary>
+        [JsonIgnore]
+        public string UserDescription
+        {
+            get;
+            set;
+        }
+
         [JsonIgnore]
         public bool CanUpdatePeriodically
         {

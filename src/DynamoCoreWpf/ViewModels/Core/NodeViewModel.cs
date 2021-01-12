@@ -569,7 +569,12 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Node description defined by the user.
         /// </summary>
-        public string UserDescription { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UserDescription
+        {
+            get { return NodeModel.UserDescription; }
+            set { NodeModel.UserDescription = value; }
+        }
 
         #endregion
 
