@@ -296,7 +296,8 @@ namespace Dynamo.Scheduler
                     (packageWithTransform).RequiresCustomTransform = true;
                 }
 
-                if (package is IRenderLabels packageLabels)
+                //Do not add replication labels if the tessellation call set DisplayLabels to true;
+                if (package is IRenderLabels packageLabels && packageLabels.AutoGenerateLabels)
                 {
                     if (package.MeshVertexCount > previousMeshVertexCount)
                     {

@@ -303,6 +303,11 @@ namespace Autodesk.DesignScript.Interfaces
         void AddLabel(string label, double x, double y, double z);
 
         /// <summary>
+        /// A flag indicating whether the render package should auto generate labels
+        /// </summary>
+        bool AutoGenerateLabels { get; set; }
+
+        /// <summary>
         /// Clear all label data from the render package.
         /// </summary>
         void ClearLabels();

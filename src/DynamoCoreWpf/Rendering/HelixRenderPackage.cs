@@ -597,11 +597,17 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
+        /// A flag indicating whether the render package should auto generate labels
+        /// </summary>
+        public bool AutoGenerateLabels { get; set; } = true;
+
+        /// <summary>
         /// Clear all label data from the render package.
         /// </summary>
         public void ClearLabels()
         {
             LabelPlaces.Clear();
+            AutoGenerateLabels = true;
         }
 
         #endregion

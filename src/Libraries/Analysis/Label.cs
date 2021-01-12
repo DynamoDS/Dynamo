@@ -39,7 +39,13 @@ namespace Analysis
         public void Tessellate(IRenderPackage package, TessellationParameters parameters)
         {
             package.AddPointVertex(point.X, point.Y, point.Z);
-            package.Description = label;
+            package.DisplayLabels = true;
+            if (package is IRenderLabels renderLabels)
+            {
+                renderLabels.AddLabel(label, point.X, point.Y, point.Z);
+                renderLabels.AutoGenerateLabels = false;
+            }
+            
         }
     }
 }
