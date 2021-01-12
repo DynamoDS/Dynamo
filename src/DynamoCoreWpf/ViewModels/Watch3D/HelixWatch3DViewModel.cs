@@ -184,6 +184,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.001;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
+
+        //see https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
         private const int DepthBiasVertexColors = 10;
         private const int DepthBiasNormalMesh = 100;
         private const int DepthBiasSelectedMesh = 0;

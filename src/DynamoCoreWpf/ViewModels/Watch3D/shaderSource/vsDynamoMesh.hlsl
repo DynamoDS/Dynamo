@@ -25,13 +25,10 @@ PSInput main(VSInput input)
     bool isSelected = flags & 2;
     bool requiresPerVertexColoration = flags & 32;
      
-    float4 inputp;
-    float3 nudge = normalize(input.n) * 0.0001;
 
-    inputp = input.p;
 
     //set position into world space
-    output.p = mul(inputp, mWorld);
+    output.p = mul(input.p, mWorld);
     output.wp = output.p;
     //set position into clip space	
     output.p = mul(output.p, mViewProjection);
