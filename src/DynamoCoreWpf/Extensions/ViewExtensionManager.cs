@@ -98,7 +98,7 @@ namespace Dynamo.Wpf.Extensions
                 // with a consistent UniqueId. This may result in unexpected Dynamo behavior.
                 if (extension.UniqueId != extension.UniqueId)
                 {
-                    Log("Inconsistent UniqueId for " + extension.Name + " view extension.");
+                    Log("Inconsistent UniqueId for " + extension.Name + " view extension. This may result in unexpected Dynamo behavior.");
                 }
 
                 if (ExtensionAdded != null)
