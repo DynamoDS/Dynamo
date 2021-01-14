@@ -89,12 +89,11 @@ http://miconvexhull.codeplex.com/
 http://miconvexhull.codeplex.com/license
   (MIT license)
 
-### Microsoft 2013 C Runtime DLLs, msvcp120.dll, msvcr120.dll
-http://msdn.microsoft.com/en-us/vstudio/dn501987
-https://docs.microsoft.com/en-us/visualstudio/productinfo/2013-redistribution-vs
-
 ### Microsoft 2015 C Runtime DLLs, msvcp140.dll, msvcr140.dll
 https://docs.microsoft.com/en-us/visualstudio/productinfo/2015-redistribution-vs
+
+### Microsoft 2019 C Runtime DLLs, msvcp142.dll, msvcr142.dll
+https://visualstudio.microsoft.com/license-terms/mlt031619/
 
 ### Moq
 http://www.nuget.org/packages/Moq/
@@ -175,6 +174,6 @@ https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
   (MIT License)
 
 ### Xceed Extended WPF Toolkit
-https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
+https://github.com/xceedsoftware/wpftoolkit/blob/0ed4ed84152d6a3e2a627f2ef05f82627fdaf3fc/license.md
   (Microsoft Public License)
 
