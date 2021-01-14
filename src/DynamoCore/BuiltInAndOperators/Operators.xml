@@ -8,9 +8,9 @@
             <summary>
                 Returns addition of x and y
             </summary>
-            <param name="x">Integer or double value</param>
-            <param name="y">Integer or double value</param>
-            <returns name="number">The sum of the two input numbers</returns>
+            <param name="x">Integer value, double value or string</param>
+            <param name="y">Integer value, double value or string</param>
+            <returns name="var">The sum of two input numbers, or the concatenation of two strings</returns>
             <search>add, plus, addition, +</search>
         </member>
 		<member name="%sub">
@@ -44,8 +44,8 @@
             <summary>
                 Compares if x and y are equal
             </summary>
-            <param name="x">Integer or double value</param>
-            <param name="y">Integer or double value</param>
+            <param name="x">Basic type object to compare (e.g. bool, int, double, string, etc.)</param>
+            <param name="y">Basic type object to compare (e.g. bool, int, double, string, etc.)</param>
             <returns name="bool">Result of equality check</returns>
             <search>eq, equal, =</search>
         </member>
