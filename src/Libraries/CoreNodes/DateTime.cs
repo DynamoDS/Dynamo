@@ -15,7 +15,7 @@ namespace DSCore
         /// <summary>
         ///     The earliest date and time that can be represented.
         /// </summary>
-        /// <returns name="dateTime">DateTime</returns>
+        /// <returns name="dateTime">Minimum possible TimeSpan representation</returns>
         public static System.DateTime MinValue
         {
             get { return System.DateTime.MinValue; }
@@ -24,7 +24,7 @@ namespace DSCore
         /// <summary>
         ///     The latest date and time that can be represented.
         /// </summary>
-        /// <returns name="dateTime">DateTime</returns>
+        /// <returns name="dateTime">Maximum possible TimeSpan representation</returns>
         public static System.DateTime MaxValue
         {
             get { return System.DateTime.MaxValue; }
@@ -52,12 +52,12 @@ namespace DSCore
         /// <summary>
         ///     Return a specified date and time as a string, in the specified format.
         /// </summary>
-        /// <param name="dateTime">The DateTime to format</param>
+        /// <param name="dateTime">DateTime to format</param>
         /// <param name="format">String representation of the date format.  Uses InvariantCulture, which outputs independent of the user's operating system language.
         /// Defaults to standard format "F" : "Tuesday, 21 February 2017 23:02:43"
         /// Search "MSDN Custom Date and Time Format Strings" for a comprehensive list of format specifiers.
         ///</param>
-        /// <returns name="string">The specified date and time as a string, in the specified format.</returns>
+        /// <returns name="string">DateTime represented as a string</returns>
         public static string Format(System.DateTime dateTime, string format="F")
         {
             if (System.String.IsNullOrEmpty(format)) format = "F";
@@ -96,9 +96,9 @@ namespace DSCore
         /// <summary>
         ///     Subtracts a TimeSpan from a DateTime, yielding a new DateTime.
         /// </summary>
-        /// <param name="dateTime">Starting DateTime.</param>
-        /// <param name="timeSpan">Amount of time to subtract.</param>
-        /// <returns name="dateTime">DateTime</returns>
+        /// <param name="dateTime">Starting DateTime</param>
+        /// <param name="timeSpan">Amount of time to subtract</param>
+        /// <returns name="dateTime">Resulting DateTime from substraction</returns>
         public static System.DateTime SubtractTimeSpan(System.DateTime dateTime, System.TimeSpan timeSpan)
         {
             return dateTime.Subtract(timeSpan);
@@ -120,6 +120,7 @@ namespace DSCore
         /// </summary>
         /// <param name="year">Exact year (1-9999)</param>
         /// <param name="month">Exact month (1-12)</param>
+        /// <returns name="int">Number of days in month</returns>
         public static int DaysInMonth(int year, int month)
         {
             return System.DateTime.DaysInMonth(year, month);
@@ -128,7 +129,8 @@ namespace DSCore
         /// <summary>
         ///     Determines if it is Daylight Savings Time at the given DateTime.
         /// </summary>
-        /// <param name="dateTime">A DateTime.</param>
+        /// <param name="dateTime">DateTime to determine if its daylight</param>
+        /// <returns name="bool">True if DateTime is in daylight saving time, false if it isn't</returns>
         public static bool IsDaylightSavingsTime(System.DateTime dateTime)
         {
             return dateTime.IsDaylightSavingTime();
@@ -137,8 +139,8 @@ namespace DSCore
         /// <summary>
         ///     Determines if the given year is a leap year.
         /// </summary>
-        /// <returns name="bool">True if year is leap year, false if not</returns>
         /// <param name="year">Exact year (1-9999)</param>
+        /// <returns name="bool">True if year is leap year, false if not</returns>
         public static bool IsLeapYear(int year)
         {
             return System.DateTime.IsLeapYear(year);
@@ -267,7 +269,7 @@ namespace DSCore
         /// </summary>
         /// <param name="date1">Starting DateTime</param>
         /// <param name="date2">Ending DateTime</param>
-        /// <returns name="timeSpan">Time span difference between two dates</returns>
+        /// <returns name="timeSpan">TimeSpan difference between two dates</returns>
         public static System.TimeSpan ByDateDifference(System.DateTime date1, System.DateTime date2)
         {
             return date1.Subtract(date2);
@@ -313,7 +315,7 @@ namespace DSCore
         /// <summary>
         ///     Multiplies a TimeSpan by a scaling factor
         /// </summary>
-        /// <param name="timeSpan">Time span to multiply</param>
+        /// <param name="timeSpan">TimeSpan to multiply</param>
         /// <param name="scaleFactor">
         /// Amount to scale the TimeSpan. For example, a scaling factor of 2 will yield
         /// double the amount of time spanned.
@@ -338,8 +340,8 @@ namespace DSCore
         ///     Adds two TimeSpans
         /// </summary>
         /// <param name="timeSpan1">TimeSpan to add</param>
-        /// <param name="timeSpan2">Other time span to add</param>
-        /// <returns name="timeSpan">Addition of two TimeSpans</returns>
+        /// <param name="timeSpan2">Other TimeSpan to add</param>
+        /// <returns name="timeSpan">Resulting TimeSpan from addition</returns>
         public static System.TimeSpan Add(System.TimeSpan timeSpan1, System.TimeSpan timeSpan2)
         {
             return timeSpan1.Add(timeSpan2);
@@ -348,9 +350,9 @@ namespace DSCore
         /// <summary>
         ///     Subtracts two TimeSpans
         /// </summary>
-        /// <param name="timeSpan1">Time span to substract from</param>
-        /// <param name="timeSpan2">Time span to substract</param>
-        /// <returns name="timeSpan">Time span difference</returns>
+        /// <param name="timeSpan1">TimeSpan to substract from</param>
+        /// <param name="timeSpan2">TimeSpan to substract</param>
+        /// <returns name="timeSpan">Resulting TimeSpan from subtraction</returns>
         public static System.TimeSpan Subtract(System.TimeSpan timeSpan1, System.TimeSpan timeSpan2)
         {
             return timeSpan1.Subtract(timeSpan2);
