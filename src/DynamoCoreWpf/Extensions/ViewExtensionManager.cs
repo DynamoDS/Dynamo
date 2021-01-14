@@ -154,7 +154,7 @@ namespace Dynamo.Wpf.Extensions
         /// <summary>
         /// Returns the collection of registered extensions implementing IExtensionStorageAccess
         /// </summary>
-        public IEnumerable<IExtensionStorageAccess> StorageAccessesViewExtensions
+        public IEnumerable<IExtensionStorageAccess> StorageAccessViewExtensions
         {
             get { return storageAccessViewExtensions; }
         }

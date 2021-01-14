@@ -9,14 +9,17 @@ namespace Dynamo.Extensions
         /// Extensions unique id.
         /// </summary>
         public string ExtensionGuid { get; private set; }
+
         /// <summary>
         /// Name of extension.
         /// </summary>
         public string Name { get; private set; }
+
         /// <summary>
         /// Extension version.
         /// </summary>
         public string Version { get; private set; }
+
         /// <summary>
         /// Extension specific data.
         /// </summary>

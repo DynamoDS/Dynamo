@@ -156,7 +156,7 @@ namespace Dynamo.Models
             if (WorkspaceSaving != null)
             {
                 WorkspaceSaving(workspace, saveContext);
-                HandleStorageExtensionsOnWorkspaceSaveing(workspace, saveContext);
+                HandleStorageExtensionsOnWorkspaceSaving(workspace, saveContext);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Dynamo.Models
         {
             if(WorkspaceOpened != null)
             {
-                WorkspaceOpened?.Invoke(workspace);
+                WorkspaceOpened.Invoke(workspace);
                 HandleStorageExtensionsOnWorkspaceOpened(workspace);
             }
         }
@@ -959,15 +959,15 @@ namespace Dynamo.Models
 
         private void HandleStorageExtensionsOnWorkspaceOpened(WorkspaceModel workspace)
         {
-            foreach (var extension in extensionManager.StorageAccessesExtensions)
+            foreach (var extension in extensionManager.StorageAccessExtensions)
             {
                 RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
             }
         }
 
-        private void HandleStorageExtensionsOnWorkspaceSaveing(WorkspaceModel workspace, SaveContext saveContext)
+        private void HandleStorageExtensionsOnWorkspaceSaving(WorkspaceModel workspace, SaveContext saveContext)
         {
-            foreach (var extension in extensionManager.StorageAccessesExtensions)
+            foreach (var extension in extensionManager.StorageAccessExtensions)
             {
                 RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
             }

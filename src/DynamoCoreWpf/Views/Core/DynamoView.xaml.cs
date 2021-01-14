@@ -215,7 +215,7 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            foreach (var extension in viewExtensionManager.StorageAccessesViewExtensions)
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
             }
@@ -223,7 +223,7 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
-            foreach (var extension in viewExtensionManager.StorageAccessesViewExtensions)
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
                 DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
             }

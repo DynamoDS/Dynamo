@@ -53,7 +53,7 @@ namespace Dynamo.Tests
         public void StorageExtensionIsAdded()
         {
             // Assert
-            Assert.IsTrue(extensionManager.StorageAccessesExtensions.Contains(storageExt.Object));
+            Assert.IsTrue(extensionManager.StorageAccessExtensions.Contains(storageExt.Object));
         }
 
 
@@ -75,29 +75,29 @@ namespace Dynamo.Tests
 
             extensionManager.Add(otherExtensionMock.Object);
 
-            var storageExtensionsBeforeRemove = extensionManager.StorageAccessesExtensions.Count();
+            var storageExtensionsBeforeRemove = extensionManager.StorageAccessExtensions.Count();
 
             // Act
             extensionManager.Remove(extensionMock.Object);
 
             // Assert
-            Assert.IsTrue(extensionManager.StorageAccessesExtensions.Count() != storageExtensionsBeforeRemove);
-            Assert.IsTrue(extensionManager.StorageAccessesExtensions.Contains(otherStorageExt.Object));
-            Assert.IsFalse(extensionManager.StorageAccessesExtensions.Contains(storageExt.Object));
+            Assert.IsTrue(extensionManager.StorageAccessExtensions.Count() != storageExtensionsBeforeRemove);
+            Assert.IsTrue(extensionManager.StorageAccessExtensions.Contains(otherStorageExt.Object));
+            Assert.IsFalse(extensionManager.StorageAccessExtensions.Contains(storageExt.Object));
         }
 
         [Test]
         public void CannotAddSameStorageExtensionTwice()
         {
             // Arrange
-            var storageExtensionBeforeAdd = extensionManager.StorageAccessesExtensions.Count();
+            var storageExtensionBeforeAdd = extensionManager.StorageAccessExtensions.Count();
 
             // Act
             model.ExtensionManager.Add(extensionMock.Object);
 
             // Assert
             Assert.AreEqual(1, storageExtensionBeforeAdd);      
-            Assert.AreEqual(1, extensionManager.StorageAccessesExtensions.Count());
+            Assert.AreEqual(1, extensionManager.StorageAccessExtensions.Count());
         }
 
         [Test]

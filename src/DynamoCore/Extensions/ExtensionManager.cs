@@ -170,7 +170,7 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Returns the collection of registered extensions implementing IExtensionStorageAccess
         /// </summary>
-        public IEnumerable<IExtensionStorageAccess> StorageAccessesExtensions
+        public IEnumerable<IExtensionStorageAccess> StorageAccessExtensions
         {
             get { return storageAccessExtensions; }
         }

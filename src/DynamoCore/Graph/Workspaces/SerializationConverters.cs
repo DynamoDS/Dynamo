@@ -461,6 +461,7 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+        internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
 
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
@@ -651,7 +652,7 @@ namespace Dynamo.Graph.Workspaces
                     loadedTraceData, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
-            };
+            }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
             ws.ExtensionData = GetExtensionData(serializer, obj);
@@ -661,7 +662,7 @@ namespace Dynamo.Graph.Workspaces
 
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
         {
-            if (!obj.TryGetValue("ExtensionWorkspaceData", StringComparison.OrdinalIgnoreCase, out JToken extensionData))
+            if (!obj.TryGetValue(EXTENSION_WORKSPACE_DATA, StringComparison.OrdinalIgnoreCase, out JToken extensionData))
                 return new List<ExtensionData>();
             if (!(extensionData is JArray array))
                 return new List<ExtensionData>();
@@ -682,7 +683,6 @@ namespace Dynamo.Graph.Workspaces
     public class WorkspaceWriteConverter : JsonConverter
     {
         private EngineController engine;
-        private const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
 
         public WorkspaceWriteConverter(EngineController engine = null)
         {
@@ -775,7 +775,7 @@ namespace Dynamo.Graph.Workspaces
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
 
             // ExtensionData
-            writer.WritePropertyName(EXTENSION_WORKSPACE_DATA);
+            writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
             serializer.Serialize(writer, ws.ExtensionData);
 
             if (engine != null)
