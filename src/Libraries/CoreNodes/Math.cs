@@ -394,7 +394,7 @@ namespace DSCore
         /// <summary>
         ///     Returns the first integer smaller than the number.
         /// </summary>
-        /// <param name="number">Number to round</param>
+        /// <param name="number">Number to round down</param>
         /// <returns name="int">First integer smaller than the number</returns>
         /// <search>round</search>
         public static long Floor(double number)
