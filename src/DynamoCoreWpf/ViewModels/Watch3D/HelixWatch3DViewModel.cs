@@ -1123,16 +1123,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetSelection(IEnumerable<Element3D> items, bool isSelected)
         {
-         
+            var postEffect = isSelected ? "border" : null;
             foreach (var element in items)
             {
                 AttachedProperties.SetShowSelected(element, isSelected);
+                (element as GeometryModel3D).PostEffects = postEffect;
             }
             SetDepthBiasBasedOnSelection(isSelected, items);
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
         {
+            var postEffect = isSelected ? "border" : null;
             foreach (var item in items)
             {
                 if (item is NodeModel node)
@@ -1149,6 +1151,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach (var model in geometryModels)
                     {
                         AttachedProperties.SetShowSelected(model, isSelected);
+                        (model as GeometryModel3D).PostEffects = postEffect;
                     }
 
                     SetDepthBiasBasedOnSelection(isSelected, geometryModels);
