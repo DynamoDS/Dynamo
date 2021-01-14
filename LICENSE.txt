@@ -2,7 +2,7 @@ Apache license 2.0
 
 ## Dynamo License
 
-Copyright 2013-2020 Autodesk
+Copyright 2013-2021 Autodesk
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
@@ -12,6 +12,11 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 
 ## Third Party Licenses ##
+
+### AngleSharp
+https://github.com/AngleSharp/AngleSharp
+https://github.com/AngleSharp/AngleSharp/blob/master/LICENSE
+	(MIT license)
 
 ### Avalon Edit
 http://avalonedit.net/
@@ -52,6 +57,11 @@ https://github.com/helix-toolkit/helix-toolkit
 https://github.com/helix-toolkit/helix-toolkit/blob/develop/LICENSE
   (MIT license)
 
+### HTMLSanitizer
+https://github.com/mganss/HtmlSanitizer
+https://github.com/mganss/HtmlSanitizer/blob/master/LICENSE.md
+	(MIT license)
+
 ### Immutable (System.Immutable)
 https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
   (MIT License)
@@ -59,6 +69,11 @@ https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
 ### Iron Python, Dynamic Language Runtime
 http://ironpython.net/
 http://opensource.org/licenses/apache2.0.php
+
+### ILMerge
+https://github.com/dotnet/ILMerge
+https://github.com/dotnet/ILMerge/blob/master/LICENSE
+  (MIT License)
 
 ### libiconv
 https://www.gnu.org/software/libiconv/
@@ -138,6 +153,26 @@ https://unlicense.org/
 ### StarMath
 https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
   (MIT license)
+
+### System.Buffers
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Memory
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Numerics.Vectors
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Runtime.CompilerServices.Unsafe
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
+
+### System.Text.Encoding.CodePages
+https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
+  (MIT License)
 
 ### Xceed Extended WPF Toolkit
 https://github.com/xceedsoftware/wpftoolkit/blob/master/license.md
