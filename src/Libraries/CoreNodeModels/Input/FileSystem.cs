@@ -92,7 +92,7 @@ namespace CoreNodeModels.Input
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("FilenameNodeDescription", typeof(Resources))]
+    [NodeDescription("FilePathDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
     [InPortTypes("UI Input")]

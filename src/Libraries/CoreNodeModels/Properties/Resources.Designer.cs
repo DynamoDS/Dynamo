@@ -476,7 +476,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a file on the system to get its filename..
+        ///   Looks up a localized string similar to Allows you to select a file on the system to get its file path..
         /// </summary>
         public static string FilePathDescription {
             get {
