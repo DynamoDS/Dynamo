@@ -813,8 +813,8 @@ namespace DSOffice
         ///     for example, the value in cell A1 will appear in the data list at [0,0].
         ///     This node requires Microsoft Excel to be installed.
         /// </summary>
-        /// <param name="file">File representing the Excel spreadsheet</param>
-        /// <param name="sheetName">Name of the spreadsheet containing data</param>
+        /// <param name="file">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
         /// <param name="readAsStrings">Toggle to read cells as strings</param>
         /// <param name="showExcel">Toggle to show excel's main window</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
@@ -854,8 +854,8 @@ namespace DSOffice
         ///     be written to cell A1. Null values and empty lists are written to Excel 
         ///     as empty cells. This node requires Microsoft Excel to be installed. 
         /// </summary>
-        /// <param name="filePath">File path to the Excel spreadsheet</param>
-        /// <param name="sheetName">Name of the spreadsheet to write data to</param>
+        /// <param name="filePath">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
         /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
         /// <param name="startColumn">
         ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
@@ -863,7 +863,7 @@ namespace DSOffice
         /// <param name="data">Data to write to the spreadsheet</param>
         /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
         /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
-        /// <returns name="data">Data written to the spreadsheet</returns>
+        /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
