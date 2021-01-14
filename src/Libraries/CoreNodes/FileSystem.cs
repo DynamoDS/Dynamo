@@ -99,7 +99,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="file">File object to copy</param>
         /// <param name="destinationPath">String representation of destination path</param>
-        /// <param name="overwrite">True if you want to overwrite existing files, false if you don't</param>
+        /// <param name="overwrite">Toggle to overwrite existing files</param>
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
         public static void CopyFile(FileInfo file, string destinationPath, bool overwrite = false)
         {
@@ -189,7 +189,7 @@ namespace DSCore.IO
         /// Returns the file name of a file path.
         /// </summary>
         /// <param name="path">Path to get the file name of</param>
-        /// <param name="withExtension">True to include extension in result, false to not include it</param>
+        /// <param name="withExtension">Toggle to include extension in result</param>
         /// <returns name="bool">File name from file path</returns>
         public static string FileName(string path, bool withExtension = true)
         {
@@ -234,7 +234,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="directory">Directory to copy</param>
         /// <param name="destinationPath">Destination of the copy operation on disk</param>
-        /// <param name="overwriteFiles">True if you want to overwrite existing directory, false if you don't</param>
+        /// <param name="overwriteFiles">Toggle to overwrite existing directory</param>
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
         public static void CopyDirectory(DirectoryInfo directory, string destinationPath, bool overwriteFiles = false)
         {
@@ -371,7 +371,7 @@ namespace DSCore.IO
         /// <summary>
         ///     Reads an image file and returns the color values at the specified grid locations.
         /// </summary>
-        /// <param name="image">Image object to get pixel colors</param>
+        /// <param name="image">Image object to get pixel colors from</param>
         /// <param name="xSamples">Number of sample grid points in the X direction.</param>
         /// <param name="ySamples">Number of sample grid points in the Y direction.</param>
         /// <returns name="colors">Colors at the specified grid points</returns>
