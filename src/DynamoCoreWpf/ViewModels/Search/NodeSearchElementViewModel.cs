@@ -318,13 +318,10 @@ namespace Dynamo.Wpf.ViewModels
         private void OnRepositionNode(object sender, EventArgs a)
         {
             var n = sender as NodeView;
-            //n.ViewModel.X -= n.ActualWidth / 2.0;
             var dynamoViewModel = n.ViewModel.DynamoViewModel;
 
             DynamoSelection.Instance.Selection.Add(n.ViewModel.NodeModel);
 
-            //dynamoViewModel.ExecuteCommand(new DynamoModel.DragSelectionCommand(new Point2D(n.ViewModel.X, n.ViewModel.Y), 
-            //    DynamoModel.DragSelectionCommand.Operation.BeginDrag));
             n.ViewModel.WorkspaceViewModel.BeginDragSelectionWithUndoRecorder(new Point2D(n.ViewModel.X, n.ViewModel.Y));
 
             dynamoViewModel.ExecuteCommand(new DynamoModel.DragSelectionCommand(
@@ -338,7 +335,6 @@ namespace Dynamo.Wpf.ViewModels
             {
                 undoRecorderGroup.Dispose();
                 undoRecorderGroup = null;
-
             }
             dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             n.RepositionNodeHandler -= OnRepositionNode;
