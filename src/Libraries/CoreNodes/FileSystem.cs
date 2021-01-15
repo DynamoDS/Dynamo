@@ -206,12 +206,12 @@ namespace DSCore.IO
             return Path.HasExtension(path);
         }
 
-        /// <summary>          
-        ///  Will return a list of files and directories that are contained within a given directory. An optional searchString can be used to filter the results.
+        /// <summary>
+        /// Will return a list of files and directories that are contained within a given directory. An optional searchString can be used to filter the results.
         /// </summary>
         /// <param name="directory">Directory to get contents of</param>
-        /// <param name="searchString">Search string used to filter results. Defaults to "*.*" (displays all contents).</param>
-        /// <param name="includeSubdirectories">Set to true to include files & folders in subdirectories (recursive) or set to false to include results from top-level of given directory only. Defaults to false.</param>
+        /// <param name="searchString">Search string used to filter results</param>
+        /// <param name="includeSubdirectories">Set to true to include files and folders in subdirectories (recursive) or set to false to include results from top-level of given directory only.</param>
         /// <returns name="files">Resulting files from query</returns>
         /// <returns name="directories">Resulting directories from query</returns>
         [MultiReturn("files", "directories")]
