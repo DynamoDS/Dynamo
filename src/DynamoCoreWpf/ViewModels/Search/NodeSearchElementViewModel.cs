@@ -12,6 +12,7 @@ using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using FontAwesome.WPF;
 using Microsoft.Practices.Prism.Commands;
@@ -306,7 +307,29 @@ namespace Dynamo.Wpf.ViewModels
             var nodeView = (NodeView) sender;
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
+            nodeView.RepositionNodeHandler += OnRepositionNode;
             dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
+
+            DynamoSelection.Instance.ClearSelection();
+
+            
+        }
+
+        private void OnRepositionNode(object sender, EventArgs a)
+        {
+            var n = sender as NodeView;
+            //n.ViewModel.X -= n.ActualWidth / 2.0;
+            var dynamoViewModel = n.ViewModel.DynamoViewModel;
+
+            DynamoSelection.Instance.Selection.Add(n.ViewModel.NodeModel);
+
+            //dynamoViewModel.ExecuteCommand(new DynamoModel.DragSelectionCommand(new Point2D(n.ViewModel.X, n.ViewModel.Y), 
+            //    DynamoModel.DragSelectionCommand.Operation.BeginDrag));
+            n.ViewModel.WorkspaceViewModel.BeginDragSelectionWithUndoRecorder(new Point2D(n.ViewModel.X, n.ViewModel.Y));
+
+            dynamoViewModel.ExecuteCommand(new DynamoModel.DragSelectionCommand(
+                new Point2D(n.ViewModel.X - n.ActualWidth / 2.0, n.ViewModel.Y),
+                DynamoModel.DragSelectionCommand.Operation.EndDrag));
 
             DynamoSelection.Instance.ClearSelection();
 
@@ -316,8 +339,9 @@ namespace Dynamo.Wpf.ViewModels
                 undoRecorderGroup.Dispose();
                 undoRecorderGroup = null;
 
-                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
             }
+            dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
+            n.RepositionNodeHandler -= OnRepositionNode;
         }
 
         public ICommand ClickedCommand { get; private set; }

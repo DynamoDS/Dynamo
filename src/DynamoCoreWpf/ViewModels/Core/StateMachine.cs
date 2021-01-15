@@ -134,6 +134,11 @@ namespace Dynamo.ViewModels
             // before they get updated by the drag operation.
             // 
             RecordSelectionForUndo();
+            BeginDragSelectionWithUndoRecorder(mouseCursor);
+        }
+
+        internal void BeginDragSelectionWithUndoRecorder(Point2D mouseCursor)
+        {
             draggedNodes.Clear();
             foreach (ISelectable selectable in DynamoSelection.Instance.Selection)
             {
