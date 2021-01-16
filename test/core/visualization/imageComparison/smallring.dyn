@@ -1,0 +1,874 @@
+{
+  "Uuid": "0df99573-c03d-472a-ada4-ad767d483df2",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "smallring",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "11a9dcc8327e408b97bad102f7c616f0",
+      "Name": "Bottom Diameter",
+      "Type": "number",
+      "Value": "2.25",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "367289586c5940ee87c54c4584cc5683",
+      "Name": "Receptacle Height",
+      "Type": "number",
+      "Value": "2.5",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "991ada68b24a4ee982fbd17140c0c37d",
+      "Name": "Receptacle Wall Thickness",
+      "Type": "number",
+      "Value": "0.02",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "Id": "0a0f8697ccd34ff6956879ea51097ad9",
+      "Name": "Top Band Height",
+      "Type": "number",
+      "Value": "0.06",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "NumberType": "Double",
+      "Description": "A slider that produces numeric values."
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.25,
+      "Id": "11a9dcc8327e408b97bad102f7c616f0",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9d5c582f77ae4dc2a5d3c0df55e269d5",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "/@var[]..[],var[]..[]",
+      "Id": "bc1892426e43483e91dd644e6518c5fb",
+      "Inputs": [
+        {
+          "Id": "e6462b5a01f84b09962883bfd3b00f9b",
+          "Name": "x",
+          "Description": "x value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "74c640629751475c9e18e12f5a4f8973",
+          "Name": "y",
+          "Description": "y value.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "5a6f50ea11a541f78f81e89c4d7031ef",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Divides x by y.\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "2;",
+      "Id": "52d8ff2182f347d1990ee6ddcd0f2f89",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "903aedd379f44b50a417c3949ec9e810",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 2.5,
+      "Id": "367289586c5940ee87c54c4584cc5683",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "73bcc4a7dd7a4284852e26f3cdad94c4",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 0.02,
+      "Id": "991ada68b24a4ee982fbd17140c0c37d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "48d924de5b894b41a036602a7f2ad81b",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
+      "Id": "badcf692bf284856ac27ae1a20786315",
+      "Inputs": [
+        {
+          "Id": "7489cf0147dc42eba49542a9ad0553f7",
+          "Name": "geometry",
+          "Description": "Autodesk.DesignScript.Geometry.Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9451e8fe24e44a82a2da74c806a7db79",
+          "Name": "xTranslation",
+          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2650b370caae42689c3b415a8d5ed219",
+          "Name": "yTranslation",
+          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f5c650ebc0f3462fb9910c0a6f9d963e",
+          "Name": "zTranslation",
+          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "57dbc43ff6e7439cac7480765175aee1",
+          "Name": "Geometry",
+          "Description": "Transformed Geometry.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "c76da7e62b834a3a8f70c211c80c4d66",
+      "Inputs": [
+        {
+          "Id": "adde120d2f414adcab735f1b3ca7a80e",
+          "Name": "curve",
+          "Description": "Autodesk.DesignScript.Geometry.Curve",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0849ab93a33d4175b1ee554784f86fcf",
+          "Name": "direction",
+          "Description": "Vector to extrude along\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cef09d44a1e8498aa95a3cbd6b277076",
+          "Name": "distance",
+          "Description": "Distance to extrude\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e103e858913c4249bab507adecfad17d",
+          "Name": "Surface",
+          "Description": "The extruded Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Extrudes a Curve in the specified direction, by the specified distance\n\nCurve.Extrude (direction: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1), distance: double = 1): Surface"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 10.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 0.06,
+      "Id": "0a0f8697ccd34ff6956879ea51097ad9",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6e39031a78774483b0645d4e96d2b593",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Thicken@double,bool",
+      "Id": "4241c0cdb2c34d1c8f42aaaf8530bd3d",
+      "Inputs": [
+        {
+          "Id": "cd0180e617f04874b3c88a2ecf2f515a",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "81cf3c496b0a493bbc11cb086fc8efdf",
+          "Name": "thickness",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "085ca50aa59f4c95bceec0355a909d13",
+          "Name": "both_sides",
+          "Description": "bool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b2fcf378677246a78f9c6542fd637531",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Thicken Surface into a Solid, extruding in the direction of Surface normals. If both_sides parameter is true, surface is thickened on both sides.\n\nSurface.Thicken (thickness: double = 1, both_sides: bool = true): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "false;",
+      "Id": "5ce56efbc81f4523b41f2c2ae5e63e08",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "441c1f5fd9df46a2ad5e3fdf30cf5b88",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "-x;",
+      "Id": "fd98d25c97c54487ab8515c0f92d774f",
+      "Inputs": [
+        {
+          "Id": "42f987ae97a94810b70b79fac1bfda87",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b962f117d5d1470d84932d55221aeaeb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Id": "0bf017e28bc04a218c49ff92a2e10cee",
+      "Inputs": [
+        {
+          "Id": "1db50395b1cd459d8ce683646d16c53d",
+          "Name": "centerPoint",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0d6b96f2cba6453e8c057bbb55e9a221",
+          "Name": "radius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "de4a3de571d245e4b211e53e00ce2a4f",
+          "Name": "Circle",
+          "Description": "Circle",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Thicken@double,bool",
+      "Id": "c5894ecb3983407a9077f8c7812e8f92",
+      "Inputs": [
+        {
+          "Id": "3485714ec11146c0b5b1856febdb76ad",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "74ef9756147e479aa5072055af16e2ab",
+          "Name": "thickness",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cac775c6523a443ea6686382f76b94fb",
+          "Name": "both_sides",
+          "Description": "bool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0eff3d2e6bde4b87902190f7a58c8a29",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Thicken Surface into a Solid, extruding in the direction of Surface normals. If both_sides parameter is true, surface is thickened on both sides.\n\nSurface.Thicken (thickness: double = 1, both_sides: bool = true): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Thicken@double,bool",
+      "Id": "a45d71130cd04b1f8d27eea602543ca2",
+      "Inputs": [
+        {
+          "Id": "9d6a02a739e84317aa6cec3f75be4432",
+          "Name": "surface",
+          "Description": "Autodesk.DesignScript.Geometry.Surface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f5cd8c42842d42dd8d93a183008f8f2c",
+          "Name": "thickness",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4813151bf12a43c091894584e14c153e",
+          "Name": "both_sides",
+          "Description": "bool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "f55771d205f04825aff2594a752d03dc",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Thicken Surface into a Solid, extruding in the direction of Surface normals. If both_sides parameter is true, surface is thickened on both sides.\n\nSurface.Thicken (thickness: double = 1, both_sides: bool = true): Solid"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "9d5c582f77ae4dc2a5d3c0df55e269d5",
+      "End": "e6462b5a01f84b09962883bfd3b00f9b",
+      "Id": "326ac492577c4731b90d6909ac67f55e"
+    },
+    {
+      "Start": "5a6f50ea11a541f78f81e89c4d7031ef",
+      "End": "0d6b96f2cba6453e8c057bbb55e9a221",
+      "Id": "a7791cfe974a4cb99fffb1f50e4916c7"
+    },
+    {
+      "Start": "903aedd379f44b50a417c3949ec9e810",
+      "End": "74c640629751475c9e18e12f5a4f8973",
+      "Id": "09a1bd29f2954e8a89ce26ee6d6a58c1"
+    },
+    {
+      "Start": "73bcc4a7dd7a4284852e26f3cdad94c4",
+      "End": "f5c650ebc0f3462fb9910c0a6f9d963e",
+      "Id": "f2d6a13c84264046b41df65bcdf9c11f"
+    },
+    {
+      "Start": "48d924de5b894b41a036602a7f2ad81b",
+      "End": "42f987ae97a94810b70b79fac1bfda87",
+      "Id": "7467229314b54b99b3f0388dfb39458c"
+    },
+    {
+      "Start": "57dbc43ff6e7439cac7480765175aee1",
+      "End": "adde120d2f414adcab735f1b3ca7a80e",
+      "Id": "5f4c00f127534a1ebf059620e6914f0a"
+    },
+    {
+      "Start": "e103e858913c4249bab507adecfad17d",
+      "End": "cd0180e617f04874b3c88a2ecf2f515a",
+      "Id": "aed0ed5586f74b60b14b7ace748b61c0"
+    },
+    {
+      "Start": "e103e858913c4249bab507adecfad17d",
+      "End": "3485714ec11146c0b5b1856febdb76ad",
+      "Id": "8f286e049f2446b7b7330c48292ed0c4"
+    },
+    {
+      "Start": "e103e858913c4249bab507adecfad17d",
+      "End": "9d6a02a739e84317aa6cec3f75be4432",
+      "Id": "b44dc2f3c0174d6085f504e1dc347e38"
+    },
+    {
+      "Start": "6e39031a78774483b0645d4e96d2b593",
+      "End": "cef09d44a1e8498aa95a3cbd6b277076",
+      "Id": "f4dbf18e5dff41dca40184bb5d984d5d"
+    },
+    {
+      "Start": "441c1f5fd9df46a2ad5e3fdf30cf5b88",
+      "End": "085ca50aa59f4c95bceec0355a909d13",
+      "Id": "3448ac0158c94597b2148cce6eecbc50"
+    },
+    {
+      "Start": "441c1f5fd9df46a2ad5e3fdf30cf5b88",
+      "End": "cac775c6523a443ea6686382f76b94fb",
+      "Id": "334da51453d14cbaab5e35419e131351"
+    },
+    {
+      "Start": "441c1f5fd9df46a2ad5e3fdf30cf5b88",
+      "End": "4813151bf12a43c091894584e14c153e",
+      "Id": "f8fa52e5394f4851a12f0369415bf15d"
+    },
+    {
+      "Start": "b962f117d5d1470d84932d55221aeaeb",
+      "End": "74ef9756147e479aa5072055af16e2ab",
+      "Id": "59d460d6b8f445d19b6c6369cd5382c9"
+    },
+    {
+      "Start": "b962f117d5d1470d84932d55221aeaeb",
+      "End": "81cf3c496b0a493bbc11cb086fc8efdf",
+      "Id": "7718729c71024102908a70e34a5e4cf9"
+    },
+    {
+      "Start": "b962f117d5d1470d84932d55221aeaeb",
+      "End": "f5cd8c42842d42dd8d93a183008f8f2c",
+      "Id": "2be1792fbc1f4ef387018cf536eb76eb"
+    },
+    {
+      "Start": "de4a3de571d245e4b211e53e00ce2a4f",
+      "End": "7489cf0147dc42eba49542a9ad0553f7",
+      "Id": "58aa3ee25425407fb4aaa1996711759c"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.0.3775",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 0.218263640999794,
+      "EyeY": 2.5945713520050049,
+      "EyeZ": -1.2073663473129272,
+      "LookX": -0.0986027866601944,
+      "LookY": -0.64179706573486328,
+      "LookZ": 1.3774043321609497,
+      "UpX": -0.0155143728479743,
+      "UpY": 0.97611486911773682,
+      "UpZ": 0.21670036017894745
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Bottom Diameter",
+        "Id": "11a9dcc8327e408b97bad102f7c616f0",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -14.508860152717773,
+        "Y": 591.832073204388
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "/",
+        "Id": "bc1892426e43483e91dd644e6518c5fb",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 536.9931311748428,
+        "Y": 690.49476790681763
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "52d8ff2182f347d1990ee6ddcd0f2f89",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 537.35345534050407,
+        "Y": 796.9870096651797
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Receptacle Height",
+        "Id": "367289586c5940ee87c54c4584cc5683",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -13.593801670704579,
+        "Y": 668.25254009480773
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Receptacle Wall Thickness",
+        "Id": "991ada68b24a4ee982fbd17140c0c37d",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -14.930061180893915,
+        "Y": 746.67108324795288
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Geometry.Translate",
+        "Id": "badcf692bf284856ac27ae1a20786315",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1156.6406161632451,
+        "Y": 691.98660850638987
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Curve.Extrude",
+        "Id": "c76da7e62b834a3a8f70c211c80c4d66",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1547.8086714994884,
+        "Y": 713.74833048886683
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Top Band Height",
+        "Id": "0a0f8697ccd34ff6956879ea51097ad9",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -10.515684478775313,
+        "Y": 859.57191785212751
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SelectNode",
+        "Id": "4241c0cdb2c34d1c8f42aaaf8530bd3d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1897.02201067949,
+        "Y": 694.537145406329
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "5ce56efbc81f4523b41f2c2ae5e63e08",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1850.9754104782892,
+        "Y": 853.19060298663192
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Code Block",
+        "Id": "fd98d25c97c54487ab8515c0f92d774f",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1852.2498745119506,
+        "Y": 936.94346941818719
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Circle.ByCenterPointRadius",
+        "Id": "0bf017e28bc04a218c49ff92a2e10cee",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 823.344121428227,
+        "Y": 675.26838457442216
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SelectNode2",
+        "Id": "c5894ecb3983407a9077f8c7812e8f92",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1899.21623946475,
+        "Y": 1016.40094162739
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "SelectNode3",
+        "Id": "a45d71130cd04b1f8d27eea602543ca2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1898.56672150895,
+        "Y": 1151.03932098318
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "6d56d284f5e74251a692e494695608d1",
+        "Title": "convert to radius",
+        "Nodes": [
+          "bc1892426e43483e91dd644e6518c5fb"
+        ],
+        "Left": 526.9931311748428,
+        "Top": 594.49476790681763,
+        "Width": 189.0,
+        "Height": 215.0,
+        "FontSize": 36.0,
+        "InitialTop": 690.49476790681763,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 86.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "b3b2bb2defb949fd905e75d361268499",
+        "Title": "move bottom curve up to top",
+        "Nodes": [
+          "badcf692bf284856ac27ae1a20786315"
+        ],
+        "Left": 1146.6406161632451,
+        "Top": 595.98660850638987,
+        "Width": 270.0,
+        "Height": 267.0,
+        "FontSize": 36.0,
+        "InitialTop": 691.98660850638987,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 86.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "eb93a5575420477582daec937cc2edd7",
+        "Title": "initial top band wall",
+        "Nodes": [
+          "c76da7e62b834a3a8f70c211c80c4d66"
+        ],
+        "Left": 1537.8086714994884,
+        "Top": 617.74833048886683,
+        "Width": 236.0,
+        "Height": 241.0,
+        "FontSize": 36.0,
+        "InitialTop": 713.74833048886683,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 86.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "6408302bd7da484d898f2a3b974d6038",
+        "Title": "thicken top band",
+        "Nodes": [
+          "4241c0cdb2c34d1c8f42aaaf8530bd3d"
+        ],
+        "Left": 1887.02201067949,
+        "Top": 598.537145406329,
+        "Width": 229.0,
+        "Height": 241.0,
+        "FontSize": 36.0,
+        "InitialTop": 694.537145406329,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 86.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -780.95182149179959,
+    "Y": -189.90359300683872,
+    "Zoom": 0.61285918455925048
+  }
+}
