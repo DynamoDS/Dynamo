@@ -17,6 +17,7 @@ namespace Dynamo.Tests
             libraries.Add("DSOffice.dll");
             libraries.Add("FunctionObject.ds");
             libraries.Add("BuiltIn.ds");
+            libraries.Add("FFITarget.dll");
             base.GetLibrariesToPreload(libraries);
         }
 

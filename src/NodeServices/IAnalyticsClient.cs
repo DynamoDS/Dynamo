@@ -81,6 +81,11 @@ namespace Dynamo.Logging
         /// Events Category related to View Extensions operations
         /// </summary>
         ViewExtensionOperations,
+
+        /// <summary>
+        /// Events Category related to package manager operations
+        /// </summary>
+        PackageManagerOperations,
     }
 
     /// <summary>
@@ -199,7 +204,7 @@ namespace Dynamo.Logging
         Run,
 
         /// <summary>
-        /// Load event, such as extensions loaded
+        /// Load event, such as extensions loaded, package loaded
         /// </summary>
         Load,
 
