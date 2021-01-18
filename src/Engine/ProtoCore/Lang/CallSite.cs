@@ -1528,6 +1528,29 @@ namespace ProtoCore
             return ret;
         }
 
+        public StackValue DispatchDispose(
+           Context context,
+           StackValue stackValue, RuntimeCore runtimeCore)
+        {
+
+            // if the last dispatched callsite is this callsite then we are repeatedly making calls
+            // to this same callsite (for example replicating over an outer function that contains this callsite)
+            // and should not reset the invoke count.
+            if (runtimeCore.LastDispatchedCallSite != this)
+            {
+                UpdateCallsiteExecutionState(null, runtimeCore);
+            }
+            runtimeCore.LastDispatchedCallSite = this;
+
+            FunctionGroup funcGroup = FirstFunctionGroupInInheritanceChain(runtimeCore, classScope);
+            var arguments = new List<StackValue>{stackValue};
+            var finalFep = funcGroup.FunctionEndPoints[0];
+
+            //EXECUTE
+            StackValue ret = finalFep.Execute(context, arguments, null, runtimeCore);
+
+            return ret;
+        }
 
         private StackValue Execute(
             List<FunctionEndPoint> functionEndPoint,
