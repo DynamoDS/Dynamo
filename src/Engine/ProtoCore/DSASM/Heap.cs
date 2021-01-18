@@ -620,18 +620,14 @@ namespace ProtoCore.DSASM
 
             if (pn != null)
             {
-                // TODO Jun/Jiong: Use build pointer utilities 
-                exe.rmem.Push(StackValue.BuildArrayDimension(0));
-                exe.rmem.Push(StackValue.BuildPointer(svPtr.Pointer, svPtr.metaData));
-                exe.rmem.Push(StackValue.BuildInt(1));
-                
                 ++exe.RuntimeCore.FunctionCallDepth;
 
                 // TODO: Need to move IsExplicitCall to DebugProps and come up with a more elegant solution for this
                 // fix for IDE-963 - pratapa
                 bool explicitCall = exe.IsExplicitCall;
                 bool tempFlag = explicitCall;
-                exe.Callr(pn.RuntimeIndex, pn.ID, classIndex, ref explicitCall);
+                //exe.Callr(pn.RuntimeIndex, pn.ID, classIndex, ref explicitCall);
+                exe.CallDipose(pn, svPtr, classIndex, ref explicitCall);
 
                 exe.IsExplicitCall = tempFlag;
 
