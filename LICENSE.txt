@@ -16,7 +16,7 @@ Unless required by applicable law or agreed to in writing, software distributed 
 ### AngleSharp
 https://github.com/AngleSharp/AngleSharp
 https://github.com/AngleSharp/AngleSharp/blob/master/LICENSE
-	(MIT license)
+  (MIT license)
 
 ### Avalon Edit
 http://avalonedit.net/
@@ -60,7 +60,7 @@ https://github.com/helix-toolkit/helix-toolkit/blob/develop/LICENSE
 ### HTMLSanitizer
 https://github.com/mganss/HtmlSanitizer
 https://github.com/mganss/HtmlSanitizer/blob/master/LICENSE.md
-	(MIT license)
+  (MIT license)
 
 ### Immutable (System.Immutable)
 https://github.com/dotnet/corefx/blob/master/LICENSE.TXT
