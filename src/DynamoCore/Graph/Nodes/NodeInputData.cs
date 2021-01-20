@@ -85,6 +85,12 @@ namespace Dynamo.Graph.Nodes
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
 
+        /// <summary>
+        /// The index of the selected index.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public int SelectedIndex { get; set; }
+
         private static Dictionary<Type, NodeInputTypes> dotNetTypeToNodeInputType = new Dictionary<Type, NodeInputTypes>
         {
             {typeof(String),NodeInputTypes.stringInput},

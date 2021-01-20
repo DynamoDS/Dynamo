@@ -78,7 +78,8 @@ namespace CoreNodeModels
                     Name = this.Name,
                     Type = NodeInputTypes.itemSelection,
                     Description = this.Description,
-                    Value = this.SelectedString
+                    Value = this.SelectedString,
+                    SelectedIndex = this.SelectedIndex
                 };
             }
         }
