@@ -125,71 +125,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
                         StencilRef = 1
                     },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshXRayP1)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshWireframe,
-                            DefaultPSShaderDescriptions.PSDepthStencilOnly
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.NoBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayP1,
-                    },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshXRayP2)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshDefault,
-                            DefaultPSShaderDescriptions.PSEffectMeshXRay
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.BSOverlayBlending,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayP2,
-                        StencilRef = 1
-                    },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshXRayGridP1)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshWireframe,
-                            DefaultPSShaderDescriptions.PSDepthStencilOnly
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.NoBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayGridP1,
-                        StencilRef = 1
-                    },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshXRayGridP2)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshWireframe,
-                            DefaultPSShaderDescriptions.PSDepthStencilOnly
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.NoBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayGridP2,
-                        StencilRef = 1
-                    },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshXRayGridP3)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshDefault,
-                            DefaultPSShaderDescriptions.PSEffectXRayGrid
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayGridP3,
-                        StencilRef = 1
-                    },
-                    new ShaderPassDescription(DefaultPassNames.EffectMeshDiffuseXRayGridP3)
-                    {
-                        ShaderList = new[]
-                        {
-                            DefaultVSShaderDescriptions.VSMeshDefault,
-                            DefaultPSShaderDescriptions.PSEffectDiffuseXRayGrid
-                        },
-                        BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
-                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSEffectMeshXRayGridP3,
-                        StencilRef = 1
-                    },
                 }
             };
             AddTechnique(dynamoCustomMeshTech);
@@ -211,7 +146,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
-                    }
+                    },
+                    new ShaderPassDescription(DefaultPassNames.EffectOutlineP1)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSPoint,
+                            DefaultGSShaderDescriptions.GSPoint,
+                            DefaultPSShaderDescriptions.PSMeshOutlineQuadStencil
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSSourceAlways,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
+                        StencilRef = 1
+                    },
                 }
             };
             AddTechnique(dynamoCustomPointTech);
@@ -233,7 +180,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
-                    }
+                    },
+                    new ShaderPassDescription(DefaultPassNames.EffectOutlineP1)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSPoint,
+                            DefaultGSShaderDescriptions.GSLine,
+                            DefaultPSShaderDescriptions.PSMeshOutlineQuadStencil
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSSourceAlways,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
+                        StencilRef = 1
+                    },
                 }
             };
             AddTechnique(dynamoCustomLineTech);

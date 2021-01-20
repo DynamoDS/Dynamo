@@ -1300,12 +1300,6 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sharpdx_direct3d11_effects_x64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="sharpdx_direct3d11_effects_x86.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="UI\Images\undock_hover.png" />
     <Resource Include="UI\Images\undock_normal.png" />
     <None Include="ViewModels\Watch3D\shaderSource\helix_shader_defs\COMMON\Common.hlsl" />
