@@ -281,6 +281,12 @@ namespace Dynamo.UI.Controls
             var watchTree = largeContentGrid.Children[0] as WatchTree;
             var rootDataContext = watchTree.DataContext as WatchViewModel;
 
+            watchTree.Width = Double.NaN;
+            watchTree.Height = Double.NaN;
+
+            var thumbElement = watchTree.ChildrenOfType<Thumb>().Where(x => x.Name.ToString() == "resizeThumb").FirstOrDefault();
+            thumbElement.Visibility = Visibility.Hidden;
+
             // Unbind the view from data context, then clear the data context.
             BindingOperations.ClearAllBindings(watchTree.treeView1);
             BindingOperations.ClearAllBindings(watchTree.ListLevelsDisplay);
@@ -402,9 +408,16 @@ namespace Dynamo.UI.Controls
                     }
 
                     var watchTree = largeContentGrid.Children[0] as WatchTree;
+
+                    watchTree.Width = Double.NaN;
+                    watchTree.Height = Double.NaN;
+
+                    var resizeThumbElement = watchTree.ChildrenOfType<Thumb>().Where(x => x.Name.ToString() == "resizeThumb").FirstOrDefault();
+                    if(resizeThumbElement != null) resizeThumbElement.Visibility = Visibility.Hidden;
+
                     if (watchTree != null)
                     {
-                        var rootDataContext = watchTree.DataContext as WatchViewModel;
+                        var rootDataContext = watchTree.DataContext as WatchViewModel; 
 
                         cachedLargeContent = newViewModel;
 
@@ -413,6 +426,7 @@ namespace Dynamo.UI.Controls
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
+
                             rootDataContext.CountNumberOfItems(); //count the total number of items in the list
                             if (!rootDataContext.IsOneRowContent)
                             {
@@ -646,6 +660,14 @@ namespace Dynamo.UI.Controls
 
         private void RefreshExpandedDisplayAction()
         {
+            var watchTree = largeContentGrid.Children[0] as WatchTree;
+
+            watchTree.Width = Double.NaN;
+            watchTree.Height = Double.NaN;
+
+            var resizeThumbElement = watchTree.ChildrenOfType<Thumb>().Where(x => x.Name.ToString() == "resizeThumb").FirstOrDefault();
+            if (resizeThumbElement != null) resizeThumbElement.Visibility = Visibility.Hidden;
+
             smallContentGrid.Visibility = Visibility.Collapsed;
             largeContentGrid.Visibility = Visibility.Visible;
 
