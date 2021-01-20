@@ -50,6 +50,7 @@ namespace Dynamo.Graph.Workspaces
             // Run layout algorithm for each subgraph
             layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
             AvoidSubgraphOverlap(layoutSubgraphs);
+
             if (isNodeAutoComplete)
             {
                 SaveLayoutGraphForNodeAutoComplete(workspace, layoutSubgraphs, originalNodeGUID);
@@ -448,17 +449,10 @@ namespace Dynamo.Graph.Workspaces
         }
         /// <summary>
         /// This method pushes changes from the GraphLayout.Graph objects
-        /// back to the workspace models.
+        /// back to the workspace models, but only for nodes placed by NodeAutocomplete.
         /// </summary>
         private static void SaveLayoutGraphForNodeAutoComplete(this WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
         {
-            var originalNode = workspace.Nodes.FirstOrDefault(n => n.GUID == originalNodeGUID);
-            GraphLayout.Graph originalNodegraph = layoutSubgraphs
-                    .FirstOrDefault(g => g.FindNode(originalNode.GUID) != null);
-            GraphLayout.Node ogn = originalNodegraph.FindNode(originalNode.GUID);
-            double marginX = originalNode.X - ogn.X;
-            double marginY = originalNode.Y - ogn.Y;
-
             // Assign coordinates to nodes outside groups
             foreach (var node in workspace.Nodes)
             {
@@ -469,6 +463,7 @@ namespace Dynamo.Graph.Workspaces
                 {
                     GraphLayout.Node n = graph.FindNode(node.GUID);
                     double offsetY = graph.OffsetY;
+                    //skipping the original node to avoid jumping of node
                     if (node.GUID != originalNodeGUID )
                     {
                             node.X = n.X;
