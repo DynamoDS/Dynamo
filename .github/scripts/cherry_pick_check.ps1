@@ -1,6 +1,7 @@
 param([string]$commitMessage)
 
 #Looks for the cherry-pick command on the commit message
+#Format: Cherry-pick to: 'target-branch'
 $commitData = $commitMessage | Select-String -Pattern "Cherry-pick to:\s?'*'"
 
 #Extracts the branch name
