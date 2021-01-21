@@ -31,6 +31,8 @@ namespace Dynamo.Controls
             resizeThumb.Visibility = Visibility.Visible;
             this.Width = 200;
             this.Height = 200;
+            inputGrid.MinHeight = 100;
+            inputGrid.MinWidth = 100;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

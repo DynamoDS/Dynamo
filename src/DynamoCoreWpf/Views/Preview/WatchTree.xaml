@@ -240,7 +240,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Name ="inputGrid" MinHeight="100" MinWidth="100">
+    <Grid Name ="inputGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height ="*" />
             <RowDefinition Height="Auto" />
