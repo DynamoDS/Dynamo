@@ -176,6 +176,7 @@
     <Compile Include="Search\SearchElements\SearchElementBaseTest.cs" />
     <Compile Include="Search\SearchLibraryTest.cs" />
     <Compile Include="SerializationTests.cs" />
+    <Compile Include="StorageExtensionTests.cs" />
     <Compile Include="TestZeroTouchClass.cs" />
     <Compile Include="TypedParametersToStringTests.cs" />
     <Compile Include="CodeBlockNodeTests.cs" />
