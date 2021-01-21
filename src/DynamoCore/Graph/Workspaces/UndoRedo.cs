@@ -465,7 +465,7 @@ namespace Dynamo.Graph.Workspaces
             {
                 NodeModel nodeModel = NodeFactory.CreateNodeFromXml(modelData, SaveContext.Undo, ElementResolver);
 
-                AddNode(nodeModel);
+                AddAndRegisterNode(nodeModel);
 
                 //check whether this node belongs to a group
                 foreach (var annotation in Annotations)
