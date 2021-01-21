@@ -402,10 +402,9 @@ namespace Dynamo.UI.Controls
                     }
 
                     var watchTree = largeContentGrid.Children[0] as WatchTree;
-
                     if (watchTree != null)
                     {
-                        var rootDataContext = watchTree.DataContext as WatchViewModel; 
+                        var rootDataContext = watchTree.DataContext as WatchViewModel;
 
                         cachedLargeContent = newViewModel;
 
@@ -414,7 +413,6 @@ namespace Dynamo.UI.Controls
                             rootDataContext.IsOneRowContent = cachedLargeContent.Children.Count == 0;
                             rootDataContext.Children.Clear();
                             rootDataContext.Children.Add(cachedLargeContent);
-
                             rootDataContext.CountNumberOfItems(); //count the total number of items in the list
                             if (!rootDataContext.IsOneRowContent)
                             {
