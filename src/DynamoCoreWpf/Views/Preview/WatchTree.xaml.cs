@@ -26,6 +26,13 @@ namespace Dynamo.Controls
             _vm = this.DataContext as WatchViewModel;
         }
 
+        internal void SetWatchNodeProperties() 
+        {
+            resizeThumb.Visibility = Visibility.Visible;
+            this.Width = 200;
+            this.Height = 200;
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             //find the element which was clicked

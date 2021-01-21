@@ -7,8 +7,6 @@
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             Width="300"
-             Height="300"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
              BorderBrush="Black">
@@ -392,7 +390,7 @@
                HorizontalAlignment="Right"
                Margin="5"
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-               Visibility="{Binding IsResizable, Converter={StaticResource BoolToVisibilityCollapsedConverter}}"/>
+               Visibility="Hidden"/>
           </Grid>
         </Border>
     </Grid>

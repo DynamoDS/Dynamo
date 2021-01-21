@@ -40,6 +40,8 @@ namespace CoreNodeModelsWpf.Nodes
 
             var watchTree = new WatchTree();
 
+            watchTree.SetWatchNodeProperties();
+
             // make empty watchViewModel
             rootWatchViewModel = new WatchViewModel(dynamoViewModel.BackgroundPreviewViewModel.AddLabelForPath);
 
