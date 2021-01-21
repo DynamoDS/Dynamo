@@ -359,7 +359,7 @@ namespace Dynamo.Core
             // 
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
-            using ((undoClient as WorkspaceModel).BeginDelayedGraphExecution())
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             {
                 // In undo scenario, user actions are undone in the reversed order 
                 // that they were done (due to inter-dependencies among components).
