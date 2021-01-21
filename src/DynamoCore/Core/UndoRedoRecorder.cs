@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Core
 {
@@ -358,45 +359,48 @@ namespace Dynamo.Core
             // 
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
-            // In undo scenario, user actions are undone in the reversed order 
-            // that they were done (due to inter-dependencies among components).
-            // 
-            for (int index = actions.Count - 1; index >= 0; index--)
+            using ((undoClient as WorkspaceModel).BeginDelayedGraphExecution())
             {
-                var element = actions[index] as XmlElement;
-
-                XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
-
-                switch (modelActionType)
+                // In undo scenario, user actions are undone in the reversed order 
+                // that they were done (due to inter-dependencies among components).
+                // 
+                for (int index = actions.Count - 1; index >= 0; index--)
                 {
-                    // Before undo takes place (to delete the model), the most 
-                    // up-to-date model is retrieved and serialized into the 
-                    // redo action group so that it can properly be redone later.
-                    case UserAction.Creation:
+                    var element = actions[index] as XmlElement;
 
-                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                        if (toBeDeleted != null)
-                        {
-                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                            undoClient.DeleteModel(element);
-                        }
-                        break;
+                    XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
+                    var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
 
-                    case UserAction.Modification:
-                        ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                        if (toBeUpdated != null)
-                        {
+                    switch (modelActionType)
+                    {
+                        // Before undo takes place (to delete the model), the most 
+                        // up-to-date model is retrieved and serialized into the 
+                        // redo action group so that it can properly be redone later.
+                        case UserAction.Creation:
 
-                            RecordActionInternal(newGroup, toBeUpdated, modelActionType);
-                            undoClient.ReloadModel(element);
-                        }
-                        break;
+                            ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                            if (toBeDeleted != null)
+                            {
+                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                                undoClient.DeleteModel(element);
+                            }
+                            break;
 
-                    case UserAction.Deletion:
-                        newGroup.AppendChild(element);
-                        undoClient.CreateModel(element);
-                        break;
+                        case UserAction.Modification:
+                            ModelBase toBeUpdated = undoClient.GetModelForElement(element);
+                            if (toBeUpdated != null)
+                            {
+
+                                RecordActionInternal(newGroup, toBeUpdated, modelActionType);
+                                undoClient.ReloadModel(element);
+                            }
+                            break;
+
+                        case UserAction.Deletion:
+                            newGroup.AppendChild(element);
+                            undoClient.CreateModel(element);
+                            break;
+                    }
                 }
             }
 

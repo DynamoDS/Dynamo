@@ -2096,5 +2096,13 @@ namespace Dynamo.Graph.Workspaces
 
             return deterministicGuid;
         }
+
+        /// <summary>
+        ///     Returns a DelayedGraphExecution object.
+        /// </summary>
+        internal DelayedGraphExecution BeginDelayedGraphExecution()
+        {
+            return new DelayedGraphExecution(this);
+        }
     }
 }

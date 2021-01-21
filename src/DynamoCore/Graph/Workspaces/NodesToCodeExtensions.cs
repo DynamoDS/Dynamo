@@ -1,4 +1,5 @@
-﻿using Dynamo.Engine;
+﻿using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -28,102 +29,105 @@ namespace Dynamo.Graph.Workspaces
             //UndoRedo Action Group----------------------------------------------
             NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
 
-            foreach (var nodeList in cliques)
+            using(workspace.BeginDelayedGraphExecution())
             {
-                //Create two dictionarys to store the details of the external connections that have to
-                //be recreated after the conversion
-                var externalInputConnections = new Dictionary<ConnectorModel, string>();
-                var externalOutputConnections = new Dictionary<ConnectorModel, string>();
-
-                //Also collect the average X and Y co-ordinates of the different nodes
-                int nodeCount = nodeList.Count;
-
-                var nodeToCodeResult = engineController.ConvertNodesToCode(workspace.Nodes, nodeList, namingProvider);
-
-                #region Step I. Delete all nodes and their connections
-
-                double totalX = 0, totalY = 0;
-
-                foreach (var node in nodeList)
+                foreach (var nodeList in cliques)
                 {
-                    #region Step I.A. Delete the connections for the node
+                    //Create two dictionarys to store the details of the external connections that have to
+                    //be recreated after the conversion
+                    var externalInputConnections = new Dictionary<ConnectorModel, string>();
+                    var externalOutputConnections = new Dictionary<ConnectorModel, string>();
 
-                    foreach (var connector in node.AllConnectors.ToList())
+                    //Also collect the average X and Y co-ordinates of the different nodes
+                    int nodeCount = nodeList.Count;
+
+                    var nodeToCodeResult = engineController.ConvertNodesToCode(workspace.Nodes, nodeList, namingProvider);
+
+                    #region Step I. Delete all nodes and their connections
+
+                    double totalX = 0, totalY = 0;
+
+                    foreach (var node in nodeList)
                     {
-                        if (!IsInternalNodeToCodeConnection(nodeList, connector))
+                        #region Step I.A. Delete the connections for the node
+
+                        foreach (var connector in node.AllConnectors.ToList())
                         {
-                            //If the connector is an external connector, the save its details
-                            //for recreation later
-                            var startNode = connector.Start.Owner;
-                            int index = startNode.OutPorts.IndexOf(connector.Start);
-                            //We use the varibleName as the connection between the port of the old Node
-                            //to the port of the new node.
-                            var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
+                            if (!IsInternalNodeToCodeConnection(nodeList, connector))
+                            {
+                                //If the connector is an external connector, the save its details
+                                //for recreation later
+                                var startNode = connector.Start.Owner;
+                                int index = startNode.OutPorts.IndexOf(connector.Start);
+                                //We use the varibleName as the connection between the port of the old Node
+                                //to the port of the new node.
+                                var variableName = startNode.GetAstIdentifierForOutputIndex(index).Value;
 
-                            //Store the data in the corresponding dictionary
-                            if (startNode == node)
-                            {
-                                if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
-                                    variableName = nodeToCodeResult.OutputMap[variableName];
-                                externalOutputConnections.Add(connector, variableName);
+                                //Store the data in the corresponding dictionary
+                                if (startNode == node)
+                                {
+                                    if (nodeToCodeResult.OutputMap.ContainsKey(variableName))
+                                        variableName = nodeToCodeResult.OutputMap[variableName];
+                                    externalOutputConnections.Add(connector, variableName);
+                                }
+                                else
+                                {
+                                    if (nodeToCodeResult.InputMap.ContainsKey(variableName))
+                                        variableName = nodeToCodeResult.InputMap[variableName];
+                                    externalInputConnections.Add(connector, variableName);
+                                }
                             }
-                            else
-                            {
-                                if (nodeToCodeResult.InputMap.ContainsKey(variableName))
-                                    variableName = nodeToCodeResult.InputMap[variableName];
-                                externalInputConnections.Add(connector, variableName);
-                            }
+
+                            //Delete the connector
+                            undoHelper.RecordDeletion(connector);
+                            connector.Delete();
                         }
+                        #endregion
 
-                        //Delete the connector
-                        undoHelper.RecordDeletion(connector);
-                        connector.Delete();
+                        #region Step I.B. Delete the node
+                        totalX += node.X;
+                        totalY += node.Y;
+                        undoHelper.RecordDeletion(node);
+                        workspace.RemoveAndDisposeNode(node);
+                        #endregion
                     }
                     #endregion
 
-                    #region Step I.B. Delete the node
-                    totalX += node.X;
-                    totalY += node.Y;
-                    undoHelper.RecordDeletion(node);
-                    workspace.RemoveAndDisposeNode(node);
+                    #region Step II. Create the new code block node
+                    var outputVariables = externalOutputConnections.Values;
+                    var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
+
+                    // Rewrite the AST using the shortest unique name in case of namespace conflicts
+                    NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
+                        engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, workspace.ElementResolver);
+                    var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
+                    var code = codegen.GenerateCode();
+
+                    var codeBlockNode = new CodeBlockNodeModel(
+                        code,
+                        System.Guid.NewGuid(),
+                        totalX / nodeCount,
+                        totalY / nodeCount, engineController.LibraryServices, workspace.ElementResolver);
+                    undoHelper.RecordCreation(codeBlockNode);
+
+                    workspace.AddAndRegisterNode(codeBlockNode, false);
+                    codeBlockNodes.Add(codeBlockNode);
+                    #endregion
+
+                    #region Step III. Recreate the necessary connections
+                    var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace);
+                    foreach (var connector in newInputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
+
+                    var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
+                    foreach (var connector in newOutputConnectors)
+                    {
+                        undoHelper.RecordCreation(connector);
+                    }
                     #endregion
                 }
-                #endregion
-
-                #region Step II. Create the new code block node
-                var outputVariables = externalOutputConnections.Values;
-                var newResult = NodeToCodeCompiler.ConstantPropagationForTemp(nodeToCodeResult, outputVariables);
-
-                // Rewrite the AST using the shortest unique name in case of namespace conflicts
-                NodeToCodeCompiler.ReplaceWithShortestQualifiedName(
-                    engineController.LibraryServices.LibraryManagementCore.ClassTable, newResult.AstNodes, workspace.ElementResolver);
-                var codegen = new ProtoCore.CodeGenDS(newResult.AstNodes);
-                var code = codegen.GenerateCode();
-
-                var codeBlockNode = new CodeBlockNodeModel(
-                    code,
-                    System.Guid.NewGuid(),
-                    totalX / nodeCount,
-                    totalY / nodeCount, engineController.LibraryServices, workspace.ElementResolver);
-                undoHelper.RecordCreation(codeBlockNode);
-
-                workspace.AddAndRegisterNode(codeBlockNode, false);
-                codeBlockNodes.Add(codeBlockNode);
-                #endregion
-
-                #region Step III. Recreate the necessary connections
-                var newInputConnectors = ReConnectInputConnections(externalInputConnections, codeBlockNode, workspace);
-                foreach (var connector in newInputConnectors)
-                {
-                    undoHelper.RecordCreation(connector);
-                }
-
-                var newOutputConnectors = ReConnectOutputConnections(externalOutputConnections, codeBlockNode);
-                foreach (var connector in newOutputConnectors)
-                {
-                    undoHelper.RecordCreation(connector);
-                }
-                #endregion
             }
 
             undoHelper.ApplyActions(workspace.UndoRecorder);

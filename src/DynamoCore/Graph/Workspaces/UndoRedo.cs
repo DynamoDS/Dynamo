@@ -200,7 +200,8 @@ namespace Dynamo.Graph.Workspaces
             // to are deleted. We will have to delete the connectors first
             // before
 
-            using (undoRecorder.BeginActionGroup()) // Start a new action group.
+            using(BeginDelayedGraphExecution())
+            using (undoRecorder.BeginActionGroup())
             {
                 foreach (var model in models)
                 {
