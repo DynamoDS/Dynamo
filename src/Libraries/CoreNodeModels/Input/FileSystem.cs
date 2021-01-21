@@ -92,7 +92,7 @@ namespace CoreNodeModels.Input
 
     [NodeName("File Path")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
-    [NodeDescription("FilenameNodeDescription", typeof(Resources))]
+    [NodeDescription("FilePathDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
     [InPortTypes("UI Input")]
@@ -107,7 +107,7 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        public Filename() : base("Filename")
+        public Filename() : base(Resources.FilePathOutputDescription)
         {
             ShouldDisplayPreviewCore = false;
         }
@@ -130,7 +130,7 @@ namespace CoreNodeModels.Input
             ShouldDisplayPreviewCore = false;
         }
 
-        public Directory() : base("Directory")
+        public Directory() : base(Resources.DirectoryPathOutputDescription)
         {
             ShouldDisplayPreviewCore = false;
         }

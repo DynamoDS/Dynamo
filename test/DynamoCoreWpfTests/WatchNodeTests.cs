@@ -329,5 +329,72 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual("42", children[3].NodeLabel);
             Assert.AreEqual("false", children[4].NodeLabel);
         }
+
+        [Test]
+        public void GetNodeLabelTree()
+        {
+            // Arrange
+            var openPath = Path.Combine(TestDirectory, @"core\watch\WatchViewModelGetNodeLabelTree.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+            var workspace = ViewModel.Model.CurrentWorkspace;
+            var multiItemWatch = workspace.NodeFromWorkspace("67d8240359e44fb6a4f682aa558467e6") as Watch;
+            var singleItemWatch = workspace.NodeFromWorkspace("4ef909473074495daebe113425170774") as Watch;
+            string multiItemTreeExpected = @"[
+  true,
+  Hello, world!,
+  false,
+  Point(X = 1.000, Y = 1.000, Z = 1.000),
+  [
+    Cuboid(Length = 1.000, Width = 1.000, Height = 1.000),
+    0
+  ],
+  -3.147,
+  [
+    [
+      [
+        true
+      ],
+      false,
+      true,
+      null
+    ]
+  ],
+  Empty List,
+  Empty Dictionary,
+  {
+    Area: 70,
+    Type: 2B4P,
+    [
+      {
+        Area: 12,
+        Type: Bedroom
+      },
+      {
+        Area: 12,
+        Type: Bedroom
+      },
+      {
+        Area: 5,
+        Type: Bathroom
+      },
+      {
+        Area: 27,
+        Type: Living/Kitchen/Dining
+      }
+    ]
+  }
+]";
+            string singleItemTreeExpected = "Hello, world!";
+
+            // Act
+            WatchViewModel multiItemWVM = GetWatchViewModel(multiItemWatch);
+            WatchViewModel singleItemWVM = GetWatchViewModel(singleItemWatch);
+            string multiItemTree = multiItemWVM.GetNodeLabelTree();
+            string singleItemTree = singleItemWVM.GetNodeLabelTree();
+
+            // Assert
+            Assert.AreEqual(multiItemTreeExpected, multiItemTree);
+            Assert.AreEqual(singleItemTreeExpected, singleItemTree);
+        }
     }
 }

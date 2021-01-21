@@ -9,6 +9,110 @@ using Microsoft.Win32;
 
 namespace DynamoInstallDetective
 {
+    // Utility class for interacting with the windows registry.
+    internal static class RegUtils
+    {
+        // Utility class to enable/disable registry caching within a scope.
+        class RegistryCacher : IDisposable
+        {
+            public RegistryCacher()
+            {
+                lock (mutex)
+                {
+                    cacheEnabled = true;
+                }
+            }
+
+            public void Dispose()
+            {
+                lock (mutex)
+                {
+                    cacheEnabled = false;
+                    cachedRecords?.Clear();
+                    cachedRecords = null;
+                }
+            }
+        }
+
+        public static string REG_KEY64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
+        public static string REG_KEY32 = @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\";
+
+        // Cached data from windows registry. Consists of a dictionary that maps The product name/code to Display Name (Tuple.item1) and Install Path(Tuple.item2)
+        // Dictionary<ProductCode, (DisplayName, InstallPath)>
+        private static Dictionary<string, (string DisplayName, string InstallLocation)> cachedRecords;
+        private static bool cacheEnabled = false;
+
+        private static readonly object mutex = new object();
+
+        public static RegistryKey OpenKey(string key)
+        {
+            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            return regKey.OpenSubKey(key);
+        }
+        public static string GetInstallLocation(RegistryKey key)
+        {
+            if (key != null)
+                return key.GetValue("InstallLocation") as string;
+
+            return string.Empty;
+        }
+
+        public static string GetDisplayName(RegistryKey key)
+        {
+            if (key != null)
+                return key.GetValue("DisplayName") as string;
+
+            return string.Empty;
+        }
+
+        // Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
+        public static Dictionary<string, (string DisplayName, string InstallLocation)> GetInstalledProducts()
+        {
+            lock (mutex)
+            {
+                if (cacheEnabled && cachedRecords != null)
+                {
+                    return cachedRecords;
+                }
+            }
+
+            var productInfo = new Dictionary<string, (string displayName, string installLocation)>();
+
+            var key = OpenKey(REG_KEY64);
+            foreach(string s in key.GetSubKeyNames())
+            {
+                try
+                {
+                    var prodKey = key.OpenSubKey(s);
+                    var displayName = GetDisplayName(prodKey);
+                    var installLocation = GetInstallLocation(prodKey);
+                    if (!string.IsNullOrEmpty(displayName) && !string.IsNullOrEmpty(installLocation))
+                    {
+                        productInfo.Add(s, (displayName, installLocation));
+                    }
+                }
+                catch (Exception)
+                {
+                    // Do nothing
+                }
+            }
+
+            lock (mutex)
+            {
+                if (cacheEnabled)
+                {
+                    cachedRecords = new Dictionary<string, (string DisplayName, string InstallLocation)>(productInfo);
+                }
+            }
+            return productInfo;
+        }
+
+        public static IDisposable StartCache()
+        {
+            return new RegistryCacher();
+        }
+    }
+
     /// <summary>
     /// Specifies an installed product
     /// </summary>
@@ -63,7 +167,7 @@ namespace DynamoInstallDetective
         IInstalledProduct GetProductFromProductCode(string productCode);
 
         /// <summary>
-        /// Returns product name list based on lookup criteria
+        /// Returns product name list using lookup criteria based on product names.
         /// </summary>
         /// <returns>Product name list</returns>
         IEnumerable<string> GetProductNameList();
@@ -120,37 +224,12 @@ namespace DynamoInstallDetective
     /// </summary>
     public class InstalledProductLookUp : IProductLookUp
     {
-        const string REG_KEY64 = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\";
-        const string REG_KEY32 = @"SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\";
-        
         /// <summary>
         /// Product name for lookup
         /// </summary>
         public string ProductLookUpName { get; private set; }
 
         private readonly Func<string, string> fileLocator;
-
-        static RegistryKey OpenKey(string key)
-        {
-            var regKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            return regKey.OpenSubKey(key);
-        }
-
-        static string GetInstallLocation(RegistryKey key)
-        {
-            if (key != null)
-                return key.GetValue("InstallLocation") as string;
-
-            return string.Empty;
-        }
-
-        static string GetDisplayName(RegistryKey key)
-        {
-            if (key != null)
-                return key.GetValue("DisplayName") as string;
-
-            return string.Empty;
-        }
 
         /// <summary>
         /// Implements a product look up algorithm based on registry key.
@@ -202,8 +281,9 @@ namespace DynamoInstallDetective
 
         public virtual IEnumerable<string> GetProductNameList()
         {
-            var key = OpenKey(REG_KEY64);
-            return key.GetSubKeyNames().Where(s => s.Contains(ProductLookUpName));
+            return RegUtils.GetInstalledProducts().Select(s => s.Value.DisplayName).Where(s => {
+                return s?.Contains(ProductLookUpName) ?? false;
+            });
         }
 
         public virtual bool ExistsAtPath(string basePath)
@@ -216,21 +296,21 @@ namespace DynamoInstallDetective
 
         public virtual string GetInstallLocationFromProductName(string name)
         {
-            var key = OpenKey(REG_KEY64 + name);
-            return GetInstallLocation(key);
+            var key = RegUtils.OpenKey(RegUtils.REG_KEY64 + name);
+            return RegUtils.GetInstallLocation(key);
         }
 
         public virtual string GetInstallLocationFromProductCode(string productCode, out string productName)
         {
-            string issProdKey = REG_KEY32 + productCode + "_is1";
-            var key = OpenKey(issProdKey);
+            string issProdKey = RegUtils.REG_KEY32 + productCode + "_is1";
+            var key = RegUtils.OpenKey(issProdKey);
             if (null == key)
             {
-                issProdKey = REG_KEY64 + productCode;
-                key = OpenKey(issProdKey);
+                issProdKey = RegUtils.REG_KEY64 + productCode;
+                key = RegUtils.OpenKey(issProdKey);
             }
-            productName = GetDisplayName(key);
-            return GetInstallLocation(key);
+            productName = RegUtils.GetDisplayName(key);
+            return RegUtils.GetInstallLocation(key);
         }
 
         public virtual string GetCoreFilePathFromInstallation(string installPath)
