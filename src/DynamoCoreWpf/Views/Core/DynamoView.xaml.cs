@@ -208,7 +208,25 @@ namespace Dynamo.Controls
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
+            this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
+        }
+
+        private void OnWorkspaceOpened(WorkspaceModel workspace)
+        {
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
+            {
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+            }
+        }
+
+        private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
+        {
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
+            {
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+            }
         }
 
         /// <summary>
@@ -1600,7 +1618,9 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
-            
+            this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
         }

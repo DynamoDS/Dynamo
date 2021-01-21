@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -453,6 +454,7 @@ namespace Dynamo.Graph.Workspaces
         bool verboseLogging;
 
         internal readonly static string NodeLibraryDependenciesPropString = "NodeLibraryDependencies";
+        internal const string EXTENSION_WORKSPACE_DATA = "ExtensionWorkspaceData";
 
         public WorkspaceReadConverter(EngineController engine, 
             DynamoScheduler scheduler, NodeFactory factory, bool isTestMode, bool verboseLogging)
@@ -524,6 +526,7 @@ namespace Dynamo.Graph.Workspaces
                     }
                 }
             }
+          
 
             #region Setting Inputs based on view layer info
             // TODO: It is currently duplicating the effort with Input Block parsing which should be cleaned up once
@@ -585,7 +588,7 @@ namespace Dynamo.Graph.Workspaces
             var info = new WorkspaceInfo(guid.ToString(), name, description, Dynamo.Models.RunType.Automatic);
 
             // IsVisibleInDynamoLibrary and Category should be set explicitly for custom node workspace
-            if (obj["View"] != null && obj["View"]["Dynamo"] !=null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
+            if (obj["View"] != null && obj["View"]["Dynamo"] != null && obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"] != null)
             {
                 info.IsVisibleInDynamoLibrary = obj["View"]["Dynamo"]["IsVisibleInDynamoLibrary"].Value<bool>();
             }
@@ -633,21 +636,33 @@ namespace Dynamo.Graph.Workspaces
             WorkspaceModel ws;
             if (isCustomNode)
             {
-                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations, 
+                ws = new CustomNodeWorkspaceModel(factory, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver, info);
             }
             else
             {
                 ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
-                    loadedTraceData, nodes, notes, annotations, 
-                    Enumerable.Empty<PresetModel>(), elementResolver, 
+                    loadedTraceData, nodes, notes, annotations,
+                    Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
+            ws.ExtensionData = GetExtensionData(serializer, obj);
 
             return ws;
         }
+
+        private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
+        {
+            if (!obj.TryGetValue(EXTENSION_WORKSPACE_DATA, StringComparison.OrdinalIgnoreCase, out JToken extensionData))
+                return new List<ExtensionData>();
+            if (!(extensionData is JArray array))
+                return new List<ExtensionData>();
+
+            return array.ToObject<List<ExtensionData>>(serializer);
+        }
+
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -751,6 +766,10 @@ namespace Dynamo.Graph.Workspaces
             // NodeLibraryDependencies
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
+
+            // ExtensionData
+            writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+            serializer.Serialize(writer, ws.ExtensionData);
 
             if (engine != null)
             {

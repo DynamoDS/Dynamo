@@ -222,7 +222,7 @@
     <value>File object</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its filename.</value>
+    <value>Allows you to select a file on the system to get its file path.</value>
     <comment>Description for File Path</comment>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
@@ -242,7 +242,7 @@
     <comment>Description for Formula</comment>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
-    <value>Result of math computation</value>
+    <value>Result from formula</value>
   </data>
   <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
     <value>The array of object to be serialized</value>
@@ -607,5 +607,11 @@
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
     <value>Tolerance
 Default value: {0}</value>
+  </data>
+  <data name="DirectoryPathOutputDescription" xml:space="preserve">
+    <value>Directory path</value>
+  </data>
+  <data name="FilePathOutputDescription" xml:space="preserve">
+    <value>File Path</value>
   </data>
 </root>
