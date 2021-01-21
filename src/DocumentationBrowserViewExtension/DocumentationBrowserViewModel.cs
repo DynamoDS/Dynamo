@@ -1,13 +1,12 @@
-﻿using Dynamo.Core;
-using Dynamo.DocumentationBrowser.Properties;
-using Dynamo.Logging;
-using Dynamo.ViewModels;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using Dynamo.Core;
+using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Logging;
+using Dynamo.ViewModels;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -19,40 +18,16 @@ namespace Dynamo.DocumentationBrowser
         private const string BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME = "InternalError.html";
         private const string BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME = "FileNotFound.html";
         private const string BUILT_IN_CONTENT_NO_CONTENT_FILENAME = "NoContent.html";
-        private const string SCRIPT_TAG_REGEX = @"<script[^>]*>[\s\S]*?</script>";
-        private const string DPISCRIPT = @"<script> function getDPIScale()
-        {
-            var dpi = 96.0;
-            if (window.screen.deviceXDPI != undefined)
-            {
-                dpi = window.screen.deviceXDPI;
-            }
-            else
-            {
-                var tmpNode = document.createElement('DIV');
-                tmpNode.style.cssText = 'width:1in;height:1in;position:absolute;left:0px;top:0px;z-index:99;visibility:hidden';
-                document.body.appendChild(tmpNode);
-                dpi = parseInt(tmpNode.offsetWidth);
-                tmpNode.parentNode.removeChild(tmpNode);
-            }
+        private const string STYLE_RESOURCE = "Dynamo.DocumentationBrowser.Docs.MarkdownStyling.html";
 
-            return dpi / 96.0;
-        }
-
-        function adaptDPI()
-        {
-            var dpiScale = getDPIScale();
-            document.body.style.zoom = dpiScale;
-
-            var widthPercentage = ((100.0 / dpiScale)-5).toString() + '%';
-            document.body.style.width = widthPercentage;
-        }
-        adaptDPI() </script>";
         #endregion
 
         #region Properties
 
         private bool shouldLoadDefaultContent;
+        private readonly PackageDocumentationManager packageManagerDoc;
+        private MarkdownHandler markdownHandler;
+        private FileSystemWatcher markdownFileWatcher;
 
         /// <summary>
         /// The link to the documentation website or file to display.
@@ -63,13 +38,26 @@ namespace Dynamo.DocumentationBrowser
             get { return this.link; }
             private set
             {
+                var oldLink = link;
+                // if the link is changed we unsubscribe the current watcher
+                // and create a new watcher for the new link, if its a markdown file.
+                if (value != oldLink)
+                {
+                    UnsubscribeMdWatcher();
+                    WatchMdFile(value.OriginalString);
+                }
+
                 this.link = value;
                 OnLinkChanged(value);
+
             }
         }
+
         private Uri link;
 
         private string content;
+
+        private MarkdownHandler MarkdownHandlerInstance => markdownHandler ?? (markdownHandler = new MarkdownHandler());
         public bool HasContent => !string.IsNullOrWhiteSpace(this.content);
 
         /// <summary>
@@ -108,6 +96,7 @@ namespace Dynamo.DocumentationBrowser
         }
 
         internal Action<ILogMessage> MessageLogged;
+        private OpenDocumentationLinkEventArgs openDocumentationLinkEventArgs;
 
         #endregion
 
@@ -119,11 +108,16 @@ namespace Dynamo.DocumentationBrowser
 
             // default to no content page on first start or no error selected
             this.shouldLoadDefaultContent = true;
+            packageManagerDoc = PackageDocumentationManager.Instance;
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            this.content = null;
+            if (!Models.DynamoModel.IsTestMode)
+            {
+                this.content = "";
+            }
+            markdownHandler?.Dispose();
         }
 
         public void Dispose()
@@ -138,6 +132,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void HandleOpenDocumentationLinkEvent(OpenDocumentationLinkEventArgs e)
         {
+            openDocumentationLinkEventArgs = e;
             if (e == null)
                 NavigateToNoContentPage();
             else
@@ -157,7 +152,29 @@ namespace Dynamo.DocumentationBrowser
         {
             try
             {
-                var targetContent = LoadContentFromResources(e.Link.ToString());
+                string targetContent;
+                Uri link;
+                switch (e)
+                {
+                    case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.MinimumQualifiedName);
+                        link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
+                        targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
+
+                        break;
+
+                    case OpenDocumentationLinkEventArgs openDocumentationLink:
+                        link = openDocumentationLink.Link;
+                        targetContent = LoadContentFromResources(openDocumentationLink.Link.ToString());
+                        break;
+
+                    default:
+                        // Navigate to unsupported 
+                        targetContent = null;
+                        link = null;
+                        break;
+                }
+
                 if (targetContent == null)
                 {
                     NavigateToContentMissingPage();
@@ -165,7 +182,7 @@ namespace Dynamo.DocumentationBrowser
                 else
                 {
                     this.content = targetContent;
-                    this.Link = e.Link;
+                    this.Link = link;
                 }
             }
             catch (FileNotFoundException)
@@ -184,6 +201,80 @@ namespace Dynamo.DocumentationBrowser
                 return;
             }
             this.shouldLoadDefaultContent = false;
+        }
+
+        private void WatchMdFile(string mdLink)
+        {
+            if (string.IsNullOrWhiteSpace(mdLink))
+                return;
+
+            var fileName = Path.GetFileNameWithoutExtension(mdLink);
+            if (!packageManagerDoc.ContainsAnnotationDoc(fileName))
+                return;
+
+            markdownFileWatcher = new FileSystemWatcher(Path.GetDirectoryName(mdLink))
+            {
+                Filter = Path.GetFileName(mdLink),
+                EnableRaisingEvents = true
+            };
+            markdownFileWatcher.Changed += OnCurrentMdFileChanged;
+        }
+
+        private void UnsubscribeMdWatcher()
+        {
+            if (markdownFileWatcher is null)
+                return;
+
+            markdownFileWatcher.Changed -= OnCurrentMdFileChanged;
+        }
+
+        // Its a known issue that FileWatchers raises the same event twice when a file is modified from some programs.
+        // https://stackoverflow.com/questions/1764809/filesystemwatcher-changed-event-is-raised-twice
+        private void OnCurrentMdFileChanged(object sender, FileSystemEventArgs e)
+        {
+            if (e.FullPath != link.OriginalString)
+                return;
+            if (!(openDocumentationLinkEventArgs is OpenNodeAnnotationEventArgs))
+                return;
+
+            var nodeAnnotationArgs = openDocumentationLinkEventArgs as OpenNodeAnnotationEventArgs;
+            this.content = CreateNodeAnnotationContent(nodeAnnotationArgs);
+            this.Link = new Uri(e.FullPath);
+        }
+
+        private string CreateNodeAnnotationContent(OpenNodeAnnotationEventArgs e)
+        {
+            var writer = new StringWriter();
+            try
+            {
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+
+                // Get the Node info section
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e);
+                writer.WriteLine(nodeDocumentation);
+
+                // Convert the markdown file to html
+                MarkdownHandlerInstance.ParseToHtml(ref writer, e.MinimumQualifiedName);
+
+                writer.Flush();
+                var output = writer.ToString();
+
+                // Sanitize html and warn if any changes where made
+                if (MarkdownHandlerInstance.SanitizeHtml(ref output))
+                {
+                    LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
+                }
+
+                // inject the syntax highlighting script at the bottom at the document.
+                output += DocumentationBrowserUtils.GetDPIScript();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+
+                return output;
+            }
+            finally
+            {
+                writer?.Dispose();
+            }
         }
 
         #endregion
@@ -245,7 +336,7 @@ namespace Dynamo.DocumentationBrowser
             return this.content;
         }
 
-        private string LoadContentFromResources(string name)
+        private string LoadContentFromResources(string name, bool injectDPI = true, bool removeScriptTags = true)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
@@ -310,13 +401,15 @@ namespace Dynamo.DocumentationBrowser
             }
 
             // Clean up possible script tags from document
-            if (Regex.IsMatch(result, SCRIPT_TAG_REGEX, RegexOptions.IgnoreCase))
+            if (removeScriptTags &&
+                MarkdownHandlerInstance.SanitizeHtml(ref result))
             {
                 LogWarning(Resources.ScriptTagsRemovalWarning, WarningLevel.Mild);
-                result = Regex.Replace(result, SCRIPT_TAG_REGEX, "", RegexOptions.IgnoreCase);
             }
+
             //inject our DPI functions:
-            result = result + DPISCRIPT;
+            if (injectDPI)
+                result += DocumentationBrowserUtils.GetDPIScript();
 
             return result;
         }

@@ -583,6 +583,46 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ListAnyTrue()
+        {
+            var oneTrue = new List<object> {true};
+            var oneFalse = new List<object> {false};
+            var subListsAllTrue = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, true, new List<object> {true}, true}}}, true};
+            var subListsAllFalse = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, false};
+            var subListsOneTrue = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, true};
+            var subListsOneFalse = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, false, new List<object> {true}, true}}}, true};
+
+            Assert.IsFalse(List.AnyTrue(List.Empty));
+            Assert.IsTrue(List.AnyTrue(oneTrue));
+            Assert.IsFalse(List.AnyTrue(oneFalse));
+            Assert.IsTrue(List.AnyTrue(subListsAllTrue));
+            Assert.IsFalse(List.AnyTrue(subListsAllFalse));
+            Assert.IsTrue(List.AnyTrue(subListsOneTrue));
+            Assert.IsTrue(List.AnyTrue(subListsOneFalse));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ListAnyFalse()
+        {
+            var oneTrue = new List<object> {true};
+            var oneFalse = new List<object> {false};
+            var subListsAllTrue = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, true, new List<object> {true}, true}}}, true};
+            var subListsAllFalse = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, false};
+            var subListsOneTrue = new List<object> {false, false, new List<object> {false, new List<object> {false, new List<object> {false, false, new List<object> {false}, false}}}, true};
+            var subListsOneFalse = new List<object> {true, true, new List<object> {true, new List<object> {true, new List<object> {true, false, new List<object> {true}, true}}}, true};
+
+            Assert.IsFalse(List.AnyFalse(List.Empty));
+            Assert.IsFalse(List.AnyFalse(oneTrue));
+            Assert.IsTrue(List.AnyFalse(oneFalse));
+            Assert.IsFalse(List.AnyFalse(subListsAllTrue));
+            Assert.IsTrue(List.AnyFalse(subListsAllFalse));
+            Assert.IsTrue(List.AnyFalse(subListsOneTrue));
+            Assert.IsTrue(List.AnyFalse(subListsOneFalse));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void JoinLists()
         {
             Assert.AreEqual(
@@ -1097,8 +1137,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "item2", "item1" } },
-                { "sorted keys", new object[] { "key1", "key2" } }
+                { "sortedList", new object[] { "item2", "item1" } },
+                { "sortedKeys", new object[] { "key1", "key2" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1142,8 +1182,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" } },
-                { "sorted keys", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" } }
+                { "sortedList", new object[] { "Neal", "Matt", "Ian", "Zack", "Colin" } },
+                { "sortedKeys", new object[] { "Burnham", "Jezyk", "Keough", "Kron", "McCrone" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1165,8 +1205,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { "Zack", "Ian", "Anna", "Neal" } },
-                { "sorted keys", new object[] { -3, 1.6, 5, "abc" } }
+                { "sortedList", new object[] { "Zack", "Ian", "Anna", "Neal" } },
+                { "sortedKeys", new object[] { -3, 1.6, 5, "abc" } }
             };
 
             Assert.AreEqual(expected, result);
@@ -1182,8 +1222,8 @@ namespace DSCoreNodesTests
             var result = List.SortByKey(list, keys);
             var expected = new Dictionary<string, object>
             {
-                { "sorted list", new object[] { 2, 3, 1 }},
-                { "sorted keys", new object[] { 1.20, 1.2001, 1.21 } }
+                { "sortedList", new object[] { 2, 3, 1 }},
+                { "sortedKeys", new object[] { 1.20, 1.2001, 1.21 } }
             };
 
             Assert.AreEqual(expected, result);

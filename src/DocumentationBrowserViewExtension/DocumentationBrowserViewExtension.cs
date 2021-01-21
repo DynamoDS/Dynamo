@@ -1,12 +1,13 @@
-﻿using Dynamo.Controls;
-using Dynamo.DocumentationBrowser.Properties;
-using Dynamo.Logging;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Extensions;
-using System;
+﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.DocumentationBrowser.Properties;
+using Dynamo.Logging;
+using Dynamo.PackageManager;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -14,22 +15,24 @@ namespace Dynamo.DocumentationBrowser
     /// The DocumentationBrowser view extension displays web or local html files on the Dynamo right panel.
     /// It reacts to documentation display request events in Dynamo to know what and when to display documentation.
     /// </summary>
-    public class DocumentationBrowserViewExtension : IViewExtension, ILogSource
+    public class DocumentationBrowserViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem documentationBrowserMenuItem;
+        private PackageManagerExtension pmExtension;
+
         internal DocumentationBrowserView BrowserView { get; private set; }
         internal DocumentationBrowserViewModel ViewModel { get; private set; }
 
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name => Properties.Resources.ExtensionName;
+        public override string Name => Properties.Resources.ExtensionName;
 
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
+        public override string UniqueId => "68B45FC0-0BD1-435C-BF28-B97CB03C71C8";
 
         public DocumentationBrowserViewExtension()
         {
@@ -41,6 +44,7 @@ namespace Dynamo.DocumentationBrowser
         #region ILogSource
 
         public event Action<ILogMessage> MessageLogged;
+
         internal void OnMessageLogged(ILogMessage msg)
         {
             MessageLogged?.Invoke(msg);
@@ -49,12 +53,12 @@ namespace Dynamo.DocumentationBrowser
 
         #region IViewExtension lifecycle
 
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
-            // Do nothing for now
+            pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
@@ -68,14 +72,31 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
             this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
 
-
-            DynamoView.CloseExtension += OnCloseExtension;
-
             // subscribe to the documentation open request event from Dynamo
             this.viewLoadedParamsReference.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
 
             // subscribe to property changes of DynamoViewModel so we can show/hide the browser on StartPage display
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged += HandleStartPageVisibilityChange;
+
+            // pmExtension could be null, if this is the case we bail before interacting with it.
+            if (pmExtension is null)
+                return;
+
+            // subscribe to package loaded so we can add the package documentation 
+            // to the Package documentation manager when a package is loaded
+            pmExtension.PackageLoader.PackgeLoaded += OnPackgeLoaded;
+
+            // add packages already loaded to the PackageDocumentationManager
+            foreach (var pkg in pmExtension.PackageLoader.LocalPackages)
+            {
+                OnPackgeLoaded(pkg);
+            }
+        }
+
+        private void OnPackgeLoaded(Package pkg)
+        {
+            // Add documentation files from the package to the DocManager
+            PackageDocumentationManager.Instance.AddPackageDocumentation(pkg.NodeDocumentaionDirectory);
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
@@ -88,28 +109,45 @@ namespace Dynamo.DocumentationBrowser
             AddToSidebar(true);
         }
 
-        public void Shutdown()
-        {
-            // Do nothing for now
-        }
-
         protected virtual void Dispose(bool disposing)
         {
             // Cleanup
-            DynamoView.CloseExtension -= OnCloseExtension;
-            this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
-            this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
-            documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
-            documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            if (this.viewLoadedParamsReference != null)
+            {
+                this.viewLoadedParamsReference.RequestOpenDocumentationLink -= HandleRequestOpenDocumentationLink;
+            }
+
+            if (this.ViewModel != null)
+            {
+                this.ViewModel.MessageLogged -= OnViewModelMessageLogged;
+            }
+
+            if (this.documentationBrowserMenuItem != null)
+            {
+                this.documentationBrowserMenuItem.Checked -= MenuItemCheckHandler;
+                this.documentationBrowserMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+            }
+
             this.BrowserView?.Dispose();
             this.ViewModel?.Dispose();
-            (viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -= HandleStartPageVisibilityChange;
+
+            if (this.viewLoadedParamsReference != null)
+            {
+                (this.viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel).PropertyChanged -=
+                    HandleStartPageVisibilityChange;
+            }
+
+            if (this.pmExtension != null)
+            {
+                this.pmExtension.PackageLoader.PackgeLoaded -= OnPackgeLoaded;
+            }
+            PackageDocumentationManager.Instance.Dispose();
         }
 
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -136,14 +174,6 @@ namespace Dynamo.DocumentationBrowser
 
             // forward the event to the ViewModel to handle
             this.ViewModel?.HandleOpenDocumentationLinkEvent(args);
-        }
-
-        private void OnCloseExtension(String extensionTabName)
-        {
-            if (extensionTabName.Equals(Name))
-            {
-                this.documentationBrowserMenuItem.IsChecked = false;
-            }
         }
 
         private void OnViewModelMessageLogged(ILogMessage msg)
@@ -179,6 +209,14 @@ namespace Dynamo.DocumentationBrowser
             if (dynamoViewModel != null && e.PropertyName == nameof(DynamoViewModel.ShowStartPage))
             {
                 ViewModel.ShowBrowser = !dynamoViewModel.ShowStartPage;
+            }
+        }
+
+        public override void Closed()
+        {
+            if (this.documentationBrowserMenuItem != null)
+            {
+                this.documentationBrowserMenuItem.IsChecked = false;
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Dynamo.WorkspaceDependency
     /// which tracks graph dependencies (currently only packages) on the Dynamo right panel.
     /// It reacts to workspace modified/ cleared events to refresh.
     /// </summary>
-    public class WorkspaceDependencyViewExtension : IViewExtension, ILogSource
+    public class WorkspaceDependencyViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
         private readonly String extensionName = Properties.Resources.ExtensionName;
@@ -31,7 +31,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Extension Name
         /// </summary>
-        public string Name
+        public override string Name
         {
             get
             {
@@ -42,7 +42,7 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// GUID of the extension
         /// </summary>
-        public string UniqueId
+        public override string UniqueId
         {
             get
             {
@@ -53,9 +53,8 @@ namespace Dynamo.WorkspaceDependency
         /// <summary>
         /// Dispose function after extension is closed
         /// </summary>
-        public void Dispose()
+        public override void Dispose()
         {
-            DependencyView.OnExtensionTabClosed -= OnCloseExtension;
             DependencyView.Dispose();
         }
 
@@ -65,12 +64,7 @@ namespace Dynamo.WorkspaceDependency
         {
         }
 
-        public void Shutdown()
-        {
-            // Do nothing for now
-        }
-
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
             pmExtension = viewStartupParams.ExtensionManager.Extensions.OfType<PackageManagerExtension>().FirstOrDefault();
         }
@@ -82,15 +76,7 @@ namespace Dynamo.WorkspaceDependency
             this.MessageLogged?.Invoke(msg);
         }
 
-        internal void OnCloseExtension(String extensionTabName)
-        {
-            if (extensionTabName.Equals(extensionName))
-            {
-                this.workspaceReferencesMenuItem.IsChecked = false;
-            }  
-        }
-
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             DependencyView = new WorkspaceDependencyView(this, viewLoadedParams);
             // when a package is loaded update the DependencyView 
@@ -100,8 +86,6 @@ namespace Dynamo.WorkspaceDependency
             {
                 DependencyView.DependencyRegen(viewLoadedParams.CurrentWorkspaceModel as WorkspaceModel);
             };
-
-            DependencyView.OnExtensionTabClosed += OnCloseExtension;
 
             // Adding a button in view menu to refresh and show manually
             workspaceReferencesMenuItem = new MenuItem { Header = Resources.MenuItemString, IsCheckable = true, IsChecked = false };
@@ -119,10 +103,16 @@ namespace Dynamo.WorkspaceDependency
                     viewLoadedParams.CloseExtensioninInSideBar(this);
                     workspaceReferencesMenuItem.IsChecked = false;
                 }
-
             };
             viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
         }
 
+        public override void Closed()
+        {
+            if (this.workspaceReferencesMenuItem != null) 
+            { 
+                this.workspaceReferencesMenuItem.IsChecked = false;
+            }
+        }
     }
 }

@@ -1192,6 +1192,36 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void TestNodeToCodeStringInputEscaping()
+        {
+            // Arrange
+            OpenModel(@"core\node2code\stringNodesInNeedOfEscaping.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            var engine = CurrentDynamoModel.EngineController;
+
+            // Act
+            var nodesToCode = engine.ConvertNodesToCode(nodes, nodes);
+            var results = nodesToCode.AstNodes.OfType<BinaryExpressionNode>()
+                .Where((x, i) => i < 8)
+                .Select(x => x.RightNode.ToString())
+                .ToList();
+
+            // Assert
+            var expect = new List<string>
+            {
+                "\"C:\\\\\"",                // "C:\\"
+                "\"4\\\"\"",                 // "4\""
+                "\"\\\"Hello, world.\\\"\"", // "\"Hello, world.\""
+                "\"Hello\\\\r\\\\nWorld\"",  // "Hello\\r\\nWorld"
+                "\"\\\\tHello World\"",      // "\\tHello World"
+                "\"\\\\u33A1\"",             // "\\u33A1"
+                "\"\\\\u00B2\"",             // "\\u00B2"
+                "\"\\\\\\\\SERVER\\\\PATH\"" // "\\\\SERVER\\PATH"
+            };
+            Assert.AreEqual(expect, results);
+        }
+
+        [Test]
         public void TestUINode_String()
         {
             OpenModel(@"core\node2code\stringNode.dyn");
@@ -1366,6 +1396,24 @@ namespace Dynamo.Tests
 
             var guid = cbn.GUID.ToString();
             AssertPreviewValue(guid, new[] { "foo", "bar", "qux" });
+        }
+
+        [Test]
+        public void TestNodeToCodeWithBuiltInAddMethod()
+        {
+            OpenModel(@"core\node2code\builtinAddNode.dyn");
+            var nodes = CurrentDynamoModel.CurrentWorkspace.Nodes;
+            SelectAll(nodes);
+
+            var command = new DynamoModel.ConvertNodesToCodeCommand();
+            CurrentDynamoModel.ExecuteCommand(command);
+            CurrentDynamoModel.ForceRun();
+
+            var cbn = CurrentDynamoModel.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().FirstOrDefault();
+            Assert.IsNotNull(cbn);
+
+            var guid = cbn.GUID.ToString();
+            AssertPreviewValue(guid, 49);
         }
 
         [Test]

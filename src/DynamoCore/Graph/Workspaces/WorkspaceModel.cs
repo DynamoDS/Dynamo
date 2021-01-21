@@ -10,6 +10,7 @@ using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Events;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -291,6 +292,15 @@ namespace Dynamo.Graph.Workspaces
 
             if (Saved != null)
                 Saved();
+        }
+
+        /// <summary>
+        /// Event that is fired when the workspace is starting the save process.
+        /// </summary>
+        public event Action<SaveContext> WorkspaceSaving;
+        internal virtual void OnSaving(SaveContext saveContext)
+        {
+            WorkspaceSaving?.Invoke(saveContext);
         }
 
         /// <summary>
@@ -675,6 +685,14 @@ namespace Dynamo.Graph.Workspaces
         }
 
         /// <summary>
+        /// List of user defined data from extensions and view extensions stored in the graph
+        /// </summary>
+        internal ICollection<ExtensionData> ExtensionData
+        {
+            get; set;
+        }
+
+        /// <summary>
         ///     Are there unsaved changes in the workspace?
         /// </summary>
         public bool HasUnsavedChanges
@@ -987,6 +1005,7 @@ namespace Dynamo.Graph.Workspaces
             this.annotations = new List<AnnotationModel>(annotations);
 
             this.NodeLibraryDependencies = new List<INodeLibraryDependencyInfo>();
+            this.ExtensionData = new List<ExtensionData>();
 
             // Set workspace info from WorkspaceInfo object
             Name = info.Name;
@@ -1151,6 +1170,9 @@ namespace Dynamo.Graph.Workspaces
 
             try
             {
+                if (!isBackup)
+                    OnSaving(SaveContext.Save);
+
                 //set the name before serializing model.
                 setNameBasedOnFileName(filePath, isBackup);
 
@@ -1560,7 +1582,7 @@ namespace Dynamo.Graph.Workspaces
                 //write the root element
                 root.AppendChild(elementList);
 
-                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.File)))
+                foreach (var dynEl in Nodes.Select(el => el.Serialize(xmlDoc, SaveContext.Save)))
                     elementList.AppendChild(dynEl);
 
                 //write only the output connectors
@@ -1594,7 +1616,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(noteList);
                 foreach (var n in Notes)
                 {
-                    var note = n.Serialize(xmlDoc, SaveContext.File);
+                    var note = n.Serialize(xmlDoc, SaveContext.Save);
                     noteList.AppendChild(note);
                 }
 
@@ -1603,7 +1625,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(annotationList);
                 foreach (var n in annotations)
                 {
-                    var annotation = n.Serialize(xmlDoc, SaveContext.File);
+                    var annotation = n.Serialize(xmlDoc, SaveContext.Save);
                     annotationList.AppendChild(annotation);
                 }
 
@@ -1612,7 +1634,7 @@ namespace Dynamo.Graph.Workspaces
                 root.AppendChild(presetsElement);
                 foreach (var preset in Presets)
                 {
-                    var presetState = preset.Serialize(xmlDoc, SaveContext.File);
+                    var presetState = preset.Serialize(xmlDoc, SaveContext.Save);
                     presetsElement.AppendChild(presetState);
                 }
 
@@ -2097,6 +2119,40 @@ namespace Dynamo.Graph.Workspaces
             return deterministicGuid;
         }
 
+        internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        {
+            data = new Dictionary<string, string>();
+            if (!ExtensionData.Any())
+                return false;
+
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return false;
+
+            data = extensionData.Data;
+            return true;
+        }
+
+        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
+        {
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return;
+
+            extensionData.Data = data;
+        }
+
+        internal void CreateNewExtensionData(string uniqueId, string name, string version, Dictionary<string, string> data)
+        {
+            // TODO: Figure out how to add extension version when creating new ExtensionData 
+            var extensionData = new ExtensionData(uniqueId, name, version, data);
+            ExtensionData.Add(extensionData);
+        }
+        
         /// <summary>
         ///     Returns a DelayedGraphExecution object.
         /// </summary>

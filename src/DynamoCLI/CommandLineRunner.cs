@@ -45,6 +45,11 @@ namespace DynamoCLI
                 Console.WriteLine("geometryFilePath option is only available when running DynamoWPFCLI, not DynamoCLI");
             }
 
+            if (!(string.IsNullOrEmpty(cmdLineArgs.HostName)))
+            {
+                model.HostName = cmdLineArgs.HostName;
+            }
+
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(model, path);
@@ -68,7 +73,6 @@ namespace DynamoCLI
 
                 return null;
             }
-
 
             model.OpenFileFromPath(cmdLineArgs.OpenFilePath, true);
             Console.WriteLine("loaded file");

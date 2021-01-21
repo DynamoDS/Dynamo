@@ -13,7 +13,7 @@ namespace IntegrationTests
         public void DynamoSandboxLoadsASMFromValidPath()
         {
             var versions = new List<Version>(){
-                    
+
                     new Version(225, 0, 0),
                     new Version(226, 0, 0),
                     new Version(227, 0, 0)
@@ -34,8 +34,8 @@ namespace IntegrationTests
                     // asm modules in the nunit-agent process.
                     dynamoSandbox = System.Diagnostics.Process.Start(Path.Combine(coreDirectory, "DynamoSandbox.exe"), $"-gp \"{locatedPath}\"");
                     dynamoSandbox.WaitForInputIdle();
-              
-                var firstASMmodulePath = string.Empty;
+
+                    var firstASMmodulePath = string.Empty;
                     foreach (ProcessModule module in dynamoSandbox.Modules)
                     {
                         if (module.FileName.Contains("ASMAHL"))
@@ -57,6 +57,13 @@ namespace IntegrationTests
         }
 
         [Test]
+        public void DynamoMakeModelWithHostName()
+        {
+            var model = Dynamo.Applications.StartupUtils.MakeModel(false, string.Empty, "DynamoFormIt");
+            Assert.AreEqual(model.HostName, "DynamoFormIt");
+        }
+
+        [Test]
         public void IfASMPathInvalidExceptionNotThrown()
         {
             var asmMockPath = @"./doesNotExist/";
@@ -67,6 +74,7 @@ namespace IntegrationTests
             });
 
         }
+
         [Test]
         public void GetVersionFromASMPath_returnsFileVersionForMockdll()
         {
