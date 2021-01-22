@@ -43,7 +43,7 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 string xmlSignature = nodeElement.Attributes["function"].Value;
 
                 string hintedSigniture =
-                    libraryServices.FunctionSignatureFromFunctionSignatureHint(xmlSignature);
+                    libraryServices.GetFunctionSignatureFromFunctionSignatureHint(xmlSignature);
 
                 if (hintedSigniture != null)
                 {
@@ -67,7 +67,8 @@ namespace Dynamo.Graph.Nodes.NodeLoaders
                 }
             }
 
-            if (context == SaveContext.File && !string.IsNullOrEmpty(assembly))
+            if ((context == SaveContext.File || context == SaveContext.Save || context == SaveContext.SaveAs) &&
+                !string.IsNullOrEmpty(assembly))
             {
                 var document = nodeElement.OwnerDocument;
                 var docPath = Nodes.Utilities.GetDocumentXmlPath(document);
