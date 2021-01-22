@@ -1,0 +1,40 @@
+name: Cherry picking
+on:
+  push:
+    branches:
+      - master
+jobs:
+  cherry_pick:
+    runs-on: ubuntu-latest
+    env:
+      #Variable for the name of the branch to cherry-pick into.
+      #It will remain 'invalid' if no branch is specified
+      destination_branch: 'invalid'
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+    #Removes posible conflicting characters on the commit message
+    #This is because the content of the message will be passed to a script as a parameter and quotation marks will split the text as if it where multiple parameters.
+    - name: Remove conflicting chars
+      uses: frabert/replace-string-action@v1.2
+      id: remove_quotations
+      with:
+        pattern: "\""
+        string: ${{github.event.commits[0].message}}
+        replace-with: "-"  
+        flags: g        
+    #Checks the message looking for a cherry-pick request and extracts the target branch name
+    - name: Check Information
+      id: check-info
+      run: |
+        echo "destination_branch=$(pwsh .\\.github\\scripts\\cherry_pick_check.ps1 "${{ steps.remove_quotations.outputs.replaced }}" )" >> $GITHUB_ENV
+    - name: Create PR to branch
+      #If a target branch was found will run the action
+      if: env.destination_branch != 'invalid'
+      uses: gorillio/github-action-cherry-pick@master
+      with:
+        pr_branch: '${{ env.destination_branch }}'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITBOT_EMAIL: <BOT_EMAIL>
+        DRY_RUN: false
