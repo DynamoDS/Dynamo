@@ -360,47 +360,45 @@ namespace Dynamo.Core
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
             using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
+            // In undo scenario, user actions are undone in the reversed order 
+            // that they were done (due to inter-dependencies among components).
+            // 
+            for (int index = actions.Count - 1; index >= 0; index--)
             {
-                // In undo scenario, user actions are undone in the reversed order 
-                // that they were done (due to inter-dependencies among components).
-                // 
-                for (int index = actions.Count - 1; index >= 0; index--)
+                var element = actions[index] as XmlElement;
+
+                XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
+                var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+
+                switch (modelActionType)
                 {
-                    var element = actions[index] as XmlElement;
+                    // Before undo takes place (to delete the model), the most 
+                    // up-to-date model is retrieved and serialized into the 
+                    // redo action group so that it can properly be redone later.
+                    case UserAction.Creation:
 
-                    XmlAttribute actionAttribute = element.Attributes[UserActionAttrib];
-                    var modelActionType = (UserAction)Enum.Parse(typeof(UserAction), actionAttribute.Value);
+                        ModelBase toBeDeleted = undoClient.GetModelForElement(element);
+                        if (toBeDeleted != null)
+                        {
+                            RecordActionInternal(newGroup, toBeDeleted, modelActionType);
+                            undoClient.DeleteModel(element);
+                        }
+                        break;
 
-                    switch (modelActionType)
-                    {
-                        // Before undo takes place (to delete the model), the most 
-                        // up-to-date model is retrieved and serialized into the 
-                        // redo action group so that it can properly be redone later.
-                        case UserAction.Creation:
+                    case UserAction.Modification:
+                        ModelBase toBeUpdated = undoClient.GetModelForElement(element);
+                        if (toBeUpdated != null)
+                        {
 
-                            ModelBase toBeDeleted = undoClient.GetModelForElement(element);
-                            if (toBeDeleted != null)
-                            {
-                                RecordActionInternal(newGroup, toBeDeleted, modelActionType);
-                                undoClient.DeleteModel(element);
-                            }
-                            break;
+                            RecordActionInternal(newGroup, toBeUpdated, modelActionType);
+                            undoClient.ReloadModel(element);
+                        }
+                        break;
 
-                        case UserAction.Modification:
-                            ModelBase toBeUpdated = undoClient.GetModelForElement(element);
-                            if (toBeUpdated != null)
-                            {
-
-                                RecordActionInternal(newGroup, toBeUpdated, modelActionType);
-                                undoClient.ReloadModel(element);
-                            }
-                            break;
-
-                        case UserAction.Deletion:
-                            newGroup.AppendChild(element);
-                            undoClient.CreateModel(element);
-                            break;
-                    }
+                    case UserAction.Deletion:
+                        newGroup.AppendChild(element);
+                        undoClient.CreateModel(element);
+                        break;
                 }
             }
 
@@ -415,6 +413,7 @@ namespace Dynamo.Core
             // See "UndoActionGroup" above for details why this duplicate.
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             // Redo operation is the reversed of undo operation, naturally.
             for (int index = actions.Count - 1; index >= 0; index--)
             {
