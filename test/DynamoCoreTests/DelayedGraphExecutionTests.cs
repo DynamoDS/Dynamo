@@ -37,6 +37,15 @@ namespace Dynamo.Tests
             return wModel.Nodes.Select(x => x as Graph.ModelBase).ToList();
         }
 
+        private void taskStateHandler(DynamoScheduler sender, TaskStateChangedEventArgs args)
+        {
+            if (args.Task is UpdateGraphAsyncTask && args.CurrentState == TaskStateChangedEventArgs.State.Scheduled && activeTaskCounter)
+            {
+                Assert.AreEqual((args.Task as UpdateGraphAsyncTask).ModifiedNodes.Count(), expectedTaskModifiedNodeCount);
+                taskCounter++;
+            }
+        }
+
         [SetUp]
         public void Init()
         {
@@ -46,14 +55,13 @@ namespace Dynamo.Tests
 
             originalNodeCount = workspaceNodes().Count();
 
-            CurrentDynamoModel.Scheduler.TaskStateChanged += (DynamoScheduler sender, TaskStateChangedEventArgs args) =>
-            {
-                if (args.Task is UpdateGraphAsyncTask && args.CurrentState == TaskStateChangedEventArgs.State.Scheduled && activeTaskCounter)
-                {
-                    Assert.AreEqual((args.Task as UpdateGraphAsyncTask).ModifiedNodes.Count(), expectedTaskModifiedNodeCount);
-                    taskCounter++;
-                }
-            };
+            CurrentDynamoModel.Scheduler.TaskStateChanged += taskStateHandler;
+        }
+
+        public override void Cleanup()
+        {
+            base.Cleanup();
+            CurrentDynamoModel.Scheduler.TaskStateChanged -= taskStateHandler;
         }
 
         [Test]
