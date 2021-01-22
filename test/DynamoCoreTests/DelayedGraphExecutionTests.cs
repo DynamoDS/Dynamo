@@ -60,8 +60,8 @@ namespace Dynamo.Tests
 
         public override void Cleanup()
         {
-            base.Cleanup();
             CurrentDynamoModel.Scheduler.TaskStateChanged -= taskStateHandler;
+            base.Cleanup();
         }
 
         [Test]
