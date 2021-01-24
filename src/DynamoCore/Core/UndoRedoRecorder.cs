@@ -5,6 +5,7 @@ using System.Xml;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.Core
 {
@@ -358,6 +359,7 @@ namespace Dynamo.Core
             // 
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             // In undo scenario, user actions are undone in the reversed order 
             // that they were done (due to inter-dependencies among components).
             // 
@@ -411,6 +413,7 @@ namespace Dynamo.Core
             // See "UndoActionGroup" above for details why this duplicate.
             var actions = actionGroup.ChildNodes.Cast<XmlNode>().ToList();
 
+            using ((undoClient as WorkspaceModel)?.BeginDelayedGraphExecution())
             // Redo operation is the reversed of undo operation, naturally.
             for (int index = actions.Count - 1; index >= 0; index--)
             {

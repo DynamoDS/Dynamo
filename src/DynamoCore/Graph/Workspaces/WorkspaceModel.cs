@@ -134,6 +134,39 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public abstract partial class WorkspaceModel : NotificationObject, ILocatable, IUndoRedoRecorderClient, ILogSource, IDisposable, IWorkspaceModel
     {
+        #region nested classes
+
+        /// <summary>
+        /// This class enables the delay of graph execution.
+        /// Use instances of this class to specify a code scope in which you want graph execution to be delayed. 
+        /// Class is thread safe, although behavior is not well defined. 
+        /// Nested instance of this class do not have a well defined behavior.
+        /// </summary>
+        internal class DelayedGraphExecution : IDisposable
+        {
+            private readonly WorkspaceModel workspace;
+            private static readonly object stateMutex = new object();
+
+            public DelayedGraphExecution(WorkspaceModel wModel)
+            {
+                workspace = wModel;
+                lock (stateMutex)
+                {
+                    workspace.delayGraphExecutionCounter++;
+                }
+            }
+
+            public virtual void Dispose()
+            {
+                lock (stateMutex)
+                {
+                    workspace.delayGraphExecutionCounter--;
+                }
+                workspace.RequestRun();
+            }
+        }
+        #endregion
+
         #region private/internal members
 
         /// <summary>
@@ -182,6 +215,13 @@ namespace Dynamo.Graph.Workspaces
         private bool hasNodeInSyncWithDefinition;
         protected Guid guid;
         private HashSet<Guid> dependencies = new HashSet<Guid>();
+
+        private int delayGraphExecutionCounter = 0;
+
+        /// <summary>
+        /// Whether or not to delay graph execution.
+        /// </summary>
+        internal protected bool DelayGraphExecution => delayGraphExecutionCounter > 0;
 
         /// <summary>
         /// This is set to true after a workspace is added.
@@ -2151,6 +2191,14 @@ namespace Dynamo.Graph.Workspaces
             // TODO: Figure out how to add extension version when creating new ExtensionData 
             var extensionData = new ExtensionData(uniqueId, name, version, data);
             ExtensionData.Add(extensionData);
+        }
+        
+        /// <summary>
+        ///     Returns a DelayedGraphExecution object.
+        /// </summary>
+        internal DelayedGraphExecution BeginDelayedGraphExecution()
+        {
+            return new DelayedGraphExecution(this);
         }
     }
 }
