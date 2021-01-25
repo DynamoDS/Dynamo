@@ -129,7 +129,7 @@ namespace DSCore
         /// <summary>
         ///     Determines if it is Daylight Savings Time at the given DateTime.
         /// </summary>
-        /// <param name="dateTime">DateTime to determine if its daylight</param>
+        /// <param name="dateTime">DateTime used to determine if there is daylight savings</param>
         /// <returns name="bool">True if DateTime is in daylight saving time, false if it isn't</returns>
         public static bool IsDaylightSavingsTime(System.DateTime dateTime)
         {
