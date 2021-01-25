@@ -247,6 +247,16 @@ namespace WpfVisualizationTests
             RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
         }
         [Test]
+        public void SelectedSolidsOverlapping3()
+        {
+            OpenVisualizationTest(@"imageComparison\smallring.dyn");
+            RunCurrentModel();
+            var node1 = ViewModel.CurrentSpace.Nodes.Where(x => x.Name.Contains("SelectNode")).FirstOrDefault();
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(node1);
+            RenderCurrentViewAndCompare(MethodBase.GetCurrentMethod().Name);
+        }
+        [Test]
         public void SelectedSolidsOverlappingIsolated1()
         {
             OpenVisualizationTest(@"imageComparison\twooverlappedspheres.dyn");

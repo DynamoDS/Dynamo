@@ -208,7 +208,25 @@ namespace Dynamo.Controls
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
+            this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
+        }
+
+        private void OnWorkspaceOpened(WorkspaceModel workspace)
+        {
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
+            {
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+            }
+        }
+
+        private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
+        {
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
+            {
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+            }
         }
 
         /// <summary>
@@ -296,6 +314,7 @@ namespace Dynamo.Controls
                 }
             }
             
+            // Setting the content of the undocked window
             // Icon is passed from DynamoView (respecting Host integrator icon)
             SetApplicationIcon();
             window.Icon = this.Icon;
@@ -328,15 +347,18 @@ namespace Dynamo.Controls
         {
             var extension = window.Tag as IViewExtension;
             var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
-            if (settings.WindowSettings == null)
+            if (settings != null)
             {
-                settings.WindowSettings = new WindowSettings();
+                if (settings.WindowSettings == null)
+                {
+                    settings.WindowSettings = new WindowSettings();
+                }
+                settings.WindowSettings.Status = window.WindowState == WindowState.Maximized ? WindowStatus.Maximized : WindowStatus.Normal;
+                settings.WindowSettings.Left = (int)window.SavedWindowRect.Left;
+                settings.WindowSettings.Top = (int)window.SavedWindowRect.Top;
+                settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
+                settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
             }
-            settings.WindowSettings.Status = window.WindowState == WindowState.Maximized ? WindowStatus.Maximized : WindowStatus.Normal;
-            settings.WindowSettings.Left = (int)window.SavedWindowRect.Left;
-            settings.WindowSettings.Top = (int)window.SavedWindowRect.Top;
-            settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
-            settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
         }
 
         private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
@@ -472,8 +494,11 @@ namespace Dynamo.Controls
             CloseExtensionTab(tabItem);
             var extension = tabItem.Tag as IViewExtension;
             var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
-            AddExtensionWindow(extension, content, settings.WindowSettings);
-            settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
+            AddExtensionWindow(extension, content, settings?.WindowSettings);
+            if (settings != null)
+            {
+                settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
+            }
         }
 
         /// <summary>
@@ -516,8 +541,10 @@ namespace Dynamo.Controls
                 AddExtensionTab(extension, content);
 
                 var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
-                settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
-
+                if (settings != null)
+                {
+                    settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
+                }
                 Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
             }
             else
@@ -1591,7 +1618,9 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
-            
+            this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
         }

@@ -58,7 +58,7 @@ namespace Dynamo.Graph
                 elNodes = xmlDoc.GetElementsByTagName("dynElements");
             XmlNode elNodesList = elNodes[0];
             return from XmlElement elNode in elNodesList.ChildNodes
-                   select LoadNodeFromXml(elNode, SaveContext.File, nodeFactory, resolver);
+                   select LoadNodeFromXml(elNode, SaveContext.Save, nodeFactory, resolver);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace Dynamo.Graph
         public static NoteModel LoadNoteFromXml(XmlNode note)
         {
             var instance = new NoteModel(0, 0, string.Empty, Guid.NewGuid());
-            instance.Deserialize(note as XmlElement, SaveContext.File);
+            instance.Deserialize(note as XmlElement, SaveContext.Save);
             return instance;
         }
 
@@ -146,7 +146,7 @@ namespace Dynamo.Graph
         internal static AnnotationModel LoadAnnotationFromXml(XmlNode annotation, IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes)
         {
             var instance = new AnnotationModel(nodes,notes);             
-            instance.Deserialize(annotation as XmlElement, SaveContext.File);
+            instance.Deserialize(annotation as XmlElement, SaveContext.Save);
             return instance;
         }
 
@@ -184,7 +184,7 @@ namespace Dynamo.Graph
         private static PresetModel PresetFromXml(XmlElement stateNode, IEnumerable<NodeModel> nodesInNodeGraph)
         {
             var instance = new PresetModel(nodesInNodeGraph);
-            instance.Deserialize(stateNode, SaveContext.File);
+            instance.Deserialize(stateNode, SaveContext.Save);
             return instance;
         }
 

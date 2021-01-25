@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
@@ -13,6 +14,8 @@ namespace Dynamo.Controls
     {
         private WatchViewModel _vm;
         private WatchViewModel prevWatchViewModel;
+        private readonly int defaultSize = 200;
+        private readonly int minSize = 100;
 
         public WatchTree()
         {
@@ -23,6 +26,15 @@ namespace Dynamo.Controls
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
             _vm = this.DataContext as WatchViewModel;
+        }
+
+        internal void SetWatchNodeProperties() 
+        {
+            resizeThumb.Visibility = Visibility.Visible;
+            this.Width = defaultSize;
+            this.Height = defaultSize;
+            inputGrid.MinHeight = minSize;
+            inputGrid.MinWidth = minSize;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -99,6 +111,21 @@ namespace Dynamo.Controls
             if (_vm.FindNodeForPathCommand.CanExecute(node.Path))
             {
                 _vm.FindNodeForPathCommand.Execute(node.Path);
+            }
+        }
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        {
+            var yAdjust = ActualHeight + e.VerticalChange;
+            var xAdjust = ActualWidth + e.HorizontalChange;
+
+            if (xAdjust >= inputGrid.MinWidth)
+            {
+                Width = xAdjust;
+            }
+
+            if (yAdjust >= inputGrid.MinHeight)
+            {
+                Height = yAdjust;
             }
         }
     }

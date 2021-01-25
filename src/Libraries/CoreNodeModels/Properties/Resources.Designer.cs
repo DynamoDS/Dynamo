@@ -313,6 +313,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory path.
+        /// </summary>
+        public static string DirectoryPathOutputDescription {
+            get {
+                return ResourceManager.GetString("DirectoryPathOutputDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to directorypath;filepath;.
         /// </summary>
         public static string DirectoryPathSearchTags {
@@ -467,11 +476,20 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allows you to select a file on the system to get its filename..
+        ///   Looks up a localized string similar to Allows you to select a file on the system to get its file path..
         /// </summary>
         public static string FilePathDescription {
             get {
                 return ResourceManager.GetString("FilePathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File Path.
+        /// </summary>
+        public static string FilePathOutputDescription {
+            get {
+                return ResourceManager.GetString("FilePathOutputDescription", resourceCulture);
             }
         }
         
@@ -530,7 +548,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Result of math computation.
+        ///   Looks up a localized string similar to Result from formula.
         /// </summary>
         public static string FormulaPortDataResultToolTip {
             get {
@@ -1349,7 +1367,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Content of a webpage as a string..
+        ///   Looks up a localized string similar to Content of a web request as a string..
         /// </summary>
         public static string WebRequestPortDataResultToolTip {
             get {

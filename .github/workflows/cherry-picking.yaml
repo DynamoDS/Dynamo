@@ -21,7 +21,8 @@ jobs:
       with:
         pattern: "\""
         string: ${{github.event.commits[0].message}}
-        replace-with: "-"    
+        replace-with: "-"  
+        flags: g        
     #Checks the message looking for a cherry-pick request and extracts the target branch name
     - name: Check Information
       id: check-info
