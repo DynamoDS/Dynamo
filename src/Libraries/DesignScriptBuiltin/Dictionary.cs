@@ -98,7 +98,7 @@ namespace DesignScript
             /// <summary>
             ///     Obtain the value at a specified key
             /// </summary>
-            /// <param name="key">The key in the Dictionary to obtain value from</param>
+            /// <param name="key">The key in the Dictionary to obtain value for</param>
             /// <returns name="value">Value at the specified key or null if it is not set</returns>
             /// <search>lookup,valueatkey,find</search>
             public object ValueAtKey(string key)
