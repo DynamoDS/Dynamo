@@ -2387,143 +2387,146 @@ namespace Dynamo.Models
 
             // Create the new NodeModel's
             var newNodeModels = new List<NodeModel>();
-            foreach (var node in nodes)
+            using(CurrentWorkspace.BeginDelayedGraphExecution())
             {
-                NodeModel newNode;
-
-                if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
+                foreach (var node in nodes)
                 {
-                    var symbol = (node is Symbol
-                        ? (node as Symbol).InputSymbol
-                        : (node as Output).Symbol);
-                    var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
-                    newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices, CurrentWorkspace.ElementResolver);
+                    NodeModel newNode;
+
+                    if (CurrentWorkspace is HomeWorkspaceModel && (node is Symbol || node is Output))
+                    {
+                        var symbol = (node is Symbol
+                            ? (node as Symbol).InputSymbol
+                            : (node as Output).Symbol);
+                        var code = (string.IsNullOrEmpty(symbol) ? "x" : symbol) + ";";
+                        newNode = new CodeBlockNodeModel(code, node.X, node.Y, LibraryServices, CurrentWorkspace.ElementResolver);
+                    }
+                    else
+                    {
+                        var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
+                        newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
+                    }
+
+                    var lacing = node.ArgumentLacing.ToString();
+                    newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
+                    if (!string.IsNullOrEmpty(node.Name) && !(node is Symbol) && !(node is Output))
+                        newNode.Name = node.Name;
+
+                    newNode.Width = node.Width;
+                    newNode.Height = node.Height;
+
+                    modelLookup.Add(node.GUID, newNode);
+
+                    newNodeModels.Add(newNode);
                 }
-                else
+
+                var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
+
+                var shiftX = targetPoint.X - newItems.Min(item => item.X);
+                var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
+                var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
+
+                foreach (var model in newItems)
                 {
-                    var dynEl = node.Serialize(xmlDoc, SaveContext.Copy);
-                    newNode = NodeFactory.CreateNodeFromXml(dynEl, SaveContext.Copy, CurrentWorkspace.ElementResolver);
+                    model.X = model.X + shiftX + offset;
+                    model.Y = model.Y + shiftY + offset;
                 }
 
-                var lacing = node.ArgumentLacing.ToString();
-                newNode.UpdateValue(new UpdateValueParams("ArgumentLacing", lacing));
-                if (!string.IsNullOrEmpty(node.Name) && !(node is Symbol) && !(node is Output))
-                    newNode.Name = node.Name;
+                // Add the new NodeModel's to the Workspace
+                foreach (var newNode in newNodeModels)
+                {
+                    CurrentWorkspace.AddAndRegisterNode(newNode, false);
+                    createdModels.Add(newNode);
+                }
 
-                newNode.Width = node.Width;
-                newNode.Height = node.Height;
+                // TODO: is this required?
+                OnRequestLayoutUpdate(this, EventArgs.Empty);
 
-                modelLookup.Add(node.GUID, newNode);
+                // Add the new NoteModel's to the Workspace
+                foreach (var newNote in newNoteModels)
+                {
+                    CurrentWorkspace.AddNote(newNote, false);
+                    createdModels.Add(newNote);
+                }
 
-                newNodeModels.Add(newNode);
-            }
+                ModelBase start;
+                ModelBase end;
+                var newConnectors =
+                    from c in connectors
 
-            var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);
-
-            var shiftX = targetPoint.X - newItems.Min(item => item.X);
-            var shiftY = targetPoint.Y - newItems.Min(item => item.Y);
-            var offset = useOffset ? CurrentWorkspace.CurrentPasteOffset : 0;
-
-            foreach (var model in newItems)
-            {
-                model.X = model.X + shiftX + offset;
-                model.Y = model.Y + shiftY + offset;
-            }
-
-            // Add the new NodeModel's to the Workspace
-            foreach (var newNode in newNodeModels)
-            {
-                CurrentWorkspace.AddAndRegisterNode(newNode, false);
-                createdModels.Add(newNode);
-            }
-
-            // TODO: is this required?
-            OnRequestLayoutUpdate(this, EventArgs.Empty);
-
-            // Add the new NoteModel's to the Workspace
-            foreach (var newNote in newNoteModels)
-            {
-                CurrentWorkspace.AddNote(newNote, false);
-                createdModels.Add(newNote);
-            }
-
-            ModelBase start;
-            ModelBase end;
-            var newConnectors =
-                from c in connectors
-
-                    // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
-                    // re-connect to the original.
+                        // If the guid is in nodeLookup, then we connect to the new pasted node. Otherwise we
+                        // re-connect to the original.
                 let startNode =
-                    modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
-                        ? start as NodeModel
-                        : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
-                let endNode =
-                    modelLookup.TryGetValue(c.End.Owner.GUID, out end)
-                        ? end as NodeModel
-                        : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
+                        modelLookup.TryGetValue(c.Start.Owner.GUID, out start)
+                            ? start as NodeModel
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.Start.Owner.GUID)
+                    let endNode =
+                        modelLookup.TryGetValue(c.End.Owner.GUID, out end)
+                            ? end as NodeModel
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == c.End.Owner.GUID)
 
                 // Don't make a connector if either end is null.
                 where startNode != null && endNode != null
-                select
-                    ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
+                    select
+                        ConnectorModel.Make(startNode, endNode, c.Start.Index, c.End.Index);
 
-            createdModels.AddRange(newConnectors);
+                createdModels.AddRange(newConnectors);
 
-            //Grouping depends on the selected node models.
-            //so adding the group after nodes / notes are added to workspace.
-            //select only those nodes that are part of a group.
-            var newAnnotations = new List<AnnotationModel>();
-            foreach (var annotation in annotations)
-            {
-                var annotationNodeModel = new List<NodeModel>();
-                var annotationNoteModel = new List<NoteModel>();
-                // some models can be deleted after copying them,
-                // so they need to be in pasted annotation as well
-                var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
-                var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
-                // checked condition here that supports pasting of multiple groups
-                foreach (var models in modelsToAdd)
+                //Grouping depends on the selected node models.
+                //so adding the group after nodes / notes are added to workspace.
+                //select only those nodes that are part of a group.
+                var newAnnotations = new List<AnnotationModel>();
+                foreach (var annotation in annotations)
                 {
-                    ModelBase mbase;
-                    modelLookup.TryGetValue(models.GUID, out mbase);
-                    if (mbase is NodeModel)
+                    var annotationNodeModel = new List<NodeModel>();
+                    var annotationNoteModel = new List<NoteModel>();
+                    // some models can be deleted after copying them,
+                    // so they need to be in pasted annotation as well
+                    var modelsToRestore = annotation.DeletedModelBases.Intersect(ClipBoard);
+                    var modelsToAdd = annotation.Nodes.Concat(modelsToRestore);
+                    // checked condition here that supports pasting of multiple groups
+                    foreach (var models in modelsToAdd)
                     {
-                        annotationNodeModel.Add(mbase as NodeModel);
+                        ModelBase mbase;
+                        modelLookup.TryGetValue(models.GUID, out mbase);
+                        if (mbase is NodeModel)
+                        {
+                            annotationNodeModel.Add(mbase as NodeModel);
+                        }
+                        if (mbase is NoteModel)
+                        {
+                            annotationNoteModel.Add(mbase as NoteModel);
+                        }
                     }
-                    if (mbase is NoteModel)
+
+                    var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel)
                     {
-                        annotationNoteModel.Add(mbase as NoteModel);
-                    }
+                        GUID = Guid.NewGuid(),
+                        AnnotationText = annotation.AnnotationText,
+                        Background = annotation.Background,
+                        FontSize = annotation.FontSize
+                    };
+
+                    newAnnotations.Add(annotationModel);
                 }
 
-                var annotationModel = new AnnotationModel(annotationNodeModel, annotationNoteModel)
+                // Add the new Annotation's to the Workspace
+                foreach (var newAnnotation in newAnnotations)
                 {
-                    GUID = Guid.NewGuid(),
-                    AnnotationText = annotation.AnnotationText,
-                    Background = annotation.Background,
-                    FontSize = annotation.FontSize
-                };
+                    CurrentWorkspace.AddAnnotation(newAnnotation);
+                    createdModels.Add(newAnnotation);
+                    AddToSelection(newAnnotation);
+                }
 
-                newAnnotations.Add(annotationModel);
-            }
+                // adding an annotation overrides selection, so add nodes and notes after
+                foreach (var item in newItems)
+                {
+                    AddToSelection(item);
+                }
 
-            // Add the new Annotation's to the Workspace
-            foreach (var newAnnotation in newAnnotations)
-            {
-                CurrentWorkspace.AddAnnotation(newAnnotation);
-                createdModels.Add(newAnnotation);
-                AddToSelection(newAnnotation);
-            }
-
-            // adding an annotation overrides selection, so add nodes and notes after
-            foreach (var item in newItems)
-            {
-                AddToSelection(item);
-            }
-
-            // Record models that are created as part of the command.
-            CurrentWorkspace.RecordCreatedModels(createdModels);
+                // Record models that are created as part of the command.
+                CurrentWorkspace.RecordCreatedModels(createdModels);
+            }    
         }
 
         /// <summary>

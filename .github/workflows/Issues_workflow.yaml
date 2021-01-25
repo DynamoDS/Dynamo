@@ -23,6 +23,7 @@ jobs:
           pattern: "\""
           string: ${{ github.event.issue.title }}
           replace-with: '-'
+          flags: g    
       - name: Check Information
         id: check-info
         run: |
@@ -90,6 +91,7 @@ jobs:
           pattern: "\""
           string: ${{ github.event.issue.body }}
           replace-with: '-'
+          flags: g
 
       #Checks for missing information inside the issue content
       - name: Check Information
