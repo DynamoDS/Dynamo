@@ -84,6 +84,7 @@
     <Compile Include="Core\NotificationObjectTests.cs" />
     <Compile Include="Core\CrashPromptArgsTests.cs" />
     <Compile Include="DefaultPythonEngineTests.cs" />
+    <Compile Include="DelayedGraphExecutionTests.cs" />
     <Compile Include="DSCoreDataTests.cs" />
     <Compile Include="Engine\CodeCompletion\CodeCompletionServicesTest.cs" />
     <Compile Include="Engine\CodeGeneration\CompilingEventArgsTest.cs" />
