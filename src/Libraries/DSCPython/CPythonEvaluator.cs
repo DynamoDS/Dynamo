@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 using DSCPython.Encoders;
 using Dynamo.Events;
@@ -256,10 +255,8 @@ namespace DSCPython
         {
             if (!isPythonInstalled)
             {
-                Task.Run(() => {
-                   Python.Included.Installer.SetupPython().Wait();
-                   isPythonInstalled = true;
-               }).Wait();
+                Python.Included.Installer.SetupPythonSync();
+                isPythonInstalled = true;
             }
         }
 
