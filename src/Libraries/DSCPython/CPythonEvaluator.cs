@@ -255,7 +255,7 @@ namespace DSCPython
         {
             if (!isPythonInstalled)
             {
-                Python.Included.Installer.SetupPython().Wait();
+                Python.Included.Installer.SetupPythonSync();
                 isPythonInstalled = true;
             }
         }
