@@ -1313,7 +1313,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the output of node..
+        ///   Looks up a localized string similar to Visualize the node&apos;s output.
         /// </summary>
         public static string WatchNodeDescription {
             get {
@@ -1331,7 +1331,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node to evaluate..
+        ///   Looks up a localized string similar to Node to show output from.
         /// </summary>
         public static string WatchPortDataInputToolTip {
             get {
@@ -1340,7 +1340,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Watch contents..
+        ///   Looks up a localized string similar to Node output.
         /// </summary>
         public static string WatchPortDataResultToolTip {
             get {

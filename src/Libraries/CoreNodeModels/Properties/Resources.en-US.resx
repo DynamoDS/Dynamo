@@ -477,13 +477,13 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
-    <value>Visualize the output of node.</value>
+    <value>Visualize the node's output</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
-    <value>Node to evaluate.</value>
+    <value>Node to show output from</value>
   </data>
   <data name="WatchPortDataResultToolTip" xml:space="preserve">
-    <value>Watch contents.</value>
+    <value>Node output</value>
   </data>
   <data name="WatchSearchTags" xml:space="preserve">
     <value>print;output;display</value>
