@@ -503,7 +503,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter function used to determine if an element is filtered in our out.
+        ///   Looks up a localized string similar to Filter function used to determine if an element is filtered in or out.
         /// </summary>
         public static string FilterPortDataConditionToolTip {
             get {
@@ -1070,7 +1070,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Item, or list with items replaced by condition.
+        ///   Looks up a localized string similar to Item, or list of items where condition was used to replace with item given in &quot;replaceWith&quot;.
         /// </summary>
         public static string ReplacePortDataResultToolTip {
             get {
