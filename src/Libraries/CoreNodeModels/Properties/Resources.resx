@@ -226,7 +226,7 @@
     <comment>Description for File Path</comment>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
-    <value>Predicate used to determine if an element is filtered in or out.</value>
+    <value>Filter function used to determine if an element is filtered in or out</value>
   </data>
   <data name="FilterPortDataListToolTip" xml:space="preserve">
     <value>List to filter</value>
@@ -426,7 +426,7 @@
     <comment>ReplaceByCondition search tags</comment>
   </data>
   <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
-    <value>Predicate used to determine if it should be replaced.</value>
+    <value>Replacement function used to determine if an object should be replaced</value>
   </data>
   <data name="ReplacePortDataItemToolTip" xml:space="preserve">
     <value>Item to potentially be replaced</value>
@@ -435,7 +435,7 @@
     <value>Object to replace with</value>
   </data>
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
-    <value>If condition(item) = True, then "replaceWith" is returned. Otherwise "item" is returned unaltered.</value>
+    <value>Item, or list of items where condition was used to replace with item given in "replaceWith"</value>
   </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
     <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
