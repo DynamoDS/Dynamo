@@ -15,7 +15,7 @@ namespace DSCore
         /// <summary>
         ///     The earliest date and time that can be represented.
         /// </summary>
-        /// <returns name="dateTime">Minimum possible TimeSpan representation</returns>
+        /// <returns name="dateTime">Minimum possible DateTime representation</returns>
         public static System.DateTime MinValue
         {
             get { return System.DateTime.MinValue; }
@@ -24,7 +24,7 @@ namespace DSCore
         /// <summary>
         ///     The latest date and time that can be represented.
         /// </summary>
-        /// <returns name="dateTime">Maximum possible TimeSpan representation</returns>
+        /// <returns name="dateTime">Maximum possible DateTime representation</returns>
         public static System.DateTime MaxValue
         {
             get { return System.DateTime.MaxValue; }
@@ -267,12 +267,12 @@ namespace DSCore
         /// <summary>
         ///     Yields a new TimeSpan calculated from the time difference between two DateTimes
         /// </summary>
-        /// <param name="date1">Starting DateTime</param>
-        /// <param name="date2">Ending DateTime</param>
+        /// <param name="dateTime">DateTime to subtract from</param>
+        /// <param name="otherDateTime">DateTime to subtract</param>
         /// <returns name="timeSpan">TimeSpan difference between two dates</returns>
-        public static System.TimeSpan ByDateDifference(System.DateTime date1, System.DateTime date2)
+        public static System.TimeSpan ByDateDifference(System.DateTime dateTime, System.DateTime otherDateTime)
         {
-            return date1.Subtract(date2);
+            return dateTime.Subtract(otherDateTime);
         }
 
         /// <summary>
@@ -371,7 +371,7 @@ namespace DSCore
         /// <summary>
         ///     Extracts the individual components of a TimeSpan.
         /// </summary>
-        /// <param name="timeSpan">DateTime to get components from</param>
+        /// <param name="timeSpan">TimeSpan to get components from</param>
         /// <returns name="days">Amount of days (type int)</returns>
         /// <returns name="hours">Amount of hours (type int)</returns>
         /// <returns name="minutes">Amount of minutes (type int)</returns>
