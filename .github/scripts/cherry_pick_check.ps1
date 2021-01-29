@@ -1,8 +1,8 @@
 param([string]$commitMessage)
 
 #Looks for the cherry-pick command on the commit message
-#Format: Cherry-pick to: 'target-branch'
-$cherrypickCommand = $commitMessage | Select-String -Pattern "Cherry-pick to:\s?'*'"
+#Format: Cherry-pick to 'target-branch'
+$cherrypickCommand = $commitMessage | Select-String -Pattern "Cherry-pick to\s?'*'"
 
 #Extracts the branch name
 if($cherrypickCommand){
