@@ -78,7 +78,7 @@
         </member>
 		<member name="%le">
             <summary>
-              If the x input is less than the y input, or if the two values are equal, it will return true. If x is greater than y, this operator will return false.
+              Compares if x is lower or equal to y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -87,7 +87,7 @@
         </member>
 		<member name="%lt">
             <summary>
-              If the x input is less than the y input, it will return true. If x is greater than y, or if the two value are equal, this operator will return false.
+              Compares if x is lower to y
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
@@ -96,7 +96,7 @@
         </member>
 		<member name="%and">
             <summary>
-                It takes two boolean values as input and returns true if both values are true.
+                Logical AND operator
             </summary>
             <param name="x">A boolean to check if true</param>
             <param name="y">Another boolean to check if true</param>
@@ -114,7 +114,7 @@
         </member>
 		<member name="%nq">
             <summary>
-                It takes two input values and returns true if the two values are not equal to each other and returns false if the two values are equal.
+              Returns true if the two values are different
             </summary>
             <param name="x">Integer or double value</param>
             <param name="y">Integer or double value</param>
