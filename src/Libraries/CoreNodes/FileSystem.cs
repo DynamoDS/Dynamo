@@ -73,9 +73,9 @@ namespace DSCore.IO
         /// <summary>
         ///  Moves a specified file to a new location
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="newPath"></param>
-        /// <param name="overwrite"></param>
+        /// <param name="path">String representation of existing path</param>
+        /// <param name="newPath">String representation of new path</param>
+        /// <param name="overwrite">Toggle to overwrite existing files</param>
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
         public static void MoveFile(string path, string newPath, bool overwrite = false)
         {
