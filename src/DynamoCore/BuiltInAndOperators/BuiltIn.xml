@@ -146,17 +146,17 @@
       <search>group,function</search>
     </member>
     <member name="List.TrueForAll">
-      <summary>Returns true if all items in the list evaluate to true with the given predicate.</summary>
+      <summary>Returns true if all items in the list evaluate to true with the given query function</summary>
       <param name="list">List from which to evaluate items by query function</param>
       <param name="queryFunction">Function to evaluate list</param>
-      <returns name="bool">Returns true for all of the items in the list compared to the query function</returns>
+      <returns name="bool">Returns true if all items in the list evaluate to true with the given query function</returns>
       <search>true,all</search>
     </member>
     <member name="List.TrueForAny">
-      <summary>Returns true if one or more items in the list evaluate to true with the given predicate.</summary>
+      <summary>Returns true if one or more items in the list evaluate to true with the given query function</summary>
       <param name="list">List from which to evaluate items by query function</param>
       <param name="queryFunction">Function to evaluate list</param>
-      <returns name="bool">Returns true if any of the items in the list compared to the query function</returns>
+      <returns name="bool">Returns true if any of the items in the list evaluate to true with the query function</returns>
       <search>true,any</search>
     </member>
     <member name="__ForEach">
