@@ -19,6 +19,7 @@ jobs:
       uses: actions/checkout@v2
 
     #Removes posible conflicting characters on the commit message
+    #This is because the content of the message will be passed to a script as a parameter and quotation marks will split the text as if it where multiple parameters.
     - name: Remove conflicting chars
       uses: frabert/replace-string-action@v1.2
       id: remove_quotations
@@ -26,6 +27,7 @@ jobs:
         pattern: "\""
         string: ${{github.event.commits[0].message}}
         replace-with: "-"  
+        flags: g
 
     #Checks the message looking for a cherry-pick request and extracts the target branch name
     - name: Check Information
