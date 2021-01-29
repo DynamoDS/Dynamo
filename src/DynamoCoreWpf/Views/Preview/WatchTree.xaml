@@ -331,12 +331,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+            <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!-- Shows counts of all items in List -->
             
-            <TextBlock Name="ListItems" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+            <TextBlock Name="ListItems" Grid.Row="0" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
                        Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             {<Run Foreground="DarkRed" Text="{Binding NumberOfItems}" />}
                 </TextBlock>
@@ -344,6 +347,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView"
+                      Grid.Row="0"
                       Grid.Column ="0" Margin="6,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
@@ -384,10 +388,10 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Thumb Name ="resizeThumb" Grid.Column ="3"
+            <Thumb Name ="resizeThumb" Grid.Row="1" Grid.Column ="2"
                Width="10" Height="10" 
                HorizontalAlignment="Right"
-               Margin="5"
+               Margin="2,2,10,2"
                DragDelta="ThumbResizeThumbOnDragDeltaHandler"
                Visibility="Hidden"/>
           </Grid>
