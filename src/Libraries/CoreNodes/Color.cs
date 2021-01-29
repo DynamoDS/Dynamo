@@ -69,15 +69,15 @@ namespace DSCore
         /// <summary>
         ///     Construct a color by alpha, red, green, and blue components.
         /// </summary>
-        /// <param name="a">The alpha value.</param>
-        /// <param name="r">The red value.</param>
-        /// <param name="g">The green value.</param>
-        /// <param name="b">The blue value.</param>
-        /// <returns name="color">Color.</returns>
+        /// <param name="alpha">Alpha value (between 0 and 255 inclusive)</param>
+        /// <param name="red">Red value for RGB color model (between 0 and 255 inclusive)</param>
+        /// <param name="green">Green value for RGB color model (between 0 and 255 inclusive)</param>
+        /// <param name="blue">Blue value for RGB color model (between 0 and 255 inclusive)</param>
+        /// <returns name="color">Color created from ARGB</returns>
         /// <search>color</search>
-        public static Color ByARGB(int a = 255, int r = 0, int g = 0, int b = 0)
+        public static Color ByARGB(int alpha = 255, int red = 0, int green = 0, int blue = 0)
         {
-            return new Color(a, r, g, b);
+            return new Color(alpha, red, green, blue);
         }
 
         internal static Color ByColor(System.Drawing.Color color)
@@ -98,10 +98,11 @@ namespace DSCore
         /// <summary>
         /// Returns the brightness value for this color.
         /// </summary>
-        /// <returns name="brightness">double between 0 and 1 inclusive.</returns>
-        public static float Brightness(Color c)
+        /// <param name="color"> Color to query brightness from</param>
+        /// <returns name="double">Brightness value (between 0 and 1 inclusive)</returns>
+        public static float Brightness(Color color)
         {
-            return c.color.GetBrightness();
+            return color.color.GetBrightness();
         }
 
         /// <summary>
@@ -262,46 +263,46 @@ namespace DSCore
             return Equals((Color)obj);
         }
         /// <summary>
-        /// Construct a Color by combining two input Colors.
+        /// Construct a color by combining the ARGB values of two existing colors.
         /// </summary>
-        /// <param name="Color 1"></param>
-        /// <param name="Color 2"></param>
-        /// <returns></returns>
-        public static Color Add(Color c1, Color c2)
+        /// <param name="color">A color to add</param>
+        /// <param name="otherColor">Other color to add</param>
+        /// <returns name="color">Color result from addition of two colors</returns>
+        public static Color Add(Color color, Color otherColor)
         {
             return ByARGB(
-                c1.Alpha + c2.Alpha,
-                c1.Red + c2.Red,
-                c1.Green + c2.Green,
-                c1.Blue + c2.Blue);
+                color.Alpha + otherColor.Alpha,
+                color.Red + otherColor.Red,
+                color.Green + otherColor.Green,
+                color.Blue + otherColor.Blue);
         }
         /// <summary>
         /// Multiply an input color with a number multiplier to produce a darker color. Input color must have an alpha less than 255.
         /// </summary>
-        /// <param name="Color 1"></param>
-        /// <param name="multiplier"></param>
-        /// <returns></returns>
-        public static Color Multiply(Color c1, double div)
+        /// <param name="color">Color to multiply</param>
+        /// <param name="multiplier">Multiplier value</param>
+        /// <returns name="color">Color result from multiplication</returns>
+        public static Color Multiply(Color color, double multiplier)
         {
             return ByARGB(
-                (int)(c1.Alpha * div),
-                (int)(c1.Red * div),
-                (int)(c1.Green * div),
-                (int)(c1.Blue * div));
+                (int)(color.Alpha * multiplier),
+                (int)(color.Red * multiplier),
+                (int)(color.Green * multiplier),
+                (int)(color.Blue * multiplier));
         }
         /// <summary>
         /// Divide an input color with a number divider to produce a brighter color and remove color tint
         /// </summary>
-        /// <param name="Color 1"></param>
-        /// <param name="divider"></param>
-        /// <returns></returns>
-        public static Color Divide(Color c1, double div)
+        /// <param name="color">Color to divide</param>
+        /// <param name="dividend">Dividend value</param>
+        /// <returns name="color">Color result from division</returns>
+        public static Color Divide(Color color, double dividend)
         {
             return ByARGB(
-                (int)(c1.Alpha / div),
-                (int)(c1.Red / div),
-                (int)(c1.Green / div),
-                (int)(c1.Blue / div));
+                (int)(color.Alpha / dividend),
+                (int)(color.Red / dividend),
+                (int)(color.Green / dividend),
+                (int)(color.Blue / dividend));
         }
 
         public override int GetHashCode()
