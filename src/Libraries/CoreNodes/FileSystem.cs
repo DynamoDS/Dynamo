@@ -146,7 +146,7 @@ namespace DSCore.IO
         /// <summary>
         ///     Combines multiple strings into a single file path.
         /// </summary>
-        /// <param name="strings">String to combine into a path</param>
+        /// <param name="strings">Strings to combine into a path</param>
         /// <returns name="string">Combined file path</returns>
         public static string CombinePath(params string[] strings)
         {
