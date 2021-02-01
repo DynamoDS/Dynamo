@@ -23,7 +23,7 @@ namespace Dynamo.Graph.Nodes
         dateInput,
         [Obsolete("Use hostSelection or dropdownSelection instead")]
         [EnumMember(Value = "selection")]
-        selection,
+        selectionInput,
         [EnumMember(Value = "hostSelection")]
         hostSelection,
         [EnumMember(Value = "dropdownSelection")]
