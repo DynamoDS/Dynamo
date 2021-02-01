@@ -649,6 +649,9 @@ namespace Dynamo.Graph.Workspaces
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
             ws.ExtensionData = GetExtensionData(serializer, obj);
+            if (obj.TryGetValue(nameof(WorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
+                ws.Thumbnail = thumbnail.ToString();
+
 
             return ws;
         }
@@ -770,6 +773,10 @@ namespace Dynamo.Graph.Workspaces
             // ExtensionData
             writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
             serializer.Serialize(writer, ws.ExtensionData);
+
+            // Thumbnail
+            writer.WritePropertyName(nameof(WorkspaceModel.Thumbnail));
+            writer.WriteValue(ws.Thumbnail);
 
             if (engine != null)
             {

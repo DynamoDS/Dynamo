@@ -284,5 +284,35 @@ namespace Dynamo.Tests
             Assert.AreEqual(Resources.ModelNotFoundError, ex3.Message);
 
         }
+
+        [Test]
+        public void CanStoreBase64EncodedImageInThumbnailProperty()
+        {
+            // Arrange
+            var imagePath = Path.Combine(TestDirectory, @"DynamoCoreTests\Graph\Workspaces\thumbnailTestImage.png");
+            Assert.That(File.Exists(imagePath));
+
+            // Act
+            byte[] imageArray = System.IO.File.ReadAllBytes(imagePath);
+            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+            this.CurrentDynamoModel.CurrentWorkspace.Thumbnail = base64ImageRepresentation;
+
+            // Assert
+            Assert.NotNull(base64ImageRepresentation);
+            Assert.AreEqual(this.CurrentDynamoModel.CurrentWorkspace.Thumbnail, base64ImageRepresentation);
+        }
+
+        [Test]
+        public void WillNotStoreInvalidBase64StringInThumbnailProperty()
+        {
+            // Arrange
+            var invalidImagePath = "GenericString";
+
+            // Act
+            this.CurrentDynamoModel.CurrentWorkspace.Thumbnail = invalidImagePath;
+
+            // Assert
+            Assert.IsNull(this.CurrentDynamoModel.CurrentWorkspace.Thumbnail);
+        }
     }
 }

@@ -724,6 +724,30 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
+        private string thumbnail;
+
+        /// <summary>
+        /// Workspace thumbnail as Base64 string.
+        /// Returns null if provide value is not Base64 encoded.
+        /// </summary>
+        public string Thumbnail
+        {
+            get { return thumbnail; }
+            set
+            {
+                try
+                {
+                    // if value is not a valid Base64 string this will throw, and we return null.
+                    byte[] data = Convert.FromBase64String(value);
+                    thumbnail = value;
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
+
         /// <summary>
         /// List of user defined data from extensions and view extensions stored in the graph
         /// </summary>
