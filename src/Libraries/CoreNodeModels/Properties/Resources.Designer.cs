@@ -133,7 +133,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of colors to include in the range..
+        ///   Looks up a localized string similar to List of colors to include in the range.
         /// </summary>
         public static string ColorRangePortDataColorsToolTip {
             get {
@@ -142,7 +142,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0 which position the input colors along the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0 which position the input colors along the range.
         /// </summary>
         public static string ColorRangePortDataIndicesToolTip {
             get {
@@ -151,7 +151,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The selected colors..
+        ///   Looks up a localized string similar to Selected colors.
         /// </summary>
         public static string ColorRangePortDataResultToolTip {
             get {
@@ -160,7 +160,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A list of values between 0.0 and 1.0. These values are used to look up the color within the range..
+        ///   Looks up a localized string similar to List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list..
         /// </summary>
         public static string ColorRangePortDataValueToolTip {
             get {
@@ -421,7 +421,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Tolerance
+        ///   Looks up a localized string similar to Tolerance permitted for equality check
         ///Default value: {0}.
         /// </summary>
         public static string EqualsWithToleranceTooltip {
@@ -503,7 +503,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Predicate used to determine if an element is filtered in or out..
+        ///   Looks up a localized string similar to Filter function used to determine if an element is filtered in or out.
         /// </summary>
         public static string FilterPortDataConditionToolTip {
             get {
@@ -1043,7 +1043,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Predicate used to determine if it should be replaced..
+        ///   Looks up a localized string similar to Replacement function used to determine if an object should be replaced.
         /// </summary>
         public static string ReplacePortDataConditionToolTip {
             get {
@@ -1070,7 +1070,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If condition(item) = True, then &quot;replaceWith&quot; is returned. Otherwise &quot;item&quot; is returned unaltered..
+        ///   Looks up a localized string similar to Item, or list of items where condition was used to replace with item given in &quot;replaceWith&quot;.
         /// </summary>
         public static string ReplacePortDataResultToolTip {
             get {
@@ -1313,7 +1313,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the output of node..
+        ///   Looks up a localized string similar to Visualize the node&apos;s output.
         /// </summary>
         public static string WatchNodeDescription {
             get {
@@ -1331,7 +1331,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Node to evaluate..
+        ///   Looks up a localized string similar to Node to show output from.
         /// </summary>
         public static string WatchPortDataInputToolTip {
             get {
@@ -1340,7 +1340,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Watch contents..
+        ///   Looks up a localized string similar to Node output.
         /// </summary>
         public static string WatchPortDataResultToolTip {
             get {
