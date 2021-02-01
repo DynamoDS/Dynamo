@@ -7,9 +7,9 @@ class List extends DSCore.List
 		return __RemoveIfNot(list, type);
 	}
 
-	public static def Equals: bool(objectA: var[]..[], objectB: var[]..[])
+	public static def Equals: bool(object: var[]..[], otherObject: var[]..[])
     {
-        return __Equals(objectA, objectB);
+        return __Equals(object, otherObject);
 	}
 
 	public static def GroupByFunction(list: var[]..[], groupFunction: Function)
@@ -32,14 +32,14 @@ class List extends DSCore.List
 		return __MinimumItemByKey(list, keyFunction);
 	}
 
-	public static def TrueForAll: bool(list: var[]..[], predicate: Function)
+	public static def TrueForAll: bool(list: var[]..[], queryFunction: Function)
 	{
-		return __TrueForAll(list, predicate);
+		return __TrueForAll(list, queryFunction);
 	}
 
-	public static def TrueForAny: bool(list: var[]..[], predicate: Function)
+	public static def TrueForAny: bool(list: var[]..[], queryFunction: Function)
 	{
-		return __TrueForAny(list, predicate);
+		return __TrueForAny(list, queryFunction);
 	}
 	public static def Rank : int(list: var[]..[])
   	{		
