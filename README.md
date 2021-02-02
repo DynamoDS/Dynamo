@@ -49,7 +49,6 @@ See the [Release Notes](https://github.com/DynamoDS/Dynamo/wiki/Release-Notes).
 Dynamo now leverages the same instrumentation component as other Autodesk products which share the opt-in option. The data will be used to enhance the usability of the product.
 
 
-
 ## License ##
 
 Dynamo is licensed under the Apache License. Dynamo also uses a number of third party libraries, some with different licenses. You can find more information [here](LICENSE.txt).
