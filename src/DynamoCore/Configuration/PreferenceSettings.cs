@@ -9,6 +9,13 @@ using Dynamo.Interfaces;
 
 namespace Dynamo.Configuration
 {
+    public class Package
+    {
+        public string Name { get; set; }
+
+        public string Version { get; set; }
+    }
+
     /// <summary>
     /// PreferenceSettings is a class for GUI to persist certain settings.
     /// Upon running of the GUI, those settings that are persistent will be loaded
@@ -233,6 +240,12 @@ namespace Dynamo.Configuration
 
         #region Dynamo application settings
 
+        // TODO: Add to IPreferences in Dynamo 3.0
+        /// <summary>
+        /// List of packages referenced by (name, version) pair to exclude from loading.
+        /// </summary>
+        public List<Package> PackagesToExcludeLoading { get; set; }
+
         /// <summary>
         /// The decimal precision used to display numbers.
         /// </summary>
@@ -421,6 +434,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = false;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
+            PackagesToExcludeLoading = new List<Package>();
         }
 
         /// <summary>

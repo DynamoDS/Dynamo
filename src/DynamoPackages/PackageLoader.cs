@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -18,6 +19,7 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
+        //public IEnumerable<Tuple<string, string>> PackagesToExcludeLoading { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -69,6 +71,8 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         private readonly List<string> packagesDirectories = new List<string>();
+        private List<Configuration.Package> packagesToExcludeLoading;
+
         public string DefaultPackagesDirectory
         {
             get { return packagesDirectories[0]; }
@@ -99,7 +103,7 @@ namespace Dynamo.PackageManager
             if (error != null)
                 Log(error);
 
-            packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
+            //packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
         }
 
         /// <summary>
@@ -275,6 +279,11 @@ namespace Dynamo.PackageManager
         /// </summary>
         public void LoadAll(LoadPackageParams loadPackageParams)
         {
+            // Add global preferences for package list to be excluded.
+            packagesToExcludeLoading = ((PreferenceSettings)loadPackageParams.Preferences).PackagesToExcludeLoading;
+            // Add workspace level packages to be excluded.
+            //packagesToExcludeLoading.AddRange(loadPackageParams.PackagesToExcludeLoading);
+
             ScanAllPackageDirectories(loadPackageParams.Preferences);
 
             var pathManager = loadPackageParams.PathManager;
@@ -408,7 +417,19 @@ namespace Dynamo.PackageManager
                 {
                     discoveredPkg = Package.FromJson(headerPath, AsLogger());
                     if (discoveredPkg == null)
-                        throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
+                    {
+                        throw new LibraryLoadFailedException(directory,
+                            String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
+                    }
+
+                    foreach (var package in packagesToExcludeLoading)
+                    {
+                        // skip current package if it exists in list of packages to be excluded.
+                        if (discoveredPkg.Name == package.Name && discoveredPkg.VersionName == package.Version)
+                        {
+                            return null;
+                        }
+                    }
                 }
                 else
                 {
