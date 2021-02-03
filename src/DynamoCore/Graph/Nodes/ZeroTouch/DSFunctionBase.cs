@@ -241,7 +241,9 @@ namespace Dynamo.Graph.Nodes.ZeroTouch
             base.SerializeCore(element, context);
             var asmPath = Definition.Assembly ?? "";
 
-            if (context == SaveContext.File)
+            if (context == SaveContext.File ||
+                context == SaveContext.Save ||
+                context == SaveContext.SaveAs)
             {
                 // We only make relative paths in a file saving operation.
                 var docPath = Utilities.GetDocumentXmlPath(element.OwnerDocument);

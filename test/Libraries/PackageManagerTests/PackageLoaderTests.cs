@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Engine;
+using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -641,6 +641,22 @@ namespace Dynamo.PackageManager.Tests
         //        }
         //    }
         //}
+
+        [Test]
+        public void HasValidStandardLibraryPath()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+        }
 
         [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()

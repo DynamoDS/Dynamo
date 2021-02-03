@@ -43,6 +43,7 @@ using Dynamo.Wpf.ViewModels.Core;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
+using Dynamo.Wpf.Windows;
 using HelixToolkit.Wpf.SharpDX;
 using ResourceNames = Dynamo.Wpf.Interfaces.ResourceNames;
 using String = System.String;
@@ -79,6 +80,11 @@ namespace Dynamo.Controls
         /// </summary>
         internal static event Action<String> CloseExtension;
         internal ObservableCollection<TabItem> ExtensionTabItems { set; get; } = new ObservableCollection<TabItem>();
+        /// <summary>
+        /// Extensions currently displayed as windows.
+        /// Made internal for testing purposes only.
+        /// </summary>
+        internal Dictionary<string, ExtensionWindow> ExtensionWindows { get; set; } = new Dictionary<string, ExtensionWindow>();
         internal ViewExtensionManager viewExtensionManager;
         internal Watch3DView BackgroundPreview { get; private set; }
 
@@ -202,77 +208,206 @@ namespace Dynamo.Controls
 
             this.dynamoViewModel.RequestPaste += OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView += OnRequestReturnFocusToView;
+            this.dynamoViewModel.Model.WorkspaceSaving += OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened += OnWorkspaceOpened;
             FocusableGrid.InputBindings.Clear();
         }
 
-        /// <summary>
-        /// Adds a tab item to the extension bar and sets the extension window/control as the tab
-        /// content. It also makes sure the extension is visible.
-        /// </summary>
-        /// <param name="viewExtension">View extension adding the content</param>
-        /// <param name="contentControl">Control being added to the extension bar</param>
-        /// <returns>The tab item if it was added, otherwise null</returns>
-        internal TabItem AddExtensionTabItem(IViewExtension viewExtension, ContentControl contentControl)
+        private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            var tab = FindExtensionTab(viewExtension);
-            if (tab == null)
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                tabDynamic.DataContext = null;
-
-                // creates a new tab item
-                tab = new TabItem();
-                tab.Header = viewExtension.Name;
-                tab.Tag = viewExtension.GetType();
-                tab.Uid = viewExtension.UniqueId;
-                tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
-
-                // setting the extension UI to the current tab content 
-                // based on whether it is a UserControl element or window element. 
-                if (contentControl is UserControl)
-                {
-                    tab.Content = contentControl;
-                }
-                else
-                {
-                    tab.Content = contentControl.Content;
-                    var extensionWindow = contentControl as Window;
-                    if (extensionWindow != null)
-                    {
-                        // Make sure the extension window closes with Dynamo
-                        extensionWindow.Owner = this;
-                    }
-                }
-
-                //Insert the tab at the end
-                ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
-
-                tabDynamic.DataContext = ExtensionTabItems;
-                tabDynamic.SelectedItem = tab;
-
-                return tab;
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
             }
+        }
 
-            // Make sure the extension bar is visible
-            if (ExtensionsCollapsed)
+        private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
+        {
+            foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                ToggleExtensionBarCollapseStatus();
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
             }
-
-            tabDynamic.SelectedItem = tab;
-            return null;
         }
 
         /// <summary>
-        /// This method will close a tab item in the right side bar based on passed extension
+        /// Adds an extension control or if it already exists it makes sure it is focused.
+        /// The control may be added as a window or a tab in the extension bar depending on settings.
+        /// </summary>
+        /// <param name="viewExtension">View extension adding the content</param>
+        /// <param name="content">Control being added</param>
+        /// <returns>True if the control was added, false if it already existed</returns>
+        internal bool AddOrFocusExtensionControl(IViewExtension viewExtension, UIElement content)
+        {
+            var window = ExtensionWindows.ContainsKey(viewExtension.Name) ? ExtensionWindows[viewExtension.Name] : null;
+            var tab = FindExtensionTab(viewExtension);
+            var addExtensionControl = window == null && tab == null;
+
+            if (addExtensionControl)
+            {
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == viewExtension.UniqueId);
+                // Create default settings if they do not currently exist
+                if (settings == null)
+                {
+                    settings = new ViewExtensionSettings()
+                    {
+                        Name = viewExtension.Name,
+                        UniqueId = viewExtension.UniqueId,
+                        DisplayMode = ViewExtensionDisplayMode.DockRight
+                    };
+                    this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Add(settings);
+                }
+
+                if (settings.DisplayMode == ViewExtensionDisplayMode.FloatingWindow)
+                {
+                    window = AddExtensionWindow(viewExtension, content, settings.WindowSettings);
+                }
+                else
+                {
+                    tab = AddExtensionTab(viewExtension, content);
+                }
+            }
+            else
+            {
+                // Set focus on the existing control
+                if (window != null)
+                {
+                    window.Focus();
+                }
+                else if (tab != null)
+                {
+                    // Make sure the extension bar is visible
+                    if (ExtensionsCollapsed)
+                    {
+                        ToggleExtensionBarCollapseStatus();
+                    }
+
+                    tabDynamic.SelectedItem = tab;
+                }
+            }
+
+            return addExtensionControl;
+        }
+
+        private ExtensionWindow AddExtensionWindow(IViewExtension viewExtension, UIElement content, WindowSettings windowSettings)
+        {
+            ExtensionWindow window;
+            if (windowSettings == null)
+            {
+                window = new ExtensionWindow();
+                window.Owner = this;
+            }
+            else
+            {
+                var windowRect = new ModelessChildWindow.WindowRect()
+                {
+                    Left = windowSettings.Left,
+                    Top = windowSettings.Top,
+                    Width = windowSettings.Width,
+                    Height = windowSettings.Height
+                };
+                window = new ExtensionWindow(this, ref windowRect);
+                if (windowSettings.Status == WindowStatus.Maximized)
+                {
+                    // Rather than setting the WindowState here, this is delayed to the Loaded event.
+                    // This helps overcome a bug which makes the window appear always on the primary screen.
+                    window.ShouldMaximize = true;
+                }
+            }
+            
+            // Setting the content of the undocked window
+            // Icon is passed from DynamoView (respecting Host integrator icon)
+            SetApplicationIcon();
+            window.Icon = this.Icon;
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                container.Owner = this;
+            }
+            window.ExtensionContent.Content = content;
+            window.Title = viewExtension.Name;
+            window.Tag = viewExtension;
+            window.Uid = viewExtension.UniqueId;
+            window.Closing += ExtensionWindow_Closing;
+            window.Closed += ExtensionWindow_Closed;
+
+            window.Show();
+
+            ExtensionWindows.Add(viewExtension.Name, window);
+
+            return window;
+        }
+
+        private void ExtensionWindow_Closing(object sender, CancelEventArgs e)
+        {
+            var window = sender as ExtensionWindow;
+            SaveExtensionWindowSettings(window);
+        }
+
+        private void SaveExtensionWindowSettings(ExtensionWindow window)
+        {
+            var extension = window.Tag as IViewExtension;
+            var settings = this.dynamoViewModel.Model.PreferenceSettings.ViewExtensionSettings.Find(ext => ext.UniqueId == extension.UniqueId);
+            if (settings != null)
+            {
+                if (settings.WindowSettings == null)
+                {
+                    settings.WindowSettings = new WindowSettings();
+                }
+                settings.WindowSettings.Status = window.WindowState == WindowState.Maximized ? WindowStatus.Maximized : WindowStatus.Normal;
+                settings.WindowSettings.Left = (int)window.SavedWindowRect.Left;
+                settings.WindowSettings.Top = (int)window.SavedWindowRect.Top;
+                settings.WindowSettings.Width = (int)window.SavedWindowRect.Width;
+                settings.WindowSettings.Height = (int)window.SavedWindowRect.Height;
+            }
+        }
+
+        private TabItem AddExtensionTab(IViewExtension viewExtension, UIElement content)
+        {
+            tabDynamic.DataContext = null;
+
+            // creates a new tab item
+            var tab = new TabItem();
+            tab.Header = viewExtension.Name;
+            tab.Tag = viewExtension;
+            tab.Uid = viewExtension.UniqueId;
+            tab.HeaderTemplate = tabDynamic.FindResource("TabHeader") as DataTemplate;
+
+            // setting the extension UI to the current tab content 
+            // based on whether it is a UserControl element or window element. 
+            if (content is Window container)
+            {
+                content = container.Content as UIElement;
+                // Make sure the extension window closes with Dynamo
+                container.Owner = this;
+            }
+            tab.Content = content;
+
+            //Insert the tab at the end
+            ExtensionTabItems.Insert(ExtensionTabItems.Count, tab);
+
+            tabDynamic.DataContext = ExtensionTabItems;
+            tabDynamic.SelectedItem = tab;
+
+            return tab;
+        }
+
+        /// <summary>
+        /// This method will close an extension control, whether it's on the side bar or undocked as a window.
         /// </summary>
         /// <param name="viewExtension">Extension to be closed</param>
         /// <returns></returns>
-        internal void CloseExtensionTabItem(IViewExtension viewExtension)
+        internal void CloseExtensionControl(IViewExtension viewExtension)
         {
             string tabName = viewExtension.Name;
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
-            CloseExtension?.Invoke(tabName);
+
+            if (viewExtension is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
+            CloseExtensionWindow(tabName);
         }
  
         /// <summary>
@@ -284,10 +419,13 @@ namespace Dynamo.Controls
         internal void CloseExtensionTab(object sender, RoutedEventArgs e)
         {
             string tabName = (sender as Button).DataContext.ToString();
-
-            CloseExtension?.Invoke(tabName);
-
             TabItem tabitem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(n => n.Header.ToString() == tabName);
+
+            if (tabitem.Tag is ViewExtensionBase viewExtensionBase)
+            {
+                viewExtensionBase.Closed();
+            }
+
             CloseExtensionTab(tabitem);
         }
 
@@ -302,12 +440,13 @@ namespace Dynamo.Controls
             // get the selected tab
             TabItem selectedTab = tabDynamic.SelectedItem as TabItem;
 
-            if (tabToBeRemoved != null)
+            if (tabToBeRemoved != null && ExtensionTabItems.Count > 0)
             {
                 // clear tab control binding and bind to the new tab-list. 
                 tabDynamic.DataContext = null;
                 ExtensionTabItems.Remove(tabToBeRemoved);
-                ExtensionTabItems = ExtensionTabItems;
+                // Disconnect content from tab to allow it to be moved.
+                tabToBeRemoved.Content = null;
                 tabDynamic.DataContext = ExtensionTabItems;
 
                 // Highlight previously selected tab. if that is removed then Highlight the first tab
@@ -322,6 +461,101 @@ namespace Dynamo.Controls
             }
         }
 
+        private void CloseExtensionWindow(string name)
+        {
+            if (ExtensionWindows.ContainsKey(name))
+            {
+                var extension = ExtensionWindows[name];
+                extension.Close();
+                // Disconnect content to allow it to be moved.
+                extension.ExtensionContent.Content = null;
+                ExtensionWindows.Remove(name);
+            }
+        }
+
+        internal void UndockExtensionTab(object sender, RoutedEventArgs e)
+        {
+            var tabName = (sender as Button).DataContext.ToString();
+            UndockExtension(tabName);
+            Logging.Analytics.TrackEvent(
+               Actions.Undock,
+               Categories.ViewExtensionOperations, tabName);
+        }
+
+        /// <summary>
+        /// Undocks the extension with the given name.
+        /// Made internal for testing purposes only.
+        /// </summary>
+        /// <param name="name">Name of the extension</param>
+        internal void UndockExtension(string name)
+        {
+            var tabItem = ExtensionTabItems.OfType<TabItem>().SingleOrDefault(tab => tab.Header.ToString() == name);
+            var content = tabItem.Content as UIElement;
+            CloseExtensionTab(tabItem);
+            var extension = tabItem.Tag as IViewExtension;
+            var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+            AddExtensionWindow(extension, content, settings?.WindowSettings);
+            if (settings != null)
+            {
+                settings.DisplayMode = ViewExtensionDisplayMode.FloatingWindow;
+            }
+        }
+
+        /// <summary>
+        /// Sets DynamoView icon to that of the currently running application. This is set for reuse
+        /// in custom child windows rather than for the main window itself, which is not customized.
+        /// </summary>
+        private void SetApplicationIcon()
+        {
+            if (this.Icon == null && !DynamoModel.IsTestMode)
+            {
+                var applicationPath = Process.GetCurrentProcess().MainModule.FileName;
+                try
+                {
+                    var icon = System.Drawing.Icon.ExtractAssociatedIcon(applicationPath);
+                    var bmp = icon.ToBitmap();
+                    MemoryStream stream = new MemoryStream();
+                    bmp.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    PngBitmapDecoder pngDecoder = new PngBitmapDecoder(stream, BitmapCreateOptions.None, BitmapCacheOption.Default);
+                    this.Icon = pngDecoder.Frames[0];
+                }
+                catch (Exception ex)
+                {
+                    Log(string.Format(Dynamo.Wpf.Properties.Resources.ErrorLoadingIcon, ex.Message));
+                }
+            }
+        }
+
+        private void ExtensionWindow_Closed(object sender, EventArgs e)
+        {
+            var window = sender as ExtensionWindow;
+            var extName = window.Title;
+            var content = window.ExtensionContent.Content as UIElement;
+            // Release content from window
+            window.ExtensionContent.Content = null;
+            ExtensionWindows.Remove(extName);
+            var extension = window.Tag as IViewExtension;
+            if (window.DockRequested)
+            {
+                AddExtensionTab(extension, content);
+
+                var settings = this.dynamoViewModel.PreferenceSettings.ViewExtensionSettings.Find(s => s.UniqueId == extension.UniqueId);
+                if (settings != null)
+                {
+                    settings.DisplayMode = ViewExtensionDisplayMode.DockRight;
+                }
+                Analytics.TrackEvent(Actions.Dock, Categories.ViewExtensionOperations, extName);
+            }
+            else
+            {
+                if (extension is ViewExtensionBase viewExtensionBase)
+                {
+                    viewExtensionBase.Closed();
+                }
+            }
+        }
+
         // This event is triggered when the tabitems list is changed and will show/hide the right side bar accordingly.
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -330,7 +564,7 @@ namespace Dynamo.Controls
 
         private TabItem FindExtensionTab(IViewExtension viewExtension)
         {
-            return ExtensionTabItems.FirstOrDefault(tab => tab.Tag.Equals(viewExtension.GetType()));
+            return ExtensionTabItems.FirstOrDefault(tab => ((IViewExtension)tab.Tag).GetType().Equals(viewExtension.GetType()));
         }
 
         private void OnRequestReturnFocusToView()
@@ -1289,6 +1523,8 @@ namespace Dynamo.Controls
 
         private void WindowClosing(object sender, CancelEventArgs e)
         {
+            SaveExtensionWindowsState();
+
             if (!PerformShutdownSequenceOnViewModel() && !DynamoModel.IsTestMode)
             {
                 e.Cancel = true;
@@ -1296,6 +1532,18 @@ namespace Dynamo.Controls
             else
             {
                 isPSSCalledOnViewModelNoCancel = true;
+            }
+        }
+
+        /// <summary>
+        /// Saves the state of currently displayed extension windows. This is needed because the closing event is
+        /// not called on child windows: https://docs.microsoft.com/en-us/dotnet/api/system.windows.window.closing
+        /// </summary>
+        private void SaveExtensionWindowsState()
+        {
+            foreach (var window in ExtensionWindows.Values)
+            {
+                SaveExtensionWindowSettings(window);
             }
         }
 
@@ -1370,7 +1618,9 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
             dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
-            
+            this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
+            this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
+
             this.Dispose();
             sharedViewExtensionLoadedParams?.Dispose();
         }

@@ -1,4 +1,5 @@
-﻿using Dynamo.Engine;
+﻿using Dynamo.Core;
+using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -28,6 +29,7 @@ namespace Dynamo.Graph.Workspaces
             //UndoRedo Action Group----------------------------------------------
             NodeToCodeUndoHelper undoHelper = new NodeToCodeUndoHelper();
 
+            using(workspace.BeginDelayedGraphExecution())
             foreach (var nodeList in cliques)
             {
                 //Create two dictionarys to store the details of the external connections that have to

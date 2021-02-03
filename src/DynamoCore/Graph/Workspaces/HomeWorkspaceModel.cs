@@ -346,10 +346,10 @@ namespace Dynamo.Graph.Workspaces
                 // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
                 // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
-                if (RunSettings.RunEnabled || executingTask)
+                if ((RunSettings.RunEnabled || executingTask) && !DelayGraphExecution)
                 {
                     Run();
-                }   
+                }
             }
         }
 
@@ -665,7 +665,7 @@ namespace Dynamo.Graph.Workspaces
             // are compiled first before the home workspace gets evaluated.
             // 
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
-
+            
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
             if (task.Initialize(EngineController, this))
             {

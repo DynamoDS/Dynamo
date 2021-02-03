@@ -35,16 +35,8 @@ namespace Dynamo.UI.Controls
             {
                 Application.Current.Deactivated += currentApplicationDeactivated;
             }
-            Loaded += InCanvasSearchControl_Loaded;
             Unloaded += InCanvasSearchControl_Unloaded;
 
-        }
-
-        private void InCanvasSearchControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            Analytics.TrackEvent(
-            Dynamo.Logging.Actions.Open,
-            Dynamo.Logging.Categories.InCanvasSearchOperations);
         }
 
         private void InCanvasSearchControl_Unloaded(object sender, RoutedEventArgs e)
@@ -125,6 +117,10 @@ namespace Dynamo.UI.Controls
 
             // Select text in text box.
             SearchTextBox.SelectAll();
+
+            Analytics.TrackEvent(
+            Dynamo.Logging.Actions.Open,
+            Dynamo.Logging.Categories.InCanvasSearchOperations);
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.

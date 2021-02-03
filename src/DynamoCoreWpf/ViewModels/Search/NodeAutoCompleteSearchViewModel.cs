@@ -1,3 +1,4 @@
+﻿using System;
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Dynamo.ViewModels
     {
 
         internal PortViewModel PortViewModel { get; set; }
+        private List<NodeSearchElement> searchElementsCache;
 
         /// <summary>
         /// Cache of default node suggestions, use it in case where
@@ -53,21 +55,71 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            var searchElements = GetMatchingSearchElements();
+            searchElementsCache = GetMatchingSearchElements().ToList();
+
             // If node match searchElements found, use default suggestions
-            if (!searchElements.Any())
+            if (!searchElementsCache.Any())
             {
-                FilteredResults = DefaultResults;
+                searchElementsCache = DefaultResults.Select(e => e.Model).ToList();
+                switch (PortViewModel.PortModel.GetInputPortType())
+                {
+                    case "int":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "double":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                        break;
+                    case "string":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
+                        break;
+                    case "bool":
+                        FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
+                        break;
+                    default:
+                        FilteredResults = DefaultResults;
+                        break;
+                }
             }
             else
             {
-                FilteredResults = searchElements.Select(e =>
-                {
-                    var vm = new NodeSearchElementViewModel(e, this);
-                    vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                    return vm;
-                });
+                FilteredResults = GetViewModelForNodeSearchElements(searchElementsCache);
             }
+        }
+
+        /// <summary>
+        /// Returns a IEnumberable of NodeSearchElementViewModel for respective NodeSearchElements.
+        /// </summary>
+        private IEnumerable<NodeSearchElementViewModel> GetViewModelForNodeSearchElements(List<NodeSearchElement> searchElementsCache)
+        {
+            return searchElementsCache.Select(e =>
+            {
+                var vm = new NodeSearchElementViewModel(e, this);
+                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
+                return vm;
+            });
+        }
+
+        /// <summary>
+        /// Filters the matching node search elements based on user input in the search field. 
+        /// </summary>
+        internal void SearchAutoCompleteCandidates(string input)
+        {
+            if (PortViewModel == null) return;
+
+            var queriedSearchElements = searchElementsCache.Where(e => QuerySearchElements(e, input)).ToList();
+
+            FilteredResults = GetViewModelForNodeSearchElements(queriedSearchElements);
+        }
+
+        /// <summary>
+        /// Returns true if the user input matches the name of the filtered node element. 
+        /// </summary>
+        /// <returns>True or false</returns>
+        private bool QuerySearchElements(NodeSearchElement e, string input) 
+        {
+            StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
+
+            return e.Name.IndexOf(input, stringComparison) >= 0;
         }
 
         /// <summary>
@@ -137,10 +189,8 @@ namespace Dynamo.ViewModels
             //first sort by type distance to input port type
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
-            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types.
-            return elements.OrderBy(x => x.Group);
-
-           
+            //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types and then sorted by name.
+            return elements.OrderBy(x => x.Group).ThenBy(x => x.OutputParameters.FirstOrDefault().ToString()).ThenBy(x => x.Name);           
         }
 
         /// <summary>

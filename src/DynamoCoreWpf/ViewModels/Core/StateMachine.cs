@@ -992,7 +992,7 @@ namespace Dynamo.ViewModels
                 args = new SelectionBoxUpdateArgs(mouseDownPos.X, mouseDownPos.Y, 0, 0);
                 args.SetVisibility(Visibility.Visible);
 
-                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                this.owningWorkspace.OnRequestSelectionBoxUpdate(this, args);
 
                 SetCurrentState(State.WindowSelection);
             }
