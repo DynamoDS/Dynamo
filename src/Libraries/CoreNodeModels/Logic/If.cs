@@ -37,14 +37,37 @@ namespace CoreNodeModels.Logic
 
             if (IsPartiallyApplied)
             {
-                var connectedInputs = Enumerable.Range(0, InPorts.Count)
-                                            .Where(index=>InPorts[index].IsConnected)
-                                            .Select(x => new IntNode(x) as AssociativeNode)
-                                            .ToList();
-                var functionNode = new IdentifierNode(Constants.kInlineConditionalMethodName);
-                var paramNumNode = new IntNode(3);
+                // Build partial function for If node if it were a single function call:
+                // Get.ValueAtIndex([t, f], cond ? 0 : 1);
+                var connectedInputs = new List<AssociativeNode>();
+                var inputs = new List<AssociativeNode>();
+
+                if (InPorts[1].IsConnected && InPorts[2].IsConnected)
+                {
+                    connectedInputs.Add(new IntNode(0));
+                    inputs.Add(AstFactory.BuildExprList(new List<AssociativeNode>
+                        {inputAstNodes[1], inputAstNodes[2]}));
+                }
+                if (InPorts[0].IsConnected)
+                {
+                    connectedInputs.Add(new IntNode(1));
+                    inputs.Add(AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1)));
+                }
+
+                var functionNode = new IdentifierListNode
+                {
+                    LeftNode = new IdentifierNode(ProtoCore.AST.Node.BuiltinGetValueAtIndexTypeName),
+                    RightNode = new IdentifierNode(ProtoCore.AST.Node.BuiltinValueAtIndexMethodName)
+                };
+                var paramNumNode = new IntNode(2);
                 var positionNode = AstFactory.BuildExprList(connectedInputs);
-                var arguments = AstFactory.BuildExprList(inputAstNodes);
+
+                var args = new List<AssociativeNode>();
+                args.Add(AstFactory.BuildExprList(new List<AssociativeNode>
+                    {inputAstNodes[1], inputAstNodes[2]}));
+                args.Add(AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1)));
+                
+                var arguments = AstFactory.BuildExprList(args);
                 var inputParams = new List<AssociativeNode>
                 {
                     functionNode,
@@ -58,12 +81,11 @@ namespace CoreNodeModels.Logic
             }
             else
             {
-                rhs = new InlineConditionalNode
-                {
-                    ConditionExpression = inputAstNodes[0],
-                    TrueExpression = inputAstNodes[1],
-                    FalseExpression = inputAstNodes[2]
-                };
+                var conditional = AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1));
+                var trueStmt = inputAstNodes[1];
+                var falseStmt = inputAstNodes[2];
+                var list = AstFactory.BuildExprList(new List<AssociativeNode> {trueStmt, falseStmt});
+                rhs = AstFactory.BuildIndexExpression(list, conditional);
             }
 
             return new[]
