@@ -2047,7 +2047,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log(Resources.WelcomeMessage);
+            Logger.Log(Environment.NewLine + Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)
