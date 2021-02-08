@@ -4543,6 +4543,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Node Libraries.
+        /// </summary>
+        public static string PublishPackageSelectNodeLibraries {
+            get {
+                return ResourceManager.GetString("PublishPackageSelectNodeLibraries", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add file....
         /// </summary>
         public static string PublishPackageViewAddFileButton {
