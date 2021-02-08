@@ -384,71 +384,68 @@
 
                     </ScrollViewer.Resources>
 
-                    <StackPanel Orientation="Vertical">
+                    <TreeView ItemsSource="{Binding Path=PackageContents}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
 
-                        <TreeView ItemsSource="{Binding Path=PackageContents}" Style="{StaticResource SearchTreeView}" BorderThickness="0">
+                        <TreeView.Resources>
 
-                            <TreeView.Resources>
+                            <DataTemplate x:Key="sharedTemplate">
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox Name="IsNodeLibrary" IsEnabled="False" Visibility="Hidden" IsChecked="{Binding IsNodeLibrary, Mode=TwoWay}"/>
+                                    <Image Name="Icon" Width="32" Height="32" />
+                                    <TextBlock Name="DepName" Padding="7" FontSize="13" Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
+                                </StackPanel>
 
-                                <DataTemplate x:Key="sharedTemplate">
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox Name="IsNodeLibrary" IsEnabled="False" Visibility="Hidden" IsChecked="{Binding IsNodeLibrary, Mode=TwoWay}"/>
-                                        <Image Name="Icon" Width="32" Height="32" />
-                                        <TextBlock Name="DepName" Padding="7" FontSize="13" Foreground="WhiteSmoke" Text="{Binding Path=Name}"/>
-                                    </StackPanel>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>File</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/files.png"/>
+                                    </DataTrigger>
 
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding DependencyType}">
-                                            <DataTrigger.Value>
-                                                <packagemanager:DependencyType>File</packagemanager:DependencyType>
-                                            </DataTrigger.Value>
-                                            <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/files.png"/>
-                                        </DataTrigger>
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/assemblies.png"/>
+                                        <Setter TargetName="IsNodeLibrary" Property="IsEnabled" Value="True"/>
+                                        <Setter TargetName="IsNodeLibrary" Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding DependencyType}">
-                                            <DataTrigger.Value>
-                                                <packagemanager:DependencyType>Assembly</packagemanager:DependencyType>
-                                            </DataTrigger.Value>
-                                            <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/assemblies.png"/>
-                                            <Setter TargetName="IsNodeLibrary" Property="IsEnabled" Value="True"/>
-                                            <Setter TargetName="IsNodeLibrary" Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
+                                    <DataTrigger Binding="{Binding DependencyType}">
+                                        <DataTrigger.Value>
+                                            <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
+                                        </DataTrigger.Value>
+                                        <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/nodes.png"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding DependencyType}">
-                                            <DataTrigger.Value>
-                                                <packagemanager:DependencyType>CustomNode</packagemanager:DependencyType>
-                                            </DataTrigger.Value>
-                                            <Setter Property="Source" TargetName="Icon" Value="/DynamoCoreWpf;component/UI/Images/nodes.png"/>
-                                        </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsNodeLibrary}" Value="true">
+                                        <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
+                                    </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding IsNodeLibrary}" Value="true">
-                                            <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
-                                        </DataTrigger>
-
-                                        <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}}"
+                                    <DataTrigger Binding="{Binding HasItems, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}}"
                                                  Value="true">
-                                            <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
+                                        <Setter Property="FontWeight" TargetName="DepName" Value="Bold"/>
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
 
-                                </DataTemplate>
+                            </DataTemplate>
 
-                                <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}">
-                                    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
-                                </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemRootViewModel}" ItemsSource="{Binding Path=Items}">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
+                            </HierarchicalDataTemplate>
 
-                                <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemInternalViewModel}" ItemsSource="{Binding Path=Items}">
-                                    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
-                                </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemInternalViewModel}" ItemsSource="{Binding Path=Items}">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
+                            </HierarchicalDataTemplate>
 
-                                <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemLeafViewModel}">
-                                    <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
-                                </HierarchicalDataTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type packagemanager:PackageItemLeafViewModel}">
+                                <ContentControl Content="{Binding}" ContentTemplate="{StaticResource sharedTemplate}" />
+                            </HierarchicalDataTemplate>
 
-                            </TreeView.Resources>
+                        </TreeView.Resources>
 
-                        </TreeView>
-                    </StackPanel>
+                    </TreeView>
                 </ScrollViewer>
             </Grid>
 
