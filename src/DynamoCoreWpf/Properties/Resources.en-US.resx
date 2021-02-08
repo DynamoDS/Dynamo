@@ -2281,4 +2281,7 @@ Uninstall the following packages: {0}?</value>
     <value>An error occurred when loading the application icon: {0}</value>
     <comment>{0} = detailed error message</comment>
   </data>
+  <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
+    <value>Select Node Libraries</value>
+  </data>
 </root>
