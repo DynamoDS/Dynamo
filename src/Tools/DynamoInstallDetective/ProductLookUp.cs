@@ -394,7 +394,7 @@ namespace DynamoInstallDetective
             var newProductTuples = lookUp.GetProductNameList().Select(x=>(DisplayName: x, ProductKey : string.Empty));
             if (lookUp is InstalledProductLookUp lookupAsInstalledProduct)
             {
-                newProductTuples = (lookUp as InstalledProductLookUp).GetProductNameAndCodeList();
+                newProductTuples = lookupAsInstalledProduct.GetProductNameAndCodeList();
             }
           
             var returnProducts = newProductTuples.Select(prod =>
