@@ -977,7 +977,16 @@ namespace Dynamo.Models
         {
             workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
-            extension.OnWorkspaceOpen(extensionDataCopy);
+
+            try
+            {
+                extension.OnWorkspaceOpen(extensionDataCopy);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return;
+            }
         }
 
         internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
@@ -986,7 +995,17 @@ namespace Dynamo.Models
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
             var hasMatchingExtensionData = workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
-            extension.OnWorkspaceSaving(data, saveContext);
+
+            try
+            {
+                extension.OnWorkspaceSaving(data, saveContext);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                return;
+            }
+            
             
             if (hasMatchingExtensionData)
             {
