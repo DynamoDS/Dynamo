@@ -79,7 +79,6 @@ namespace Dynamo.Tests
             AssertPreviewValue("23a03082-5807-4e44-9a3d-2d1eec4a914c", 42);
         }
 
-
         [Test]
         [Category("SmokeTest")]
         public void TestNewIfForPreview()
