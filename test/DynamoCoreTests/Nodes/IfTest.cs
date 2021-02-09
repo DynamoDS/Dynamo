@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using CoreNodeModels.Input;
 using NUnit.Framework;
+using ProtoCore.AST.ImperativeAST;
 
 namespace Dynamo.Tests
 {
@@ -75,6 +77,26 @@ namespace Dynamo.Tests
             RunModel(testFilePath);
             AssertPreviewValue("9fe8e82f-760d-43a6-90b2-5f9c252139d7", 42);
             AssertPreviewValue("23a03082-5807-4e44-9a3d-2d1eec4a914c", 42);
+        }
+
+
+        [Test]
+        [Category("SmokeTest")]
+        public void TestNewIfForPreview()
+        {
+            string testFilePath = Path.Combine(testFolder, "testNewIf.dyn");
+            OpenModel(testFilePath);
+            BoolSelector boolSelectorNode = (BoolSelector) this.CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("886a464b-9b2b-4e66-a033-c18d0753c2cf");
+
+            boolSelectorNode.Value = true;
+            AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", true);
+            AssertPreviewValue("8ec964ca-a03c-4fd3-b11d-bcf399642d3e", new object[] { "a1", "b1", "c1" });
+            AssertPreviewValue("61f0a2f7-d923-4dda-8a57-ff12ff130fc0", new object[] { 1, new object[] { 2 } });
+
+            boolSelectorNode.Value = false;
+            AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", false);
+            AssertPreviewValue("8ec964ca-a03c-4fd3-b11d-bcf399642d3e", new object[] { new object[] { "a2" }, "b2" });
+            AssertPreviewValue("61f0a2f7-d923-4dda-8a57-ff12ff130fc0", new object[] { });
         }
     }
 }

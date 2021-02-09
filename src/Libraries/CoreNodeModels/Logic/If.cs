@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
@@ -14,6 +15,7 @@ namespace CoreNodeModels.Logic
     [OutPortTypes("Function")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
+    [Obsolete("This node will be removed in a future version of Dynamo. Please use the new if node instead.")]
     public class If : NodeModel
     {
         [JsonConstructor]
@@ -35,10 +37,75 @@ namespace CoreNodeModels.Logic
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
+            if (IsPartiallyApplied)
+            {
+                var connectedInputs = Enumerable.Range(0, InPorts.Count)
+                                            .Where(index => InPorts[index].IsConnected)
+                                            .Select(x => new IntNode(x) as AssociativeNode)
+                                            .ToList();
+                var functionNode = new IdentifierNode(Constants.kInlineConditionalMethodName);
+                var paramNumNode = new IntNode(3);
+                var positionNode = AstFactory.BuildExprList(connectedInputs);
+                var arguments = AstFactory.BuildExprList(inputAstNodes);
+                var inputParams = new List<AssociativeNode>
+                {
+                    functionNode,
+                    paramNumNode,
+                    positionNode,
+                    arguments,
+                    AstFactory.BuildBooleanNode(true)
+                };
+
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
+            }
+            else
+            {
+                rhs = new InlineConditionalNode
+                {
+                    ConditionExpression = inputAstNodes[0],
+                    TrueExpression = inputAstNodes[1],
+                    FalseExpression = inputAstNodes[2]
+                };
+            }
+
+            return new[]
+            {
+                AstFactory.BuildAssignment(lhs, rhs)
+            };
+        }
+    }
+
+    [NodeName("NewIf")]
+    [NodeCategory(BuiltinNodeCategories.LOGIC)]
+    [NodeDescription("ScopeIfDescription", typeof(Resources))]
+    [OutPortTypes("Function")]
+    [IsDesignScriptCompatible]
+    [AlsoKnownAs("DSCoreNodesUI.Logic.NewIf")]
+    public class NewIf : NodeModel
+    {
+        [JsonConstructor]
+        private NewIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+
+        public NewIf()
+        {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("false", Resources.PortDataFalseBlockToolTip)));
+
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("result", Resources.PortDataResultToolTip)));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            var lhs = GetAstIdentifierForOutputIndex(0);
+            AssociativeNode rhs;
+
             var conditional = AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1));
             var trueStmt = inputAstNodes[1];
             var falseStmt = inputAstNodes[2];
-            var list = AstFactory.BuildExprList(new List<AssociativeNode> {trueStmt, falseStmt});
+            var list = AstFactory.BuildExprList(new List<AssociativeNode> { trueStmt, falseStmt });
             rhs = AstFactory.BuildIndexExpression(list, conditional);
 
             return new[]
