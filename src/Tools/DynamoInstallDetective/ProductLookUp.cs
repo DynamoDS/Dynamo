@@ -285,9 +285,9 @@ namespace DynamoInstallDetective
                 return s?.Contains(ProductLookUpName) ?? false;
             });
         }
-        //TODO consider adding new interface.
+        //TODO add to IProductLookUp interface in Dynamo 3.0
         //Returns product names and code tuples for products which have valid display name.
-        internal IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
+        internal virtual IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
         {
             return RegUtils.GetInstalledProducts().Select(s => (s.Value.DisplayName,s.Key)).Where(s => {
                 return s.DisplayName?.Contains(ProductLookUpName) ?? false;
@@ -391,9 +391,13 @@ namespace DynamoInstallDetective
 
         public virtual void LookUpAndInitProducts(IProductLookUp lookUp)
         {
-            //TODO fallback if this cast fails
-            var newProducts = (lookUp as InstalledProductLookUp).GetProductNameAndCodeList()
-             .Select(prod =>
+            var newProductTuples = lookUp.GetProductNameList().Select(x=>(DisplayName: x, ProductKey : string.Empty));
+            if (lookUp is InstalledProductLookUp lookupAsInstalledProduct)
+            {
+                newProductTuples = (lookUp as InstalledProductLookUp).GetProductNameAndCodeList();
+            }
+          
+            var returnProducts = newProductTuples.Select(prod =>
             {
                 var product = lookUp.GetProductFromProductName(prod.DisplayName);
                 if (product == null)
@@ -402,7 +406,7 @@ namespace DynamoInstallDetective
                 }
                 return product;
             }).Distinct().Where(p => p != null).OrderBy(p => p);
-            Products = Products == null ? newProducts : Products.Concat(newProducts);
+            Products = Products == null ? returnProducts : Products.Concat(returnProducts);
         }
     }
 
