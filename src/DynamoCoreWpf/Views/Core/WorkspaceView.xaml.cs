@@ -62,6 +62,7 @@ namespace Dynamo.Views
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private bool isAutoCompleteLoading;
 
         public WorkspaceViewModel ViewModel
         {
@@ -164,6 +165,14 @@ namespace Dynamo.Views
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
+            // Prevents hiding the dialog from releasing the left mouse button
+            if (flag == ShowHideFlags.Hide && isAutoCompleteLoading)
+            {
+                isAutoCompleteLoading = false;
+                return;
+            }
+
+            isAutoCompleteLoading = flag == ShowHideFlags.Show && !NodeAutoCompleteSearchBar.IsOpen;
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
@@ -214,13 +223,8 @@ namespace Dynamo.Views
             }
             if (NodeAutoCompleteSearchBar.IsOpen)
             {
-                // Suppress the mouse action from last 0.2 second otherwise mouse button release 
-                // in Dynamo window will forcefully shutdown all the open SearchBars
-                if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
-                {
-                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
-                    ViewModel.CancelActiveState();
-                }
+                ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                ViewModel.CancelActiveState();
             }
         }
 
@@ -390,7 +394,6 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-                ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
 
                 ViewModel.Loaded();
             }
