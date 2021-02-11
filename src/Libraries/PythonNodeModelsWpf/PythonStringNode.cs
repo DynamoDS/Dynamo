@@ -28,30 +28,26 @@ namespace PythonNodeModelsWpf
             pythonStringNodeView = nodeView;
             dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            // If it is a Debug build, display a python engine switcher
-            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
+            var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
+            nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
+            pythonEngine2Item.Click += UpdateToPython2Engine;
+            pythonEngine2Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.Engine))
             {
-                var pythonEngineVersionMenu = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuEngineSwitcher, IsCheckable = false };
-                nodeView.MainContextMenu.Items.Add(pythonEngineVersionMenu);
-                pythonEngine2Item.Click += UpdateToPython2Engine;
-                pythonEngine2Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.Engine))
-                {
-                    Source = pythonStringNodeModel,
-                    Converter = new EnumToBooleanConverter(),
-                    ConverterParameter = PythonEngineVersion.IronPython2.ToString()
-                });
-                pythonEngine3Item.Click += UpdateToPython3Engine;
-                pythonEngine3Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.Engine))
-                {
-                    Source = pythonStringNodeModel,
-                    Converter = new EnumToBooleanConverter(),
-                    ConverterParameter = PythonEngineVersion.CPython3.ToString()
-                });
-                learnMoreItem.Click += OpenPythonLearningMaterial;
-                pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
-                pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
-                nodeView.MainContextMenu.Items.Add(learnMoreItem);
-            }
+                Source = pythonStringNodeModel,
+                Converter = new EnumToBooleanConverter(),
+                ConverterParameter = PythonEngineVersion.IronPython2.ToString()
+            });
+            pythonEngine3Item.Click += UpdateToPython3Engine;
+            pythonEngine3Item.SetBinding(MenuItem.IsCheckedProperty, new Binding(nameof(pythonStringNodeModel.Engine))
+            {
+                Source = pythonStringNodeModel,
+                Converter = new EnumToBooleanConverter(),
+                ConverterParameter = PythonEngineVersion.CPython3.ToString()
+            });
+            learnMoreItem.Click += OpenPythonLearningMaterial;
+            pythonEngineVersionMenu.Items.Add(pythonEngine2Item);
+            pythonEngineVersionMenu.Items.Add(pythonEngine3Item);
+            nodeView.MainContextMenu.Items.Add(learnMoreItem);
 
             nodeModel.Disposed += NodeModel_Disposed;
 
