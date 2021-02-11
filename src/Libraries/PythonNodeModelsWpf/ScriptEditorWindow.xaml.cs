@@ -32,8 +32,8 @@ namespace PythonNodeModelsWpf
         public PythonEngineVersion CachedEngine { get; set; }
 
         public ScriptEditorWindow(
-            DynamoViewModel dynamoViewModel, 
-            PythonNode nodeModel, 
+            DynamoViewModel dynamoViewModel,
+            PythonNode nodeModel,
             NodeView nodeView,
             ref ModelessChildWindow.WindowRect windowRect
             ) : base(nodeView, ref windowRect)
@@ -42,17 +42,14 @@ namespace PythonNodeModelsWpf
             this.dynamoViewModel = dynamoViewModel;
             this.nodeModel = nodeModel;
 
-            completionProvider = new SharedCompletionProvider(nodeModel.Engine,dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
+            completionProvider = new SharedCompletionProvider(nodeModel.Engine, dynamoViewModel.Model.PathManager.DynamoCoreDirectory);
             completionProvider.MessageLogged += dynamoViewModel.Model.Logger.Log;
             nodeModel.CodeMigrated += OnNodeModelCodeMigrated;
 
             InitializeComponent();
             this.DataContext = this;
 
-            if (Dynamo.Configuration.DebugModes.IsEnabled("PythonEngineSelectionUIDebugMode"))
-            {
-                EngineSelectorComboBox.Visibility = Visibility.Visible;
-            }
+            EngineSelectorComboBox.Visibility = Visibility.Visible;
 
             Dynamo.Logging.Analytics.TrackScreenView("Python");
         }
