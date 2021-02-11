@@ -109,7 +109,6 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
-            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
@@ -147,7 +146,6 @@ namespace Dynamo.Views
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
-            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -378,6 +376,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+                oldViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
                 removeViewModelsubscriptions(oldViewModel);
             }
 
@@ -394,6 +393,7 @@ namespace Dynamo.Views
                 ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
                 ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
                 ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+                ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
 
                 ViewModel.Loaded();
             }
