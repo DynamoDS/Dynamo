@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Markup;
 using System.Xml;
 using Dynamo.Core;
+using Dynamo.PackageManager;
 using Dynamo.ViewModels;
 
 namespace Dynamo.Nodes.Prompts
