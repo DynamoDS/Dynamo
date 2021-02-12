@@ -1,6 +1,7 @@
 ﻿using Dynamo.Configuration;
 using Dynamo.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -33,12 +34,16 @@ namespace Dynamo.Wpf.Utilities
         /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
         private static string GitHubCrashReportBody(object details)
         {
-            var stackTrace = details?.ToString() ?? string.Empty;
+            var content = details?.ToString() ?? string.Empty;
+            var contentSplit = content.Split(new string[] { "splitMarker" }, StringSplitOptions.None);
+
+            var stackTrace = contentSplit[0];
+            var markdownPackages = contentSplit[1];
 
             // This functionality was not available prior to version 2.1.0, so it should be the fallback value
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
-            return BuildMarkdownContent(dynamoVersion, stackTrace);
+            return BuildMarkdownContent(dynamoVersion, stackTrace, markdownPackages);
         }
 
         /// <summary>
@@ -46,8 +51,9 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="dynamoVersion">Dynamo version that should be recorded in the issue report</param>
         /// <param name="stackTrace">The crash stack trace to be included in the issue report</param>
+        /// <param name="markdownPackages">Section of the issue with the loaded packages in markdown format</param>
         /// <returns></returns>
-        internal static string BuildMarkdownContent(string dynamoVersion, string stackTrace)
+        internal static string BuildMarkdownContent(string dynamoVersion, string stackTrace, string markdownPackages)
         {
             return
                 "# Issue Description" + Environment.NewLine +
@@ -70,11 +76,13 @@ namespace Dynamo.Wpf.Utilities
                 "(Fill in here)" + Environment.NewLine + Environment.NewLine +
 
                 "## What packages or external references (if any) were used?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine + Environment.NewLine + Environment.NewLine +
+                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
+
+                markdownPackages + Environment.NewLine + Environment.NewLine +
 
                 "## Stack Trace" + Environment.NewLine +
                 "```" + Environment.NewLine +
-                "(From the Dynamo crash window select 'Details' -> 'Copy' and paste here)" + Environment.NewLine +
+                stackTrace + Environment.NewLine +
                 "```" + Environment.NewLine + Environment.NewLine +
 
                 "---" + Environment.NewLine +

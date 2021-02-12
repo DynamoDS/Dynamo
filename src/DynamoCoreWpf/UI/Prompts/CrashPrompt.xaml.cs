@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -18,6 +21,7 @@ namespace Dynamo.Nodes.Prompts
         private string details; // Store here for clipboard copy
         private string folderPath;
         private string productName;
+        private string markdownPackages;
 
         public CrashPrompt(string details, DynamoViewModel dynamoViewModel)
         {
@@ -25,10 +29,10 @@ namespace Dynamo.Nodes.Prompts
             this.CrashDetailsContent.Text = details;
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
-            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle,productName);
+            Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
-        
+
         public CrashPrompt(DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
@@ -38,9 +42,14 @@ namespace Dynamo.Nodes.Prompts
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
-        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel)
+        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel, PackageLoader packageLoader)
         {
             InitializeComponent();
+
+            //List of the names of all the loaded packages
+            var packagesNames = PackagesNames(packageLoader);
+            //Package's issue section in markdown format
+            markdownPackages = PackagesNamesToMakrdown(packagesNames);
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
@@ -69,6 +78,34 @@ namespace Dynamo.Nodes.Prompts
                 ConvertFormattedTextIntoTextblock(this.txtOverridingText, overridingText);
             }
         }
+        private string PackagesNamesToMakrdown(IEnumerable<string> packagesNames)
+        {
+            string markdownText = "";
+            if (packagesNames != null)
+            {
+                markdownText = "## Loaded Packages" + Environment.NewLine;
+                foreach (var name in packagesNames)
+                {
+                    markdownText += "- " + name + Environment.NewLine;
+                }
+            }
+            return markdownText;
+        }
+
+        private IEnumerable<string> PackagesNames(PackageLoader packageLoader)
+        {
+            var packages = packageLoader.LocalPackages;
+            var pckgsNames = new List<string>();
+            if (packages.Any())
+            {
+                pckgsNames.AddRange(packages.Select(pckg => pckg.Name));
+            }
+            else
+            {
+                pckgsNames.Add("No packages where loaded.");
+            }
+            return pckgsNames;
+        }
 
         private void ConvertFormattedTextIntoTextblock(TextBlock txtBox, string text)
         {
@@ -92,7 +129,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text);
+            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text + "splitMarker" + markdownPackages);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)

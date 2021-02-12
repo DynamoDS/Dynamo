@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using NUnit.Framework;
@@ -47,7 +48,7 @@ namespace Dynamo.Tests
         public void CanReportBugWithNoContent()
         {
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(null, null);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(null, null, null);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Mock url for request
@@ -66,7 +67,7 @@ namespace Dynamo.Tests
             var dynamoVersion = "2.1.0";
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace, "");
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Report a bug with a stack trace
@@ -80,7 +81,7 @@ namespace Dynamo.Tests
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace, "");
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Mock url for request
