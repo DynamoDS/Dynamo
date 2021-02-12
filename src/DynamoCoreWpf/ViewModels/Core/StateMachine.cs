@@ -913,13 +913,12 @@ namespace Dynamo.ViewModels
 
             private void CancelWindowSelection()
             {
-                throw new Exception("new exception");
                 // visualization unpause
-                //owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
+                owningWorkspace.OnDragSelectionEnded(this, EventArgs.Empty);
 
-                //SelectionBoxUpdateArgs args = null;
-                //args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
-                //this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
+                SelectionBoxUpdateArgs args = null;
+                args = new SelectionBoxUpdateArgs(Visibility.Collapsed);
+                this.owningWorkspace.RequestSelectionBoxUpdate(this, args);
             }
 
             #endregion
