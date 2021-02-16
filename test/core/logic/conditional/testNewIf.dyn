@@ -57,53 +57,6 @@
       "Description": "Allows for DesignScript code to be authored directly"
     },
     {
-      "ConcreteType": "CoreNodeModels.Logic.NewIf, CoreNodeModels",
-      "NodeType": "ExtensionNode",
-      "Id": "8ec964caa03c4fd3b11dbcf399642d3e",
-      "Inputs": [
-        {
-          "Id": "49cf2818d1e7445fa2515665dcd056ce",
-          "Name": "test",
-          "Description": "Boolean test",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "23c0cfd3fe8442ffbaf66e4cba78f308",
-          "Name": "true",
-          "Description": "Returned if test is true",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "a7f2552ce978486bb3ff6f6c66114e35",
-          "Name": "false",
-          "Description": "Returned if test is false",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Outputs": [
-        {
-          "Id": "b8aaa4aabba84015b8204950ae5db8f0",
-          "Name": "result",
-          "Description": "Result block produced",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        }
-      ],
-      "Replication": "Disabled",
-      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
-    },
-    {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
       "NodeType": "BooleanInputNode",
       "InputValue": true,
@@ -124,12 +77,12 @@
       "Description": "Selection between a true and false."
     },
     {
-      "ConcreteType": "CoreNodeModels.Logic.NewIf, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
       "NodeType": "ExtensionNode",
-      "Id": "61f0a2f7d9234dda8a57ff12ff130fc0",
+      "Id": "904dcd0394a345609cdf8825e2ce63e6",
       "Inputs": [
         {
-          "Id": "c6121e78f6134d2fbfbe6c3d0d959755",
+          "Id": "881567be242d4b328160f891a01f9ce3",
           "Name": "test",
           "Description": "Boolean test",
           "UsingDefaultValue": false,
@@ -138,7 +91,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "c8b9d93236bb46348cb1a113c84864e3",
+          "Id": "81eee78dcf8e4c2ab744e579b4348e1d",
           "Name": "true",
           "Description": "Returned if test is true",
           "UsingDefaultValue": false,
@@ -147,7 +100,7 @@
           "KeepListStructure": false
         },
         {
-          "Id": "476ea13c11b5438da10917fa0317bbe2",
+          "Id": "e718c439a67e4a63b7a29edf8b4521fe",
           "Name": "false",
           "Description": "Returned if test is false",
           "UsingDefaultValue": false,
@@ -158,7 +111,54 @@
       ],
       "Outputs": [
         {
-          "Id": "aa7222f4d9c84d0abe71e8e58155216c",
+          "Id": "6aeca93df5a44f609e175479f6a2748d",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ceefb20319b94eb3b0e4c355dcb84365",
+      "Inputs": [
+        {
+          "Id": "7ccfe809ce154a20a345ed5b4c2601e5",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d79e0899d98f4474a678aa0868068de1",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c16ded6761084fc59f157920ae14f6d4",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bdb0180b86f44c1a8dbdbb675d1bef8a",
           "Name": "result",
           "Description": "Result block produced",
           "UsingDefaultValue": false,
@@ -174,33 +174,33 @@
   "Connectors": [
     {
       "Start": "6e3a5447971b48d289766f5daa856d60",
-      "End": "23c0cfd3fe8442ffbaf66e4cba78f308",
-      "Id": "30c0ad937c7f431ab3680939c0a0066f"
+      "End": "81eee78dcf8e4c2ab744e579b4348e1d",
+      "Id": "1d9e83d8a7004c91bbe903d5d4008e02"
     },
     {
       "Start": "e261689194624bfe9969d0bb8b1d8a57",
-      "End": "a7f2552ce978486bb3ff6f6c66114e35",
-      "Id": "d7dc066944bf407bb9cea3c1bab1b9c0"
+      "End": "e718c439a67e4a63b7a29edf8b4521fe",
+      "Id": "3d6bc540015340efa3164787e413bba0"
     },
     {
       "Start": "bc74cb9869a44a838dc78eb273730263",
-      "End": "c8b9d93236bb46348cb1a113c84864e3",
-      "Id": "20bd629b45e8487a8bdddb3e731ae8db"
+      "End": "d79e0899d98f4474a678aa0868068de1",
+      "Id": "ef2b605f523f45cea361eb7e69d5ac91"
     },
     {
       "Start": "2a7abb946e5541de84576f400c8e726b",
-      "End": "476ea13c11b5438da10917fa0317bbe2",
-      "Id": "c7d3ff8264df4988b2b6d880fdd0fd64"
+      "End": "c16ded6761084fc59f157920ae14f6d4",
+      "Id": "a330d22125cc4f38b6c9bd9246d89317"
     },
     {
       "Start": "3f90288806474ec2a7184fb87a41c006",
-      "End": "49cf2818d1e7445fa2515665dcd056ce",
-      "Id": "15148e8d8891447e9bdb62e49a12b0c2"
+      "End": "881567be242d4b328160f891a01f9ce3",
+      "Id": "6ca4ac90d6de48f4b938bff0333d8506"
     },
     {
       "Start": "3f90288806474ec2a7184fb87a41c006",
-      "End": "c6121e78f6134d2fbfbe6c3d0d959755",
-      "Id": "e9bac7270ade4f1fbdc53ed98c6eb648"
+      "End": "7ccfe809ce154a20a345ed5b4c2601e5",
+      "Id": "8c56b3f1e2034f1dad8c3b34a453fd05"
     }
   ],
   "Dependencies": [],
@@ -212,7 +212,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.11.0.4052",
+      "Version": "2.11.0.4125",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -241,16 +241,6 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "NewIf",
-        "Id": "8ec964caa03c4fd3b11dbcf399642d3e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 437.0,
-        "Y": 177.5
-      },
-      {
-        "ShowGeometry": true,
         "Name": "Boolean",
         "Id": "886a464b9b2b4e66a033c18d0753c2cf",
         "IsSetAsInput": false,
@@ -261,13 +251,23 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "NewIf",
-        "Id": "61f0a2f7d9234dda8a57ff12ff130fc0",
+        "Name": "If",
+        "Id": "904dcd0394a345609cdf8825e2ce63e6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 437.0,
-        "Y": 349.5
+        "X": 483.0,
+        "Y": 122.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "ceefb20319b94eb3b0e4c355dcb84365",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 485.0,
+        "Y": 332.5
       }
     ],
     "Annotations": [],

@@ -89,13 +89,13 @@ namespace Dynamo.Tests
 
             boolSelectorNode.Value = true;
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", true);
-            AssertPreviewValue("8ec964ca-a03c-4fd3-b11d-bcf399642d3e", new object[] { "a1", "b1", "c1" });
-            AssertPreviewValue("61f0a2f7-d923-4dda-8a57-ff12ff130fc0", new object[] { 1, new object[] { 2 } });
+            AssertPreviewValue("904dcd03-94a3-4560-9cdf-8825e2ce63e6", new object[] { "a1", "b1", "c1" });
+            AssertPreviewValue("ceefb203-19b9-4eb3-b0e4-c355dcb84365", new object[] { 1, new object[] { 2 } });
 
             boolSelectorNode.Value = false;
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", false);
-            AssertPreviewValue("8ec964ca-a03c-4fd3-b11d-bcf399642d3e", new object[] { new object[] { "a2" }, "b2" });
-            AssertPreviewValue("61f0a2f7-d923-4dda-8a57-ff12ff130fc0", new object[] { });
+            AssertPreviewValue("904dcd03-94a3-4560-9cdf-8825e2ce63e6", new object[] { new object[] { "a2" }, "b2" });
+            AssertPreviewValue("ceefb203-19b9-4eb3-b0e4-c355dcb84365", new object[] { });
         }
     }
 }
