@@ -17,7 +17,7 @@ namespace CoreNodeModels.Logic
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
     [IsVisibleInDynamoLibrary(false)]
-    [Obsolete("This node will be removed in a future version of Dynamo. Please use the new if node instead.")]
+    [Obsolete("This node will be removed in a future version of Dynamo. Please use the new 'If' node instead.")]
     public class If : NodeModel
     {
         [JsonConstructor]
@@ -36,6 +36,8 @@ namespace CoreNodeModels.Logic
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            Warning("This node will be removed in a future version of Dynamo. Please use the new 'If' node instead.", true);
+
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
