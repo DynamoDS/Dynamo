@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autodesk.DesignScript.Runtime;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
@@ -15,6 +16,7 @@ namespace CoreNodeModels.Logic
     [OutPortTypes("Function")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
+    [IsVisibleInDynamoLibrary(false)]
     [Obsolete("This node will be removed in a future version of Dynamo. Please use the new if node instead.")]
     public class If : NodeModel
     {
@@ -75,18 +77,18 @@ namespace CoreNodeModels.Logic
         }
     }
 
-    [NodeName("NewIf")]
+    [NodeName("If")]
     [NodeCategory(BuiltinNodeCategories.LOGIC)]
     [NodeDescription("ScopeIfDescription", typeof(Resources))]
     [OutPortTypes("Function")]
     [IsDesignScriptCompatible]
-    [AlsoKnownAs("DSCoreNodesUI.Logic.NewIf")]
-    public class NewIf : NodeModel
+    [AlsoKnownAs("DSCoreNodesUI.Logic.If")]
+    public class RefactoredIf : NodeModel
     {
         [JsonConstructor]
-        private NewIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        private RefactoredIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
 
-        public NewIf()
+        public RefactoredIf()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
