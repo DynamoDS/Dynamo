@@ -1,0 +1,278 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "testNewIf",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[\"a1\",\"b1\",\"c1\"];\n[[\"a2\"],\"b2\"];\n[1,[2]];\n[];",
+      "Id": "95224771f8f74d4b97ff0a84447c55fa",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "6e3a5447971b48d289766f5daa856d60",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e261689194624bfe9969d0bb8b1d8a57",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bc74cb9869a44a838dc78eb273730263",
+          "Name": "",
+          "Description": "Value of expression at line 3",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "2a7abb946e5541de84576f400c8e726b",
+          "Name": "",
+          "Description": "Value of expression at line 4",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "NodeType": "BooleanInputNode",
+      "InputValue": true,
+      "Id": "886a464b9b2b4e66a033c18d0753c2cf",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3f90288806474ec2a7184fb87a41c006",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Selection between a true and false."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "904dcd0394a345609cdf8825e2ce63e6",
+      "Inputs": [
+        {
+          "Id": "881567be242d4b328160f891a01f9ce3",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "81eee78dcf8e4c2ab744e579b4348e1d",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e718c439a67e4a63b7a29edf8b4521fe",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "6aeca93df5a44f609e175479f6a2748d",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "ceefb20319b94eb3b0e4c355dcb84365",
+      "Inputs": [
+        {
+          "Id": "7ccfe809ce154a20a345ed5b4c2601e5",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d79e0899d98f4474a678aa0868068de1",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c16ded6761084fc59f157920ae14f6d4",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bdb0180b86f44c1a8dbdbb675d1bef8a",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "6e3a5447971b48d289766f5daa856d60",
+      "End": "81eee78dcf8e4c2ab744e579b4348e1d",
+      "Id": "1d9e83d8a7004c91bbe903d5d4008e02"
+    },
+    {
+      "Start": "e261689194624bfe9969d0bb8b1d8a57",
+      "End": "e718c439a67e4a63b7a29edf8b4521fe",
+      "Id": "3d6bc540015340efa3164787e413bba0"
+    },
+    {
+      "Start": "bc74cb9869a44a838dc78eb273730263",
+      "End": "d79e0899d98f4474a678aa0868068de1",
+      "Id": "ef2b605f523f45cea361eb7e69d5ac91"
+    },
+    {
+      "Start": "2a7abb946e5541de84576f400c8e726b",
+      "End": "c16ded6761084fc59f157920ae14f6d4",
+      "Id": "a330d22125cc4f38b6c9bd9246d89317"
+    },
+    {
+      "Start": "3f90288806474ec2a7184fb87a41c006",
+      "End": "881567be242d4b328160f891a01f9ce3",
+      "Id": "6ca4ac90d6de48f4b938bff0333d8506"
+    },
+    {
+      "Start": "3f90288806474ec2a7184fb87a41c006",
+      "End": "7ccfe809ce154a20a345ed5b4c2601e5",
+      "Id": "8c56b3f1e2034f1dad8c3b34a453fd05"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.0.4125",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "95224771f8f74d4b97ff0a84447c55fa",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.0,
+        "Y": 290.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Boolean",
+        "Id": "886a464b9b2b4e66a033c18d0753c2cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 163.0,
+        "Y": 153.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "904dcd0394a345609cdf8825e2ce63e6",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 483.0,
+        "Y": 122.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "ceefb20319b94eb3b0e4c355dcb84365",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 485.0,
+        "Y": 332.5
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
