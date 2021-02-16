@@ -101,6 +101,14 @@ namespace CoreNodeModels.Logic
             RegisterAllPorts();
         }
 
+        /// <summary>
+        /// This node will translate the following DS code into an AST output for the If NodeModel node. 
+        ///   result  = [trueValue, falseValue][boolCondition ? 0 : 1]
+        /// This node will just return the trueValue or the falseValue based on the input condition
+        /// and would be different to the conditional "If" node that was present before.
+        /// </summary>
+        /// <param name="inputAstNodes"> List of input AST nodes. </param>
+        /// <returns></returns>
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             var lhs = GetAstIdentifierForOutputIndex(0);
