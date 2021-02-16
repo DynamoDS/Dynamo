@@ -36,7 +36,7 @@ namespace CoreNodeModels.Logic
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            Warning("This node will be removed in a future version of Dynamo. Please use the new 'If' node instead.", true);
+            Warning(Resources.IFNodeWarningMessage, true);
 
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
