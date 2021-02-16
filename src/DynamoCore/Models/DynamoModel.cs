@@ -961,7 +961,7 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
-                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, this.Logger);
             }
         }
 
@@ -969,11 +969,11 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
-                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext, this.Logger);
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension)
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, ILogger logger)
         {
             workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
@@ -984,12 +984,12 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                logger.Log(ex.Message + " : " + ex.StackTrace);
                 return;
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext, ILogger logger)
         {
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
@@ -1002,7 +1002,7 @@ namespace Dynamo.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message + " : " + ex.StackTrace);
+                logger.Log(ex.Message + " : " + ex.StackTrace);
                 return;
             }
             
