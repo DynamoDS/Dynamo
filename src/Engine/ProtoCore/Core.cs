@@ -828,7 +828,7 @@ namespace ProtoCore
 
         public void Cleanup()
         {
-            CLRModuleType.ClearTypes();
+            //CLRModuleType.ClearTypes();
         }
     }
 }

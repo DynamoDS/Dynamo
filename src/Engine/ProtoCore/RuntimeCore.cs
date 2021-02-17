@@ -270,7 +270,7 @@ namespace ProtoCore
         public void Cleanup()
         {
             OnDispose();
-            CLRModuleType.ClearTypes();
+            //CLRModuleType.ClearTypes();
         }
 
         public void NotifyExecutionEvent(ExecutionStateEventArgs.State state)

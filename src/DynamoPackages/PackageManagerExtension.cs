@@ -224,6 +224,12 @@ namespace Dynamo.PackageManager
                 (ws as WorkspaceModel).CollectingCustomNodePackageDependencies += GetCustomNodePackageFromID;
                 (ws as WorkspaceModel).CollectingNodePackageDependencies += GetNodePackageFromAssemblyName;
                 currentWorkspace = ws;
+
+                if (PackageLoader != null && ws is HomeWorkspaceModel model)
+                {
+                    PackageLoader.OnWorkspaceRead(model.NodeLibraryDependencies,
+                        ReadyParams.StartupParams.PathManager.PackagesDirectories);
+                }
             }
         }
         
