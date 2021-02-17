@@ -278,66 +278,70 @@ namespace DynamoShapeManager
                 throw new ArgumentNullException("location");
 
             location = string.Empty;
-
-            try
+            using (StartRegistryCache(rootFolder))
             {
-                // use the passed lookup function if it exists,
-                // else use the default asm install lookup -
-                // this is used for testing
-                getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
-                var installations = getASMInstallsFunc(rootFolder);
-
-
-                // first find the exact match or the lowest matching within same major version
-                foreach (var version in versions)
+                try
                 {
-                    Dictionary<Version, string> versionToLocationDic = new Dictionary<Version, string>();
-                    foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
+
+
+                    // use the passed lookup function if it exists,
+                    // else use the default asm install lookup -
+                    // this is used for testing
+                    getASMInstallsFunc = getASMInstallsFunc ?? GetAsmInstallations;
+                    var installations = getASMInstallsFunc(rootFolder);
+
+
+                    // first find the exact match or the lowest matching within same major version
+                    foreach (var version in versions)
                     {
-                        var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
-                        if (version.Major == installVersion.Major && !versionToLocationDic.ContainsKey(installVersion))
+                        Dictionary<Version, string> versionToLocationDic = new Dictionary<Version, string>();
+                        foreach (KeyValuePair<string, Tuple<int, int, int, int>> install in installations)
                         {
-                            versionToLocationDic.Add(installVersion, install.Key);
+                            var installVersion = new Version(install.Value.Item1, install.Value.Item2, install.Value.Item3);
+                            if (version.Major == installVersion.Major && !versionToLocationDic.ContainsKey(installVersion))
+                            {
+                                versionToLocationDic.Add(installVersion, install.Key);
+                            }
+                        }
+
+                        // When there is major version matching, continue the search
+                        if (versionToLocationDic.Count != 0)
+                        {
+                            versionToLocationDic.TryGetValue(version, out location);
+                            // If exact matching version found, return it
+                            if (location != null)
+                            {
+                                return version;
+                            }
+                            // If no matching version, return the lowest within same major
+                            else
+                            {
+                                location = versionToLocationDic[versionToLocationDic.Keys.Min()];
+                                return versionToLocationDic.Keys.Min();
+                            }
                         }
                     }
 
-                    // When there is major version matching, continue the search
-                    if (versionToLocationDic.Count != 0)
+                    // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
+                    foreach (var v in versions)
                     {
-                        versionToLocationDic.TryGetValue(version, out location);
-                        // If exact matching version found, return it
-                        if (location != null)
-                        {
-                            return version;
-                        }
-                        // If no matching version, return the lowest within same major
-                        else
-                        {
-                            location = versionToLocationDic[versionToLocationDic.Keys.Min()];
-                            return versionToLocationDic.Keys.Min();
-                        }
+                        var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
+                        var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
+                        if (!dir.Exists)
+                            continue;
+
+                        var files = dir.GetFiles(ASMFileMask);
+                        if (!files.Any())
+                            continue;
+
+                        location = dir.FullName;
+                        return v;
                     }
                 }
-
-                // Fallback mechanism, look inside libg folders if any of them contains ASM dlls.
-                foreach (var v in versions)
+                catch (Exception)
                 {
-                    var folderName = string.Format("libg_{0}_{1}_{2}", v.Major, v.Minor, v.Build);
-                    var dir = new DirectoryInfo(Path.Combine(rootFolder, folderName));
-                    if (!dir.Exists)
-                        continue;
-
-                    var files = dir.GetFiles(ASMFileMask);
-                    if (!files.Any())
-                        continue;
-
-                    location = dir.FullName;
-                    return v;
+                    return null;
                 }
-            }
-            catch (Exception)
-            {
-                return null;
             }
 
             return null;
@@ -568,6 +572,16 @@ namespace DynamoShapeManager
             return assemblyPath;
         }
 
+        private static IDisposable StartRegistryCache(string rootFolder)
+        {
+            var assemblyPath = Path.Combine(Path.Combine(rootFolder, "DynamoInstallDetective.dll"));
+            if (!File.Exists(assemblyPath))
+                throw new FileNotFoundException(assemblyPath);
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+            return assembly?.GetType("DynamoInstallDetective.RegUtils")?.GetMethod("StartCache", BindingFlags.Static|BindingFlags.Public)?.Invoke(null, new object[] { }) as IDisposable;
+        }
+
 
         private static IEnumerable GetAsmInstallations(string rootFolder)
         {
@@ -587,6 +601,7 @@ namespace DynamoShapeManager
             {
                 throw new MissingMethodException("Method 'DynamoInstallDetective.Utilities.FindProductInstallations' not found");
             }
+
 
 
             var methodParams = new object[] { ProductsWithASM, ASMFileMask };
