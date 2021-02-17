@@ -227,7 +227,7 @@ namespace Dynamo.PackageManager
 
                 if (PackageLoader != null && ws is HomeWorkspaceModel model)
                 {
-                    PackageLoader.OnWorkspaceRead(model.NodeLibraryDependencies,
+                    PackageLoader.OnWorkspaceOpened(model.NodeLibraryDependencies,
                         ReadyParams.StartupParams.PathManager.PackagesDirectories);
                 }
             }

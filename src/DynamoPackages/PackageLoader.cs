@@ -103,7 +103,7 @@ namespace Dynamo.PackageManager
             packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
         }
 
-        internal void OnWorkspaceRead(IEnumerable<INodeLibraryDependencyInfo> packageDependencies, 
+        internal void OnWorkspaceOpened(IEnumerable<INodeLibraryDependencyInfo> packageDependencies, 
             IEnumerable<string> packageDirectories)
         {
             var pkgs = new List<Package>();
