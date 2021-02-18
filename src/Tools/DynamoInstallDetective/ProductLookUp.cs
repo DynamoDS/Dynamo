@@ -65,7 +65,13 @@ namespace DynamoInstallDetective
             return string.Empty;
         }
 
-        // Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
+        
+        /// <summary>
+        /// Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
+        /// NOTE! Because this static method returns a static field that might be cleaned up by the owning RegistryCacher don't use this method in deffered queries
+        /// unless you force a copy to be made using ToList(), ToArray() or some other immediate query.
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, (string DisplayName, string InstallLocation)> GetInstalledProducts()
         {
             lock (mutex)
@@ -281,7 +287,7 @@ namespace DynamoInstallDetective
 
         public virtual IEnumerable<string> GetProductNameList()
         {
-            return RegUtils.GetInstalledProducts().Select(s => s.Value.DisplayName).Where(s => {
+            return RegUtils.GetInstalledProducts().ToList().Select(s => s.Value.DisplayName).Where(s => {
                 return s?.Contains(ProductLookUpName) ?? false;
             });
         }
@@ -289,7 +295,7 @@ namespace DynamoInstallDetective
         //Returns product names and code tuples for products which have valid display name.
         internal virtual IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
         {
-            return RegUtils.GetInstalledProducts().Select(s => (s.Value.DisplayName,s.Key)).Where(s => {
+            return RegUtils.GetInstalledProducts().ToList().Select(s => (s.Value.DisplayName,s.Key)).Where(s => {
                 return s.DisplayName?.Contains(ProductLookUpName) ?? false;
             });
         }
