@@ -30,22 +30,36 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
-        /// Converts packages information into markdown formatfor use in Github issue body
+        /// Converts packages information into markdown format for use in Github issue body
         /// </summary>
-        /// <param name="packagesNames">List of names of loaded packages</param>
+        /// <param name="packageLoader">Package loader</param>
         /// <returns>A markdown format string to use in issue body.</returns>
-        internal static string PackagesNamesToMakrdown(IEnumerable<string> packagesNames)
+        internal static string PackagesToMakrdown(PackageLoader packageLoader)
         {
-            string markdownText = "";
-            if (packagesNames != null)
+            if (packageLoader != null)
             {
-                markdownText = "### Loaded Packages" + Environment.NewLine;
-                foreach (var name in packagesNames)
+                //List of the names of all the loaded packages
+                var packagesNames = packageLoader.LocalPackages.Select(o => o.Name).ToList();
+                //Package's issue section in markdown format
+                string markdownText;
+                if (packagesNames.Any())
                 {
-                    markdownText += "- " + name + Environment.NewLine;
+                    markdownText = "### Loaded Packages" + Environment.NewLine;
+                    foreach (var name in packagesNames)
+                    {
+                        markdownText += "- " + name + Environment.NewLine;
+                    }
                 }
+                else
+                {
+                    markdownText = "No loaded packages where found.";
+                }
+                return markdownText;
             }
-            return markdownText;
+            else
+            {
+                return "(Fill in here)";
+            }
         }
 
         /// <summary>
