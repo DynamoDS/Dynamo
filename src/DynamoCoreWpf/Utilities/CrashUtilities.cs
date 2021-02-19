@@ -92,8 +92,6 @@ namespace Dynamo.Wpf.Utilities
                 "(Fill in here)" + Environment.NewLine + Environment.NewLine +
 
                 "## What packages or external references (if any) were used?" + Environment.NewLine +
-                "(Fill in here)" + Environment.NewLine + Environment.NewLine +
-
                 markdownPackages + Environment.NewLine + Environment.NewLine +
 
                 "## Stack Trace" + Environment.NewLine +
