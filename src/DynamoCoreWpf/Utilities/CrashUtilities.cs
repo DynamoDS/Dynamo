@@ -67,7 +67,6 @@ namespace Dynamo.Wpf.Utilities
         /// Builds a Markdown string that will be posted to our new GitHub issue
         /// </summary>
         /// <param name="dynamoVersion">Dynamo version that should be recorded in the issue report</param>
-        /// <param name="stackTrace">The crash stack trace to be included in the issue report</param>
         /// <param name="markdownPackages">Section of the issue with the loaded packages in markdown format</param>
         /// <returns></returns>
         internal static string BuildMarkdownContent(string dynamoVersion, string markdownPackages)
