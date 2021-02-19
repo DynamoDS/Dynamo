@@ -1,7 +1,9 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -28,22 +30,37 @@ namespace Dynamo.Wpf.Utilities
         }
 
         /// <summary>
+        /// Converts packages information into markdown formatfor use in Github issue body
+        /// </summary>
+        /// <param name="packagesNames">List of names of loaded packages</param>
+        /// <returns>A markdown format string to use in issue body.</returns>
+        internal static string PackagesNamesToMakrdown(IEnumerable<string> packagesNames)
+        {
+            string markdownText = "";
+            if (packagesNames != null)
+            {
+                markdownText = "## Loaded Packages" + Environment.NewLine;
+                foreach (var name in packagesNames)
+                {
+                    markdownText += "- " + name + Environment.NewLine;
+                }
+            }
+            return markdownText;
+        }
+
+        /// <summary>
         /// Formats crash details and adds metadata for use in Github issue body
         /// </summary>
         /// <param name="details">Crash details, such as a stack trace.</param>
         /// <returns>A formatted, but not escaped, string to use as issue body.</returns>
         private static string GitHubCrashReportBody(object details)
         {
-            var content = details?.ToString() ?? string.Empty;
-            var contentSplit = content.Split(new string[] { "splitMarker" }, StringSplitOptions.None);
-
-            var stackTrace = contentSplit[0];
-            var markdownPackages = contentSplit[1];
+            var markdownPackages = details?.ToString() ?? string.Empty;
 
             // This functionality was not available prior to version 2.1.0, so it should be the fallback value
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
-            return BuildMarkdownContent(dynamoVersion, stackTrace, markdownPackages);
+            return BuildMarkdownContent(dynamoVersion, markdownPackages);
         }
 
         /// <summary>
@@ -53,7 +70,7 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="stackTrace">The crash stack trace to be included in the issue report</param>
         /// <param name="markdownPackages">Section of the issue with the loaded packages in markdown format</param>
         /// <returns></returns>
-        internal static string BuildMarkdownContent(string dynamoVersion, string stackTrace, string markdownPackages)
+        internal static string BuildMarkdownContent(string dynamoVersion, string markdownPackages)
         {
             return
                 "# Issue Description" + Environment.NewLine +
@@ -82,7 +99,7 @@ namespace Dynamo.Wpf.Utilities
 
                 "## Stack Trace" + Environment.NewLine +
                 "```" + Environment.NewLine +
-                stackTrace + Environment.NewLine +
+                "(From the Dynamo crash window select 'Details' -> 'Copy' and paste here)" + Environment.NewLine +
                 "```" + Environment.NewLine + Environment.NewLine +
 
                 "---" + Environment.NewLine +

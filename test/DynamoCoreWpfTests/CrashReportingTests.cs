@@ -43,12 +43,17 @@ namespace Dynamo.Tests
             at System.Windows.Application.RunInternal(Window window)
             at DynamoSandbox.DynamoCoreSetup.RunApplication(Application app)";
 
+        // This are example packages names used to simulate loaded packages information
+        private string Packages = @"
+            - Package Example A
+            - Package Example B";
+
         [Test]
         [Ignore("Test ignored because the web browser is not closed after the test execution")]
         public void CanReportBugWithNoContent()
         {
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(null, null, null);
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(null, null);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Mock url for request
@@ -67,7 +72,7 @@ namespace Dynamo.Tests
             var dynamoVersion = "2.1.0";
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace, "");
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Report a bug with a stack trace
@@ -81,7 +86,7 @@ namespace Dynamo.Tests
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString();
 
             // Create a crash report to submit
-            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, StackTrace, "");
+            var crashReport = Wpf.Utilities.CrashUtilities.BuildMarkdownContent(dynamoVersion, Packages);
             Assert.IsNotNullOrEmpty(crashReport);
 
             // Mock url for request

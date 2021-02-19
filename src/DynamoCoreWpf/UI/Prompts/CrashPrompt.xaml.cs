@@ -43,14 +43,15 @@ namespace Dynamo.Nodes.Prompts
             txtOverridingText.Text = string.Format(Wpf.Properties.Resources.CrashPromptDialogCrashMessage, productName);
         }
 
-        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel, PackageLoader packageLoader)
+        public CrashPrompt(CrashPromptArgs args, DynamoViewModel dynamoViewModel)
         {
             InitializeComponent();
 
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
             //List of the names of all the loaded packages
-            var packagesNames = PackagesNames(packageLoader);
+            var packagesNames = packageLoader.LocalPackages.Select(o => o.Name).ToList();
             //Package's issue section in markdown format
-            markdownPackages = PackagesNamesToMakrdown(packagesNames);
+            markdownPackages = Wpf.Utilities.CrashUtilities.PackagesNamesToMakrdown(packagesNames);
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
@@ -79,34 +80,6 @@ namespace Dynamo.Nodes.Prompts
                 ConvertFormattedTextIntoTextblock(this.txtOverridingText, overridingText);
             }
         }
-        private string PackagesNamesToMakrdown(IEnumerable<string> packagesNames)
-        {
-            string markdownText = "";
-            if (packagesNames != null)
-            {
-                markdownText = "## Loaded Packages" + Environment.NewLine;
-                foreach (var name in packagesNames)
-                {
-                    markdownText += "- " + name + Environment.NewLine;
-                }
-            }
-            return markdownText;
-        }
-
-        private IEnumerable<string> PackagesNames(PackageLoader packageLoader)
-        {
-            var packages = packageLoader.LocalPackages;
-            var pckgsNames = new List<string>();
-            if (packages.Any())
-            {
-                pckgsNames.AddRange(packages.Select(pckg => pckg.Name));
-            }
-            else
-            {
-                pckgsNames.Add("No packages where loaded.");
-            }
-            return pckgsNames;
-        }
 
         private void ConvertFormattedTextIntoTextblock(TextBlock txtBox, string text)
         {
@@ -130,7 +103,7 @@ namespace Dynamo.Nodes.Prompts
 
         private void PostOnGithub_Click(object sender, RoutedEventArgs e)
         {
-            DynamoViewModel.ReportABug(this.CrashDetailsContent.Text + "splitMarker" + markdownPackages);
+            DynamoViewModel.ReportABug(markdownPackages);
         }
 
         private void Details_Click(object sender, RoutedEventArgs e)

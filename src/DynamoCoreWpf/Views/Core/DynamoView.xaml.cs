@@ -1272,8 +1272,7 @@ namespace Dynamo.Controls
 
         private void Controller_RequestsCrashPrompt(object sender, CrashPromptArgs args)
         {
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            var prompt = new CrashPrompt(args, dynamoViewModel, packageLoader);
+            var prompt = new CrashPrompt(args, dynamoViewModel);
             prompt.ShowDialog();
         }
 
