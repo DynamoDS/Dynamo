@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Utilities
             string markdownText = "";
             if (packagesNames != null)
             {
-                markdownText = "## Loaded Packages" + Environment.NewLine;
+                markdownText = "### Loaded Packages" + Environment.NewLine;
                 foreach (var name in packagesNames)
                 {
                     markdownText += "- " + name + Environment.NewLine;
