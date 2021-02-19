@@ -47,11 +47,17 @@ namespace Dynamo.Nodes.Prompts
         {
             InitializeComponent();
 
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            //List of the names of all the loaded packages
-            var packagesNames = packageLoader.LocalPackages.Select(o => o.Name).ToList();
-            //Package's issue section in markdown format
-            markdownPackages = Wpf.Utilities.CrashUtilities.PackagesNamesToMakrdown(packagesNames);
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            if(packageLoader != null)
+            {
+                //List of the names of all the loaded packages
+                var packagesNames = packageLoader.LocalPackages.Select(o => o.Name).ToList();
+                //Package's issue section in markdown format
+                markdownPackages = Wpf.Utilities.CrashUtilities.PackagesNamesToMakrdown(packagesNames);
+            }
+            else {
+                markdownPackages = "(Fill in here)";
+            }
 
             productName = dynamoViewModel.BrandingResourceProvider.ProductName;
             Title = string.Format(Wpf.Properties.Resources.CrashPromptDialogTitle, productName);
