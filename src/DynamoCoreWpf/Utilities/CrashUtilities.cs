@@ -52,7 +52,7 @@ namespace Dynamo.Wpf.Utilities
                 }
                 else
                 {
-                    markdownText = "No loaded packages where found.";
+                    markdownText = "No loaded packages were found.";
                 }
                 return markdownText;
             }
