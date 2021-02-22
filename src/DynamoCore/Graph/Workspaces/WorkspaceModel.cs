@@ -737,7 +737,9 @@ namespace Dynamo.Graph.Workspaces
                 if (graphDocumentationURL == value)
                     return;
 
-                graphDocumentationURL = value; }
+                graphDocumentationURL = value;
+                RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
         }
 
 
@@ -755,6 +757,7 @@ namespace Dynamo.Graph.Workspaces
                     // if value is not a valid Base64 string this will throw, and we return null.
                     byte[] data = Convert.FromBase64String(value);
                     thumbnail = value;
+                    RaisePropertyChanged(nameof(Thumbnail));
                 }
                 catch
                 {
