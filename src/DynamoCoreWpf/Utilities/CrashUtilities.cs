@@ -38,7 +38,7 @@ namespace Dynamo.Wpf.Utilities
         {
             if (packageLoader != null)
             {
-                //List of the names of all the loaded packages
+                //List of the names of all the loaded packages with their corresponding version
                 var packagesNames = packageLoader.LocalPackages.Select(o => o.Name + " " + o.VersionName).ToList();
                 //Package's issue section in markdown format
                 string markdownText;
