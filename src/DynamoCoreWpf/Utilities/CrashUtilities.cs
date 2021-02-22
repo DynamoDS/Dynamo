@@ -39,7 +39,7 @@ namespace Dynamo.Wpf.Utilities
             if (packageLoader != null)
             {
                 //List of the names of all the loaded packages
-                var packagesNames = packageLoader.LocalPackages.Select(o => o.Name).ToList();
+                var packagesNames = packageLoader.LocalPackages.Select(o => o.Name + " " + o.VersionName).ToList();
                 //Package's issue section in markdown format
                 string markdownText;
                 if (packagesNames.Any())
