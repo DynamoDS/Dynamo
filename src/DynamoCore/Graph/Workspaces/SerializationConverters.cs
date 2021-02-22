@@ -652,6 +652,12 @@ namespace Dynamo.Graph.Workspaces
             if (obj.TryGetValue(nameof(WorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                 ws.Thumbnail = thumbnail.ToString();
 
+            if (obj.TryGetValue(nameof(WorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
+                ws.GraphDocumentationURL = new Uri(helpLink.ToString());
+
+            if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
+                ws.Author = author.ToString();
+
 
             return ws;
         }
@@ -777,6 +783,14 @@ namespace Dynamo.Graph.Workspaces
             // Thumbnail
             writer.WritePropertyName(nameof(WorkspaceModel.Thumbnail));
             writer.WriteValue(ws.Thumbnail);
+
+            // GraphDocumentaionLink
+            writer.WritePropertyName(nameof(WorkspaceModel.GraphDocumentationURL));
+            writer.WriteValue(ws.GraphDocumentationURL);
+
+            // Graph Author
+            writer.WritePropertyName(nameof(WorkspaceModel.Author));
+            writer.WriteValue(ws.Author);
 
             if (engine != null)
             {

@@ -203,6 +203,8 @@ namespace Dynamo.Graph.Workspaces
         private DateTime lastSaved;
         private string author = "None provided";
         private string description;
+        private string thumbnail;
+        private Uri graphDocumentationURL;
         private bool hasUnsavedChanges;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
@@ -724,7 +726,20 @@ namespace Dynamo.Graph.Workspaces
             }
         }
 
-        private string thumbnail;
+        /// <summary>
+        /// Link to documentation page for this workspace
+        /// </summary>
+        public Uri GraphDocumentationURL
+        {
+            get { return graphDocumentationURL; }
+            set 
+            {
+                if (graphDocumentationURL == value)
+                    return;
+
+                graphDocumentationURL = value; }
+        }
+
 
         /// <summary>
         /// Workspace thumbnail as Base64 string.
