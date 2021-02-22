@@ -555,6 +555,7 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
+            public bool DisableADPForProcess { get; set; }
         }
 
         /// <summary>
@@ -586,11 +587,14 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            if (config is DefaultStartConfiguration)
+            var disableADPForProcess = false;
+            if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
-                DefaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
+                DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
+                disableADPForProcess = defaultStartConfig.DisableADPForProcess;
+
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -668,6 +672,15 @@ namespace Dynamo.Models
             {
                 // Do nothing for now
             }
+
+            // these configuration options are incompatible, one requires loading ADP binaries
+            // the other depends on not loading those same binaries.
+
+            if (areAnalyticsDisabledFromConfig && disableADPForProcess)
+            {
+                throw new ConfigurationException("could not start Dynamo with both [Analytics disabled] and [ADP disabled per process] config options enabled");
+            }
+
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {

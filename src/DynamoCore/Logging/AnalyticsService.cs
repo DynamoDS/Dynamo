@@ -17,9 +17,24 @@ namespace Dynamo.Logging
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
         /// <param name="model">DynamoModel</param>
-        internal static void Start(DynamoModel model)
+        /// <param name="disableADPForProcessLifetime">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
+        internal static void Start(DynamoModel model, bool disableADPForProcessLifetime)
         {
             var client = new DynamoAnalyticsClient(model);
+            if (disableADPForProcessLifetime)
+            {
+                //if this returns false something has gone wrong.
+                //the client requested ADP be disabled, but we cannot disable it.
+                if (!ADPProcessSession.DisableADPForProcessLifetime())
+                {
+                    //TODO consider throwing instead - that will cause a crash.
+                   model.Logger.LogNotification("Dynamo",
+                       "Dynamo Startup Error", 
+                       "Analytics could not be disabled",
+                       "Dynamo was started with configuration requesting ADP be disabled - but ADP could not be disabled.");
+                }
+
+            }
             Analytics.Start(client);
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
