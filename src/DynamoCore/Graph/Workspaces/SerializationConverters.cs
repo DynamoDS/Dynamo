@@ -653,7 +653,11 @@ namespace Dynamo.Graph.Workspaces
                 ws.Thumbnail = thumbnail.ToString();
 
             if (obj.TryGetValue(nameof(WorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
-                ws.GraphDocumentationURL = new Uri(helpLink.ToString());
+            {
+                if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
+                    ws.GraphDocumentationURL = uri;
+            }
+                
 
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
