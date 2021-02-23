@@ -18,9 +18,14 @@ namespace Dynamo.Logging
         /// </summary>
         /// <param name="model">DynamoModel</param>
         /// <param name="disableADPForProcessLifetime">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
-        internal static void Start(DynamoModel model, bool disableADPForProcessLifetime)
+        /// <param name="isHeadless">Analytics won't be started if IsHeadless, but ADP may be loaded to be disabled.</param>
+        /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
+        internal static void Start(DynamoModel model, bool disableADPForProcessLifetime, bool isHeadless, bool isTestMode)
         {
-            var client = new DynamoAnalyticsClient(model);
+            if (isTestMode)
+            {
+                return;
+            }
             if (disableADPForProcessLifetime)
             {
                 //if this returns false something has gone wrong.
@@ -28,13 +33,18 @@ namespace Dynamo.Logging
                 if (!ADPProcessSession.DisableADPForProcessLifetime())
                 {
                     //TODO consider throwing instead - that will cause a crash.
-                   model.Logger.LogNotification("Dynamo",
-                       "Dynamo Startup Error", 
-                       "Analytics could not be disabled",
-                       "Dynamo was started with configuration requesting ADP be disabled - but ADP could not be disabled.");
+                    model.Logger.LogNotification("Dynamo",
+                        "Dynamo Startup Error",
+                        "Analytics could not be disabled",
+                        "Dynamo was started with configuration requesting ADP be disabled - but ADP could not be disabled.");
                 }
-
             }
+
+            if (isHeadless)
+            {
+                return;
+            }
+            var client = new DynamoAnalyticsClient(model);
             Analytics.Start(client);
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
@@ -50,7 +60,7 @@ namespace Dynamo.Logging
         /// <summary>
         /// Indicates whether the user has opted-in to ADP analytics.
         /// </summary>
-        internal static bool IsADPOptedIn 
+        internal static bool IsADPOptedIn
         {
             get
             {

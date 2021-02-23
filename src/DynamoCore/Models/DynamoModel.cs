@@ -451,7 +451,7 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-
+        private bool disableADPForProcess;
         #endregion
 
         #region initialization and disposal
@@ -587,7 +587,6 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            var disableADPForProcess = false;
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
@@ -678,9 +677,14 @@ namespace Dynamo.Models
 
             if (areAnalyticsDisabledFromConfig && disableADPForProcess)
             {
-                throw new ConfigurationException("could not start Dynamo with both [Analytics disabled] and [ADP disabled per process] config options enabled");
+                throw new ConfigurationException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled per process] config options enabled");
             }
 
+            if(IsTestMode && disableADPForProcess)
+            {
+                this.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled per process] ");
+            }
+          
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {
@@ -1420,10 +1424,7 @@ namespace Dynamo.Models
 
         private void InitializeAnalyticsService()
         {
-            if (!IsTestMode && !IsHeadless)
-            {
-                AnalyticsService.Start(this);
-            }
+           AnalyticsService.Start(this,disableADPForProcess, IsHeadless, IsTestMode);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
