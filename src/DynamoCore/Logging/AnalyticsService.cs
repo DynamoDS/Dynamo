@@ -10,27 +10,27 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
-        private static IAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+        private static ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
         /// <param name="model">DynamoModel</param>
-        /// <param name="disableADPForProcessLifetime">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
+        /// <param name="disableADP">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
         /// <param name="isHeadless">Analytics won't be started if IsHeadless, but ADP may be loaded to be disabled.</param>
         /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
-        internal static void Start(DynamoModel model, bool disableADPForProcessLifetime, bool isHeadless, bool isTestMode)
+        internal static void Start(DynamoModel model, bool disableADP, bool isHeadless, bool isTestMode)
         {
             if (isTestMode)
             {
                 return;
             }
-            if (disableADPForProcessLifetime)
+            if (disableADP)
             {
                 //if this returns false something has gone wrong.
                 //the client requested ADP be disabled, but we cannot disable it.
-                if (!ADPProcessSession.DisableADPForProcessLifetime())
+                if (!adpAnalyticsUI.DisableADPForProcessLifetime())
                 {
                     //TODO consider throwing instead - that will cause a crash.
                     model.Logger.LogNotification("Dynamo",
