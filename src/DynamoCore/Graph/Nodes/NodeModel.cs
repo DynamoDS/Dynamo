@@ -2234,7 +2234,7 @@ namespace Dynamo.Graph.Nodes
             argumentLacing = helper.ReadEnum("lacing", LacingStrategy.Disabled);
             IsSetAsInput = helper.ReadBoolean("isSelectedInput", false);
             IsSetAsOutput = helper.ReadBoolean("isSelectedOutput", false);
-            isFrozenExplicitly = helper.ReadBoolean("IsFrozen", false);
+            IsFrozen = helper.ReadBoolean("IsFrozen", false);
             PreviewPinned = helper.ReadBoolean("isPinned", false);
 
             var portInfoProcessed = new HashSet<int>();
@@ -2306,13 +2306,6 @@ namespace Dynamo.Graph.Nodes
                 RaisePropertyChanged(nameof(ArgumentLacing));
                 RaisePropertyChanged(nameof(IsVisible));
                 RaisePropertyChanged(nameof(DisplayLabels));
-                RaisePropertyChanged(nameof(IsSetAsInput));
-                RaisePropertyChanged(nameof(IsSetAsOutput));
-                //we need to modify the downstream nodes manually in case the
-                //undo is for toggling freeze. This is ONLY modifying the execution hint.
-                // this does not run the graph.
-                RaisePropertyChanged(nameof(IsFrozen));
-                MarkDownStreamNodesAsModified(this);
 
                 // Notify listeners that the position of the node has changed,
                 // then all connected connectors will also redraw themselves.
