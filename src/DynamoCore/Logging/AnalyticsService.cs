@@ -24,6 +24,10 @@ namespace Dynamo.Logging
         {
             if (isTestMode)
             {
+                if (disableADP)
+                {
+                    model.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled] ");
+                }
                 return;
             }
             if (disableADP)

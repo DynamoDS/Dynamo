@@ -680,14 +680,9 @@ namespace Dynamo.Models
 
             if (areAnalyticsDisabledFromConfig && disableADP)
             {
-                throw new ConfigurationException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
+                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
             }
 
-            if(IsTestMode && disableADP)
-            {
-                this.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled] ");
-            }
-          
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {
