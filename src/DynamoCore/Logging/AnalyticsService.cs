@@ -32,7 +32,6 @@ namespace Dynamo.Logging
                 //the client requested ADP be disabled, but we cannot disable it.
                 if (!adpAnalyticsUI.DisableADPForProcessLifetime())
                 {
-                    //TODO consider throwing instead - that will cause a crash.
                     model.Logger.LogNotification("Dynamo",
                         "Dynamo Startup Error",
                         "Analytics could not be disabled",

@@ -451,7 +451,7 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-        private bool disableADPForProcess;
+        private bool disableADP;
         #endregion
 
         #region initialization and disposal
@@ -555,7 +555,10 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
-            public bool DisableADPForProcess { get; set; }
+            /// <summary>
+            /// Disables ADP for the entire process for the lifetime of the process.
+            /// </summary>
+            public bool DisableADP { get; set; }
         }
 
         /// <summary>
@@ -592,7 +595,7 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
-                disableADPForProcess = defaultStartConfig.DisableADPForProcess;
+                disableADP = defaultStartConfig.DisableADP;
 
             }
 
@@ -675,14 +678,14 @@ namespace Dynamo.Models
             // these configuration options are incompatible, one requires loading ADP binaries
             // the other depends on not loading those same binaries.
 
-            if (areAnalyticsDisabledFromConfig && disableADPForProcess)
+            if (areAnalyticsDisabledFromConfig && disableADP)
             {
-                throw new ConfigurationException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled per process] config options enabled");
+                throw new ConfigurationException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
             }
 
-            if(IsTestMode && disableADPForProcess)
+            if(IsTestMode && disableADP)
             {
-                this.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled per process] ");
+                this.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled] ");
             }
           
             // If user skipped analytics from assembly config, do not try to launch the analytics client
@@ -1424,7 +1427,7 @@ namespace Dynamo.Models
 
         private void InitializeAnalyticsService()
         {
-           AnalyticsService.Start(this,disableADPForProcess, IsHeadless, IsTestMode);
+           AnalyticsService.Start(this,disableADP, IsHeadless, IsTestMode);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
