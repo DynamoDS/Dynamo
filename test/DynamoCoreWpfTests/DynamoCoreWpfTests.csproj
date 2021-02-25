@@ -335,6 +335,7 @@
     <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="dynamoMenusRedesign.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
