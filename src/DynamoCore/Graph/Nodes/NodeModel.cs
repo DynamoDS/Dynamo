@@ -1050,6 +1050,52 @@ namespace Dynamo.Graph.Nodes
             inputNodes = new Dictionary<int, Tuple<int, NodeModel>>();
             outputNodes = new Dictionary<int, HashSet<Tuple<int, NodeModel>>>();
 
+            //TODO extract to private method
+
+            //try to get portData from attributes on the nodeModel type.
+            //to assign the correct tooltips...
+            var inportDatas = GetPortDataFromAttributes(PortType.Input);
+            var outportDatas = GetPortDataFromAttributes(PortType.Output);
+
+
+
+            // if the above attempt failed, for example because the node type does not have any port data attributes
+            // create a temporary node and extract data from it.
+            //TODO it would be great to avoid doing this for node types that we've already done it for...
+
+            //TODO - it's not clear under what circumstances we should fall back to this...
+            //what about if the lengths just don't match.
+            if(inportDatas.Count() != inPorts.Count() || outportDatas.Count() != outPorts.Count())
+            {
+                //TODO possible to create this node in another appdomain or somehow isolated?
+                var tempNode = this.GetType().GetConstructor(Type.EmptyTypes).Invoke(null) as NodeModel;
+                inportDatas = tempNode.InPorts.Select(x => new PortData(x.Name,x.ToolTip));
+                outportDatas = tempNode.outPorts.Select(x => new PortData(x.Name, x.ToolTip));
+                //kind of risky.
+                tempNode.Dispose();
+            }
+
+            //TODO we should probably give up for variable input nodes...
+
+
+            for (var i = 0;i<outportDatas.Count(); i++)
+            {
+                var portData = outportDatas.ElementAt(i);
+                var port = outPorts.ElementAt(i);
+                //TODO index bounds checking.
+                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+            }
+
+            for (var i = 0; i < inportDatas.Count(); i++)
+            {
+                var portData = inportDatas.ElementAt(i);
+                var port = inPorts.ElementAt(i);
+                //TODO index bounds checking.
+                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+            }
+
             // Initialize the port events
             // Note: It is important that this occurs before the ports are added next
             InPorts.CollectionChanged += PortsCollectionChanged;

@@ -686,6 +686,25 @@ namespace Dynamo.Tests
             var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
         }
+        [Test]
+        public void PortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.OutPorts.First().ToolTip, "An Arc");
+            
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.OutPorts.First().ToolTip, "Selected colors");
+            
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.OutPorts.First().ToolTip, "Combined lists");
+
+            //TODO add some tests for inputs
+        }
+
 
         [Test]
         public void NodeFreezeStateDeserilizationTest()

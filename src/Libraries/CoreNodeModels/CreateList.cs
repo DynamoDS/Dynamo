@@ -14,6 +14,10 @@ namespace CoreNodeModels
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.CreateList", "List.Create")]
+    [InPortNames("item0")]
+    [InPortDescriptions(typeof(Resources),"CreateListPortDataIndex0ToolTip")]
+    [OutPortNames("item0")]
+    [OutPortDescriptions(typeof(Resources), "CreateListPortDataResultToolTip")]
     public class CreateList : VariableInputNode
     {
         /// <summary>
