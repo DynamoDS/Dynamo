@@ -154,6 +154,7 @@ namespace Dynamo.Controls
 
         #endregion
 
+        internal event EventHandler RepositionNodeHandler;
         /// <summary>
         /// Called when the size of the node changes. Communicates changes down to the view model 
         /// then to the model.
@@ -169,6 +170,8 @@ namespace Dynamo.Controls
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
             }
+
+            RepositionNodeHandler?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
