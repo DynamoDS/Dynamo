@@ -2280,11 +2280,6 @@ namespace Dynamo.Controls
             collapsedExtensionSidebar.Visibility = Visibility.Visible;
         }
 
-        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
-        {
-            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
-        }
-
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             //http://stackoverflow.com/questions/4474670/how-to-catch-the-ending-resize-window
