@@ -571,6 +571,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sets the visibility of the preferences menu option inside the Dynamo menu
+        /// The option will be disabled if in debug mode
+        /// </summary>
+        public bool IsVisiblePreferences
+        {
+            get { return !IsDebugBuild; }
+        }
+
         #endregion
 
         public struct StartConfiguration
