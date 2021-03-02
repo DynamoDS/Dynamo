@@ -111,21 +111,7 @@
         background-color: #373737;
         opacity: 1.0;
     }
-    .questionmark:after {
-        content: '?';
-        display: inline-block;
-        font-family: sans-serif;
-        font-weight: bold;
-        text-align: center;
-        font-size: 0.8em;
-        line-height: 0.8em;
-        border-radius: 50%;
-        margin-left: 6px;
-        padding: 0.13em 0.2em 0.09em 0.2em;
-        color: inherit;
-        border: 1px solid;
-        text-decoration: none;
-    }
+
     @media screen and (max-width: 600px) {
         table {
             width: 100%;
@@ -172,15 +158,10 @@
 <!-- and custom styling in Dynamo sidepanel. -->
 
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
-    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649">
-        <input type="submit" class="button" value="Report Python 3 node issue" style="font-size:medium;" />
-    </form>
+    <h3>Publishing Dynamo Packages</h3>
     <p>
-        Since the introduction of Python 3 in 2008, Python 2 and 3 have been supported side-by-side by the Python
-        Software Foundation (PSF) and the broader Python Community.
-    </p>
-    <p>
-        This stopped on January 1st 2020, when Python 2 support from the PSF officially ended.
+        Dynamo offers a vast no. of features out of the box, along with those we also maintain an extensive package library,
+        contributed by the Dynamo community, these can significantly extend Dynamo's capability. This documentation describes how a user can publish a package from Dynamo.
     </p>
 
     <h3>Backwards Compatibility</h3>
