@@ -299,9 +299,7 @@
                                   Focusable="False" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
-                                  Visibility="{Binding IsDebugBuild, 
-                                            Mode = OneWay, 
-                                            Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
+                                  Name="preferencesOption"/>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
                                   Command="{Binding ExitCommand}"
