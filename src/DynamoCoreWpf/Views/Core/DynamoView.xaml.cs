@@ -914,6 +914,11 @@ namespace Dynamo.Controls
                 // If first run, Collect Info Prompt will appear
                 UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
             }
+            else
+            {
+            // If we've made it this far it's not the first run.
+            dynamoViewModel.Model.PreferenceSettings.IsFirstRun = false;
+            }
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
