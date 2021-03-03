@@ -4368,6 +4368,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Features.
+        /// </summary>
+        public static string PreferencesViewFeaturesTab {
+            get {
+                return ResourceManager.GetString("PreferencesViewFeaturesTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string PreferencesViewGeneralTab {
+            get {
+                return ResourceManager.GetString("PreferencesViewGeneralTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string PreferencesViewTitle {
+            get {
+                return ResourceManager.GetString("PreferencesViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visual Settings.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsTab {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
         /// </summary>
         public static string PresetOverwrite {
