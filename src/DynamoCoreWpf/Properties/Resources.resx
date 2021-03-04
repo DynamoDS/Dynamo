@@ -334,9 +334,9 @@
     <value>_Undo</value>
     <comment>Edit menu | Undo</comment>
   </data>
-  <data name="DynamoViewFiileMenuExit" xml:space="preserve">
-    <value>_Exit</value>
-    <comment>File menu | Exit Dynamo</comment>
+  <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
+    <value>_Exit Dynamo</value>
+    <comment>Dynamo menu | Exit Dynamo</comment>
   </data>
   <data name="DynamoViewFileMenu" xml:space="preserve">
     <value>_File</value>
@@ -386,20 +386,20 @@
     <value>Help</value>
     <comment>Help menu</comment>
   </data>
-  <data name="DynamoViewHelpMenuAbout" xml:space="preserve">
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
     <value>_About...</value>
-    <comment>Help menu | Display About dialog</comment>
+    <comment>Dynamo menu | Display About dialog</comment>
   </data>
   <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
     <value>_Display Start Page</value>
     <comment>Help menu | Display start page</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
-    <value>_Go To Project Website</value>
-    <comment>Help menu | Go go Dynamo website</comment>
+    <value>_Dynamo Website</value>
+    <comment>Help menu | Go Dynamo website</comment>
   </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
-    <value>Go To Project _Wiki</value>
+    <value>Dynamo Project _Wiki</value>
     <comment>Help menu | Go to wiki</comment>
   </data>
   <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
@@ -2140,7 +2140,8 @@ Want to publish a different package?</value>
     <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
   </data>
   <data name="DynamoViewHelpDictionary" xml:space="preserve">
-    <value>Open Dynamo Dictionary</value>
+    <value>Dynamo Dictionary</value>
+    <comment>Help menu | Go to Dynamo dictionary</comment>
   </data>
   <data name="RerunButton" xml:space="preserve">
     <value>Apply Changes</value>
@@ -2288,5 +2289,17 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PublishPackageMoreInfoFile" xml:space="preserve">
     <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
+  <data name="DynamoViewDynamoMenu" xml:space="preserve">
+    <value>_Dynamo</value>
+    <comment>Dynamo menu</comment>
+  </data>
+  <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
+    <value>_Preferences...</value>
+    <comment>Dynamo menu | Preferences</comment>
+  </data>
+  <data name="DynamoViewFileMenuExport" xml:space="preserve">
+    <value>_Export</value>
+    <comment>File menu | Export</comment>
   </data>
 </root>

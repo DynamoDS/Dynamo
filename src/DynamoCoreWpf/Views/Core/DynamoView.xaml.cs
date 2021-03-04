@@ -190,6 +190,17 @@ namespace Dynamo.Controls
                 }
             }
 
+            // Sets the visibility of the preferences option in the Dynamo menu depending on the debug mode being enabled
+            // This will be deleted once the option goes into production
+            if (Dynamo.Configuration.DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode"))
+            {
+                preferencesOption.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                preferencesOption.Visibility = Visibility.Collapsed;
+            }
+
             // when an extension is added if dynamoView is loaded, call loaded on
             // that extension (this alerts late loaded extensions).
             this.viewExtensionManager.ExtensionAdded += (extension) =>
@@ -2278,11 +2289,6 @@ namespace Dynamo.Controls
 
             sidebarExtensionsGrid.Visibility = Visibility.Collapsed;
             collapsedExtensionSidebar.Visibility = Visibility.Visible;
-        }
-
-        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
-        {
-            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
