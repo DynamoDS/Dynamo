@@ -1017,6 +1017,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Dynamo.
+        /// </summary>
+        public static string DynamoViewDynamoMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewDynamoMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _About....
+        /// </summary>
+        public static string DynamoViewDynamoMenuAbout {
+            get {
+                return ResourceManager.GetString("DynamoViewDynamoMenuAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Exit Dynamo.
+        /// </summary>
+        public static string DynamoViewDynamoMenuExit {
+            get {
+                return ResourceManager.GetString("DynamoViewDynamoMenuExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Preferences....
+        /// </summary>
+        public static string DynamoViewDynamoMenuPreferences {
+            get {
+                return ResourceManager.GetString("DynamoViewDynamoMenuPreferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Edit.
         /// </summary>
         public static string DynamoViewEditMenu {
@@ -1242,20 +1278,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Exit.
-        /// </summary>
-        public static string DynamoViewFiileMenuExit {
-            get {
-                return ResourceManager.GetString("DynamoViewFiileMenuExit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _File.
         /// </summary>
         public static string DynamoViewFileMenu {
             get {
                 return ResourceManager.GetString("DynamoViewFileMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Export.
+        /// </summary>
+        public static string DynamoViewFileMenuExport {
+            get {
+                return ResourceManager.GetString("DynamoViewFileMenuExport", resourceCulture);
             }
         }
         
@@ -1359,7 +1395,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Dynamo Dictionary.
+        ///   Looks up a localized string similar to Dynamo Dictionary.
         /// </summary>
         public static string DynamoViewHelpDictionary {
             get {
@@ -1377,15 +1413,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _About....
-        /// </summary>
-        public static string DynamoViewHelpMenuAbout {
-            get {
-                return ResourceManager.GetString("DynamoViewHelpMenuAbout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Display Start Page.
         /// </summary>
         public static string DynamoViewHelpMenuDisplayStartPage {
@@ -1395,7 +1422,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Go To Project Website.
+        ///   Looks up a localized string similar to _Dynamo Website.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWebsite {
             get {
@@ -1404,7 +1431,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go To Project _Wiki.
+        ///   Looks up a localized string similar to Dynamo Project _Wiki.
         /// </summary>
         public static string DynamoViewHelpMenuGotoWiki {
             get {
