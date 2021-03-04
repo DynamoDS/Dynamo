@@ -38,8 +38,8 @@
     <DocumentationFile>..\..\..\bin\AnyCPU\Release\en-US\GeometryColor.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ProtoGeometry, Version=2.11.0.4161, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.11.0.4161\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.11.0.4226, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\DynamoVisualProgramming.LibG_227_0_0.2.11.0.4226\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
