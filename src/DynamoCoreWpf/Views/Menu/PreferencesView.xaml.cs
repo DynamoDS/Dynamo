@@ -15,7 +15,7 @@ namespace Dynamo.Wpf.Views
             InitializeComponent();         
             DataContext = dynamoViewModel;
 
-            //For doing this window modal
+            //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
             this.Owner = Application.Current.MainWindow;
         }
 
@@ -29,12 +29,13 @@ namespace Dynamo.Wpf.Views
             this.Close();
         }
 
-        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        //When the TitleBar is clicked this method will be executed
+        private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-
+            //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
             if (e.ChangedButton == MouseButton.Left)
             {
-                this.DragMove();              
+                this.DragMove();
             }
         }
     }

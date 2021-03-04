@@ -132,56 +132,45 @@
                 </Setter>
             </Style>
 
-            <Style TargetType="HeaderedItemsControl">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type HeaderedItemsControl}">
-                            <StackPanel>
-                                <Grid>
-                                    <Rectangle Fill="{TemplateBinding Background}"/>
-                                    <ContentPresenter ContentSource="Header"/>
-                                </Grid>
-                                <Grid>
-                                    <Rectangle Stroke="{TemplateBinding BorderBrush}"/>
-                                    <ItemsPresenter Margin="2,0,0,0"/>
-                                </Grid>
-                            </StackPanel>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style TargetType="TabItem">
+            <Style x:Key="LeftTab" 
+                   TargetType="{x:Type TabItem}">
                 <Setter Property="HorizontalAlignment" 
                         Value="Left"/>
-                <Setter Property="Foreground" 
-                        Value="{StaticResource PreferencesWindowFontColor}"/>
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="TabItem">
-                            <Grid Name="TabPanel" 
-                                  Width="130"
-                                  Height="36">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="5" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label x:Name="SelectedItem" 
-                                       Grid.Column="0"
-                                       Background="{StaticResource PreferencesWindowBackgroundColor}"/>
-                                <ContentPresenter x:Name="ContentSite"
-                                                  Grid.Column="1"
-                                                  VerticalAlignment="Center"
-                                                  ContentSource="Header"
-                                                  Margin="10,2"/>
-                                
-                            </Grid>
+                        <ControlTemplate TargetType="{x:Type TabItem}">
+                            <Border Margin="2" 
+                                    Name="TabBorder" 
+                                    CornerRadius="6" 
+                                    BorderBrush="Transparent" 
+                                    Background="Transparent" 
+                                    BorderThickness="2" 
+                                    HorizontalAlignment="Stretch" 
+                                    VerticalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Stretch" 
+                                            VerticalAlignment="Stretch">
+                                    <Grid Name="TabPanel" 
+                                          Width="100"
+                                          Height="30">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label x:Name="SelectedItem" 
+                                               Grid.Column="0"/>
+                                        <ContentPresenter x:Name="ContentSection"
+                                                          Grid.Column="1" 
+                                                          ContentSource="Header" 
+                                                          VerticalAlignment="Center" 
+                                                          HorizontalAlignment="Stretch" 
+                                                          Margin="5,0,0,0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" 
                                          Value="True">
-                                    <Setter TargetName="TabPanel" 
-                                            Property="Background" 
-                                            Value="{StaticResource PreferencesWindowBackgroundColor}" />
                                     <Setter TargetName="SelectedItem" 
                                             Property="Background" 
                                             Value="{StaticResource PreferencesWindowButtonColor}" />
@@ -192,9 +181,6 @@
                                 </Trigger>
                                 <Trigger Property="IsSelected" 
                                          Value="False">
-                                    <Setter TargetName="TabPanel" 
-                                            Property="Background" 
-                                            Value="{StaticResource PreferencesWindowBackgroundColor}" />
                                     <Setter TargetName="SelectedItem" 
                                             Property="Background" 
                                             Value="{StaticResource PreferencesWindowBackgroundColor}" />
@@ -203,9 +189,9 @@
                                     <Setter Property="FontWeight" 
                                             Value="Bold" />
                                 </Trigger>
-                                <Trigger Property="IsMouseOver" 
+                                <Trigger Property="Border.IsMouseOver" 
                                          Value="True">
-                                    <Setter TargetName="TabPanel"
+                                    <Setter TargetName="TabBorder" 
                                             Property="Background" 
                                             Value="{StaticResource PreferencesWindowButtonPressedColor}" />
                                 </Trigger>
@@ -228,8 +214,7 @@
                 Grid.Row="0" 
                 MouseDown="StackPanel_MouseDown"  
                 VerticalAlignment="Top" 
-                Margin="0"  
-                Background="{StaticResource PreferencesWindowBackgroundColor}">
+                Margin="0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -257,7 +242,7 @@
         </Grid>
 
         <Grid x:Name="TabsContent" 
-              Grid.Row="1">
+              Grid.Row="1" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
@@ -268,22 +253,23 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <TabControl TabStripPlacement="Left" 
-                            Background="{StaticResource PreferencesWindowBackgroundColor}" >
-                    <TabItem Header="{x:Static p:Resources.PreferencesViewGeneralTab}">
-                        <Label Content="Content goes here..." 
+                <TabControl TabStripPlacement="Left" Background="{StaticResource PreferencesWindowBackgroundColor}">
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewGeneralTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Label Content="General Content goes here..." 
                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     </TabItem>
-                    <TabItem Header="{x:Static p:Resources.PreferencesViewFeaturesTab}" >
-                        <Label Content="Features content goes here..." 
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewFeaturesTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Label Content="Features Content goes here..." 
                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     </TabItem>
-                    <TabItem Header="{x:Static p:Resources.PreferencesViewVisualSettingsTab}">
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewVisualSettingsTab}"
+                             Style="{StaticResource LeftTab}">
                         <Label Content="Visual Content goes here..."
                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     </TabItem>
                 </TabControl>
-
             </Grid>
         </Grid>
         
