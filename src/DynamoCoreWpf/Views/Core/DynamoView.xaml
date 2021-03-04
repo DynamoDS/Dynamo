@@ -299,6 +299,7 @@
                                   Focusable="False" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
+                                  Visibility="Collapsed"
                                   Name="preferencesOption"/>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
