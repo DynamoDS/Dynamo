@@ -211,25 +211,25 @@
         </Grid.RowDefinitions>
 
         <Grid x:Name="TitleBar" 
-                Grid.Row="0" 
-                MouseDown="PreferencesPanel_MouseDown"  
+                Grid.Row="0"  
+                MouseDown="PreferencesPanel_MouseDown"
                 VerticalAlignment="Top" 
                 Margin="0" >
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="46" />
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="HeaderTitle" 
-                       Text="{x:Static p:Resources.PreferencesViewTitle}"
+                       Text="{x:Static p:Resources.PreferencesViewTitle}"        
                        Foreground="{StaticResource PreferencesWindowFontColor}" 
-                       Grid.Column="1" 
+                       Grid.Column="0" 
                        Margin="25,10,0,0" 
                        TextAlignment="Left" 
                        FontSize="17" 
                        FontFamily="Helvetica" 
-                       HorizontalAlignment="Left" />
-            <StackPanel Grid.Column="2" 
+                       HorizontalAlignment="Left" 
+                       Width="459" />
+            <StackPanel Grid.Column="1" 
                         VerticalAlignment="Top"  
                         Orientation="Horizontal" 
                         HorizontalAlignment="Right">
