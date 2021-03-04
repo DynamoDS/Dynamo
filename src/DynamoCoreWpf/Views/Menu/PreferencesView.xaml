@@ -212,7 +212,7 @@
 
         <Grid x:Name="TitleBar" 
                 Grid.Row="0" 
-                MouseDown="StackPanel_MouseDown"  
+                MouseDown="PreferencesPanel_MouseDown"  
                 VerticalAlignment="Top" 
                 Margin="0" >
             <Grid.ColumnDefinitions>
