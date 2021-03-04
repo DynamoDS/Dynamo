@@ -79,7 +79,7 @@ namespace Dynamo.PackageManager
 
         private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
         {
-            pkgViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri("DynamoCoreWpf;PublishPackageDocumentation.html", UriKind.Relative)));
+            pkgViewModel.DynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.PublishPackageMoreInfoFile, UriKind.Relative)));
         }
     }
 

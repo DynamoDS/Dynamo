@@ -2284,4 +2284,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
     <value>Select Node Libraries</value>
   </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
 </root>
