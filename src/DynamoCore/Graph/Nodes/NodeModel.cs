@@ -1103,33 +1103,49 @@ namespace Dynamo.Graph.Nodes
             //to assign the correct tooltips.
             //This might fail because some nodes don't use attributes to define 
             //port data and instead add them using PortModel constructors.
-            var inportDatas = GetPortDataFromAttributes(PortType.Input);
-            var outportDatas = GetPortDataFromAttributes(PortType.Output);
+            var inportDatas = GetPortDataFromAttributes(PortType.Input).ToList();
+            var outportDatas = GetPortDataFromAttributes(PortType.Output).ToList();
 
             // if the above attempt failed, for example because the node type does not have any port data attributes
             // then try other approaches
             if (inportDatas.Count() != inPorts.Count() || outportDatas.Count() != outPorts.Count())
             {
+                //TODO GET FEEDBACK - 
+                //a possibility is for variable port nodes to just give up here and do not
+                //modify the data coming from deserialization - risk is that these nodes may 
+                //create ports on the fly or do other transformations - just ask the node authors
+                //to handle this inside the json constructor - we've done the same for some variable input nodes.
 
                 // create a temporary node and extract data from it.
                 //TODO it would be great to avoid doing this for node types that we've already done it for...
+                //IE static or shared cache between node constructors - dumped/recreated after workspace load.
 
                 //TODO possible to create this node in another appdomain or somehow isolated?
                 var tempNode = this.GetType().GetConstructor(Type.EmptyTypes).Invoke(null) as NodeModel;
-                inportDatas = tempNode.InPorts.Select(x => new PortData(x.Name, x.ToolTip));
-                outportDatas = tempNode.outPorts.Select(x => new PortData(x.Name, x.ToolTip));
+                inportDatas = tempNode.InPorts.Select(x => new PortData(x.Name, x.ToolTip)).ToList();
+                outportDatas = tempNode.outPorts.Select(x => new PortData(x.Name, x.ToolTip)).ToList();
                 tempNode.Dispose();
 
                 //if this was a variable input node we likey need to generate tooltips for the extra ports
-                //that users may have added. (or removed)
+                //that users may have added.
                 var offset = inportDatas.Count();
                 if (this is VariableInputNode thisAsVarInput)
                 {
-                    inportDatas = inPorts.Skip(offset).Select((_, index) =>
+                    for (int i = offset; i < inPorts.Count(); i++)
                     {
-                        var data = thisAsVarInput.GetInputTooltipAndName(index + offset);
-                        return new PortData(data.name, data.tooltip);
-                    });
+                        var data = thisAsVarInput.GetInputTooltipAndName(i);
+                        var newPortData = new PortData(data.name, data.tooltip);
+                        //add a new portdata for the existing port we deserialized.
+                        if (i >= inportDatas.Count())
+                        {
+                            inportDatas.Add(newPortData);
+                        }
+                        else
+                        {
+                            inportDatas[i] = newPortData;
+                        }
+                       
+                    }
                 }
 
             }
