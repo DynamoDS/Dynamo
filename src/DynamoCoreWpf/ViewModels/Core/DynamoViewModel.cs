@@ -503,7 +503,7 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
-        public bool HideReportOptions { get; }
+        public bool HideReportOptions { get; internal set; }
 
         /// <summary>
         /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
