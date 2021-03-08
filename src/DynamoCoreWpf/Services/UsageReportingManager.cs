@@ -146,14 +146,14 @@ namespace Dynamo.Services
         {
             resourceProvider = resource;
             // First run of Dynamo
-            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun)
+            if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
+                && !dynamoViewModel.HideReportOptions
+                && !DynamoModel.IsTestMode)
             {
-                FirstRun = false;
-
                 //Prompt user for detailed reporting
-                if (!DynamoModel.IsTestMode)
                     ShowUsageReportingPrompt(ownerWindow);
             }
+            FirstRun = false;
         }
 
         [Obsolete("Function will be removed in Dynamo 3.0, please set IsUsageReportingApproved.")]

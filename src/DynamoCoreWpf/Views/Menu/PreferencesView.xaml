@@ -1,0 +1,124 @@
+﻿<!--The Preferences Modal Dialog was created folloring the screen design (width, height, colors, styles) located in the next site:
+    https://www.figma.com/file/i2e1g2calbisxZTadS8pOV/DynamoPreferencePalette?node-id=3%3A3353-->
+    <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Dynamo.Wpf.Views.PreferencesWindow"
+        x:Name="DynamoPreferencesWindow"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:views="clr-namespace:Dynamo.Wpf.Views"
+        xmlns:ui="clr-namespace:Dynamo.UI"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        mc:Ignorable="d" 
+        Height="474" 
+        Width="530" >
+
+    <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!--This is the main row of the Preference Window-->
+    <Grid Background="{StaticResource PreferencesWindowBackgroundColor}">
+        <!--The Window is divided basically in three rows, TitleBar, Content, and ButtonsBottomSection-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <!--Section/Row of the TitleBar it contains a TextBlock for the windows title and the close button-->
+        <!--The CloseButtonStyle and Color Styles are located in the DynamoModer.xaml file-->
+        <Grid x:Name="TitleBar" 
+                Grid.Row="0"  
+                MouseDown="PreferencesPanel_MouseDown"
+                VerticalAlignment="Top" 
+                Margin="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="46" />
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="HeaderTitle" 
+                       Text="{x:Static p:Resources.PreferencesViewTitle}"        
+                       Foreground="{StaticResource PreferencesWindowFontColor}" 
+                       Grid.Column="0" 
+                       Margin="25,10,0,0" 
+                       TextAlignment="Left" 
+                       FontSize="17" 
+                       FontFamily="Helvetica" 
+                       HorizontalAlignment="Left" 
+                       Width="459" />
+            <StackPanel Grid.Column="1" 
+                        VerticalAlignment="Top"  
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Right">
+                <Button x:Name="CloseButton"  
+                        Style="{DynamicResource CloseButtonStyle}" 
+                        Click="CloseButton_Click" 
+                        VerticalAlignment="Center"
+                        KeyboardNavigation.IsTabStop="False" />
+            </StackPanel>
+        </Grid>
+
+        <!--Section/Row of the Tabs content, it contains all the tabs left side aligned and the controls in the right section for each tab-->
+        <!--The LeftTab Style is located in the DynamoModer.xaml file-->
+        <Grid x:Name="TabsContent" 
+              Grid.Row="1" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid x:Name="ContentGrid" 
+                  Grid.Column="0" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <TabControl TabStripPlacement="Left" Background="{StaticResource PreferencesWindowBackgroundColor}">
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewGeneralTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Label Content="General Content goes here..." 
+                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    </TabItem>
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewFeaturesTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Label Content="Features Content goes here..." 
+                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    </TabItem>
+                    <TabItem Header="{x:Static p:Resources.PreferencesViewVisualSettingsTab}"
+                             Style="{StaticResource LeftTab}">
+                        <Label Content="Visual Content goes here..."
+                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Grid>
+        
+        <!--This Section/Row is the bottom one and it contains all the buttons in the window.-->
+        <!--The NormalButtonStyle Style is located in the DynamoModer.xaml file-->
+        <Grid x:Name="ButtonsBottomGrid"
+              Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Name="SaveChanges" 
+                    Grid.Row="2" 
+                    Style="{DynamicResource NormalButtonStyle}" 
+                    HorizontalAlignment="Right"
+                    Margin="0,0,24,0"
+                    Width="112"
+                    Height="36"
+                    Click="SaveChanges_Click">
+                Save Changes
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

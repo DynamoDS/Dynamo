@@ -2263,5 +2263,191 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <SolidColorBrush x:Key="PreferencesWindowBackgroundColor" 
+                             Color="#535353" />
+    <SolidColorBrush x:Key="PreferencesWindowFontColor" 
+                             Color="#E5E5E5" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonColor" 
+                             Color="#0696D7" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" 
+                             Color="#0778B0" />
+    <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" 
+                             Color="#CDCBCB" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverBackground" 
+                             Color="#E81123" />
+    <SolidColorBrush x:Key="CloseButtonPressed" 
+                             Color="#B70F1B" />
+    <SolidColorBrush x:Key="CloseButtonMouseOverForeground" 
+                             Color="#FFFFFF" />
+    <SolidColorBrush x:Key="TabItemUnSelected" 
+                             Color="DarkGray" />
+
+    <Style x:Key="CaptionButtonStyleClose" 
+                   TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid x:Name="LayoutRoot" 
+                                  Background="Transparent" 
+                                  Width="46" 
+                                  Height="40">
+                        <TextBlock x:Name="txt" 
+                                           Text="{TemplateBinding Content}" 
+                                           FontFamily="Segoe MDL2 Assets" 
+                                           FontSize="14" 
+                                           Foreground="{StaticResource PreferencesWindowFontColor}" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           RenderOptions.ClearTypeHint="Auto" 
+                                           TextOptions.TextRenderingMode="Aliased"  
+                                           TextOptions.TextFormattingMode="Display"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                            <Setter TargetName="LayoutRoot" 
+                                            Property="Background" 
+                                            Value="{StaticResource CloseButtonMouseOverBackground}"/>
+                            <Setter TargetName="txt" 
+                                            Property="Foreground" 
+                                            Value="{StaticResource CloseButtonMouseOverForeground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                         Value="True">
+                            <Setter TargetName="LayoutRoot" 
+                                            Property="Background" 
+                                            Value="{StaticResource CloseButtonPressed}"/>
+                            <Setter TargetName="txt" 
+                                            Property="Foreground" 
+                                            Value="{StaticResource CloseButtonMouseOverForeground}"/>
+                            <Setter TargetName="txt" 
+                                            Property="FontSize" 
+                                            Value="12"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CloseButtonStyle" 
+                   TargetType="Button" 
+                   BasedOn="{StaticResource CaptionButtonStyleClose}">
+        <Setter Property="Content" 
+                        Value="&#xE8BB;"/>
+    </Style>
+
+    <Style x:Key="NormalButtonStyle" 
+                   TargetType="Button">
+        <Setter Property="Foreground" 
+                        Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border"
+                                    Background="{StaticResource PreferencesWindowButtonColor}"
+                                    BorderThickness="1"
+                                    Padding="4,2"
+                                    BorderBrush="Transparent"
+                                    CornerRadius="3">
+                        <Grid >
+                            <ContentPresenter HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center" 
+                                                      Name="contentShadow">
+                            </ContentPresenter>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" 
+                                         Value="True">
+                            <Setter TargetName="border" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                            <Setter Property="FontSize" 
+                                            Value="11"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                         Value="True">
+                            <Setter TargetName="border" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource PreferencesWindowButtonMouseOverFontColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate >
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="LeftTab" 
+                   TargetType="{x:Type TabItem}">
+        <Setter Property="HorizontalAlignment" 
+                        Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Border Margin="2" 
+                                    Name="TabBorder" 
+                                    CornerRadius="6" 
+                                    BorderBrush="Transparent" 
+                                    Background="Transparent" 
+                                    BorderThickness="2" 
+                                    HorizontalAlignment="Stretch" 
+                                    VerticalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" 
+                                            HorizontalAlignment="Stretch" 
+                                            VerticalAlignment="Stretch">
+                            <Grid Name="TabPanel" 
+                                          Width="100"
+                                          Height="30">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label x:Name="SelectedItem" 
+                                               Grid.Column="0"/>
+                                <ContentPresenter x:Name="ContentSection"
+                                                          Grid.Column="1" 
+                                                          ContentSource="Header" 
+                                                          VerticalAlignment="Center" 
+                                                          HorizontalAlignment="Stretch" 
+                                                          Margin="5,0,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" 
+                                         Value="True">
+                            <Setter TargetName="SelectedItem" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource PreferencesWindowFontColor}" />
+                            <Setter Property="FontWeight" 
+                                            Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" 
+                                         Value="False">
+                            <Setter TargetName="SelectedItem" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowBackgroundColor}" />
+                            <Setter Property="Foreground" 
+                                            Value="{StaticResource TabItemUnSelected}" />
+                            <Setter Property="FontWeight" 
+                                            Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="Border.IsMouseOver" 
+                                         Value="True">
+                            <Setter TargetName="TabBorder" 
+                                            Property="Background" 
+                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>
