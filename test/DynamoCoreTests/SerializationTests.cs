@@ -687,7 +687,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
         }
         [Test]
-        public void PortDescriptionDeserilizationTest()
+        public void OutPortDescriptionDeserilizationTest()
         {
             //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
             var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
@@ -701,10 +701,30 @@ namespace Dynamo.Tests
             
             var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
             Assert.AreEqual(variableInputNode.OutPorts.First().ToolTip, "Combined lists");
-
-            //TODO add some tests for inputs
         }
 
+        [Test]
+        public void InPortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.InPorts.First().ToolTip, "First point along the curve\n\nPoint");
+
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
+
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.InPorts.First().ToolTip, "Function to use as combinator");
+
+            var variableInputNodeWithPortAttributes = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("ddbbd4be7e0b471598151cd09f17f5a1")).First();
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.First().ToolTip, "Item Index #0");
+            //TODO this fails because this is a variable input node.
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.ElementAt(2).ToolTip, "Item Index #2");
+           
+        }
 
         [Test]
         public void NodeFreezeStateDeserilizationTest()

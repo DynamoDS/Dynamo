@@ -9,7 +9,7 @@
   "Inputs": [],
   "Outputs": [],
   "Nodes": [
-       {
+    {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
@@ -160,6 +160,54 @@
       ],
       "Replication": "Disabled",
       "Description": "Get a color given a color range."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "ddbbd4be7e0b471598151cd09f17f5a1",
+      "Inputs": [
+        {
+          "Id": "8f4a4fcc8b9a416898555df089166e7f",
+          "Name": "item0",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0b061d4d8ddd44c4a67768f09c021db4",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cde863b7330c42ea8ab4b7bc61a5c001",
+          "Name": "item2",
+           "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7729dbfe5f0c4460a46324335eb555f9",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
     }
   ],
   "Connectors": [],
@@ -188,15 +236,16 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
-    "NodeViews": [{
+    "NodeViews": [
+      {
         "ShowGeometry": true,
         "Name": "Arc.ByThreePoints",
         "Id": "bda3e3e4c18c461dae5598df465035b2",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 245.5,
-        "Y": 270.0
+        "X": 239.5,
+        "Y": 120.0
       },
       {
         "ShowGeometry": true,
@@ -217,6 +266,16 @@
         "Excluded": false,
         "X": 227.5,
         "Y": 529.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List Create",
+        "Id": "ddbbd4be7e0b471598151cd09f17f5a1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 556.5,
+        "Y": 323.0
       }
     ],
     "Annotations": [],
