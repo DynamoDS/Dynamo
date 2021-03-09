@@ -16,7 +16,7 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.CreateList", "List.Create")]
     [InPortNames("item0")]
     [InPortDescriptions(typeof(Resources),"CreateListPortDataIndex0ToolTip")]
-    [OutPortNames("item0")]
+    [OutPortNames("list")]
     [OutPortDescriptions(typeof(Resources), "CreateListPortDataResultToolTip")]
     public class CreateList : VariableInputNode
     {
