@@ -1157,20 +1157,27 @@ namespace Dynamo.Graph.Nodes
 
             for (var i = 0; i < outPorts.Count(); i++)
             {
-                var portData = outportDatas.ElementAt(i);
-                var port = outPorts.ElementAt(i);
-                //TODO index bounds checking.
-                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
-                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+                //bounds check
+                if (outportDatas.Count > i)
+                {
+                    var portData = outportDatas.ElementAt(i);
+                    var port = outPorts.ElementAt(i);
+                    port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                    port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+                }
             }
 
             for (var i = 0; i < inPorts.Count(); i++)
             {
-                var portData = inportDatas.ElementAt(i);
-                var port = inPorts.ElementAt(i);
-                //TODO index bounds checking.
-                port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
-                port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+                //bounds check
+                if(inportDatas.Count > i)
+                {
+                    var portData = inportDatas.ElementAt(i);
+                    var port = inPorts.ElementAt(i);
+                    port.Name = portData.Name == string.Empty ? port.Name : portData.Name;
+                    port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
+                }
+                
             }
         }
 
