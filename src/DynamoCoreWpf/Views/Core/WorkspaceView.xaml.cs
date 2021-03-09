@@ -122,7 +122,7 @@ namespace Dynamo.Views
         /// clean up view model subscriptions to prevent memory leak
         /// </summary>
         /// <param name="ViewModel"></param>
-        private void removeViewModelsubscriptions(WorkspaceViewModel ViewModel)
+        private void RemoveViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
@@ -148,7 +148,7 @@ namespace Dynamo.Views
         /// Attach view model subscriptions
         /// </summary>
         /// <param name="ViewModel"></param>
-        private void attachViewModelsubscriptions(WorkspaceViewModel ViewModel)
+        private void AttachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
@@ -374,13 +374,13 @@ namespace Dynamo.Views
             if (e.OldValue != null)
             {
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
-                removeViewModelsubscriptions(oldViewModel);
+                RemoveViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)
             {
                 // Adding registration of event listener
-                attachViewModelsubscriptions(ViewModel);
+                AttachViewModelsubscriptions(ViewModel);
                 ViewModel.Loaded();
             }
         }
