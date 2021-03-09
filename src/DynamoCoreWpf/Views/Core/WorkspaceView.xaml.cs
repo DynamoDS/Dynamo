@@ -80,6 +80,9 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public WorkspaceView()
         {
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
@@ -92,9 +95,6 @@ namespace Dynamo.Views
 
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
-            Loaded += OnWorkspaceViewLoaded;
-            Unloaded += OnWorkspaceViewUnloaded;
-
             // view of items to drag
             draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
             var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
@@ -102,16 +102,6 @@ namespace Dynamo.Views
             // let draggedSelectionTemplate know about views of node, note, annotation, connector
             dictionaries.Add(SharedDictionaryManager.ConnectorsDictionary);
             dictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-        }
-
-        void OnWorkspaceViewLoaded(object sender, RoutedEventArgs e)
-        {
-            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
-
-            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
-            ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -128,9 +118,14 @@ namespace Dynamo.Views
             }
         }
 
+        /// <summary>
+        /// clean up view model subscriptions to prevent memory leak
+        /// </summary>
+        /// <param name="ViewModel"></param>
         private void removeViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
            
             ViewModel.ZoomChanged -= vm_ZoomChanged;
@@ -144,21 +139,35 @@ namespace Dynamo.Views
             ViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
 
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
-            ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
+            infiniteGridView.DetachFromZoomBorder(zoomBorder);
         }
 
-        void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Attach view model subscriptions
+        /// </summary>
+        /// <param name="ViewModel"></param>
+        private void attachViewModelsubscriptions(WorkspaceViewModel ViewModel)
         {
-            DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
+            ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            if (ViewModel != null)
-            {
-                removeViewModelsubscriptions(ViewModel);
-            }
+            ViewModel.ZoomChanged += vm_ZoomChanged;
+            ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
+            ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
+            ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
+            ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
 
-            infiniteGridView.DetachFromZoomBorder(zoomBorder);
-            
+            ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
+            ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
+            ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
+
+            ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
+            ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
+            DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+            infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
@@ -365,36 +374,13 @@ namespace Dynamo.Views
             if (e.OldValue != null)
             {
                 WorkspaceViewModel oldViewModel = (WorkspaceViewModel)e.OldValue;
-
-                oldViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
-                oldViewModel.ZoomChanged -= vm_ZoomChanged;
-                oldViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
-                oldViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
-                oldViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
-                oldViewModel.RequestCenterViewOnElement -= CenterViewOnElement;
-                oldViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
-                oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
-                oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
-                oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
-                oldViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
                 removeViewModelsubscriptions(oldViewModel);
             }
 
             if (ViewModel != null)
             {
                 // Adding registration of event listener
-                ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
-                ViewModel.ZoomChanged +=vm_ZoomChanged;
-                ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
-                ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
-                ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
-                ViewModel.RequestCenterViewOnElement += CenterViewOnElement;
-                ViewModel.Model.RequestNodeCentered += vm_RequestNodeCentered;
-                ViewModel.RequestAddViewToOuterCanvas += vm_RequestAddViewToOuterCanvas;
-                ViewModel.WorkspacePropertyEditRequested += VmOnWorkspacePropertyEditRequested;
-                ViewModel.RequestSelectionBoxUpdate += VmOnRequestSelectionBoxUpdate;
-                ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
-
+                attachViewModelsubscriptions(ViewModel);
                 ViewModel.Loaded();
             }
         }
