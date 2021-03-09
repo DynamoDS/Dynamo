@@ -1121,7 +1121,12 @@ namespace Dynamo.Graph.Nodes
                 //IE static or shared cache between node constructors - dumped/recreated after workspace load.
 
                 //TODO possible to create this node in another appdomain or somehow isolated?
-                var tempNode = this.GetType().GetConstructor(Type.EmptyTypes).Invoke(null) as NodeModel;
+                var tempNode = this.GetType().GetConstructor(Type.EmptyTypes)?.Invoke(null) as NodeModel;
+                if(tempNode == null)
+                {
+                    //if the nodeModel did not have a parameterless constructor, let's give up!
+                    return;
+                }
                 inportDatas = tempNode.InPorts.Select(x => new PortData(x.Name, x.ToolTip)).ToList();
                 outportDatas = tempNode.outPorts.Select(x => new PortData(x.Name, x.ToolTip)).ToList();
                 tempNode.Dispose();
@@ -1150,7 +1155,7 @@ namespace Dynamo.Graph.Nodes
 
             }
 
-            for (var i = 0; i < outportDatas.Count(); i++)
+            for (var i = 0; i < outPorts.Count(); i++)
             {
                 var portData = outportDatas.ElementAt(i);
                 var port = outPorts.ElementAt(i);
@@ -1159,7 +1164,7 @@ namespace Dynamo.Graph.Nodes
                 port.ToolTip = portData.ToolTipString == string.Empty ? port.ToolTip : portData.ToolTipString;
             }
 
-            for (var i = 0; i < inportDatas.Count(); i++)
+            for (var i = 0; i < inPorts.Count(); i++)
             {
                 var portData = inportDatas.ElementAt(i);
                 var port = inPorts.ElementAt(i);
