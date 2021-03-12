@@ -14,6 +14,7 @@ namespace Dynamo.Wpf.Extensions
         /// </summary>
         /// <param name="type"></param>
         /// <returns>A localized string used as the menu header</returns>
+        /// TODO: Remove in Dynamo 3.0
         internal static string ToDisplayString(this MenuBarType type)
         {
             switch (type)
@@ -23,7 +24,6 @@ namespace Dynamo.Wpf.Extensions
                 case MenuBarType.View: return Properties.Resources.DynamoViewViewMenu;
                 case MenuBarType.Help: return Properties.Resources.DynamoViewHelpMenu;
                 case MenuBarType.Packages: return Properties.Resources.DynamoViewPackageMenu;
-                case MenuBarType.Extensions: return Properties.Resources.DynamoViewExtensionsMenu;
 
                 default: throw new ArgumentOutOfRangeException("type");
             }

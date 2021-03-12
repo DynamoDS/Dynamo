@@ -101,7 +101,9 @@ namespace Dynamo.Wpf.Extensions
         {
             if (dynamoMenu == null) return;
 
-            var dynamoItem = SearchForMenuItem(MenuBarType.Extensions);
+            var dynamoMenuItems = dynamoMenu.Items.OfType<MenuItem>();
+            var dynamoItem = dynamoMenuItems.First(item => item.Header.ToString() == Properties.Resources.DynamoViewExtensionsMenu);
+
             if (dynamoItem == null) return;
             if (!dynamoItem.IsEnabled) dynamoItem.IsEnabled = true;
 
@@ -218,14 +220,14 @@ namespace Dynamo.Wpf.Extensions
     /// An enum that represents the different possible 
     /// MenuBars which ViewExtensions may add items to.
     /// </summary>
+    /// TODO: Remove in Dynamo 3.0
     public enum MenuBarType
     {
         File,
         Edit,
         View,
         Help,
-        Packages,
-        Extensions
+        Packages
     }
 
 }
