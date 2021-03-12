@@ -588,6 +588,12 @@
                                       Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
+                    
+                    <!--The menue will be enabled when at least one MenuItem is added-->
+                    <MenuItem Header="{x:Static p:Resources.DynamoViewExtensionsMenu}"
+                              Name="ExtensionsMenu"
+                              Focusable="False"
+                              IsEnabled="False"/>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenu}"
                               Name="PackageManagerMenu"

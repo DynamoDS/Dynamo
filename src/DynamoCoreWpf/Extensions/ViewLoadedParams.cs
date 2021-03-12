@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -85,9 +86,28 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
+        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
         public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
         {
             AddItemToMenu(type, menuItem, index);
+        }
+
+        /// <summary>
+        /// Adds a menu item to the extensions menu
+        /// Items will be ordered alphabetically
+        /// </summary>
+        /// <param name="menuItem">Menu item for the extension to be added</param>
+        public void AddExtensionMenuItem(MenuItem menuItem)
+        {
+            if (dynamoMenu == null) return;
+
+            var dynamoItem = SearchForMenuItem(MenuBarType.Extensions);
+            if (dynamoItem == null) return;
+            if (!dynamoItem.IsEnabled) dynamoItem.IsEnabled = true;
+
+            dynamoItem.Items.Add(menuItem);
+            //Orders the menu items alphabetically 
+            dynamoItem.Items.SortDescriptions.Add(new SortDescription("Header", ListSortDirection.Ascending));
         }
 
         /// <summary>
@@ -204,7 +224,8 @@ namespace Dynamo.Wpf.Extensions
         Edit,
         View,
         Help,
-        Packages
+        Packages,
+        Extensions
     }
 
 }
