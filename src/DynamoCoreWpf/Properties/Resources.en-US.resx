@@ -2309,4 +2309,13 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
     <value>Visual Settings</value>
   </data>
+  <data name="PreferencesWindowFontSizes" xml:space="preserve">
+    <value>Small,Medium,Large,Extra Large</value>
+  </data>
+  <data name="PreferencesWindowLanguages" xml:space="preserve">
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+  </data>
+  <data name="PreferencesWindowNumberFormats" xml:space="preserve">
+    <value>0,0.0,0.00,0.000,0.0000</value>
+  </data>
 </root>

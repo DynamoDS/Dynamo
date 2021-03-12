@@ -4431,6 +4431,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Small,Medium,Large,Extra Large.
+        /// </summary>
+        public static string PreferencesWindowFontSizes {
+            get {
+                return ResourceManager.GetString("PreferencesWindowFontSizes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        /// </summary>
+        public static string PreferencesWindowLanguages {
+            get {
+                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 0,0.0,0.00,0.000,0.0000.
+        /// </summary>
+        public static string PreferencesWindowNumberFormats {
+            get {
+                return ResourceManager.GetString("PreferencesWindowNumberFormats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A preset by this name already exists, do you wish to overwrite?.
         /// </summary>
         public static string PresetOverwrite {
