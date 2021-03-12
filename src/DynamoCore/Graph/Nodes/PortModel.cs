@@ -78,7 +78,6 @@ namespace Dynamo.Graph.Nodes
         /// Tooltip of the port.
         /// </summary>
         [JsonProperty("Description")]
-        //[JsonConverter(typeof(DescriptionConverter))]
         public string ToolTip
         {
             get

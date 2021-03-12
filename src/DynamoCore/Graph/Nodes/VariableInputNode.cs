@@ -93,11 +93,6 @@ namespace Dynamo.Graph.Nodes
         protected abstract string GetInputTooltip(int index);
         protected abstract string GetInputName(int index);
 
-        [Obsolete("at 3.0 release make GetInputTooltip and GetInputName internal and use them instead.")]
-        internal (string name, string tooltip) GetInputTooltipAndName(int index)
-        {
-            return (GetInputName(index), GetInputTooltip(index));
-        }
         protected virtual void RemoveInput()
         {
             VariableInputController.RemoveInputBase();
