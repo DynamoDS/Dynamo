@@ -1109,7 +1109,7 @@ namespace Dynamo.Graph.Nodes
                 return;
             }
 
-            for (var i = 0; i < outPorts.Count() && i < outportDatas.Count; i++)
+            for (var i = 0; i < outPorts.Count(); i++)
             {
                 var portData = outportDatas.ElementAt(i);
                 var port = outPorts.ElementAt(i);
@@ -1118,7 +1118,7 @@ namespace Dynamo.Graph.Nodes
 
             }
 
-            for (var i = 0; i < inPorts.Count() && i < inportDatas.Count; i++)
+            for (var i = 0; i < inPorts.Count(); i++)
             {
 
                 var portData = inportDatas.ElementAt(i);
