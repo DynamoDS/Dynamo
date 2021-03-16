@@ -199,8 +199,7 @@
                                           SelectedItem="{Binding Path=SelectedNumberFormat}"
                                           ItemsSource="{Binding NumberFormatList}"
                                           Style="{StaticResource NoBordersComboBoxStyle}"
-                                          Height="30"
-                                          Width="390">
+                                          Width="213">
                                 </ComboBox>
                             </Grid>
                         </Grid>

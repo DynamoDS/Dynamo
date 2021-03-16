@@ -9,11 +9,11 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> _languagesList;
         private ObservableCollection<string> _fontSizeList;
         private ObservableCollection<string> _numberFormatList;
-        private string _selectedLanguage;
-        private string _selectedFontSize;
-        private string _selectedNumberFormat;
-        private bool _runSettingsIsChecked;
-        private bool _runPreviewIsChecked;
+        private string selectedLanguage;
+        private string selectedFontSize;
+        private string selectedNumberFormat;
+        private bool runSettingsIsChecked;
+        private bool runPreviewIsChecked;
 
         /// <summary>
         /// Controls the Selected option in Language ComboBox
@@ -22,11 +22,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _selectedLanguage;
+                return selectedLanguage;
             }
             set
             {
-                _selectedLanguage = value;
+                selectedLanguage = value;
                 RaisePropertyChanged("SelectedLanguage");
             }
         }
@@ -38,11 +38,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _selectedFontSize;
+                return selectedFontSize;
             }
             set
             {
-                _selectedFontSize = value;
+                selectedFontSize = value;
                 RaisePropertyChanged("SelectedFontSize");
             }
         }
@@ -54,11 +54,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _selectedNumberFormat;
+                return selectedNumberFormat;
             }
             set
             {
-                _selectedNumberFormat = value;
+                selectedNumberFormat = value;
                 RaisePropertyChanged("SelectedNumberFormat");
             }
         }
@@ -70,11 +70,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _runSettingsIsChecked;
+                return runSettingsIsChecked;
             }
             set
             {
-                _runSettingsIsChecked = value;
+                runSettingsIsChecked = value;
                 RaisePropertyChanged("RunSettingsIsChecked");
             }
         }
@@ -86,11 +86,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _runPreviewIsChecked;
+                return runPreviewIsChecked;
             }
             set
             {
-                _runPreviewIsChecked = value;
+                runPreviewIsChecked = value;
                 RaisePropertyChanged("RunPreviewIsChecked");
             }
         }
@@ -148,18 +148,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         public PreferencesViewModel()
         {
-
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
 
-            string fontSizes = Wpf.Properties.Resources.PreferencesWindowFontSizes;
-            FontSizeList = new ObservableCollection<string>(fontSizes.Split(','));
-            SelectedFontSize = fontSizes.Split(',')[1];
+            FontSizeList = new ObservableCollection<string>();
+            FontSizeList.Add(Wpf.Properties.Resources.ScalingSmallButton);
+            FontSizeList.Add(Wpf.Properties.Resources.ScalingMediumButton);
+            FontSizeList.Add(Wpf.Properties.Resources.ScalingLargeButton);
+            FontSizeList.Add(Wpf.Properties.Resources.ScalingExtraLargeButton);
+            SelectedFontSize = Wpf.Properties.Resources.ScalingMediumButton;
 
-            string numberFormats = Wpf.Properties.Resources.PreferencesWindowNumberFormats;
-            NumberFormatList = new ObservableCollection<string>(numberFormats.Split(','));
-            SelectedNumberFormat = numberFormats.Split(',').First();
+            NumberFormatList = new ObservableCollection<string>();
+            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0);
+            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00);
+            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber000);
+            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
+            NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
+            SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
 
             //By Default the Default Run Settings radio button will be in Manual
             RunSettingsIsChecked = true;
