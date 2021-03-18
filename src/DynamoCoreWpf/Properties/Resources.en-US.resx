@@ -2302,6 +2302,7 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
     <value>Learn More about publishing a package</value>
+  </data>  
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
   </data>
