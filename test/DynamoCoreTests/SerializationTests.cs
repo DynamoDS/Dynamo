@@ -686,6 +686,61 @@ namespace Dynamo.Tests
             var node = this.CurrentDynamoModel.CurrentWorkspace.Nodes.First();
             Assert.AreEqual(node.Description, "Makes a new list out of the given inputs");
         }
+        [Test]
+        public void OutPortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.OutPorts.First().ToolTip, "An Arc");
+
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.OutPorts.First().ToolTip, "Selected colors");
+        }
+
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void OutPortDescriptionDeserilizationTest_VariableInputNodes()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.OutPorts.First().ToolTip, "Combined lists");
+        }
+
+        [Test]
+        public void InPortDescriptionDeserilizationTest()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+
+            var ztNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("bda3e3e4c18c461dae5598df465035b2")).First();
+            Assert.AreEqual(ztNode.InPorts.First().ToolTip, "First point along the curve\n\nPoint");
+
+            var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
+            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
+
+        }
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void InPortDescriptionDeserilizationTest_VariableInputNodes()
+        {
+            //similar to above test, uses a modified graph to assert port tooltips not deserialized when possible.
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\PortTooltipDeserilizationTest.dyn");
+            OpenModel(testFile);
+            var variableInputNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("db8fd7b97be1413e91897316ae75b51a")).First();
+            Assert.AreEqual(variableInputNode.InPorts.First().ToolTip, "Function to use as combinator");
+
+            var variableInputNodeWithPortAttributes = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("ddbbd4be7e0b471598151cd09f17f5a1")).First();
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.First().ToolTip, "Item Index #0");
+            Assert.AreEqual(variableInputNodeWithPortAttributes.InPorts.ElementAt(2).ToolTip, "Item Index #2");
+        }
 
         [Test]
         public void NodeFreezeStateDeserilizationTest()
