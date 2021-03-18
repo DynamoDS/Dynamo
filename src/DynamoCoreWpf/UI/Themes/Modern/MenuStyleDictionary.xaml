@@ -469,7 +469,6 @@
                         <Setter TargetName="Content"
                                 Property="TextBox.Foreground"
                                 Value="{StaticResource ActiveForegroundBrush}" />
-                        <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource HighlightedBrush}" />
                     </Trigger>
                     <Trigger Property="IsSubmenuOpen"
                              Value="true">
