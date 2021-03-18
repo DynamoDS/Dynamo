@@ -203,8 +203,6 @@ namespace Dynamo.Graph.Workspaces
         private DateTime lastSaved;
         private string author = "None provided";
         private string description;
-        private string thumbnail;
-        private Uri graphDocumentationURL;
         private bool hasUnsavedChanges;
         private bool isReadOnly;
         private readonly List<NodeModel> nodes;
@@ -698,7 +696,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        
+
 
         /// <summary>
         ///     An author of the workspace
@@ -709,7 +707,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 author = value;
-                RaisePropertyChanged("Author");
+                RaisePropertyChanged(nameof(Author));
             }
         }
 
@@ -723,46 +721,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 description = value;
                 RaisePropertyChanged("Description");
-            }
-        }
-
-        /// <summary>
-        /// Link to documentation page for this workspace
-        /// </summary>
-        public Uri GraphDocumentationURL
-        {
-            get { return graphDocumentationURL; }
-            set 
-            {
-                if (graphDocumentationURL == value)
-                    return;
-
-                graphDocumentationURL = value;
-                RaisePropertyChanged(nameof(GraphDocumentationURL));
-            }
-        }
-
-
-        /// <summary>
-        /// Workspace thumbnail as Base64 string.
-        /// Returns null if provide value is not Base64 encoded.
-        /// </summary>
-        public string Thumbnail
-        {
-            get { return thumbnail; }
-            set
-            {
-                try
-                {
-                    // if value is not a valid Base64 string this will throw, and we return null.
-                    byte[] data = Convert.FromBase64String(value);
-                    thumbnail = value;
-                    RaisePropertyChanged(nameof(Thumbnail));
-                }
-                catch
-                {
-                    return;
-                }
             }
         }
 

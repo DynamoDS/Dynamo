@@ -295,11 +295,14 @@ namespace Dynamo.Tests
             // Act
             byte[] imageArray = System.IO.File.ReadAllBytes(imagePath);
             string base64ImageRepresentation = Convert.ToBase64String(imageArray);
-            this.CurrentDynamoModel.CurrentWorkspace.Thumbnail = base64ImageRepresentation;
+            if (!(this.CurrentDynamoModel.CurrentWorkspace is HomeWorkspaceModel hws))
+                throw new Exception("current workspace is not a HomeWorkspaceModel");
+
+            hws.Thumbnail = base64ImageRepresentation;
 
             // Assert
             Assert.NotNull(base64ImageRepresentation);
-            Assert.AreEqual(this.CurrentDynamoModel.CurrentWorkspace.Thumbnail, base64ImageRepresentation);
+            Assert.AreEqual(hws.Thumbnail, base64ImageRepresentation);
         }
 
         [Test]
@@ -309,10 +312,12 @@ namespace Dynamo.Tests
             var invalidImagePath = "GenericString";
 
             // Act
-            this.CurrentDynamoModel.CurrentWorkspace.Thumbnail = invalidImagePath;
+            if (!(this.CurrentDynamoModel.CurrentWorkspace is HomeWorkspaceModel hws))
+                throw new Exception("current workspace is not a HomeWorkspaceModel");
+            hws.Thumbnail = invalidImagePath;
 
             // Assert
-            Assert.IsNull(this.CurrentDynamoModel.CurrentWorkspace.Thumbnail);
+            Assert.IsNull(hws.Thumbnail);
         }
     }
 }
