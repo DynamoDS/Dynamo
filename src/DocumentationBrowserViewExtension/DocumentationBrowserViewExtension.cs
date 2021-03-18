@@ -70,7 +70,7 @@ namespace Dynamo.DocumentationBrowser
             this.documentationBrowserMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
             this.documentationBrowserMenuItem.Checked += MenuItemCheckHandler;
             this.documentationBrowserMenuItem.Unchecked += MenuItemUnCheckedHandler;
-            this.viewLoadedParamsReference.AddMenuItem(MenuBarType.View, this.documentationBrowserMenuItem);
+            this.viewLoadedParamsReference.AddExtensionMenuItem(this.documentationBrowserMenuItem);
 
             // subscribe to the documentation open request event from Dynamo
             this.viewLoadedParamsReference.RequestOpenDocumentationLink += HandleRequestOpenDocumentationLink;
