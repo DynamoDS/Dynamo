@@ -156,7 +156,8 @@ namespace Dynamo.Models
             if (WorkspaceSaving != null)
             {
                 WorkspaceSaving(workspace, saveContext);
-                HandleStorageExtensionsOnWorkspaceSaving(workspace, saveContext);
+                if (workspace is HomeWorkspaceModel hws) 
+                    HandleStorageExtensionsOnWorkspaceSaving(hws, saveContext);
             }
         }
 
@@ -194,7 +195,8 @@ namespace Dynamo.Models
             if(WorkspaceOpened != null)
             {
                 WorkspaceOpened.Invoke(workspace);
-                HandleStorageExtensionsOnWorkspaceOpened(workspace);
+                if (workspace is HomeWorkspaceModel hws) 
+                    HandleStorageExtensionsOnWorkspaceOpened(hws);
             }
         }
 
@@ -957,7 +959,7 @@ namespace Dynamo.Models
         }
 
 
-        private void HandleStorageExtensionsOnWorkspaceOpened(WorkspaceModel workspace)
+        private void HandleStorageExtensionsOnWorkspaceOpened(HomeWorkspaceModel workspace)
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
@@ -965,7 +967,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void HandleStorageExtensionsOnWorkspaceSaving(WorkspaceModel workspace, SaveContext saveContext)
+        private void HandleStorageExtensionsOnWorkspaceSaving(HomeWorkspaceModel workspace, SaveContext saveContext)
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
@@ -973,14 +975,14 @@ namespace Dynamo.Models
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension)
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(HomeWorkspaceModel workspace, IExtensionStorageAccess extension)
         {
             workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
             extension.OnWorkspaceOpen(extensionDataCopy);
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(HomeWorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
         {
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";

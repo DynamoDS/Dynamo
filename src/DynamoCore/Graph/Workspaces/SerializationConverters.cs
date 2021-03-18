@@ -646,20 +646,24 @@ namespace Dynamo.Graph.Workspaces
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
 
+                // Thumbnail
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
 
+                // GraphDocumentaionLink
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
                 {
                     if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
                         homeWorkspace.GraphDocumentationURL = uri;
                 }
 
+                // ExtensionData
+                homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
+
                 ws = homeWorkspace;
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-            ws.ExtensionData = GetExtensionData(serializer, obj);
 
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
@@ -781,11 +785,6 @@ namespace Dynamo.Graph.Workspaces
             // NodeLibraryDependencies
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
-
-            // ExtensionData
-            writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
-            serializer.Serialize(writer, ws.ExtensionData);
-
             
             if (!isCustomNode && ws is HomeWorkspaceModel hws)
             {
@@ -796,6 +795,10 @@ namespace Dynamo.Graph.Workspaces
                 // GraphDocumentaionLink
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
                 writer.WriteValue(hws.GraphDocumentationURL);
+
+                // ExtensionData
+                writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+                serializer.Serialize(writer, hws.ExtensionData);
             }
 
             // Graph Author

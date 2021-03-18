@@ -215,17 +215,23 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension);
             }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext);
             }
         }
 
