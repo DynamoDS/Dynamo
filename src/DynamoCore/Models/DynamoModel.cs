@@ -451,7 +451,7 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-
+        private bool disableADP;
         #endregion
 
         #region initialization and disposal
@@ -555,6 +555,10 @@ namespace Dynamo.Models
             /// Default Python script engine
             /// </summary>
             public string DefaultPythonEngine { get; set; }
+            /// <summary>
+            /// Disables ADP for the entire process for the lifetime of the process.
+            /// </summary>
+            public bool DisableADP { get; set; }
         }
 
         /// <summary>
@@ -586,11 +590,13 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            if (config is DefaultStartConfiguration)
+            if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
-                DefaultPythonEngine = ((DefaultStartConfiguration)config).DefaultPythonEngine;
+                DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
+                disableADP = defaultStartConfig.DisableADP;
+
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -668,6 +674,15 @@ namespace Dynamo.Models
             {
                 // Do nothing for now
             }
+
+            // these configuration options are incompatible, one requires loading ADP binaries
+            // the other depends on not loading those same binaries.
+
+            if (areAnalyticsDisabledFromConfig && disableADP)
+            {
+                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
+            }
+
             // If user skipped analytics from assembly config, do not try to launch the analytics client
             if (!areAnalyticsDisabledFromConfig)
             {
@@ -961,7 +976,7 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
-                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+                RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, this.Logger);
             }
         }
 
@@ -969,24 +984,43 @@ namespace Dynamo.Models
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
-                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+                RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext, this.Logger);
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension)
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, ILogger logger)
         {
             workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
-            extension.OnWorkspaceOpen(extensionDataCopy);
+
+            try
+            {
+                extension.OnWorkspaceOpen(extensionDataCopy);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message + " : " + ex.StackTrace);
+                return;
+            }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext)
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext, ILogger logger)
         {
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
 
             var hasMatchingExtensionData = workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
-            extension.OnWorkspaceSaving(data, saveContext);
+
+            try
+            {
+                extension.OnWorkspaceSaving(data, saveContext);
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message + " : " + ex.StackTrace);
+                return;
+            }
+            
             
             if (hasMatchingExtensionData)
             {
@@ -1407,10 +1441,7 @@ namespace Dynamo.Models
 
         private void InitializeAnalyticsService()
         {
-            if (!IsTestMode && !IsHeadless)
-            {
-                AnalyticsService.Start(this);
-            }
+           AnalyticsService.Start(this,disableADP, IsHeadless, IsTestMode);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
@@ -2047,7 +2078,7 @@ namespace Dynamo.Models
 
         internal void PostUIActivation(object parameter)
         {
-            Logger.Log(Resources.WelcomeMessage);
+            Logger.Log(Environment.NewLine + Resources.WelcomeMessage);
         }
 
         internal void DeleteModelInternal(List<ModelBase> modelsToDelete)

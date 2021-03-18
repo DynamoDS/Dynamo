@@ -189,9 +189,12 @@ namespace Dynamo.Graph.Nodes
             get { return usingDefaultValue; }
             set
             {
-                usingDefaultValue = value;
-                RaisePropertyChanged("UsingDefaultValue");
-                RaisePropertyChanged("ToolTip");
+                if (usingDefaultValue != value)
+                {
+                    usingDefaultValue = value;
+                    RaisePropertyChanged("UsingDefaultValue");
+                    RaisePropertyChanged("ToolTip");
+                }
             }
         }
 

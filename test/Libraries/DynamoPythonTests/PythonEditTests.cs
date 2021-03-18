@@ -640,5 +640,14 @@ namespace Dynamo.Tests
             Assert.AreEqual(sysPathList.Count(), 3);
             Assert.AreNotEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
         }
+
+        [Test]
+        public void Test_Hidden_Properties_Python()
+        {
+            RunModel(@"core\python\HiddenProperties_Python.dyn");
+
+            var getItemAtIndex2 = "ad1f2ed7-6373-4381-aa93-df707c5e6339";
+            AssertPreviewValue(getItemAtIndex2, new string[] { "TSplineVertex", "TSplineVertex" });
+        }
     }
 }

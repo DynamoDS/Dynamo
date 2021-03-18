@@ -62,6 +62,7 @@ namespace Dynamo.Views
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+        private bool isAutoCompleteLoading;
 
         public WorkspaceViewModel ViewModel
         {
@@ -108,7 +109,6 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
 
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
-            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
             infiniteGridView.AttachToZoomBorder(zoomBorder);
@@ -146,7 +146,6 @@ namespace Dynamo.Views
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.RequestNodeCentered -= vm_RequestNodeCentered;
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
-            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
         }
 
         void OnWorkspaceViewUnloaded(object sender, RoutedEventArgs e)
@@ -164,6 +163,14 @@ namespace Dynamo.Views
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
+            // Prevents hiding the dialog from releasing the left mouse button
+            if (flag == ShowHideFlags.Hide && isAutoCompleteLoading)
+            {
+                isAutoCompleteLoading = false;
+                return;
+            }
+
+            isAutoCompleteLoading = flag == ShowHideFlags.Show && !NodeAutoCompleteSearchBar.IsOpen;
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
@@ -214,13 +221,8 @@ namespace Dynamo.Views
             }
             if (NodeAutoCompleteSearchBar.IsOpen)
             {
-                // Suppress the mouse action from last 0.2 second otherwise mouse button release 
-                // in Dynamo window will forcefully shutdown all the open SearchBars
-                if ((new TimeSpan(DateTime.Now.Ticks - ViewModel.GetLastStateTimestamp().Ticks)).TotalSeconds > 0.2)
-                {
-                    ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
-                    ViewModel.CancelActiveState();
-                }
+                ShowHideNodeAutoCompleteControl(ShowHideFlags.Hide);
+                ViewModel.CancelActiveState();
             }
         }
 
@@ -374,6 +376,7 @@ namespace Dynamo.Views
                 oldViewModel.RequestAddViewToOuterCanvas -= vm_RequestAddViewToOuterCanvas;
                 oldViewModel.WorkspacePropertyEditRequested -= VmOnWorkspacePropertyEditRequested;
                 oldViewModel.RequestSelectionBoxUpdate -= VmOnRequestSelectionBoxUpdate;
+                oldViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
                 removeViewModelsubscriptions(oldViewModel);
             }
 
