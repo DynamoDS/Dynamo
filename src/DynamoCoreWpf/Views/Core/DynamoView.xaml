@@ -652,7 +652,7 @@
                               Focusable="False"
                               IsEnabled="True">
                         <MenuItem.Icon>
-                            <Image Source="/DynamoCoreWpf;component/UI/Images/searchcancel_hover.png"
+                            <Image Source="/DynamoCoreWpf;component/UI/Images/pin.png"
                                    Width="14"
                                    Height="14"/>
                         </MenuItem.Icon>
