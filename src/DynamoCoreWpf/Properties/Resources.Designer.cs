@@ -4542,6 +4542,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn More about publishing a package.
+        /// </summary>
+        public static string PublishPackageDocTooltipText {
+            get {
+                return ResourceManager.GetString("PublishPackageDocTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Locally.
         /// </summary>
         public static string PublishPackageLocally {

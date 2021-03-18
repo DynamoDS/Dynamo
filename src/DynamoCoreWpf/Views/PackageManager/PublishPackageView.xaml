@@ -68,7 +68,7 @@
                                 </Label.Content>
                                 <Label.ToolTip>
                                     <ToolTip>
-                                        <TextBlock Text="Learn More about publishing a package" />
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageDocTooltipText}" />
                                     </ToolTip>
                                 </Label.ToolTip>
                             </Label>
