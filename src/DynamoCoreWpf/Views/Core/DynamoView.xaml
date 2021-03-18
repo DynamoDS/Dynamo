@@ -299,6 +299,8 @@
                                   Focusable="False" />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
+                                  Click="OnPreferencesWindowClick"
+                                  Visibility="Collapsed"
                                   Name="preferencesOption"/>
                         <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
@@ -586,7 +588,7 @@
                                       Command="{Binding Path=BackgroundPreviewViewModel.ToggleCanNavigateBackgroundCommand}" />
                         </MenuItem>
                     </MenuItem>
-
+                    
                     <MenuItem Header="{x:Static p:Resources.DynamoViewPackageMenu}"
                               Name="PackageManagerMenu"
                               Focusable="False"
@@ -642,6 +644,12 @@
                                   Command="{Binding ReportABugCommand}"
                                   Focusable="False" />
                     </MenuItem>
+
+                    <!--The menu will be enabled when at least one MenuItem is added-->
+                    <MenuItem Header="{x:Static p:Resources.DynamoViewExtensionsMenu}"
+                              Name="ExtensionsMenu"
+                              Focusable="False"
+                              IsEnabled="False"/>
 
                     <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenu}"
                               Focusable="False"

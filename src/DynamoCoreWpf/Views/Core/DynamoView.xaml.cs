@@ -40,6 +40,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
@@ -909,11 +910,9 @@ namespace Dynamo.Controls
             //Backing up IsFirstRun to determine whether to show Gallery
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
-            if (!dynamoViewModel.HideReportOptions)
-            {
-                // If first run, Collect Info Prompt will appear
-                UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
-            }
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
+            
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -1847,6 +1846,14 @@ namespace Dynamo.Controls
             debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             debugModesWindow.ShowDialog();
         }
+
+        private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
+        {
+            var preferencesWindow = new PreferencesWindow();
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            preferencesWindow.ShowDialog();
+        }
+
         /// <summary>
         /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>

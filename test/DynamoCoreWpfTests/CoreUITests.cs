@@ -666,6 +666,17 @@ namespace DynamoCoreWpfTests
             Assert.True(resultSetting.ShowEdges);
         }
 
+        [Test]
+        public void PreferenceSettings_IsFirstRun_And_HideReportOptions()
+        {
+            ViewModel.HideReportOptions = true;
+            ViewModel.Model.PreferenceSettings.IsFirstRun = true;
+            //force the dynamoview's loaded handler to be called again - 
+            View.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            Assert.IsFalse(ViewModel.PreferenceSettings.IsFirstRun);
+        }
+
         private void RestartTestSetup(bool startInTestMode)
         {
             // Shutdown Dynamo and restart it

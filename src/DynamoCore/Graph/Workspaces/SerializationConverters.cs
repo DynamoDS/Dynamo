@@ -641,14 +641,29 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                var homeWorkspace = new HomeWorkspaceModel(guid, engine, scheduler, factory,
                     loadedTraceData, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
+
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
+                    homeWorkspace.Thumbnail = thumbnail.ToString();
+
+                if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
+                {
+                    if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
+                        homeWorkspace.GraphDocumentationURL = uri;
+                }
+
+                ws = homeWorkspace;
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
             ws.ExtensionData = GetExtensionData(serializer, obj);
+
+            if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
+                ws.Author = author.ToString();
+
 
             return ws;
         }
@@ -770,6 +785,22 @@ namespace Dynamo.Graph.Workspaces
             // ExtensionData
             writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
             serializer.Serialize(writer, ws.ExtensionData);
+
+            
+            if (!isCustomNode && ws is HomeWorkspaceModel hws)
+            {
+                // Thumbnail
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
+                writer.WriteValue(hws.Thumbnail);
+
+                // GraphDocumentaionLink
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
+                writer.WriteValue(hws.GraphDocumentationURL);
+            }
+
+            // Graph Author
+            writer.WritePropertyName(nameof(WorkspaceModel.Author));
+            writer.WriteValue(ws.Author);
 
             if (engine != null)
             {

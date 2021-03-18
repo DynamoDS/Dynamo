@@ -104,7 +104,7 @@ namespace Dynamo.WorkspaceDependency
                     workspaceReferencesMenuItem.IsChecked = false;
                 }
             };
-            viewLoadedParams.AddMenuItem(MenuBarType.View, workspaceReferencesMenuItem);
+            viewLoadedParams.AddExtensionMenuItem(workspaceReferencesMenuItem);
         }
 
         public override void Closed()

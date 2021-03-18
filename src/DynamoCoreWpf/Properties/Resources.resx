@@ -2304,5 +2304,20 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
     <value>Learn More about publishing a package</value>
+  <data name="PreferencesViewFeaturesTab" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="PreferencesViewGeneralTab" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="PreferencesViewTitle" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
+    <value>Visual Settings</value>
+  </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>_Extensions</value>
+    <comment>Extensions menu</comment>
   </data>
 </root>
