@@ -20,7 +20,7 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">Workspace on which graph layout will be performed.</param>
         /// <param name="reuseUndoRedoGroup">If true, skip initializing new undo action group.</param>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false)
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false, bool isNodeAutoComplete = false, Guid? originalNodeGUID = null)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -50,7 +50,14 @@ namespace Dynamo.Graph.Workspaces
             // Run layout algorithm for each subgraph
             layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
             AvoidSubgraphOverlap(layoutSubgraphs);
-            SaveLayoutGraph(workspace, layoutSubgraphs);
+
+            if (isNodeAutoComplete)
+            {
+                SaveLayoutGraphForNodeAutoComplete(workspace, layoutSubgraphs, originalNodeGUID);
+            }
+            else {
+                SaveLayoutGraph(workspace, layoutSubgraphs);
+            }
 
             // Restore the workspace model selection information
             selection.ToList().ForEach(x => x.Select());
@@ -423,6 +430,46 @@ namespace Dynamo.Graph.Workspaces
 
                     node.X = n.X;
                     node.Y = n.Y + n.NotesHeight + offsetY;
+                    node.ReportPosition();
+                    workspace.HasUnsavedChanges = true;
+
+                    double noteOffset = -n.NotesHeight;
+                    foreach (NoteModel note in n.LinkedNotes)
+                    {
+                        if (note.IsSelected || DynamoSelection.Instance.Selection.Count == 0)
+                        {
+                            note.X = node.X;
+                            note.Y = node.Y + noteOffset;
+                            noteOffset += note.Height + GraphLayout.Graph.VerticalNoteDistance;
+                            note.ReportPosition();
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// This method pushes changes from the GraphLayout.Graph objects
+        /// back to the workspace models, but only for nodes placed by NodeAutocomplete.
+        /// </summary>
+        private static void SaveLayoutGraphForNodeAutoComplete(this WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
+        {
+            // Assign coordinates to nodes outside groups
+            foreach (var node in workspace.Nodes)
+            {
+                GraphLayout.Graph graph = layoutSubgraphs
+                    .FirstOrDefault(g => g.FindNode(node.GUID) != null);
+
+                if (graph != null)
+                {
+                    GraphLayout.Node n = graph.FindNode(node.GUID);
+                    double offsetY = graph.OffsetY;
+                    //skipping the original node to avoid jumping of node
+                    if (node.GUID != originalNodeGUID )
+                    {
+                            node.X = n.X;
+                            node.Y = n.Y + n.NotesHeight + offsetY;
+                        
+                    }
                     node.ReportPosition();
                     workspace.HasUnsavedChanges = true;
 

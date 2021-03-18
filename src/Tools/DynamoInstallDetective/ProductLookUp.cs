@@ -65,7 +65,13 @@ namespace DynamoInstallDetective
             return string.Empty;
         }
 
-        // Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
+        
+        /// <summary>
+        /// Returns all the products registered under "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\" that have a valid DisplayName and an InstallLocation.
+        /// NOTE! Because this static method returns a static field that might be cleaned up by the owning RegistryCacher don't use this method in deffered queries
+        /// unless you force a copy to be made using ToList(), ToArray() or some other immediate query.
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, (string DisplayName, string InstallLocation)> GetInstalledProducts()
         {
             lock (mutex)
@@ -281,8 +287,16 @@ namespace DynamoInstallDetective
 
         public virtual IEnumerable<string> GetProductNameList()
         {
-            return RegUtils.GetInstalledProducts().Select(s => s.Value.DisplayName).Where(s => {
+            return RegUtils.GetInstalledProducts().ToList().Select(s => s.Value.DisplayName).Where(s => {
                 return s?.Contains(ProductLookUpName) ?? false;
+            });
+        }
+        //TODO add to IProductLookUp interface in Dynamo 3.0
+        //Returns product names and code tuples for products which have valid display name.
+        internal virtual IEnumerable<(string DisplayName, string ProductKey)> GetProductNameAndCodeList()
+        {
+            return RegUtils.GetInstalledProducts().ToList().Select(s => (s.Value.DisplayName,s.Key)).Where(s => {
+                return s.DisplayName?.Contains(ProductLookUpName) ?? false;
             });
         }
 
@@ -383,10 +397,22 @@ namespace DynamoInstallDetective
 
         public virtual void LookUpAndInitProducts(IProductLookUp lookUp)
         {
-            var newProducts = lookUp.GetProductNameList()
-                    .Select(lookUp.GetProductFromProductName).Distinct()
-                    .Where(p => p != null).OrderBy(p => p);
-            Products = Products == null ? newProducts : Products.Concat(newProducts);
+            var newProductTuples = lookUp.GetProductNameList().Select(x=>(DisplayName: x, ProductKey : string.Empty));
+            if (lookUp is InstalledProductLookUp lookupAsInstalledProduct)
+            {
+                newProductTuples = lookupAsInstalledProduct.GetProductNameAndCodeList();
+            }
+          
+            var returnProducts = newProductTuples.Select(prod =>
+            {
+                var product = lookUp.GetProductFromProductName(prod.DisplayName);
+                if (product == null)
+                {
+                    product = lookUp.GetProductFromProductCode(prod.ProductKey);
+                }
+                return product;
+            }).Distinct().Where(p => p != null).OrderBy(p => p);
+            Products = Products == null ? returnProducts : Products.Concat(returnProducts);
         }
     }
 

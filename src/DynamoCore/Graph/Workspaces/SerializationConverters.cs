@@ -668,7 +668,6 @@ namespace Dynamo.Graph.Workspaces
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
 
-
             return ws;
         }
 

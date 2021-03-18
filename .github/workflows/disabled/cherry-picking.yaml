@@ -1,3 +1,5 @@
+#DYN-3364 
+#This action is disabled for now due to it not behaving as expected
 name: Cherry picking
 on:
   push:
@@ -44,8 +46,18 @@ jobs:
         git checkout -b ${{env.auto_branch}} origin/${{env.destination_branch}}
         git cherry-pick -x ${{github.event.after}} --strategy-option theirs
         git push -u origin ${{env.auto_branch}}
-        hub pull-request -b "${{env.destination_branch}}" -h "${{env.auto_branch}}" -l "autocreated" -m "\"Auto Cherry-Pick: ${{github.event.after}}\""
+        hub pull-request -b "${{env.destination_branch}}" -h "${{env.auto_branch}}" -m "${{env.pr_message}}"
       env: 
         #Token used for the pull request. Corresponds to the DynamoBot account
         GITHUB_TOKEN: ${{secrets.DYNAMOBOTTOKEN}}
-        
+        #This represents the title and description of the pr in Markdown format
+        #Everything before the first blank line will be the title
+        #Everything after will be included in the description
+        pr_message: |
+                  Cherry-Pick from commit: ${{github.event.after}}
+
+                  ### Cherry-picking: 
+                  [Commit](https://github.com/DynamoDS/Dynamo/commit/${{github.event.after}})
+                  
+                  ### Pull request:
+                  ${{ steps.remove_quotations.outputs.replaced }}
