@@ -421,30 +421,30 @@ namespace Dynamo.PackageManager
                     CheckPackageNodeLibraryCertificates(directory, discoveredPkg);
                 }
 
-                var dupePackage = LocalPackages.FirstOrDefault(pkg => pkg.Name == discoveredPkg.Name);
+                var existingPackage = LocalPackages.FirstOrDefault(pkg => pkg.Name == discoveredPkg.Name);
 
-                // Is this a duplicate?
-                if (dupePackage == null)
+                // Is this a new package?
+                if (existingPackage == null)
                 {
-                    // No
+                    // Yes
                     Add(discoveredPkg);
                     return discoveredPkg; // success
                 }
 
-                var existingVersion = new Version(dupePackage.VersionName);
+                var existingVersion = new Version(existingPackage.VersionName);
                 var newVersion = new Version(discoveredPkg.VersionName);
 
-                // Check version on the duplicate
+                // Is this a duplicated package?
                 if (existingVersion == newVersion)
                 {
-                    // Duplicate with the same version
+                    // Duplicated with the same version
                     throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
                 } 
                 
                 // Is the existing version newer?
                 if (existingVersion > newVersion)
                 {
-                    // New version exist
+                    // Newer version already exist
                     throw new LibraryLoadFailedException(directory,
                         String.Format(
                             "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
@@ -453,13 +453,13 @@ namespace Dynamo.PackageManager
                 }
 
                 // Older version exist, replace with newer version
-                Remove(dupePackage);
+                Remove(existingPackage);
                 Add(discoveredPkg);
 
                 throw new LibraryLoadFailedException(directory,
                     String.Format(
                         "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
-                        dupePackage.Name, dupePackage.RootDirectory, newVersion.ToString(),
+                        existingPackage.Name, existingPackage.RootDirectory, newVersion.ToString(),
                         existingVersion.ToString()));
 
             }
