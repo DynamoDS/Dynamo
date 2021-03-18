@@ -276,7 +276,6 @@ namespace Dynamo.PackageManager
         public void LoadAll(LoadPackageParams loadPackageParams)
         {
             ScanAllPackageDirectories(loadPackageParams.Preferences);
-            return;
 
             var pathManager = loadPackageParams.PathManager;
             if (pathManager != null)
