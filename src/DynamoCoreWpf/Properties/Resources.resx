@@ -2325,4 +2325,8 @@ Uninstall the following packages: {0}?</value>
     <value>Default Run Settings</value>
     <comment>Label used in the general tab</comment>
   </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>_Extensions</value>
+    <comment>Extensions menu</comment>
+  </data>
 </root>

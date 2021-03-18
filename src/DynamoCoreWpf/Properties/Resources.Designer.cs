@@ -1278,6 +1278,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Extensions.
+        /// </summary>
+        public static string DynamoViewExtensionsMenu {
+            get {
+                return ResourceManager.GetString("DynamoViewExtensionsMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _File.
         /// </summary>
         public static string DynamoViewFileMenu {

@@ -696,7 +696,7 @@ namespace Dynamo.Graph.Workspaces
         }
 
         private Dictionary<Guid, PackageInfo> nodePackageDictionary = new Dictionary<Guid, PackageInfo>();
-        
+
 
         /// <summary>
         ///     An author of the workspace
@@ -707,7 +707,7 @@ namespace Dynamo.Graph.Workspaces
             set
             {
                 author = value;
-                RaisePropertyChanged("Author");
+                RaisePropertyChanged(nameof(Author));
             }
         }
 
