@@ -482,9 +482,7 @@ namespace Dynamo.PackageManager
             }
             catch (Exception e) when (e is ArgumentException || e is FormatException || e is OverflowException)
             {
-                throw new LibraryLoadFailedException(directory, String.Format(
-                    Properties.Resources.InvalidPackageVersion,
-                    name, directory, version));
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.InvalidPackageVersion, name, directory, version));
             }
         }
 
