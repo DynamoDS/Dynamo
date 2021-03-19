@@ -18,6 +18,7 @@ limitations under the License.
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)/Config/CS.props" />
     <Import Project="$(SolutionDir)Config/Cleanup.targets" />
+    <Import Project="..\packages\Microsoft.NETFramework.ReferenceAssemblies.net47.1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net47.targets" Condition="Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net47.1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net47.targets')" />
   </ImportGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,6 +39,8 @@ limitations under the License.
     </UpgradeBackupLocation>
     <OldToolsVersion>3.5</OldToolsVersion>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup>
     <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
@@ -435,5 +438,11 @@ limitations under the License.
     <!-- Generate customization dll for BuiltIn -->
     <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" References="$(FrameworkAssembliesPath)System.Drawing.dll" />
     <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(DynamoCoreInfo.Version)" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.NETFramework.ReferenceAssemblies.net47.1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net47.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.NETFramework.ReferenceAssemblies.net47.1.0.0\build\Microsoft.NETFramework.ReferenceAssemblies.net47.targets'))" />
   </Target>
 </Project>
