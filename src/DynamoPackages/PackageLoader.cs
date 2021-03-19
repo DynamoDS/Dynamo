@@ -445,23 +445,24 @@ namespace Dynamo.PackageManager
                 if (existingVersion > newVersion)
                 {
                     // Newer version already exist
-                    throw new LibraryLoadFailedException(directory,
-                        String.Format(
-                            "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
-                            discoveredPkg.Name, discoveredPkg.RootDirectory, existingVersion.ToString(),
-                            newVersion.ToString()));
+                    Log(String.Format(
+                        "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
+                        discoveredPkg.Name, discoveredPkg.RootDirectory, existingVersion.ToString(),
+                        newVersion.ToString()), WarningLevel.Moderate);
+
+                    return null;
                 }
 
                 // Older version exist, replace with newer version
                 Remove(existingPackage);
                 Add(discoveredPkg);
 
-                throw new LibraryLoadFailedException(directory,
-                    String.Format(
-                        "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
-                        existingPackage.Name, existingPackage.RootDirectory, newVersion.ToString(),
-                        existingVersion.ToString()));
+                Log(String.Format(
+                    "An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it.",
+                    existingPackage.Name, existingPackage.RootDirectory, newVersion.ToString(),
+                    existingVersion.ToString()), WarningLevel.Moderate);
 
+                return discoveredPkg;
             }
             catch (Exception e)
             {
