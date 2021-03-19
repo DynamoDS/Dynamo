@@ -1,5 +1,6 @@
 ﻿<Window x:Class="Dynamo.PackageManager.PublishPackageView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +9,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
         xmlns:system="clr-namespace:System;assembly=mscorlib"
-        xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:controls="clr-namespace:Dynamo.Controls"                
         mc:Ignorable="d" 
         Height="590" Width="700" 
         ResizeMode="CanResizeWithGrip" 
@@ -17,13 +18,24 @@
 
     <Window.Resources>
         <ResourceDictionary>
+            <Style x:Key="ImageAwesomeIcons"
+                   TargetType="{x:Type fa:ImageAwesome}">
+                <Setter Property="Margin"
+                        Value="13,0,13,0" />
+                <Setter Property="Height"
+                        Value="17" />
+                <Setter Property="Margin"
+                        Value="13,0,13,0" />
+                <Setter Property="Foreground"
+                        Value="#bbbbbb" />
+            </Style>
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
             <ResourceDictionary.MergedDictionaries>
-
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            
         </ResourceDictionary>
     </Window.Resources>
 
@@ -47,9 +59,21 @@
 
                 <Border Width="{Binding Path=ActualWidth,RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Border}}}" >
                     <StackPanel Name="FieldArrangement" Orientation="Vertical" Margin="10">
-
-                        <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.PublishPackageViewPublish}"/>
-
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Name ="Indicator" Foreground="WhiteSmoke" Padding="0,15,0,15" FontSize="15" Text="{x:Static p:Resources.PublishPackageViewPublish}"/>
+                            <Label HorizontalAlignment="Left" Name="Titleinfo" VerticalAlignment="Center" Height="26" Width="53" Margin="-10 3 0 0" MouseLeftButtonUp="OnMoreInfoClicked">
+                                <Label.Content>
+                                    <fa:ImageAwesome Style="{StaticResource ImageAwesomeIcons}" Width="15" Height="15" 
+                                     VerticalAlignment="Bottom" HorizontalAlignment="Left" Icon="QuestionCircleOutline" />
+                                </Label.Content>
+                                <Label.ToolTip>
+                                    <ToolTip>
+                                        <TextBlock Text="{x:Static p:Resources.PublishPackageDocTooltipText}" />
+                                    </ToolTip>
+                                </Label.ToolTip>
+                            </Label>
+                        </StackPanel>
+                        
                         <Label Content="{x:Static p:Resources.PublishPackageViewPackageName}" Foreground="DarkGray" Height="28" Margin="0,10,0,0"  HorizontalAlignment="Left" Name="TitleLabel" VerticalAlignment="Top" >
                             <Label.ToolTip>
                                 <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageNameTooltip}" />
@@ -222,6 +246,13 @@
                         HorizontalAlignment="Right"
                         Command="{Binding Path=SubmitCommand}"
                         Content="{x:Static p:Resources.PublishPackage}"></Button>
+                <Button Style="{DynamicResource ResourceKey=STextButton}"
+                        Width="auto"
+                        MinWidth="130"
+                        Margin="10,5"
+                        HorizontalAlignment="Right"
+                        Click="OnMoreInfoClicked"
+                        Content="Info"></Button>
             </StackPanel>
         </StackPanel>
 
