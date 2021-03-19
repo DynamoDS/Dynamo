@@ -1,0 +1,286 @@
+{
+  "Uuid": "587cf967-cfb8-43bd-a95e-cf4dd7978241",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "PortTooltipDeserilizationTest",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
+      "Id": "bda3e3e4c18c461dae5598df465035b2",
+      "Inputs": [
+        {
+          "Id": "87a604a346ba4b76b341028dc2723544",
+          "Name": "firstPoint",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3509eeed813d4bfe9fa07f251b2da577",
+          "Name": "secondPoint",
+          "Description": "Second point along the curve\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "66147666281d43e481a070adcfcc5276",
+          "Name": "thirdPoint",
+          "Description": "Third point along the curve\n\nPoint",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "162f3e57cbd648b8a8af5f7a58d7156a",
+          "Name": "Arc",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.HigherOrder.Combine, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "db8fd7b97be1413e91897316ae75b51a",
+      "Inputs": [
+        {
+          "Id": "1f9c4bcca3f242878255fe75ede8e439",
+          "Name": "combineFunction",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "1ca72ea969ca4dadabb2c346a1de1bc4",
+          "Name": "list0",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "b19684a6b2224e3d91ea7a410d9724f1",
+          "Name": "list1",
+          "Description": "List #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d6b3f0d9a7b54df09c5471b33e40bce3",
+          "Name": "list2",
+          "Description": "List #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3e58bba981fd42cea9b7505770c61a59",
+          "Name": "list",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Applies a combinator to each element in two sequences"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.ColorRange, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "c848cc3cb24a477f8248e53fc9304cc1",
+      "Inputs": [
+        {
+          "Id": "e373c6fe6bf14a46bd468fce7343aea6",
+          "Name": "colors",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f71da708eb14432935c58fbe90b5b4d",
+          "Name": "indices",
+          "Description": "List of values between 0.0 and 1.0 which position the input colors along the range",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "06f1db7efa1e42eab4ca1abe86fd8287",
+          "Name": "value",
+          "Description": "List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "871c999b7e2c44d0a80bd222be299cfb",
+          "Name": "color",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Get a color given a color range."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "NodeType": "ExtensionNode",
+      "Id": "ddbbd4be7e0b471598151cd09f17f5a1",
+      "Inputs": [
+        {
+          "Id": "8f4a4fcc8b9a416898555df089166e7f",
+          "Name": "item0",
+          "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0b061d4d8ddd44c4a67768f09c021db4",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cde863b7330c42ea8ab4b7bc61a5c001",
+          "Name": "item2",
+           "Description": "Bad Description Should Not Be Deserialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7729dbfe5f0c4460a46324335eb555f9",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list out of the given inputs"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.4226",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Arc.ByThreePoints",
+        "Id": "bda3e3e4c18c461dae5598df465035b2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 239.5,
+        "Y": 120.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List.Combine",
+        "Id": "db8fd7b97be1413e91897316ae75b51a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 229.5,
+        "Y": 323.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Color Range",
+        "Id": "c848cc3cb24a477f8248e53fc9304cc1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 227.5,
+        "Y": 529.75
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "List Create",
+        "Id": "ddbbd4be7e0b471598151cd09f17f5a1",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 556.5,
+        "Y": 323.0
+      }
+    ],
+    "Annotations": [],
+    "X": 23.0,
+    "Y": -23.0,
+    "Zoom": 1.0
+  }
+}
