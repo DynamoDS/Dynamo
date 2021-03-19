@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Moq;
@@ -11,6 +12,7 @@ using NUnit.Framework;
 
 namespace Dynamo.Tests
 {
+    [TestFixture]
     public class StorageExtensionTests
     {
         private const string MOCK_EXTENSION_GUID = "7de691ac-b1ea-4353-9b9b-1f57b2967895";
@@ -124,7 +126,8 @@ namespace Dynamo.Tests
         public void OnWorkspaceOpenDoesNotAddToWorkspaceExtensionData()
         {
             // Arrange
-            var extensionDataBeforeWorkspaceOpen = model.CurrentWorkspace.ExtensionData.Count;
+            var homeworkspace = model.CurrentWorkspace as HomeWorkspaceModel;
+            var extensionDataBeforeWorkspaceOpen = homeworkspace.ExtensionData.Count;
 
             var dataDictionary = new Dictionary<string, string>
             {
@@ -135,7 +138,7 @@ namespace Dynamo.Tests
 
             // Act
             model.OnWorkspaceOpened(model.CurrentWorkspace);
-            var extensionDataAfterWorkspaceOpen = model.CurrentWorkspace.ExtensionData.Count;
+            var extensionDataAfterWorkspaceOpen = homeworkspace.ExtensionData.Count;
 
             // Assert
             Assert.AreEqual(extensionDataBeforeWorkspaceOpen, extensionDataAfterWorkspaceOpen);
@@ -145,6 +148,7 @@ namespace Dynamo.Tests
         public void OnWorkspaceOpenDoesNotModifyExistingExtensionDataDictionary()
         {
             // Arrange
+            var homeworkspace = model.CurrentWorkspace as HomeWorkspaceModel;
             var initialDict = new Dictionary<string, string>
             {
                 {"A","a"},
@@ -161,11 +165,11 @@ namespace Dynamo.Tests
 
             // Act
             model.OnWorkspaceSaving(model.CurrentWorkspace, Graph.SaveContext.Save);
-            var extensionDataDictionaryBeforeOpen = model.CurrentWorkspace.ExtensionData
+            var extensionDataDictionaryBeforeOpen = homeworkspace.ExtensionData
                 .Where(x=>x.ExtensionGuid == MOCK_EXTENSION_GUID).FirstOrDefault();
 
             model.OnWorkspaceOpened(model.CurrentWorkspace);
-            var extensionDataDictionaryAfterOpen = model.CurrentWorkspace.ExtensionData
+            var extensionDataDictionaryAfterOpen = homeworkspace.ExtensionData
                 .Where(x => x.ExtensionGuid == MOCK_EXTENSION_GUID).FirstOrDefault();
 
             // Assert
@@ -178,7 +182,8 @@ namespace Dynamo.Tests
         public void OnWorkspaceSavingAddsToStoredExtensionData()
         {
             // Arrange
-            var initialDataDictionary = model.CurrentWorkspace.ExtensionData
+            var homeworkspace = model.CurrentWorkspace as HomeWorkspaceModel;
+            var initialDataDictionary = homeworkspace.ExtensionData
                 .Where(x => x.ExtensionGuid == MOCK_EXTENSION_GUID)
                 .FirstOrDefault();
 
@@ -193,7 +198,7 @@ namespace Dynamo.Tests
 
             // Act
             model.OnWorkspaceSaving(model.CurrentWorkspace, Graph.SaveContext.Save);
-            var extensionDataDictionaryAfterSave = model.CurrentWorkspace.ExtensionData
+            var extensionDataDictionaryAfterSave = homeworkspace.ExtensionData
                 .Where(x => x.ExtensionGuid == MOCK_EXTENSION_GUID).FirstOrDefault();
 
             // Assert
@@ -207,13 +212,14 @@ namespace Dynamo.Tests
         public void OnWorkspaceSavingModifiesExistingExtensionDataDictionary()
         {
             // Arrange
+            var homeworkspace = model.CurrentWorkspace as HomeWorkspaceModel;
             var initialDataDictionary = new Dictionary<string, string>
             {
                 {"A","a" },
                 {"B","b" }
             };
             var extensionData = new ExtensionData(MOCK_EXTENSION_GUID, MOCK_EXTENSION_NAME, "0.0", initialDataDictionary);
-            model.CurrentWorkspace.ExtensionData.Add(extensionData);
+            homeworkspace.ExtensionData.Add(extensionData);
 
             var dictionaryToAddOnSaving = new Dictionary<string, string>
             {
@@ -230,7 +236,7 @@ namespace Dynamo.Tests
 
             // Act
             model.OnWorkspaceSaving(model.CurrentWorkspace, Graph.SaveContext.Save);
-            var extensionDataAfterSave = model.CurrentWorkspace.ExtensionData
+            var extensionDataAfterSave = homeworkspace.ExtensionData
                 .Where(x => x.ExtensionGuid == MOCK_EXTENSION_GUID).FirstOrDefault();
 
             // Assert
