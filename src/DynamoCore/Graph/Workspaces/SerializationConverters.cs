@@ -641,15 +641,16 @@ namespace Dynamo.Graph.Workspaces
             }
             else
             {
-                ws = new HomeWorkspaceModel(guid, engine, scheduler, factory,
+                 var homeWorkspace = new HomeWorkspaceModel(guid, engine, scheduler, factory,
                     loadedTraceData, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
 
                 // ExtensionData
-                ws.ExtensionData = GetExtensionData(serializer, obj);
+                homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
+                ws = homeWorkspace;
             }
-
+           
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
 
             return ws;
