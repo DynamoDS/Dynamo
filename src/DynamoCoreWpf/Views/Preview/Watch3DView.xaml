@@ -110,6 +110,8 @@
                 <MouseBinding Command="hx:ViewportCommands.Reset" Gesture="Ctrl+MiddleDoubleClick"/>
                 <MouseBinding Command="{Binding LeftClickCommand}" Gesture="LeftClick"/>
             </hx:Viewport3DX.InputBindings>
+            <hx:PostEffectMeshBorderHighlight EffectName="border" Name="border" ScaleX="1" ScaleY="1">
+            </hx:PostEffectMeshBorderHighlight>
             <hx:GroupModel3D
                 x:Name="Models"
                 ItemsSource="{Binding SceneItems}"

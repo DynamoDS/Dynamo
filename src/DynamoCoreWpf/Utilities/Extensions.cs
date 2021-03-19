@@ -1,5 +1,21 @@
 ﻿namespace Dynamo.Utilities
 {
+    public static class ColorExtensions
+    {
+        /// <summary>
+        /// Convert a color to a 24bit hex representation
+        /// </summary>
+        /// <param name="col"></param>
+        /// <returns></returns>
+        public static string ToHex(this System.Windows.Media.Color col)
+        {
+            var red = col.R.ToString("X2");
+            var green = col.G.ToString("X2");
+            var blue = col.B.ToString("X2");
+            return $"#{red}{green}{blue}";
+        }
+    }
+
     public static class WindowsBaseExtensions
     {
         public static System.Windows.Thickness AsWindowsType(this Dynamo.Utilities.Thickness thickness)

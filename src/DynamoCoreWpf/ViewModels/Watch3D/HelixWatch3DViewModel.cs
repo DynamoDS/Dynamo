@@ -156,6 +156,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private readonly Color4 defaultTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.5f);
         private readonly Color4 meshIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.1f);
         internal static readonly Color4 ptAndLineIsolatedTransparencyColor = new Color4(1.0f, 1.0f, 1.0f, 0.25f);
+        private string borderPostEffectString;
 
         private readonly Size defaultPointSize = new Size(6, 6);
         private readonly Size highlightSize = new Size(8, 8);
@@ -1123,16 +1124,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
         private void SetSelection(IEnumerable<Element3D> items, bool isSelected)
         {
-         
+            var postEffect = isSelected ? borderPostEffectString : null;
             foreach (var element in items)
             {
                 AttachedProperties.SetShowSelected(element, isSelected);
+                (element as GeometryModel3D).PostEffects = postEffect;
             }
             SetDepthBiasBasedOnSelection(isSelected, items);
         }
 
         private void SetSelection(IEnumerable items, bool isSelected)
         {
+            var postEffect = isSelected ? borderPostEffectString : null;
             foreach (var item in items)
             {
                 if (item is NodeModel node)
@@ -1149,6 +1152,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     foreach (var model in geometryModels)
                     {
                         AttachedProperties.SetShowSelected(model, isSelected);
+                        (model as GeometryModel3D).PostEffects = postEffect;
                     }
 
                     SetDepthBiasBasedOnSelection(isSelected, geometryModels);
@@ -1360,6 +1364,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 AttachedProperties.SetIsSpecialRenderPackage(axesModel3D, true);
                 Element3DDictionary.Add(DefaultAxesName, axesModel3D);
             }
+            //TODO after updating to latest helix remove this color scale.
+            borderPostEffectString = $"border[color:{Color4.Scale(defaultSelectionColor,.5f).ToColor().ToHex()}]";
 
             UpdateSceneItems();
         }

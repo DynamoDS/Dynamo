@@ -105,6 +105,26 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
                     },
+                        new ShaderPassDescription(DefaultPassNames.MeshOutline)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSMeshDefault,
+                            DefaultPSShaderDescriptions.PSMeshXRay
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSOverlayBlending,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSLessEqualNoWrite
+                    }, new ShaderPassDescription(DefaultPassNames.EffectOutlineP1)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSMeshWireframe,
+                            DefaultPSShaderDescriptions.PSMeshOutlineQuadStencil
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSSourceAlways,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
+                        StencilRef = 1
+                    },
                 }
             };
             AddTechnique(dynamoCustomMeshTech);
@@ -126,7 +146,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
-                    }
+                    },
+                    new ShaderPassDescription(DefaultPassNames.EffectOutlineP1)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSPoint,
+                            DefaultGSShaderDescriptions.GSPoint,
+                            DefaultPSShaderDescriptions.PSMeshOutlineQuadStencil
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSSourceAlways,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
+                        StencilRef = 1
+                    },
                 }
             };
             AddTechnique(dynamoCustomPointTech);
@@ -148,7 +180,19 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         },
                         BlendStateDescription = DefaultBlendStateDescriptions.BSAlphaBlend,
                         DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSDepthLess
-                    }
+                    },
+                    new ShaderPassDescription(DefaultPassNames.EffectOutlineP1)
+                    {
+                        ShaderList = new[]
+                        {
+                            DefaultVSShaderDescriptions.VSPoint,
+                            DefaultGSShaderDescriptions.GSLine,
+                            DefaultPSShaderDescriptions.PSMeshOutlineQuadStencil
+                        },
+                        BlendStateDescription = DefaultBlendStateDescriptions.BSSourceAlways,
+                        DepthStencilStateDescription = DefaultDepthStencilDescriptions.DSSMeshOutlineP1,
+                        StencilRef = 1
+                    },
                 }
             };
             AddTechnique(dynamoCustomLineTech);
