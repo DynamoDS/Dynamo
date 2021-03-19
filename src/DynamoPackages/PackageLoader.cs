@@ -431,8 +431,11 @@ namespace Dynamo.PackageManager
                     return discoveredPkg; // success
                 }
 
-                var existingVersion = new Version(existingPackage.VersionName);
-                var newVersion = new Version(discoveredPkg.VersionName);
+                var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name,
+                    existingPackage.RootDirectory);
+
+                var newVersion = CheckAndGetPackageVersion(discoveredPkg.VersionName, discoveredPkg.Name,
+                    discoveredPkg.RootDirectory);
 
                 // Is this a duplicated package?
                 if (existingVersion == newVersion)
@@ -471,6 +474,27 @@ namespace Dynamo.PackageManager
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Check and get the version from the version string. Throw a libray load expection if anything is wrong with the version
+        /// </summary>
+        /// <param name="version">the version string</param>
+        /// <param name="name">name of the package</param>
+        /// <param name="directory">package directory</param>
+        /// <returns>Returns a valid Version</returns>
+        private Version CheckAndGetPackageVersion(string version, string name, string directory)
+        {
+            try
+            {
+                return new Version(version);
+            }
+            catch (Exception e) when (e is ArgumentException || e is FormatException || e is OverflowException)
+            {
+                throw new LibraryLoadFailedException(directory, String.Format(
+                    "The version of the package called {0} found at {1} is invalid (version: \"{2}\"). Ignoring it.",
+                    name, directory, version));
+            }
         }
 
         /// <summary>
