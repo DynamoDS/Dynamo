@@ -645,10 +645,12 @@ namespace Dynamo.Graph.Workspaces
                     loadedTraceData, nodes, notes, annotations,
                     Enumerable.Empty<PresetModel>(), elementResolver,
                     info, verboseLogging, isTestMode);
+
+                // ExtensionData
+                ws.ExtensionData = GetExtensionData(serializer, obj);
             }
 
             ws.NodeLibraryDependencies = nodeLibraryDependencies.ToList();
-            ws.ExtensionData = GetExtensionData(serializer, obj);
 
             return ws;
         }
@@ -766,11 +768,12 @@ namespace Dynamo.Graph.Workspaces
             // NodeLibraryDependencies
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
             serializer.Serialize(writer, ws.NodeLibraryDependencies);
-
-            // ExtensionData
-            writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
-            serializer.Serialize(writer, ws.ExtensionData);
-
+            if (!isCustomNode && ws is HomeWorkspaceModel hws)
+            {
+                // ExtensionData
+                writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+                serializer.Serialize(writer, hws.ExtensionData);
+            }
             if (engine != null)
             {
                 // Bindings
