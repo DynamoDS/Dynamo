@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
@@ -90,6 +91,12 @@ namespace Dynamo.Graph.Workspaces
         public long EvaluationCount { get; private set; }
 
         /// <summary>
+        /// List of user defined data from extensions and view extensions stored in the graph
+        /// </summary>
+        internal ICollection<ExtensionData> ExtensionData
+        {
+            get; set;
+        }
         /// In near future, the file loading mechanism will be completely moved 
         /// into WorkspaceModel, that's the time we removed this property setter below.
         /// </summary>
@@ -278,6 +285,7 @@ namespace Dynamo.Graph.Workspaces
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
+            this.ExtensionData = new List<ExtensionData>();
 
             // The first time the preloaded trace data is set, we cache
             // the data as historical. This will be used after the initial
@@ -769,6 +777,40 @@ namespace Dynamo.Graph.Workspaces
             historicalTraceData = null;
 
             return orphans;
-        } 
+        }
+
+        internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        {
+            data = new Dictionary<string, string>();
+            if (!ExtensionData.Any())
+                return false;
+
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return false;
+
+            data = extensionData.Data;
+            return true;
+        }
+
+        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
+        {
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return;
+
+            extensionData.Data = data;
+        }
+
+        internal void CreateNewExtensionData(string uniqueId, string name, string version, Dictionary<string, string> data)
+        {
+            // TODO: Figure out how to add extension version when creating new ExtensionData 
+            var extensionData = new ExtensionData(uniqueId, name, version, data);
+            ExtensionData.Add(extensionData);
+        }
     }
 }
