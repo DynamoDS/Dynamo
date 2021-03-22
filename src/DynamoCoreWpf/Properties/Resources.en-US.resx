@@ -2281,6 +2281,9 @@ Uninstall the following packages: {0}?</value>
   <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
     <value>Select Node Libraries</value>
   </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
   <data name="DynamoViewDynamoMenu" xml:space="preserve">
     <value>_Dynamo</value>
     <comment>Dynamo menu</comment>
@@ -2297,6 +2300,9 @@ Uninstall the following packages: {0}?</value>
     <value>_Export</value>
     <comment>File menu | Export</comment>
   </data>
+  <data name="PublishPackageDocTooltipText" xml:space="preserve">
+    <value>Learn More about publishing a package</value>
+  </data>  
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
   </data>
