@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -53,6 +54,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Action<Package> PackageRemoved;
 
+        private const string stdLibName = @"Standard Library";
         private readonly List<IExtension> requestedExtensions = new List<IExtension>();
         /// <summary>
         /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
@@ -79,7 +81,7 @@ namespace Dynamo.PackageManager
         // The standard library directory is located in the same directory as the DynamoPackages.dll
         internal string StandardLibraryDirectory =>
             Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
-                @"Standard Library", @"Packages");
+                stdLibName, @"Packages");
 
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
@@ -337,7 +339,21 @@ namespace Dynamo.PackageManager
         {
             foreach (var packagesDirectory in packagesDirectories)
             {
-                ScanPackageDirectories(packagesDirectory, preferences);
+
+                if (preferences is IDisablePackageLoadingPreferences disablePrefs
+                    &&
+                    //if this directory is the standard library location
+                    //and loading from there is disabled, don't scan the directory.
+                    ((disablePrefs.DisableStandardLibrary && packagesDirectory == StandardLibraryDirectory)
+                    //or if custom package directories are disabled, and this is a custom package directory, don't scan.
+                    || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
+                {
+                    continue;
+                }
+                else
+                {
+                    ScanPackageDirectories(packagesDirectory, preferences);
+                }
             }
         }
 
