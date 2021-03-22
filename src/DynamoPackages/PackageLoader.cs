@@ -421,6 +421,8 @@ namespace Dynamo.PackageManager
                     CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
 
+                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
+
                 var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
 
                 // Is this a new package?
@@ -432,8 +434,6 @@ namespace Dynamo.PackageManager
                 }
 
                 var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
-
-                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
 
                 // Is this a duplicated package?
                 if (existingVersion == discoveredVersion)
