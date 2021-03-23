@@ -727,6 +727,10 @@ namespace Dynamo.PackageManager.Tests
             // Assert
             Assert.IsNotNull(oldPackage);
             Assert.IsNotNull(newPackage);
+            Assert.AreEqual("Package", oldPackage.Name);
+            Assert.AreEqual("Package", newPackage.Name);
+            Assert.AreEqual("1.0.0", oldPackage.VersionName);
+            Assert.AreEqual("2.0.0", newPackage.VersionName);
             Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
             Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
         }
@@ -746,6 +750,8 @@ namespace Dynamo.PackageManager.Tests
             // Assert
             Assert.IsNull(oldPackage);
             Assert.IsNotNull(newPackage);
+            Assert.AreEqual("Package", newPackage.Name);
+            Assert.AreEqual("2.0.0", newPackage.VersionName);
             Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
             Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
         }
