@@ -450,6 +450,12 @@ namespace Dynamo.PackageManager
                     return null;
                 }
 
+                // If the existing package already loaded
+                if (existingPackage.Loaded)
+                {
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedPackageAlreadyLoaded, existingPackage.Name, discoveredPackage.RootDirectory, existingVersion.ToString(), discoveredVersion.ToString()));
+                }
+
                 // Older version exist, replace with newer version
                 Remove(existingPackage);
                 Add(discoveredPackage);

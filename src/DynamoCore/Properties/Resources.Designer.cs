@@ -460,6 +460,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The old version of the package is already loaded. Please restart Dynamo for loading the new version of the package..
+        /// </summary>
+        public static string DuplicatedPackageAlreadyLoaded {
+            get {
+                return ResourceManager.GetString("DuplicatedPackageAlreadyLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate migration type registered for {0}.
         /// </summary>
         public static string DuplicateMigrationTypeRegistered {
