@@ -478,7 +478,7 @@ namespace Dynamo.PackageManager
         {
             try
             {
-                return new Version(version);
+                return VersionUtilities.PartialParse(version);
             }
             catch (Exception e) when (e is ArgumentException || e is FormatException || e is OverflowException)
             {
