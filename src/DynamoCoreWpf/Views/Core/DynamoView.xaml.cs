@@ -215,17 +215,23 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, dynamoViewModel.Model.Logger);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext, dynamoViewModel.Model.Logger);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
         }
 
@@ -898,11 +904,9 @@ namespace Dynamo.Controls
             //Backing up IsFirstRun to determine whether to show Gallery
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
-            if (!dynamoViewModel.HideReportOptions)
-            {
-                // If first run, Collect Info Prompt will appear
-                UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
-            }
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
+            
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
