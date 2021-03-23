@@ -468,7 +468,7 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Check and get the version from the version string. Throw a libray load expection if anything is wrong with the version
+        /// Check and get the version from the version string. Throw a library load exception if anything is wrong with the version
         /// </summary>
         /// <param name="version">the version string</param>
         /// <param name="name">name of the package</param>
