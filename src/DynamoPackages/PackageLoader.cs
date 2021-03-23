@@ -78,30 +78,53 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
-        // The standard library directory is located in the same directory as the DynamoPackages.dll
-        internal string StandardLibraryDirectory =>
-            Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
-                stdLibName, @"Packages");
+        private string stdLibDirectory = null;
 
+        /// <summary>
+        /// The standard library directory is located in the same directory as the DynamoPackages.dll
+        /// Property should only be set during testing.
+        /// </summary>
+        internal string StandardLibraryDirectory
+        {
+            get
+            {
+                if (stdLibDirectory == null)
+                {
+                    return Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
+                        stdLibName, @"Packages");
+                }
+                else
+                {
+                    return stdLibDirectory;
+                }
+            }
+            set
+            {   if(stdLibDirectory!= value)
+                {
+                    stdLibDirectory = value;
+                }
+            }
+        }
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
         }
 
+        /// <summary>
+        /// This constructor is only intended for testing of stdLib using a non standard directory.
+        /// </summary>
+        /// <param name="packagesDirectories"></param>
+        /// <param name="stdLibDirectory"></param>
+        internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        {
+            InitPackageLoader(packagesDirectories, stdLibDirectory);
+            //override the property.
+            this.StandardLibraryDirectory = stdLibDirectory;
+        }
+
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            if (packagesDirectories == null)
-                throw new ArgumentNullException("packagesDirectories");
-
-            this.packagesDirectories.AddRange(packagesDirectories);
-            this.packagesDirectories.Add(StandardLibraryDirectory);
-            
-            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-
-            if (error != null)
-                Log(error);
-
-            packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories,StandardLibraryDirectory);
         }
 
         /// <summary>
@@ -116,6 +139,22 @@ namespace Dynamo.PackageManager
                 throw new ArgumentNullException("packageDirectoriesToVerify");
 
             packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
+        }
+
+        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        {
+            if (packagesDirectories == null)
+                throw new ArgumentNullException("packagesDirectories");
+
+            this.packagesDirectories.AddRange(packagesDirectories);
+            this.packagesDirectories.Add(stdLibDirectory);
+
+            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
+
+            if (error != null)
+                Log(error);
+
+            packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
         }
 
         private void OnPackageAdded(Package pkg)
