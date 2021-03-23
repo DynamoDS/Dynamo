@@ -4413,11 +4413,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node Font Size.
+        /// </summary>
+        public static string PreferencesViewFontSizeLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewFontSizeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         public static string PreferencesViewGeneralTab {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string PreferencesViewLanguageLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewLanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Run Settings.
+        /// </summary>
+        public static string PreferencesViewRunSettingsLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewRunSettingsLabel", resourceCulture);
             }
         }
         
@@ -4436,6 +4463,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewVisualSettingsTab {
             get {
                 return ResourceManager.GetString("PreferencesViewVisualSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        /// </summary>
+        public static string PreferencesWindowLanguages {
+            get {
+                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
             }
         }
         
@@ -4587,6 +4623,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn More about publishing a package.
+        /// </summary>
+        public static string PublishPackageDocTooltipText {
+            get {
+                return ResourceManager.GetString("PublishPackageDocTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publish Locally.
         /// </summary>
         public static string PublishPackageLocally {
@@ -4602,6 +4647,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageMessage {
             get {
                 return ResourceManager.GetString("PublishPackageMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DynamoCoreWpf;PublishPackageDocumentation.html.
+        /// </summary>
+        public static string PublishPackageMoreInfoFile {
+            get {
+                return ResourceManager.GetString("PublishPackageMoreInfoFile", resourceCulture);
             }
         }
         

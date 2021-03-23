@@ -1,0 +1,227 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="UTF-8" />
+</head>
+
+<style>
+    body {
+        color: white;
+        font-size: 14px;
+        font-family: "Artifakt Element";
+        src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+        padding: 1%;
+    }
+
+    a {
+        color: lightgray;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid white;
+    }
+
+    th,
+    td {
+        border: 1px solid white;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    samp {
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
+    }
+
+    code .k {
+        color: #dcdcaa;
+        font-weight: bold;
+    }
+
+    code .s {
+        color: #ce9178;
+    }
+
+    code .v {
+        color: #b5cea8;
+    }
+
+    code .o {
+        color: #c586c0;
+        font-weight: bold;
+    }
+
+    code .i {
+        color: #569cd6;
+        font-weight: bold;
+    }
+
+    code .b {
+        color: #9cdcfe;
+        font-weight: bold;
+    }
+
+    code .e {
+        color: #43c9b0;
+    }
+
+    code > .nl .nl {
+        padding-left: 10px;
+    }
+
+    code .nl {
+        display: block;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .hidden-lg {
+        display: none;
+    }
+
+    .button {
+        background-color: transparent;
+        border-color: #3c3c3c;
+        color: #bbbbbb;
+    }
+
+    .button:hover {
+        border-color: #656565;
+        background-color: #373737;
+        opacity: 1.0;
+    }
+
+    @media screen and (max-width: 600px) {
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
+
+        td,
+        th {
+            display: block;
+        }
+
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+
+        .hidden-sm {
+            display: none;
+        }
+
+        .spaced-sm {
+            margin-top: 20px;
+        }
+
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Publishing Dynamo Packages</h3>
+    <p>
+        Dynamo offers a vast number of features out of the box and also maintains an extensive package library, to which the community can contribute, that can significantly extend Dynamo's capability. 
+        This documentation describes how a user can publish a package from Dynamo.
+    </p>
+    <p>
+        The menu option to publish a package can be found at: "Packages > Publish New Package...". 
+        Clicking this menu item will open a dialog box that will ask for all the information related to the package the user wants to publish.
+    </p>
+    <h4>Package Name:</h4>
+    <p>
+        Name of the package you want to publish. This will appear in the library and on the package manager website.
+    </p>
+    <p>
+        <b>Description:</b><br />
+        The description is a great place to add more details about your package, including listing any exceptions and pre-requisites. 
+        It can also be used to educate users on what the package does and how it can be utilised into their workspaces.
+    </p>
+    <p>
+        <b>Version:</b><br />
+        The version field is split into three sections, major, minor and build, which allows you as a package author to upload new versions of your 
+        package that follow versioning semantics - Users may want to publish more versions for their packages with new and improved features, 
+        polish some corners which were left out in the first version, or fix a bug.
+    </p>
+    <p>
+        <b>Group:</b><br />
+        This field can be used to specify a group that a package belongs to such as the company/organization.
+    </p>
+    <p>
+        <b>External Dependency (optional):</b><br />
+        Your package may depend on a host or its API as Dynamo can be integrated with a bunch of different optional 
+        hosts such as Revit or Civil 3D, so this field can be used to specify which other host(s) your package depends upon.
+    </p>
+    <p>
+        <b>Keywords (optional):</b><br />
+        Some keywords that can be used as tags related to your package. For e.g Generative Design, ML etc.
+    </p>
+    <p>
+        <b>Website (optional):</b><br />
+        Website that may provide the user with more info regarding the package or the organization/author.
+    </p>
+    <p>
+        <b>Repository URL (optional):</b><br />
+        A link to package's repository that can help users to view or contribute to the package development.
+    </p>
+    <p>
+        <b>License (optional):</b><br />
+        A license under which the package is released. Default license : MIT.
+    </p>
+    <p>
+        <b>Package Contents (optional):</b><br />
+        This section includes the right sidebar of the dialog box.
+    </p>
+    <p>
+        <b>Add File:</b><br />
+        Select and add all the files that are related to your package; generally the bin folder, binaries and dependencies are added.
+    </p>
+    <p>
+        <b>Select Node Libraries:</b><br />
+        Select the node libraries/DLLs from the list of added files.
+    </p>
+    <p>
+        After filling in all the required details user can publish the package locally or online.
+        When publishing locally the package will be published in the local root directory,
+        whereas while publishing online the package will be uploaded to the package manager.
+    </p>
+</body>

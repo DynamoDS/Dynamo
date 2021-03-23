@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Input;
-using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Views
 {
