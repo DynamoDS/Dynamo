@@ -451,7 +451,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. Ignoring it..
+        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
         /// </summary>
         public static string DuplicatedOlderPackage {
             get {
