@@ -691,6 +691,49 @@ namespace Dynamo.PackageManager.Tests
         //signedpackge2 generated from internal repo at SignedDynamoTestingPackages
 
         [Test]
+        public void PackageInCustomPackagePathIsLoaded()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //just to be certain this is false.
+            settings.DisableCustomPackageLocations = false;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was loaded
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+        }
+        [Test]
+        public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //disable custom package paths
+            settings.DisableCustomPackageLocations = true;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was not loaded
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+        }
+
+        [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()
         {
             Assert.Inconclusive("Finish me");
