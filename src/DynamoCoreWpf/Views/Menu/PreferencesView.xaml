@@ -236,7 +236,7 @@
                     Grid.Row="2" 
                     Style="{StaticResource NormalButtonStyle}" 
                     HorizontalAlignment="Right"
-                    Margin="0,0,24,0"
+                    Margin="0,0,14,0"
                     Width="112"
                     Height="36"
                     Click="SaveChanges_Click">
