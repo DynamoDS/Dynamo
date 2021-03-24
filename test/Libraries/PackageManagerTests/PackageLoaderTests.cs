@@ -662,9 +662,10 @@ namespace Dynamo.PackageManager.Tests
             //invoke the load
             loader.LoadAll(loaderParams);
 
-            //assert the package in std lib was not loaded.
-            Assert.AreEqual(1, loader.LocalPackages.Count());
+            //assert the package in std lib was loaded.
             Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
         }
 
         [Test]
@@ -684,9 +685,9 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(loaderParams);
 
             //assert the package in std lib was not loaded.
-            Assert.AreEqual(0, loader.LocalPackages.Count());
             Assert.IsFalse(loader.LocalPackages.Any(x => x.Name.Contains("SignedPackage2")));
-            //delete the package we copied.
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+            
         }
         //signedpackge2 generated from internal repo at SignedDynamoTestingPackages
 
@@ -708,8 +709,9 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(loaderParams);
 
             //assert the package in the custom package path was loaded
-            Assert.AreEqual(1, loader.LocalPackages.Count());
             Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
         }
         [Test]
         public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
@@ -729,8 +731,9 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(loaderParams);
 
             //assert the package in the custom package path was not loaded
-            Assert.AreEqual(0, loader.LocalPackages.Count());
             Assert.IsFalse(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+           
         }
 
         [Test]

@@ -88,18 +88,13 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                if (stdLibDirectory == null)
-                {
-                    return Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),
-                        stdLibName, @"Packages");
-                }
-                else
-                {
-                    return stdLibDirectory;
-                }
+                return stdLibDirectory == null ?
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
+                    : stdLibDirectory;
             }
             set
-            {   if(stdLibDirectory!= value)
+            {
+                if (stdLibDirectory != value)
                 {
                     stdLibDirectory = value;
                 }
@@ -124,7 +119,7 @@ namespace Dynamo.PackageManager
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            InitPackageLoader(packagesDirectories,StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
         }
 
         /// <summary>
@@ -387,6 +382,7 @@ namespace Dynamo.PackageManager
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.
                     || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
                 {
+                    Log(string.Format(Resources.PackagesDirectorySkipped,packagesDirectory));
                     continue;
                 }
                 else
@@ -422,7 +418,7 @@ namespace Dynamo.PackageManager
                 foreach (var dir in
                     Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
                 {
-                    
+
                     // verify if the package directory requires certificate verifications
                     // This is done by default for the package directory defined in PathManager common directory location.
                     var checkCertificates = false;
@@ -539,7 +535,7 @@ namespace Dynamo.PackageManager
                             Resources.InvalidPackageNodeLibraryIsNotSigned,
                             discoveredPkg.Name, discoveredPkg.RootDirectory, e.Message));
                 }
-                
+
             }
 
             discoveredPkg.RequiresSignedEntryPoints = true;
