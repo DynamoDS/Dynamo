@@ -224,7 +224,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Input nodes are used in Customizer and Presets. Input nodes can be numbers, number sliders,
-        /// strings, bool, code blocks and custom nodes, which don't specify path. This property
+        /// strings, bool, code blocks, custom nodes and color palette node. This property
         /// is true for nodes that are potential inputs for Customizers and Presets.
         /// </summary>
         [JsonIgnore]
@@ -719,7 +719,7 @@ namespace Dynamo.Graph.Nodes
         /// Node description that can be customized by the user.
         /// </summary>
         [JsonIgnore]
-        public string UserDescription
+        internal string UserDescription
         {
             get;
             set;

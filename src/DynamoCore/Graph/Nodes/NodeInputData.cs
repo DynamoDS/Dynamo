@@ -89,7 +89,7 @@ namespace Dynamo.Graph.Nodes
         public string Description { get; set; }
 
         /// <summary>
-        /// The index of the selected index.
+        /// The index of the selected item.
         /// </summary>
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public int SelectedIndex { get; set; }
