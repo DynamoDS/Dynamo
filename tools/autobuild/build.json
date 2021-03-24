@@ -2,6 +2,8 @@
   "product_id": "DYN",
   "release_id": "2.12.0",
   "master_id": "Win64",
+  "build_id": "2.12.0",
+  "name": "2.12.0",
   "build_milestone": "FCS",
   "description":"Build"
 }
