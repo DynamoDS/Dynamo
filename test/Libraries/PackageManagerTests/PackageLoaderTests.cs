@@ -726,13 +726,11 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.IsNotNull(oldPackage);
-            Assert.IsNotNull(newPackage);
+            Assert.IsNull(newPackage);
             Assert.AreEqual("Package", oldPackage.Name);
-            Assert.AreEqual("Package", newPackage.Name);
             Assert.AreEqual("1.0.0", oldPackage.VersionName);
-            Assert.AreEqual("2.0.0", newPackage.VersionName);
-            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
-            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
         }
 
         [Test]
@@ -745,50 +743,6 @@ namespace Dynamo.PackageManager.Tests
 
             // Act
             var newPackage = loader.ScanPackageDirectory(newPackageLocation);
-            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
-
-            // Assert
-            Assert.IsNull(oldPackage);
-            Assert.IsNotNull(newPackage);
-            Assert.AreEqual("Package", newPackage.Name);
-            Assert.AreEqual("2.0.0", newPackage.VersionName);
-            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
-            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
-        }
-
-        [Test]
-        public void PackageLoaderLoadNewWhenOldPackageHasBeenLoadedAlready()
-        {
-            // Arrange
-            var loader = GetPackageLoader();
-            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
-            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
-
-            // Act
-            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
-            oldPackage.Loaded = true;
-            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
-
-            // Assert
-            Assert.IsNotNull(oldPackage);
-            Assert.IsNull(newPackage);
-            Assert.AreEqual("Package", oldPackage.Name);
-            Assert.AreEqual("1.0.0", oldPackage.VersionName);
-            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
-            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
-        }
-
-        [Test]
-        public void PackageLoaderLoadOldWhenNewPackageHasBeenLoadedAlready()
-        {
-            // Arrange
-            var loader = GetPackageLoader();
-            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
-            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
-
-            // Act
-            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
-            newPackage.Loaded = true;
             var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
 
             // Assert

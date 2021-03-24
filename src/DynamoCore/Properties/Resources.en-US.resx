@@ -741,7 +741,7 @@ Parameter name: {0}</value>
   <data name="InvalidPackageVersion" xml:space="preserve">
     <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
   </data>
-  <data name="DuplicatedPackageAlreadyLoaded" xml:space="preserve">
-    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The old version of the package is already loaded. Please restart Dynamo for loading the new version of the package.</value>
+  <data name="DuplicatedNewerPackage" xml:space="preserve">
+    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
   </data>
 </root>

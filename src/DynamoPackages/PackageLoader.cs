@@ -91,8 +91,8 @@ namespace Dynamo.PackageManager
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
-            this.packagesDirectories.AddRange(packagesDirectories);
             this.packagesDirectories.Add(StandardLibraryDirectory);
+            this.packagesDirectories.AddRange(packagesDirectories);
             
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
 
@@ -448,41 +448,20 @@ namespace Dynamo.PackageManager
                 // Is the existing version newer?
                 if (existingVersion > discoveredVersion)
                 {
-                    // Newer version already exist
-                    Log(String.Format(Properties.Resources.DuplicatedOlderPackage,
-                            discoveredPackage.Name,
-                            discoveredPackage.RootDirectory,
-                            existingVersion.ToString(),
-                            discoveredVersion.ToString()),
-                        WarningLevel.Moderate);
-                    return null;
-                }
-
-                // Is the existing package already loaded?
-                // This can happen when we reload after a new package directory has been added
-                // and the new package directory has a newer version of a package that has been loaded already
-                if (existingPackage.Loaded)
-                {
-                    throw new LibraryLoadFailedException(directory,
-                        String.Format(Properties.Resources.DuplicatedPackageAlreadyLoaded,
+                    // Older version found, show notification
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedOlderPackage,
                             existingPackage.Name,
                             discoveredPackage.RootDirectory,
                             existingVersion.ToString(),
                             discoveredVersion.ToString()));
                 }
 
-                // Older version exist, replace with newer version
-                Remove(existingPackage);
-                Add(discoveredPackage);
-
-                Log(String.Format(Properties.Resources.DuplicatedOlderPackage,
+                // Newer version found, show notification.
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedNewerPackage,
                         existingPackage.Name,
-                        existingPackage.RootDirectory,
-                        discoveredVersion.ToString(),
-                        existingVersion.ToString()),
-                    WarningLevel.Moderate);
-
-                return discoveredPackage;
+                        discoveredPackage.RootDirectory,
+                        existingVersion.ToString(),
+                        discoveredVersion.ToString()));
             }
             catch (Exception e)
             {

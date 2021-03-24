@@ -451,20 +451,20 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored..
+        /// </summary>
+        public static string DuplicatedNewerPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
         /// </summary>
         public static string DuplicatedOlderPackage {
             get {
                 return ResourceManager.GetString("DuplicatedOlderPackage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The old version of the package is already loaded. Please restart Dynamo for loading the new version of the package..
-        /// </summary>
-        public static string DuplicatedPackageAlreadyLoaded {
-            get {
-                return ResourceManager.GetString("DuplicatedPackageAlreadyLoaded", resourceCulture);
             }
         }
         
