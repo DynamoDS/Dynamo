@@ -66,10 +66,8 @@ namespace CoreNodeModels
 
         public override NodeInputData InputData
         {
-            //TODO There is not yet an appropriate input type
-            //defined in the cogs graph schema to support dropdowns
-            //which return arbitrary objects at some index - implement this
-            //when that exists.
+            //TODO extend cogs graph schema with new
+            //`NodeInputTypes.dropdownSelection` support.
             get
             {
                 return new NodeInputData
