@@ -69,6 +69,10 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         private readonly List<string> packagesDirectories = new List<string>();
+
+        // Returns the default package directory where new packages will be installed
+        // The default package directory is currently the second entry in the list
+        // The first entry is the standard library
         public string DefaultPackagesDirectory
         {
             get { return packagesDirectories[1]; }
