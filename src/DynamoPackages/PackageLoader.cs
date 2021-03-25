@@ -72,12 +72,16 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-        // Returns the default package directory where new packages will be installed
-        // The default package directory is currently the second entry in the list
-        // The first entry is the standard library
+
+        /// <summary>
+        /// Returns the default package directory where new packages will be installed
+        /// The default package directory is currently the second entry in the list
+        /// The first entry is the standard library.
+        /// </summary>
+        /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
         public string DefaultPackagesDirectory
         {
-            get { return packagesDirectories[1]; }
+            get { return packagesDirectories.Count > 1 ? packagesDirectories[1] : null; }
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
