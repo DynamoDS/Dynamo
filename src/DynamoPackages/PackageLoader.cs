@@ -80,7 +80,7 @@ namespace Dynamo.PackageManager
             {
                 if (path.Contains(packagesDirectories[ii]))
                 {
-                    return ii;
+                    return packagesDirectories.Count() - ii;
                 }
             }
             return -1;
