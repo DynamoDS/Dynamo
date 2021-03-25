@@ -798,36 +798,22 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath, bool skipInstall = false)
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
         {
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
-                if (!skipInstall)
-                {
-                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installing;
+                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installing;
 
-                    if (PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
-                    {
-                        PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-                    }
-                    else
-                    {
-                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                        packageDownloadHandle.Error(Resources.MessageInvalidPackage);
-                    }
-
-                } else
+                if (!Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") || PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
                 {
-                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloaded; 
+                    PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                 }
+                return;
             }
-            else
-            {
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
-            }
+            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
         }
 
         public void ClearCompletedDownloads()
