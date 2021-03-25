@@ -677,7 +677,7 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
-                    if (pkgNameDirTup.Contains(StandardLibraryDirectory))
+                    if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") && pkgNameDirTup.Contains(StandardLibraryDirectory))
                     {
                         pkgDirsRemoved.Add(pkgNameDirTup);
                         Log(
