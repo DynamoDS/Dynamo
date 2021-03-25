@@ -460,7 +460,7 @@ namespace CoreNodeModels.HigherOrder
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("replaceWith", Resources.ReplacePortDataReplaceWithToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("condition", Resources.ReplacePortDataConditionToolTip)));
 
-            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("var", Resources.ReplacePortDataResultToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("var[]..[]", Resources.ReplacePortDataResultToolTip)));
 
             RegisterAllPorts();
         }

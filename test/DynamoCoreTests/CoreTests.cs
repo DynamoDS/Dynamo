@@ -677,6 +677,29 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void UndoMoveDoesNotForceExecution()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");
+            OpenModel(openPath);
+            RunCurrentModel();
+
+            var sumNodeGuid = new Guid("088365b5-4543-4e73-9430-463475147e19");
+            var sumNode = CurrentDynamoModel.CurrentWorkspace.Nodes.First(node => node.GUID == sumNodeGuid);
+            Assert.IsFalse(sumNode.IsModified);
+
+            var oldX = sumNode.X;
+            var newX = sumNode.X + 100;
+            var newPosition = $"{newX};{sumNode.Y}";
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, sumNodeGuid, nameof(NodeModel.Position), newPosition));
+            Assert.AreEqual(newX, sumNode.X);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(oldX, sumNode.X);
+
+            Assert.IsFalse(sumNode.IsModified);
+        }
+
+        [Test]
         public void TestFileDirtyOnLacingChange()
         {
             string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");

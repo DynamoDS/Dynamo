@@ -425,7 +425,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Save);
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
@@ -460,6 +460,11 @@ namespace DynamoCoreWpfTests
             // Re-saving the file will update the version number (which can be expected)
             // Setting the version numbers to be equal to stop the deep compare from failing
             jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+
+            // Ignoring the ExtensionWorkspaceData property as this is added after the re-save,
+            // this will cause a difference between jobject1 and jobject2 if it is not ignored.
+            jobject2.Remove("ExtensionWorkspaceData");
+
             var jsonText2 = jobject2.ToString();
 
             Console.WriteLine(jsonText1);

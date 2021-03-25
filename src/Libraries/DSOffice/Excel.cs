@@ -738,9 +738,9 @@ namespace DSOffice
         ///     Imports data from a CSV (comma separated values) file, put the items into a list and 
         ///     transpose it if needed.
         /// </summary>
-        /// <param name="filePath">The CSV file to be converted into a list.</param>
-        /// <param name="transpose">Whether the resulting list should be transposed.</param>
-        /// <returns name="list">The list containing the items in the CSV file.</returns>
+        /// <param name="filePath">CSV file to be converted into a list</param>
+        /// <param name="transpose">Toggle to transpose the imported data</param>
+        /// <returns name="list">List containing the items in the CSV file</returns>
         /// <search>import,csv,comma,file,list,separate,transpose</search>
         public static IList ImportCSV(string filePath, bool transpose = false)
         {
@@ -813,11 +813,11 @@ namespace DSOffice
         ///     for example, the value in cell A1 will appear in the data list at [0,0].
         ///     This node requires Microsoft Excel to be installed.
         /// </summary>
-        /// <param name="file">File representing the Microsoft Excel spreadsheet.</param>
-        /// <param name="sheetName">Name of the worksheet containing the data.</param>
-        /// <param name="readAsStrings">Toggle to switch between reading Excel file as strings.</param>
-        /// <param name="showExcel">Toggle to switch between showing and hiding the main Excel window.</param>
-        /// <returns name="data">Rows of data from the Excel worksheet.</returns>
+        /// <param name="file">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
+        /// <param name="readAsStrings">Toggle to read cells as strings</param>
+        /// <param name="showExcel">Toggle to show excel's main window</param>
+        /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet,ifequalreturnindex</search>
         public static object[][] ImportExcel(FileInfo file, string sheetName, bool readAsStrings = false, bool showExcel = true)
         {
@@ -831,20 +831,20 @@ namespace DSOffice
         ///     be written to cell A1. Null values and empty lists are written to Excel 
         ///     as empty cells. This node requires Microsoft Excel to be installed. 
         /// </summary>
-        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
-        /// <param name="sheetName">Name of the workseet to write data to.</param>
+        /// <param name="filePath">File path to the Microsoft Excel spreadsheet</param>
+        /// <param name="sheetName">Name of the workseet to write data to</param>
         /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
-        /// <param name="startCol">
+        /// <param name="startColumn">
         ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
         /// </param>
-        /// <param name="data">Data to write to the spreadsheet.</param>
-        /// <param name="overWrite"></param>
-        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <param name="data">Data to write to the spreadsheet</param>
+        /// <param name="overWrite">True to overwrite file, false not to overwrite</param>
+        /// <returns name="data">Data written to the spreadsheet</returns>
         /// <search>office,excel,spreadsheet</search>
         [Obsolete("Use ExportToExcel instead.")] 
-        public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false)
+        public static object[][] ExportExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false)
         {
-            return Excel.WriteData(filePath, sheetName, startRow, startCol, data, overWrite);
+            return Excel.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite);
         }
 
         /// <summary>
@@ -854,20 +854,20 @@ namespace DSOffice
         ///     be written to cell A1. Null values and empty lists are written to Excel 
         ///     as empty cells. This node requires Microsoft Excel to be installed. 
         /// </summary>
-        /// <param name="filePath">File path to the Microsoft Excel spreadsheet.</param>
-        /// <param name="sheetName">Name of the worksheet to write data to.</param>
+        /// <param name="filePath">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
         /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
-        /// <param name="startCol">
+        /// <param name="startColumn">
         ///     Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.
         /// </param>
-        /// <param name="data">Data to write to the spreadsheet.</param>
-        /// <param name="overWrite"></param>
-        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings.</param>
-        /// <returns name="data">Data written to the spreadsheet.</returns>
+        /// <param name="data">Data to write to the spreadsheet</param>
+        /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
+        /// <param name="writeAsString">Toggle to switch between writing Excel file as strings</param>
+        /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startCol, object[][] data, bool overWrite = false, bool writeAsString = false)
+        public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
-            return Excel.WriteData(filePath, sheetName, startRow, startCol, data, overWrite, writeAsString);
+            return Excel.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
         }
     }
 }

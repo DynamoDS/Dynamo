@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <migrations>
   <priorNameHint>
-    <oldName>Examples.BasicExample.Create@Autodesk.DesignScript.Geometry.Point</oldName>
-    <newName>Examples.NEWBasicExample.Create@Autodesk.DesignScript.Geometry.Point</newName>
+    <oldName>Examples.BasicExample.Create</oldName>
+    <newName>Examples.NEWBasicExample.Create</newName>
   </priorNameHint>
   <priorNameHint>
     <oldName>Examples.BasicExample.Create@double,double,double</oldName>
