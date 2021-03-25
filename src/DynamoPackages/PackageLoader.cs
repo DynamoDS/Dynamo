@@ -69,9 +69,13 @@ namespace Dynamo.PackageManager
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
         private readonly List<string> packagesDirectories = new List<string>();
+
+        // Returns the default package directory where new packages will be installed
+        // The default package directory is currently the second entry in the list
+        // The first entry is the standard library
         public string DefaultPackagesDirectory
         {
-            get { return packagesDirectories[0]; }
+            get { return packagesDirectories[1]; }
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
@@ -91,8 +95,8 @@ namespace Dynamo.PackageManager
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
-            this.packagesDirectories.AddRange(packagesDirectories);
             this.packagesDirectories.Add(StandardLibraryDirectory);
+            this.packagesDirectories.AddRange(packagesDirectories);
             
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
 
@@ -401,13 +405,13 @@ namespace Dynamo.PackageManager
             {
                 var headerPath = Path.Combine(directory, "pkg.json");
 
-                Package discoveredPkg;
+                Package discoveredPackage;
 
                 // get the package name and the installed version
                 if (PathHelper.IsValidPath(headerPath))
                 {
-                    discoveredPkg = Package.FromJson(headerPath, AsLogger());
-                    if (discoveredPkg == null)
+                    discoveredPackage = Package.FromJson(headerPath, AsLogger());
+                    if (discoveredPackage == null)
                         throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.MalformedHeaderPackage, headerPath));
                 }
                 else
@@ -418,16 +422,50 @@ namespace Dynamo.PackageManager
                 // prevent loading unsigned packages if the certificates are required on package dlls
                 if (checkCertificates)
                 {
-                    CheckPackageNodeLibraryCertificates(directory, discoveredPkg);
+                    CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
 
-                // prevent duplicates
-                if (LocalPackages.All(pkg => pkg.Name != discoveredPkg.Name))
+                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
+
+                var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
+
+                // Is this a new package?
+                if (existingPackage == null)
                 {
-                    Add(discoveredPkg);
-                    return discoveredPkg; // success
+                    // Yes
+                    Add(discoveredPackage);
+                    return discoveredPackage; // success
                 }
-                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DulicatedPackage, discoveredPkg.Name, discoveredPkg.RootDirectory));
+
+                var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
+
+                // Is this a duplicated package?
+                if (existingVersion == discoveredVersion)
+                {
+                    // Duplicated with the same version
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(Properties.Resources.DulicatedPackage,
+                            discoveredPackage.Name,
+                            discoveredPackage.RootDirectory));
+                } 
+                
+                // Is the existing version newer?
+                if (existingVersion > discoveredVersion)
+                {
+                    // Older version found, show notification
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedOlderPackage,
+                            existingPackage.Name,
+                            discoveredPackage.RootDirectory,
+                            existingVersion.ToString(),
+                            discoveredVersion.ToString()));
+                }
+
+                // Newer version found, show notification.
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedNewerPackage,
+                        existingPackage.Name,
+                        discoveredPackage.RootDirectory,
+                        existingVersion.ToString(),
+                        discoveredVersion.ToString()));
             }
             catch (Exception e)
             {
@@ -436,6 +474,25 @@ namespace Dynamo.PackageManager
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Check and get the version from the version string. Throw a library load exception if anything is wrong with the version
+        /// </summary>
+        /// <param name="version">the version string</param>
+        /// <param name="name">name of the package</param>
+        /// <param name="directory">package directory</param>
+        /// <returns>Returns a valid Version</returns>
+        private Version CheckAndGetPackageVersion(string version, string name, string directory)
+        {
+            try
+            {
+                return VersionUtilities.PartialParse(version);
+            }
+            catch (Exception e) when (e is ArgumentException || e is FormatException || e is OverflowException)
+            {
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.InvalidPackageVersion, name, directory, version));
+            }
         }
 
         /// <summary>
