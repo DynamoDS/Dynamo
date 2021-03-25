@@ -205,8 +205,11 @@ namespace Dynamo.PackageManager
         /// <param name="package"></param>
         internal void TryLoadPackageIntoLibrary(Package package)
         {
+            /*if (LocalPackages.FirstOrDefault(x => x.Name == package.Name) == null)
+            {
+                Add(package);
+            }*/
             Add(package);
-
             // Prevent duplicate loads
             if (package.Loaded) return;
 
@@ -413,6 +416,60 @@ namespace Dynamo.PackageManager
             return ScanPackageDirectory(directory, false);
         }
 
+        internal bool CheckForDuplicatePackages(Package discoveredPackage)
+        {
+            var directory = discoveredPackage.RootDirectory;
+
+            try
+            {
+                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
+
+                var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
+
+                // Is this a new package?
+                if (existingPackage == null)
+                {
+                    return true; // success
+                }
+
+                var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
+
+                // Is this a duplicated package?
+                if (existingVersion == discoveredVersion)
+                {
+                    // Duplicated with the same version
+                    throw new LibraryLoadFailedException(directory,
+                        String.Format(Properties.Resources.DulicatedPackage,
+                            discoveredPackage.Name,
+                            discoveredPackage.RootDirectory));
+                }
+
+                // Is the existing version newer?
+                if (existingVersion > discoveredVersion)
+                {
+                    // Older version found, show notification
+                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedOlderPackage,
+                            existingPackage.Name,
+                            discoveredPackage.RootDirectory,
+                            existingVersion.ToString(),
+                            discoveredVersion.ToString()));
+                }
+
+                // Newer version found, show notification.
+                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedNewerPackage,
+                        existingPackage.Name,
+                        discoveredPackage.RootDirectory,
+                        existingVersion.ToString(),
+                        discoveredVersion.ToString()));
+            }
+            catch (Exception e)
+            {
+                Log(String.Format(Properties.Resources.ExceptionEncountered, directory), WarningLevel.Error);
+                Log(e);
+            }
+            return false;
+        }
+
         public Package ScanPackageDirectory(string directory, bool checkCertificates)
         {
             try
@@ -434,52 +491,16 @@ namespace Dynamo.PackageManager
                 }
 
                 // prevent loading unsigned packages if the certificates are required on package dlls
-                if (checkCertificates)
+                if (checkCertificates && 1 == 0)
                 {
                     CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
 
-                var discoveredVersion = CheckAndGetPackageVersion(discoveredPackage.VersionName, discoveredPackage.Name, discoveredPackage.RootDirectory);
-
-                var existingPackage = LocalPackages.FirstOrDefault(package => package.Name == discoveredPackage.Name);
-
-                // Is this a new package?
-                if (existingPackage == null)
+                if (CheckForDuplicatePackages(discoveredPackage))
                 {
-                    // Yes
                     Add(discoveredPackage);
-                    return discoveredPackage; // success
+                    return discoveredPackage;
                 }
-
-                var existingVersion = CheckAndGetPackageVersion(existingPackage.VersionName, existingPackage.Name, existingPackage.RootDirectory);
-
-                // Is this a duplicated package?
-                if (existingVersion == discoveredVersion)
-                {
-                    // Duplicated with the same version
-                    throw new LibraryLoadFailedException(directory,
-                        String.Format(Properties.Resources.DulicatedPackage,
-                            discoveredPackage.Name,
-                            discoveredPackage.RootDirectory));
-                } 
-                
-                // Is the existing version newer?
-                if (existingVersion > discoveredVersion)
-                {
-                    // Older version found, show notification
-                    throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedOlderPackage,
-                            existingPackage.Name,
-                            discoveredPackage.RootDirectory,
-                            existingVersion.ToString(),
-                            discoveredVersion.ToString()));
-                }
-
-                // Newer version found, show notification.
-                throw new LibraryLoadFailedException(directory, String.Format(Properties.Resources.DuplicatedNewerPackage,
-                        existingPackage.Name,
-                        discoveredPackage.RootDirectory,
-                        existingVersion.ToString(),
-                        discoveredVersion.ToString()));
             }
             catch (Exception e)
             {
