@@ -580,7 +580,8 @@ namespace Dynamo.ViewModels
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                foreach (var localPkg in package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name)))
+                var localPkgsWithSameName = package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                foreach (var localPkg in localPkgsWithSameName)
                 {
                     if (localPkg == null) continue;
 
@@ -605,21 +606,30 @@ namespace Dynamo.ViewModels
                 var stdLibHasTopPriority = pmExt.PackageLoader.Priority(pmExt.PackageLoader.StandardLibraryDirectory) >         
                                            pmExt.PackageLoader.Priority(downloadPath);
 
-                if (uninstallRequiringUserModifications.Any())
+                var stdLibPkgs = GetPackagesLocatedInStandardLibrary(localPkgsWithSameName);
+                if (stdLibHasTopPriority && stdLibPkgs.Count() > 0)
                 {
-                    var message = String.Format(Resources.MessageUninstallToContinue,
-                            DynamoViewModel.BrandingResourceProvider.ProductName,
-                            JoinPackageNames(uninstallRequiringUserModifications));
+                    var samePackage = localPkgsWithSameName.Count() == 1 &&
+                                      localPkgsWithSameName.First().Name == name &&
+                                      localPkgsWithSameName.First().VersionName == package.version;
 
-                    var stdLibPkgs = GetPackagesLocatedInStandardLibrary(uninstallRequiringUserModifications);
-                    if (stdLibHasTopPriority && stdLibPkgs.Count() > 0) {
-                        // Some or all dependencies are in standard library.
-                        message = String.Format(Resources.MessagePackageHasDepsInStdLib,
+                    var errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLibg,
+                            name + " " + package.version) :
+                            String.Format(Resources.MessagePackageHasDepsInStdLib,
                             name + " " + package.version,
                             JoinPackageNames(stdLibPkgs));
-                    }
 
-                    MessageBox.Show(message,
+                    MessageBox.Show(errMsg,
+                        Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (uninstallRequiringUserModifications.Any())
+                {
+                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
+                        DynamoViewModel.BrandingResourceProvider.ProductName,
+                        JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -629,33 +639,16 @@ namespace Dynamo.ViewModels
 
                 if (uninstallsRequiringRestart.Any())
                 {
-                    var samePackage = uninstallsRequiringRestart.Count == 1 &&
-                                      uninstallsRequiringRestart.First().Name == name &&
-                                      uninstallsRequiringRestart.First().VersionName == package.version;
-
-                    var stdLibPkgs = GetPackagesLocatedInStandardLibrary(uninstallsRequiringRestart);
-                    if (stdLibHasTopPriority && stdLibPkgs.Count() > 0)
-                    {
-                        var errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLibg,
-                                name + " " + package.version) :
-                                String.Format(Resources.MessagePackageHasDepsInStdLib,
-                                name + " " + package.version,
-                                JoinPackageNames(stdLibPkgs));
-
-                        MessageBox.Show(errMsg,
-                            Resources.CannotDownloadPackageMessageBoxTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
 
                     var message = string.Format(Resources.MessageUninstallToContinue2,
-                      DynamoViewModel.BrandingResourceProvider.ProductName,
-                      JoinPackageNames(uninstallsRequiringRestart),
-                      name + " " + package.version);
-
+                        DynamoViewModel.BrandingResourceProvider.ProductName,
+                        JoinPackageNames(uninstallsRequiringRestart),
+                        name + " " + package.version);
                     // different message for the case that the user is
                     // trying to install the same package/version they already have installed.
-                    if (samePackage)
+                    if (uninstallsRequiringRestart.Count == 1 &&
+                        uninstallsRequiringRestart.First().Name == name &&
+                        uninstallsRequiringRestart.First().VersionName == package.version)
                     {
                         message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
                     }
@@ -673,18 +666,7 @@ namespace Dynamo.ViewModels
 
                 if (immediateUninstalls.Any())
                 {
-                    var stdLibPkgs = GetPackagesLocatedInStandardLibrary(immediateUninstalls);
-                    if (stdLibHasTopPriority && stdLibPkgs.Count() > 0) {
-                        // Some or all dependencies are in standard library.
-                        MessageBox.Show(String.Format(Resources.MessagePackageHasDepsInStdLib,
-                            name + " " + package.version,
-                            JoinPackageNames(stdLibPkgs)),
-                            Resources.CannotDownloadPackageMessageBoxTitle,
-                            MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
-
-                    // if the package is not in use, tell the user we will uninstall it and give them the opportunity to cancel
+                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(immediateUninstalls)),
