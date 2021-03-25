@@ -428,7 +428,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // prevent loading unsigned packages if the certificates are required on package dlls
-                if (checkCertificates && 1 == 9)
+                if (checkCertificates)
                 {
                     CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
