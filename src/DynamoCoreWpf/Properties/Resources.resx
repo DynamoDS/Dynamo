@@ -2317,6 +2317,20 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
     <value>Visual Settings</value>
   </data>
+  <data name="PreferencesWindowLanguages" xml:space="preserve">
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+  </data>
+  <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
+    <value>Node Font Size</value>
+  </data>
+  <data name="PreferencesViewLanguageLabel" xml:space="preserve">
+    <value>Language</value>
+    <comment>Label used in the general tab</comment>
+  </data>
+  <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
+    <value>Default Run Settings</value>
+    <comment>Label used in the general tab</comment>
+  </data>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
     <value>_Extensions</value>
     <comment>Extensions menu</comment>

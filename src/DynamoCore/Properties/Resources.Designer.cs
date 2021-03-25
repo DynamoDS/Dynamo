@@ -451,6 +451,24 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored..
+        /// </summary>
+        public static string DuplicatedNewerPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
+        /// </summary>
+        public static string DuplicatedOlderPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedOlderPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate migration type registered for {0}.
         /// </summary>
         public static string DuplicateMigrationTypeRegistered {
@@ -833,6 +851,15 @@ namespace Dynamo.Properties {
         public static string InvalidLibraryFormat {
             get {
                 return ResourceManager.GetString("InvalidLibraryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version of the package called {0} found at {1} is invalid (version: &quot;{2}&quot;). Ignoring it..
+        /// </summary>
+        public static string InvalidPackageVersion {
+            get {
+                return ResourceManager.GetString("InvalidPackageVersion", resourceCulture);
             }
         }
         

@@ -737,6 +737,102 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void PackageLoaderLoadPackageWithBadVersion()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+
+            // Assert
+            Assert.IsNull(badPackage);
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadMultiplePackagesWithBadVersion()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var goodPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithGoodVersion");
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var goodPackage = loader.ScanPackageDirectory(goodPackageLocation);
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(goodPackage);
+            Assert.IsNull(badPackage);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Good package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadMultiplePackagesWithBadVersionReversed()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var goodPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithGoodVersion");
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+            var goodPackage = loader.ScanPackageDirectory(goodPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(goodPackage);
+            Assert.IsNull(badPackage);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Good package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+
+        [Test]
+        public void PackageLoaderLoadNewPackage()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
+            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
+
+            // Act
+            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
+            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(oldPackage);
+            Assert.IsNull(newPackage);
+            Assert.AreEqual("Package", oldPackage.Name);
+            Assert.AreEqual("1.0.0", oldPackage.VersionName);
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadOldPackage()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
+            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
+
+            // Act
+            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
+            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
+
+            // Assert
+            Assert.IsNull(oldPackage);
+            Assert.IsNotNull(newPackage);
+            Assert.AreEqual("Package", newPackage.Name);
+            Assert.AreEqual("2.0.0", newPackage.VersionName);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+        }
+
+        [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()
         {
             Assert.Inconclusive("Finish me");
