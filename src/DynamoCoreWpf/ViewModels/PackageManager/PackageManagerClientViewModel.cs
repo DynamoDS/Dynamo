@@ -484,12 +484,6 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
-        private IEnumerable<Package> GetPackagesLocatedInStandardLibrary(IEnumerable<Package> packages)
-        {
-            var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
-            return packages.Where(x => x.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory));
-        }
-
         internal void ExecutePackageDownload(string name, PackageVersion package, string downloadPath)
         {
             string msg = String.IsNullOrEmpty(downloadPath) ?
@@ -577,14 +571,20 @@ namespace Dynamo.ViewModels
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
                 var immediateUninstalls = new List<Package>();
+                var stdLibPackages = new List<Package>();
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                var localPkgsWithSameName = package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
-                foreach (var localPkg in localPkgsWithSameName)
+                var duplicateLoacalPackages = package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                foreach (var localPkg in duplicateLoacalPackages)
                 {
                     if (localPkg == null) continue;
 
+                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
+                    {
+                        stdLibPackages.Add(localPkg);
+                    }
+                    
                     // should we also uninstall deps with the same version?
                     //if (VersionUtilities.PartialParse(localPkg.VersionName) == pkgVersion) continue;
 
@@ -603,76 +603,101 @@ namespace Dynamo.ViewModels
                     immediateUninstalls.Add(localPkg);
                 }
 
-                var stdLibHasTopPriority = pmExt.PackageLoader.Priority(pmExt.PackageLoader.StandardLibraryDirectory) >         
-                                           pmExt.PackageLoader.Priority(downloadPath);
-
-                var stdLibPkgs = GetPackagesLocatedInStandardLibrary(localPkgsWithSameName);
-                if (stdLibHasTopPriority && stdLibPkgs.Count() > 0)
-                {
-                    var samePackage = localPkgsWithSameName.Count() == 1 &&
-                                      localPkgsWithSameName.First().Name == name &&
-                                      localPkgsWithSameName.First().VersionName == package.version;
-
-                    var errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLibg,
-                            name + " " + package.version) :
-                            String.Format(Resources.MessagePackageHasDepsInStdLib,
-                            name + " " + package.version,
-                            JoinPackageNames(stdLibPkgs));
-
-                    MessageBox.Show(errMsg,
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
-                if (uninstallRequiringUserModifications.Any())
-                {
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(uninstallRequiringUserModifications)),
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
-
                 var settings = DynamoViewModel.Model.PreferenceSettings;
 
-                if (uninstallsRequiringRestart.Any())
+                bool skipInstall = false;
+                if (stdLibPackages.Count() > 0)
                 {
+                    var stdLibHasTopPriority = pmExt.PackageLoader.Priority(pmExt.PackageLoader.StandardLibraryDirectory) >
+                                               pmExt.PackageLoader.Priority(downloadPath);
 
-                    var message = string.Format(Resources.MessageUninstallToContinue2,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(uninstallsRequiringRestart),
-                        name + " " + package.version);
-                    // different message for the case that the user is
-                    // trying to install the same package/version they already have installed.
-                    if (uninstallsRequiringRestart.Count == 1 &&
-                        uninstallsRequiringRestart.First().Name == name &&
-                        uninstallsRequiringRestart.First().VersionName == package.version)
+                    var samePackage = duplicateLoacalPackages.Count() == 1 &&
+                                      duplicateLoacalPackages.First().Name == name &&
+                                      duplicateLoacalPackages.First().VersionName == package.version;
+
+                    var errMsg = "";
+                    if (stdLibHasTopPriority)
                     {
-                        message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
+                        // Standard lib directory has a higher priority than the downloadPath
+                        // The user will have to download the package (and dependencies), modify the path order and restart dynamo.
+                        errMsg = samePackage? String.Format(Resources.MessageSamePackageInStdLibg,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            name + " " + package.version) 
+                            :
+                            String.Format(Resources.MessagePackageHasDepsInStdLib,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            name + " " + package.version,
+                            JoinPackageNames(stdLibPackages));
+                    } else
+                    {
+                        // Standard lib directory has a lower priority than the downloadPath
+                        // The user will have to download the package (and dependencies) and restart dynamo.
+                        errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLibg2,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            name + " " + package.version)
+                            :
+                            String.Format(Resources.MessagePackageHasDepsInStdLib2,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            name + " " + package.version,
+                            JoinPackageNames(stdLibPackages));
                     }
-                    var dialogResult = MessageBox.Show(message,
+
+                    var dialogResult = MessageBox.Show(errMsg,
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Error);
 
-                    if (dialogResult == MessageBoxResult.Yes)
-                    {
-                        // mark for uninstallation
-                        uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings, pmExt.PackageLoader));
-                    }
-                    return;
-                }
+                    if (dialogResult == MessageBoxResult.No) return;
 
-                if (immediateUninstalls.Any())
+                    skipInstall = true;
+                } else
                 {
-                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
-                        DynamoViewModel.BrandingResourceProvider.ProductName,
-                        JoinPackageNames(immediateUninstalls)),
-                        Resources.DownloadWarningMessageBoxTitle,
-                        MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                    if (uninstallRequiringUserModifications.Any())
+                    {
+                        MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            JoinPackageNames(uninstallRequiringUserModifications)),
+                            Resources.CannotDownloadPackageMessageBoxTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
+                    }
+
+                    if (uninstallsRequiringRestart.Any())
+                    {
+
+                        var message = string.Format(Resources.MessageUninstallToContinue2,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            JoinPackageNames(uninstallsRequiringRestart),
+                            name + " " + package.version);
+                        // different message for the case that the user is
+                        // trying to install the same package/version they already have installed.
+                        if (uninstallsRequiringRestart.Count == 1 &&
+                            uninstallsRequiringRestart.First().Name == name &&
+                            uninstallsRequiringRestart.First().VersionName == package.version)
+                        {
+                            message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
+                        }
+                        var dialogResult = MessageBox.Show(message,
+                            Resources.CannotDownloadPackageMessageBoxTitle,
+                            MessageBoxButton.YesNo, MessageBoxImage.Error);
+
+                        if (dialogResult == MessageBoxResult.Yes)
+                        {
+                            // mark for uninstallation
+                            uninstallsRequiringRestart.ForEach(x => x.MarkForUninstall(settings, pmExt.PackageLoader));
+                        }
+                        return;
+                    }
+
+                    if (immediateUninstalls.Any())
+                    {
+                        // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                        if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
+                            DynamoViewModel.BrandingResourceProvider.ProductName,
+                            JoinPackageNames(immediateUninstalls)),
+                            Resources.DownloadWarningMessageBoxTitle,
+                            MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.Cancel)
+                            return;
+                    }
                 }
 
                 // add custom path to custom package folder list
@@ -697,7 +722,7 @@ namespace Dynamo.ViewModels
                         };
                     })
                     .ToList()
-                    .ForEach(x => DownloadAndInstall(x, downloadPath));
+                    .ForEach(x => DownloadAndInstall(x, downloadPath, skipInstall));
             }
         }
 
@@ -718,7 +743,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath, bool skipInstall = false)
         {
             Downloads.Add(packageDownloadHandle);
 
@@ -734,6 +759,12 @@ namespace Dynamo.ViewModels
                 if (!res.Success)
                 {
                     packageDownloadHandle.Error(res.Error);
+                    return;
+                }
+
+                if (skipInstall)
+                {
+                    SetPackageState(packageDownloadHandle, downloadPath, true);
                     return;
                 }
 
@@ -775,13 +806,19 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath, bool skipInstall = false)
         {
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
-                PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                if (!skipInstall)
+                {
+                    PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                } else
+                {
+                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Downloaded; 
+                }
             }
             else
             {
