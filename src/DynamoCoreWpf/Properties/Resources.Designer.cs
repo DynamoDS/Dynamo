@@ -3344,16 +3344,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has dependencies that conflict with packages in the Stadard Library: {1}. 
-        ///    To install {0}, please change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), then try and download it again..
-        /// </summary>
-        public static string MessagePackageHasDepsInStdLib {
-            get {
-                return ResourceManager.GetString("MessagePackageHasDepsInStdLib", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
@@ -3377,15 +3367,6 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageVersionNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &quot;The package {0} is already installed as part of the Standard Library. To reinstall it, you must first change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), then try to download it again&quot;.
-        /// </summary>
-        public static string MessageSamePackageInStdLibg {
-            get {
-                return ResourceManager.GetString("MessageSamePackageInStdLibg", resourceCulture);
             }
         }
         
@@ -4432,11 +4413,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node Font Size.
+        /// </summary>
+        public static string PreferencesViewFontSizeLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewFontSizeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to General.
         /// </summary>
         public static string PreferencesViewGeneralTab {
             get {
                 return ResourceManager.GetString("PreferencesViewGeneralTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language.
+        /// </summary>
+        public static string PreferencesViewLanguageLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewLanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default Run Settings.
+        /// </summary>
+        public static string PreferencesViewRunSettingsLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewRunSettingsLabel", resourceCulture);
             }
         }
         
@@ -4455,6 +4463,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewVisualSettingsTab {
             get {
                 return ResourceManager.GetString("PreferencesViewVisualSettingsTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        /// </summary>
+        public static string PreferencesWindowLanguages {
+            get {
+                return ResourceManager.GetString("PreferencesWindowLanguages", resourceCulture);
             }
         }
         
