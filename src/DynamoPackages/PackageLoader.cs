@@ -6,6 +6,7 @@ using System.Reflection;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Utilities;
@@ -91,7 +92,7 @@ namespace Dynamo.PackageManager
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
-            this.packagesDirectories.AddRange(packagesDirectories);
+            //this.packagesDirectories.AddRange(packagesDirectories);
             this.packagesDirectories.Add(StandardLibraryDirectory);
             
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
@@ -100,6 +101,36 @@ namespace Dynamo.PackageManager
                 Log(error);
 
             packagesDirectoriesToVerifyCertificates.Add(StandardLibraryDirectory);
+        }
+
+        internal void OnWorkspaceOpened(IEnumerable<INodeLibraryDependencyInfo> packageDependencies, 
+            IEnumerable<string> packageDirectories)
+        {
+            var pkgs = new List<Package>();
+            foreach (var root in packageDirectories)
+            {
+                foreach (var dir in
+                    Directory.EnumerateDirectories(root, "*", SearchOption.TopDirectoryOnly))
+                {
+                    var headerPath = Path.Combine(dir, "pkg.json");
+                    if (PathHelper.IsValidPath(headerPath))
+                    {
+                        var discoveredPkg = Package.FromJson(headerPath, AsLogger());
+                        if(discoveredPkg == null) continue;
+
+                        foreach (var info in packageDependencies)
+                        {
+                            // if workspace package dependency is present in downloaded packages, load it.
+                            if (info.Name == discoveredPkg.Name && info.Version.ToString() == discoveredPkg.VersionName)
+                            {
+                                pkgs.Add(discoveredPkg);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            LoadPackages(pkgs);
         }
 
         /// <summary>

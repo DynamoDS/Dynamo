@@ -1726,6 +1726,8 @@ namespace Dynamo.Models
                             OnComputeModelDeserialized();
 
                             SetPeriodicEvaluation(ws);
+
+                            CurrentWorkspace = ws;
                         }
                     }
                 }
@@ -1804,7 +1806,7 @@ namespace Dynamo.Models
             }
 
             AddWorkspace(ws);
-            CurrentWorkspace = ws;
+            //CurrentWorkspace = ws;
             OnWorkspaceOpened(ws);
         }
 
