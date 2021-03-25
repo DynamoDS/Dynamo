@@ -311,6 +311,7 @@
     <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
       <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
       <Name>TestUINodes</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

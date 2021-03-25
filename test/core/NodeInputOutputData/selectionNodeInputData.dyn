@@ -1,5 +1,5 @@
 {
-  "Uuid": "2f334c1e-47bd-4237-b8c4-ba3cf5713d6f",
+  "Uuid": "3bd828bf-7d20-469e-a201-c0f1d89c42f2",
   "IsCustomNode": false,
   "Description": null,
   "Name": "Home",
@@ -8,7 +8,7 @@
   },
   "Inputs": [
     {
-      "Id": "bc4cd1fae3cb4edab1174184e96d3537",
+      "Id": "6274f4dc9b7f4e62a6a6daa0bcdfef6e",
       "Name": "selectionTestName",
       "Type": "hostSelection",
       "Value": "",
@@ -22,11 +22,11 @@
       "ConcreteType": "TestUINodes.SelectionConcrete, TestUINodes",
       "NodeType": "ExtensionNode",
       "InstanceId": [],
-      "Id": "bc4cd1fae3cb4edab1174184e96d3537",
+      "Id": "6274f4dc9b7f4e62a6a6daa0bcdfef6e",
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "935e36b6981a4a0c9cffecf1bcf99245",
+          "Id": "99283df0b29a44de9dc6b55ce686a471",
           "Name": "Elements",
           "Description": "The selected elements.",
           "UsingDefaultValue": false,
@@ -41,5 +41,9 @@
   "Connectors": [],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
   "Bindings": []
 }
