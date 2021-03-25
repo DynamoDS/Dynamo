@@ -76,14 +76,16 @@ namespace Dynamo.PackageManager
 
         internal int Priority(string path)
         {
-            for (var ii=0; ii<packagesDirectories.Count(); ii++)
+            var pkgDirCount = packagesDirectories.Count();
+            for (var ii=0; ii< pkgDirCount; ii++)
             {
                 if (path.Contains(packagesDirectories[ii]))
                 {
-                    return packagesDirectories.Count() - ii;
+                    return pkgDirCount - ii;
                 }
             }
-            return -1;
+            // Lowest priority for paths that are not yet registered.
+            return pkgDirCount;
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();

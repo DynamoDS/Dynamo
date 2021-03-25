@@ -674,8 +674,17 @@ namespace Dynamo.ViewModels
                 if (immediateUninstalls.Any())
                 {
                     var stdLibPkgs = GetPackagesLocatedInStandardLibrary(immediateUninstalls);
+                    if (stdLibHasTopPriority && stdLibPkgs.Count() > 0) {
+                        // Some or all dependencies are in standard library.
+                        MessageBox.Show(String.Format(Resources.MessagePackageHasDepsInStdLib,
+                            name + " " + package.version,
+                            JoinPackageNames(stdLibPkgs)),
+                            Resources.CannotDownloadPackageMessageBoxTitle,
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
 
-                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                    // if the package is not in use, tell the user we will uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(immediateUninstalls)),
