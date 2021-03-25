@@ -422,14 +422,21 @@ namespace Dynamo.PackageManager
                     .Any(guids.Contains);
         }
 
-        internal void MarkForUninstall(IPreferences prefs)
+        internal bool MarkForUninstall(IPreferences prefs, PackageLoader packageLoader)
         {
+            if (RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
+            {
+                // cannot uninstall standard library pakcages.
+                return false;
+            }
+
             MarkedForUninstall = true;
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
             }
+            return true;
         }
 
         internal void UnmarkForUninstall(IPreferences prefs)
@@ -442,12 +449,16 @@ namespace Dynamo.PackageManager
         {
             if (LoadedAssemblies.Any())
             {
-                MarkForUninstall(prefs);
+                MarkForUninstall(prefs, packageLoader);
                 return;
             }
 
             try
             {
+                if (RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
+                {
+                    throw new Exception("Cannot delete packages from the standard library location");
+                }
                 LoadedCustomNodes.ToList().ForEach(x => customNodeManager.Remove(x.FunctionId));
                 packageLoader.Remove(this);
                 Directory.Delete(RootDirectory, true);

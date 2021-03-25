@@ -2333,4 +2333,11 @@ Uninstall the following packages: {0}?</value>
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
   </data>
+  <data name="MessagePackageHasDepsInStdLib" xml:space="preserve">
+    <value>{0} has dependencies that conflict with packages in the Stadard Library: {1}. 
+    To install {0}, please change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), then try and download it again.</value>
+  </data>
+  <data name="MessageSamePackageInStdLibg" xml:space="preserve">
+    <value>"The package {0} is already installed as part of the Standard Library. To reinstall it, you must first change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), then try to download it again"</value>
+  </data>
 </root>

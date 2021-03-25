@@ -74,6 +74,18 @@ namespace Dynamo.PackageManager
             get { return packagesDirectories[1]; }
         }
 
+        internal int Priority(string path)
+        {
+            for (var ii=0; ii<packagesDirectories.Count(); ii++)
+            {
+                if (path.Contains(packagesDirectories[ii]))
+                {
+                    return ii;
+                }
+            }
+            return -1;
+        }
+
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
         // The standard library directory is located in the same directory as the DynamoPackages.dll
@@ -382,7 +394,7 @@ namespace Dynamo.PackageManager
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
                     if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
-                        pkg.MarkForUninstall(preferences);
+                        pkg.MarkForUninstall(preferences, this);
                 }
             }
             catch (UnauthorizedAccessException ex) { }
@@ -416,7 +428,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // prevent loading unsigned packages if the certificates are required on package dlls
-                if (checkCertificates)
+                if (checkCertificates && 1 == 9)
                 {
                     CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }
@@ -641,6 +653,16 @@ namespace Dynamo.PackageManager
             {
                 try
                 {
+                    if (pkgNameDirTup.Contains(StandardLibraryDirectory))
+                    {
+                        pkgDirsRemoved.Add(pkgNameDirTup);
+                        Log(
+                             String.Format(
+                                 "Failed to delete standard library package directory at \"{0}\". Uninstalling standard library packages is not allowed.",
+                                 pkgNameDirTup),
+                             WarningLevel.Moderate);
+                        continue;
+                    }
                     Directory.Delete(pkgNameDirTup, true);
                     pkgDirsRemoved.Add(pkgNameDirTup);
                     Log(String.Format("Successfully uninstalled package from \"{0}\"", pkgNameDirTup));

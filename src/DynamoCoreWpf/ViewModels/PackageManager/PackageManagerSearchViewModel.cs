@@ -612,7 +612,7 @@ namespace Dynamo.PackageManager
             {
                 // mark for uninstallation
                 var settings = PackageManagerClientViewModel.DynamoViewModel.Model.PreferenceSettings;
-                installed.MarkForUninstall(settings);
+                installed.MarkForUninstall(settings, PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
             }
         }
 
