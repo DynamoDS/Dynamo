@@ -3393,18 +3393,18 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details) before {0} can loaded it. Restart {0} to complete the process.&quot;.
         /// </summary>
-        public static string MessageSamePackageInStdLibg {
+        public static string MessageSamePackageInStdLib {
             get {
-                return ResourceManager.GetString("MessageSamePackageInStdLibg", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageInStdLib", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to &quot;The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package. Restart {0} to complete the process.&quot;.
         /// </summary>
-        public static string MessageSamePackageInStdLibg2 {
+        public static string MessageSamePackageInStdLibg {
             get {
-                return ResourceManager.GetString("MessageSamePackageInStdLibg2", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageInStdLibg", resourceCulture);
             }
         }
         

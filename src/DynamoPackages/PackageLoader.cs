@@ -205,11 +205,8 @@ namespace Dynamo.PackageManager
         /// <param name="package"></param>
         internal void TryLoadPackageIntoLibrary(Package package)
         {
-            /*if (LocalPackages.FirstOrDefault(x => x.Name == package.Name) == null)
-            {
-                Add(package);
-            }*/
             Add(package);
+
             // Prevent duplicate loads
             if (package.Loaded) return;
 
@@ -491,7 +488,7 @@ namespace Dynamo.PackageManager
                 }
 
                 // prevent loading unsigned packages if the certificates are required on package dlls
-                if (checkCertificates && 1 == 0)
+                if (checkCertificates)
                 {
                     CheckPackageNodeLibraryCertificates(directory, discoveredPackage);
                 }

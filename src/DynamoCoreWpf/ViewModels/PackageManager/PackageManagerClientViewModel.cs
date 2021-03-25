@@ -606,7 +606,7 @@ namespace Dynamo.ViewModels
 
                 var settings = DynamoViewModel.Model.PreferenceSettings;
 
-                if (stdLibPackages.Count() > 0)
+                if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") && stdLibPackages.Count() > 0)
                 {
                     var stdLibHasTopPriority = pmExt.PackageLoader.Priority(pmExt.PackageLoader.StandardLibraryDirectory) >
                                                pmExt.PackageLoader.Priority(String.IsNullOrEmpty(downloadPath) ? pmExt.PackageLoader.DefaultPackagesDirectory : downloadPath);
@@ -620,7 +620,7 @@ namespace Dynamo.ViewModels
                     {
                         // Standard lib directory has a higher priority than the downloadPath
                         // The user will have to download the package (and dependencies), modify the path order and restart dynamo.
-                        errMsg = samePackage? String.Format(Resources.MessageSamePackageInStdLibg,
+                        errMsg = samePackage? String.Format(Resources.MessageSamePackageInStdLib,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
                             name + " " + package.version) 
                             :
@@ -632,7 +632,7 @@ namespace Dynamo.ViewModels
                     {
                         // Standard lib directory has a lower priority than the downloadPath
                         // The user will have to download the package (and dependencies) and restart dynamo.
-                        errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLibg2,
+                        errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLib2,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
                             name + " " + package.version)
                             :

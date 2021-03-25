@@ -424,7 +424,7 @@ namespace Dynamo.PackageManager
 
         internal bool MarkForUninstall(IPreferences prefs, PackageLoader packageLoader)
         {
-            if (RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
+            if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") && RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
             {
                 // cannot uninstall standard library pakcages.
                 return false;
@@ -455,7 +455,7 @@ namespace Dynamo.PackageManager
 
             try
             {
-                if (RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
+                if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") && RootDirectory.Contains(packageLoader.StandardLibraryDirectory))
                 {
                     throw new Exception("Cannot delete packages from the standard library location");
                 }
