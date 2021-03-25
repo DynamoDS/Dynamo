@@ -71,7 +71,7 @@ namespace Dynamo.PackageManager
         private readonly List<string> packagesDirectories = new List<string>();
         public string DefaultPackagesDirectory
         {
-            get { return packagesDirectories[0]; }
+            get { return packagesDirectories[1]; }
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
