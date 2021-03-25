@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -17,6 +18,7 @@ namespace Dynamo.PackageManager.Tests
     {
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
         public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
+        internal string StandardLibraryTestDirectory { get { return Path.Combine(TestDirectory, "standard lib testdir", "Packages"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -601,7 +603,6 @@ namespace Dynamo.PackageManager.Tests
             // Assert that ScanPackageDirectory returns no packages
             Assert.IsNull(pkg);
         }
-
         [Test]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillLoadPackageWithValidCertificate()
         {
@@ -628,19 +629,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
 
-        //FYI this is the code for the SingedPackage zero-touch node used in the previous test
-        //The built and signed dll lives in the test\pkgs_signed\Signed Package\bin directory
-        //This is for furture reference if we need to recreate the package in the future
-        //namespace SignedPackage
-        //{
-        //    public class SignedPackage
-        //    {
-        //        public string Hello()
-        //        {
-        //            return nameof(Hello);
-        //        }
-        //    }
-        //}
+        //signedpackge generated from internal repo at SignedDynamoTestingPackages
 
         [Test]
         public void HasValidStandardLibraryPath()
@@ -656,6 +645,95 @@ namespace Dynamo.PackageManager.Tests
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
             Assert.AreEqual(standardDirectory, directory);
+        }
+        [Test]
+        public void PackageInStandardLibLocationIsLoaded()
+        {
+           //setup clean loader
+            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var settings = new PreferenceSettings();
+            settings.DisableStandardLibrary = false;
+
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in std lib was loaded.
+            Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
+        }
+
+        [Test]
+        public void DisablingStandardLibraryCorrectlyDisablesLoading()
+        {
+
+            //setup clean loader
+            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var settings = new PreferenceSettings();
+            settings.DisableStandardLibrary = true;
+
+            var loaderParams = new LoadPackageParams()
+            { PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings };
+            //then invoke load
+
+            loader.LoadAll(loaderParams);
+
+            //assert the package in std lib was not loaded.
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.Name.Contains("SignedPackage2")));
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+            
+        }
+        //signedpackge2 generated from internal repo at SignedDynamoTestingPackages
+
+        [Test]
+        public void PackageInCustomPackagePathIsLoaded()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //just to be certain this is false.
+            settings.DisableCustomPackageLocations = false;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was loaded
+            Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
+        }
+        [Test]
+        public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //disable custom package paths
+            settings.DisableCustomPackageLocations = true;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was not loaded
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+           
         }
 
         [Test]
