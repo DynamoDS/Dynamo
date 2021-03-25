@@ -2346,7 +2346,7 @@ Uninstall the following packages: {0}?</value>
     <value>{0} has dependencies that conflict with packages in the Stadard Library: {2}. 
     {0} will attempt to download this package and all it's dependencies. Restart {0} to complete the process.</value>
   </data>
-    <data name="MessageSamePackageInStdLibg" xml:space="preserve">
+    <data name="MessageSamePackageInStdLib2" xml:space="preserve">
     <value>"The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package. Restart {0} to complete the process."</value>
   </data>
 </root>

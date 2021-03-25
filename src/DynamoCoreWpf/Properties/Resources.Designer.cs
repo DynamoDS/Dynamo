@@ -3402,9 +3402,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to &quot;The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package. Restart {0} to complete the process.&quot;.
         /// </summary>
-        public static string MessageSamePackageInStdLibg {
+        public static string MessageSamePackageInStdLib2 {
             get {
-                return ResourceManager.GetString("MessageSamePackageInStdLibg", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageInStdLib2", resourceCulture);
             }
         }
         
