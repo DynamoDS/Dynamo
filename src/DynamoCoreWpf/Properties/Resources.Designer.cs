@@ -3344,8 +3344,8 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {1} has dependencies that conflict with packages in the Stadard Library: {2}. 
-        ///    {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details). Before the new package can be loaded, you need to restart {0}..
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Stadard Library packages : {2}.
+        ///    To install {1}, try to first change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), then restart {0} to allow changes to take effect, then try and download {1} again..
         /// </summary>
         public static string MessagePackageHasDepsInStdLib {
             get {
@@ -3354,7 +3354,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has dependencies that conflict with packages in the Stadard Library: {2}. 
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with packages in the Stadard Library: {2}. 
         ///    {0} will attempt to download this package. Restart {0} to complete the process..
         /// </summary>
         public static string MessagePackageHasDepsInStdLib2 {

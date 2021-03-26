@@ -580,14 +580,15 @@ namespace Dynamo.ViewModels
                 {
                     if (localPkg == null) continue;
 
-                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
+                    // should we also uninstall deps with the same version?
+                    //if (VersionUtilities.PartialParse(localPkg.VersionName) == pkgVersion) continue;
+
+                    if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") &&
+                        localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
                     {
                         stdLibPackages.Add(localPkg);
                         continue;
                     }
-                    
-                    // should we also uninstall deps with the same version?
-                    //if (VersionUtilities.PartialParse(localPkg.VersionName) == pkgVersion) continue;
 
                     if (localPkg.LoadedAssemblies.Any())
                     {
@@ -604,9 +605,10 @@ namespace Dynamo.ViewModels
                     immediateUninstalls.Add(localPkg);
                 }
 
+                bool skipLoad = false;
                 var settings = DynamoViewModel.Model.PreferenceSettings;
 
-                if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") && stdLibPackages.Count() > 0)
+                if (stdLibPackages.Count() > 0)//conflicts with std lib packages
                 {
                     var stdLibHasTopPriority = pmExt.PackageLoader.Priority(pmExt.PackageLoader.StandardLibraryDirectory) >
                                                pmExt.PackageLoader.Priority(String.IsNullOrEmpty(downloadPath) ? pmExt.PackageLoader.DefaultPackagesDirectory : downloadPath);
@@ -620,33 +622,33 @@ namespace Dynamo.ViewModels
                     {
                         // Standard lib directory has a higher priority than the downloadPath
                         // The user will have to download the package (and dependencies), modify the path order and restart dynamo.
-                        errMsg = samePackage? String.Format(Resources.MessageSamePackageInStdLib,
+                        errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLib,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
-                            name + " " + package.version) 
+                            name + " " + package.version)
                             :
                             String.Format(Resources.MessagePackageHasDepsInStdLib,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
                             name + " " + package.version,
                             JoinPackageNames(stdLibPackages));
-                    } else
+                    }
+                    else
                     {
-                        // Standard lib directory has a lower priority than the downloadPath
-                        // The user will have to download the package (and dependencies) and restart dynamo.
                         errMsg = samePackage ? String.Format(Resources.MessageSamePackageInStdLib2,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
-                            name + " " + package.version)
-                            :
-                            String.Format(Resources.MessagePackageHasDepsInStdLib2,
+                            name + " " + package.version,
+                            JoinPackageNames(stdLibPackages))
+                        :
+                        String.Format(Resources.MessagePackageHasDepsInStdLib2,
                             DynamoViewModel.BrandingResourceProvider.ProductName,
                             name + " " + package.version,
                             JoinPackageNames(stdLibPackages));
                     }
-
                     var dialogResult = MessageBox.Show(errMsg,
-                        Resources.CannotDownloadPackageMessageBoxTitle,
-                        MessageBoxButton.YesNo, MessageBoxImage.Error);
+                       Resources.CannotDownloadPackageMessageBoxTitle,
+                       MessageBoxButton.YesNo, MessageBoxImage.Error);
 
                     if (dialogResult == MessageBoxResult.No) return;
+                    skipLoad = true;
                 }
 
                 if (uninstallRequiringUserModifications.Any())
@@ -661,7 +663,6 @@ namespace Dynamo.ViewModels
 
                 if (uninstallsRequiringRestart.Any())
                 {
-
                     var message = string.Format(Resources.MessageUninstallToContinue2,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(uninstallsRequiringRestart),
@@ -688,7 +689,7 @@ namespace Dynamo.ViewModels
 
                 if (immediateUninstalls.Any())
                 {
-                    // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
+                    // if the package is not in use, tell the user we will uninstall it and give them the opportunity to cancel
                     if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(immediateUninstalls)),
@@ -719,7 +720,7 @@ namespace Dynamo.ViewModels
                         };
                     })
                     .ToList()
-                    .ForEach(x => DownloadAndInstall(x, downloadPath));
+                    .ForEach(x => DownloadAndInstall(x, downloadPath, skipLoad));
             }
         }
 
@@ -740,7 +741,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal void DownloadAndInstall(PackageDownloadHandle packageDownloadHandle, string downloadPath, bool skipLoad = false)
         {
             Downloads.Add(packageDownloadHandle);
 
@@ -783,7 +784,7 @@ namespace Dynamo.ViewModels
                                     MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
-                        SetPackageState(packageDownloadHandle, downloadPath);
+                        SetPackageState(packageDownloadHandle, downloadPath, skipLoad);
                     }
                     catch (Exception e)
                     {
@@ -798,30 +799,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="packageDownloadHandle">package download handle</param>
         /// <param name="downloadPath">package download path</param>
-        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath)
+        internal void SetPackageState(PackageDownloadHandle packageDownloadHandle, string downloadPath, bool skipLoad = false)
         {
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
                 if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode"))
                 {
-                    if (PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
-                    {
-                        PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
-                    }
-                } 
-                else
+                    PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg);
+                }
+                if (!skipLoad)
                 {
                     PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
-                    packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                 }
+                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                return;
             }
-            else 
-            {
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
-            }
+            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
         }
 
         public void ClearCompletedDownloads()
