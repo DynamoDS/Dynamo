@@ -580,13 +580,13 @@
     <value>Volume Display Units</value>
     <comment>Setting menu | Volume unit display</comment>
   </data>
-  <data name="DynamoViewSettingExperimental" xml:space="preserve">
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
     <value>Experimental</value>
-    <comment>Setting menu | Experimental</comment>
+    <comment>Preferences | Features | Experimental</comment>
   </data>
-  <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
-    <value>Enable T-Spline nodes (requires relaunch of Dynamo)</value>
-    <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>Enable T-Spline nodes</value>
+    <comment>Preferences | Features | Experimental | Enable T-Spline nodes</comment>
   </data>
   <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
     <value>Export Workspace As Image</value>
@@ -2237,8 +2237,9 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
-  <data name="DynamoViewSettingsMenuIsIronPythonDialogDisabled" xml:space="preserve">
-    <value>Hide IronPython Alerts</value>
+  <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
+    <value>Hide IronPython alerts</value>
+    <comment>Preferences | Features | Python | Hide IronPython Alerts</comment>
   </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
@@ -2265,20 +2266,21 @@ Uninstall the following packages: {0}?</value>
   <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor" xml:space="preserve">
-    <value>Show Whitespace Characters in Python Editor</value>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Show Whitespace in Python Editor</value>
+    <comment>Preferences | Features | Python | Show Whitspace Characters in Python editor</comment>
   </data>
-  <data name="DynamoViewSettingsDefaultPythonEngine" xml:space="preserve">
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
     <value>Default Python Engine</value>
-    <comment>Settings Menu | Default Python Engine</comment>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Settings Menu | Default Python Engine (first option, rest are purposely not translated)</comment>
   </data>
-  <data name="DynamoViewSettingEnableNodeAutoComplete" xml:space="preserve">
-    <value>Enable Node Auto Complete</value>
-    <comment>Setting menu | Experimental | Enable Node Auto Complete</comment>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>Node Autocomplete</value>
+    <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
     <value>An error occurred when loading the application icon: {0}</value>
@@ -2334,5 +2336,13 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Preferences | Features | Python</comment>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Requires relaunch of Dynamo</value>
+    <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
 </root>

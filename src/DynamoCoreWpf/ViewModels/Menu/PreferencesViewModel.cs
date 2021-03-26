@@ -9,11 +9,16 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> _languagesList;
         private ObservableCollection<string> _fontSizeList;
         private ObservableCollection<string> _numberFormatList;
+        private ObservableCollection<string> _pythonEngineList;
         private string selectedLanguage;
         private string selectedFontSize;
         private string selectedNumberFormat;
         private bool runSettingsIsChecked;
         private bool runPreviewIsChecked;
+        private bool hideIronPAlerts;
+        private bool showWhitespace;
+        private bool nodeAutocomplete;
+        private bool enableTSpline;
 
         /// <summary>
         /// Controls the Selected option in Language ComboBox
@@ -143,6 +148,89 @@ namespace Dynamo.ViewModels
             }
         }
 
+        //This includes all the properites that can be set on the Features tab
+        #region Features Properites
+        /// <summary>
+        /// PythonEnginesList contains the list of Python engines available
+        /// </summary>
+        public ObservableCollection<string> PythonEnginesList
+        {
+            get
+            {
+                return _pythonEngineList;
+            }
+            set
+            {
+                _pythonEngineList = value;
+                RaisePropertyChanged("PythonEnginesList");
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
+        /// </summary>
+        public bool HideIronPythonAlertsIsChecked
+        {
+            get
+            {
+                return hideIronPAlerts;
+            }
+            set
+            {
+                hideIronPAlerts = value;
+                RaisePropertyChanged("HideIronPythonAlerts");
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toogle button
+        /// </summary>
+        public bool ShowWhitespaceIsChecked
+        {
+            get
+            {
+                return showWhitespace;
+            }
+            set
+            {
+                showWhitespace = value;
+                RaisePropertyChanged("ShowWhitespace");
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// </summary>
+        public bool NodeAutocompleteIsChecked
+        {
+            get
+            {
+                return nodeAutocomplete;
+            }
+            set
+            {
+                nodeAutocomplete = value;
+                RaisePropertyChanged("NodeAutocomplete");
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// </summary>
+        public bool EnableTSplineIsChecked
+        {
+            get
+            {
+                return enableTSpline;
+            }
+            set
+            {
+                enableTSpline = value;
+                RaisePropertyChanged("EnableTSpline");
+            }
+        }
+        #endregion
+
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
@@ -169,7 +257,6 @@ namespace Dynamo.ViewModels
 
             //By Default the Default Run Settings radio button will be in Manual
             RunSettingsIsChecked = true;
-
         }
     }
 }
