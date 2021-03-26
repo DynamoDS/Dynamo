@@ -3344,7 +3344,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} has dependencies that conflict with packages in the Stadard Library: {2}. 
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with packages in the Stadard Library: {2}. 
         ///    {0} will attempt to download this package and all it&apos;s dependencies, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), before {0} can loaded the new package. Restart {0} to complete the process..
         /// </summary>
         public static string MessagePackageHasDepsInStdLib {
