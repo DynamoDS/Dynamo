@@ -2341,7 +2341,7 @@ Uninstall the following packages: {0}?</value>
     <value>"The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details). Before the new package can be loaded, you need to restart {0}."</value>
   </data>
     <data name="MessagePackageHasDepsInStdLib2" xml:space="preserve">
-    <value>{1} has dependencies that conflict with packages in the Stadard Library: {2}. 
+    <value>{1} has dependencies that conflict with the following Stadard Library packages : {2}.
     {0} will attempt to download this package. Restart {0} to complete the process.</value>
   </data>
     <data name="MessageSamePackageInStdLib2" xml:space="preserve">
