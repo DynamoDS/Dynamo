@@ -803,8 +803,6 @@ namespace Dynamo.ViewModels
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
-                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installing;
-
                 if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode"))
                 {
                     if (PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
