@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using PythonNodeModels;
 
 namespace Dynamo.ViewModels
 {
@@ -256,8 +255,8 @@ namespace Dynamo.ViewModels
         {
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
-            PythonEnginesList.Add(PythonEngineVersion.IronPython2.ToString());
-            PythonEnginesList.Add(PythonEngineVersion.CPython3.ToString());
+            PythonEnginesList.Add("IronPython2");
+            PythonEnginesList.Add("CPython3");
             SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
