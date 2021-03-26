@@ -279,7 +279,6 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
             SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
 
-
             //By Default the Default Run Settings radio button will be in Manual
             RunSettingsIsChecked = true;
         }
