@@ -229,11 +229,12 @@
                                                 Padding="0,5,5,5"
                                                 FontSize="13"
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <ComboBox Width="213"
-                                              HorizontalAlignment="Left"
-                                              ItemsSource="{Binding Path=LanguagesList}"
-                                              SelectedItem="{Binding Path=SelectedLanguage}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}">
+                                        <ComboBox Name="PythonEngineSelector" 
+                                                  Width="213"
+                                                  HorizontalAlignment="Left"
+                                                  ItemsSource="{Binding Path=PythonEnginesList}"
+                                                  SelectedItem="{Binding Path=SelectedPythonEngine}"
+                                                  Style="{StaticResource NoBordersComboBoxStyle}">
                                         </ComboBox>
                                         
                                         <Grid>
@@ -243,11 +244,12 @@
                                             </Grid.RowDefinitions>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
-                                                <ToggleButton MinWidth="30"             
-                                                      MaxHeight="20"
-                                                      VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
-                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                                <ToggleButton Name="IronPythonAlertsToggle"
+                                                              MinWidth="30"             
+                                                              MaxHeight="20"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
                                                 <Label Content="Hide IronPython alerts" 
                                                        Margin="10,0,0,0"
                                                        VerticalAlignment="Center"
@@ -255,11 +257,12 @@
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
-                                                <ToggleButton MinWidth="30"             
-                                                      MaxHeight="20"
-                                                      VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
-                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                                <ToggleButton Name="ShowWhitespaceToggle"
+                                                              MinWidth="30"             
+                                                              MaxHeight="20"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
                                                 <Label Content="{x:Static p:Resources.PreferencesViewShowWhitespaceInPythonEditor}" 
                                                        VerticalAlignment="Center"
                                                        Margin="10,0,0,0"
@@ -282,25 +285,25 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
-                                            <ToggleButton MinWidth="30"             
+                                            <ToggleButton Name="NodeAutocompleteToggle"
+                                                      MinWidth="30"             
                                                       MaxHeight="20" 
                                                       VerticalAlignment="Center"
-                                                      Grid.Row="0"                              
                                                       IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Grid.Row="0"
-                                                   Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
                                                    Margin="10,0,0,0"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
 
                                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
-                                            <ToggleButton MinWidth="30"             
-                                                      MaxHeight="20" 
-                                                      VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=EnableTSplineIsChecked}"
-                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                            <ToggleButton Name="EnableTSplineToggle"
+                                                          MinWidth="30"             
+                                                          MaxHeight="20" 
+                                                          VerticalAlignment="Center"
+                                                          IsChecked="{Binding Path=EnableTSplineIsChecked}"
+                                                          Style="{StaticResource EllipseToggleButton1}"/>
                                             <StackPanel VerticalAlignment="Center">
                                                 <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
                                                        Padding="5,5,5,0"

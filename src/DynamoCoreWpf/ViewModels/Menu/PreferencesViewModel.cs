@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using PythonNodeModels;
 
 namespace Dynamo.ViewModels
 {
@@ -13,6 +14,7 @@ namespace Dynamo.ViewModels
         private string selectedLanguage;
         private string selectedFontSize;
         private string selectedNumberFormat;
+        private string selectedPythonEngine;
         private bool runSettingsIsChecked;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
@@ -167,6 +169,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the Selected option in Number Format ComboBox
+        /// </summary>
+        public string SelectedPythonEngine
+        {
+            get
+            {
+                return selectedPythonEngine;
+            }
+            set
+            {
+                selectedPythonEngine = value;
+                RaisePropertyChanged("SelectedPythonEngine");
+            }
+        }
+        
+        /// <summary>
         /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
         /// </summary>
         public bool HideIronPythonAlertsIsChecked
@@ -236,6 +254,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         public PreferencesViewModel()
         {
+            PythonEnginesList = new ObservableCollection<string>();
+            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            PythonEnginesList.Add(PythonEngineVersion.IronPython2.ToString());
+            PythonEnginesList.Add(PythonEngineVersion.CPython3.ToString());
+            SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
+
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -254,6 +278,7 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
             SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
+
 
             //By Default the Default Run Settings radio button will be in Manual
             RunSettingsIsChecked = true;

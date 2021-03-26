@@ -2272,6 +2272,7 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
     <value>Node Autocomplete</value>
