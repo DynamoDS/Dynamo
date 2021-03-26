@@ -805,15 +805,25 @@ namespace Dynamo.ViewModels
             {
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installing;
 
-                if (!Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode") || PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
+                if (Configuration.DebugModes.IsEnabled("PackageManagerVsStdLibDebugMode"))
+                {
+                    if (PackageManagerExtension.PackageLoader.CheckForDuplicatePackages(dynPkg))
+                    {
+                        PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
+                        packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+                    }
+                } 
+                else
                 {
                     PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                     packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
                 }
-                return;
             }
-            packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
-            packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+            else 
+            {
+                packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Error;
+                packageDownloadHandle.Error(Resources.MessageInvalidPackage);
+            }
         }
 
         public void ClearCompletedDownloads()

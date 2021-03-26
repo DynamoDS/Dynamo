@@ -3345,7 +3345,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {1} has dependencies that conflict with packages in the Stadard Library: {2}. 
-        ///    {0} will attempt to download this package and all it&apos;s dependencies, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details), before {0} can loaded the new package. Restart {0} to complete the process..
+        ///    {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details). Before the new package can be loaded, you need to restart {0}..
         /// </summary>
         public static string MessagePackageHasDepsInStdLib {
             get {
@@ -3355,7 +3355,7 @@ namespace Dynamo.Wpf.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to {0} has dependencies that conflict with packages in the Stadard Library: {2}. 
-        ///    {0} will attempt to download this package and all it&apos;s dependencies. Restart {0} to complete the process..
+        ///    {0} will attempt to download this package. Restart {0} to complete the process..
         /// </summary>
         public static string MessagePackageHasDepsInStdLib2 {
             get {
@@ -3391,7 +3391,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details) before {0} can loaded it. Restart {0} to complete the process.&quot;.
+        ///   Looks up a localized string similar to &quot;The package {1} is already installed as part of the Standard Library. {0} will attempt to download this package, but you will have to change the package loading order (see https://primer.dynamobim.org/11_Packages/11-Packages.html for more details). Before the new package can be loaded, you need to restart {0}.&quot;.
         /// </summary>
         public static string MessageSamePackageInStdLib {
             get {
