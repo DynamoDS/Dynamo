@@ -484,11 +484,11 @@ namespace Dynamo.ViewModels
             return String.Join(", ", pkgs.Select(x => x.Name + " " + x.VersionName));
         }
 
-        internal void ExecutePackageDownload(string name, PackageVersion version, string downloadPath)
+        internal void ExecutePackageDownload(string name, PackageVersion package, string downloadPath)
         {
             string msg = String.IsNullOrEmpty(downloadPath) ?
-                String.Format(Resources.MessageConfirmToInstallPackage, name, version.version) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, version.version, downloadPath);
+                String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
+                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, downloadPath);
 
             var result = MessageBox.Show(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
@@ -498,11 +498,11 @@ namespace Dynamo.ViewModels
             if (result == MessageBoxResult.OK)
             {
                 // get all of the dependency version headers
-                var dependencyVersionHeaders = version.full_dependency_ids.Select((dep, i) =>
+                var dependencyVersionHeaders = package.full_dependency_ids.Select((dep, i) =>
                 {
                     try
                     {
-                        var depVersion = version.full_dependency_versions[i];
+                        var depVersion = package.full_dependency_versions[i];
                         var res = Model.GetPackageVersionHeader(dep._id, depVersion);
                         return res;
                     }
@@ -519,6 +519,60 @@ namespace Dynamo.ViewModels
                 // if any header download fails, abort
                 if (dependencyVersionHeaders.Any(x => x == null))
                 {
+                    return;
+                }
+
+                var localPkgs = pmExt.PackageLoader.LocalPackages;
+
+                var uninstallsRequiringRestart = new List<Package>();
+                var uninstallRequiringUserModifications = new List<Package>();
+                var immediateUninstalls = new List<Package>();
+                var stdLibPackages = new List<Package>();
+
+                // if a package is already installed we need to uninstall it, allowing
+                // the user to cancel if they do not want to uninstall the package
+                var duplicateLoacalPackages = package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                foreach (var localPkg in duplicateLoacalPackages)
+                {
+                    if (localPkg == null) continue;
+
+                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
+                    {
+                        stdLibPackages.Add(localPkg);
+                        continue;
+                    }
+
+                    if (localPkg.LoadedAssemblies.Any())
+                    {
+                        uninstallsRequiringRestart.Add(localPkg);
+                        continue;
+                    }
+
+                    if (localPkg.InUse(DynamoViewModel.Model))
+                    {
+                        uninstallRequiringUserModifications.Add(localPkg);
+                        continue;
+                    }
+
+                    immediateUninstalls.Add(localPkg);
+                }
+
+                if (stdLibPackages.Any())
+                {
+                    var samePackage = duplicateLoacalPackages.Count() == 1 &&
+                                      duplicateLoacalPackages.First().Name == name &&
+                                      duplicateLoacalPackages.First().VersionName == package.version;
+
+                    var message = samePackage ? String.Format(Resources.MessageSamePackageInStdLib,
+                                                DynamoViewModel.BrandingResourceProvider.ProductName,
+                                                JoinPackageNames(stdLibPackages))
+                                            :
+                                            String.Format(Resources.MessageSamePackageInStdLib2,
+                                                DynamoViewModel.BrandingResourceProvider.ProductName,
+                                                JoinPackageNames(stdLibPackages));
+                    MessageBox.Show(message,
+                        Resources.CannotDownloadPackageMessageBoxTitle,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -564,33 +618,6 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                var localPkgs = pmExt.PackageLoader.LocalPackages;
-
-                var uninstallsRequiringRestart = new List<Package>();
-                var uninstallRequiringUserModifications = new List<Package>();
-                var immediateUninstalls = new List<Package>();
-
-                // if a package is already installed we need to uninstall it, allowing
-                // the user to cancel if they do not want to uninstall the package
-                foreach (var localPkg in version.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.ID == dep._id)))
-                {
-                    if (localPkg == null) continue;
-
-                    if (localPkg.LoadedAssemblies.Any())
-                    {
-                        uninstallsRequiringRestart.Add(localPkg);
-                        continue;
-                    }
-
-                    if (localPkg.InUse(DynamoViewModel.Model))
-                    {
-                        uninstallRequiringUserModifications.Add(localPkg);
-                        continue;
-                    }
-
-                    immediateUninstalls.Add(localPkg);
-                }
-
                 if (uninstallRequiringUserModifications.Any())
                 {
                     MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
@@ -605,18 +632,17 @@ namespace Dynamo.ViewModels
 
                 if (uninstallsRequiringRestart.Any())
                 {
-
                     var message = string.Format(Resources.MessageUninstallToContinue2,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(uninstallsRequiringRestart),
-                        name + " " + version.version);
+                        name + " " + package.version);
                     // different message for the case that the user is
                     // trying to install the same package/version they already have installed.
                     if (uninstallsRequiringRestart.Count == 1 &&
                         uninstallsRequiringRestart.First().Name == name &&
-                        uninstallsRequiringRestart.First().VersionName == version.version)
+                        uninstallsRequiringRestart.First().VersionName == package.version)
                     {
-                        message = String.Format(Resources.MessageUninstallSamePackage, name + " " + version.version);
+                        message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
                     }
                     var dialogResult = MessageBox.Show(message,
                         Resources.CannotDownloadPackageMessageBoxTitle,
@@ -654,7 +680,7 @@ namespace Dynamo.ViewModels
                         // Note that Name will be empty when calling from DownloadAndInstallPackage.
                         // This is currently not an issue, as the code path belongs to the Workspace Dependency
                         // extension, which does not display dependencies names.
-                        var dependencyPackageHeader = version.full_dependency_ids[i];
+                        var dependencyPackageHeader = package.full_dependency_ids[i];
                         return new PackageDownloadHandle()
                         {
                             Id = dependencyPackageHeader._id,
