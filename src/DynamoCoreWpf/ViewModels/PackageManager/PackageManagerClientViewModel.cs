@@ -558,7 +558,7 @@ namespace Dynamo.ViewModels
                 }
 
                 if (stdLibPackages.Any())
-                {
+                {// Conflicts with standard library packages
                     var samePackage = duplicateLoacalPackages.Count() == 1 &&
                                       duplicateLoacalPackages.First().Name == name &&
                                       duplicateLoacalPackages.First().VersionName == package.version;
@@ -567,8 +567,9 @@ namespace Dynamo.ViewModels
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                                 JoinPackageNames(stdLibPackages))
                                             :
-                                            String.Format(Resources.MessageSamePackageInStdLib2,
+                                            String.Format(Resources.MessagePackageDepsInStdLib,
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
+                                                name + " " + package.version,
                                                 JoinPackageNames(stdLibPackages));
                     MessageBox.Show(message,
                         Resources.CannotDownloadPackageMessageBoxTitle,
@@ -735,7 +736,7 @@ namespace Dynamo.ViewModels
                     try
                     {
                         packageDownloadHandle.Done(pathDl);
-                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.ID == packageDownloadHandle.Id);
+                        var firstOrDefault = PackageManagerExtension.PackageLoader.LocalPackages.FirstOrDefault(pkg => pkg.Name == packageDownloadHandle.Name);
                         if (firstOrDefault != null)
                         {
                             var dynModel = DynamoViewModel.Model;
