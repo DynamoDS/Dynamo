@@ -96,18 +96,21 @@
                               Margin="12 0 0 0"
                               HorizontalAlignment="Left">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             
                             <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
-                            <Grid Grid.Row="0">
+                            <Grid Grid.Row="0" 
+                                  Margin="0,0,0,20">
                                 <StackPanel Orientation="Vertical">
                                     <Label  Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
+                                            Margin="-3,0,10,0"
                                             Grid.Row="0"
+                                            FontWeight="Bold"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     <ComboBox Grid.Row="1" 
                                               Width="213"
@@ -120,14 +123,17 @@
                             </Grid>
 
                             <!--This Grid contains controls for selecting Run Settings options-->
-                            <Grid Grid.Row="1">
+                            <Grid Grid.Row="1"
+                                  Margin="0,0,0,20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0"
-                                   Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
-                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
+                                       Content="{x:Static p:Resources.PreferencesViewRunSettingsLabel}" 
+                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -146,16 +152,19 @@
                             </Grid>
 
                             <!--This Grid contains controls for selecting Font Size-->
-                            <Grid Grid.Row="2">
+                            <Grid Grid.Row="2"
+                                  Margin="0,0,0,20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Label Name="FontSize"
-                                   Grid.Row="0"
-                                   Content="{x:Static p:Resources.PreferencesViewFontSizeLabel}" 
-                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                       Grid.Row="0"
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
+                                       Content="{x:Static p:Resources.PreferencesViewFontSizeLabel}" 
+                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 <ComboBox Grid.Row="1"
                                           Width="213"
                                           HorizontalAlignment="Left"
@@ -167,7 +176,8 @@
                             </Grid>
 
                             <!--This Grid contains controls for selecting Run Preview options-->
-                            <Grid Grid.Row="3">
+                            <Grid Grid.Row="3"
+                                  Margin="0,0,0,20">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -181,20 +191,21 @@
                                                   Style="{StaticResource EllipseToggleButton1}"/>
                                     <Label Grid.Column="1"
                                            Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}" 
-                                           VerticalAlignment="Center"
                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 </Grid>
                             </Grid>
 
                             <!--This Grid contains controls for selecting Number Format options-->
-                            <Grid Grid.Row="4">
+                            <Grid Grid.Row="4"
+                                  Margin="0,0,0,20">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Label Grid.Row="0"
                                        Content="{x:Static p:Resources.DynamoViewSettingMenuNumberFormat}" 
-                                       VerticalAlignment="Center"
+                                       Margin="-3,0,10,0"
+                                       FontWeight="Bold"
                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 <ComboBox Name="numberFormatCmb"
                                           Grid.Row="1"                                         
@@ -236,7 +247,7 @@
                     Grid.Row="2" 
                     Style="{StaticResource NormalButtonStyle}" 
                     HorizontalAlignment="Right"
-                    Margin="0,0,24,0"
+                    Margin="0,0,14,0"
                     Width="112"
                     Height="36"
                     Click="SaveChanges_Click">

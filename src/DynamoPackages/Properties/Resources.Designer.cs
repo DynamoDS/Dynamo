@@ -95,5 +95,14 @@ namespace DynamoPackages.Properties {
                 return ResourceManager.GetString("InvalidPackageNoNodeLibrariesDefinedInPackageJson", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} was not scanned for packages because a preference setting disabled loading from that location.&quot;.
+        /// </summary>
+        public static string PackagesDirectorySkipped {
+            get {
+                return ResourceManager.GetString("PackagesDirectorySkipped", resourceCulture);
+            }
+        }
     }
 }
