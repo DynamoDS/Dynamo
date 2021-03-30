@@ -504,14 +504,14 @@ namespace Dynamo.ViewModels
                     {
                         var depVersion = package.full_dependency_versions[i];
                         var res = Model.GetPackageVersionHeader(dep._id, depVersion);
-                        if (dep.name == null)
+                        if (dep.name == null && res.name != null)
                         {
                             // Note that dep.name will be empty when calling from DownloadAndInstallPackage.
                             // This happens because Model.GetPackageVersionHeader (backed by PM server) does have dependency names 
                             // in the responses when making package version header requests.
                             //
                             // Update the dependency name if it was missing.
-                            dep.name = res?.name;
+                            dep.name = res.name;
                         }
                         
                         return res;
