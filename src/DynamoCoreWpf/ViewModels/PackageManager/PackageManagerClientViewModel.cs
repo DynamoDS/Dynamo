@@ -504,6 +504,16 @@ namespace Dynamo.ViewModels
                     {
                         var depVersion = package.full_dependency_versions[i];
                         var res = Model.GetPackageVersionHeader(dep._id, depVersion);
+                        if (dep.name == null)
+                        {
+                            // Note that dep.name will be empty when calling from DownloadAndInstallPackage.
+                            // This happens because Model.GetPackageVersionHeader (backed by PM server) does have dependency names 
+                            // in the responses when making package version header requests.
+                            //
+                            // Update the dependency name if it was missing.
+                            dep.name = res?.name;
+                        }
+                        
                         return res;
                     }
                     catch
@@ -678,9 +688,6 @@ namespace Dynamo.ViewModels
                 // form header version pairs and download and install all packages
                 dependencyVersionHeaders
                     .Select((dep, i) => {
-                        // Note that Name will be empty when calling from DownloadAndInstallPackage.
-                        // This is currently not an issue, as the code path belongs to the Workspace Dependency
-                        // extension, which does not display dependencies names.
                         var dependencyPackageHeader = package.full_dependency_ids[i];
                         return new PackageDownloadHandle()
                         {
