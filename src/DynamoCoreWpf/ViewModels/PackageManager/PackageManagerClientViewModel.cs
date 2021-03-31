@@ -503,18 +503,7 @@ namespace Dynamo.ViewModels
                     try
                     {
                         var depVersion = package.full_dependency_versions[i];
-                        var res = Model.GetPackageVersionHeader(dep._id, depVersion);
-                        if (dep.name == null && res.name != null)
-                        {
-                            // Note that dep.name will be empty when calling from DownloadAndInstallPackage.
-                            // This happens because Model.GetPackageVersionHeader (backed by PM server) does have dependency names 
-                            // in the responses when making package version header requests.
-                            //
-                            // Update the dependency name if it was missing.
-                            dep.name = res.name;
-                        }
-                        
-                        return res;
+                        return Model.GetPackageVersionHeader(dep._id, depVersion);
                     }
                     catch
                     {
@@ -541,7 +530,7 @@ namespace Dynamo.ViewModels
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                var duplicateLoacalPackages = package.full_dependency_ids.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                var duplicateLoacalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
                 foreach (var localPkg in duplicateLoacalPackages)
                 {
                     if (localPkg == null) continue;
@@ -688,12 +677,11 @@ namespace Dynamo.ViewModels
                 // form header version pairs and download and install all packages
                 dependencyVersionHeaders
                     .Select((dep, i) => {
-                        var dependencyPackageHeader = package.full_dependency_ids[i];
                         return new PackageDownloadHandle()
                         {
-                            Id = dependencyPackageHeader._id,
+                            Id = dep.id,
                             VersionName = dep.version,
-                            Name = dependencyPackageHeader.name
+                            Name = dep.name
                         };
                     })
                     .ToList()
