@@ -2405,6 +2405,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
+                <!--Draws a plus (+) sign on the expander-->
                 <Path x:Name="Sign"
                       Grid.Column="1"
                       Data="M 0,6 H 12 M 6,0 V 12 Z"
@@ -2431,6 +2432,7 @@
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="true">
+                <!--Sets the sign on the expander to a minus (-)-->
                 <Setter TargetName="Sign" Property="Data" Value="M 0,6 H 12 Z" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
