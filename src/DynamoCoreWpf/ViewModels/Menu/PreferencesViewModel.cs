@@ -33,7 +33,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedLanguage = value;
-                RaisePropertyChanged("SelectedLanguage");
+                RaisePropertyChanged(nameof(SelectedLanguage));
             }
         }
 
@@ -49,7 +49,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedFontSize = value;
-                RaisePropertyChanged("SelectedFontSize");
+                RaisePropertyChanged(nameof(SelectedFontSize));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedNumberFormat = value;
-                RaisePropertyChanged("SelectedNumberFormat");
+                RaisePropertyChanged(nameof(SelectedNumberFormat));
             }
         }
 
@@ -81,7 +81,7 @@ namespace Dynamo.ViewModels
             set
             {
                 runSettingsIsChecked = value;
-                RaisePropertyChanged("RunSettingsIsChecked");
+                RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
         }
 
@@ -97,7 +97,7 @@ namespace Dynamo.ViewModels
             set
             {
                 runPreviewIsChecked = value;
-                RaisePropertyChanged("RunPreviewIsChecked");
+                RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
         }
 
@@ -113,7 +113,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _languagesList = value;
-                RaisePropertyChanged("LanguagesList");
+                RaisePropertyChanged(nameof(LanguagesList));
             }
         }
 
@@ -129,7 +129,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _fontSizeList = value;
-                RaisePropertyChanged("FontSizeList");
+                RaisePropertyChanged(nameof(FontSizeList));
             }
         }
 
@@ -145,7 +145,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _numberFormatList = value;
-                RaisePropertyChanged("NumberFormatList");
+                RaisePropertyChanged(nameof(NumberFormatList));
             }
         }
 
@@ -163,7 +163,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _pythonEngineList = value;
-                RaisePropertyChanged("PythonEnginesList");
+                RaisePropertyChanged(nameof(PythonEnginesList));
             }
         }
 
@@ -179,7 +179,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedPythonEngine = value;
-                RaisePropertyChanged("SelectedPythonEngine");
+                RaisePropertyChanged(nameof(SelectedPythonEngine));
             }
         }
         
@@ -195,7 +195,7 @@ namespace Dynamo.ViewModels
             set
             {
                 hideIronPAlerts = value;
-                RaisePropertyChanged("HideIronPythonAlerts");
+                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
             }
         }
 
@@ -211,7 +211,7 @@ namespace Dynamo.ViewModels
             set
             {
                 showWhitespace = value;
-                RaisePropertyChanged("ShowWhitespace");
+                RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
             }
         }
 
@@ -227,7 +227,7 @@ namespace Dynamo.ViewModels
             set
             {
                 nodeAutocomplete = value;
-                RaisePropertyChanged("NodeAutocomplete");
+                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
             }
         }
 
@@ -243,7 +243,7 @@ namespace Dynamo.ViewModels
             set
             {
                 enableTSpline = value;
-                RaisePropertyChanged("EnableTSpline");
+                RaisePropertyChanged(nameof(EnableTSplineIsChecked));
             }
         }
         #endregion
