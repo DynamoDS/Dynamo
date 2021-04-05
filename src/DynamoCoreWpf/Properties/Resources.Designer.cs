@@ -3380,6 +3380,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessageSamePackageDiffVersInStdLib {
+            get {
+                return ResourceManager.GetString("MessageSamePackageDiffVersInStdLib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
         /// </summary>
         public static string MessageSamePackageInStdLib {

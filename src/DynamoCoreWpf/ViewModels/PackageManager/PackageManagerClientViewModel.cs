@@ -558,18 +558,30 @@ namespace Dynamo.ViewModels
 
                 if (stdLibPackages.Any())
                 {// Conflicts with standard library packages
-                    var samePackage = duplicateLoacalPackages.Count() == 1 &&
-                                      duplicateLoacalPackages.First().Name == name &&
-                                      duplicateLoacalPackages.First().VersionName == package.version;
+                    var samePackageName = duplicateLoacalPackages.Count() == 1 &&
+                                      duplicateLoacalPackages.First().Name == name;
 
-                    var message = samePackage ? String.Format(Resources.MessageSamePackageInStdLib,
+                    var sameVersion = duplicateLoacalPackages.First().VersionName == package.version;
+
+                    string message = "";
+                    if (samePackageName)
+                    {
+                        message = sameVersion ? String.Format(Resources.MessageSamePackageInStdLib,
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                                 JoinPackageNames(stdLibPackages))
-                                            :
-                                            String.Format(Resources.MessagePackageDepsInStdLib,
+                                              :
+                                                String.Format(Resources.MessageSamePackageDiffVersInStdLib,
+                                                DynamoViewModel.BrandingResourceProvider.ProductName,
+                                                JoinPackageNames(stdLibPackages));
+                    } 
+                    else 
+                    {
+                        message = String.Format(Resources.MessagePackageDepsInStdLib,
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                                 name + " " + package.version,
                                                 JoinPackageNames(stdLibPackages));
+                    }
+       
                     MessageBox.Show(message,
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
