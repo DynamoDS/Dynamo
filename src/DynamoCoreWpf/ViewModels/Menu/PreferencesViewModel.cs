@@ -256,7 +256,7 @@ namespace Dynamo.ViewModels
         /// <returns>Strings array with the different names</returns>
         private string[] GetPythonEngineOptions()
         {
-            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "nodes\\PythonNodeModels.dll");
+            var assembly = Assembly.ReflectionOnlyLoadFrom(AppDomain.CurrentDomain.BaseDirectory + "nodes\\PythonNodeModels.dll");
             var enumType = assembly.GetType("PythonNodeModels.PythonEngineVersion");
             return Enum.GetNames(enumType);
         }
