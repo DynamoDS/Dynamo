@@ -256,9 +256,47 @@ namespace Dynamo.ViewModels
         /// <returns>Strings array with the different names</returns>
         private string[] GetPythonEngineOptions()
         {
-            var assembly = Assembly.ReflectionOnlyLoadFrom(AppDomain.CurrentDomain.BaseDirectory + "nodes\\PythonNodeModels.dll");
-            var enumType = assembly.GetType("PythonNodeModels.PythonEngineVersion");
-            return Enum.GetNames(enumType);
+            try
+            {
+                var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s =>
+                    {
+                        try
+                        {
+                            return s.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            return new Type[0];
+                        }
+                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
+
+                return Enum.GetNames(enumType);
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
+        private void AddPythonEnginesOptions()
+        {
+            var pythonEngineOptions = GetPythonEngineOptions();
+            if (pythonEngineOptions.Length != 0)
+            {
+                for (int i = 0; i < pythonEngineOptions.Length; i++)
+                {
+                    if (pythonEngineOptions[i] != "Unspecified")
+                    {
+                        PythonEnginesList.Add(pythonEngineOptions[i]);
+                    }
+                }
+            }
+            else
+            {
+                PythonEnginesList.Add("IronPython2");
+                PythonEnginesList.Add("CPython3");
+            }
         }
         #endregion
 
@@ -269,14 +307,7 @@ namespace Dynamo.ViewModels
         {
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
-            var pythonEngineOptions = GetPythonEngineOptions();
-            for (int i = 0; i < pythonEngineOptions.Length; i++)
-            {
-                if(pythonEngineOptions[i] != "Unspecified")
-                {
-                    PythonEnginesList.Add(pythonEngineOptions[i]);
-                }
-            }
+            AddPythonEnginesOptions();
             SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
