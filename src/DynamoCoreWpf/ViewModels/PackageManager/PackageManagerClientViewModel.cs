@@ -530,8 +530,8 @@ namespace Dynamo.ViewModels
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                var duplicateLoacalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
-                foreach (var localPkg in duplicateLoacalPackages)
+                var duplicateLocalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                foreach (var localPkg in duplicateLocalPackages)
                 {
                     if (localPkg == null) continue;
 
@@ -558,21 +558,18 @@ namespace Dynamo.ViewModels
 
                 if (stdLibPackages.Any())
                 {// Conflicts with standard library packages
-                    var samePackageName = duplicateLoacalPackages.Count() == 1 &&
-                                      duplicateLoacalPackages.First().Name == name;
-
-                    var sameVersion = duplicateLoacalPackages.First().VersionName == package.version;
-
                     string message = "";
-                    if (samePackageName)
+                    if (duplicateLocalPackages.Count() == 1 &&
+                        duplicateLocalPackages.First().Name == name)
                     {
-                        message = sameVersion ? String.Format(Resources.MessageSamePackageInStdLib,
-                                                DynamoViewModel.BrandingResourceProvider.ProductName,
-                                                JoinPackageNames(stdLibPackages))
-                                              :
-                                                String.Format(Resources.MessageSamePackageDiffVersInStdLib,
-                                                DynamoViewModel.BrandingResourceProvider.ProductName,
-                                                JoinPackageNames(stdLibPackages));
+                        message = duplicateLocalPackages.First().VersionName == package.version ?
+                                    String.Format(Resources.MessageSamePackageInStdLib,
+                                    DynamoViewModel.BrandingResourceProvider.ProductName,
+                                    JoinPackageNames(stdLibPackages))
+                                    :
+                                    String.Format(Resources.MessageSamePackageDiffVersInStdLib,
+                                    DynamoViewModel.BrandingResourceProvider.ProductName,
+                                    JoinPackageNames(stdLibPackages));
                     } 
                     else 
                     {
