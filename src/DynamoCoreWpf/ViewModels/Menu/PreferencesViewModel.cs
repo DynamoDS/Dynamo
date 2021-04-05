@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 
 namespace Dynamo.ViewModels
 {
@@ -246,6 +249,17 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
             }
         }
+
+        /// <summary>
+        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
+        /// </summary>
+        /// <returns>Strings array with the different names</returns>
+        private string[] GetPythonEngineOptions()
+        {
+            var assembly = Assembly.LoadFile(AppDomain.CurrentDomain.BaseDirectory + "nodes\\PythonNodeModels.dll");
+            var enumType = assembly.GetType("PythonNodeModels.PythonEngineVersion");
+            return Enum.GetNames(enumType);
+        }
         #endregion
 
         /// <summary>
@@ -255,8 +269,14 @@ namespace Dynamo.ViewModels
         {
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
-            PythonEnginesList.Add("IronPython2");
-            PythonEnginesList.Add("CPython3");
+            var pythonEngineOptions = GetPythonEngineOptions();
+            for (int i = 0; i < pythonEngineOptions.Length; i++)
+            {
+                if(pythonEngineOptions[i] != "Unspecified")
+                {
+                    PythonEnginesList.Add(pythonEngineOptions[i]);
+                }
+            }
             SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
