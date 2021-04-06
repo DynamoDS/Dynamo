@@ -3,8 +3,8 @@
 	<GalleryUiContents>
 	<GalleryContent>
 		<Header>New Feature - Dynamo NodeAutocomplete</Header>
-		<Body>By pressing Alt + left mouse click on port, use NodeAutocomplete to simplify your workflow to place nodes.&#10;[1] Search for node suggestions.&#10;[2] NodeAutocomplete suggestions for you. &#10;[3] NodeAutocomplete will be enabled by default and can be disabled under Dynamo -> Preferences... -> Features setting.</Body>
-		<ImagePath>NodeAutoComplete.png</ImagePath>
+		<Body>By pressing Alt + left mouse click on port, use NodeAutocomplete to simplify your workflow to place nodes.NodeAutocomplete will be enabled by default and can be disabled under Preferences... -> Features setting.&#10;[1] Search for node suggestions.&#10;[2] NodeAutocomplete suggestions for you.</Body>
+		<ImagePath>12-NodeAutoComplete.png</ImagePath>
 	</GalleryContent>
 	<GalleryContent>
 		<Header>Getting Started with Dynamo</Header>
