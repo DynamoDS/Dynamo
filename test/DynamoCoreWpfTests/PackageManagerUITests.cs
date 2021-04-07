@@ -6,6 +6,14 @@ using System.Threading;
 using System.Windows;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.Tests;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
+using Greg;
+using Greg.Requests;
+using Greg.Responses;
+using Moq;
 using NUnit.Framework;
 using SystemTestServices;
 
@@ -15,6 +23,10 @@ namespace DynamoCoreWpfTests
     [TestFixture]
     public class PackageManagerUITests : SystemTestBase
     {
+        public string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
+        public string PackagesDirectorySigned { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs_signed"); } }
+        internal string StandardLibraryTestDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "standard lib testdir", "Packages"); } }
+
         #region Utility functions
 
         protected void LoadPackage(string packageDirectory)
@@ -140,6 +152,54 @@ namespace DynamoCoreWpfTests
             AssertWindowOwnedByDynamoView<InstalledPackagesView>();
             AssertWindowClosedWithDynamoView<InstalledPackagesView>();
 
+        }
+
+        [Test]
+        public void PackageManagerClientViewModelTest()
+        {
+            var pkgLoader = GetPackageLoader();
+            pkgLoader.StandardLibraryDirectory = StandardLibraryTestDirectory;
+
+            var stdPackageLocation = Path.Combine(StandardLibraryTestDirectory, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(stdPackageLocation);
+
+            var stdLibPkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(stdLibPkg);
+
+            var id = "test-123";
+            var deps = new List<Dependency>() { new Dependency() { _id = id, name = stdLibPkg.Name } };
+            var depVers = new List<string>() { stdLibPkg.VersionName };
+
+            var mockGreg = new Mock<IGregClient>();
+            mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
+                .Returns(new ResponseWithContentBody<PackageVersion>()
+                {
+                    content = new PackageVersion()
+                    {
+                        version = stdLibPkg.VersionName,
+                        engine_version = stdLibPkg.EngineVersion,
+                        name = stdLibPkg.Name,
+                        id = id,
+                        full_dependency_ids = deps,
+                        full_dependency_versions = depVers
+                    },
+                    success = true
+                });
+
+            mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+            var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var pmVm = new PackageManagerClientViewModel(ViewModel, client);
+
+            var dlgMock = new Mock<IDialogService>();
+            dlgMock.Setup(m => m.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+                .Returns(MessageBoxResult.OK);
+            pmVm.dialogService = dlgMock.Object;
+
+            var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(stdLibPkg.Name, VersionUtilities.PartialParse(stdLibPkg.VersionName));
+            pmVm.DownloadAndInstallPackage(pkgInfo);
+
+            dlgMock.Verify(x => x.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(), 
+                It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
         }
 
         #endregion

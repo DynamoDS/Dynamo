@@ -19,6 +19,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.Utilities;
 using Greg.AuthProviders;
 using Greg.Responses;
 using Microsoft.Practices.Prism.Commands;
@@ -198,6 +199,8 @@ namespace Dynamo.ViewModels
         public AuthenticationManager AuthenticationManager { get; set; }
         internal PackageManagerClient Model { get; private set; }
 
+        internal IDialogService dialogService { get; set; }
+
         public LoginState LoginState
         {
             get
@@ -233,6 +236,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Username");
             };
 
+            dialogService = new DialogService();
         }
 
         private void ToggleLoginState()
@@ -490,7 +494,7 @@ namespace Dynamo.ViewModels
                 String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
                 String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, downloadPath);
 
-            var result = MessageBox.Show(msg,
+            var result = dialogService.ShowMessageBox(msg,
                 Resources.PackageDownloadConfirmMessageBoxTitle,
                 MessageBoxButton.OKCancel, MessageBoxImage.Question);
 
@@ -507,7 +511,7 @@ namespace Dynamo.ViewModels
                     }
                     catch
                     {
-                        MessageBox.Show(
+                        dialogService.ShowMessageBox(
                             String.Format(Resources.MessageFailedToDownloadPackageVersion, dep._id),
                             Resources.PackageDownloadErrorMessageBoxTitle,
                             MessageBoxButton.OK, MessageBoxImage.Error);
@@ -578,8 +582,8 @@ namespace Dynamo.ViewModels
                                                 name + " " + package.version,
                                                 JoinPackageNames(stdLibPackages));
                     }
-       
-                    MessageBox.Show(message,
+
+                    dialogService.ShowMessageBox(message,
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
@@ -602,7 +606,7 @@ namespace Dynamo.ViewModels
                 // if any do, notify user and allow cancellation
                 if (containsBinariesOrPythonScripts)
                 {
-                    var res = MessageBox.Show(Resources.MessagePackageContainPythonScript,
+                    var res = dialogService.ShowMessageBox(Resources.MessagePackageContainPythonScript,
                         Resources.PackageDownloadMessageBoxTitle,
                         MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
 
@@ -618,7 +622,7 @@ namespace Dynamo.ViewModels
                 // allowing them to cancel the package download
                 if (futureDeps.Any())
                 {
-                    if (MessageBox.Show(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
+                    if (dialogService.ShowMessageBox(string.Format(Resources.MessagePackageNewerDynamo, DynamoViewModel.BrandingResourceProvider.ProductName),
                         string.Format(Resources.PackageUseNewerDynamoMessageBoxTitle, DynamoViewModel.BrandingResourceProvider.ProductName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning) == MessageBoxResult.Cancel)
@@ -629,7 +633,7 @@ namespace Dynamo.ViewModels
 
                 if (uninstallRequiringUserModifications.Any())
                 {
-                    MessageBox.Show(String.Format(Resources.MessageUninstallToContinue,
+                    dialogService.ShowMessageBox(String.Format(Resources.MessageUninstallToContinue,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(uninstallRequiringUserModifications)),
                         Resources.CannotDownloadPackageMessageBoxTitle,
@@ -653,7 +657,7 @@ namespace Dynamo.ViewModels
                     {
                         message = String.Format(Resources.MessageUninstallSamePackage, name + " " + package.version);
                     }
-                    var dialogResult = MessageBox.Show(message,
+                    var dialogResult = dialogService.ShowMessageBox(message,
                         Resources.CannotDownloadPackageMessageBoxTitle,
                         MessageBoxButton.YesNo, MessageBoxImage.Error);
 
@@ -668,7 +672,7 @@ namespace Dynamo.ViewModels
                 if (immediateUninstalls.Any())
                 {
                     // if the package is not in use, tell the user we will be uninstall it and give them the opportunity to cancel
-                    if (MessageBox.Show(String.Format(Resources.MessageAlreadyInstallDynamo,
+                    if (dialogService.ShowMessageBox(String.Format(Resources.MessageAlreadyInstallDynamo,
                         DynamoViewModel.BrandingResourceProvider.ProductName,
                         JoinPackageNames(immediateUninstalls)),
                         Resources.DownloadWarningMessageBoxTitle,

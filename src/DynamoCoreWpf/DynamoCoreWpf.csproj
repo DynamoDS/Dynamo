@@ -204,6 +204,7 @@
     <Compile Include="UI\VisualConfigurations.cs" />
     <Compile Include="Utilities\CrashUtilities.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
+    <Compile Include="Utilities\MessageBoxUtilities.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
     <Compile Include="TestInfrastructure\MutationTestAttribute.cs" />
