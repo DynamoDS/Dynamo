@@ -284,11 +284,11 @@ namespace Dynamo.ViewModels
             var pythonEngineOptions = GetPythonEngineOptions();
             if (pythonEngineOptions.Length != 0)
             {
-                for (int i = 0; i < pythonEngineOptions.Length; i++)
+                foreach (var option in pythonEngineOptions)
                 {
-                    if (pythonEngineOptions[i] != "Unspecified")
+                    if (option != "Unspecified")
                     {
-                        PythonEnginesList.Add(pythonEngineOptions[i]);
+                        PythonEnginesList.Add(option);
                     }
                 }
             }
