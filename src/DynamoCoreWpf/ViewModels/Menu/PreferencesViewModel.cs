@@ -1,5 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 
 namespace Dynamo.ViewModels
 {
@@ -9,11 +12,17 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> _languagesList;
         private ObservableCollection<string> _fontSizeList;
         private ObservableCollection<string> _numberFormatList;
+        private ObservableCollection<string> _pythonEngineList;
         private string selectedLanguage;
         private string selectedFontSize;
         private string selectedNumberFormat;
+        private string selectedPythonEngine;
         private bool runSettingsIsChecked;
         private bool runPreviewIsChecked;
+        private bool hideIronPAlerts;
+        private bool showWhitespace;
+        private bool nodeAutocomplete;
+        private bool enableTSpline;
 
         /// <summary>
         /// Controls the Selected option in Language ComboBox
@@ -27,7 +36,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedLanguage = value;
-                RaisePropertyChanged("SelectedLanguage");
+                RaisePropertyChanged(nameof(SelectedLanguage));
             }
         }
 
@@ -43,7 +52,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedFontSize = value;
-                RaisePropertyChanged("SelectedFontSize");
+                RaisePropertyChanged(nameof(SelectedFontSize));
             }
         }
 
@@ -59,7 +68,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedNumberFormat = value;
-                RaisePropertyChanged("SelectedNumberFormat");
+                RaisePropertyChanged(nameof(SelectedNumberFormat));
             }
         }
 
@@ -75,7 +84,7 @@ namespace Dynamo.ViewModels
             set
             {
                 runSettingsIsChecked = value;
-                RaisePropertyChanged("RunSettingsIsChecked");
+                RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
         }
 
@@ -91,7 +100,7 @@ namespace Dynamo.ViewModels
             set
             {
                 runPreviewIsChecked = value;
-                RaisePropertyChanged("RunPreviewIsChecked");
+                RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
         }
 
@@ -107,7 +116,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _languagesList = value;
-                RaisePropertyChanged("LanguagesList");
+                RaisePropertyChanged(nameof(LanguagesList));
             }
         }
 
@@ -123,7 +132,7 @@ namespace Dynamo.ViewModels
             set
             {
                 _fontSizeList = value;
-                RaisePropertyChanged("FontSizeList");
+                RaisePropertyChanged(nameof(FontSizeList));
             }
         }
 
@@ -139,15 +148,168 @@ namespace Dynamo.ViewModels
             set
             {
                 _numberFormatList = value;
-                RaisePropertyChanged("NumberFormatList");
+                RaisePropertyChanged(nameof(NumberFormatList));
             }
         }
+
+        //This includes all the properites that can be set on the Features tab
+        #region Features Properites
+        /// <summary>
+        /// PythonEnginesList contains the list of Python engines available
+        /// </summary>
+        public ObservableCollection<string> PythonEnginesList
+        {
+            get
+            {
+                return _pythonEngineList;
+            }
+            set
+            {
+                _pythonEngineList = value;
+                RaisePropertyChanged(nameof(PythonEnginesList));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Selected option in Number Format ComboBox
+        /// </summary>
+        public string SelectedPythonEngine
+        {
+            get
+            {
+                return selectedPythonEngine;
+            }
+            set
+            {
+                selectedPythonEngine = value;
+                RaisePropertyChanged(nameof(SelectedPythonEngine));
+            }
+        }
+        
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
+        /// </summary>
+        public bool HideIronPythonAlertsIsChecked
+        {
+            get
+            {
+                return hideIronPAlerts;
+            }
+            set
+            {
+                hideIronPAlerts = value;
+                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toogle button
+        /// </summary>
+        public bool ShowWhitespaceIsChecked
+        {
+            get
+            {
+                return showWhitespace;
+            }
+            set
+            {
+                showWhitespace = value;
+                RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// </summary>
+        public bool NodeAutocompleteIsChecked
+        {
+            get
+            {
+                return nodeAutocomplete;
+            }
+            set
+            {
+                nodeAutocomplete = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// </summary>
+        public bool EnableTSplineIsChecked
+        {
+            get
+            {
+                return enableTSpline;
+            }
+            set
+            {
+                enableTSpline = value;
+                RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
+        /// </summary>
+        /// <returns>Strings array with the different names</returns>
+        private string[] GetPythonEngineOptions()
+        {
+            try
+            {
+                var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s =>
+                    {
+                        try
+                        {
+                            return s.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            return new Type[0];
+                        }
+                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
+
+                return Enum.GetNames(enumType);
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
+        private void AddPythonEnginesOptions()
+        {
+            var pythonEngineOptions = GetPythonEngineOptions();
+            if (pythonEngineOptions.Length != 0)
+            {
+                foreach (var option in pythonEngineOptions)
+                {
+                    if (option != "Unspecified")
+                    {
+                        PythonEnginesList.Add(option);
+                    }
+                }
+            }
+            else
+            {
+                PythonEnginesList.Add("IronPython2");
+                PythonEnginesList.Add("CPython3");
+            }
+        }
+        #endregion
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel()
         {
+            PythonEnginesList = new ObservableCollection<string>();
+            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            AddPythonEnginesOptions();
+            SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
+
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -169,7 +331,6 @@ namespace Dynamo.ViewModels
 
             //By Default the Default Run Settings radio button will be in Manual
             RunSettingsIsChecked = true;
-
         }
     }
 }

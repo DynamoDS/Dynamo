@@ -221,8 +221,116 @@
                     <!--Features Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesViewFeaturesTab}"
                              Style="{StaticResource LeftTab}">
-                        <Label Content="Features Content goes here..." 
-                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <!--This Grid contains the features tab-->
+                        <Grid x:Name="FeaturesTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--This Grid row contains the Python section-->
+                            <Grid Grid.Row="0">
+                                <Expander x:Name="PythonExpander" 
+                                          Style="{StaticResource MenuExpanderStyle}" 
+                                          Header="{x:Static p:Resources.PreferencesViewPython}">
+                                    <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                        <Label  Content="{x:Static p:Resources.PreferencesViewDefaultPythonEngine}" 
+                                                Padding="0,5,5,5"
+                                                FontSize="13"
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <ComboBox Name="PythonEngineSelector" 
+                                                  Width="213"
+                                                  HorizontalAlignment="Left"
+                                                  ItemsSource="{Binding Path=PythonEnginesList}"
+                                                  SelectedItem="{Binding Path=SelectedPythonEngine}"
+                                                  Style="{StaticResource NoBordersComboBoxStyle}">
+                                        </ComboBox>
+                                        
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                                <ToggleButton Name="IronPythonAlertsToggle"
+                                                              MinWidth="30"             
+                                                              MaxHeight="20"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Content="Hide IronPython alerts" 
+                                                       Margin="10,0,0,0"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </StackPanel>
+
+                                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                                <ToggleButton Name="ShowWhitespaceToggle"
+                                                              MinWidth="30"             
+                                                              MaxHeight="20"
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
+                                                              Style="{StaticResource EllipseToggleButton1}"/>
+                                                <Label Content="{x:Static p:Resources.PreferencesViewShowWhitespaceInPythonEditor}" 
+                                                       VerticalAlignment="Center"
+                                                       Margin="10,0,0,0"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Expander>
+                            </Grid>
+
+                            <!--This Grid row contains the Experimental section-->
+                            <Grid Grid.Row="1">
+                                <Expander x:Name="ExperimentalExpander" 
+                                          Style="{StaticResource MenuExpanderStyle}" 
+                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                            <ToggleButton Name="NodeAutocompleteToggle"
+                                                      MinWidth="30"             
+                                                      MaxHeight="20" 
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                                   Margin="10,0,0,0"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                            <ToggleButton Name="EnableTSplineToggle"
+                                                          MinWidth="30"             
+                                                          MaxHeight="20" 
+                                                          VerticalAlignment="Center"
+                                                          IsChecked="{Binding Path=EnableTSplineIsChecked}"
+                                                          Style="{StaticResource EllipseToggleButton1}"/>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
+                                                       Padding="5,5,5,0"
+                                                       Margin="10,0,0,0"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                                <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
+                                                       FontSize="10"
+                                                       Margin="10,0,0,0"
+                                                       Padding="5,0,5,5"
+                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Expander>
+                            </Grid>
+                        </Grid>
                     </TabItem>
                     
                     <!--Visual Settings Tab-->
