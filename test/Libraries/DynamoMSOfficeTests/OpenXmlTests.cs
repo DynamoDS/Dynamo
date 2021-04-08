@@ -151,69 +151,6 @@ namespace DynamoMSOfficeTests
             AssertPreviewValue(node.GUID.ToString(), data);
         }
 
-        //[Test]
-        //public void CanReadAndWriteExcel()
-        //{
-        //    // NOTE: This test is basically CanReadWorksheetWithMixedNumbersAndStrings but also checks a file can be written.
-        //    // However, it does not check what gets written to the file. Consider deleting/replacing.
-        //    string openPath = Path.Combine(TestDirectory, @"core\excel\ReadAndWrite_OpenXml.dyn");
-        //    ViewModel.OpenCommand.Execute(openPath);
-
-        //    var filePath = Path.Combine(TempFolder, "output.xlsx");
-        //    var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<StringInput>();
-        //    stringNode.Value = filePath;
-
-        //    var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
-
-        //    ViewModel.HomeSpace.Run();
-
-        //    Assert.IsTrue(File.Exists(filePath));
-
-        //    var data = new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } };
-
-        //    AssertPreviewValue(node.GUID.ToString(), data);
-        //}
-
-        //[Test, Category("ExcelTest")]
-        //public void ReadChangeFilename()
-        //{
-
-        //    // 1.  Read from an Existing excel file and Run
-        //    // 2.  Modify the file name in file path to an existing file
-        //    //3.  Rerun the file  
-        //    string openPath = Path.Combine(TestDirectory, @"core\excel\ChangeFilename.dyn");
-        //    ViewModel.OpenCommand.Execute(openPath);
-
-        //    var fileNodes = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Filename>();
-        //    foreach (var file in fileNodes)
-        //    {
-        //        file.Value.Replace(@"..\..\..\test", TestDirectory);
-        //    }
-
-        //    // remap the filename as Excel requires an absolute path
-
-        //    ViewModel.HomeSpace.Run();
-
-        //    var watch = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("de5c9439-bc4c-408d-9484-798d8d8b8aed");
-        //    var excelFileName = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("b9b04f1f-9069-4eaf-a31c-eee7428aacab");
-        //    var FileObject = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("1bd2c2da-b0e9-4b88-9f9e-33bd0906c6e9");
-
-        //    Assert.IsTrue(watch.CachedValue.IsCollection);
-
-
-        //    // single column - 1, "word", 2, 3, "palabra"
-        //    AssertPreviewValue(watch.GUID.ToString(), new object[] { new object[] { 1 }, new object[] { "word" }, new object[] { 2 }, new object[] { 3 }, new object[] { "palabra" } });
-
-        //    // change the file path 
-        //    ConnectorModel.Make(excelFileName, FileObject, 0, 0);
-        //    ViewModel.HomeSpace.Run();
-
-        //    Assert.IsTrue(watch.CachedValue.IsCollection);
-        //    var data = new object[] { new object[] { 10 }, new object[] { 20 }, new object[] { 30 }, new object[] { "test" }, new object[] { "Dynamo" } };
-        //    AssertPreviewValue(watch.GUID.ToString(), data);
-
-        //}
-
         [Test]
         public void ReadNonExistingFile()
         {

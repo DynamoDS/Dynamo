@@ -9,8 +9,20 @@ using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace DSOffice
 {
+    /// <summary>
+    /// Deals with reading and writing Excel files using the Open XML SDK.
+    /// </summary>
     internal class OpenXmlHelper
     {
+        /// <summary>
+        /// Reads data from an Excel spreadsheet using the Open XML SDK.
+        /// </summary>
+        /// <param name="filePath">Path to the Excel workbook file</param>
+        /// <param name="sheetName">Name of the sheet to read from inside the workbook</param>
+        /// <param name="startRow">Row where to begin reading from (zero-based)</param>
+        /// <param name="startColumn">Column where to begin reading from (zero-based)</param>
+        /// <param name="readAsString">Whether to read cell values as strings or not</param>
+        /// <returns>Cell values read from the spreadsheet</returns>
         internal static object[][] Read(string filePath, string sheetName, int startRow, int startColumn, bool readAsString)
         {
             // While SpreadsheetDocument.Open handles this, the error message it throws is not localized.
@@ -29,18 +41,6 @@ namespace DSOffice
                 var stylesheet = document.WorkbookPart.WorkbookStylesPart.Stylesheet;
                 var sharedStringTable = document.WorkbookPart.SharedStringTablePart?.SharedStringTable;
                 var rowsData = new List<object[]>();
-                
-                // Reads consecutive rows and cells
-                //foreach (var row in sheet.Worksheet.GetFirstChild<SheetData>().Elements<Row>().Skip(startRow))
-                //{
-                //    var rowData = new List<object>();
-                //    foreach (Cell cell in row.Elements<Cell>().Skip(startColumn))
-                //    {
-                //        object value = GetCellValue(cell, sharedStringTable, stylesheet, readAsString);
-                //        rowData.Add(value);
-                //    }
-                //    rowsData.Add(rowData.ToArray());
-                //}
 
                 // Takes into account holes at the beginning or in between rows and cells
                 var currentRowIndex = startRow + 1;
@@ -55,17 +55,7 @@ namespace DSOffice
 
                     while (row.RowIndex.Value > currentRowIndex)
                     {
-                        // Add empty rows to fill gap. Cell count is assumed to be the same as
-                        // the previous row or 0 if there is no previous row.
-                        //var length = 0;
-                        //if (rowsData.Count > 0)
-                        //{
-                        //    length = rowsData[rowsData.Count - 1].Length;
-                        //}
-                        //rowsData.Add(new object[length]);
-
-                        // Add empty rows to fill gap. The current column count is used
-                        // although this may change if a larger count is found for a later row.
+                        // Add empty rows to fill gap. The column count used is the largest one found.
                         rowsData.Add(new object[columnCount]);
                         currentRowIndex++;
                     }
@@ -109,210 +99,15 @@ namespace DSOffice
         }
 
         /// <summary>
-        /// Given a worksheet's data it returns the largest column index for any rows.
+        /// Writes data to an Excel spreadsheet using the Open XML SDK.
         /// </summary>
-        /// <param name="sheetData">Worksheet's data</param>
-        /// <returns>The largest column index found</returns>
-        private static int GetLargestColumnIndex(SheetData sheetData)
-        {
-            var result = 1;
-            foreach (var row in sheetData.Elements<Row>())
-            {
-                var lastCell = row.LastChild as Cell;
-                var current = GetColumnIndex(lastCell.CellReference);
-                if (current > result)
-                {
-                    result = current;
-                }
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Given the column and row indices, like 3 and 7, it returns the cell reference, C7 in this case.
-        /// </summary>
-        /// <param name="columnIndex">Column index (1-based)</param>
-        /// <param name="rowIndex">Row index (1-based)</param>
-        /// <returns>The cell reference that matches the provided column and index</returns>
-        private static string GetCellReference(int columnIndex, uint rowIndex)
-        {
-            var letters = new Stack<char>();
-            do
-            {
-                letters.Push((char)('A' + ((columnIndex - 1) % 26)));
-                columnIndex = (columnIndex - 1) / 26;
-            }
-            while (columnIndex > 0);
-
-            return new string(letters.ToArray()) + rowIndex;
-        }
-
-        /// <summary>
-        /// Given a cell reference, like C7, it returns the column index, C = 3 in this case.
-        /// </summary>
-        /// <param name="cellReference">A cell reference like C7</param>
-        /// <returns>The column index (1-based) equivalent to the letter sequence identifying the cell column</returns>
-        private static int GetColumnIndex(string cellReference)
-        {
-            var result = 0;
-            cellReference = cellReference.ToUpper();
-            Func<char, bool> isLetter = c => c >= 'A' && c <= 'Z';
-            for (var i = 0; i < cellReference.Length && isLetter(cellReference[i]); i++)
-            {
-                result = result * 26 + cellReference[i] - 'A' + 1;
-            }
-            return result;
-        }
-
-        private static object GetCellValue(Cell cell, SharedStringTable sharedStringTable, Stylesheet stylesheet, bool readAsString)
-        {
-            if (cell != null && !string.IsNullOrEmpty(cell.InnerText))
-            {
-                if (cell.DataType == null)
-                {
-                    // For numbers and dates Office sets the data type as null.
-                    // In this case, the type needs to be determined by inspecting the cell format.
-                    var numberFormatId = 0;
-                    if (cell.StyleIndex != null)
-                    {
-                        var cellFormat = (CellFormat)stylesheet.CellFormats.ElementAt((int)cell.StyleIndex.Value);
-                        numberFormatId = (int)cellFormat.NumberFormatId.Value;
-                    }
-
-                    if (14 <= numberFormatId && numberFormatId <= 22 ||
-                        45 <= numberFormatId && numberFormatId <= 47)
-                    {
-                        // This is a date
-                        //var value = DateTime.FromOADate(double.Parse(cell.InnerText, CultureInfo.InvariantCulture));
-                        //if (readAsString)
-                        //{
-                        //    return value.ToString();
-                        //}
-
-                        //return value;
-                        if (cell.CellValue.TryGetDouble(out var number))
-                        {
-                            var value = DateTime.FromOADate(number);
-                            if (readAsString)
-                            {
-                                return value.ToString();
-                            }
-
-                            return value;
-                        }
-
-                        return cell.InnerText;
-                    }
-                    else
-                    {
-                        // This is probably a number
-                        //if (double.TryParse(cell.InnerText, NumberStyles.Any, CultureInfo.InvariantCulture, out double value))
-                        //{
-                        //    if (readAsString)
-                        //    {
-                        //        if (numberFormatId != 0)
-                        //        {
-                        //            var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
-                        //            var formatted = value.ToString(numberingFormat.FormatCode);
-                        //            return formatted;
-                        //        }
-
-                        //        return value.ToString();
-                        //    }
-
-                        //    return value;
-                        //}
-                        //else
-                        //{
-                        //    // This might be something else, with no type, so we default to returning the raw value
-                        //    return cell.InnerText;
-                        //}
-
-                        if (cell.CellValue.TryGetDouble(out var value))
-                        {
-                            if (readAsString)
-                            {
-                                if (numberFormatId != 0)
-                                {
-                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
-                                    var formatted = value.ToString(numberingFormat.FormatCode);
-                                    return formatted;
-                                }
-
-                                return value.ToString();
-                            }
-
-                            return value;
-                        }
-
-                        return cell.InnerText;
-                    }
-                }
-                else if (cell.DataType.Value == CellValues.SharedString)
-                {
-                    // In this case, the value is actually an index on the shared string table.
-                    // This is the representation used for strings by Office.
-                    if (sharedStringTable != null)
-                    {
-                        //return sharedStringTable.ElementAt(int.Parse(cell.InnerText, CultureInfo.InvariantCulture)).InnerText;
-                        if (cell.CellValue.TryGetInt(out var index))
-                        {
-                            return sharedStringTable.ElementAt(index).InnerText;
-                        }
-                    }
-
-                    return cell.InnerText;
-                }
-                else if (cell.DataType.Value == CellValues.Boolean)
-                {
-                    // For booleans, values 0 or 1 can be converted directly.
-                    //var parts = cell.InnerText.Split(new[] { "()" }, StringSplitOptions.None);
-                    // This returns the actual string in the Excel file (ALL CAPS)
-                    //var text = parts[0];
-                    //var number = int.Parse(parts.Length == 1 ? parts[0] : parts[1]);
-                    //if (readAsString)
-                    //{
-                    //    return text;
-                    //}
-
-                    //return Convert.ToBoolean(number);
-
-                    // This is compatible with the current Office node
-                    //var number = int.Parse(parts.Length == 1 ? parts[0] : parts[1], CultureInfo.InvariantCulture);
-                    //var value = Convert.ToBoolean(number);
-                    if (cell.CellValue.TryGetBoolean(out var value))
-                    {
-                        if (readAsString)
-                        {
-                            return value.ToString();
-                        }
-
-                        return value;
-                    }
-
-                    return cell.InnerText;
-                }
-                else
-                {
-                    // Default to raw string value for inline strings and unknown types.
-                    return cell.InnerText;
-                }
-            }
-
-            return null;
-        }
-
-        private static WorksheetPart GetWorksheetPart(SpreadsheetDocument document, string sheetName)
-        {
-            var sheet = document.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().FirstOrDefault(s => s.Name == sheetName);
-            if (sheet == null)
-            {
-                return null;
-            }
-            return document.WorkbookPart.GetPartById(sheet.Id.Value) as WorksheetPart;
-        }
-
+        /// <param name="filePath">Path to the Excel workbook file. If it does not exist, a new workbook will be created.</param>
+        /// <param name="sheetName">Name of the sheet to write to inside the workbook</param>
+        /// <param name="data">Data values to be written to the sheet's cells</param>
+        /// <param name="startRow">Row where to begin writing from (zero-based)</param>
+        /// <param name="startColumn">Column where to begin writing from (zero-based)</param>
+        /// <param name="overWrite">Whether the sheet should be re-created before writing</param>
+        /// <param name="writeAsString">Whether data values should be written as strings or not</param>
         internal static void Write(string filePath, string sheetName, object[][] data, int startRow, int startColumn, bool overWrite, bool writeAsString)
         {
             using (var document = OpenOrCreate(filePath, sheetName))
@@ -324,7 +119,7 @@ namespace DSOffice
                 }
                 else if (overWrite)
                 {
-                    RemoveWorksheetPart(document, sheet, sheetName);
+                    RemoveWorksheetPart(document, sheet);
                     sheet = AddWorksheetPart(document, sheetName);
                 }
 
@@ -336,40 +131,6 @@ namespace DSOffice
                     document.WorkbookPart.SharedStringTablePart.SharedStringTable = new SharedStringTable() { Count = 0, UniqueCount = 0 };
                 }
                 var sharedStringTable = document.WorkbookPart.SharedStringTablePart.SharedStringTable;
-
-                // Simple code but does not handle gaps perfectly
-                //var i = 0;
-                //var sheetData = sheet.Worksheet.GetFirstChild<SheetData>();
-                //foreach (var row in sheetData.Elements<Row>().Skip(startRow))
-                //{
-                //    var j = 0;
-                //    foreach (Cell cell in row.Elements<Cell>().Skip(startColumn))
-                //    {
-                //        SetCellValue(data[i][j], cell, sharedStringTable, stylesheet, writeAsString);
-                //        j++;
-                //    }
-                //    // Some cells might not have been written to, because they did not exist
-                //    for (int colIndex = j; colIndex < data[i].Length; colIndex++)
-                //    {
-                //        var cell = new Cell();
-                //        row.AppendChild(cell);
-                //        SetCellValue(data[i][j], cell, sharedStringTable, stylesheet, writeAsString);
-                //    }
-                //    i++;
-                //}
-                //// Some rows might not have been written to, because they did not exist
-                //for (int rowIndex = i; rowIndex < data.Length; rowIndex++)
-                //{
-                //    var row = new Row();
-                //    sheetData.Append(row);
-                //    for (int j = 0; j < data[i].Length; j++)
-                //    {
-                //        var cell = new Cell();
-                //        row.AppendChild(cell);
-                //        SetCellValue(data[i][j], cell, sharedStringTable, stylesheet, writeAsString);
-                //    }
-                //    i++;
-                //}
 
                 // Special case: When data is an empty list or list of empty lists
                 // then it is treated as a single empty value.
@@ -480,6 +241,181 @@ namespace DSOffice
                     currentRowIndex++;
                 }
             }
+        }
+
+        /// <summary>
+        /// Given a worksheet's data it returns the largest column index for any rows.
+        /// </summary>
+        /// <param name="sheetData">Worksheet's data</param>
+        /// <returns>The largest column index found</returns>
+        private static int GetLargestColumnIndex(SheetData sheetData)
+        {
+            var result = 1;
+            foreach (var row in sheetData.Elements<Row>())
+            {
+                var lastCell = row.LastChild as Cell;
+                var current = GetColumnIndex(lastCell.CellReference);
+                if (current > result)
+                {
+                    result = current;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Given the column and row indices, like 3 and 7, it returns the cell reference, C7 in this case.
+        /// </summary>
+        /// <param name="columnIndex">Column index (1-based)</param>
+        /// <param name="rowIndex">Row index (1-based)</param>
+        /// <returns>The cell reference that matches the provided column and index</returns>
+        private static string GetCellReference(int columnIndex, uint rowIndex)
+        {
+            var letters = new Stack<char>();
+            do
+            {
+                letters.Push((char)('A' + ((columnIndex - 1) % 26)));
+                columnIndex = (columnIndex - 1) / 26;
+            }
+            while (columnIndex > 0);
+
+            return new string(letters.ToArray()) + rowIndex;
+        }
+
+        /// <summary>
+        /// Given a cell reference, like C7, it returns the column index, C = 3 in this case.
+        /// </summary>
+        /// <param name="cellReference">A cell reference like C7</param>
+        /// <returns>The column index (1-based) equivalent to the letter sequence identifying the cell column</returns>
+        private static int GetColumnIndex(string cellReference)
+        {
+            var result = 0;
+            cellReference = cellReference.ToUpper();
+            Func<char, bool> isLetter = c => c >= 'A' && c <= 'Z';
+            for (var i = 0; i < cellReference.Length && isLetter(cellReference[i]); i++)
+            {
+                result = result * 26 + cellReference[i] - 'A' + 1;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Gets the value from the cell, optionally converting it to a string.
+        /// </summary>
+        /// <param name="cell">Cell to get the value from</param>
+        /// <param name="sharedStringTable">Structure of the spreadsheet that contains the actual string values</param>
+        /// <param name="stylesheet">Style section of the spreadsheet, containing formatting information</param>
+        /// <param name="readAsString">When true, a string will be returned rather than the actual cell value</param>
+        /// <returns>The value inside of the cell, possibly converted to a string</returns>
+        private static object GetCellValue(Cell cell, SharedStringTable sharedStringTable, Stylesheet stylesheet, bool readAsString)
+        {
+            if (cell != null && !string.IsNullOrEmpty(cell.InnerText))
+            {
+                if (cell.DataType == null)
+                {
+                    // For numbers and dates Office sets the data type as null.
+                    // In this case, the type needs to be determined by inspecting the cell format.
+                    var numberFormatId = 0;
+                    if (cell.StyleIndex != null)
+                    {
+                        var cellFormat = (CellFormat)stylesheet.CellFormats.ElementAt((int)cell.StyleIndex.Value);
+                        numberFormatId = (int)cellFormat.NumberFormatId.Value;
+                    }
+
+                    if (14 <= numberFormatId && numberFormatId <= 22 ||
+                        45 <= numberFormatId && numberFormatId <= 47)
+                    {
+                        // This is a date
+                        if (cell.CellValue.TryGetDouble(out var number))
+                        {
+                            var value = DateTime.FromOADate(number);
+                            if (readAsString)
+                            {
+                                return value.ToString();
+                            }
+
+                            return value;
+                        }
+
+                        return cell.InnerText;
+                    }
+                    else
+                    {
+                        // This is a number
+                        if (cell.CellValue.TryGetDouble(out var value))
+                        {
+                            if (readAsString)
+                            {
+                                if (numberFormatId != 0)
+                                {
+                                    var numberingFormat = (NumberingFormat)stylesheet.NumberingFormats.ElementAt(numberFormatId);
+                                    var formatted = value.ToString(numberingFormat.FormatCode);
+                                    return formatted;
+                                }
+
+                                return value.ToString();
+                            }
+
+                            return value;
+                        }
+
+                        return cell.InnerText;
+                    }
+                }
+                else if (cell.DataType.Value == CellValues.SharedString)
+                {
+                    // In this case, the value is actually an index on the shared string table.
+                    // This is the representation used for strings by Office.
+                    if (sharedStringTable != null)
+                    {
+                        if (cell.CellValue.TryGetInt(out var index))
+                        {
+                            return sharedStringTable.ElementAt(index).InnerText;
+                        }
+                    }
+
+                    return cell.InnerText;
+                }
+                else if (cell.DataType.Value == CellValues.Boolean)
+                {
+                    // For booleans, values 0 or 1 can be converted directly.
+                    if (cell.CellValue.TryGetBoolean(out var value))
+                    {
+                        if (readAsString)
+                        {
+                            return value.ToString();
+                        }
+
+                        return value;
+                    }
+
+                    return cell.InnerText;
+                }
+                else
+                {
+                    // Default to raw string value for inline strings and unknown types.
+                    return cell.InnerText;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the worksheet with the specified name from the document.
+        /// </summary>
+        /// <param name="document">Document where to obtain the worksheet from</param>
+        /// <param name="sheetName">Name of the sheet to obtain</param>
+        /// <returns>The sheet with the specified name or null if it was not found</returns>
+        private static WorksheetPart GetWorksheetPart(SpreadsheetDocument document, string sheetName)
+        {
+            var sheet = document.WorkbookPart.Workbook.GetFirstChild<Sheets>().Elements<Sheet>().FirstOrDefault(s => s.Name == sheetName);
+            if (sheet == null)
+            {
+                return null;
+            }
+            return document.WorkbookPart.GetPartById(sheet.Id.Value) as WorksheetPart;
         }
 
         /// <summary>
@@ -595,7 +531,12 @@ namespace DSOffice
             });
         }
 
-        private static void RemoveWorksheetPart(SpreadsheetDocument document, WorksheetPart worksheetPart, string sheetName)
+        /// <summary>
+        /// Removes a worksheet from the document.
+        /// </summary>
+        /// <param name="document">Document to remove the worksheet from</param>
+        /// <param name="worksheetPart">Worksheet to be removed</param>
+        private static void RemoveWorksheetPart(SpreadsheetDocument document, WorksheetPart worksheetPart)
         {
             var relId = document.WorkbookPart.GetIdOfPart(worksheetPart);
             document.WorkbookPart.DeletePart(worksheetPart);
@@ -603,16 +544,18 @@ namespace DSOffice
             var sheets = document.WorkbookPart.Workbook.GetFirstChild<Sheets>();
             var sheet = sheets.FirstOrDefault(s => (s as Sheet).Id == relId);
             sheets.RemoveChild(sheet);
-            // Do we need this?
-            //document.WorkbookPart.Workbook.Save();
         }
 
+        /// <summary>
+        /// Adds a worksheet to the document.
+        /// </summary>
+        /// <param name="document">Document to add the wroksheet to</param>
+        /// <param name="sheetName">Name of the worksheet to be added</param>
+        /// <returns></returns>
         private static WorksheetPart AddWorksheetPart(SpreadsheetDocument document, string sheetName)
         {
             var worksheetPart = document.WorkbookPart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
-            // Do we need this?
-            //worksheetPart.Worksheet.Save();
 
             var sheets = document.WorkbookPart.Workbook.GetFirstChild<Sheets>();
             var relationshipId = document.WorkbookPart.GetIdOfPart(worksheetPart);
@@ -624,12 +567,18 @@ namespace DSOffice
 
             var sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = sheetName };
             sheets.Append(sheet);
-            // Do we need this?
-            //document.WorkbookPart.Workbook.Save();
 
             return worksheetPart;
         }
 
+        /// <summary>
+        /// Sets the value of a cell, optionally converting it to a string first.
+        /// </summary>
+        /// <param name="value">Value to set in the cell</param>
+        /// <param name="cell">Cell where to set the value</param>
+        /// <param name="sharedStringTable">Structure of the spreadsheet that contains the actual string values</param>
+        /// <param name="stylesheet">Style section of the spreadsheet, containing formatting information</param>
+        /// <param name="writeAsString">When true, the value will be converted to a string before writing to the cell</param>
         private static void SetCellValue(object value, Cell cell, SharedStringTable sharedStringTable, Stylesheet stylesheet, bool writeAsString)
         {
             if (writeAsString)
@@ -650,8 +599,6 @@ namespace DSOffice
                     // Yes, you need to update these manually
                     sharedStringTable.Count++;
                     sharedStringTable.UniqueCount++;
-                    // Do we need this?
-                    //sharedStringTable.Save();
                 }
                 else
                 {
@@ -675,13 +622,10 @@ namespace DSOffice
                 if (tuple == null)
                 {
                     // No such style exists so we create one
-                    //stylesheet.CellFormats.AppendChild(new CellFormat() { NumberFormatId = DateTimeFormatId, FontId = 0, FillId = 0, BorderId = 0, FormatId = 0, ApplyNumberFormat = true });
                     stylesheet.CellFormats.AppendChild(new CellFormat() { NumberFormatId = DateTimeFormatId, FormatId = 0 });
                     index = stylesheet.CellFormats.Count.Value;
                     // We update this for the sake of consistency
                     stylesheet.CellFormats.Count++;
-                    // Do we need this?
-                    //stylesheet.Save();
                 }
                 else
                 {
