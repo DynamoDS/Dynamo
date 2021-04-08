@@ -60,6 +60,7 @@ namespace ProtoCore.Lang
             Transpose,
             Union,
             InlineConditional,
+            ConditionalIf,
             Break,
             GetKeys,
             GetValues,
@@ -120,6 +121,7 @@ namespace ProtoCore.Lang
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
+            Constants.IfConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    
@@ -750,6 +752,18 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = BuiltInMethods.MethodID.InlineConditional
+                },
+                
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.ConditionalIf
                 },
 
                 new BuiltInMethod

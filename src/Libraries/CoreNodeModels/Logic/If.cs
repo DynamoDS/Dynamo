@@ -114,11 +114,33 @@ namespace CoreNodeModels.Logic
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
-            var conditional = AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1));
-            var trueStmt = inputAstNodes[1];
-            var falseStmt = inputAstNodes[2];
-            var list = AstFactory.BuildExprList(new List<AssociativeNode> { trueStmt, falseStmt });
-            rhs = AstFactory.BuildIndexExpression(list, conditional);
+            if (IsPartiallyApplied)
+            {
+                var connectedInputs = Enumerable.Range(0, InPorts.Count)
+                                       .Where(index => InPorts[index].IsConnected)
+                                       .Select(x => new IntNode(x) as AssociativeNode)
+                                       .ToList();
+
+                var functionNode = new IdentifierNode(Constants.IfConditionalMethodName);
+                var paramNumNode = new IntNode(3);
+                var positionNode = AstFactory.BuildExprList(connectedInputs);
+                var arguments = AstFactory.BuildExprList(inputAstNodes);
+                var inputParams = new List<AssociativeNode>
+                {
+                    functionNode,
+                    paramNumNode,
+                    positionNode,
+                    arguments,
+                    AstFactory.BuildBooleanNode(true)
+                };
+
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
+            }
+            else
+            {
+                var arguments = AstFactory.BuildExprList(inputAstNodes);
+                rhs = AstFactory.BuildFunctionCall(Constants.IfConditionalMethodName, inputAstNodes);
+            }
 
             return new[]
             {
