@@ -155,11 +155,13 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PackageManagerClientViewModelTest()
+        [Description("User tries to download the same package that already exists in std lib")]
+        public void StdLibConflictWarnsUser()
         {
             var pkgLoader = GetPackageLoader();
             pkgLoader.StandardLibraryDirectory = StandardLibraryTestDirectory;
 
+            // Load a std lib package
             var stdPackageLocation = Path.Combine(StandardLibraryTestDirectory, "SignedPackage2");
             pkgLoader.ScanPackageDirectory(stdPackageLocation);
 
@@ -170,6 +172,7 @@ namespace DynamoCoreWpfTests
             var deps = new List<Dependency>() { new Dependency() { _id = id, name = stdLibPkg.Name } };
             var depVers = new List<string>() { stdLibPkg.VersionName };
 
+            // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
             mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
                 .Returns(new ResponseWithContentBody<PackageVersion>()
@@ -187,18 +190,22 @@ namespace DynamoCoreWpfTests
                 });
 
             mockGreg.Setup(x => x.Execute(It.IsAny<PackageDownload>())).Throws(new Exception("Failed to get your package!"));
+
             var client = new Dynamo.PackageManager.PackageManagerClient(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
             var pmVm = new PackageManagerClientViewModel(ViewModel, client);
 
-            var dlgMock = new Mock<IDialogService>();
-            dlgMock.Setup(m => m.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
+            var dlgMock = new Mock<MessageBoxService.IMessageBox>();
+            dlgMock.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.Is<MessageBoxButton>(x => x == MessageBoxButton.OKCancel || x == MessageBoxButton.OK), It.IsAny<MessageBoxImage>()))
                 .Returns(MessageBoxResult.OK);
-            pmVm.dialogService = dlgMock.Object;
+            MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
             var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(stdLibPkg.Name, VersionUtilities.PartialParse(stdLibPkg.VersionName));
             pmVm.DownloadAndInstallPackage(pkgInfo);
 
-            dlgMock.Verify(x => x.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(), 
+            // Users should get 2 warnings :
+            // 1. To confirm that they want to download the specified package.
+            // 2. That a package with the same name and version already exists as part of the Standard Library.
+            dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(), 
                 It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
         }
 
