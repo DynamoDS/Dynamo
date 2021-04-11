@@ -1298,6 +1298,9 @@ namespace Dynamo.Graph.Workspaces
             }
 
             OnNodeRemoved(model);
+            // Force this change to address the edge case that user deleting the right edge
+            // node and do not see unsaved changes, e.g. the watch node at end of the graph
+            HasUnsavedChanges = true;
 
             if (dispose)
             {
