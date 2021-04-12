@@ -699,7 +699,7 @@ namespace Dynamo.ViewModels
                     // A full regeneration is required to get the edge geometry.
                     foreach (var vm in Watch3DViewModels)
                     {
-                        if (vm is HelixWatch3DViewModel)
+                        if (vm is HelixWatch3DViewModel) // just need a full regeneration when vm is HelixWatch3DViewModel
                         {
                             vm.RegenerateAllPackages();
                         }
