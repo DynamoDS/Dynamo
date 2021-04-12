@@ -60,7 +60,6 @@ namespace ProtoCore.Lang
             Transpose,
             Union,
             InlineConditional,
-            ConditionalIf,
             Break,
             GetKeys,
             GetValues,
@@ -69,6 +68,7 @@ namespace ProtoCore.Lang
             Evaluate,
             NodeAstFailed,
             GC,
+            ConditionalIf,
         }
 
         private static string[] methodNames = new string[]
@@ -121,7 +121,6 @@ namespace ProtoCore.Lang
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
-            Constants.kIfConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    
@@ -130,6 +129,7 @@ namespace ProtoCore.Lang
             "Evaluate",                 // kEvaluateFunctionPointer
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC
+            Constants.kIfConditionalMethodName,
         };
 
         public static string GetMethodName(MethodID id)
