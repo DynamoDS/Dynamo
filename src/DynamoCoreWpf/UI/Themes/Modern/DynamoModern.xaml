@@ -2270,6 +2270,8 @@
                              Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" 
                              Color="#0696D7" />
+    <SolidColorBrush x:Key="PreferencesWindowTabSelectedColor" 
+                             Color="#ADE4DE" />
     <SolidColorBrush x:Key="PreferencesWindowButtonPressedColor" 
                              Color="#0778B0" />
     <SolidColorBrush x:Key="PreferencesWindowButtonMouseOverFontColor" 
@@ -2282,6 +2284,8 @@
                              Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" 
                              Color="DarkGray" />
+    <SolidColorBrush x:Key="ExpanderBackgroundColor" 
+                             Color="#707070" />
 
 
     <!--Usual button color for the Preferences Window-->
@@ -2392,10 +2396,94 @@
         </Setter>
     </Style>
 
+    <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border Name="Border" 
+                Grid.Row="0" 
+                Background="{StaticResource ExpanderBackgroundColor}" 
+                BorderThickness="1" 
+                CornerRadius="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <!--Draws a plus (+) sign on the expander-->
+                <Path x:Name="Sign"
+                      Grid.Column="1"
+                      Data="M 0,6 H 12 M 6,0 V 12 Z"
+                      Stroke="{StaticResource PreferencesWindowFontColor}"
+                      Width="12"
+                      Height="12"
+                      Margin="0,10,15,10"
+                      StrokeThickness="2"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      >
+                </Path>
+                <ContentPresenter x:Name="HeaderContent" 
+                                    Grid.Column="0" 
+                                    Margin="15,0,0,0"  
+                                    RecognizesAccessKey="True" 
+                                    VerticalAlignment="Center"
+                                    Width="{Binding
+                                        RelativeSource={RelativeSource
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Expander}},
+                                        Path=ActualWidth}"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <!--Sets the sign on the expander to a minus (-)-->
+                <Setter TargetName="Sign" Property="Data" Value="M 0,6 H 12 Z" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" TargetName="Border" Value="{x:Null}"/>
+                <Setter Property="BorderBrush" TargetName="Border" Value="{x:Null}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="Expander" x:Key="MenuExpanderStyle">
+        <Setter Property="Background" Value="{StaticResource ExpanderBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderToggleButton}" Background="#FF4682B4">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1" 
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <ContentPresenter Margin="12,0,0,15" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="LeftTab" 
                    TargetType="{x:Type TabItem}">
         <Setter Property="HorizontalAlignment" 
-                        Value="Left"/>
+                Value="Left"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TabItem}">
@@ -2433,7 +2521,7 @@
                                          Value="True">
                             <Setter TargetName="SelectedItem" 
                                             Property="Background" 
-                                            Value="{StaticResource PreferencesWindowButtonColor}" />
+                                            Value="{StaticResource PreferencesWindowTabSelectedColor}" />
                             <Setter Property="Foreground" 
                                             Value="{StaticResource PreferencesWindowFontColor}" />
                             <Setter Property="FontWeight" 
@@ -2447,13 +2535,7 @@
                             <Setter Property="Foreground" 
                                             Value="{StaticResource TabItemUnSelected}" />
                             <Setter Property="FontWeight" 
-                                            Value="Bold" />
-                        </Trigger>
-                        <Trigger Property="Border.IsMouseOver" 
-                                         Value="True">
-                            <Setter TargetName="TabBorder" 
-                                            Property="Background" 
-                                            Value="{StaticResource PreferencesWindowButtonPressedColor}" />
+                                            Value="Regular" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

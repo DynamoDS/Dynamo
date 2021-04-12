@@ -78,7 +78,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         /// geometry updates. When set to False, the Watch3DView corresponding
         /// to this view model is not displayed.
         /// </summary>
-        public bool Active
+        public virtual bool Active
         {
             get { return active; }
             set
