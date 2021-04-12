@@ -88,10 +88,14 @@ namespace CoreNodeModels.Logic
     public class RefactoredIf : NodeModel
     {
         [JsonConstructor]
-        private RefactoredIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        private RefactoredIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) 
+        {
+            ArgumentLacing = LacingStrategy.Auto;
+        }
 
         public RefactoredIf()
         {
+            ArgumentLacing = LacingStrategy.Auto;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("false", Resources.PortDataFalseBlockToolTip)));
@@ -121,7 +125,7 @@ namespace CoreNodeModels.Logic
                                        .Select(x => new IntNode(x) as AssociativeNode)
                                        .ToList();
 
-                var functionNode = new IdentifierNode(Constants.IfConditionalMethodName);
+                var functionNode = new IdentifierNode(Constants.kIfConditionalMethodName);
                 var paramNumNode = new IntNode(3);
                 var positionNode = AstFactory.BuildExprList(connectedInputs);
                 var arguments = AstFactory.BuildExprList(inputAstNodes);
@@ -138,8 +142,8 @@ namespace CoreNodeModels.Logic
             }
             else
             {
-                var arguments = AstFactory.BuildExprList(inputAstNodes);
-                rhs = AstFactory.BuildFunctionCall(Constants.IfConditionalMethodName, inputAstNodes);
+                UseLevelAndReplicationGuide(inputAstNodes);
+                rhs = AstFactory.BuildFunctionCall(Constants.kIfConditionalMethodName, inputAstNodes);
             }
 
             return new[]

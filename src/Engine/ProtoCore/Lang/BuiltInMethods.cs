@@ -121,7 +121,7 @@ namespace ProtoCore.Lang
             "Transpose",                // kTranspose
             "SetUnion",                 // kUnion
             Constants.kInlineConditionalMethodName,
-            Constants.IfConditionalMethodName,
+            Constants.kIfConditionalMethodName,
             "Break",                    // kBreak
             "GetKeys",                  // kGetKeys    
             "GetValues",                // kGetValues    
