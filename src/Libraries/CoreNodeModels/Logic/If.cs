@@ -88,10 +88,14 @@ namespace CoreNodeModels.Logic
     public class RefactoredIf : NodeModel
     {
         [JsonConstructor]
-        private RefactoredIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) { }
+        private RefactoredIf(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts) 
+        {
+            ArgumentLacing = LacingStrategy.Auto;
+        }
 
         public RefactoredIf()
         {
+            ArgumentLacing = LacingStrategy.Auto;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("test", Resources.PortDataTestBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("true", Resources.PortDataTrueBlockToolTip)));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("false", Resources.PortDataFalseBlockToolTip)));
@@ -114,11 +118,33 @@ namespace CoreNodeModels.Logic
             var lhs = GetAstIdentifierForOutputIndex(0);
             AssociativeNode rhs;
 
-            var conditional = AstFactory.BuildConditionalNode(inputAstNodes[0], new IntNode(0), new IntNode(1));
-            var trueStmt = inputAstNodes[1];
-            var falseStmt = inputAstNodes[2];
-            var list = AstFactory.BuildExprList(new List<AssociativeNode> { trueStmt, falseStmt });
-            rhs = AstFactory.BuildIndexExpression(list, conditional);
+            if (IsPartiallyApplied)
+            {
+                var connectedInputs = Enumerable.Range(0, InPorts.Count)
+                                       .Where(index => InPorts[index].IsConnected)
+                                       .Select(x => new IntNode(x) as AssociativeNode)
+                                       .ToList();
+
+                var functionNode = new IdentifierNode(Constants.kIfConditionalMethodName);
+                var paramNumNode = new IntNode(3);
+                var positionNode = AstFactory.BuildExprList(connectedInputs);
+                var arguments = AstFactory.BuildExprList(inputAstNodes);
+                var inputParams = new List<AssociativeNode>
+                {
+                    functionNode,
+                    paramNumNode,
+                    positionNode,
+                    arguments,
+                    AstFactory.BuildBooleanNode(true)
+                };
+
+                rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
+            }
+            else
+            {
+                UseLevelAndReplicationGuide(inputAstNodes);
+                rhs = AstFactory.BuildFunctionCall(Constants.kIfConditionalMethodName, inputAstNodes);
+            }
 
             return new[]
             {

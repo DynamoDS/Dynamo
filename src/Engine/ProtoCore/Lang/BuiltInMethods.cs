@@ -68,6 +68,7 @@ namespace ProtoCore.Lang
             Evaluate,
             NodeAstFailed,
             GC,
+            ConditionalIf,
         }
 
         private static string[] methodNames = new string[]
@@ -128,6 +129,7 @@ namespace ProtoCore.Lang
             "Evaluate",                 // kEvaluateFunctionPointer
             Constants.kNodeAstFailed,   // kNodeAstFailed
             "__GC",                     // kGC
+            Constants.kIfConditionalMethodName,
         };
 
         public static string GetMethodName(MethodID id)
@@ -750,6 +752,18 @@ namespace ProtoCore.Lang
                         new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, 0))
                     },
                     ID = BuiltInMethods.MethodID.InlineConditional
+                },
+                
+                new BuiltInMethod
+                {
+                    ReturnType = TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank),
+                    Parameters = new List<KeyValuePair<string, ProtoCore.Type>>
+                    {
+                        new KeyValuePair<string, ProtoCore.Type>("condition", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Bool, 0)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn1", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank)),
+                        new KeyValuePair<string, ProtoCore.Type>("dyn2", TypeSystem.BuildPrimitiveTypeObject(PrimitiveType.Var, Constants.kArbitraryRank))
+                    },
+                    ID = BuiltInMethods.MethodID.ConditionalIf
                 },
 
                 new BuiltInMethod
