@@ -40,7 +40,7 @@ namespace Dynamo.Linting.Rules
                 return false;
 
             return this.RuleId == other.RuleId && 
-                this.NodeIds == other.NodeIds;
+                this.NodeIds.SetEquals(other.NodeIds);
         }
 
         public override bool Equals(object obj)

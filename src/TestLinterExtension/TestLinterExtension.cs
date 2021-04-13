@@ -6,11 +6,17 @@ using Dynamo.Extensions;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
 using Dynamo.Linting.Interfaces;
+using Dynamo.Wpf.Extensions;
+using System.Windows.Controls;
+using System.Windows;
+using System;
 
 namespace Dynamo.TestLinterExtension
 {
-    public class TestLinterExtension : LinterExtensionBase
+    public class TestLinterExtension : LinterExtensionBase, IViewExtension
     {
+        private MenuItem testLinterMenuItem;
+        private ViewLoadedParams viewLoadedParamsReference;
 
         public override string UniqueId => "a7ad5249-10ea-4fbf-b2f6-7f9658773850";
 
@@ -29,6 +35,30 @@ namespace Dynamo.TestLinterExtension
 
         public override void Dispose() { }
         public override void Shutdown() { }
+
+        public void Startup(ViewStartupParams viewStartupParams)
+        {
+        }
+
+        public void Loaded(ViewLoadedParams viewLoadedParams)
+        {
+            this.viewLoadedParamsReference = viewLoadedParams;
+            this.testLinterMenuItem = new MenuItem { Header = "TestLinter", IsCheckable = true };
+            this.testLinterMenuItem.Checked += MenuItemCheckHandler;
+            this.viewLoadedParamsReference.AddExtensionMenuItem(this.testLinterMenuItem);
+        }
+
+        private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
+        {
+            var viewModel = this.viewLoadedParamsReference.DynamoWindow.DataContext as DynamoViewModel;
+            var linterManager = viewModel.Model.LinterManager;
+            foreach (var linter in linterManager.AvailableLinters)
+            {
+                if (linter.Id == this.UniqueId)
+                    linterManager.ActiveLinter = linter;
+
+            }
+        }
 
         #endregion
 

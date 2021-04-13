@@ -33,7 +33,12 @@ namespace Dynamo.Linting.Rules
         /// Description of how to solve issues related to this rule
         /// </summary>
         public abstract string CallToAction { get; }
-       
+
+        /// <summary>
+        /// List of Property names that this rule should react to changes on
+        /// </summary>
+        public abstract List<string> EvaluationTriggerEvents { get; }
+
         /// <summary>
         /// Uses the init function to evaluate this rule and return a collection of evaluation results
         /// </summary>

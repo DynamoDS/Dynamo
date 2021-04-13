@@ -18,6 +18,8 @@ namespace Dynamo.TestLinterExtension.LinterRules
 
         public override string CallToAction => "Rename the nodes listed above to something else than 'Foo'";
 
+        public override List<string> EvaluationTriggerEvents { get => new List<string> { nameof(NodeModel.Name) }; }
+
         protected override RuleEvaluationStatusEnum EvalualteFunction(NodeModel nodeModel)
         {
             var status = nodeModel.Name != "Foo" ?

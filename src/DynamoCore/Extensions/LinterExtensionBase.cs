@@ -15,9 +15,13 @@ namespace Dynamo.Extensions
     /// </summary>
     public abstract class LinterExtensionBase : IExtension
     {
+        private const string NODE_ADDED_PROPERTY = "NodeAdded";
+        private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
+
         #region Private/Internal properties
         private HashSet<LinterRule> linterRules = new HashSet<LinterRule>();
         private LinterManager linterManager;
+        private WorkspaceModel currentWorkspace;
 
         internal bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
   
@@ -42,6 +46,8 @@ namespace Dynamo.Extensions
         /// 
         /// </summary>
         public HashSet<LinterRule> LinterRules => linterRules;
+
+
 
         #endregion
 
@@ -71,7 +77,8 @@ namespace Dynamo.Extensions
         /// </summary>
         public void Activate()
         {
-            this.linterManager.ActiveLinter = this.ExtensionDescriptor;
+            ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+            OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
             this.InitializeRules();
         }
 
@@ -80,44 +87,73 @@ namespace Dynamo.Extensions
         internal void InitializeBase(LinterManager linterManager)
         {
             this.linterManager = linterManager;
-            this.linterManager.RequestNodeRuleEvaluation += OnRequestNodeRuleEvaluation;
-            this.linterManager.RequestGraphRuleEvaluation += OnRequestGraphRuleEvaluation;
         }
 
-        private void OnRequestGraphRuleEvaluation(NodeModel modifiedNode)
-        {
-            if (!IsActive ||
-                !(ReadyParamsRef.CurrentWorkspaceModel is WorkspaceModel ws))
-                return;
-
-            linterRules.
-                Where(x => x is GraphLinterRule).
-                Cast<GraphLinterRule>().
-                ToList().
-                ForEach(x => x.Evaluate(ws, modifiedNode));
-        }
-
-        private void OnRequestNodeRuleEvaluation(NodeModel modifiedNode)
+        private void EvaluateGraphRules(NodeModel modifiedNode, string changedProperty)
         {
             if (!IsActive)
                 return;
 
-            linterRules.
+            var graphRules = linterRules.
+                Where(x => x is GraphLinterRule).
+                Cast<GraphLinterRule>().
+                ToList();
+
+            if (graphRules is null)
+                return;
+
+            foreach (var rule in graphRules)
+            {
+                if (changedProperty != NODE_ADDED_PROPERTY && 
+                    changedProperty != NODE_REMOVED_PROPERTY &&
+                    !rule.EvaluationTriggerEvents.Contains(changedProperty))
+                    continue;
+
+                rule.Evaluate(currentWorkspace, modifiedNode);
+            }
+        }
+
+        private void EvaluateNodeRules(NodeModel modifiedNode, string changedProperty)
+        {
+            if (!IsActive)
+                return;
+
+            var nodeRules = linterRules.
                 Where(x => x is NodeLinterRule).
                 Cast<NodeLinterRule>().
-                ToList().
-                ForEach(x => x.Evaluate(modifiedNode));
+                ToList();
+
+            if (nodeRules is null)
+                return;
+
+            foreach (var rule in nodeRules)
+            {
+                if (changedProperty != NODE_ADDED_PROPERTY && !rule.EvaluationTriggerEvents.Contains(changedProperty))
+                    continue;
+
+                rule.Evaluate(modifiedNode);
+            }
+        }
+
+        private void InitializeRules()
+        {
+            if (!(ReadyParamsRef.CurrentWorkspaceModel is WorkspaceModel wm))
+                return;
+
+            foreach (var rule in LinterRules)
+            {
+                rule.InitializeBase(wm);
+            }
         }
 
         #region Extension Lifecycle
-       
+
         public virtual void Ready(ReadyParams sp)
         {
             ReadyParamsRef = sp;
             if (IsActive)
                 InitializeRules();
         }
-
 
         public virtual void Startup(StartupParams sp)
         {
@@ -140,44 +176,84 @@ namespace Dynamo.Extensions
 
         internal static event LinterExtensionReadyHandler LinterExtensionReady;
 
-        public void OnLinterExtensionReady()
+        private void OnLinterExtensionReady()
         {
             LinterExtensionReady?.Invoke(ExtensionDescriptor);
         }
 
-        private void InitializeRules()
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel obj)
         {
-            if (!(ReadyParamsRef.CurrentWorkspaceModel is WorkspaceModel wm))
-                return;
+            if (this.currentWorkspace != null)
+                UnsubscribeGraphEvents(this.currentWorkspace);
 
-            foreach (var rule in LinterRules)
+            this.currentWorkspace = ReadyParamsRef.CurrentWorkspaceModel as WorkspaceModel;
+            this.SubscribeNodeEvents();
+            this.SubscribeGraphEvents();
+        }
+
+        private void SubscribeGraphEvents()
+        {
+            this.currentWorkspace.NodeRemoved += OnNodeRemoved;
+            this.currentWorkspace.NodeAdded += OnNodeAdded;
+        }
+
+
+        private void SubscribeNodeEvents()
+        {
+            foreach (var node in currentWorkspace.Nodes)
             {
-                rule.InitializeBase(wm);
+                node.PropertyChanged += OnNodePropertyChanged;
             }
         }
 
-        internal void OnGraphModified(WorkspaceModel ws)
+        private void UnsubscribeGraphEvents(WorkspaceModel workspaceModel)
         {
-            if (!IsActive)
-                return;
-
-            LinterRules.Where(x => x is GraphLinterRule)
-                .Select(x => x as GraphLinterRule)
-                .ToList()
-                .ForEach(rule => rule.Evaluate(ws));
+            workspaceModel.NodeRemoved -= OnNodeRemoved;
+            workspaceModel.NodeAdded -= OnNodeAdded;
+            workspaceModel.Nodes.
+                ToList().
+                ForEach(x => UnsubscribeNodeEvents(x));
         }
 
-        internal void OnNodeModified(NodeModel node)
+        private void UnsubscribeNodeEvents(NodeModel node)
         {
-            if (!IsActive)
-                return;
-
-            LinterRules.Where(x => x is NodeLinterRule)
-                .Select(x => x as NodeLinterRule)
-                .ToList()
-                .ForEach(rule => rule.Evaluate(node));
+            node.PropertyChanged -= OnNodePropertyChanged;
         }
 
+        private void OnNodeAdded(NodeModel node)
+        {
+            EvaluateGraphRules(node, NODE_ADDED_PROPERTY);
+            EvaluateNodeRules(node, NODE_ADDED_PROPERTY);
+            node.PropertyChanged += OnNodePropertyChanged;
+        }
+
+        private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            EvaluateNodeRules(sender as NodeModel, e.PropertyName);
+            EvaluateGraphRules(sender as NodeModel, e.PropertyName);
+
+        }
+
+        private void OnNodeRemoved(Graph.Nodes.NodeModel node)
+        {
+            EvaluateGraphRules(node, NODE_REMOVED_PROPERTY);
+
+            var nodeRules = LinterRules.
+                Where(x => x is NodeLinterRule).
+                Cast<NodeLinterRule>().
+                ToList();
+
+            if (nodeRules is null)
+                return;
+
+            foreach (var rule in nodeRules)
+            {
+                var result = new NodeRuleEvaluationResult(rule.Id, Linting.Interfaces.RuleEvaluationStatusEnum.Passed, node.GUID.ToString());
+                rule.OnRuleEvaluated(result);
+            }
+
+            UnsubscribeNodeEvents(node);
+        }
         #endregion
     }
 }

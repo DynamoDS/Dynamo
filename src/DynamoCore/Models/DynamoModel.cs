@@ -927,10 +927,6 @@ namespace Dynamo.Models
                 try
                 {
                     ext.Ready(readyParams);
-
-                    // Only for testing until we get the UI
-                    if (ext is LinterExtensionBase linter)
-                        linter.Activate();
                 }
                 catch (Exception ex)
                 {

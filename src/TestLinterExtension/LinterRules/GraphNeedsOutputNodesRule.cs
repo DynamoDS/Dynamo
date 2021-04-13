@@ -11,6 +11,8 @@ namespace Dynamo.TestLinterExtension.LinterRules
 {
     public class GraphNeedsOutputNodesRule : GraphLinterRule
     {
+        private List<NodeModel> outputNodes = new List<NodeModel>();
+        
         public override string Id => "a9ecd7fc-ac33-4a2d-b1c5-cf225e740d47";
 
         public override SeverityCodesEnum SeverityCode => SeverityCodesEnum.Error;
@@ -19,9 +21,24 @@ namespace Dynamo.TestLinterExtension.LinterRules
 
         public override string CallToAction => "Set an appropriate node as 'IsOutput'";
 
+
+        public override List<string> EvaluationTriggerEvents => new List<string>
+        {
+            nameof(NodeModel.IsSetAsOutput)
+        };
+
         protected override Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvalualteFunction(WorkspaceModel workspaceModel, NodeModel nodeModel = null)
         {
-            var result = workspaceModel.Nodes.Any(x => x.IsSetAsOutput) ?
+            if (!(nodeModel is null))
+            {
+                if (nodeModel.IsSetAsOutput && !outputNodes.Contains(nodeModel))
+                    outputNodes.Add(nodeModel);
+
+                else if (outputNodes.Contains(nodeModel))
+                    outputNodes.Remove(nodeModel);
+            }
+
+            var result = outputNodes.Any() ?
                 RuleEvaluationStatusEnum.Passed :
                 RuleEvaluationStatusEnum.Failed;
 
@@ -30,6 +47,12 @@ namespace Dynamo.TestLinterExtension.LinterRules
 
         protected override List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>> InitFunction(WorkspaceModel workspaceModel)
         {
+            foreach (var node in workspaceModel.Nodes)
+            {
+                if (node.IsSetAsOutput)
+                    outputNodes.Add(node);
+            }
+
             return new List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>> { EvalualteFunction(workspaceModel) };
         }
     }

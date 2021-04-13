@@ -23,23 +23,19 @@ namespace Dynamo.Linting
 
         #region Public properties
 
-        public WorkspaceModel CurrentWorkspace { get; private set; }
-
         /// <summary>
         /// Available linters
         /// </summary>
         public HashSet<LinterExtensionDescriptor> AvailableLinters { get; internal set; }
-
-        internal bool IsExtensionActive(string uniqueId)
-        {
-            return ActiveLinter?.Id == uniqueId;
-        }
 
         /// <summary>
         /// Results from evaluated rules
         /// </summary>
         public ObservableCollection<IRuleEvaluationResult> RuleEvaluationResults { get; set; }
 
+        /// <summary>
+        /// The LinterDescripter that is currently set as active
+        /// </summary>
         public LinterExtensionDescriptor ActiveLinter
         {
             get => activeLinter;
@@ -49,6 +45,12 @@ namespace Dynamo.Linting
                     return;
 
                 activeLinter = value;
+
+                var linterExt = GetLinterExtension(activeLinter);
+                if (linterExt is null)
+                    return;
+
+                linterExt.Activate();
             }
         }
 
@@ -57,43 +59,23 @@ namespace Dynamo.Linting
         public LinterManager(DynamoModel dynamoModel)
         {
             this.dynamoModel = dynamoModel;
-            CurrentWorkspace = this.dynamoModel.CurrentWorkspace;
             AvailableLinters = new HashSet<LinterExtensionDescriptor>();
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
-            this.dynamoModel.PropertyChanged += OnCurrentWorkspaceChanged;
 
             SubscribeLinterEvents();
         }
 
-
-        internal event RequestNodeRuleEvaluationHandler RequestNodeRuleEvaluation;
-        internal event RequestGraphRuleEvaluationHandler RequestGraphRuleEvaluation;
-
-        internal void OnRequestNodeRuleEvaluation(NodeModel modifiedNode)
-        {
-            RequestNodeRuleEvaluation?.Invoke(modifiedNode);
-        }
-
-        internal void OnRequestGraphRuleEvaluation(NodeModel modifiedNode)
-        {
-            RequestGraphRuleEvaluation?.Invoke(modifiedNode);
-        }
-
         /// <summary>
-        /// Represents the method that will handle node rule requests related events.
+        /// Checks if the uniqueId equals the id of the Active linter descriptor
         /// </summary>
-        /// <param name="modifiedNode"></param>
-        internal delegate void RequestNodeRuleEvaluationHandler(NodeModel modifiedNode);
-
-        /// <summary>
-        /// Represents the method that will handle node rule requests related events.
-        /// </summary>
-        /// <param name="modifiedNode"></param>
-        internal delegate void RequestGraphRuleEvaluationHandler(NodeModel modifiedNode);
-
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        internal bool IsExtensionActive(string uniqueId)
+        {
+            return ActiveLinter?.Id == uniqueId;
+        }
 
         #region Private methods
-
         private void SubscribeLinterEvents()
         {
             LinterExtensionBase.LinterExtensionReady += OnLinterExtensionReady;
@@ -107,88 +89,6 @@ namespace Dynamo.Linting
                 return;
 
             AvailableLinters.Add(extensionDescriptor);
-        }
-
-        private void OnCurrentWorkspaceChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(DynamoModel.CurrentWorkspace))
-            {
-                if (this.CurrentWorkspace != null)
-                    UnsubscribeGraphEvents(this.CurrentWorkspace);
-
-                this.CurrentWorkspace = dynamoModel.CurrentWorkspace;
-                this.SubscribeNodeEvents();
-                this.SubscribeGraphEvents();
-                
-            }
-        }
-
-        private void SubscribeGraphEvents()
-        {
-            this.CurrentWorkspace.NodeRemoved += OnNodeRemoved;
-            this.CurrentWorkspace.NodeAdded += OnNodeAdded;
-        }
-
-
-        private void SubscribeNodeEvents()
-        {
-            foreach (var node in CurrentWorkspace.Nodes)
-            {
-                node.PropertyChanged += OnNodePropertyChanged;
-            }
-        }
-
-        private void UnsubscribeGraphEvents(WorkspaceModel workspaceModel)
-        {
-            workspaceModel.NodeRemoved -= OnNodeRemoved;
-            workspaceModel.NodeAdded -= OnNodeAdded;
-        }
-        private void UnsubscribeNodeEvents(NodeModel node)
-        {
-            node.PropertyChanged -= OnNodePropertyChanged;
-        }
-
-        private void OnNodeAdded(NodeModel node)
-        {
-            OnRequestGraphRuleEvaluation(node);
-            node.PropertyChanged += OnNodePropertyChanged;
-        }
-
-        private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(NodeModel.Name):
-                case nameof(NodeModel.State):
-                    OnRequestNodeRuleEvaluation(sender as NodeModel);
-                    return;
-
-                case nameof(NodeModel.IsSetAsInput):
-                case nameof(NodeModel.IsSetAsOutput):
-                    OnRequestNodeRuleEvaluation(sender as NodeModel);
-                    OnRequestGraphRuleEvaluation(sender as NodeModel);
-                    return;
-
-                default:
-                    return;
-            }
-        }
-
-        private void OnNodeRemoved(Graph.Nodes.NodeModel obj)
-        {
-            var nodeRuleEvaluations = RuleEvaluationResults.
-                Where(x => x is NodeRuleEvaluationResult).
-                Cast<NodeRuleEvaluationResult>().
-                ToList().
-                Where(x => x.NodeId == obj.GUID.ToString()).
-                ToList();
-
-            foreach (var item in nodeRuleEvaluations)
-            {
-                RuleEvaluationResults.Remove(item);
-            }
-
-            UnsubscribeNodeEvents(obj);
         }
 
         private void OnRuleEvaluated(IRuleEvaluationResult result)
@@ -211,6 +111,13 @@ namespace Dynamo.Linting
             }
         }
 
+        private LinterExtensionBase GetLinterExtension(LinterExtensionDescriptor activeLinter)
+        {
+            return this.dynamoModel.ExtensionManager.
+                Extensions.
+                Where(x => x.UniqueId == activeLinter.Id).
+                FirstOrDefault() as LinterExtensionBase;
+        }
 
         #endregion
     }

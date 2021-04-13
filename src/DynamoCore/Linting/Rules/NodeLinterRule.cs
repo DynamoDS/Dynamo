@@ -20,7 +20,7 @@ namespace Dynamo.Linting.Rules
         /// This will use <see cref="EvalualteFunction(NodeModel)"/> to evaluate the rule.
         /// </summary>
         /// <param name="nodeModel"></param>
-        public void Evaluate(NodeModel nodeModel)
+        internal void Evaluate(NodeModel nodeModel)
         {
             var status = EvalualteFunction(nodeModel);
             var result = new NodeRuleEvaluationResult(this.Id, status, nodeModel.GUID.ToString());

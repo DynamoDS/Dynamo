@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,10 +53,12 @@
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
       <Name>DynamoCoreWpf</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
@@ -63,7 +66,9 @@
   <Target Name="AfterBuild">
     <ItemGroup>
       <ExtensionDefinition Include="TestLinter_ExtensionDefinition.xml" />
+      <ViewExtensionDefinition Include="TestLinter_ViewExtensionDefinition.xml" />
     </ItemGroup>
     <Copy SourceFiles="@(ExtensionDefinition)" DestinationFolder="$(OutputPath)\extensions\" />
+    <Copy SourceFiles="@(ViewExtensionDefinition)" DestinationFolder="$(OutputPath)\viewExtensions\" />
   </Target>
 </Project>

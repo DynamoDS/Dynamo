@@ -15,6 +15,10 @@ namespace Dynamo.TestLinterExtension.LinterRules
         public override string Description => "Nodes are not allowed to be set as input in this graph";
         public override string CallToAction => "Set the above nodes to not be inputs";
 
+        public override List<string> EvaluationTriggerEvents => new List<string>
+        {
+            nameof(NodeModel.IsSetAsInput)
+        };
 
         protected override RuleEvaluationStatusEnum EvalualteFunction(NodeModel nodeModel)
         {
