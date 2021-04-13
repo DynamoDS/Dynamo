@@ -26,6 +26,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Properties;
@@ -322,6 +323,8 @@ namespace Dynamo.Models
         ///     Manages all extensions for Dynamo
         /// </summary>
         public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        public LinterManager LinterManager { get; }
 
         private readonly ExtensionManager extensionManager;
 
@@ -788,6 +791,8 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
+            LinterManager = new LinterManager(this);
+
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
@@ -861,6 +866,9 @@ namespace Dynamo.Models
 
                     try
                     {
+                        if (ext is LinterExtensionBase linter)
+                            linter.InitializeBase(this.LinterManager);
+
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
                         // then we can start the extension(s) (B) that it requested be loaded.
@@ -919,6 +927,10 @@ namespace Dynamo.Models
                 try
                 {
                     ext.Ready(readyParams);
+
+                    // Only for testing until we get the UI
+                    if (ext is LinterExtensionBase linter)
+                        linter.Activate();
                 }
                 catch (Exception ex)
                 {
