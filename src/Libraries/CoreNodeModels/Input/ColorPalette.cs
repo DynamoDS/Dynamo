@@ -169,14 +169,5 @@ namespace CoreNodeModels.Input
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), colorNode) };
         }
-
-        /// <summary>
-        ///     Indicates whether node is input node. 
-        ///     Used to bind visibility of UI for user selection.
-        /// </summary>
-        public override bool IsInputNode
-        {
-            get { return false; }
-        }
     }
 }

@@ -61,6 +61,7 @@ namespace Dynamo.Graph.Workspaces
         public bool Excluded;
         public bool IsSetAsInput;
         public bool IsSetAsOutput;
+        public string UserDescription;
     }
 
     /// <summary>
@@ -2005,6 +2006,7 @@ namespace Dynamo.Graph.Workspaces
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
+                    nodeModel.UserDescription = nodeViewInfo.UserDescription;
 
                     // NOTE: The name needs to be set using UpdateValue to cause the view to update
                     nodeModel.UpdateValue(new UpdateValueParams("Name", nodeViewInfo.Name));
