@@ -1,0 +1,139 @@
+﻿<UserControl x:Class="Dynamo.GraphMetadata.GraphMetadataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.GraphMetadata"
+             xmlns:controls="clr-namespace:Dynamo.GraphMetadata.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="850" d:DesignWidth="400"
+             d:DataContext="{d:DesignInstance Type=local:GraphMetadataViewModel, IsDesignTimeCreatable=False}">
+    
+    <UserControl.Resources>
+        <convertes:UriToStringConverter x:Key="UriToStringConverter" />
+        
+        <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type GroupBox}}">
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="Margin"
+                    Value="16px,5px" />
+            <Setter Property="Foreground"
+                    Value="White" />
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}"
+                                   Margin="0,0,0,5" />
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ListViewStyle"
+               TargetType="{x:Type ListView}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderBrush"
+                    Value="Transparent" />
+        </Style>
+
+        <Style x:Key="ListViewItemStyle"
+               TargetType="{x:Type ListViewItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}">
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Cursor"
+                            Value="Hand" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="0">
+            <GroupBox Header="Description"
+                      Height="100">
+                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"/>
+            </GroupBox>
+            <GroupBox Header="Image">
+                <controls:ImageSelector MaxHeight="150"
+                                        MinHeight="100"
+                                        Image="{Binding Thumbnail, Mode=TwoWay}"/>
+            </GroupBox>
+            <GroupBox Header="Author Name">
+                <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}" />
+            </GroupBox>
+            <GroupBox Header="Learn more URL">
+                <TextBox Text="{Binding HelpLink, Converter={StaticResource UriToStringConverter}, Mode=TwoWay}" />
+            </GroupBox>
+            <Separator />
+        </StackPanel>
+
+        <GroupBox Grid.Row="1"
+                  Header="Custom Properties">
+            <GroupBox.Template>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Grid SnapsToDevicePixels="true">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Margin="9,1,9,0"
+                              Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter ContentSource="Header" />
+                            <Button Grid.Column="1">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <fa:ImageAwesome Icon="Plus"
+                                                         VerticalAlignment="Stretch" />
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                        </Grid>
+                        <ContentPresenter Margin="9,1,9,0"
+                                          Grid.Row="1"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Grid>
+
+                </ControlTemplate>
+
+            </GroupBox.Template>
+
+            <StackPanel Orientation="Vertical">
+                <ListView HorizontalContentAlignment="Stretch"
+                          Background="Transparent"
+                          Margin="0,16">
+                    <ListViewItem>
+                        <controls:CustomPropertyControl PropertyName="SomeName"
+                                                        PropertyValue="SomeValue" />
+                    </ListViewItem>
+                </ListView>
+            </StackPanel>
+
+        </GroupBox>
+    </Grid>
+</UserControl>
