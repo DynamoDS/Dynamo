@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "NodeDocumentationMarkdownGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "frompackage -i \"C:\\Users\\SylvesterKnudsen\\AppData\\Roaming\\Dynamo\\Dynamo Core\\2.12\\packages\\JsonData\" -w"
+    }
+  }
+}

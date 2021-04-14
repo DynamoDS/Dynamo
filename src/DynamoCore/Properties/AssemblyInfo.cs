@@ -35,3 +35,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("PythonNodeModels")]
 [assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
+[assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
