@@ -77,6 +77,63 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Converts the list of package dependencies to a string
+    /// </summary>
+    public class DependencyListToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string depString = string.Empty;
+            bool flag = false;
+            if (value != null)
+            {
+                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                for (int i = 0; i < depList.Count(); i++)
+                {
+                    if (depList[i].name == "CPython" || depList[i].name == "IronPython")
+                    {
+                        depString += depList[i].name + " " + depList[i]._id + ", ";
+                        flag = true;
+                    }
+                }
+                return flag ? depString.Remove(depString.Length - 2) : null;
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class EmptyDepStringToCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value != null)
+            {
+                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                for (int i = 0; i < depList.Count(); i++)
+                {
+                    if (depList[i].name == "CPython" || depList[i].name == "IronPython")
+                    {
+                        return Visibility.Visible;
+                    }
+                }
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
     public class PackageSearchStateToStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter,

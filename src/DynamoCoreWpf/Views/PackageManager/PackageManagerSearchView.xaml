@@ -91,10 +91,22 @@
                 </Setter>
             </Style>
 
+            <Style x:Key="DependencyTooltip" TargetType="ToolTip">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToolTip">
+                            <ContentPresenter />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
             <controls:EmptyStringToCollapsedConverter x:Key="EmptyStringToCollapsedConverter" />
             <controls:BoolToVisibilityCollapsedConverter x:Key="BooleanToVisibilityCollapsedConverter" />
             <controls:PrettyDateConverter x:Key="PrettyDateConverter" />
-
+            <controls:DependencyListToStringConverter x:Key="DependencyListToStringConverter" />
+            <controls:EmptyDepStringToCollapsedConverter x:Key="EmptyDepStringToCollapsedConverter" />
+            
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
@@ -292,8 +304,18 @@
                                                 <StackPanel Orientation="Vertical" Width="340" IsHitTestVisible="True" >
                                                    <StackPanel Orientation="Horizontal">
                                                       <TextBlock Width ="Auto" MinWidth="235" FontSize="14"  Name="name" Text="{Binding Path=Model.Name}" Margin="5,0,0,0" HorizontalAlignment="Left" Foreground="WhiteSmoke" />
-                                                      <TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" 
-                                                                 VerticalAlignment="Center" ToolTip="{x:Static p:Resources.PackageHostDependencyTooltip}"/>
+                                                        <TextBlock Width ="90" FontSize="12"  Name="HostDependency" Margin="5,0,0,0" HorizontalAlignment="Right" VerticalAlignment="Center"  Visibility="{Binding Path=Model.HostsString, Converter={StaticResource EmptyStringToCollapsedConverter}}">
+                                                            <TextBlock.ToolTip>
+                                                                <ToolTip Style="{StaticResource DependencyTooltip}">
+                                                                    <StackPanel Background="#535353" Height="Auto" Width="100" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                                                                        <TextBlock TextWrapping="Wrap" Padding="8" FontSize="12" Foreground="WhiteSmoke" Text="{Binding Path=Model.HostsString}"/>
+                                                                    </StackPanel>
+                                                                </ToolTip>
+                                                            </TextBlock.ToolTip>
+                                                            <Hyperlink Foreground="LightBlue">Dependencies</Hyperlink>
+                                                        </TextBlock>
+                                                        <!--<TextBlock Width ="90" FontSize="10"  Name="HostDependency" Text="{Binding Path=Model.HostsString}" Margin="5,0,0,0" HorizontalAlignment="Right" Foreground="LightBlue" 
+                                                                 VerticalAlignment="Center" ToolTip="{x:Static p:Resources.PackageHostDependencyTooltip}"/>-->
                                                    </StackPanel>
                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
 
@@ -361,7 +383,7 @@
                                                 <DataTemplate>
                                                     <StackPanel Orientation="Horizontal">
                                                         <TextBlock Text="{Binding Path=Item1.version}" MinWidth="50" Margin="5"  Foreground="WhiteSmoke" />
-                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" />
+                                                        <TextBlock Text="{Binding Path=Item1.created, Converter={StaticResource PrettyDateConverter}}" MinWidth="100" Margin="24,5,5,5"  Foreground="DarkGray" /> 
 
                                                         <Border Background="#000000" Margin="3">
                                                             <StackPanel Orientation="Horizontal">
@@ -388,9 +410,8 @@
                                                                 </Button>
                                                             </StackPanel>
                                                         </Border>
-
-
-                                                    </StackPanel>
+                                                        <TextBlock FontSize="14" FontWeight="Bold" Text="ⓘ    " Foreground="WhiteSmoke" MinWidth="50" Margin="5 10 5 5" Visibility="{Binding Path=Item1.full_dependency_ids, Converter={StaticResource EmptyDepStringToCollapsedConverter}}" ToolTip="{Binding Path=Item1.full_dependency_ids, Converter={StaticResource DependencyListToStringConverter}}" />
+                                                        </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
 
