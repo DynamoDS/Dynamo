@@ -112,7 +112,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns true if the user input matches the name of the filtered node element. 
+        /// Returns true if the user input matches the full or partial name or any keyword or description of the filtered node element. 
         /// </summary>
         /// <returns>True or false</returns>
         private bool QuerySearchElements(NodeSearchElement e, string input) 
