@@ -44,9 +44,5 @@ namespace Dynamo.TestLinterExtension.LinterRules
             }
             return results;
         }
-
-        public override void Dispose()
-        {
-        }
     }
 }
