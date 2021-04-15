@@ -77,6 +77,9 @@ namespace Dynamo.Extensions
         /// </summary>
         public void Activate()
         {
+            if (IsActive)
+                return;
+
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
             this.InitializeRules();
