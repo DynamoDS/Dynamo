@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dynamo.Configuration;
+using Dynamo.Wpf.ViewModels.Core.Converters;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,6 +26,29 @@ namespace Dynamo.ViewModels
         private bool nodeAutocomplete;
         private bool enableTSpline;
 
+        private PreferenceSettings _preferenceSettings;
+        public PreferenceSettings PreferenceSettings
+        {
+            get { return _preferenceSettings; }
+            set
+            {
+                _preferenceSettings = value;
+                RaisePropertyChanged(nameof(PreferenceSettings));
+            }
+        }
+
+        private DynamoPythonScriptEditorTextOptions editTextOptions;
+        public DynamoPythonScriptEditorTextOptions PythonScriptEditorTextOptions
+        {
+            get { return editTextOptions; }
+            set
+            {
+                editTextOptions = value;
+            }
+        }
+
+        //This includes all the properties that can be set on the General tab
+        #region General Properties
         /// <summary>
         /// Controls the Selected option in Language ComboBox
         /// </summary>
@@ -151,9 +176,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NumberFormatList));
             }
         }
+        #endregion
 
-        //This includes all the properites that can be set on the Features tab
-        #region Features Properites
+        //This includes all the properties that can be set on the Features tab
+        #region Features Properties
         /// <summary>
         /// PythonEnginesList contains the list of Python engines available
         /// </summary>
@@ -171,18 +197,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls the Selected option in Number Format ComboBox
+        /// Controls the Selected option in Python Engine combobox
         /// </summary>
         public string SelectedPythonEngine
         {
             get
             {
-                return selectedPythonEngine;
+                return PreferenceSettings.DefaultPythonEngine;
             }
             set
             {
-                selectedPythonEngine = value;
-                RaisePropertyChanged(nameof(SelectedPythonEngine));
+                if (value != PreferenceSettings.DefaultPythonEngine)
+                {
+                    selectedPythonEngine = value;
+                    PreferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(SelectedPythonEngine));
+                }
             }
         }
         
@@ -193,11 +223,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return hideIronPAlerts;
+                return PreferenceSettings.IsIronPythonDialogDisabled;
             }
             set
             {
                 hideIronPAlerts = value;
+                PreferenceSettings.IsIronPythonDialogDisabled = value;
                 RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
             }
         }
@@ -209,10 +240,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return showWhitespace;
+                return PreferenceSettings.ShowTabsAndSpacesInScriptEditor;
             }
             set
             {
+                PythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
+                PreferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
                 showWhitespace = value;
                 RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
             }
@@ -225,10 +258,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return nodeAutocomplete;
+                return PreferenceSettings.EnableNodeAutoComplete;
             }
             set
             {
+                PreferenceSettings.EnableNodeAutoComplete = value;
                 nodeAutocomplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
             }
@@ -241,12 +275,40 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return enableTSpline;
+                return !PreferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
             }
             set
             {
                 enableTSpline = value;
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// This method updates the node search library to either hide or unhide nodes that belong
+        /// to a specified assembly name and namespace. These nodes will be hidden from the node
+        /// library sidebar and from the node search.
+        /// </summary>
+        /// <param name="hide">Set to true to hide, set to false to unhide.</param>
+        /// <param name="library">The assembly name of the library.</param>
+        /// <param name="namespc">The namespace of the nodes to be hidden.</param>
+        internal void HideUnhideNamespace(bool hide, string library, string namespc)
+        {
+            var str = library + ':' + namespc;
+            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
+
+            if (hide)
+            {
+                if (!namespaces.Contains(str))
+                {
+                    namespaces.Add(str);
+                }
+            }
+            else // unhide
+            {
+                namespaces.Remove(str);
             }
         }
 
@@ -303,12 +365,15 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
-        public PreferencesViewModel()
+        public PreferencesViewModel(PreferenceSettings preferenceSettings, DynamoPythonScriptEditorTextOptions editTextOptions)
         {
+            this._preferenceSettings = preferenceSettings;
+            this.editTextOptions = editTextOptions;
+
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
             AddPythonEnginesOptions();
-            SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone;
+            SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));

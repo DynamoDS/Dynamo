@@ -2637,32 +2637,6 @@ namespace Dynamo.Models
             SearchModel.Add(new NodeModelSearchElement(typeLoadData));
         }
 
-        /// <summary>
-        /// This method updates the node search library to either hide or unhide nodes that belong
-        /// to a specified assembly name and namespace. These nodes will be hidden from the node
-        /// library sidebar and from the node search.
-        /// </summary>
-        /// <param name="hide">Set to true to hide, set to false to unhide.</param>
-        /// <param name="library">The assembly name of the library.</param>
-        /// <param name="namespc">The namespace of the nodes to be hidden.</param>
-        internal void HideUnhideNamespace(bool hide, string library, string namespc)
-        {
-            var str = library + ':' + namespc;
-            var namespaces = PreferenceSettings.NamespacesToExcludeFromLibrary;
-
-            if (hide)
-            {
-                if (!namespaces.Contains(str))
-                {
-                    namespaces.Add(str);
-                }
-            }
-            else // unhide
-            {
-                namespaces.Remove(str);
-            }
-        }
-
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             foreach (var funcGroup in functionGroups)

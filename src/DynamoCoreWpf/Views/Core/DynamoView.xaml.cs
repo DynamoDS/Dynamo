@@ -1855,7 +1855,7 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            var preferencesWindow = new PreferencesWindow();
+            var preferencesWindow = new PreferencesView(dynamoViewModel);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }
