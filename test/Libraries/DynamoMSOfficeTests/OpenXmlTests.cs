@@ -660,12 +660,12 @@ namespace DynamoMSOfficeTests
         }
 
         [Test]
-        public void CanWriteNullValuesToExcel()
+        public void CanWriteNullValueToExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = Path.Combine(TempFolder, $"{nameof(CanWriteNullValuesToExcel)}_output.xlsx");
+            var filePath = Path.Combine(TempFolder, $"{nameof(CanWriteNullValueToExcel)}_output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
@@ -678,12 +678,12 @@ namespace DynamoMSOfficeTests
         }
 
         [Test]
-        public void CanWriteNullValuesToExcel1()
+        public void CanWriteNullValueInListToExcel()
         {
             string openPath = Path.Combine(TestDirectory, @"core\excel\WriteNullValuesToExcel1_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var filePath = Path.Combine(TempFolder, $"{nameof(CanWriteNullValuesToExcel1)}_output.xlsx");
+            var filePath = Path.Combine(TempFolder, $"{nameof(CanWriteNullValueInListToExcel)}_output.xlsx");
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
