@@ -119,7 +119,9 @@ namespace Dynamo.ViewModels
         {
             StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
 
-            return e.Name.IndexOf(input, stringComparison) >= 0;
+            return e.Name.IndexOf(input, stringComparison) >= 0 || 
+                e.SearchKeywords.Any(x => x.IndexOf(input,stringComparison) >= 0) || 
+                e.Description.IndexOf(input, stringComparison) >= 0;
         }
 
         /// <summary>
