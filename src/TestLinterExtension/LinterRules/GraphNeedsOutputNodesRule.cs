@@ -27,7 +27,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
             nameof(NodeModel.IsSetAsOutput)
         };
 
-        protected override Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvalualteFunction(WorkspaceModel workspaceModel, NodeModel nodeModel = null)
+        protected override Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvaluateFunction(WorkspaceModel workspaceModel, NodeModel nodeModel = null)
         {
             if (!(nodeModel is null))
             {
@@ -53,7 +53,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
                     outputNodes.Add(node);
             }
 
-            return new List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>> { EvalualteFunction(workspaceModel) };
+            return new List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>> { EvaluateFunction(workspaceModel) };
         }
     }
 }

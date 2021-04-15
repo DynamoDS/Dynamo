@@ -17,12 +17,12 @@ namespace Dynamo.Linting.Rules
 
         /// <summary>
         /// Method to call when this rule needs to be evaluated.
-        /// This will use <see cref="EvalualteFunction(NodeModel)"/> to evaluate the rule.
+        /// This will use <see cref="EvaluateFunction(NodeModel)"/> to evaluate the rule.
         /// </summary>
         /// <param name="nodeModel"></param>
         internal void Evaluate(NodeModel nodeModel)
         {
-            var status = EvalualteFunction(nodeModel);
+            var status = EvaluateFunction(nodeModel);
             var result = new NodeRuleEvaluationResult(this.Id, status, nodeModel.GUID.ToString());
             OnRuleEvaluated(result);
         }
@@ -32,7 +32,7 @@ namespace Dynamo.Linting.Rules
         /// </summary>
         /// <param name="nodeModel">Node to evaluate</param>
         /// <returns></returns>
-        protected abstract RuleEvaluationStatusEnum EvalualteFunction(NodeModel nodeModel);
+        protected abstract RuleEvaluationStatusEnum EvaluateFunction(NodeModel nodeModel);
 
         /// <summary>
         /// The init function is used when the Linter extension implementing this Rule is initialized.

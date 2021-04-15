@@ -73,7 +73,5 @@ namespace Dynamo.Linting.Rules
         {
             RuleEvaluated?.Invoke(result);
         }
-
-        public virtual void Dispose() { }
     }
 }

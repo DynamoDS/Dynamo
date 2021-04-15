@@ -16,13 +16,13 @@ namespace Dynamo.Linting.Rules
     {
         /// <summary>
         /// Method to call when this rule needs to be evaluated.
-        /// This will use <see cref="EvalualteFunction(WorkspaceModel, NodeModel)"/> to evaluate the rule.       
+        /// This will use <see cref="EvaluateFunction(WorkspaceModel, NodeModel)"/> to evaluate the rule.       
         /// </summary>
         /// <param name="workspaceModel"></param>
         /// <param name="modifiedNode"></param>
         internal void Evaluate(WorkspaceModel workspaceModel, NodeModel modifiedNode = null)
         {
-            var pair = EvalualteFunction(workspaceModel, modifiedNode);
+            var pair = EvaluateFunction(workspaceModel, modifiedNode);
             var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, pair.Item2);
             OnRuleEvaluated(result);
         }
@@ -33,7 +33,7 @@ namespace Dynamo.Linting.Rules
         /// <param name="workspaceModel"></param>
         /// <param name="modifiedNode"></param>
         /// <returns></returns>
-        protected abstract Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvalualteFunction(WorkspaceModel workspaceModel, NodeModel modifiedNode = null);
+        protected abstract Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvaluateFunction(WorkspaceModel workspaceModel, NodeModel modifiedNode = null);
 
         /// <summary>
         /// The init function is used when the Linter extension implementing this Rule is initialized.
