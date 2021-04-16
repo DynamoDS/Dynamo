@@ -2284,6 +2284,8 @@
                              Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" 
                              Color="DarkGray" />
+    <SolidColorBrush x:Key="ExpanderBackgroundColor" 
+                             Color="#707070" />
     <SolidColorBrush x:Key="SecondaryGray" 
                              Color="#707070" />
 
@@ -2894,6 +2896,197 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <SolidColorBrush x:Key="PreferencesWindowVisualSettingsBackground" 
+                             Color="#535353" />
+
+    <SolidColorBrush x:Key="PreferencesWindowVisualSettingsAddStyleBackground" 
+                             Color="#666666" />
+
+    <!--This Style will be used in the radio buttons located in the Preferences -> Visual Settings ->  Geometry Scaling section-->
+    <Style x:Key="GeometryScaleRadioButtons"
+           TargetType="{x:Type RadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <BulletDecorator Background="{StaticResource PreferencesWindowBackgroundColor}" 
+                                     Cursor="Hand">
+                        <BulletDecorator.Bullet>
+                            <Grid Width="18"
+                                        Height="18">
+                                <!--The main white circle filled with White color (see the trigger IsChecked -> True-->
+                                <Ellipse x:Name="MainEllipse"
+                                         StrokeThickness="1"
+                                         Stroke="Black">
+                                </Ellipse>
+                                <!--The black circle inside the MainEllipse which indicates which radio button is checked-->
+                                <Ellipse x:Name="SelectedEllipse"
+                                         Margin="5"
+                                         Visibility="Collapsed"
+                                         Fill="Black">
+                                </Ellipse>
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <!--Text element next to each radio button-->
+                        <TextBlock 
+                                    x:Name="RadioTextBlock"
+                                    Margin="3,1,0,0" 
+                                   Foreground="{StaticResource PreferencesWindowFontColor}" 
+                                   FontWeight="Regular"
+                                   FontSize="12">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </BulletDecorator>
+                    <!--If item is checked, trigger the visibility of the mark-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" 
+                                 Value="true">
+                            <!--If item is checked, trigger the visibility to Visible of the SelectedEllipse and change the color of the MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Visible"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowFontColor}"/>
+                            <Setter TargetName="RadioTextBlock"
+                                            Property="FontWeight"
+                                            Value="Bold"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" 
+                                 Value="false">
+                            <!--If item is checked, trigger the visibility to Collapse of the SelectedEllipse and change the color of the  MainEllipse into White for better highlighting-->
+                            <Setter TargetName="SelectedEllipse" 
+                                    Property="Visibility" 
+                                    Value="Collapsed"/>
+                            <Setter TargetName="MainEllipse" 
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowBackgroundColor}"/>
+                            <Setter TargetName="MainEllipse" 
+                                Property="Stroke" 
+                                Value="{StaticResource PreferencesWindowFontColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used for some TextBlocks located in "Preferences -> Visual Settings ->  Geometry Scaling section" that have a very specific behavior of showing a descrition below-->
+    <Style x:Key="GeometryScaleDescTextBox"
+                   TargetType="{x:Type TextBlock}">
+        <Setter Property="Background" Value="#474747"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Regular"/>
+    </Style>
+
+    <!--This Style will be used for a TextBox located in "Preferences -> Visual Settings -> Group Styles when adding a new Style
+    The specific behaviour for the TextBox is that doesn't have borders and has some text that is deleted when the user starts typing-->
+    <Style x:Key="TextBoxWaterMarkStyle" 
+                   TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="#666666" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="20" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Row="0"
+                                Background="#666666" 
+                                BorderBrush="#0696D7" 
+                                Grid.ColumnSpan="2"
+                                BorderThickness="0,0,0,2"/>
+                        <ScrollViewer x:Name="PART_ContentHost" 
+                                      Margin="5,0,0,0" 
+                                      VerticalAlignment="Center" />
+
+                        <!--This Label will show the WaterMark text that will be deleted once the user starts typing-->
+                        <Label Grid.Row="0"
+                                Margin="5,0,0,0" 
+                                x:Name="WaterMarkLabel" 
+                                Content="{TemplateBinding Tag}" 
+                                VerticalAlignment="Center"
+                                Visibility="Collapsed" 
+                                Foreground="LightGray"/>
+
+                        <!--This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists-->
+                        <Canvas Grid.Column="1" 
+                                Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                ToolTip="Style name already in use">
+                            <Polygon 
+                                         Points="10,5 18,20 2,20">
+                                <Polygon.Fill>
+                                    <SolidColorBrush Color="#FAA21B" />
+                                </Polygon.Fill>
+                            </Polygon>
+
+                            <Line x:Name="exclamationMark"
+                                    X1="10" Y1="8"
+                                    X2="10" Y2="15"
+                                    Stroke="Black"
+                                    StrokeThickness="2"/>
+                            <Ellipse x:Name="exclamationPoint"
+                                    Height="2"
+                                    Width="2"
+                                    Canvas.Top="17"
+                                    Canvas.Left="9"
+                                    Canvas.Right="10"
+                                    Fill="Black"/>
+                        </Canvas>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <!--When the user delete the text (Text property is empty) typed when we show again the WaterMark text-->
+                            <MultiTrigger.Conditions>
+                                <Condition Property="Text" 
+                                           Value=""/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Visibility" 
+                                    TargetName="WaterMarkLabel" 
+                                    Value="Visible"/>
+                        </MultiTrigger>
+                        <Trigger Property="IsEnabled" 
+                                 Value="False">
+                            <Setter Property="Foreground" 
+                                    Value="DimGray"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used in the button for adding a Style in the "Group Styles" section-->
+    <Style x:Key="LinkButton"
+           TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock>
+                        <ContentPresenter />
+                    </TextBlock>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground"
+                Value="#6DD2FF" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="Foreground"
+                        Value="Red" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="#BBBBBB" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>

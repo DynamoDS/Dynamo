@@ -4503,6 +4503,33 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Geometry Scaling.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGeoScaling {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGroupStyles {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGroupStyles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Render Precision.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsRenderPrecision {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsRenderPrecision", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Visual Settings.
         /// </summary>
         public static string PreferencesViewVisualSettingsTab {
