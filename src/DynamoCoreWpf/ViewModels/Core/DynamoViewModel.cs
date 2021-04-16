@@ -292,6 +292,25 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
+        /// <summary>
+        /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
+        /// in the node search library.
+        /// </summary>
+        public bool EnableTSpline
+        {
+            get
+            {
+                return !PreferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
+            }
+            set
+            {
+                model.HideUnhideNamespace(!value,
+                    "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
+            }
+        }
+
         /// <summary>
         /// Indicates whether to enabled node Auto Complete feature for port interaction.
         /// </summary>
@@ -534,6 +553,24 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(ShowTabsAndSpacesInScriptEditor));
             }
         }
+
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
+        /// <summary>
+        /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
+        /// </summary>
+        public string DefaultPythonEngine
+        {
+            get { return model.PreferenceSettings.DefaultPythonEngine; }
+            set
+            {
+                if (value != model.PreferenceSettings.DefaultPythonEngine)
+                {
+                    model.PreferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(DefaultPythonEngine));
+                }
+            }
+        }
+
         #endregion
 
         public struct StartConfiguration
