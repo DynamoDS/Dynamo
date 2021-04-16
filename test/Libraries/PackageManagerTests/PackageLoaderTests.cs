@@ -629,10 +629,10 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
 
-        //signedpackge generated from internal repo at SignedDynamoTestingPackages
+        //signedpackage generated from internal repo at SignedDynamoTestingPackages
 
         [Test]
-        public void HasValidStandardLibraryPath()
+        public void HasValidStandardLibraryAndDefaultPackagesPath()
         {
             // Arrange
             var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
@@ -641,10 +641,46 @@ namespace Dynamo.PackageManager.Tests
 
             // Act
             var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
             Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
+        }
+        [Test]
+        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { PackageLoader.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
+        }
+        [Test]
+        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { PackagesDirectory, PackageLoader.StandardLibraryToken }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
         public void PackageInStandardLibLocationIsLoaded()
