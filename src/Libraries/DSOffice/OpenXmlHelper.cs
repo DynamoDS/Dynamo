@@ -144,7 +144,7 @@ namespace DSOffice
                 if (ContainsFunction(data))
                 {
                     string message = string.Format(Properties.Resources.kMethodResolutionFailureWithTypes,
-                        "Data.ExportOpenXml", "Function");
+                        "Data.OpenXMLExportExcel", "Function");
                     DynamoServices.LogWarningMessageEvents.OnLogWarningMessage(message);
                     data = new object[0][];
                 }

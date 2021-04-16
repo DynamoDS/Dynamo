@@ -17,7 +17,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "DSOffice.Data.ImportOpenXml@string,string,int,int,bool",
+      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
       "Id": "51e0b233fa764f95879c2479818925bf",
       "Inputs": [
         {
@@ -78,12 +78,12 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Read data from a Microsoft Excel spreadsheet. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.ImportOpenXml (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
+      "Description": "Read data from a Microsoft Excel spreadsheet. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "DSOffice.Data.ExportOpenXml@string,string,var[][],int,int,bool,bool",
+      "FunctionSignature": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
       "Id": "e76a86594d8a4abc87fd82eddcbf0315",
       "Inputs": [
         {
@@ -162,7 +162,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Write data to a Microsoft Excel spreadsheet. Data is written by row with sublists to be written in successive rows. Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will be written to cell A1. Null values and empty lists are written to Excel as empty cells.\n\nData.ExportOpenXml (filePath: string, sheetName: string, data: var[][], startRow: int = 0, startColumn: int = 0, overWrite: bool = false, writeAsString: bool = false): void"
+      "Description": "Write data to a Microsoft Excel spreadsheet. Data is written by row with sublists to be written in successive rows. Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will be written to cell A1. Null values and empty lists are written to Excel as empty cells.\n\nData.OpenXMLExportExcel (filePath: string, sheetName: string, data: var[][], startRow: int = 0, startColumn: int = 0, overWrite: bool = false, writeAsString: bool = false): void"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -385,7 +385,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "Data.ImportOpenXml",
+        "Name": "Data.OpenXMLImportExcel",
         "Id": "51e0b233fa764f95879c2479818925bf",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
@@ -395,7 +395,7 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "Data.ExportOpenXml",
+        "Name": "Data.OpenXMLExportExcel",
         "Id": "e76a86594d8a4abc87fd82eddcbf0315",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

@@ -883,7 +883,7 @@ namespace DSOffice
         /// <param name="readAsString">Toggle to read cells as strings</param>
         /// <returns name="data">Rows of data from the Excel worksheet</returns>
         /// <search>office,excel,spreadsheet</search>
-        public static object[][] ImportOpenXml(string filePath, string sheetName, int startRow = 0, int startColumn = 0, bool readAsString = false)
+        public static object[][] OpenXMLImportExcel(string filePath, string sheetName, int startRow = 0, int startColumn = 0, bool readAsString = false)
         {
             return OpenXmlHelper.Read(filePath, sheetName, startRow, startColumn, readAsString);
         }
@@ -902,7 +902,7 @@ namespace DSOffice
         /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
         /// <param name="writeAsString">Toggle to switch between writing cell values as strings</param>
         /// <search>office,excel,spreadsheet</search>
-        public static void ExportOpenXml(string filePath, string sheetName, object[][] data, int startRow = 0, int startColumn = 0, bool overWrite = false, bool writeAsString = false)
+        public static void OpenXMLExportExcel(string filePath, string sheetName, object[][] data, int startRow = 0, int startColumn = 0, bool overWrite = false, bool writeAsString = false)
         {
             OpenXmlHelper.Write(filePath, sheetName, data, startRow, startColumn, overWrite, writeAsString);
         }

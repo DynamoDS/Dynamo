@@ -12,7 +12,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "DSOffice.Data.ImportOpenXml@string,string,int,int,bool",
+      "FunctionSignature": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
       "Id": "2030f61a59594ad2b0639a8aa024de84",
       "Inputs": [
         {
@@ -73,7 +73,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Read data from a Microsoft Excel spreadsheet. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.ImportOpenXml (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
+      "Description": "Read data from a Microsoft Excel spreadsheet. Data is read by row and returned in a series of lists by row. Rows and columns are zero-indexed; for example, the value in cell A1 will appear in the data list at [0,0].\n\nData.OpenXMLImportExcel (filePath: string, sheetName: string, startRow: int = 0, startColumn: int = 0, readAsString: bool = false): var[][]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
@@ -171,7 +171,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "Data.ImportOpenXml",
+        "Name": "Data.OpenXMLImportExcel",
         "Id": "2030f61a59594ad2b0639a8aa024de84",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,

@@ -5657,17 +5657,17 @@
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSOffice.Data.ImportOpenXml",
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLImportExcel",
       "iconUrl": "http://localhost/icons/DSOffice.Data.ImportExcel.Small?path=DSOffice.dll",
-      "contextData": "DSOffice.Data.ImportOpenXml@string,string,int,int,bool",
+      "contextData": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""
     },
     {
-      "fullyQualifiedName": "DSOffice.Data.ExportOpenXml",
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLExportExcel",
       "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
-      "contextData": "DSOffice.Data.ExportOpenXml@string,string,var[][],int,int,bool,bool",
+      "contextData": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""

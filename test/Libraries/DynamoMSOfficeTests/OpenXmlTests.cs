@@ -44,7 +44,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\InvalidSheet_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -58,7 +58,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\SingleColumnAscending_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -84,7 +84,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\MultiColumn_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -113,7 +113,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\MissingCell_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -127,7 +127,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\MixedNumbersAndStrings_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -143,7 +143,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\ReadOnlyFile_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
             
@@ -157,7 +157,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\ReadNonExistingFile_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.AreEqual(ElementState.Warning, node.State);
@@ -170,7 +170,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\ReadAsStrings_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -185,7 +185,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(TestDirectory, @"core\excel\ReadEmptyCellsAsStrings_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -230,7 +230,7 @@ namespace DynamoMSOfficeTests
             string openPath = Path.Combine(testDir, @"core\excel\formula_OpenXml.dyn");
             ViewModel.OpenCommand.Execute(openPath);
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -253,7 +253,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
 
             ViewModel.HomeSpace.Run();
 
@@ -273,7 +273,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -335,7 +335,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -360,7 +360,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -378,7 +378,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -396,7 +396,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -420,7 +420,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsNull(node.CachedValue.Data);
@@ -436,7 +436,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -465,7 +465,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var node = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(node.CachedValue.IsCollection);
@@ -498,7 +498,7 @@ namespace DynamoMSOfficeTests
             var dataValueNode = stringNodes.Where(n => n.Name == "Value").First();
             filePathNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -537,7 +537,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -555,7 +555,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -577,7 +577,7 @@ namespace DynamoMSOfficeTests
             var stringInput = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringInput.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -595,7 +595,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -617,7 +617,7 @@ namespace DynamoMSOfficeTests
             var stringInput = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringInput.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -644,7 +644,7 @@ namespace DynamoMSOfficeTests
             var stringInput = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringInput.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -669,7 +669,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -687,7 +687,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -705,7 +705,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             ProtoCore.RuntimeCore runtimeCore = ViewModel.Model.EngineController.LiveRunnerRuntimeCore;
@@ -733,7 +733,7 @@ namespace DynamoMSOfficeTests
             var stringNode = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringNode.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             ViewModel.HomeSpace.Run();
 
             Assert.IsTrue(readNode.CachedValue.IsCollection);
@@ -751,7 +751,7 @@ namespace DynamoMSOfficeTests
             var stringInput = ViewModel.Model.CurrentWorkspace.FirstNodeFromWorkspace<CoreNodeModels.Input.StringInput>();
             stringInput.Value = filePath;
 
-            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.ImportOpenXml");
+            var readNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Data.OpenXMLImportExcel");
             var typeNode = ViewModel.Model.CurrentWorkspace.Nodes.First(n => n.Name == "Object.Type");
             ViewModel.HomeSpace.Run();
 
