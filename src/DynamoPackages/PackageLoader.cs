@@ -126,12 +126,12 @@ namespace Dynamo.PackageManager
         /// <param name="stdLibDirectory"></param>
         internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
         {
+            InitPackageLoader(packagesDirectories, stdLibDirectory);
+
             //override the property.
             this.StandardLibraryDirectory = stdLibDirectory;
-
-            InitPackageLoader(packagesDirectories, stdLibDirectory);
         }
-        
+
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
             InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
