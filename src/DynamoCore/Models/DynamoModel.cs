@@ -724,7 +724,12 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { @"%StandardLibrary%", pathManager.UserDataDirectory };
+
+            if (!PreferenceSettings.CustomPackageFolders.Contains(@"%StandardLibrary%"))
+            {
+                PreferenceSettings.CustomPackageFolders.Insert(0, @"%StandardLibrary%");
+            }
 
             // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
