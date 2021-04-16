@@ -2284,7 +2284,6 @@
                              Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" 
                              Color="DarkGray" />
-    <!--Examples of usage: Extenders background and off toggle button background-->
     <SolidColorBrush x:Key="SecondaryGray" 
                              Color="#707070" />
 

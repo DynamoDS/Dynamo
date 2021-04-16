@@ -17,9 +17,6 @@
         mc:Ignorable="d" 
         Height="474" 
         Width="530" >
-    <!--<Window.DataContext>
-        <viewModel:PreferencesViewModel/>
-    </Window.DataContext>-->
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -267,8 +264,6 @@
                                                               VerticalAlignment="Center"
                                                               IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
                                                               Style="{StaticResource EllipseToggleButton1}"/>
-                                                              <!--MinWidth="30"             
-                                                              MaxHeight="20"-->
                                                 <Label Content="Hide IronPython alerts" 
                                                        Margin="10,0,0,0"
                                                        VerticalAlignment="Center"
