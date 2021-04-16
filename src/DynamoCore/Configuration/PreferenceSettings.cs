@@ -426,7 +426,7 @@ namespace Dynamo.Configuration
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
-            EnableNodeAutoComplete = false;
+            EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
         }

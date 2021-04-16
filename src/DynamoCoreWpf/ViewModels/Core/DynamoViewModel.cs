@@ -292,6 +292,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
@@ -553,6 +554,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
