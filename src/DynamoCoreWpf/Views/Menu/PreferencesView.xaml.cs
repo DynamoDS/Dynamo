@@ -32,6 +32,11 @@ namespace Dynamo.Wpf.Views
                 viewModel = viewModelTemp;
             }
 
+            InitRadioButtonsDescription();
+        }
+
+        private void InitRadioButtonsDescription()
+        {
             RadioSmallDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[0]);
 
             RadioMediumDesc.Inlines.Add(new Run(Res.ChangeScaleFactorPromptDescriptionDefaultSetting) { FontWeight = FontWeights.Bold });

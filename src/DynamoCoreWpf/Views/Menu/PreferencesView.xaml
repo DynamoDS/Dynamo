@@ -31,7 +31,6 @@
             <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
             <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <viewModels:PreferencesViewModel x:Key="ViewModelPreferences"/>
 
             <!--This Style will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
