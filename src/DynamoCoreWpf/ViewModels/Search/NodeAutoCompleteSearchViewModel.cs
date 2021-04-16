@@ -166,8 +166,6 @@ namespace Dynamo.ViewModels
             {
                 //for now, remove rank from descriptors
                 var returnTypeName = ztSearchElement.Descriptor.ReturnType.Name;
-
-                var descriptor = ztSearchElement.Descriptor;
                 if ((returnTypeName == inputPortType)
                     || DerivesFrom(inputPortType, returnTypeName, core))
                 {
@@ -175,10 +173,14 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            // NodeModel nodes, match any output return type to inputport type name
+            // NodeModel nodes, match any output return type to InputPortType name
             foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
             {
-                if (element.OutputParameters.Any(op => op == inputPortType))
+                // For NodeModel nodes, output types are defined by user which usually do not contain namespace
+                // e.g. For ColorRange, the OutPortType(OutputParameter) is Color instead of DSCore.Color
+                // While we can define output type with namespace there, in order to be consistent on simplified  
+                // PortType name display in library, we make it tolerant here
+                if (element.OutputParameters.Any(op => inputPortType.EndsWith(op)))
                 {
                     elements.Add(element);
                 }
