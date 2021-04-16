@@ -2284,7 +2284,7 @@
                              Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" 
                              Color="DarkGray" />
-    <SolidColorBrush x:Key="ExpanderBackgroundColor" 
+    <SolidColorBrush x:Key="SecondaryGray" 
                              Color="#707070" />
 
 
@@ -2399,7 +2399,7 @@
     <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
-                Background="{StaticResource ExpanderBackgroundColor}" 
+                Background="{StaticResource SecondaryGray}" 
                 BorderThickness="1" 
                 CornerRadius="1" >
             <Grid>
@@ -2445,7 +2445,7 @@
     </ControlTemplate>
 
     <Style TargetType="Expander" x:Key="MenuExpanderStyle">
-        <Setter Property="Background" Value="{StaticResource ExpanderBackgroundColor}"/>
+        <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -2549,67 +2549,94 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
-                    <Viewbox>
-                        <!--This Border is the one that shows the Blue color when the toogle button is checked-->
-                        <Border x:Name="Border" 
-                                CornerRadius="10"
-                                Background="{StaticResource PreferencesWindowFontColor}"
-                                Width="40" 
-                                Height="20">
-                            <Border.Effect>
-                                <DropShadowEffect ShadowDepth="0.5" 
-                                                  Direction="0" 
-                                                  Opacity="0.3" />
-                            </Border.Effect>
-                            
-                            <!--The Ellipse Fill color is always white even when the Toogle button is checked or unchecked-->
-                            <Ellipse x:Name="Ellipse" 
-                                     Fill="#FFFFFFFF" 
-                                     Stretch="Uniform"
-                                     Margin="2 1 2 1"
-                                     Stroke="{StaticResource PreferencesWindowFontColor}" 
-                                     StrokeThickness="0.2"
-                                     HorizontalAlignment="Stretch">
-                                <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="10" 
-                                                      ShadowDepth="1" 
-                                                      Opacity="0.3" 
-                                                      Direction="260" />
-                                </Ellipse.Effect>
-                            </Ellipse>
+                    <Grid x:Name="mainGrid">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Name="_borderOn"
+                                Background="Transparent"
+                                Width="{TemplateBinding Width}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Row="0" Grid.RowSpan="1" Grid.Column="1"
+                                        Grid.ColumnSpan="3" Background="{StaticResource PreferencesWindowButtonColor}"
+                                        Panel.ZIndex="1"/>
+                                <Ellipse Name="ButtonBackgroundOn"
+                                         Grid.Row="0" Grid.RowSpan="1" Grid.Column="0"
+                                         Grid.ColumnSpan="2" 
+                                         Fill="{StaticResource PreferencesWindowButtonColor}"
+                                         Width="{TemplateBinding Height}"
+                                         Panel.ZIndex="0"/>
+                                <Ellipse Grid.Row="0" Grid.RowSpan="1"
+                                         Grid.Column="3" Grid.ColumnSpan="2"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Panel.ZIndex="3"
+                                         Stroke="{StaticResource PreferencesWindowButtonColor}"
+                                         StrokeThickness="4"/>
+                            </Grid>
                         </Border>
-                    </Viewbox>
+                        
+                        <Border Grid.Column="0" Name="_borderOff"
+                                Background="Transparent"
+                                Width="{TemplateBinding Width}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Row="0" Grid.RowSpan="1" Grid.Column="1"
+                                        Grid.ColumnSpan="3" Background="{StaticResource TabItemUnSelected}"
+                                        Panel.ZIndex="1"/>
+                                <Ellipse Name="ButtonBackgroundOff"
+                                         Grid.Row="0" Grid.RowSpan="1" Grid.Column="3"
+                                         Grid.ColumnSpan="2" 
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Fill="{StaticResource TabItemUnSelected}"
+                                         Panel.ZIndex="0"/>
+                                <Ellipse Grid.Row="0" Grid.RowSpan="1"
+                                         Grid.Column="0" Grid.ColumnSpan="2"
+                                         Fill="{StaticResource CloseButtonMouseOverForeground}"
+                                         Width="{TemplateBinding Height}"
+                                         Height="{TemplateBinding Height}"
+                                         Panel.ZIndex="3"
+                                         Stroke="{StaticResource TabItemUnSelected}"
+                                         StrokeThickness="4"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- triggers toggle visual appearance -->
                     <ControlTemplate.Triggers>
-                        <!--When is checked execute an animation and the Border shows the blue color-->
-                        <EventTrigger RoutedEvent="Checked">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="Border"
-                                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                    To="{StaticResource PreferencesToogleCheckedColor}"
-                                                    Duration="0:0:0.1" />
-                                    <ThicknessAnimation Storyboard.TargetName="Ellipse"
-                                                        Storyboard.TargetProperty="Margin"
-                                                        To="20 1 2 1"
-                                                        Duration="0:0:0.1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
-                        <!--When is unchecked execute the animation and shows a gray color in the Border-->
-                        <EventTrigger RoutedEvent="Unchecked">
-                            <BeginStoryboard>
-                                <Storyboard>
-                                    <ColorAnimation Storyboard.TargetName="Border"
-                                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                    To="{StaticResource PreferencesToogleUnCheckedColor}"
-                                                    Duration="0:0:0.1" />
-                                    <ThicknessAnimation Storyboard.TargetName="Ellipse"
-                                                        Storyboard.TargetProperty="Margin"
-                                                        To="2 1 2 1"
-                                                        Duration="0:0:0.1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </EventTrigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="_borderOff" Property="Visibility"
+                                    Value="Collapsed" />
+                            <Setter TargetName="_borderOn" Property="Visibility"
+                                    Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="False">
+                            <Setter TargetName="_borderOff" Property="Visibility"
+                                    Value="Visible" />
+                            <Setter TargetName="_borderOn" Property="Visibility"
+                                    Value="Collapsed" />
+                        </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

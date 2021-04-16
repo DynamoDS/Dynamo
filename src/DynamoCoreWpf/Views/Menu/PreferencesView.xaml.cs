@@ -1,16 +1,21 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Wpf.Views
 {
     /// <summary>
     /// Interaction logic for PreferencesView.xaml
     /// </summary>
-    public partial class PreferencesWindow : Window
+    public partial class PreferencesView : Window
     {
 
-        public PreferencesWindow()
+        public PreferencesView(DynamoViewModel dynamoViewModel)
         {
+            DataContext = new PreferencesViewModel(dynamoViewModel.Model.PreferenceSettings, dynamoViewModel.PythonScriptEditorTextOptions);
+            
             InitializeComponent();
 
             //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)

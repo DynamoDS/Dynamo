@@ -3290,6 +3290,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Stadard Library packages : {2}. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessagePackageDepsInStdLib {
+            get {
+                return ResourceManager.GetString("MessagePackageDepsInStdLib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
@@ -3313,6 +3322,24 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageVersionNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessageSamePackageDiffVersInStdLib {
+            get {
+                return ResourceManager.GetString("MessageSamePackageDiffVersInStdLib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessageSamePackageInStdLib {
+            get {
+                return ResourceManager.GetString("MessageSamePackageInStdLib", resourceCulture);
             }
         }
         
