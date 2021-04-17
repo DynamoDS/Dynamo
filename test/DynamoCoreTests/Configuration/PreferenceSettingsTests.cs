@@ -56,7 +56,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
@@ -70,7 +70,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowCodeBlockLineNumber, true);
             Assert.AreEqual(settings.IsIronPythonDialogDisabled, false);
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, false);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
             Assert.AreEqual(settings.DefaultPythonEngine, string.Empty);
             Assert.AreEqual(settings.MaxNumRecentFiles, PreferenceSettings.DefaultMaxNumRecentFiles);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 0);
