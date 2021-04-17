@@ -82,7 +82,7 @@ namespace Dynamo.Tests.Configuration
             settings.ShowTabsAndSpacesInScriptEditor = true;
             settings.DefaultPythonEngine = "CP3";
             settings.MaxNumRecentFiles = 24;
-            settings.EnableNodeAutoComplete = true;
+            settings.EnableNodeAutoComplete = false;
             settings.ViewExtensionSettings.Add(new ViewExtensionSettings()
             {
                 Name = "MyExtension",
@@ -109,7 +109,7 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.ShowTabsAndSpacesInScriptEditor, true);
             Assert.AreEqual(settings.DefaultPythonEngine, "CP3");
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];
             Assert.AreEqual(extensionSettings.Name, "MyExtension");
