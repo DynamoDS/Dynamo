@@ -75,7 +75,7 @@ namespace Dynamo.ViewModels
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
             MovePathUpCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) - 1), CanMoveUp);
             MovePathDownCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) + 1), CanMoveDown);
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p));
+            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p), CanUpdate);
             SaveSettingCommand = new DelegateCommand(CommitChanges);
 
             SelectedIndex = 0;
@@ -87,13 +87,13 @@ namespace Dynamo.ViewModels
         public PackagePathViewModel(IPreferences setting)
         {
 
-            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+            InitializeRootLocations();
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int)p), CanDelete);
             MovePathUpCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) - 1), CanMoveUp);
             MovePathDownCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) + 1), CanMoveDown);
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int)p));
+            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int)p), CanUpdate);
             SaveSettingCommand = new DelegateCommand(CommitChanges);
 
             SelectedIndex = 0;
@@ -106,10 +106,15 @@ namespace Dynamo.ViewModels
             MovePathUpCommand.RaiseCanExecuteChanged();
             AddPathCommand.RaiseCanExecuteChanged();
             DeletePathCommand.RaiseCanExecuteChanged();
+            UpdatePathCommand.RaiseCanExecuteChanged();
         }
 
         private bool CanDelete(object param)
         {
+            if (RootLocations.IndexOf("Standard Library") == SelectedIndex)
+            {
+                return false;
+            }
             return RootLocations.Count > 1;
         }
 
@@ -121,6 +126,11 @@ namespace Dynamo.ViewModels
         private bool CanMoveDown(object param)
         {
             return SelectedIndex < RootLocations.Count - 1;
+        }
+
+        private bool CanUpdate(object param)
+        {
+            return RootLocations.IndexOf("Standard Library") != SelectedIndex;
         }
 
         // The position of the selected entry must always be the first parameter.
