@@ -44,13 +44,15 @@ namespace Dynamo.Linting
                 if (activeLinter == value)
                     return;
 
-                activeLinter = value;
+                if (activeLinter != null)
+                    GetLinterExtension(activeLinter).Deactivate();
 
-                var linterExt = GetLinterExtension(activeLinter);
+                var linterExt = GetLinterExtension(value);
                 if (linterExt is null)
                     return;
 
                 linterExt.Activate();
+                activeLinter = value;
             }
         }
 

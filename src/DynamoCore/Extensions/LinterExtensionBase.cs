@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Graph.Nodes;
@@ -11,7 +12,7 @@ using Dynamo.Linting.Rules;
 namespace Dynamo.Extensions
 {
     /// <summary>
-    /// 
+    /// Base class for all LinterExtensions
     /// </summary>
     public abstract class LinterExtensionBase : IExtension
     {
@@ -23,6 +24,8 @@ namespace Dynamo.Extensions
         private LinterManager linterManager;
         private WorkspaceModel currentWorkspace;
 
+        internal ReadyParams ReadyParamsRef { get; set; }
+
         internal bool IsActive => this.linterManager?.IsExtensionActive(UniqueId) ?? false;
   
         internal LinterExtensionDescriptor ExtensionDescriptor { get; private set; }
@@ -30,31 +33,23 @@ namespace Dynamo.Extensions
 
         #region Public properties
 
-        public ReadyParams ReadyParamsRef { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
+        ///<inheritdoc/>
         public abstract string UniqueId { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        ///<inheritdoc/>
         public abstract string Name { get; }
 
         /// <summary>
-        /// 
+        /// Collection of the rules in this extension
         /// </summary>
         public HashSet<LinterRule> LinterRules => linterRules;
 
-
-
         #endregion
 
-        #region Public methods
+        #region Internal methods
 
         /// <summary>
-        /// 
+        /// Add a LinterRule
         /// </summary>
         /// <param name="linterRule"></param>
         public void AddLinterRule(LinterRule linterRule)
@@ -63,7 +58,7 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Remove a LinterRule
         /// </summary>
         /// <param name="linterRule"></param>
         public void RemoveLinterRule(LinterRule linterRule)
@@ -73,9 +68,9 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// 
+        /// Activate this linter by subscribing the workspace and initializing its rules
         /// </summary>
-        public void Activate()
+        internal void Activate()
         {
             if (IsActive)
                 return;
@@ -83,6 +78,15 @@ namespace Dynamo.Extensions
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
             this.InitializeRules();
+        }
+
+        /// <summary>
+        /// Deactivates this extension by unsubscribing all its events
+        /// </summary>
+        internal void Deactivate()
+        {
+            ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            UnsubscribeGraphEvents(currentWorkspace);
         }
 
         #endregion
@@ -151,6 +155,7 @@ namespace Dynamo.Extensions
 
         #region Extension Lifecycle
 
+        ///<inheritdoc/>
         public virtual void Ready(ReadyParams sp)
         {
             ReadyParamsRef = sp;
@@ -158,15 +163,22 @@ namespace Dynamo.Extensions
                 InitializeRules();
         }
 
+        ///<inheritdoc/>
         public virtual void Startup(StartupParams sp)
         {
             ExtensionDescriptor = new LinterExtensionDescriptor(UniqueId, Name);
             OnLinterExtensionReady();
         }
 
+        ///<inheritdoc/>
         public abstract void Shutdown();
 
-        public abstract void Dispose();
+        ///<inheritdoc/>
+        public virtual void Dispose()
+        {
+            ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            UnsubscribeGraphEvents(currentWorkspace);
+        }
 
         #endregion
 
