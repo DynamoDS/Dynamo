@@ -87,6 +87,7 @@ namespace Dynamo.Core
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
 
+        private static readonly string StandardLibraryToken = @"%StandardLibrary%";
         #endregion
 
         internal IPreferences Preferences { get; set; }
@@ -129,7 +130,7 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
+            get { return TransformPath(RootDirectories.First(path => path != StandardLibraryToken), DefinitionsDirectoryName); }
         }
 
         public IEnumerable<string> DefinitionDirectories
@@ -149,7 +150,7 @@ namespace Dynamo.Core
 
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
+            get { return TransformPath(RootDirectories.First(path => path != StandardLibraryToken), PackagesDirectoryName); }
         }
 
         public IEnumerable<string> PackagesDirectories

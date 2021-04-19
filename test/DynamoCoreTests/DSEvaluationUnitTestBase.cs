@@ -341,7 +341,8 @@ namespace Dynamo.Tests
 
             var data = mirror.GetData();
             Assert.IsTrue(data.IsCollection, "preview data is not a list");
-            Assert.AreEqual(count, data.GetElements().ToList().Count);
+            var c = data.GetElements().ToList().Count;
+            Assert.AreEqual(count, c);
         }
 
         protected object GetPreviewValueAtIndex(string guid, int index)
