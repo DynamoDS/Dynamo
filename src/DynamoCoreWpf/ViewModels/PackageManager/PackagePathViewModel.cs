@@ -49,6 +49,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        // Token representing the standard library directory
+        private static readonly string StandardLibraryToken = @"%StandardLibrary%";
+
         private IPreferences setting
         {
             get { return loadPackageParams.Preferences; }
@@ -206,7 +209,7 @@ namespace Dynamo.ViewModels
         private void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            var index = RootLocations.IndexOf(@"%StandardLibrary%");
+            var index = RootLocations.IndexOf(StandardLibraryToken);
 
             if (index != -1)
             {
@@ -221,7 +224,7 @@ namespace Dynamo.ViewModels
 
             if (index != -1)
             {
-                rootLocations[index] = @"%StandardLibrary%";
+                rootLocations[index] = StandardLibraryToken;
             }
 
             return rootLocations;
