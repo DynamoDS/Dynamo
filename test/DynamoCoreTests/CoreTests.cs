@@ -422,7 +422,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("")]
+        [Category("UnitTests")]
         public void UpdateModelValue_MissingNode_ThrowsException()
         {
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -435,7 +435,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("")]
+        [Category("UnitTests")]
         public void UpdateModelValue_EmptyList_ThrowsException()
         {
             var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
