@@ -112,7 +112,7 @@ namespace Dynamo.PackageManager
         }
 
         // Token representing the standard library directory
-        public static readonly string StandardLibraryToken = @"%StandardLibrary%";
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
