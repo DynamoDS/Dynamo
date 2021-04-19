@@ -2284,8 +2284,6 @@
                              Color="#FFFFFF" />
     <SolidColorBrush x:Key="TabItemUnSelected" 
                              Color="DarkGray" />
-    <SolidColorBrush x:Key="ExpanderBackgroundColor" 
-                             Color="#707070" />
     <SolidColorBrush x:Key="SecondaryGray" 
                              Color="#707070" />
 
