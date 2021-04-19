@@ -68,7 +68,8 @@ namespace Dynamo.ViewModels
             this.packageLoader = loader;
             this.loadPackageParams = loadParams;
             this.customNodeManager = customNodeManager;
-            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+            
+            InitializeRootLocations();
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
@@ -184,12 +185,35 @@ namespace Dynamo.ViewModels
 
         private void CommitChanges(object param)
         {
-            setting.CustomPackageFolders = new List<string>(RootLocations);
+            setting.CustomPackageFolders = CommitRootLocations();
             if (this.packageLoader != null)
             {
                 this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
             }
         }
 
+        private void InitializeRootLocations()
+        {
+            RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
+            var index = RootLocations.IndexOf(@"%StandardLibrary%");
+
+            if (index != -1)
+            {
+                RootLocations[index] = "Standard Library";
+            }
+        }
+
+        private List<string> CommitRootLocations()
+        {
+            var rootLocations = new List<string>(RootLocations);
+            var index = rootLocations.IndexOf("Standard Library");
+
+            if (index != -1)
+            {
+                rootLocations[index] = @"%StandardLibrary%";
+            }
+
+            return rootLocations;
+        }
     }
 }
