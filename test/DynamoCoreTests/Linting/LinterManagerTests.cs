@@ -110,7 +110,7 @@ namespace DynamoCoreWpfTests.Linter
         }
 
         [Test]
-        public void VerifyThatOnlyRulesFromActiveRuleSetGetsEvaluated()
+        public void VerifyThatOnlyRulesFromActiveLinterGetsEvaluated()
         {
             // Arrange
             var secondLinterExtId = "cddab693-9f38-4a66-a600-a758f2c6c817";

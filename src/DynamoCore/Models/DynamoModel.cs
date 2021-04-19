@@ -791,13 +791,13 @@ namespace Dynamo.Models
             NodeFactory = new NodeFactory();
             NodeFactory.MessageLogged += LogMessage;
 
-            LinterManager = new LinterManager(this);
-
             //Initialize the ExtensionManager with the CommonDataDirectory so that extensions found here are checked first for dll's with signed certificates
             extensionManager = new ExtensionManager(new[] { PathManager.CommonDataDirectory });
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            LinterManager = new LinterManager(this.ExtensionManager);
+            
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
             {

@@ -17,7 +17,7 @@ namespace Dynamo.Linting
     public class LinterManager : NotificationObject
     {
         #region Private fields
-        private readonly DynamoModel dynamoModel;
+        private readonly IExtensionManager extensionManager;
         private LinterExtensionDescriptor activeLinter;
         #endregion
 
@@ -58,9 +58,9 @@ namespace Dynamo.Linting
 
         #endregion
 
-        public LinterManager(DynamoModel dynamoModel)
+        public LinterManager(IExtensionManager extensionManager)
         {
-            this.dynamoModel = dynamoModel;
+            this.extensionManager = extensionManager;
             AvailableLinters = new HashSet<LinterExtensionDescriptor>();
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
 
@@ -115,10 +115,11 @@ namespace Dynamo.Linting
 
         private LinterExtensionBase GetLinterExtension(LinterExtensionDescriptor activeLinter)
         {
-            return this.dynamoModel.ExtensionManager.
+            return this.extensionManager.
                 Extensions.
+                OfType<LinterExtensionBase>().
                 Where(x => x.UniqueId == activeLinter.Id).
-                FirstOrDefault() as LinterExtensionBase;
+                FirstOrDefault();
         }
 
         #endregion
