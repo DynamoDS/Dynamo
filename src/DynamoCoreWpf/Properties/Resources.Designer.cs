@@ -3927,6 +3927,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Standard Library.
+        /// </summary>
+        public static string PackagePathViewModel_Standard_Library {
+            get {
+                return ResourceManager.GetString("PackagePathViewModel_Standard_Library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
         /// </summary>
         public static string PackagePathViewSummary1 {

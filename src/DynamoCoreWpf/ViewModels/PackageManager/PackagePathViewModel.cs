@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.PackageManager;
+using Dynamo.Wpf.Properties;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 
 namespace Dynamo.ViewModels
@@ -111,7 +112,7 @@ namespace Dynamo.ViewModels
 
         private bool CanDelete(object param)
         {
-            if (RootLocations.IndexOf("Standard Library") == SelectedIndex)
+            if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == SelectedIndex)
             {
                 return false;
             }
@@ -130,7 +131,7 @@ namespace Dynamo.ViewModels
 
         private bool CanUpdate(object param)
         {
-            return RootLocations.IndexOf("Standard Library") != SelectedIndex;
+            return RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) != SelectedIndex;
         }
 
         // The position of the selected entry must always be the first parameter.
@@ -209,14 +210,14 @@ namespace Dynamo.ViewModels
 
             if (index != -1)
             {
-                RootLocations[index] = "Standard Library";
+                RootLocations[index] = Resources.PackagePathViewModel_Standard_Library;
             }
         }
 
         private List<string> CommitRootLocations()
         {
             var rootLocations = new List<string>(RootLocations);
-            var index = rootLocations.IndexOf("Standard Library");
+            var index = rootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library);
 
             if (index != -1)
             {
