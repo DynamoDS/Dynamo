@@ -1,0 +1,99 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:local="clr-namespace:Dynamo.LintingViewExtension"
+                    xmlns:core="clr-namespace:Dynamo.Linting.Rules;assembly=DynamoCore"
+                    xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
+                    xmlns:controls="clr-namespace:Dynamo.LintingViewExtension.Controls">
+
+    <SolidColorBrush Color="#444444"
+                     x:Key="ExpanderBackground" />
+    <SolidColorBrush Color="#F5F5F5"
+                     x:Key="HeaderFontColor" />
+    
+    <!--#region Styles -->
+    <Style x:Key="ListViewStyle" TargetType="{x:Type ListView}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderBrush"
+                Value="Transparent" />
+    </Style>
+
+    <Style x:Key="ListViewItemStyle"
+           TargetType="{x:Type ListViewItem}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                    <ContentPresenter />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NodeNameButtonStyle"
+           TargetType="{x:Type Button}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Cursor"
+                        Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock Text="{TemplateBinding Content}"
+                               TextWrapping="WrapWithOverflow"
+                               TextDecorations="Underline"
+                               Foreground="{StaticResource HeaderFontColor}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--#endregion-->
+
+    <!--#region Templates -->
+
+    <DataTemplate x:Key="NodeIssuesItemTemplate"
+                  DataType="{x:Type core:NodeRuleEvaluationResult}">
+        <Button Style="{StaticResource NodeNameButtonStyle}"
+                Background="Transparent"
+                Content="{Binding NodeId}"
+                Command="{Binding Path=DataContext.SelectIssueNodeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LinterView}}}"
+                CommandParameter="{Binding NodeId}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="GraphIssuesItemTemplate"
+                  DataType="{x:Type core:NodeRuleEvaluationResult}">
+    </DataTemplate>
+
+    <DataTemplate x:Key="NodeIssueGroupsItemTemplate"
+                  DataType="{x:Type controls:NodeRuleIssueDto}">
+        <controls:IssueGroup Description="{Binding Rule.Description}"
+                                 CallToAction="{Binding Rule.CallToAction}"
+                                 Results="{Binding Results}"
+                                 Margin="5">
+            <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
+                      ItemsSource="{Binding Results}"
+                      Style="{DynamicResource ListViewStyle}"
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Grid.Row="1"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      Margin="0, 5" />
+
+        </controls:IssueGroup>
+    </DataTemplate>
+
+    <DataTemplate x:Key="GraphIssueGroupsItemTemplate"
+                  DataType="{x:Type controls:GraphRuleIssueDto}">
+        <controls:IssueGroup Description="{Binding Rule.Description}"
+                                 CallToAction="{Binding Rule.CallToAction}"
+                                 Results="{Binding Results}"
+                                 Margin="5">
+        </controls:IssueGroup>
+    </DataTemplate>
+
+    <!--#endregion-->
+
+</ResourceDictionary>

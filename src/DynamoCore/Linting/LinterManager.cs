@@ -113,7 +113,7 @@ namespace Dynamo.Linting
             }
         }
 
-        private LinterExtensionBase GetLinterExtension(LinterExtensionDescriptor activeLinter)
+        internal LinterExtensionBase GetLinterExtension(LinterExtensionDescriptor activeLinter)
         {
             return this.extensionManager.
                 Extensions.
