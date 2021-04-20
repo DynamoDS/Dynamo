@@ -510,7 +510,7 @@ namespace Dynamo.Tests
                 count++;
                 Assert.AreEqual(count, (GetModel().CurrentWorkspace as HomeWorkspaceModel).EvaluationCount);
 
-                AssertPreviewCount(guid, 3);
+                AssertPreviewCount(guid, 2);
             }
         }
 

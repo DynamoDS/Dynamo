@@ -978,7 +978,7 @@ namespace DynamoCoreWpfTests
             new ConnectorModel(numberNode.OutPorts.FirstOrDefault(), outnode2.InPorts.FirstOrDefault(), Guid.NewGuid());
 
 
-            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefaultUserDefinitions, "NewCustomNodeSaveAndLoad.dyf");
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.First(), "NewCustomNodeSaveAndLoad.dyf");
             //save it to the definitions folder so it gets loaded at startup.
             ws.Save(savePath);
 
@@ -1004,7 +1004,7 @@ namespace DynamoCoreWpfTests
             Assert.NotNull(nodeingraph);
             Assert.IsTrue(nodeingraph.State == ElementState.Active);
             //remove custom node from definitions folder
-            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefaultUserDefinitions, "NewCustomNodeSaveAndLoad.dyf");
+            var savePath = Path.Combine(this.ViewModel.Model.PathManager.DefinitionDirectories.First(), "NewCustomNodeSaveAndLoad.dyf");
             File.Delete(savePath);
 
         }
