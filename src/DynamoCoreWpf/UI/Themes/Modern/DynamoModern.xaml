@@ -3060,24 +3060,45 @@
     </Style>
 
     <!--This Style will be used in the button for adding a Style in the "Group Styles" section-->
-    <Style x:Key="LinkButton"
-           TargetType="Button">
+    <Style x:Key="FlatButtonStyle"
+                    TargetType="Button">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <TextBlock>
-                        <ContentPresenter />
-                    </TextBlock>
+                    <Border x:Name="ButtonBorder" 
+                                    CornerRadius="4" 
+                                    BorderBrush="#E0E0E0"
+                                    Background="Transparent">
+                        <TextBlock VerticalAlignment="Center">
+                                    <ContentPresenter />
+                        </TextBlock>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderThickness" 
+                                            Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderThickness" 
+                                            Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderBrush" 
+                                            Value="#A2D4EB" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
         <Setter Property="Foreground"
-                Value="#6DD2FF" />
+                        Value="#6DD2FF" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver"
                      Value="true">
-                <Setter Property="Foreground"
-                        Value="Red" />
+                <Setter Property="Cursor" Value="Hand"/>
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="false">
@@ -3086,5 +3107,64 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="OutlinedButtonStyle"
+                    TargetType="Button">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" 
+                                    CornerRadius="4" 
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="0.5"
+                                    Background="Transparent">
+                        <TextBlock VerticalAlignment="Center"
+                                           HorizontalAlignment="Center">
+                                    <ContentPresenter />
+                        </TextBlock>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Button.Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect Color="Black" 
+                                                              Direction="320" 
+                                                              ShadowDepth="3" 
+                                                              BlurRadius="5" Opacity="0.5" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderThickness" 
+                                            Value="1" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderThickness" 
+                                            Value="2" />
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="ButtonBorder" 
+                                            Property="BorderBrush" 
+                                            Value="#A2D4EB" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground"
+                        Value="#6DD2FF" />
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="true">
+                <Setter Property="Cursor" Value="Hand"/>
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="false">
+                <Setter Property="Foreground"
+                        Value="#BBBBBB" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
 </ResourceDictionary>
