@@ -355,7 +355,7 @@ namespace Dynamo.Search
         private List<IGrouping<string, Tuple<V, double>>> BuildSubsetDictionary(IEnumerable<SearchElements.NodeSearchElement> subset)
         {
             var subsetDictionary = new List<IGrouping<string, Tuple<V, double>>>();
-            foreach (var pair in tagDictionary.Where(x => MatchWithSubset2(x, subset)))
+            foreach (var pair in tagDictionary.Where(x => MatchWithSubset(x, subset)))
             {
                 subsetDictionary.Add(pair);
             }
