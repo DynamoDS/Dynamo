@@ -135,7 +135,7 @@ namespace Dynamo.Core
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)).Where(path => path != StandardLibraryToken); }
         }
 
         public string CommonDefinitions
@@ -155,7 +155,7 @@ namespace Dynamo.Core
 
         public IEnumerable<string> PackagesDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
+            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)).Where(path => path != StandardLibraryToken); }
         }
 
         public IEnumerable<string> ExtensionsDirectories
