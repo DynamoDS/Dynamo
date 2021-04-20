@@ -36,7 +36,7 @@ namespace Dynamo.Controls
     {
         private const int MaxChars = 100;
         private const double MinFontFactor = 7.0;
-        
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var tooltip = value as string;
@@ -82,6 +82,9 @@ namespace Dynamo.Controls
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
+
+        private const string CPython = "CPython";
+        private const string IronPython = "IronPython";
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string depString = string.Empty;
@@ -89,11 +92,11 @@ namespace Dynamo.Controls
             if (value != null)
             {
                 List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
-                for (int i = 0; i < depList.Count(); i++)
+                foreach (var dep in depList)
                 {
-                    if (depList[i].name == "CPython" || depList[i].name == "IronPython")
+                    if (dep.name == CPython || dep.name == IronPython)
                     {
-                        depString += depList[i].name + " " + depList[i]._id + ", ";
+                        depString += dep.name + " " + dep._id + ", ";
                         flag = true;
                     }
                 }
@@ -110,15 +113,17 @@ namespace Dynamo.Controls
 
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
+        private const string CPython = "CPython";
+        private const string IronPython = "IronPython";
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
             if (value != null)
             {
                 List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
-                for (int i = 0; i < depList.Count(); i++)
+                foreach (var dep in depList)
                 {
-                    if (depList[i].name == "CPython" || depList[i].name == "IronPython")
+                    if (dep.name == CPython || dep.name == IronPython)
                     {
                         return Visibility.Visible;
                     }
