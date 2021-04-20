@@ -69,7 +69,7 @@ namespace Dynamo.Linting.Rules
 
         internal static event RuleEvaluatedHandler RuleEvaluated;
 
-        public void OnRuleEvaluated(IRuleEvaluationResult result)
+        internal void OnRuleEvaluated(IRuleEvaluationResult result)
         {
             RuleEvaluated?.Invoke(result);
         }

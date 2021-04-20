@@ -1190,6 +1190,8 @@ namespace Dynamo.Models
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
 
+            LinterManager.Dispose();
+
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
             LibraryServices.MessageLogged -= LogMessage;

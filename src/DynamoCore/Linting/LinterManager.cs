@@ -14,7 +14,7 @@ using Dynamo.Models;
 
 namespace Dynamo.Linting
 {
-    public class LinterManager : NotificationObject
+    public class LinterManager : NotificationObject, IDisposable
     {
         #region Private fields
         private readonly IExtensionManager extensionManager;
@@ -120,6 +120,12 @@ namespace Dynamo.Linting
                 OfType<LinterExtensionBase>().
                 Where(x => x.UniqueId == activeLinter.Id).
                 FirstOrDefault();
+        }
+
+        public void Dispose()
+        {
+            LinterExtensionBase.LinterExtensionReady -= OnLinterExtensionReady;
+            LinterRule.RuleEvaluated -= OnRuleEvaluated;
         }
 
         #endregion

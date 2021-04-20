@@ -10,7 +10,7 @@ namespace Dynamo.Linting.Rules
     /// <summary>
     /// Rule evaluation result for graph linter rules
     /// </summary>
-    public class GraphRuleEvaluationResult : IEquatable<GraphRuleEvaluationResult>, IRuleEvaluationResult
+    internal class GraphRuleEvaluationResult : IEquatable<GraphRuleEvaluationResult>, IRuleEvaluationResult
     {
         /// <summary>
         /// Id of the rule this evaluation result belongs to
@@ -25,9 +25,9 @@ namespace Dynamo.Linting.Rules
         /// <summary>
         /// List of nodes involved in the evaluation of this rule
         /// </summary>
-        public HashSet<string> NodeIds { get; }
+        internal HashSet<string> NodeIds { get; }
 
-        public GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, HashSet<string> nodeIds)
+        internal GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, HashSet<string> nodeIds)
         {
             RuleId = ruleId ?? throw new ArgumentNullException(nameof(ruleId));
             Status = status;
