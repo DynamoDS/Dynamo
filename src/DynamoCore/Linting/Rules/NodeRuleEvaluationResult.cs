@@ -10,7 +10,7 @@ namespace Dynamo.Linting.Rules
     /// <summary>
     /// Rule evaluation result for node linter rules
     /// </summary>
-    public class NodeRuleEvaluationResult : IEquatable<NodeRuleEvaluationResult>, IRuleEvaluationResult
+    internal class NodeRuleEvaluationResult : IEquatable<NodeRuleEvaluationResult>, IRuleEvaluationResult
     {
         /// <summary>
         /// Id of the rule this evaluation result belongs to
@@ -25,9 +25,9 @@ namespace Dynamo.Linting.Rules
         /// <summary>
         /// Unique id of the node that has been evaluated
         /// </summary>
-        public string NodeId { get; }
+        internal string NodeId { get; }
 
-        public NodeRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, string nodeId)
+        internal NodeRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, string nodeId)
         {
             RuleId = ruleId;
             Status = status;
