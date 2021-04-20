@@ -12,15 +12,15 @@ namespace Dynamo.LintingViewExtension.Controls
     {
         #region DependencyProperties
 
-        public IEnumerable<NodeRuleEvaluationResult> Results
+        internal IEnumerable<string> NodeIds
         {
-            get { return (IEnumerable<NodeRuleEvaluationResult>)GetValue(ResultsProperty); }
+            get { return (IEnumerable<string>)GetValue(ResultsProperty); }
             set { SetValue(ResultsProperty, value); }
         }
 
         public static readonly DependencyProperty ResultsProperty = DependencyProperty.Register(
-            nameof(Results),
-            typeof(IEnumerable<NodeRuleEvaluationResult>),
+            nameof(NodeIds),
+            typeof(IEnumerable<string>),
             typeof(IssueGroup)
         );
 

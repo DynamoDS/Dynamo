@@ -59,13 +59,13 @@
     <Compile Include="..\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
       <Link>Properties\AssemblySharedInfo.cs</Link>
     </Compile>
+    <Compile Include="Controls\IRuleIssue.cs" />
     <Compile Include="Controls\IssueGroup.xaml.cs">
       <DependentUpon>IssueGroup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\DataBindingDebugger.cs" />
     <Compile Include="Converters\RuleFromRuleIdConverter.cs" />
-    <Compile Include="Controls\IRuleIssueDto.cs" />
-    <Compile Include="Controls\GraphRuleIssueDto.cs" />
+    <Compile Include="Controls\GraphRuleIssue.cs" />
     <Compile Include="LinterView.xaml.cs">
       <DependentUpon>LinterView.xaml</DependentUpon>
     </Compile>
@@ -77,7 +77,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\NodeRuleIssueDto.cs" />
+    <Compile Include="Controls\NodeRuleIssue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

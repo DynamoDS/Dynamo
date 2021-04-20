@@ -6,6 +6,8 @@
                     xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
                     xmlns:controls="clr-namespace:Dynamo.LintingViewExtension.Controls">
 
+    <converter:DataBindingDebugger x:Key="Debug" />
+
     <SolidColorBrush Color="#444444"
                      x:Key="ExpanderBackground" />
     <SolidColorBrush Color="#F5F5F5"
@@ -56,26 +58,26 @@
     <!--#region Templates -->
 
     <DataTemplate x:Key="NodeIssuesItemTemplate"
-                  DataType="{x:Type core:NodeRuleEvaluationResult}">
+                  DataType="{x:Type sys:String}">
         <Button Style="{StaticResource NodeNameButtonStyle}"
                 Background="Transparent"
-                Content="{Binding NodeId}"
+                Content="{Binding Converter={StaticResource Debug}}"
                 Command="{Binding Path=DataContext.SelectIssueNodeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LinterView}}}"
-                CommandParameter="{Binding NodeId}" />
+                CommandParameter="{Binding}" />
     </DataTemplate>
 
     <DataTemplate x:Key="GraphIssuesItemTemplate"
-                  DataType="{x:Type core:NodeRuleEvaluationResult}">
+                  DataType="{x:Type sys:String}">
     </DataTemplate>
 
     <DataTemplate x:Key="NodeIssueGroupsItemTemplate"
-                  DataType="{x:Type controls:NodeRuleIssueDto}">
+                  DataType="{x:Type controls:NodeRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
                                  CallToAction="{Binding Rule.CallToAction}"
-                                 Results="{Binding Results}"
+                                 NodeIds="{Binding AffectedNodes, Converter={StaticResource Debug}}"
                                  Margin="5">
             <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
-                      ItemsSource="{Binding Results}"
+                      ItemsSource="{Binding AffectedNodes}"
                       Style="{DynamicResource ListViewStyle}"
                       ItemContainerStyle="{StaticResource ListViewItemStyle}"
                       Grid.Row="1"
@@ -86,11 +88,11 @@
     </DataTemplate>
 
     <DataTemplate x:Key="GraphIssueGroupsItemTemplate"
-                  DataType="{x:Type controls:GraphRuleIssueDto}">
+                  DataType="{x:Type controls:GraphRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
-                                 CallToAction="{Binding Rule.CallToAction}"
-                                 Results="{Binding Results}"
-                                 Margin="5">
+                             CallToAction="{Binding Rule.CallToAction}"
+                             NodeIds="{Binding AffectedNodes}"
+                             Margin="5">
         </controls:IssueGroup>
     </DataTemplate>
 
