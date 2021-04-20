@@ -295,7 +295,7 @@ namespace Dynamo.Search
         /// </summary>
         /// <param name="subset">The subset that will be used to match elements in tagDictionary.</param>
         /// <returns></returns>
-        private static bool MatchWithSubset2(IGrouping<string, Tuple<V, double>> pair, IEnumerable<SearchElements.NodeSearchElement> subset)
+        private static bool MatchWithSubset(IGrouping<string, Tuple<V, double>> pair, IEnumerable<SearchElements.NodeSearchElement> subset)
         {
             foreach (var eleAndWeight in pair)
             {
