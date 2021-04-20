@@ -17,6 +17,8 @@ namespace Dynamo.LintingViewExtension
         private const string EXTENSION_GUID = "3467481b-d20d-4918-a454-bf19fc5c25d7";
         private const string GRAPH_USAGES_NAME_PROP = "GraphUsages";
         private const string GRAPH_USAGES_ID_PROP = "GraphUsagesId";
+        private const string NODE_ISSUES_COUNT_PROP = "Unresolved Node Issues";
+        private const string GRAPH_ISSUES_COUNT_PROP = "Unresolved Graph Issues";
 
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParamsReference;
@@ -100,6 +102,8 @@ namespace Dynamo.LintingViewExtension
         {
             extensionData[GRAPH_USAGES_NAME_PROP] = this.linterViewModel.ActiveLinter.Name;
             extensionData[GRAPH_USAGES_ID_PROP] = this.linterViewModel.ActiveLinter.Id;
+            extensionData[NODE_ISSUES_COUNT_PROP] = this.linterViewModel.NodeIssues.Count.ToString();
+            extensionData[GRAPH_ISSUES_COUNT_PROP] = this.linterViewModel.GraphIssues.Count.ToString();
         }
     }
 }
