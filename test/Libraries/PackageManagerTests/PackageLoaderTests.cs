@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Remoting;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -882,8 +883,10 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
+            Assert.AreEqual(2, packageDirectories.Count());
             Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
+            Assert.AreEqual(2, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
         }
 
