@@ -869,6 +869,25 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void StandardLibraryIsNotExposedInPathManager()
+        {
+            // Arrange
+            var pathManager = CurrentDynamoModel.PathManager;
+
+            // Act
+            var defaultPackageDirectory = pathManager.DefaultPackagesDirectory;
+            var packageDirectories = pathManager.PackagesDirectories;
+            var defaultUserDefinitions = pathManager.DefaultUserDefinitions;
+            var userDefinitions = pathManager.DefinitionDirectories;
+
+            // Assert
+            Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
+            Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
+            Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
+            Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+        }
+
+        [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()
         {
             Assert.Inconclusive("Finish me");
