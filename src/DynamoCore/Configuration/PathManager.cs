@@ -94,7 +94,7 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != StandardLibraryToken) : rootDirectories; }
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
@@ -130,12 +130,12 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(path => path != StandardLibraryToken), DefinitionsDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
         }
 
         public IEnumerable<string> DefinitionDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)).Where(path => path != StandardLibraryToken); }
+            get { return RootDirectories.Select(path => TransformPath(path, DefinitionsDirectoryName)); }
         }
 
         public string CommonDefinitions
@@ -150,12 +150,12 @@ namespace Dynamo.Core
 
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(RootDirectories.First(path => path != StandardLibraryToken), PackagesDirectoryName); }
+            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
         }
 
         public IEnumerable<string> PackagesDirectories
         {
-            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)).Where(path => path != StandardLibraryToken); }
+            get { return RootDirectories.Select(path => TransformPath(path, PackagesDirectoryName)); }
         }
 
         public IEnumerable<string> ExtensionsDirectories
@@ -360,7 +360,7 @@ namespace Dynamo.Core
             var galleryDirectory = GetGalleryDirectory(commonDataDir);
             galleryFilePath = Path.Combine(galleryDirectory, GalleryContentsFileName);
 
-            rootDirectories = new List<string> { StandardLibraryToken, userDataDir };
+            rootDirectories = new List<string> { userDataDir };
 
             nodeDirectories = new HashSet<string>
             {
