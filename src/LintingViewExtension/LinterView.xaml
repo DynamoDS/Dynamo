@@ -115,9 +115,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="100" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
         <HeaderedContentControl Header="Graph Type"
@@ -142,35 +140,45 @@
                                  Foreground="#808080"
                                  Width="20"
                                  Height="20"
-                                 ToolTip="Some Tooltip"/>
-
+                                 ToolTip="Some Tooltip" />
             </Grid>
-
         </HeaderedContentControl>
 
-        <Expander Grid.Row="1"
-                  Header="Node Issues"
-                  IsExpanded="True"
-                  Template="{StaticResource issueExpander}"
-                  Margin="0 0 0 5">
-            <ListView ItemTemplate="{DynamicResource NodeIssueGroupsItemTemplate}"
-                      ItemsSource="{Binding NodeIssues}"
-                      Style="{StaticResource ListViewStyle}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      HorizontalContentAlignment="Stretch" />
-        </Expander>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto"
+                      CanContentScroll="True"
+                      Grid.Row="1"
+                      PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Expander Grid.Row="0"
+                          Header="Node Issues"
+                          IsExpanded="True"
+                          Template="{StaticResource issueExpander}"
+                          Margin="0 0 0 5">
+                    <ListView ItemTemplate="{DynamicResource NodeIssueGroupsItemTemplate}"
+                              ItemsSource="{Binding NodeIssues}"
+                              Style="{StaticResource ListViewStyle}"
+                              ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              HorizontalContentAlignment="Stretch" />
+                </Expander>
 
-        <Expander Grid.Row="2"
-                  Header="Graph Issues"
-                  IsExpanded="True"
-                  Template="{StaticResource issueExpander}">
-            <ListView ItemTemplate="{DynamicResource GraphIssueGroupsItemTemplate}"
-                      ItemsSource="{Binding GraphIssues}"
-                      Style="{StaticResource ListViewStyle}"
-                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
-                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      HorizontalContentAlignment="Stretch" />
-        </Expander>
+                <Expander Grid.Row="1"
+                          Header="Graph Issues"
+                          IsExpanded="True"
+                          Template="{StaticResource issueExpander}">
+                    <ListView ItemTemplate="{DynamicResource GraphIssueGroupsItemTemplate}"
+                              ItemsSource="{Binding GraphIssues}"
+                              Style="{StaticResource ListViewStyle}"
+                              ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              HorizontalContentAlignment="Stretch" />
+                </Expander>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </UserControl>
