@@ -6,10 +6,25 @@ namespace Dynamo.LintingViewExtension
 {
     public interface IRuleIssue
     {
+        /// <summary>
+        /// Collection of nodeIds affected by this rule issue
+        /// </summary>
         ObservableCollection<string> AffectedNodes { get; }
+
+        /// <summary>
+        /// Id of the rule this issue comes from
+        /// </summary>
         string Id { get; }
+
+        /// <summary>
+        /// Rule this issue comes from
+        /// </summary>
         LinterRule Rule { get; }
 
-        void AddResult(List<string> nodeIds);
+        /// <summary>
+        /// Adds a list of affected nodes to this issue
+        /// </summary>
+        /// <param name="nodeIds"></param>
+        void AddAffectedNodes(List<string> nodeIds);
     }
 }

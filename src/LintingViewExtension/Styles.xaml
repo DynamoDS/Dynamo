@@ -61,7 +61,7 @@
                   DataType="{x:Type sys:String}">
         <Button Style="{StaticResource NodeNameButtonStyle}"
                 Background="Transparent"
-                Content="{Binding Converter={StaticResource Debug}}"
+                Content="{Binding}"
                 Command="{Binding Path=DataContext.SelectIssueNodeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LinterView}}}"
                 CommandParameter="{Binding}" />
     </DataTemplate>
@@ -74,7 +74,7 @@
                   DataType="{x:Type controls:NodeRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
                                  CallToAction="{Binding Rule.CallToAction}"
-                                 NodeIds="{Binding AffectedNodes, Converter={StaticResource Debug}}"
+                                 NodeIds="{Binding AffectedNodes }"
                                  Margin="5">
             <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
                       ItemsSource="{Binding AffectedNodes}"

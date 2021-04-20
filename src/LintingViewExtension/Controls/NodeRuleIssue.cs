@@ -19,7 +19,7 @@ namespace Dynamo.LintingViewExtension.Controls
             AffectedNodes = new ObservableCollection<string>();
         }
 
-        public void AddResult(List<string> nodeIds)
+        public void AddAffectedNodes(List<string> nodeIds)
         {
             // Node rules will always only have a single Id
             var nodeId = nodeIds.FirstOrDefault();

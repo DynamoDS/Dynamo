@@ -81,7 +81,7 @@ namespace Dynamo.LintingViewExtension
 
             var newIssue = new NodeRuleIssue(
                 ruleId, GetLinterRule(ruleId) as NodeLinterRule);
-            newIssue.AddResult(new List<string> { issueNodeId });
+            newIssue.AddAffectedNodes(new List<string> { issueNodeId });
 
             NodeIssues.Add(newIssue);
         }
@@ -103,7 +103,7 @@ namespace Dynamo.LintingViewExtension
 
             var newIssue = new GraphRuleIssue(
                 ruleId, GetLinterRule(ruleId) as GraphLinterRule);
-            newIssue.AddResult(issueNodeIds);
+            newIssue.AddAffectedNodes(issueNodeIds);
 
             GraphIssues.Add(newIssue);
         }

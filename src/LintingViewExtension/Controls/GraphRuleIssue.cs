@@ -17,7 +17,7 @@ namespace Dynamo.LintingViewExtension.Controls
             AffectedNodes = new ObservableCollection<string>();
         }
 
-        public void AddResult(List<string> nodeIds)
+        public void AddAffectedNodes(List<string> nodeIds)
         {
             nodeIds.ForEach(x => AffectedNodes.Add(x));
         }
