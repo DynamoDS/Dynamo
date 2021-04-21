@@ -423,6 +423,27 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void UpdateModelValue_MissingNode_ThrowsException()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(addNode);
+
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, addNode.GUID, "Code", "");
+            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateModelValue_EmptyList_ThrowsException()
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanCopyAndPasteAndUndoInputState()
         {
             var numberNode = new DoubleInput();

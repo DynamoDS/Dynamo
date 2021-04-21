@@ -1715,6 +1715,10 @@ namespace Dynamo.Models
         /// <summary>
         /// A command used to update the value of a property on a model object.
         /// </summary>
+        /// <exception cref="System.InvalidOperationException">This exception is 
+        /// thrown if the node model is not found in the workspace.</exception>
+        /// /// <exception cref="System.ArgumentNullException">This exception is 
+        /// thrown if the node model or list of node models passed is null or empty.</exception>
         [DataContract]
         public class UpdateModelValueCommand : ModelBasedRecordableCommand
         {
