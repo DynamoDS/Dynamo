@@ -6,6 +6,7 @@ using Dynamo.Interfaces;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
+using Dynamo.Models;
 
 namespace Dynamo.ViewModels
 {
@@ -48,9 +49,6 @@ namespace Dynamo.ViewModels
                 RequestShowFileDialog(sender, e);
             }
         }
-
-        // Token representing the standard library directory
-        private static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
         private IPreferences setting
         {
@@ -209,7 +207,7 @@ namespace Dynamo.ViewModels
         private void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            var index = RootLocations.IndexOf(StandardLibraryToken);
+            var index = RootLocations.IndexOf(DynamoModel.StandardLibraryToken);
 
             if (index != -1)
             {
@@ -224,7 +222,7 @@ namespace Dynamo.ViewModels
 
             if (index != -1)
             {
-                rootLocations[index] = StandardLibraryToken;
+                rootLocations[index] = DynamoModel.StandardLibraryToken;
             }
 
             return rootLocations;

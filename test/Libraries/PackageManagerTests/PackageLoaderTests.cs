@@ -10,6 +10,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Search.SearchElements;
+using Dynamo.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -653,7 +654,7 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackageLoader.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var loader = new PackageLoader(new[] { DynamoModel.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
                 @"Standard Library", @"Packages");
 
@@ -670,7 +671,7 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory, PackageLoader.StandardLibraryToken }, new[] { PackagesDirectorySigned });
+            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.StandardLibraryToken }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
                 @"Standard Library", @"Packages");
 

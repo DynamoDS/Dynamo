@@ -12,6 +12,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.PackageManager
 {
@@ -111,9 +112,6 @@ namespace Dynamo.PackageManager
             }
         }
 
-        // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
-
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
@@ -159,7 +157,7 @@ namespace Dynamo.PackageManager
             this.packagesDirectories.AddRange(packagesDirectories);
 
             // Setup standard library
-            var standardLibraryIndex = this.packagesDirectories.IndexOf(StandardLibraryToken);
+            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.StandardLibraryToken);
             if (standardLibraryIndex == -1)
             {
                 // No standard library in list
