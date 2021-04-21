@@ -2897,10 +2897,10 @@
     </Style>
     
     <SolidColorBrush x:Key="PreferencesWindowVisualSettingsBackground" 
-                             Color="#535353" />
+                     Color="#535353" />
 
     <SolidColorBrush x:Key="PreferencesWindowVisualSettingsAddStyleBackground" 
-                             Color="#666666" />
+                     Color="#666666" />
 
     <!--This Style will be used in the radio buttons located in the Preferences -> Visual Settings ->  Geometry Scaling section-->
     <Style x:Key="GeometryScaleRadioButtons"
@@ -2912,7 +2912,7 @@
                                      Cursor="Hand">
                         <BulletDecorator.Bullet>
                             <Grid Width="18"
-                                        Height="18">
+                                  Height="18">
                                 <!--The main white circle filled with White color (see the trigger IsChecked -> True-->
                                 <Ellipse x:Name="MainEllipse"
                                          StrokeThickness="1"
@@ -2927,9 +2927,8 @@
                             </Grid>
                         </BulletDecorator.Bullet>
                         <!--Text element next to each radio button-->
-                        <TextBlock 
-                                    x:Name="RadioTextBlock"
-                                    Margin="3,1,0,0" 
+                        <TextBlock x:Name="RadioTextBlock"
+                                   Margin="3,1,0,0" 
                                    Foreground="{StaticResource PreferencesWindowFontColor}" 
                                    FontWeight="Regular"
                                    FontSize="12">
@@ -2948,8 +2947,8 @@
                                     Property="Fill" 
                                     Value="{StaticResource PreferencesWindowFontColor}"/>
                             <Setter TargetName="RadioTextBlock"
-                                            Property="FontWeight"
-                                            Value="Bold"/>
+                                    Property="FontWeight"
+                                    Value="Bold"/>
                         </Trigger>
                         <Trigger Property="IsChecked" 
                                  Value="false">
@@ -2961,8 +2960,8 @@
                                     Property="Fill" 
                                     Value="{StaticResource PreferencesWindowBackgroundColor}"/>
                             <Setter TargetName="MainEllipse" 
-                                Property="Stroke" 
-                                Value="{StaticResource PreferencesWindowFontColor}"/>
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowFontColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -2973,19 +2972,26 @@
     <!--This Style will be used for some TextBlocks located in "Preferences -> Visual Settings ->  Geometry Scaling section" that have a very specific behavior of showing a descrition below-->
     <Style x:Key="GeometryScaleDescTextBox"
                    TargetType="{x:Type TextBlock}">
-        <Setter Property="Background" Value="#474747"/>
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="FontSize" Value="11"/>
-        <Setter Property="FontWeight" Value="Regular"/>
+        <Setter Property="Background" 
+                Value="#474747"/>
+        <Setter Property="Foreground" 
+                Value="White"/>
+        <Setter Property="TextWrapping" 
+                Value="Wrap"/>
+        <Setter Property="FontSize" 
+                Value="11"/>
+        <Setter Property="FontWeight" 
+                Value="Regular"/>
     </Style>
 
     <!--This Style will be used for a TextBox located in "Preferences -> Visual Settings -> Group Styles when adding a new Style
     The specific behaviour for the TextBox is that doesn't have borders and has some text that is deleted when the user starts typing-->
     <Style x:Key="TextBoxWaterMarkStyle" 
-                   TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="#666666" />
-        <Setter Property="Foreground" Value="White" />
+           TargetType="{x:Type TextBox}">
+        <Setter Property="Background" 
+                Value="#666666" />
+        <Setter Property="Foreground" 
+                Value="White" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -2996,7 +3002,7 @@
                         </Grid.ColumnDefinitions>
                         <Border Grid.Row="0"
                                 Background="#666666" 
-                                BorderBrush="#0696D7" 
+                                BorderBrush="{StaticResource PreferencesWindowButtonColor}" 
                                 Grid.ColumnSpan="2"
                                 BorderThickness="0,0,0,2"/>
                         <ScrollViewer x:Name="PART_ContentHost" 
@@ -3015,7 +3021,7 @@
                         <!--This is the Canvas for the exclamation mark appearing when the Style that the user is trying to insert already exists-->
                         <Canvas Grid.Column="1" 
                                 Visibility="{Binding Path=IsWarningEnabled, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="Style name already in use">
+                                ToolTip="{x:Static p:Resources.PreferencesViewStyleWarning}">
                             <Polygon 
                                          Points="10,5 18,20 2,20">
                                 <Polygon.Fill>
@@ -3061,7 +3067,9 @@
 
     <!--This Style will be used in the button for adding a Style in the "Group Styles" section-->
     <Style x:Key="FlatButtonStyle"
-                    TargetType="Button">
+           TargetType="Button">
+        <Setter Property="Foreground"
+                Value="#6DD2FF" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -3070,32 +3078,33 @@
                                     BorderBrush="#E0E0E0"
                                     Background="Transparent">
                         <TextBlock VerticalAlignment="Center">
-                                    <ContentPresenter />
+                                <ContentPresenter />
                         </TextBlock>
                     </Border>
+                    <!--Following the Autodesk Hig Standards some colors of the button will be changed according to the event-->
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderThickness" 
-                                            Value="1" />
+                                    Property="BorderThickness" 
+                                    Value="1" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderThickness" 
-                                            Value="2" />
+                                    Property="BorderThickness" 
+                                    Value="2" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderBrush" 
-                                            Value="#A2D4EB" />
+                                    Property="BorderBrush" 
+                                    Value="#A2D4EB" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground"
-                        Value="#6DD2FF" />
         <Style.Triggers>
+            <!--When the mouse is over the button the cursor will change to a hand-->
             <Trigger Property="IsMouseOver"
                      Value="true">
                 <Setter Property="Cursor" Value="Hand"/>
@@ -3108,8 +3117,11 @@
         </Style.Triggers>
     </Style>
 
+    <!--This Style will be used for the Buttons that have a border and transparent background like Save and Cancel in the Preferences->Visual Settings tab-->
     <Style x:Key="OutlinedButtonStyle"
-                    TargetType="Button">
+           TargetType="Button">
+        <Setter Property="Foreground"
+                Value="{StaticResource PreferencesWindowFontColor}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -3119,44 +3131,46 @@
                                     BorderThickness="0.5"
                                     Background="Transparent">
                         <TextBlock VerticalAlignment="Center"
-                                           HorizontalAlignment="Center">
-                                    <ContentPresenter />
+                                   HorizontalAlignment="Center">
+                            <ContentPresenter />
                         </TextBlock>
                     </Border>
+                    <!--According to the Hig Autodesk standards for Outlined buttons some colors/properties will be changed according to the event generated-->
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
                             <Setter Property="Button.Effect">
                                 <Setter.Value>
                                     <DropShadowEffect Color="Black" 
-                                                              Direction="320" 
-                                                              ShadowDepth="3" 
-                                                              BlurRadius="5" Opacity="0.5" />
+                                                      Direction="320" 
+                                                      ShadowDepth="3" 
+                                                      BlurRadius="5" 
+                                                      Opacity="0.5" />
                                 </Setter.Value>
                             </Setter>
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderThickness" 
-                                            Value="1" />
+                                    Property="BorderThickness" 
+                                    Value="1" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderThickness" 
-                                            Value="2" />
+                                    Property="BorderThickness" 
+                                    Value="2" />
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
                             <Setter TargetName="ButtonBorder" 
-                                            Property="BorderBrush" 
-                                            Value="#A2D4EB" />
+                                    Property="BorderBrush" 
+                                    Value="#A2D4EB" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="Foreground"
-                        Value="#6DD2FF" />
         <Style.Triggers>
             <Trigger Property="IsMouseOver"
                      Value="true">
-                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Cursor" 
+                        Value="Hand"/>
             </Trigger>
             <Trigger Property="IsEnabled"
                      Value="false">
@@ -3164,6 +3178,99 @@
                         Value="#BBBBBB" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
+    <Style x:Key="RemoveStyleButtonStyle" 
+           TargetType="{x:Type Button}">
+        <Setter Property="Background" 
+                Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="removeStyleBorder" 
+                            Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Rectangle x:Name="backgroundRectangle"
+                                       Fill="{TemplateBinding Background}"/>
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2"/>
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!--According to the Hig Autodesk standards for icon buttons some colors/properties will be changed according to the event generated-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter TargetName="backgroundRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="backgroundRectangle" 
+                                    Property="Opacity" 
+                                    Value="0.2"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                 Value="True">
+                            <Setter TargetName="backgroundRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="backgroundRectangle" 
+                                    Property="Opacity" 
+                                    Value="0.8"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--This Style will be used for the ColorPicker button that is shown when adding a new Style in the Preferences -> Visual Settings tab-->
+    <Style x:Key="ButtonColorPickerStyle" 
+           TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="removeStyleBorder" 
+                            Background="{TemplateBinding Background}">
+                        <Grid>
+                            <Rectangle x:Name="borderRectangle"
+                                       Fill="Transparent"
+                                       Stroke="Transparent"
+                                       StrokeThickness="2"/>
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!--According to the Hig Autodesk standards for icon buttons some colors/properties will be changed according to the event generated-->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" 
+                                 Value="True">
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                 Value="True">
+                            <Setter TargetName="borderRectangle"
+                                    Property="Fill" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter TargetName="borderRectangle" 
+                                    Property="Stroke" 
+                                    Value="{StaticResource PreferencesWindowButtonColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 

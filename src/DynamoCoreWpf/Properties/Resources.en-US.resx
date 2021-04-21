@@ -2366,4 +2366,7 @@ Uninstall the following packages: {0}?</value>
     <value>Render Precision</value>
     <comment>Expander Header Name</comment>
   </data>
+  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+    <value>Style name already in use</value>
+  </data>
 </root>

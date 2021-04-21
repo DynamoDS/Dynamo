@@ -12,7 +12,6 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        d:DataContext="{d:DesignInstance viewModels:PreferencesViewModel, IsDesignTimeCreatable=False}"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -34,7 +33,7 @@
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
-                <Border Background="#666666"
+                <Border Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
                         Margin="5,5,0,0"
                         Width="160">
                     <Grid>
@@ -48,54 +47,35 @@
                                     <RowDefinition Height="*"></RowDefinition>
                                     <RowDefinition Height="*"></RowDefinition>
                                 </Grid.RowDefinitions>
-
                                 <Label Name="groupNameLabel"
-                                Content="{Binding GroupName}"
-                                HorizontalAlignment="Left"
-                                Grid.Row="0"
-                                Margin="5,0,0,0"
-                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        Content="{Binding GroupName}"
+                                        HorizontalAlignment="Left"
+                                        Grid.Row="0"
+                                        Margin="5,0,0,0"
+                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 <StackPanel Orientation="Horizontal" 
-                                    Margin="10,0,0,0"
-                                    Grid.Row="1">
+                                            Margin="10,0,0,0"
+                                            Grid.Row="1">
                                     <Border x:Name="borderColor"
-                                    Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
-                                    Width="25" 
-                                    Height="15"/>
+                                            Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                            Width="25" 
+                                            Height="15"/>
                                     <Label Name="colorHexVal" 
-                                    Foreground="{StaticResource PreferencesWindowFontColor}"
-                                    FontSize="13"
-                                    Content="{Binding Background, ElementName=borderColor, Converter={StaticResource BrushColorToStringConverter}}"/>
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            FontSize="13"
+                                            Content="{Binding Background, ElementName=borderColor, Converter={StaticResource BrushColorToStringConverter}}"/>
                                 </StackPanel>
                             </Grid>
                         </Grid>
                         <Grid Grid.Column="1">
                             <Button Name="removeStyle"
-                            Margin="0,0,8,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Click="removeStyle_Click"
-                            Width="20"
-                            Height="30">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}">
-                                        <Setter Property="Background" Value="Transparent"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border Background="{TemplateBinding Background}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                        <Style.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="DarkGoldenrod"/>
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
+                                    Margin="0,0,8,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    Click="removeStyle_Click"
+                                    Style="{StaticResource RemoveStyleButtonStyle}"
+                                    Width="20"
+                                    Height="30">
                                 <Image Source="/DynamoCoreWpf;component/UI/Images/trash_icon.png"/>
                             </Button>
                         </Grid>
@@ -488,6 +468,7 @@
                                                             Height="30"
                                                             Grid.Column="0">
                                                         <Button x:Name="buttonColorPicker"
+                                                                Style="{StaticResource ButtonColorPickerStyle}"
                                                                 Background="{Binding AddStyleControl.HexColorString}" 
                                                                 Click="buttonColorPicker_Click"
                                                                 Width="25" 
