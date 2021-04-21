@@ -349,7 +349,7 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(4 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]
