@@ -29,6 +29,7 @@ namespace Dynamo.Search.SearchElements
             if (VisibilityChanged != null)
                 VisibilityChanged();
         }
+        internal int PortToConnect { get; set; }
 
         /// <summary>
         ///     Specifies whether or not this entry should appear in search.

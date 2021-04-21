@@ -440,6 +440,40 @@ namespace Dynamo.Graph.Nodes
             }
             return null;
         }
+
+        /// <summary>
+        /// Returns the string representation of the fully qualified typename
+        /// where possible for the port if it's an output port. This method currently
+        /// returns a valid type for only Zero Touch, Builtin and NodeModel nodes,
+        /// and returns null otherwise. The string representation of the type also
+        /// contains the rank information of the type, e.g. Point[], or var[]..[]. 
+        /// </summary>
+        /// <returns>output port type</returns>
+        internal string GetOutPortType()
+        {
+            if (PortType == PortType.Input) return null;
+
+            var ztNode = Owner as DSFunction;
+            if (ztNode != null)
+            {
+                var fd = ztNode.Controller.Definition;
+
+                string type = fd.ReturnType.ToString();
+              
+                return type;
+            }
+
+            var nmNode = Owner as NodeModel;
+            if (nmNode != null)
+            {
+                var classType = nmNode.GetType();
+
+                var outPortAttribute = classType.GetCustomAttributes().OfType<OutPortTypesAttribute>().FirstOrDefault();
+
+                return outPortAttribute?.PortTypes.ElementAt(Index);
+            }
+            return null;
+        }
     }
 
     /// <summary>

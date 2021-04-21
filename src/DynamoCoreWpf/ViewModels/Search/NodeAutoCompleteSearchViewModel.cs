@@ -2,6 +2,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Dynamo.Engine;
+using Dynamo.Graph.Nodes;
 using Dynamo.Properties;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
@@ -136,12 +138,22 @@ namespace Dynamo.ViewModels
         internal IEnumerable<NodeSearchElement> GetMatchingSearchElements()
         {
             var elements = new List<NodeSearchElement>();
-            var inputPortType = PortViewModel.PortModel.GetInputPortType();
+
+            var portType = String.Empty;
+
+            if (PortViewModel.PortModel.PortType == PortType.Input)
+            {
+                portType = PortViewModel.PortModel.GetInputPortType();
+            }
+            else if (PortViewModel.PortModel.PortType == PortType.Output)
+            {
+                portType = PortViewModel.PortModel.GetOutPortType();
+            }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
             var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double" };
 
-            if (inputPortType == null)
+            if (portType == null)
             {
                 return elements; 
             }
@@ -149,42 +161,72 @@ namespace Dynamo.ViewModels
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
             //if inputPortType is an array, use just the typename
-            var parseResult = ParserUtils.ParseWithCore($"dummyName:{ inputPortType};", core);
+            var parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
             var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
             //if parsing the type failed, revert to original string.
-            inputPortType = ast != null ? ast.datatype.Name : inputPortType;
+            portType = ast != null ? ast.datatype.Name : portType;
 
             //check if the input port return type is in the skipped input types list
-            if (skippedInputTypes.Any(s => s == inputPortType))
+            if (skippedInputTypes.Any(s => s == portType))
             {
                 return elements;
             }
 
             //gather all ztsearchelements that are visible in search and filter using inputPortType and zt return type name.
             var ztSearchElements = Model.SearchEntries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
-            foreach (var ztSearchElement in ztSearchElements)
-            {
-                //for now, remove rank from descriptors
-                var returnTypeName = ztSearchElement.Descriptor.ReturnType.Name;
 
-                var descriptor = ztSearchElement.Descriptor;
-                if ((returnTypeName == inputPortType)
-                    || DerivesFrom(inputPortType, returnTypeName, core))
+            if (PortViewModel.PortModel.PortType == PortType.Input)
+            {
+                foreach (var ztSearchElement in ztSearchElements)
                 {
-                    elements.Add(ztSearchElement);
+                    //for now, remove rank from descriptors    
+                    var returnTypeName = ztSearchElement.Descriptor.ReturnType.Name;
+
+                    var descriptor = ztSearchElement.Descriptor;
+                    if ((returnTypeName == portType) || DerivesFrom(portType, returnTypeName, core))
+                    {
+                        elements.Add(ztSearchElement);
+                    }
+                }
+
+                // NodeModel nodes, match any output return type to inputport type name
+                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                {
+                    if (element.OutputParameters.Any(op => op == portType))
+                    {
+                        elements.Add(element);
+                    }
+                }
+            }
+            else if (PortViewModel.PortModel.PortType == PortType.Output)
+            {
+                foreach (var ztSearchElement in ztSearchElements)
+                {
+                    foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
+                    {
+                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(portType, inputParameter.value.Type.ToString(), core))
+                        {
+                            ztSearchElement.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
+                            elements.Add(ztSearchElement);
+                            break;
+                        }
+                    }
+                }
+
+                // NodeModel nodes, match any output return type to inputport type name
+                foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
+                {
+                    foreach (var inputParameter in element.InputParameters)
+                    {
+                        if (inputParameter.Item2 == portType)
+                        {
+                            elements.Add(element);
+                        }
+                    }
                 }
             }
 
-            // NodeModel nodes, match any output return type to inputport type name
-            foreach (var element in Model.SearchEntries.OfType<NodeModelSearchElement>())
-            {
-                if (element.OutputParameters.Any(op => op == inputPortType))
-                {
-                    elements.Add(element);
-                }
-            }
-
-            var comparer = new NodeSearchElementComparer(inputPortType, core);
+            var comparer = new NodeSearchElementComparer(portType, core);
 
             //first sort by type distance to input port type
             elements.Sort(comparer);
