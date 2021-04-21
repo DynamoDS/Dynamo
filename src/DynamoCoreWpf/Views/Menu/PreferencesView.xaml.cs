@@ -71,6 +71,7 @@ namespace Dynamo.Wpf.Views
         {
             AddStyleBorder.Visibility = Visibility.Visible;
             AddStyleButton.IsEnabled = false;
+            groupNameBox.Focus();
         }
 
         private void AddStyle_SaveButton_Click(object sender, RoutedEventArgs e)

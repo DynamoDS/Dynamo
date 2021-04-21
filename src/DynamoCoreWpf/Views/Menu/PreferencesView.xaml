@@ -406,6 +406,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <!--Group Styles Expander-->
                             <Expander x:Name="Styles"
@@ -415,7 +416,7 @@
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
                                       Style="{StaticResource MenuExpanderStyle}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                                              Height="250">
+                                              Height="220">
                                     <Grid Margin="8,0,0,0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
@@ -446,7 +447,7 @@
                                                     <RowDefinition Height="*"></RowDefinition>
                                                 </Grid.RowDefinitions>
                                                 <TextBox  x:Name="groupNameBox"
-                                                          CaretBrush="#0696D7"
+                                                          CaretBrush="{StaticResource PreferencesWindowButtonColor}"
                                                           VerticalAlignment="Center"
                                                           HorizontalAlignment ="Left"
                                                           Style="{StaticResource TextBoxWaterMarkStyle}"
@@ -589,6 +590,48 @@
                                     <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                                Margin="10,0,0,0"></TextBlock>
                                 </StackPanel>
+                            </Expander>
+                            <Expander x:Name="Display"
+                                      Grid.Row="3"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      Expanded="Expander_Expanded"
+                                      Header="{x:Static p:Resources.PreferencesViewVisualSettingsDisplaySettings}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="0">
+                                        <ToggleButton Name="IsolateSelectedGeoToggle"
+                                                    Width="{StaticResource ToggleButtonWidth}"
+                                                    Height="{StaticResource ToggleButtonHeight}"
+                                                    VerticalAlignment="Center"
+                                                    IsChecked="{Binding Path=IsolateSelectedGeometry}"
+                                                    Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingsIsolateSelectedGeo}" 
+                                                Margin="10,0,0,0"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="1">
+                                        <ToggleButton Name="ShowEdgesToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=ShowEdges}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingShowEdges}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                </Grid>
                             </Expander>
                         </Grid>
                     </TabItem>

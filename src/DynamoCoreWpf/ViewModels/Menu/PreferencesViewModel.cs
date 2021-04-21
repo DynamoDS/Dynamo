@@ -40,6 +40,8 @@ namespace Dynamo.ViewModels
         private bool showWhitespace;
         private bool nodeAutocomplete;
         private bool enableTSpline;
+        private bool showEdges;
+        private bool isolateSelectedGeometry;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
@@ -256,6 +258,38 @@ namespace Dynamo.ViewModels
             {
                 optionsGeometryScal = value;
                 RaisePropertyChanged(nameof(OptionsGeometryScal));
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the ShowEdges toogle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool ShowEdges
+        {
+            get
+            {
+                return showEdges;
+            }
+            set
+            {
+                showEdges = value;
+                RaisePropertyChanged(nameof(ShowEdges));
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool IsolateSelectedGeometry
+        {
+            get
+            {
+                return isolateSelectedGeometry;
+            }
+            set
+            {
+                isolateSelectedGeometry = value;
+                RaisePropertyChanged(nameof(IsolateSelectedGeometry));
             }
         }
         #endregion

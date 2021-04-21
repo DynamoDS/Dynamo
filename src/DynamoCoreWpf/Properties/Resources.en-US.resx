@@ -2369,4 +2369,16 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewStyleWarning" xml:space="preserve">
     <value>Style name already in use</value>
   </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Display Settings</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+    <comment>Show Edges</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
+    <comment>Toogle Button Content</comment>
+  </data>
 </root>
