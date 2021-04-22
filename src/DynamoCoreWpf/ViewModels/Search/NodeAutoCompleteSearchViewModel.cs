@@ -59,8 +59,9 @@ namespace Dynamo.ViewModels
 
             searchElementsCache = GetMatchingSearchElements().ToList();
 
-            // If node match searchElements found, use default suggestions
-            if (!searchElementsCache.Any())
+            // If node match searchElements found, use default suggestions. 
+            // These default suggestions will be populated for input ports only.
+            if (!searchElementsCache.Any() && PortViewModel.PortModel.PortType == PortType.Input)
             {
                 searchElementsCache = DefaultResults.Select(e => e.Model).ToList();
                 switch (PortViewModel.PortModel.GetInputPortType())
@@ -204,7 +205,7 @@ namespace Dynamo.ViewModels
                 {
                     foreach (var inputParameter in ztSearchElement.Descriptor.Parameters.Select((value, index) => new { value, index }))
                     {
-                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(portType, inputParameter.value.Type.ToString(), core))
+                        if (inputParameter.value.Type.ToString() == portType || DerivesFrom(inputParameter.value.Type.ToString(), portType, core))
                         {
                             ztSearchElement.PortToConnect = ztSearchElement.Descriptor.Type == FunctionType.InstanceMethod ? inputParameter.index + 1 : inputParameter.index;
                             elements.Add(ztSearchElement);
