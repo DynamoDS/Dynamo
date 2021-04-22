@@ -63,8 +63,7 @@ namespace Dynamo.Extensions
         /// <param name="linterRule"></param>
         public void RemoveLinterRule(LinterRule linterRule)
         {
-            if (linterRules.Contains(linterRule))
-                linterRules.Remove(linterRule);
+            linterRules.Remove(linterRule);
         }
 
         /// <summary>
@@ -251,6 +250,7 @@ namespace Dynamo.Extensions
 
         private void OnNodeRemoved(Graph.Nodes.NodeModel node)
         {
+            UnsubscribeNodeEvents(node);
             EvaluateGraphRules(node, NODE_REMOVED_PROPERTY);
 
             var nodeRules = LinterRules.
@@ -267,7 +267,6 @@ namespace Dynamo.Extensions
                 rule.OnRuleEvaluated(result);
             }
 
-            UnsubscribeNodeEvents(node);
         }
         #endregion
     }

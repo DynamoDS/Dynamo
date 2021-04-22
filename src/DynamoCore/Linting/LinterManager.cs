@@ -100,8 +100,6 @@ namespace Dynamo.Linting
 
             if (result.Status == RuleEvaluationStatusEnum.Passed)
             {
-                if (!RuleEvaluationResults.Contains(result))
-                    return;
                 RuleEvaluationResults.Remove(result);
             }
 

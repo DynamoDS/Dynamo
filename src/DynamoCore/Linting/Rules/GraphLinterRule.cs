@@ -23,6 +23,9 @@ namespace Dynamo.Linting.Rules
         internal void Evaluate(WorkspaceModel workspaceModel, NodeModel modifiedNode = null)
         {
             var pair = EvaluateFunction(workspaceModel, modifiedNode);
+            if (pair is null)
+                return;
+
             var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, pair.Item2);
             OnRuleEvaluated(result);
         }
