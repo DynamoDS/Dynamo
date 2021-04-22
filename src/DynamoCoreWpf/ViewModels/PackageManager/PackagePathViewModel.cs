@@ -1,15 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Controls;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.Properties;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using Dynamo.Models;
+using System.Windows.Data;
 
 namespace Dynamo.ViewModels
 {
+    public sealed class PathEnabledConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value != null && parameter != null)
+            {
+                var disableStandardLibrary = (bool)parameter;
+                if (disableStandardLibrary)
+                {
+                    var path = value as string;
+                    return String.CompareOrdinal(path, Resources.PackagePathViewModel_Standard_Library) != 0;
+                }
+            }
+            return true;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class PackagePathEventArgs : EventArgs
     {
         /// <summary>
@@ -36,7 +60,7 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedIndex = value;
-                RaisePropertyChanged("SelectedIndex");
+                RaisePropertyChanged(nameof(SelectedIndex));
                 RaiseCanExecuteChanged();
             }
         }
@@ -64,6 +88,8 @@ namespace Dynamo.ViewModels
         public DelegateCommand MovePathDownCommand { get; private set; }
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
+
+        public static bool DisableStandardLibrary = false;
 
         public PackagePathViewModel(PackageLoader loader, LoadPackageParams loadParams, CustomNodeManager customNodeManager)
         {
@@ -212,6 +238,11 @@ namespace Dynamo.ViewModels
             if (index != -1)
             {
                 RootLocations[index] = Resources.PackagePathViewModel_Standard_Library;
+
+                if (setting is IDisablePackageLoadingPreferences disablePrefs)
+                {
+                    DisableStandardLibrary = disablePrefs.DisableStandardLibrary;
+                }
             }
         }
 

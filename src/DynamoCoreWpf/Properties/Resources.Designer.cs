@@ -3945,11 +3945,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top path is the default save location..
+        ///   Looks up a localized string similar to The default save location is the first path that is not the Standard Library location.
         /// </summary>
         public static string PackagePathViewSummary2 {
             get {
                 return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locations in italic are disabled.
+        /// </summary>
+        public static string PackagePathViewSummary3 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary3", resourceCulture);
             }
         }
         
