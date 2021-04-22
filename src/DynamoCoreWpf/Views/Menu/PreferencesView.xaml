@@ -12,6 +12,7 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -76,7 +77,11 @@
                                     Style="{StaticResource RemoveStyleButtonStyle}"
                                     Width="20"
                                     Height="30">
-                                <Image Source="/DynamoCoreWpf;component/UI/Images/trash_icon.png"/>
+                                <fa:ImageAwesome Icon="Trash"          
+                                                 Width="15"
+                                                 Height="25"
+                                                 IsHitTestVisible="False"
+                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                             </Button>
                         </Grid>
                     </Grid>

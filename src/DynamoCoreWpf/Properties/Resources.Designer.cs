@@ -1890,29 +1890,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Isolate Selected Geometry.
-        /// </summary>
-        public static string DynamoViewSettingsMenuIsolationMode {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
         /// </summary>
         public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowCodeBlockNodeLineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Edges.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowEdges {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
             }
         }
         

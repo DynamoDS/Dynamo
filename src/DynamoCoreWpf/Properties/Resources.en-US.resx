@@ -853,12 +853,6 @@ You will get a chance to save your work.</value>
     <value>Geometry Scaling...</value>
     <comment>Settings menu | Geometry Scaling</comment>
   </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
-    <value>Show Edges</value>
-  </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Settings menu | Show preview bubbles</comment>

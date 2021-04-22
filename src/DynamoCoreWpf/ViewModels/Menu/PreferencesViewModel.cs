@@ -22,13 +22,13 @@ namespace Dynamo.ViewModels
     }
     public class PreferencesViewModel : ViewModelBase
     {
-
+        #region Private Properties
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
         private ObservableCollection<StyleItem> styleItemsList;
         private StyleItem addStyleControl;  
-	    private ObservableCollection<string> _pythonEngineList;
+        private ObservableCollection<string> _pythonEngineList;
 
         private string selectedLanguage;
         private string selectedFontSize;
@@ -47,6 +47,7 @@ namespace Dynamo.ViewModels
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScal = null;
+        #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
 
