@@ -230,7 +230,7 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(2, suggestions.Count());
+            Assert.AreEqual(29, suggestions.Count());
         }
 
         [Test]
