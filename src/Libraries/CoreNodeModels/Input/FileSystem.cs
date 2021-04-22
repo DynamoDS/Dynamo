@@ -118,7 +118,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("DirectoryNodeDescription", typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
     [InPortTypes("UI Input")]
-    [OutPortTypes("bool")]
+    [OutPortTypes("string")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.Directory", "DSCoreNodesUI.Input.Directory")]
