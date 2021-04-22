@@ -1030,6 +1030,12 @@
                 {
                   "path": "DSOffice.DSOffice.Data.ExportToExcel"
                 },
+                                {
+                  "path": "DSOffice.DSOffice.Data.OpenXMLImportExcel"
+                },
+                {
+                  "path": "DSOffice.DSOffice.Data.OpenXMLExportExcel"
+                },
                 {
                   "path": "DSOffice.DSOffice.Data.ImportCSV"
                 },

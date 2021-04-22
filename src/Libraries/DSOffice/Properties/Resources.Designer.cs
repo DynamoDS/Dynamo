@@ -95,5 +95,23 @@ namespace DSOffice.Properties {
                 return ResourceManager.GetString("ReadObsolete", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A workbook was not found in the provided path..
+        /// </summary>
+        internal static string WorkbookNotFound {
+            get {
+                return ResourceManager.GetString("WorkbookNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A worksheet with the provided name &apos;{0}&apos; was not found in the workbook..
+        /// </summary>
+        internal static string WorksheetNotFound {
+            get {
+                return ResourceManager.GetString("WorksheetNotFound", resourceCulture);
+            }
+        }
     }
 }
