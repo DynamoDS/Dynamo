@@ -106,20 +106,10 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel == null) return;
 
-            var queriedSearchElements = searchElementsCache.Where(e => QuerySearchElements(e, input)).ToList();
+            //Providing the saved search results to limit the scope of the query search.
+            var foundNodes = Search(input, searchElementsCache);
+            FilteredResults = new List<NodeSearchElementViewModel>(foundNodes).OrderBy(x => x.Name).ThenBy(x => x.Description);
 
-            FilteredResults = GetViewModelForNodeSearchElements(queriedSearchElements);
-        }
-
-        /// <summary>
-        /// Returns true if the user input matches the name of the filtered node element. 
-        /// </summary>
-        /// <returns>True or false</returns>
-        private bool QuerySearchElements(NodeSearchElement e, string input) 
-        {
-            StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase;
-
-            return e.Name.IndexOf(input, stringComparison) >= 0;
         }
 
         /// <summary>
