@@ -1,7 +1,7 @@
 
 ## !!WIP!!
 
-### Dynamo Standard Library Overview
+## Dynamo Standard Library Overview
 
 The Standard Library is an effort to bundle more node content with Dynamo Core without expanding the core itself by leveraging the dynamo package loading functionality implemented by the `PackageLoader` and `PackageManager` extension.
 
@@ -22,6 +22,8 @@ With some constraints this location will be useable for ADSK Dynamo clients and 
 
 Because the underlying loading mechanism is the same - it will be necessary to make sure that packages included this way do not lead to user confusion about core `std.lib` packages, and integration specific packages that are only available in a single host product. We advise that until the Dynamo team designs and implements apis to support this - that to avoid user confusion - the `std.lib` should only be used in discussion with the team.
 
+
+
 ### Package Localization
 
 Because packages included in the `std.lib` will be available to more customers and the guarantees we make about them will be stricter (see above) they should be localized.
@@ -30,14 +32,18 @@ For internal ADSK packages intended for std.lib inclusion - the current limitati
 
 Using a workaround it's possible to manually create (and even publish) packages with culture subdirectories in the /bin folder of a package.
 
-Create the culture specific subdirectories you require under the packages's `/bin` folder manually. If you need to publish these folders as well - then you must first publish a version of the packages that is missing these folders - then publish a new version. The new version upload in Dynamo should not delete your folders and files under`/bin`. The package upload process in Dynamo will be updated to deal with localized files in the future.
+Create the culture specific subdirectories you require under the packages's `/bin` folder manually. 
 
+If for some reason, the package needs to also be published to the package manager then you must first publish a version of the package that is missing these culture subfolders - then publish a new version of the package using the DynamoUI `publish package version`. The new version upload in Dynamo should not delete your the folders and files under`/bin` which you have added manually using the windows file explorer. The package upload process in Dynamo will be updated to deal with the requirements for localized files in the future.
 
 These culture subdirectories are loaded without issue by the .net runtime.
 
 For more information on resource assemblies and .resx files please see: https://docs.microsoft.com/en-us/dotnet/framework/resources/creating-resource-files-for-desktop-apps.
 
 You'll likely be creating the `.resx` files and compiling them with visual studio. For a given assembly `xyz.dll` - the resulting resources will be compiled to a new assembly `xyz.resources.dll` - as is described above the location and name of this assembly are important.
+
+The generated `xyz.resources.dll` should be located as follows:
+`package\bin\culture\xyz.resources.dll`.
 
 To access the localized strings in your package - you can use the ResourceManager - but even simpler you should be able to refer to the `Properties.Resources.YourLocalizedResourceName` from within the assembly you have added a `.resx` file for. For example, see: 
 
