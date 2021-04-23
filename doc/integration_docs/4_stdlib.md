@@ -37,7 +37,7 @@ These culture subdirectories are loaded without issue by the .net runtime.
 
 For more information on resource assemblies and .resx files please see: https://docs.microsoft.com/en-us/dotnet/framework/resources/creating-resource-files-for-desktop-apps.
 
-You'll likely be creating the `.resx` files and compiling them with visual studio. For a given assembly `xyz.dll` - the resulting resources will be compiled to a new assembly xyz.resources.dll - as is described above the location and name of this assembly are important.
+You'll likely be creating the `.resx` files and compiling them with visual studio. For a given assembly `xyz.dll` - the resulting resources will be compiled to a new assembly `xyz.resources.dll` - as is described above the location and name of this assembly are important.
 
 To access the localized strings in your package - you can use the ResourceManager - but even simpler you should be able to refer to the `Properties.Resources.YourLocalizedResourceName` from within the assembly you have added a `.resx` file for. For example, see: 
 
