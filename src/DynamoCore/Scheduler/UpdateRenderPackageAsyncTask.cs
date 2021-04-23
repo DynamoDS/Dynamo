@@ -203,11 +203,11 @@ namespace Dynamo.Scheduler
                     return;
                 }
 
-                GetRenderPackageFromGraphicItem(outputPortId, graphicItem, package, labelKey);
+                GetTessellationDataFromGraphicItem(outputPortId, graphicItem, package, labelKey);
             }
         }
 
-        private void GetRenderPackageFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, IRenderPackage package, string labelKey)
+        private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, IRenderPackage package, string labelKey)
         {
             var packageWithTransform = package as ITransformable;
 
@@ -242,7 +242,7 @@ namespace Dynamo.Scheduler
                         legacyPackage.IsSelected = isNodeSelected;
 
                         //Use it to get fill the tessellation data and add it to the render cache.
-                        GetRenderPackageFromGraphicItem(outputPortId, graphicItem, legacyPackage, labelKey);
+                        GetTessellationDataFromGraphicItem(outputPortId, graphicItem, legacyPackage, labelKey);
 
                         if (legacyPackage.MeshVertexColors.Any())
                         {
@@ -256,7 +256,6 @@ namespace Dynamo.Scheduler
 
                     //Now we validate that tessellation call has added colors for each new vertex.
                     //If any vertex colors previously existed, this will ensure the vertex color and vertex counts stays in sync.
-                    //If no pixel colors exist we leave the color array empty.  A default value will applied when the render package is displayed.
                     EnsureColorExistsPerVertex(package, previousPointVertexCount, previousLineVertexCount,
                         previousMeshVertexCount);
 
