@@ -154,8 +154,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
@@ -186,8 +186,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -279,8 +279,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
