@@ -317,6 +317,7 @@ namespace CoreNodeModels.Input
     [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
+    [OutPortTypes("object")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject", "Directory.FromPath")]

@@ -16,6 +16,7 @@ namespace GeometryUI
     [NodeName("ExportToSAT")]
     [NodeDescription("ExportToSATDescripiton", typeof(GeometryUI.Properties.Resources))]
     [NodeSearchTags("ExportWithUnitsSearchTags", typeof(GeometryUI.Properties.Resources))]
+    [OutPortTypes("string")]
     [IsDesignScriptCompatible]
     public class ExportWithUnits : NodeModel
     {
