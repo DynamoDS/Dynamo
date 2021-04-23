@@ -36,7 +36,7 @@ namespace Dynamo.Controls
     {
         private const int MaxChars = 100;
         private const double MinFontFactor = 7.0;
-        
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var tooltip = value as string;
@@ -72,6 +72,68 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Converts the list of package dependencies to a string
+    /// </summary>
+    public class DependencyListToStringConverter : IValueConverter
+    {
+
+        private const string CPython = "CPython";
+        private const string IronPython = "IronPython";
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            string depString = string.Empty;
+            bool flag = false;
+            if (value != null)
+            {
+                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                foreach (var dep in depList)
+                {
+                    if (dep.name == CPython || dep.name == IronPython)
+                    {
+                        depString += dep.name + " " + dep._id + ", ";
+                        flag = true;
+                    }
+                }
+                return flag ? depString.Remove(depString.Length - 2) : null;
+            }
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class EmptyDepStringToCollapsedConverter : IValueConverter
+    {
+        private const string CPython = "CPython";
+        private const string IronPython = "IronPython";
+        public object Convert(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            if (value != null)
+            {
+                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                foreach (var dep in depList)
+                {
+                    if (dep.name == CPython || dep.name == IronPython)
+                    {
+                        return Visibility.Visible;
+                    }
+                }
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
         {
             return null;
         }
