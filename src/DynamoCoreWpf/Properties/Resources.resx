@@ -1906,7 +1906,7 @@ Do you want to install the latest Dynamo update?</value>
     <comment>Package path management dialog content</comment>
   </data>
   <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>The default install location is the first path that is not the Standard Library location</value>
+    <value>The default install location is the first path that is not the Standard Library location.</value>
     <comment>Package path management dialog content that describes about the first non standard libary entry being the default save location.</comment>
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
@@ -2358,7 +2358,7 @@ Uninstall the following packages: {0}?</value>
     <value>Standard Library</value>
   </data>
   <data name="PackagePathViewSummary3" xml:space="preserve">
-    <value>Locations in italic(s) are disabled</value>
+    <value>Locations in italic(s) are disabled.</value>
     <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
   </data>
 </root>

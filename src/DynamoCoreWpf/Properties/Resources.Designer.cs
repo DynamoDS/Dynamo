@@ -3945,7 +3945,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location.
+        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location..
         /// </summary>
         public static string PackagePathViewSummary2 {
             get {
@@ -3954,7 +3954,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Locations in italic(s) are disabled.
+        ///   Looks up a localized string similar to Locations in italic(s) are disabled..
         /// </summary>
         public static string PackagePathViewSummary3 {
             get {
