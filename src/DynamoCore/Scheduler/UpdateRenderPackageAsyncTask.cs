@@ -330,7 +330,6 @@ namespace Dynamo.Scheduler
             var b = Point.ByCartesianCoordinates(cs, -s, s, 0);
             var c = Point.ByCartesianCoordinates(cs, -s, -s, 0);
             var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
-            //Todo Dispose cs, a, b, c, d?
 
             //Add two triangles to represent the plane
             package.AddTriangleVertex(a.X, a.Y, a.Z);
@@ -364,13 +363,20 @@ namespace Dynamo.Scheduler
             var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
             package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
-            //Add the line vertex for the plane line geometry (4 plane edges and 1 normal).
+            //Add the line vertex data for the plane line geometry (4 plane edges and 1 normal).
             for (var i = 0; i < 5; i++)
             {
                 package.AddLineStripVertexCount(2);
                 package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                 package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
             }
+
+            //dispose helper geometry
+            a.Dispose();
+            b.Dispose();
+            c.Dispose();
+            d.Dispose();
+            cs.Dispose();
         }
 
         private static void EnsureColorExistsPerVertex(IRenderPackage package, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
