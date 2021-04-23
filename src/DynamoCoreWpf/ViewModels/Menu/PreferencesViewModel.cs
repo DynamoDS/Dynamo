@@ -540,7 +540,7 @@ namespace Dynamo.ViewModels
         /// This method will remove the current Style selected from the Styles list
         /// </summary>
         /// <param name="groupName"></param>
-        public void RemoveStyleEntry(string groupName)
+        internal void RemoveStyleEntry(string groupName)
         {
             StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
@@ -551,7 +551,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="item1"></param>
         /// <returns></returns>
-        public bool ValidateExistingStyle(StyleItem item1)
+        internal bool ValidateExistingStyle(StyleItem item1)
         {
             return StyleItemsList.Where(x => x.GroupName.Equals(item1.GroupName)).Any();
         }
@@ -559,7 +559,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This method will remove a specific style control from the Styles list
         /// </summary>
-        public void ResetAddStyleControl()
+        internal void ResetAddStyleControl()
         {
             AddStyleControl.GroupName = String.Empty;
             AddStyleControl.HexColorString = "#" + GetRandomHexStringColor();
@@ -570,7 +570,7 @@ namespace Dynamo.ViewModels
         /// This Method will generate a random color string in a Hexadecimal format
         /// </summary>
         /// <returns></returns>
-        public string GetRandomHexStringColor()
+        internal string GetRandomHexStringColor()
         {
             Random r = new Random();
             Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
