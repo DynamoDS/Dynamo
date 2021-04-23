@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -830,6 +832,49 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreEqual("2.0.0", newPackage.VersionName);
             Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
             Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+        }
+
+        [Test]
+        public void LocalizedPackageLocalizedCorrectly()
+        {
+            var esculture = CultureInfo.CreateSpecificCulture("es-ES");
+
+            // Save current culture - usually "en-US"
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            // Set "es-ES"
+            Thread.CurrentThread.CurrentCulture = esculture;
+            Thread.CurrentThread.CurrentUICulture = esculture;
+
+            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] {string.Empty});
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var pkgDir = Path.Combine(PackagesDirectory, "Dynamo Samples");
+            var pkg = loader.ScanPackageDirectory(pkgDir, false);
+
+            // Assert that ScanPackageDirectory returns a package
+            Assert.IsNotNull(pkg);
+            loader.LoadPackages(new List<Package> { pkg });       
+
+            // Verify that the package are imported successfully
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            var nse = entries.Where(x => x.FullName == "SampleLibraryUI.Examples.LocalizedNode").FirstOrDefault();
+            Assert.IsNotNull(nse);
+
+            //verify that the node has the correctly localized description
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+                , nse.Description);
+            var node = nse.CreateNode();
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+               , nse.Description);
+
+            // Restore "en-US"
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
 
         [Test]
