@@ -286,13 +286,15 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = inPorts[0];
 
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(6, suggestions.Count());
+            Assert.AreEqual(8, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName);
             var expectedNodes = new[] { "DSCoreNodes.DSCore.Color.Add",
                 "DSCoreNodes.DSCore.Color.ByARGB",
                 "DSCoreNodes.DSCore.Color.Divide",
                 "DSCoreNodes.DSCore.Color.Multiply",
+                "DSCoreNodes.DSCore.Color Palette",
+                "DSCoreNodes.DSCore.Color.Color Range",
                 "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
                 "DSCoreNodes.DSCore.IO.Image.Pixels"};
 
@@ -349,7 +351,7 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(4 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]
