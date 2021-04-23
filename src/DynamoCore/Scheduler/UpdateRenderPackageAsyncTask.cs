@@ -217,7 +217,7 @@ namespace Dynamo.Scheduler
                 var previousLineVertexCount = package.LineVertexCount;
                 var previousMeshVertexCount = package.MeshVertexCount;
 
-                //Plane tessellation needs to be handled here vs in LibG currently
+                //Todo Plane tessellation needs to be handled here vs in LibG currently
                 if (graphicItem is Plane plane)
                 {
                     CreatePlaneTessellation(package, plane);
@@ -332,6 +332,7 @@ namespace Dynamo.Scheduler
             var d = Point.ByCartesianCoordinates(cs, s, -s, 0);
             //Todo Dispose cs, a, b, c, d?
 
+            //Add two triangles to represent the plane
             package.AddTriangleVertex(a.X, a.Y, a.Z);
             package.AddTriangleVertex(b.X, b.Y, b.Z);
             package.AddTriangleVertex(c.X, c.Y, c.Z);
@@ -340,12 +341,13 @@ namespace Dynamo.Scheduler
             package.AddTriangleVertex(d.X, d.Y, d.Z);
             package.AddTriangleVertex(a.X, a.Y, a.Z);
 
-            package.AddTriangleVertexUV(0, 0);
-            package.AddTriangleVertexUV(0, 0);
-            package.AddTriangleVertexUV(0, 0);
-            package.AddTriangleVertexUV(0, 0);
-            package.AddTriangleVertexUV(0, 0);
-            package.AddTriangleVertexUV(0, 0);
+            //Add the mesh vertex UV, normal, and color data for the 6 triangle vertices
+            for (var i = 0; i < 6; i++)
+            {
+                package.AddTriangleVertexUV(0, 0);
+                package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
+                package.AddTriangleVertexColor(0, 0, 0, 10);
+            }
 
             // Draw plane edges
             package.AddLineStripVertex(a.X, a.Y, a.Z);
@@ -362,17 +364,12 @@ namespace Dynamo.Scheduler
             var nEnd = plane.Origin.Add(plane.Normal.Scale(2.5));
             package.AddLineStripVertex(nEnd.X, nEnd.Y, nEnd.Z);
 
+            //Add the line vertex for the plane line geometry (4 plane edges and 1 normal).
             for (var i = 0; i < 5; i++)
             {
                 package.AddLineStripVertexCount(2);
                 package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
                 package.AddLineStripVertexColor(MidTone, MidTone, MidTone, 255);
-            }
-
-            for (var i = 0; i < 6; i++)
-            {
-                package.AddTriangleVertexNormal(plane.Normal.X, plane.Normal.Y, plane.Normal.Z);
-                package.AddTriangleVertexColor(0, 0, 0, 10);
             }
         }
 
