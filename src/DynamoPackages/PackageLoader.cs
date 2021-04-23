@@ -12,6 +12,7 @@ using Dynamo.Logging;
 using Dynamo.Utilities;
 using DynamoPackages.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.PackageManager
 {
@@ -75,14 +76,16 @@ namespace Dynamo.PackageManager
 
         /// <summary>
         /// Returns the default package directory where new packages will be installed
-        /// The default package directory is currently the second entry in the list
+        /// This is the first non standard library directory
         /// The first entry is the standard library.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
         public string DefaultPackagesDirectory
         {
-            get { return packagesDirectories.Count > 1 ? packagesDirectories[1] : null; }
+            get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
         }
+
+        private int defaultPackagesDirectoryIndex = -1;
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
@@ -108,6 +111,7 @@ namespace Dynamo.PackageManager
                 }
             }
         }
+
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
@@ -121,10 +125,11 @@ namespace Dynamo.PackageManager
         internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
         {
             InitPackageLoader(packagesDirectories, stdLibDirectory);
+
             //override the property.
             this.StandardLibraryDirectory = stdLibDirectory;
         }
-        
+
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
             InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
@@ -148,9 +153,33 @@ namespace Dynamo.PackageManager
         {
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
-            
-            this.packagesDirectories.Add(stdLibDirectory);
+
             this.packagesDirectories.AddRange(packagesDirectories);
+
+            // Setup standard library
+            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.StandardLibraryToken);
+            if (standardLibraryIndex == -1)
+            {
+                // No standard library in list
+                // Add standard library first
+                this.packagesDirectories.Insert(0, stdLibDirectory);
+            }
+            else
+            {
+                // Replace token with runtime library location
+                this.packagesDirectories[standardLibraryIndex] = stdLibDirectory;
+            }
+
+            // Setup Default Package Directory
+            if (standardLibraryIndex == -1)
+            {
+                defaultPackagesDirectoryIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
+            }
+            else
+            {
+                var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
+                defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
+            }
 
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
 
