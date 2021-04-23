@@ -3954,7 +3954,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Locations in italic(s) are disabled..
+        ///   Looks up a localized string similar to Italicized locations are disabled..
         /// </summary>
         public static string PackagePathViewSummary3 {
             get {
