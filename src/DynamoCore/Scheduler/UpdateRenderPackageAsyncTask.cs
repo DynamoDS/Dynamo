@@ -421,33 +421,44 @@ namespace Dynamo.Scheduler
 
         private static void LegacyPackageEnsureColorExistsPerVertex(IRenderPackage pkg, int previousPointVertexCount, int previousLineVertexCount, int previousMeshVertexCount)
         {
-            if (pkg.PointVertexCount > previousPointVertexCount
-                && pkg.PointVertexColors.Any()
-                && pkg.PointVertexColors.Count() / 4 > pkg.PointVertexCount)
+            // We sequence the if statements here to avoid calling Count on PointVertexColors if we don't have to.
+            // For Helix IRenderPackage implementation we have to regenerate a new IEnumerable each time we access PointVertexColors.
+            // The data is stored in a Helix specific data structure for efficient transfer to the view later.
+            // The same applies for line and mesh
+
+            if (pkg.PointVertexCount > previousPointVertexCount)
             {
-                for (var i = pkg.PointVertexColors.Count() / 4; i < pkg.PointVertexCount; i++)
+                var colorCount = pkg.PointVertexColors.Count() / 4;
+                if(colorCount < pkg.PointVertexCount)
                 {
-                    pkg.AddPointVertexColor(DefR, DefG, DefB, DefA);
+                    for (var i = colorCount; i < pkg.PointVertexCount; i++)
+                    {
+                        pkg.AddPointVertexColor(DefR, DefG, DefB, DefA);
+                    }
                 }
             }
 
-            if (pkg.LineVertexCount > previousLineVertexCount
-                && pkg.LineStripVertexColors.Any()
-                && pkg.LineStripVertexColors.Count() / 4 > pkg.LineVertexCount)
+            if (pkg.LineVertexCount > previousLineVertexCount)
             {
-                for (var i = pkg.LineStripVertexColors.Count() / 4; i < pkg.LineVertexCount; i++)
+                var colorCount = pkg.LineStripVertexColors.Count() / 4;
+                if (colorCount < pkg.LineVertexCount)
                 {
-                    pkg.AddLineStripVertexColor(DefR, DefG, DefB, DefA);
+                    for (var i = colorCount; i < pkg.LineVertexCount; i++)
+                    {
+                        pkg.AddLineStripVertexColor(DefR, DefG, DefB, DefA);
+                    }
                 }
             }
 
-            if (pkg.MeshVertexCount > previousMeshVertexCount
-                && pkg.MeshVertexColors.Any()
-                && pkg.MeshVertexColors.Count() / 4 > pkg.MeshVertexCount)
+            if (pkg.MeshVertexCount > previousMeshVertexCount)
             {
-                for (var i = pkg.MeshVertexColors.Count() / 4; i < pkg.MeshVertexCount; i++)
+                var colorCount = pkg.MeshVertexColors.Count() / 4;
+                if (colorCount < pkg.MeshVertexCount)
                 {
-                    pkg.AddTriangleVertexColor(DefR, DefG, DefB, DefA);
+                    for (var i = colorCount; i < pkg.MeshVertexCount; i++)
+                    {
+                        pkg.AddTriangleVertexColor(DefR, DefG, DefB, DefA);
+                    }
                 }
             }
         }
