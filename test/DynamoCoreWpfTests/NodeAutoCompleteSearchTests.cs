@@ -293,8 +293,8 @@ namespace DynamoCoreWpfTests
                 "DSCoreNodes.DSCore.Color.ByARGB",
                 "DSCoreNodes.DSCore.Color.Divide",
                 "DSCoreNodes.DSCore.Color.Multiply",
-                "DSCoreNodes.DSCore.Color Palette",
-                "DSCoreNodes.DSCore.Color.Color Range",
+                "Core.Color.Color Palette",
+                "Core.Color.Color Range",
                 "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
                 "DSCoreNodes.DSCore.IO.Image.Pixels"};
 
