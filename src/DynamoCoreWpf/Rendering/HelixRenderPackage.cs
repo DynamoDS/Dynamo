@@ -644,15 +644,9 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, points, out message))
+            if (!HasValidStartEnd(startIndex, endIndex, points, out var message))
             {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
-
-                return;
+                throw new Exception(message);
             }
 
             for (var i = startIndex; i <= endIndex; i++)
@@ -686,15 +680,9 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, lines, out message))
+            if (!HasValidStartEnd(startIndex, endIndex, lines, out var message))
             {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
-
-                return;
+                throw new Exception(message);
             }
 
             for (var i = startIndex; i <= endIndex; i++)
@@ -728,15 +716,9 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+            if (!HasValidStartEnd(startIndex, endIndex, mesh, out var message))
             {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
-
-                return;
+                throw new Exception(message);
             }
 
             for (var i = startIndex; i <= endIndex; i++)
@@ -793,15 +775,9 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="stride">The size of one dimension of the colors array</param>
         public void AddTextureMapForMeshVerticesRange(int startIndex, int endIndex, byte[] textureMap, int stride)
         {
-            var message = string.Empty;
-            if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
+            if (!HasValidStartEnd(startIndex, endIndex, mesh, out var message))
             {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    throw new Exception(message);
-                }
-
-                return;
+                throw new Exception(message);
             }
             
             foreach (var r in colorsMeshVerticesRange)
