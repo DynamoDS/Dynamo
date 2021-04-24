@@ -557,14 +557,14 @@ namespace Dynamo.Scheduler
             
             if(package is IRenderPackageSupplement packageSupplement  && newPackage is IRenderPackageSupplement newPackageSupplement)
             {
-                var colorsList = packageSupplement.ColorsList;
-                var colorsStrideList = packageSupplement.ColorsStrideList;
-                var colorsMeshVerticesRange = packageSupplement.ColorsMeshVerticesRange;
+                var textureMapsList = packageSupplement.TextureMapsList;
+                var textureMapsStrideList = packageSupplement.TextureMapsStrideList;
+                var meshVerticesRange = packageSupplement.MeshVerticesRangesAssociatedWithTextureMaps;
                 packageSupplement.AllowLegacyColorOperations = false;
 
-                for (var i = 0; i < colorsList.Count; i++)
+                for (var i = 0; i < textureMapsList.Count; i++)
                 {
-                    newPackageSupplement.AddColorsForMeshVerticesRange(colorsMeshVerticesRange[i].Item1, colorsMeshVerticesRange[i].Item2, colorsList[i], colorsStrideList[i]);
+                    newPackageSupplement.AddTextureMapForMeshVerticesRange(meshVerticesRange[i].Item1, meshVerticesRange[i].Item2, textureMapsList[i], textureMapsStrideList[i]);
                 }
             }
 

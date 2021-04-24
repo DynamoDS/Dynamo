@@ -563,8 +563,11 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Add a label position to the render package.
+        /// Add a label position to the render package with position information from an existing geometry vertex.
         /// </summary>
+        /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="vertexType">The type of vertex geometry used to look up a position: Point, Line, or Mesh</param>
+        /// <param name="index">The index of the vertex geometry used to look up a position</param>
         public void AddLabel(string label, VertexType vertexType, int index)
         {
             Vector3 position;
@@ -591,13 +594,14 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Add a label position to the render package.
         /// </summary>
+        /// <param name="label">Text to be displayed in the label</param>
         public void AddLabel(string label, double x, double y, double z)
         {
             LabelPlaces.Add(new Tuple<string, Vector3>(label, Vector3ForYUp(x, y, z)));
         }
 
         /// <summary>
-        /// A flag indicating whether the render package should auto generate labels
+        /// A flag indicating whether the render package should auto generate labels based on replication indices
         /// </summary>
         public bool AutoGenerateLabels { get; set; } = true;
 
@@ -615,23 +619,29 @@ namespace Dynamo.Wpf.Rendering
         #region IRenderPackageSupplement implementation
 
         /// <summary>
-        /// The number of point vertices colors in the package.
+        /// The number of point vertices colors in the package (Optimized for speed).
         /// </summary>
         public int PointVertexColorCount => points.Colors.Count;
 
         /// <summary>
-        /// The number of line vertices colors in the package.
+        /// The number of line vertices colors in the package (Optimized for speed).
         /// </summary>
         public int LineVertexColorCount => lines.Colors.Count;
 
         /// <summary>
-        /// The number of mesh vertices colors in the package.
+        /// The number of mesh vertices colors in the package (Optimized for speed).
         /// </summary>
         public int MeshVertexColorCount => mesh.Colors.Count;
 
         /// <summary>
         /// Insert a color to a range of point vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in PointVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in PointVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             var message = string.Empty;
@@ -668,6 +678,12 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Insert a color to a range of line vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             var message = string.Empty;
@@ -704,6 +720,12 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// Insert a color to a range of of mesh vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         public void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             var message = string.Empty;
@@ -741,15 +763,15 @@ namespace Dynamo.Wpf.Rendering
         /// A List containing arrays of bytes representing RGBA colors.
         /// These arrays can be used to populate textures for mapping onto specific meshes
         /// </summary>
-        public List<byte[]> ColorsList
+        public List<byte[]> TextureMapsList
         {
             get { return colorsList; }
         }
 
         /// <summary>
-        /// A list containing the size of one dimension of the associated Colors list.
+        /// A list containing the size of one dimension of the associated texture map array in TextureMapsList.
         /// </summary>
-        public List<int> ColorsStrideList
+        public List<int> TextureMapsStrideList
         {
             get { return colorStrideList; }
         }
@@ -757,15 +779,19 @@ namespace Dynamo.Wpf.Rendering
         /// <summary>
         /// A list of mesh vertices ranges that have associated texture maps
         /// </summary>
-        public List<Tuple<int, int>> ColorsMeshVerticesRange
+        public List<Tuple<int, int>> MeshVerticesRangesAssociatedWithTextureMaps
         {
             get { return colorsMeshVerticesRange; }
         }
 
         /// <summary>
-        /// Set a color map for a range of mesh vertices
+        /// Set a color texture map for a specific range of mesh vertices
         /// </summary>
-        public void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride)
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the texture map</param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the texture map</param>
+        /// <param name="textureMap">An array of bytes representing RGBA colors to be used as a color texture map</param>
+        /// <param name="stride">The size of one dimension of the colors array</param>
+        public void AddTextureMapForMeshVerticesRange(int startIndex, int endIndex, byte[] textureMap, int stride)
         {
             var message = string.Empty;
             if (!HasValidStartEnd(startIndex, endIndex, mesh, out message))
@@ -787,12 +813,14 @@ namespace Dynamo.Wpf.Rendering
             }
             
             colorsMeshVerticesRange.Add(new Tuple<int, int>(startIndex, endIndex));
-            colorsList.Add(colors);
+            colorsList.Add(textureMap);
             colorStrideList.Add(stride);
         }
 
         /// <summary>
         /// Allow legacy usage of the color methods in IRenderPackage
+        /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
+        /// any third party usage of deprecated color methods in IRenderPackage API
         /// </summary>
         [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
         public bool AllowLegacyColorOperations { get; set; } = true;

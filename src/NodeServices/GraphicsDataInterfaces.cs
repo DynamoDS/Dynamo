@@ -208,23 +208,29 @@ namespace Autodesk.DesignScript.Interfaces
     public interface IRenderPackageSupplement
     {
         /// <summary>
-        /// The number of point vertices colors in the package.
+        /// The number of point vertices colors in the package (Optimized for speed).
         /// </summary>
         int PointVertexColorCount { get; }
 
         /// <summary>
-        /// The number of line vertices colors in the package.
+        /// The number of line vertices colors in the package (Optimized for speed).
         /// </summary>
         int LineVertexColorCount { get; }
 
         /// <summary>
-        /// The number of mesh vertices colors in the package.
+        /// The number of mesh vertices colors in the package (Optimized for speed).
         /// </summary>
         int MeshVertexColorCount { get; }
-        
+
         /// <summary>
         /// Insert a color to a range of point vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in PointVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in PointVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
         
         /// <summary>
@@ -236,16 +242,29 @@ namespace Autodesk.DesignScript.Interfaces
         /// <summary>
         /// Insert a color to a range of line vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
 
         /// <summary>
         /// Append a color range for line vertices.
         /// </summary>
+        /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         void AppendLineVertexColorRange(byte[] colors);
 
         /// <summary>
         /// Insert a color to a range of of mesh vertices.
         /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with a color</param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with a color</param>
+        /// <param name="red">byte for the red RGB value</param>
+        /// <param name="green">byte for the green RGB value</param>
+        /// <param name="blue">byte for the blue RGB value</param>
+        /// <param name="alpha">byte for the alpha RGB value</param>
         void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
 
         /// <summary>
@@ -258,25 +277,31 @@ namespace Autodesk.DesignScript.Interfaces
         /// A List containing arrays of bytes representing RGBA colors.
         /// These arrays can be used to populate textures for mapping onto specific meshes
         /// </summary>
-        List<byte[]> ColorsList { get; }
+        List<byte[]> TextureMapsList { get; }
 
         /// <summary>
-        /// A list containing the size of one dimension of the associated Colors list.
+        /// A list containing the size of one dimension of the associated texture map array in TextureMapsList.
         /// </summary>
-        List<int> ColorsStrideList { get; }
+        List<int> TextureMapsStrideList { get; }
 
         /// <summary>
         /// A list of mesh vertices ranges that have associated texture maps
         /// </summary>
-        List<Tuple<int,int>> ColorsMeshVerticesRange { get; }
+        List<Tuple<int,int>> MeshVerticesRangesAssociatedWithTextureMaps { get; }
 
         /// <summary>
-        /// Set a color map for a range of mesh vertices
+        /// Set a color texture map for a specific range of mesh vertices
         /// </summary>
-        void AddColorsForMeshVerticesRange(int startIndex, int endIndex, byte[] colors, int stride);
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the texture map</param>
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the texture map</param>
+        /// <param name="textureMap">An array of bytes representing RGBA colors to be used as a color texture map</param>
+        /// <param name="stride">The size of one dimension of the colors array</param>
+        void AddTextureMapForMeshVerticesRange(int startIndex, int endIndex, byte[] textureMap, int stride);
 
         /// <summary>
         /// Allow legacy usage of the color methods in IRenderPackage
+        /// This flag is used by the UpdateRenderPackageAsyncTask implementation to flag
+        /// any third party usage of deprecated color methods in IRenderPackage API
         /// </summary>
         [Obsolete("Do not use! This will be removed in Dynamo 3.0")]
         bool AllowLegacyColorOperations { get; set; }
@@ -293,17 +318,21 @@ namespace Autodesk.DesignScript.Interfaces
         List<Tuple<string, float[]>> LabelData { get; }
 
         /// <summary>
-        /// Add a label position to the render package with reference to a geometry vertex.
+        /// Add a label position to the render package with position information from an existing geometry vertex.
         /// </summary>
+        /// <param name="label">Text to be displayed in the label</param>
+        /// <param name="vertexType">The type of vertex geometry used to look up a position: Point, Line, or Mesh</param>
+        /// <param name="index">The index of the vertex geometry used to look up a position</param>
         void AddLabel(string label, VertexType vertexType, int index);
 
         /// <summary>
         /// Add a label position to the render package.
         /// </summary>
+        /// <param name="label">Text to be displayed in the label</param>
         void AddLabel(string label, double x, double y, double z);
 
         /// <summary>
-        /// A flag indicating whether the render package should auto generate labels
+        /// A flag indicating whether the render package should auto generate labels based on replication indices
         /// </summary>
         bool AutoGenerateLabels { get; set; }
 

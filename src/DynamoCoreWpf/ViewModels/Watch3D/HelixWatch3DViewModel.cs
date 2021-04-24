@@ -1811,18 +1811,18 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D object for each texture map and associated mesh geometry.  
                     //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
-                    if (rp.ColorsMeshVerticesRange.Any())
+                    if (rp.MeshVerticesRangesAssociatedWithTextureMaps.Any())
                     {
                         //For each range of mesh vertices add the mesh data and texture map to the scene
                         var meshVertexCountTotal = 0;
-                        for (var j = 0; j < rp.ColorsMeshVerticesRange.Count; j++)
+                        for (var j = 0; j < rp.MeshVerticesRangesAssociatedWithTextureMaps.Count; j++)
                         {
-                            var range = rp.ColorsMeshVerticesRange[j];
+                            var range = rp.MeshVerticesRangesAssociatedWithTextureMaps[j];
                             var index = range.Item1; //Start mesh vertex index
                             var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
                             var uniqueId = baseId + ":" + j + MeshKey;
                             
-                            AddMeshData(uniqueId, rp,index,count, drawDead, baseId, rp.ColorsList[j], rp.ColorsStrideList[j]);
+                            AddMeshData(uniqueId, rp,index,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j]);
 
                             //Track cumulative total of mesh vertices added.
                             meshVertexCountTotal+= count;
@@ -1834,7 +1834,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
                         //First sort the range data
-                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.ColorsMeshVerticesRange);
+                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
                         sortedVerticesRange.Sort();
                         sortedVerticesRange.Reverse();
                         

@@ -263,7 +263,7 @@ namespace Modifiers
 
             if (package is IRenderPackageSupplement packageSupplement)
             {
-                packageSupplement.AddColorsForMeshVerticesRange(previousMeshVertexCount, package.MeshVertexCount - 1, colorBytes.ToArray(),
+                packageSupplement.AddTextureMapForMeshVerticesRange(previousMeshVertexCount, package.MeshVertexCount - 1, colorBytes.ToArray(),
                     colorMap.First().Length * 4);
 
                 if (package.LineVertexCount > previousLineVertexCount)
