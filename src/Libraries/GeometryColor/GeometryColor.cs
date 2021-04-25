@@ -204,7 +204,7 @@ namespace Modifiers
 
             if (singleColor != null)
             {
-                CreateGeometryRenderData(singleColor, package, parameters);
+                CreateGeometryRenderData(package, parameters);
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace Modifiers
                     return;
                 }
 
-                CreateColorMapOnSurface(colorMap, package, parameters);
+                CreateColorMapOnSurface(package, parameters);
                 return;
             }
         }
@@ -238,7 +238,7 @@ namespace Modifiers
             return Utils.CreateGradientColorMap(colors, uvs, samplesU, samplesV);
         }
 
-        private void CreateColorMapOnSurface(Color[][] colorMap , IRenderPackage package, TessellationParameters parameters)
+        private void CreateColorMapOnSurface(IRenderPackage package, TessellationParameters parameters)
         {
             const byte gray = 80;
             var previousMeshVertexCount = package.MeshVertexCount;
@@ -275,7 +275,7 @@ namespace Modifiers
             }
         }
 
-        private void CreateGeometryRenderData(Color color, IRenderPackage package, TessellationParameters parameters)
+        private void CreateGeometryRenderData(IRenderPackage package, TessellationParameters parameters)
         {
             var previousPointVertexCount = package.PointVertexCount;
             var previousLineVertexCount = package.LineVertexCount;
@@ -294,20 +294,20 @@ namespace Modifiers
             {
                 if (package.LineVertexCount > previousLineVertexCount)
                 {
-                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1, color.Red, color.Green,
-                        color.Blue, color.Alpha);
+                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1, singleColor.Red, singleColor.Green,
+                        singleColor.Blue, singleColor.Alpha);
                 }
 
                 if (package.PointVertexCount > previousPointVertexCount)
                 {
-                    packageSupplement.InsertPointVertexColorRange( previousPointVertexCount, package.PointVertexCount - 1, color.Red, color.Green,
-                        color.Blue, color.Alpha);
+                    packageSupplement.InsertPointVertexColorRange( previousPointVertexCount, package.PointVertexCount - 1, singleColor.Red, singleColor.Green,
+                        singleColor.Blue, singleColor.Alpha);
                 }
 
                 if (package.MeshVertexCount > previousMeshVertexCount)
                 {
-                    packageSupplement.InsertMeshVertexColorRange(previousMeshVertexCount, package.MeshVertexCount - 1, color.Red, color.Green,
-                        color.Blue, color.Alpha);
+                    packageSupplement.InsertMeshVertexColorRange(previousMeshVertexCount, package.MeshVertexCount - 1, singleColor.Red, singleColor.Green,
+                        singleColor.Blue, singleColor.Alpha);
                 }
             }
             else
