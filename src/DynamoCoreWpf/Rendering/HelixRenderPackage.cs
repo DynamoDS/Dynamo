@@ -871,7 +871,7 @@ namespace Dynamo.Wpf.Rendering
         internal static string CleanTag(string tag)
         {
             var splits = tag.Split(':');
-            return splits.Count() <= 1 ? tag : string.Format("[{0}]", string.Join(",", splits.Skip(1)));
+            return splits.Count() <= 1 ? "[0]" : string.Format("[{0}]", string.Join(",", splits.Skip(1)));
         }
 
         private static Color4 Color4FromBytes(byte red, byte green, byte blue, byte alpha)
