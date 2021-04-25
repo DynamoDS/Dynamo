@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dynamo.LintingViewExtension.Controls"
              xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
+             xmlns:severity="clr-namespace:Dynamo.Linting.Interfaces;assembly=DynamoCore"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"
              d:DesignHeight="450"
@@ -12,6 +13,10 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
+            <converter:SeverityCodeToColorConverter x:Key="SeverityCodeToColorConverter" />
+            <converter:SeverityCodeToIconConverter x:Key="SeverityCodeToIconConverter" />
+            <converter:CollectionToVisibilityConverter x:Key="CollectionToVisibilityConverter" />
+
             <Style TargetType="{x:Type TextBlock}">
                 <Setter Property="Foreground"
                         Value="White" />
@@ -38,10 +43,11 @@
                 </Grid.ColumnDefinitions>
 
 
-                <fa:ImageAwesome Icon="ExclamationTriangle"
-                                    Foreground="Yellow"
-                                    Height="15"
-                                    Grid.Column="0" />
+                <fa:ImageAwesome Height="15"
+                                 Grid.Column="0"
+                                 Icon="{Binding SeverityCode, Converter={StaticResource SeverityCodeToIconConverter}}"
+                                 Foreground="{Binding SeverityCode, Converter={StaticResource SeverityCodeToColorConverter}}">
+                </fa:ImageAwesome>
                 <TextBlock Text="{Binding Description, FallbackValue='Header description'}"
                             Grid.Column="1"
                             TextWrapping="WrapWithOverflow"
@@ -50,7 +56,8 @@
 
                 <ContentPresenter Grid.Row="1"
                                   Grid.Column="1"
-                                  Margin="10" />
+                                  Margin="15 5"
+                                  Visibility="{Binding NodeIds, Converter={StaticResource CollectionToVisibilityConverter}}"/>
 
                 <TextBlock Text="{Binding CallToAction, FallbackValue='Call to action'}"
                            Grid.Row="2"

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Linting.Interfaces;
 using Dynamo.Linting.Rules;
 
 namespace Dynamo.LintingViewExtension.Controls
@@ -45,6 +46,18 @@ namespace Dynamo.LintingViewExtension.Controls
         public static readonly DependencyProperty CallToActionProperty = DependencyProperty.Register(
             nameof(CallToAction),
             typeof(string),
+            typeof(IssueGroup)
+        );
+
+        public SeverityCodesEnum SeverityCode
+        {
+            get { return (SeverityCodesEnum)GetValue(SeverityCodeProperty); }
+            set { SetValue(SeverityCodeProperty, value); }
+        }
+
+        public static readonly DependencyProperty SeverityCodeProperty = DependencyProperty.Register(
+            nameof(SeverityCode),
+            typeof(SeverityCodesEnum),
             typeof(IssueGroup)
         );
 

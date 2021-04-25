@@ -46,6 +46,7 @@
     <Compile Include="LinterRules\GraphNeedsOutputNodesRule.cs" />
     <Compile Include="LinterRules\InputNodesNotAllowedRule.cs" />
     <Compile Include="LinterRules\NodesCantBeNamedFooRule.cs" />
+    <Compile Include="LinterRules\WarningSeverityRule.cs" />
     <Compile Include="TestLinterExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

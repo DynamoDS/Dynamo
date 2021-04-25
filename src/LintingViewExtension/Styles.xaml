@@ -73,9 +73,10 @@
     <DataTemplate x:Key="NodeIssueGroupsItemTemplate"
                   DataType="{x:Type controls:NodeRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
-                                 CallToAction="{Binding Rule.CallToAction}"
-                                 NodeIds="{Binding AffectedNodes }"
-                                 Margin="5">
+                             CallToAction="{Binding Rule.CallToAction}"
+                             NodeIds="{Binding AffectedNodes }"
+                             SeverityCode="{Binding Rule.SeverityCode}"
+                             Margin="5">
             <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
                       ItemsSource="{Binding AffectedNodes}"
                       Style="{DynamicResource ListViewStyle}"
@@ -92,6 +93,7 @@
         <controls:IssueGroup Description="{Binding Rule.Description}"
                              CallToAction="{Binding Rule.CallToAction}"
                              NodeIds="{Binding AffectedNodes}"
+                             SeverityCode="{Binding Rule.SeverityCode}"
                              Margin="5">
         </controls:IssueGroup>
     </DataTemplate>

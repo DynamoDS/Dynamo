@@ -24,7 +24,7 @@
             <DataTemplate x:Key="HeaderItemControlHeaderTemplate">
                 <TextBlock Text="{Binding}"
                            Foreground="{StaticResource HeaderFontColor}"
-                           FontSize="15"
+                           FontSize="12"
                            FontFamily="{StaticResource OpenSansSemibold}" />
             </DataTemplate>
 
@@ -57,9 +57,7 @@
                                           Grid.Column="1"
                                           Margin="10,0,0,0"
                                           VerticalAlignment="Center"
-                                          TextBlock.FontSize="15"
-                                          TextBlock.Foreground="{StaticResource HeaderFontColor}"
-                                          TextBlock.FontFamily="{StaticResource OpenSansSemibold}"
+                                          ContentTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                                           ContentSource="Content"/>
                     </Grid>
                 </Border>
@@ -156,6 +154,7 @@
                 </Grid.RowDefinitions>
                 <Expander Grid.Row="0"
                           Header="Node Issues"
+                          HeaderTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                           IsExpanded="True"
                           Template="{StaticResource issueExpander}"
                           Margin="0 0 0 5">
@@ -169,6 +168,7 @@
 
                 <Expander Grid.Row="1"
                           Header="Graph Issues"
+                          HeaderTemplate="{StaticResource HeaderItemControlHeaderTemplate}"
                           IsExpanded="True"
                           Template="{StaticResource issueExpander}">
                     <ListView ItemTemplate="{DynamicResource GraphIssueGroupsItemTemplate}"
