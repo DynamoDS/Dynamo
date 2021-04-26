@@ -1553,10 +1553,6 @@ Next assemblies were loaded several times:
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
   </data>
-  <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>Top path is the default save location.</value>
-    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
-  </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
     <comment>Package path management dialog title</comment>
@@ -2374,5 +2370,16 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
     <value>Isolate Selected Geometry</value>
     <comment>Toogle Button Content</comment>
+  </data>
+  <data name="PackagePathViewModel_Standard_Library" xml:space="preserve">
+    <value>Standard Library</value>
+  </data>
+  <data name="PackagePathViewSummary2" xml:space="preserve">
+    <value>The default install location is the first path that is not the Standard Library location.</value>
+    <comment>Package path management dialog content that displays the first non-standard library entry being the default save location.</comment>
+  </data>
+  <data name="PackagePathViewSummary3" xml:space="preserve">
+    <value>Italicized locations are disabled.</value>
+    <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
   </data>
 </root>

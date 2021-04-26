@@ -20,7 +20,7 @@ namespace CoreNodeModels.Input
     [NodeSearchTags("ColorUISearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [OutPortNames("Color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions("Selected Color.")]
     public class ColorPalette : NodeModel
     {

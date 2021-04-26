@@ -3909,6 +3909,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Standard Library.
+        /// </summary>
+        public static string PackagePathViewModel_Standard_Library {
+            get {
+                return ResourceManager.GetString("PackagePathViewModel_Standard_Library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
         /// </summary>
         public static string PackagePathViewSummary1 {
@@ -3918,11 +3927,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top path is the default save location..
+        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location..
         /// </summary>
         public static string PackagePathViewSummary2 {
             get {
                 return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italicized locations are disabled..
+        /// </summary>
+        public static string PackagePathViewSummary3 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary3", resourceCulture);
             }
         }
         
