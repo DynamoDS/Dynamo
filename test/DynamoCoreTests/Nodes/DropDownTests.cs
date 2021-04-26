@@ -209,11 +209,9 @@ namespace Dynamo.Tests.Nodes
             Assert.AreEqual("Cersei", node.GetType().GetProperty("SelectedString").GetValue(node));
 
             // Call PopulateItems() on node should not change index
-            // TODO fix the selection state code in PopulateItemsCore() in DynamoSamples repo 
-            // and update the test to be the correct behavior
             node.GetType().GetMethod("PopulateItems").Invoke(node, new object[] { });
-            Assert.AreNotEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
-            Assert.AreNotEqual("Cersei", node.GetType().GetProperty("SelectedString").GetValue(node));
+            Assert.AreEqual(1, node.GetType().GetProperty("SelectedIndex").GetValue(node));
+            Assert.AreEqual("Cersei", node.GetType().GetProperty("SelectedString").GetValue(node));
         }
 
         [Test]

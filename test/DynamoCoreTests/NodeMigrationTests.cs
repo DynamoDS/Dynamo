@@ -2252,7 +2252,7 @@ namespace Dynamo.Tests
         {
             // Define package loading reference paths
             var dir = SystemTestBase.GetTestDirectory(ExecutingDirectory);
-            var pkgDir = Path.Combine(dir, "pkgs\\Dynamo Samples");
+            var pkgDir = Path.Combine(dir, "pkgs\\MigrationTesting");
             var legacyGraph = Path.Combine(pkgDir, "extra\\LegacyPackageSampleGraph.dyn");
             var pkgMan = this.CurrentDynamoModel.GetPackageManagerExtension();
             var loader = pkgMan.PackageLoader;
@@ -2262,7 +2262,7 @@ namespace Dynamo.Tests
             loader.LoadPackages(new List<Package> {pkg});
 
             // Assert expected package was loaded
-            Assert.AreEqual(pkg.Name, "Dynamo Samples");
+            Assert.AreEqual(pkg.Name, "MigrationTesting");
 
             // Load the legacy graph, which contains 4 ZeroTouch/NodeModel test cases that use
             // old class names than were renamed in the version of the package we are loading.
