@@ -140,6 +140,31 @@ namespace DynamoUtilitiesTests
             Assert.AreEqual("0.8.2.3", prod082.VersionString);
         }
 
+        // Test ensures product initialization fallsback to using product code if product lookup with name fails.
+        [Test, Category("ProductLookUp"), Category("UnitTests")]
+        public void FindProductsWhenProductNameLookupFails()
+        {
+            var products = new Dictionary<string, (Version version, string installlocation, string displayName)>
+            {
+                { "0000", (new Version(0, 1, 2, 3),"installLocation0", null) },
+                { "0001", (new Version(0, 1, 2, 4), null,"prodname1XYZ") },
+                { "0002", (new Version(0, 1, 2, 5),"installLocation2","prodname2") },
+                { "0003", (new Version(0, 1, 2, 5),"installLocation3","prodnameXYZ") },
+            };
+
+            var locations = new Dictionary<string, Version>
+            {
+                { "installLocation3", new Version(0,1,2,5) },
+            };
+
+            var lookUp = SetUpProductLookUpFailsToFindProductByName(products,locations);
+
+            var p = new InstalledProducts();
+            p.LookUpAndInitProducts(lookUp);
+            Assert.AreEqual(1, p.Products.Count());
+
+        }
+
         [Test, Category("ProductLookUp"), Category("UnitTests")]
         public void GetProductFromInstallPath()
         {
@@ -268,6 +293,49 @@ namespace DynamoUtilitiesTests
             Assert.IsTrue(p.CompareTo(p5) < 0);
         }
 
+
+        private static InstalledProductLookUp SetUpProductLookUpFailsToFindProductByName(Dictionary<string, (Version version,string installlocation, string displayName)> products,
+            Dictionary<string,Version> mockedLocations)
+        {
+            string name;
+            (Version version, string installlocation, string displayName) product;
+            Version version;
+
+            var lookUp = new Mock<InstalledProductLookUp>(new object[] { "XYZ", "some.dll" }) { CallBase = true };
+
+            lookUp.Setup(l => l.ExistsAtPath(It.IsAny<string>()))
+                .Returns<string>(
+                    (s) =>
+                    {
+                        if (string.IsNullOrEmpty(s))
+                            return false;
+
+                        if (products.TryGetValue(s, out product))
+                            return product.version != null;
+                        if (mockedLocations.TryGetValue(s, out version))
+                           return version != null;
+
+                        return false;
+                    });
+
+            lookUp.Setup(l => l.GetInstallLocationFromProductName(It.IsAny<string>()))
+                .Returns<string>(null);
+            lookUp.Setup(l => l.GetProductNameAndCodeList()).Returns(
+                products.Select(s => (s.Value.displayName, s.Key)).Where(s2 =>
+                {
+                    return s2.displayName?.Contains(lookUp.Object.ProductLookUpName) ?? false;
+                }));
+
+            lookUp.Setup(l => l.GetProductNameList()).Returns(products.Select(x=>x.Value.displayName));
+            lookUp.Setup(l => l.GetCoreFilePathFromInstallation(It.IsAny<string>()))
+                .Returns<string>(s => s);
+            lookUp.Setup(
+                l => l.GetInstallLocationFromProductCode(It.IsAny<string>(), out name))
+                .Returns<string,string>((s,s2)=> { return products[s].installlocation;});
+
+            return lookUp.Object;
+        }
+
         private static InstalledProductLookUp SetUpProductLookUp(Dictionary<string, Tuple<int,int,int,int>> products,
             Dictionary<string, Tuple<int, int, int, int>> locations)
         {
@@ -293,6 +361,8 @@ namespace DynamoUtilitiesTests
             lookUp.Setup(l => l.GetInstallLocationFromProductName(It.IsAny<string>()))
                 .Returns<string>(s => s);
             lookUp.Setup(l => l.GetProductNameList()).Returns(products.Keys);
+            lookUp.Setup(l => l.GetProductNameAndCodeList()).Returns(
+              products.Select(s => (s.Key, "someCode")));
             lookUp.Setup(l => l.GetCoreFilePathFromInstallation(It.IsAny<string>()))
                 .Returns<string>(s => s);
             lookUp.Setup(l => l.GetVersionInfoFromFile(It.IsAny<string>()))

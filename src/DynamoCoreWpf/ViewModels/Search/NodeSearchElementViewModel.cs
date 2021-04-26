@@ -286,11 +286,12 @@ namespace Dynamo.Wpf.ViewModels
             dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                 Model.CreationName, 0, portModel.Index, adjustedX, 0, createAsDownStreamNode, false, true));
 
-            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
-            DynamoSelection.Instance.ClearSelection();
             var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
 
+            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
+            DynamoSelection.Instance.ClearSelection();
             DynamoSelection.Instance.Selection.AddRange(inputNodes);
+            DynamoSelection.Instance.Selection.Add(initialNode);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
@@ -305,8 +306,9 @@ namespace Dynamo.Wpf.ViewModels
         {
             var nodeView = (NodeView) sender;
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
+            var originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
 
-            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
+            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
 
             DynamoSelection.Instance.ClearSelection();
 

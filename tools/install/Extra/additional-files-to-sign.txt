@@ -4,6 +4,7 @@
 ## Files which are not found should cause a build failure.
 
 Greg.dll
+Analytics.Net.ADP.dll
 Analytics.NET.Core.dll
 Analytics.NET.Google.dll
 LibG.Interface.dll

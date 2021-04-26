@@ -533,7 +533,7 @@ namespace WpfVisualizationTests
 
             // Ensure the serialization survives through file, undo, and copy.
             var document = new XmlDocument();
-            var fileElement = original.Serialize(document, SaveContext.File);
+            var fileElement = original.Serialize(document, SaveContext.Save);
             var undoElement = original.Serialize(document, SaveContext.Undo);
             var copyElement = original.Serialize(document, SaveContext.Copy);
 
@@ -547,7 +547,7 @@ namespace WpfVisualizationTests
             var nodeFromCopy = new Watch3D();
             var vmCopy = new HelixWatch3DNodeViewModel(nodeFromCopy, vmParams);
 
-            nodeFromFile.Deserialize(fileElement, SaveContext.File);
+            nodeFromFile.Deserialize(fileElement, SaveContext.Save);
             nodeFromUndo.Deserialize(undoElement, SaveContext.Undo);
             nodeFromCopy.Deserialize(copyElement, SaveContext.Copy);
 

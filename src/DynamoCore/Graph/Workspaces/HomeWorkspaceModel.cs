@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
@@ -27,6 +28,8 @@ namespace Dynamo.Graph.Workspaces
     {
         #region Class Data Members and Properties
 
+        private string thumbnail;
+        private Uri graphDocumentationURL;
         private readonly DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
         private readonly bool verboseLogging;
@@ -88,6 +91,54 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         [JsonIgnore]
         public long EvaluationCount { get; private set; }
+
+        /// <summary>
+        /// Link to documentation page for this workspace
+        /// </summary>
+        public Uri GraphDocumentationURL
+        {
+            get { return graphDocumentationURL; }
+            set
+            {
+                if (graphDocumentationURL == value)
+                    return;
+
+                graphDocumentationURL = value;
+                RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
+        }
+
+
+        /// <summary>
+        /// Workspace thumbnail as Base64 string.
+        /// Returns null if provide value is not Base64 encoded.
+        /// </summary>
+        public string Thumbnail
+        {
+            get { return thumbnail; }
+            set
+            {
+                try
+                {
+                    // if value is not a valid Base64 string this will throw, and we return null.
+                    byte[] data = Convert.FromBase64String(value);
+                    thumbnail = value;
+                    RaisePropertyChanged(nameof(Thumbnail));
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// List of user defined data from extensions and view extensions stored in the graph
+        /// </summary>
+        internal ICollection<ExtensionData> ExtensionData
+        {
+            get; set;
+        }
 
         /// <summary>
         /// In near future, the file loading mechanism will be completely moved 
@@ -278,6 +329,7 @@ namespace Dynamo.Graph.Workspaces
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
+            this.ExtensionData = new List<ExtensionData>();
 
             // The first time the preloaded trace data is set, we cache
             // the data as historical. This will be used after the initial
@@ -346,10 +398,10 @@ namespace Dynamo.Graph.Workspaces
                 // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
                 // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
-                if (RunSettings.RunEnabled || executingTask)
+                if ((RunSettings.RunEnabled || executingTask) && !DelayGraphExecution)
                 {
                     Run();
-                }   
+                }
             }
         }
 
@@ -665,7 +717,7 @@ namespace Dynamo.Graph.Workspaces
             // are compiled first before the home workspace gets evaluated.
             // 
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
-
+            
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
             if (task.Initialize(EngineController, this))
             {
@@ -769,6 +821,40 @@ namespace Dynamo.Graph.Workspaces
             historicalTraceData = null;
 
             return orphans;
-        } 
+        }
+
+        internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        {
+            data = new Dictionary<string, string>();
+            if (!ExtensionData.Any())
+                return false;
+
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return false;
+
+            data = extensionData.Data;
+            return true;
+        }
+
+        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
+        {
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return;
+
+            extensionData.Data = data;
+        }
+
+        internal void CreateNewExtensionData(string uniqueId, string name, string version, Dictionary<string, string> data)
+        {
+            // TODO: Figure out how to add extension version when creating new ExtensionData 
+            var extensionData = new ExtensionData(uniqueId, name, version, data);
+            ExtensionData.Add(extensionData);
+        }
     }
 }

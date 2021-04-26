@@ -559,7 +559,7 @@ namespace DynamoCoreWpfTests
             // get menu items that match the extension's menu item
             return loadedParams.dynamoMenu.Items
                 .Cast<MenuItem>()
-                .Where(x => ((string)x.Header).Contains("View"))
+                .Where(x => ((string)x.Header).Contains("Extensions"))
                 .Select(x => x.Items)
                 .FirstOrDefault()
                 .Cast<MenuItem>()

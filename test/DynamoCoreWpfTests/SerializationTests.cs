@@ -336,6 +336,36 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeUserDescriptionTest()
+        {
+            // Arrange
+            var userDescription = "Some description set by user...";
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeUserDescriptionDeserilizationTest.dyn");         
+
+            OpenModel(testFile);
+
+            // Act
+            // Stage 1: Serialize the workspace view.
+            var jobject1 = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionBefore = jobject1["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Stage 2: set UserDescription
+            var nodeViewModel = this.ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nodeViewModel.UserDescription = userDescription;
+
+            // Stage 3: Serialize the workspace view again to make sure UserDescription is now serialized.
+            var jobject2 = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionAfter = jobject2["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Assert
+            Assert.That(nodeViewModel.UserDescription == userDescription);
+            Assert.That(nodeViewModel.UserDescription == this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().UserDescription);
+            Assert.That(userDescriptionBefore is null);
+            Assert.AreNotEqual(userDescriptionBefore, userDescriptionAfter);
+            Assert.IsTrue(userDescriptionAfter.ToString() == userDescription);
+        }
+
+        [Test]
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
@@ -395,7 +425,7 @@ namespace DynamoCoreWpfTests
 
             Assert.IsNotNull(dummyNode);
             var xmlDocument = new XmlDocument();
-            var element = dummyNode.Serialize(xmlDocument, SaveContext.File);
+            var element = dummyNode.Serialize(xmlDocument, SaveContext.Save);
 
             // Dummy node should be serialized to its original node
             Assert.AreEqual(element.Name, "Dynamo.Nodes.DSFunction");
@@ -430,6 +460,11 @@ namespace DynamoCoreWpfTests
             // Re-saving the file will update the version number (which can be expected)
             // Setting the version numbers to be equal to stop the deep compare from failing
             jobject2["View"]["Dynamo"]["Version"] = jobject1["View"]["Dynamo"]["Version"];
+
+            // Ignoring the ExtensionWorkspaceData property as this is added after the re-save,
+            // this will cause a difference between jobject1 and jobject2 if it is not ignored.
+            jobject2.Remove("ExtensionWorkspaceData");
+
             var jsonText2 = jobject2.ToString();
 
             Console.WriteLine(jsonText1);

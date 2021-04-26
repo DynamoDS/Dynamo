@@ -148,7 +148,7 @@ namespace Dynamo.Tests
         {
             // Add one node from "Dynamo Samples" package
             var pi = GetPackageInfo("Dynamo Samples");
-            var node = GetNodeInstance("Examples.NEWBasicExample.Create@double,double,double");
+            var node = GetNodeInstance("Examples.BasicExample.Create@double,double,double");
             CurrentDynamoModel.AddNodeToCurrentWorkspace(node, true);
 
             // Assert that "Dynamo Samples" has been added to the workspace's package dependencies
@@ -173,7 +173,7 @@ namespace Dynamo.Tests
 
             // Add one node from "Dynamo Samples" package
             var package1 = GetPackageInfo("Dynamo Samples");
-            var node1 = GetNodeInstance("Examples.NEWBasicExample.Create@double,double,double");
+            var node1 = GetNodeInstance("Examples.BasicExample.Create@double,double,double");
             CurrentDynamoModel.AddNodeToCurrentWorkspace(node1, true);
             var packageDependencies = CurrentDynamoModel.CurrentWorkspace.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);

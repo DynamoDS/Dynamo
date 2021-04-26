@@ -23,10 +23,16 @@ namespace Dynamo.Search
             this.logger = logger;
         }
 
+        /// <summary>
+        ///     Dictionary of searchElement:(tag, weight)
+        /// </summary>
         protected readonly Dictionary<V, Dictionary<string, double>> entryDictionary =
             new Dictionary<V, Dictionary<string, double>>();
 
-        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;
+        /// <summary>
+        /// Dictionary of tag:(list(searchelement, weight)) which contains all nodes that share a tag 
+        /// </summary>
+        private List<IGrouping<string, Tuple<V, double>>> tagDictionary;        
 
         /// <summary>
         ///     All the current entries in search.
@@ -283,6 +289,29 @@ namespace Dynamo.Search
             return (double)numberOfMatchSymbols / numberOfAllSymbols > 0.8;
         }
 
+        /// <summary>
+        /// Check if any element in the given subset
+        /// matches any element in the tagDictionary.
+        /// </summary>
+        /// <param name="subset">The subset that will be used to match elements in tagDictionary.</param>
+        /// <returns></returns>
+        private static bool MatchWithSubset(IGrouping<string, Tuple<V, double>> pair, IEnumerable<SearchElements.NodeSearchElement> subset)
+        {
+            foreach (var eleAndWeight in pair)
+            {
+                var currentElement = (eleAndWeight.Item1 as SearchElements.NodeSearchElement).FullName;
+                foreach (var ele in subset)
+                {
+                    //if any element in tagDictionary matches to any element in subset, return true
+                    if (currentElement.IndexOf(ele.FullName) != -1)
+                    {
+                        return true;
+                    }
+                }                
+            }
+            return false;
+        }
+
         private static string[] SplitOnWhiteSpace(string s)
         {
             return s.Split(null);
@@ -320,11 +349,26 @@ namespace Dynamo.Search
         }
 
         /// <summary>
-        /// Search for elements in the dictionary based on the query
+        /// Extract subset of nodes from tagDictionary to limit search scope
+        /// </summary>
+        /// <param name="subset"> The subset that will be extracted. </param>
+        private List<IGrouping<string, Tuple<V, double>>> BuildSubsetDictionary(IEnumerable<SearchElements.NodeSearchElement> subset)
+        {
+            var subsetDictionary = new List<IGrouping<string, Tuple<V, double>>>();
+            foreach (var pair in tagDictionary.Where(x => MatchWithSubset(x, subset)))
+            {
+                subsetDictionary.Add(pair);
+            }
+            return subsetDictionary;
+        }
+
+        /// <summary>
+        /// Search for elements in the dictionary or subset based on the query
         /// </summary>
         /// <param name="query"> The query </param>
         /// <param name="minResultsForTolerantSearch">Minimum number of results in the original search strategy to justify doing more tolerant search</param>
-        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0)
+        /// <param name="subset">Subset of nodes that should be used for the search instead of the complete set of nodes</param>
+        internal IEnumerable<V> Search(string query, int minResultsForTolerantSearch = 0, IEnumerable<SearchElements.NodeSearchElement> subset = null)
         {
 #if DEBUG
             Stopwatch stopwatch = null;
@@ -334,13 +378,13 @@ namespace Dynamo.Search
                 stopwatch.Start();
             }
 #endif
-
             var searchDict = new Dictionary<V, double>();
 
             if (tagDictionary == null)
             {
                 RebuildTagDictionary();
             }
+            var currentDictionary = tagDictionary;
 
             query = query.ToLower();
 
@@ -351,7 +395,13 @@ namespace Dynamo.Search
             subPatternsList.Insert(0, query);
             subPatterns = (subPatternsList).ToArray();
 
-            foreach (var pair in tagDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
+            //check if subset is provided, if yes then extract the subset from tagDictionary
+            if (subset != null)
+            {
+                currentDictionary = BuildSubsetDictionary(subset);
+            }
+
+            foreach (var pair in currentDictionary.Where(x => MatchWithQueryString(x.Key, subPatterns)))
             {
                 ComputeWeightAndAddToDictionary(query, pair, searchDict);
             }

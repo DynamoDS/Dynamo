@@ -292,6 +292,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Indicates whether to make T-Spline nodes (under ProtoGeometry.dll) discoverable
         /// in the node search library.
@@ -503,7 +504,7 @@ namespace Dynamo.ViewModels
             get { return BackgroundPreviewViewModel.Active; }
         }
 
-        public bool HideReportOptions { get; }
+        public bool HideReportOptions { get; internal set; }
 
         /// <summary>
         /// Indicates if whether the Iron Python dialog box should be displayed before each new session.
@@ -553,6 +554,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [Obsolete ("This was moved to PreferencesViewModel.cs")]
         /// <summary>
         /// Engine used by default for new Python script and string nodes. If not empty, this takes precedence over any system settings.
         /// </summary>
@@ -699,7 +701,10 @@ namespace Dynamo.ViewModels
                     // A full regeneration is required to get the edge geometry.
                     foreach (var vm in Watch3DViewModels)
                     {
-                        vm.RegenerateAllPackages();
+                        if (vm is HelixWatch3DViewModel) // just need a full regeneration when vm is HelixWatch3DViewModel
+                        {
+                            vm.RegenerateAllPackages();
+                        }
                     }
                     break;
                 case "MaxTessellationDivisions":
@@ -1523,7 +1528,7 @@ namespace Dynamo.ViewModels
                 if (this.CurrentSpace.IsReadOnly)
                     ShowSaveDialogAndSaveResult(parameter);
                 else
-                    SaveAs(Model.CurrentWorkspace.FileName);      
+                    InternalSaveAs(Model.CurrentWorkspace.FileName, SaveContext.Save);      
             }
                 
         }
@@ -1544,7 +1549,7 @@ namespace Dynamo.ViewModels
                 return;
 
             var fi = new FileInfo(filePath);
-            SaveAs(fi.FullName);
+            InternalSaveAs(fi.FullName, SaveContext.SaveAs);
         }
 
         internal bool CanSaveAs(object parameters)
@@ -1552,21 +1557,13 @@ namespace Dynamo.ViewModels
             return (parameters != null);
         }
 
-        /// <summary>
-        /// Save the current workspace to a specific file path. If the file path is null or empty, an
-        /// exception is written to the console.
-        /// </summary>
-        /// <param name="path">The path to the file.</param>
-        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
-        /// <exception cref="IOException"></exception>
-        /// <exception cref="UnauthorizedAccessException"></exception>
-        public void SaveAs(string path, bool isBackup = false)
+        private void InternalSaveAs(string path, SaveContext saveContext, bool isBackup = false)
         {
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController);
-                if(!isBackup) AddToRecentFiles(path);
+                CurrentSpaceViewModel.Save(path, isBackup, Model.EngineController, saveContext);
+                if (!isBackup) AddToRecentFiles(path);
             }
             catch (Exception ex)
             {
@@ -1582,18 +1579,47 @@ namespace Dynamo.ViewModels
         /// Save the current workspace to a specific file path. If the file path is null or empty, an
         /// exception is written to the console.
         /// </summary>
-        /// <param name="id">Indicate the id of target workspace view model instead of defaulting to 
-        /// current workspace view model. This is critical in crash cases.</param>
         /// <param name="path">The path to the file.</param>
         /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
         /// <exception cref="IOException"></exception>
         /// <exception cref="UnauthorizedAccessException"></exception>
-        internal void SaveAs(Guid id, string path, bool isBackup = false)
+        [Obsolete("Please use the SaveAs method with the saveContext argument.")]
+        public void SaveAs(string path, bool isBackup = false)
+        {
+            InternalSaveAs(path, SaveContext.SaveAs, isBackup: isBackup);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="saveContext">The context of the save operation.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        public void SaveAs(string path, SaveContext saveContext, bool isBackup = false)
+        {
+            InternalSaveAs(path, saveContext, isBackup);
+        }
+
+        /// <summary>
+        /// Save the current workspace to a specific file path. If the file path is null or empty, an
+        /// exception is written to the console.
+        /// </summary>
+        /// <param name="id">Indicate the id of target workspace view model instead of defaulting to 
+        /// current workspace view model. This is critical in crash cases.</param>
+        /// <param name="path">The path to the file.</param>
+        /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
+        /// <param name="saveContext">The context of the save operation.</param>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        internal void SaveAs(Guid id, string path, bool isBackup = false, SaveContext saveContext = SaveContext.None)
         {
             try
             {
                 Model.Logger.Log(String.Format(Properties.Resources.SavingInProgress, path));
-                Workspaces.Where(w => w.Model.Guid == id).FirstOrDefault().Save(path, isBackup, Model.EngineController);
+                Workspaces.Where(w => w.Model.Guid == id).FirstOrDefault().Save(path, isBackup, Model.EngineController, saveContext);
                 if (!isBackup) AddToRecentFiles(path);
             }
             catch (Exception ex)

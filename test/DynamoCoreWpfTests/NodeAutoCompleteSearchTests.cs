@@ -131,6 +131,9 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
             // Hide Node AutoCompleteSearchBar
+            // Note the event handler needs to be called twice. The first one is ignore because it is
+            // assumed to come from releasing the left mouse button when popping up AutoCompleteSearchBar
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
@@ -283,13 +286,15 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = inPorts[0];
 
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(6, suggestions.Count());
+            Assert.AreEqual(8, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName);
             var expectedNodes = new[] { "DSCoreNodes.DSCore.Color.Add",
                 "DSCoreNodes.DSCore.Color.ByARGB",
                 "DSCoreNodes.DSCore.Color.Divide",
                 "DSCoreNodes.DSCore.Color.Multiply",
+                "Core.Color.Color Palette",
+                "Core.Color.Color Range",
                 "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
                 "DSCoreNodes.DSCore.IO.Image.Pixels"};
 
@@ -346,7 +351,7 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]
