@@ -661,7 +661,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void AppendPointVertexColorRange(byte[] colors)
         {
-            if (colors.Count() / 4 != points.Colors.Count + points.Positions.Count)
+            if (colors.Count() / 4 != points.Positions.Count - points.Colors.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
@@ -697,7 +697,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void AppendLineVertexColorRange(byte[] colors)
         {
-            if (colors.Count() / 4 != lines.Colors.Count + lines.Positions.Count)
+            if (colors.Count() / 4 != lines.Positions.Count - lines.Colors.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
@@ -733,7 +733,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="colors">A buffer of R,G,B,A values corresponding to each vertex.</param>
         public void AppendMeshVertexColorRange(byte[] colors)
         {
-            if (colors.Count() / 4 != mesh.Colors.Count + mesh.Positions.Count)
+            if (colors.Count() / 4 != mesh.Positions.Count- mesh.Colors.Count)
             {
                 throw new Exception("The number of colors specified must be equal to the number of vertices.");
             }
