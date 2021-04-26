@@ -1970,7 +1970,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             // use the transform property to transform the text label positions
             if (rp is HelixRenderPackage hrp && rp is Autodesk.DesignScript.Interfaces.ITransformable)
             {
-                List<Tuple<string, Vector3>> transformedLabelData = new List<Tuple<string, Vector3>>();
+                var transformedLabelData = new List<Tuple<string, Vector3>>();
                 foreach (var labelInstance in labelData)
                 {
                     var transformedPos = hrp.Transform.ToMatrix3D().Transform(labelInstance.Item2.ToPoint3D()).ToVector3();
