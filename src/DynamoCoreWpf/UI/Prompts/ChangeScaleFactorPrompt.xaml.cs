@@ -13,6 +13,7 @@ namespace Dynamo.Prompts
     /// </summary>
     public partial class ChangeScaleFactorPrompt : Window
     {
+        [Obsolete("Please use the GeometryScaleSize enum located in PreferencesViewModel.cs instead!")]
         public enum Size
         {
             Medium,
