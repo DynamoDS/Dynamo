@@ -9,6 +9,7 @@ using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -434,7 +435,14 @@ namespace Dynamo.Graph.Nodes
                 var classType = nmNode.GetType();
                 var inPortAttribute = classType.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
 
-                return inPortAttribute?.PortTypes.ElementAt(Index);
+                try
+                {
+                    return inPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch (Exception e)
+                {
+                    Log(e.Message);
+                }
             }
             return null;
         }
@@ -466,7 +474,14 @@ namespace Dynamo.Graph.Nodes
 
                 var outPortAttribute = classType.GetCustomAttributes().OfType<OutPortTypesAttribute>().FirstOrDefault();
 
-                return outPortAttribute?.PortTypes.ElementAt(Index);
+                try
+                {
+                    return outPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch(Exception e)
+                {
+                   Log(e.Message);
+                }
             }
             return null;
         }
