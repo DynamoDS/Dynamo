@@ -70,6 +70,36 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CannotDeleteStandardLibraryPath()
+        {
+            var setting = new PreferenceSettings
+            {
+                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+            };
+
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            Assert.AreEqual(2, vm.RootLocations.Count);
+            Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
+        }
+
+        [Test]
+        public void CannotUpdateStandardLibraryPath()
+        {
+            var setting = new PreferenceSettings
+            {
+                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+            };
+
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            Assert.AreEqual(2, vm.RootLocations.Count);
+            Assert.IsFalse(vm.UpdatePathCommand.CanExecute(null));
+        }
+
+        [Test]
         public void AddRemovePathsTest()
         {
             var setting = new PreferenceSettings()
