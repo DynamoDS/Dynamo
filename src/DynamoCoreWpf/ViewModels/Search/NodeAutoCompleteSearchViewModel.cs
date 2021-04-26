@@ -41,7 +41,7 @@ namespace Dynamo.ViewModels
             var candidates = new List<NodeSearchElementViewModel>();
             // TODO: These are basic input types in Dynamo
             // This should be only served as a temporary default case.
-            var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean" };
+            var queries = new List<string>(){"String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script"};
             foreach (var query in queries)
             {
                 var foundNode = Search(query).FirstOrDefault();
@@ -60,27 +60,33 @@ namespace Dynamo.ViewModels
             searchElementsCache = GetMatchingSearchElements().ToList();
 
             // If node match searchElements found, use default suggestions. 
-            // These default suggestions will be populated for input ports only.
-            if (!searchElementsCache.Any() && PortViewModel.PortModel.PortType == PortType.Input)
+            // These default suggestions will be populated based on the port type.
+            if (!searchElementsCache.Any())
             {
-                searchElementsCache = DefaultResults.Select(e => e.Model).ToList();
-                switch (PortViewModel.PortModel.GetInputPortType())
+                if (PortViewModel.PortModel.PortType == PortType.Input) 
                 {
-                    case "int":
-                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                        break;
-                    case "double":
-                        FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
-                        break;
-                    case "string":
-                        FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
-                        break;
-                    case "bool":
-                        FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
-                        break;
-                    default:
-                        FilteredResults = DefaultResults;
-                        break;
+                    switch (PortViewModel.PortModel.GetInputPortType())
+                    {
+                        case "int":
+                            FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                            break;
+                        case "double":
+                            FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
+                            break;
+                        case "string":
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
+                            break;
+                        case "bool":
+                            FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
+                            break;
+                        default:
+                            FilteredResults = DefaultResults;
+                            break;
+                    }
+                }
+                else
+                {
+                    FilteredResults = DefaultResults.Where(e => e.Name == "Watch" || e.Name == "Watch 3D" || e.Name == "Python Script").ToList();
                 }
             }
             else

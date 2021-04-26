@@ -403,8 +403,7 @@ namespace Dynamo.Graph.Nodes
         {
             if (PortType == PortType.Output) return null;
 
-            var ztNode = Owner as DSFunction;
-            if (ztNode != null)
+            if (Owner is DSFunction ztNode)
             {
                 var fd = ztNode.Controller.Definition;
                 string type;
@@ -430,8 +429,7 @@ namespace Dynamo.Graph.Nodes
                 return type;
             }
 
-            var nmNode = Owner as NodeModel;
-            if (nmNode != null)
+            if (Owner is NodeModel nmNode)
             {
                 var classType = nmNode.GetType();
                 var inPortAttribute = classType.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
@@ -453,8 +451,7 @@ namespace Dynamo.Graph.Nodes
         {
             if (PortType == PortType.Input) return null;
 
-            var ztNode = Owner as DSFunction;
-            if (ztNode != null)
+            if (Owner is DSFunction ztNode)
             {
                 var fd = ztNode.Controller.Definition;
 
@@ -463,8 +460,7 @@ namespace Dynamo.Graph.Nodes
                 return type;
             }
 
-            var nmNode = Owner as NodeModel;
-            if (nmNode != null)
+            if (Owner is NodeModel nmNode)
             {
                 var classType = nmNode.GetType();
 
