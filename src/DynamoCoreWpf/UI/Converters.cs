@@ -2956,4 +2956,60 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// It converts a Brush type to a string representation of the hex color, removing the initial ## and the alpha values (last 2 chars in the string)
+    /// </summary>
+    public class BrushColorToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is Brush)
+            {
+                var strColor = value.ToString().Replace("#", "");
+                return strColor.Substring(2);                
+            }
+            return "000000";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Receives an string containing a hexadecimal color value and returs a Brush color corresponding to the string value
+    /// </summary>
+    public class StringToBrushColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string)
+            {
+                var strColor = "#" + value;
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom(strColor));
+            }
+            return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFF"));
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Receive a enum value corresponding to the radio button option and returs true if is the same otherwise does nothing
+    /// This is used when we have multiple radio buttons and we want just one enabled at one time
+    /// </summary>
+    public class RadioButtonCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(parameter);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(true) ? parameter : Binding.DoNothing;
+        }
+    }
+
 }

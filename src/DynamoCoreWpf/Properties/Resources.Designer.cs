@@ -1890,29 +1890,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Isolate Selected Geometry.
-        /// </summary>
-        public static string DynamoViewSettingsMenuIsolationMode {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
         /// </summary>
         public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowCodeBlockNodeLineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Edges.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowEdges {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
             }
         }
         
@@ -4512,11 +4494,74 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Style name already in use.
+        /// </summary>
+        public static string PreferencesViewStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewStyleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         public static string PreferencesViewTitle {
             get {
                 return ResourceManager.GetString("PreferencesViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display Settings.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsDisplaySettings {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsDisplaySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geometry Scaling.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGeoScaling {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGroupStyles {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGroupStyles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Edges.
+        /// </summary>
+        public static string PreferencesViewVisualSettingShowEdges {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometry.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsIsolateSelectedGeo {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsIsolateSelectedGeo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Render Precision.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsRenderPrecision {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsRenderPrecision", resourceCulture);
             }
         }
         
