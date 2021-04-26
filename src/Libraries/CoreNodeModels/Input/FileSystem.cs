@@ -256,7 +256,7 @@ namespace CoreNodeModels.Input
     [NodeDescription("FileObjectNodeDescription", typeof(Resources))]
     [NodeSearchTags("FilePathSearchTags", typeof(Resources))]
     [SupressImportIntoVM]
-    [OutPortTypes("object")]
+    [OutPortTypes("var")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.FileObject", "DSCoreNodesUI.Input.FileObject")]
     public class FileObject : FileSystemObject<FileInfo>
@@ -317,7 +317,7 @@ namespace CoreNodeModels.Input
     [NodeCategory("Core.File")]
     [NodeDescription("DirectoryObjectNodeDescription",typeof(Resources))]
     [NodeSearchTags("DirectoryPathSearchTags", typeof(Resources))]
-    [OutPortTypes("object")]
+    [OutPortTypes("var")]
     [SupressImportIntoVM]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.File.DirectoryObject", "DSCoreNodesUI.Input.DirectoryObject", "Directory.FromPath")]
