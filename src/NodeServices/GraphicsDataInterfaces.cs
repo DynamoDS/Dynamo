@@ -223,7 +223,7 @@ namespace Autodesk.DesignScript.Interfaces
         int MeshVertexColorCount { get; }
 
         /// <summary>
-        /// Insert a color to a range of point vertices.
+        /// Update a color to a range of point vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in PointVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in PointVertices we want to associate with a color</param>
@@ -231,7 +231,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+        void UpdatePointVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
         
         /// <summary>
         /// Append a color range for point vertices.
@@ -240,7 +240,7 @@ namespace Autodesk.DesignScript.Interfaces
         void AppendPointVertexColorRange(byte[] colors);
 
         /// <summary>
-        /// Insert a color to a range of line vertices.
+        /// Update a color to a range of line vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with a color</param>
@@ -248,7 +248,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+        void UpdateLineVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
 
         /// <summary>
         /// Append a color range for line vertices.
@@ -257,7 +257,7 @@ namespace Autodesk.DesignScript.Interfaces
         void AppendLineVertexColorRange(byte[] colors);
 
         /// <summary>
-        /// Insert a color to a range of of mesh vertices.
+        /// Update a color to a range of of mesh vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with a color</param>
@@ -265,7 +265,7 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
+        void UpdateMeshVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha);
 
         /// <summary>
         /// Append a color range for mesh vertex.

@@ -634,7 +634,7 @@ namespace Dynamo.Wpf.Rendering
         public int MeshVertexColorCount => mesh.Colors.Count;
 
         /// <summary>
-        /// Insert a color to a range of point vertices.
+        /// Update a color to a range of point vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in PointVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in PointVertices we want to associate with a color</param>
@@ -642,7 +642,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        public void InsertPointVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        public void UpdatePointVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             if (!HasValidStartEnd(startIndex, endIndex, points, out var message))
             {
@@ -670,7 +670,7 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Insert a color to a range of line vertices.
+        /// Update a color to a range of line vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in LineVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in LineVertices we want to associate with a color</param>
@@ -678,7 +678,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        public void InsertLineVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        public void UpdateLineVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             if (!HasValidStartEnd(startIndex, endIndex, lines, out var message))
             {
@@ -706,7 +706,7 @@ namespace Dynamo.Wpf.Rendering
         }
 
         /// <summary>
-        /// Insert a color to a range of of mesh vertices.
+        /// Update a color to a range of of mesh vertices.
         /// </summary>
         /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with a color</param>
         /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with a color</param>
@@ -714,7 +714,7 @@ namespace Dynamo.Wpf.Rendering
         /// <param name="green">byte for the green RGB value</param>
         /// <param name="blue">byte for the blue RGB value</param>
         /// <param name="alpha">byte for the alpha RGB value</param>
-        public void InsertMeshVertexColorRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
+        public void UpdateMeshVertexColorForRange(int startIndex, int endIndex, byte red, byte green, byte blue, byte alpha)
         {
             if (!HasValidStartEnd(startIndex, endIndex, mesh, out var message))
             {

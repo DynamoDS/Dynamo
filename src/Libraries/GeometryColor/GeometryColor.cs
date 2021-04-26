@@ -268,7 +268,7 @@ namespace Modifiers
 
                 if (package.LineVertexCount > previousLineVertexCount)
                 {
-                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1,
+                    packageSupplement.UpdateLineVertexColorForRange(previousLineVertexCount, package.LineVertexCount - 1,
                         gray, gray,
                         gray, 255);
                 }
@@ -290,23 +290,25 @@ namespace Modifiers
             geometry.Tessellate(package, parameters);
 
             TessellateEdges(package, parameters);
+            
+            //Update colors in render package
             if (package is IRenderPackageSupplement packageSupplement)
             {
                 if (package.LineVertexCount > previousLineVertexCount)
                 {
-                    packageSupplement.InsertLineVertexColorRange(previousLineVertexCount, package.LineVertexCount - 1, singleColor.Red, singleColor.Green,
-                        singleColor.Blue, singleColor.Alpha);
+                    packageSupplement.UpdateLineVertexColorForRange(previousLineVertexCount, package.LineVertexCount - 1, singleColor.Red, singleColor.Green,
+                            singleColor.Blue, singleColor.Alpha);
                 }
 
                 if (package.PointVertexCount > previousPointVertexCount)
                 {
-                    packageSupplement.InsertPointVertexColorRange( previousPointVertexCount, package.PointVertexCount - 1, singleColor.Red, singleColor.Green,
+                    packageSupplement.UpdatePointVertexColorForRange( previousPointVertexCount, package.PointVertexCount - 1, singleColor.Red, singleColor.Green,
                         singleColor.Blue, singleColor.Alpha);
                 }
 
                 if (package.MeshVertexCount > previousMeshVertexCount)
                 {
-                    packageSupplement.InsertMeshVertexColorRange(previousMeshVertexCount, package.MeshVertexCount - 1, singleColor.Red, singleColor.Green,
+                    packageSupplement.UpdateMeshVertexColorForRange(previousMeshVertexCount, package.MeshVertexCount - 1, singleColor.Red, singleColor.Green,
                         singleColor.Blue, singleColor.Alpha);
                 }
             }
