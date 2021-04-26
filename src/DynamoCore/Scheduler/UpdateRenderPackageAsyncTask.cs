@@ -203,11 +203,11 @@ namespace Dynamo.Scheduler
                     return;
                 }
 
-                GetTessellationDataFromGraphicItem(outputPortId, graphicItem, package, labelKey);
+                GetTessellationDataFromGraphicItem(outputPortId, graphicItem, labelKey, ref package);
             }
         }
 
-        private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, IRenderPackage package, string labelKey)
+        private void GetTessellationDataFromGraphicItem(Guid outputPortId, IGraphicItem graphicItem, string labelKey, ref IRenderPackage package)
         {
             var packageWithTransform = package as ITransformable;
 
@@ -242,7 +242,7 @@ namespace Dynamo.Scheduler
                         legacyPackage.IsSelected = isNodeSelected;
 
                         //Use it to get fill the tessellation data and add it to the render cache.
-                        GetTessellationDataFromGraphicItem(outputPortId, graphicItem, legacyPackage, labelKey);
+                        GetTessellationDataFromGraphicItem(outputPortId, graphicItem, labelKey, ref legacyPackage);
 
                         if (legacyPackage.MeshVertexColors.Any())
                         {
