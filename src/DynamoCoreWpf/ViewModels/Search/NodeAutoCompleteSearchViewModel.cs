@@ -80,7 +80,7 @@ namespace Dynamo.ViewModels
                             FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                             break;
                         default:
-                            FilteredResults = DefaultResults;
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
                             break;
                     }
                 }
