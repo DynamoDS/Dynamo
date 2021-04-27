@@ -2,6 +2,7 @@
 using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;

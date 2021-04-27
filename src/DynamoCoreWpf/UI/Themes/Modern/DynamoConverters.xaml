@@ -123,6 +123,7 @@
     <controls:IsUpdateAvailableToTextConverter x:Key="IsUpdateAvailableToTextConverter"/>
     <controls:IsUpdateAvailableBrushConverter x:Key="IsUpdateAvailableBrushConverter"/>
     <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
+    <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
     <controls:NumberFormatConverter x:Key="NumberFormatConverter"/>
     <controls:CompareToParameterConverter x:Key="CompareToParameterConverter"/>
     <controls:DoubleDisplay x:Key="DoubleDisplayConverter"/>

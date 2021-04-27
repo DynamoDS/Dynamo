@@ -30,6 +30,7 @@
             <controls:BrushColorToStringConverter x:Key="BrushColorToStringConverter"/>
             <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
             <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
+            <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
@@ -210,12 +211,12 @@
                                     <RadioButton Grid.Column="0" 
                                                  MinWidth="80"
                                                  Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource RadioButtonCheckedConverter},ConverterParameter=True}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                  Content="{x:Static p:Resources.Manual}"/>
                                     <RadioButton Grid.Column="1" 
                                                  MinWidth="80"
                                                  Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource RadioButtonCheckedConverter},ConverterParameter=False}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
                                                  Content="{x:Static p:Resources.Automatic}"/>
                                 </Grid>
                             </Grid>
