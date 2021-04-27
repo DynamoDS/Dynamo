@@ -199,6 +199,44 @@ namespace Dynamo.Models
             return assem.GetTypes().Any(IsNodeSubType);
         }
 
+        internal static bool ContainsNodeModelSubTypeReflectionLoaded(Assembly assem, Type nodeModelType = null)
+        {
+            if(!(nodeModelType is null))
+                return assem.GetTypes().Any(x => IsNodeSubTypeReflectionLoaded(x, nodeModelType));
+            return assem.GetTypes().Any(x => IsNodeSubType(x));
+        }
+
+        internal static bool IsNodeSubTypeReflectionLoaded(Type t, Type nodeModelType)
+        {
+            bool isNodeSubType = false;
+
+            try
+            {
+                isNodeSubType = !t.IsAbstract &&
+                    t.IsSubclassOf(nodeModelType) &&
+                    t.GetConstructor(Type.EmptyTypes) != null;
+            }
+            catch (Exception)
+            {
+
+                var customAttributes = CustomAttributeData.GetCustomAttributes(t).ToList();
+                var customAttributeTypes = customAttributes.Select(x => x.AttributeType).ToList();
+
+                if (customAttributes is null || customAttributes.Count == 0)
+                    return false;
+
+                isNodeSubType = customAttributes.
+                    Any(x => 
+                    x.AttributeType.Name.Equals(nameof(NodeNameAttribute)) ||
+                    x.AttributeType.Name.Equals(nameof(NodeCategoryAttribute)) ||
+                    x.AttributeType.Name.Equals(nameof(IsDesignScriptCompatibleAttribute)) ||
+                    x.AttributeType.Name.Equals(nameof(AlsoKnownAsAttribute)) ||
+                    x.AttributeType.Name.Equals(nameof(NodeSearchTagsAttribute)));
+            }
+
+            return isNodeSubType;
+        }
+
         /// <summary>
         ///     Enumerate the types in an assembly and add them to DynamoController's
         ///     dictionaries and the search view model.  Internally catches exceptions and sends the error 

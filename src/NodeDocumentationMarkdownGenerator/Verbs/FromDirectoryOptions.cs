@@ -10,10 +10,10 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
     internal class FromDirectoryOptions
     {
 
-        [Option('i', "input", HelpText = "Directory folder path")]
+        [Option('i', "input", HelpText = "Directory folder path", Required = true)]
         public string InputFolderPath { get; set; }
 
-        [Option('o', "output", HelpText = "Folder path to save generated documents in")]
+        [Option('o', "output", HelpText = "Folder path to save generated documents in", Required = true)]
         public string OutputFolderPath { get; set; }
 
         [Option('f', "filter", HelpText = "Specifies which binary files documentation should be generated for", Required = false)]
@@ -30,6 +30,9 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
 
         [Option('p', "preview", HelpText = "Preview....", Required = false, Default = false)]
         public bool Preview { get; set; }
+
+        [Option('r', "recursive-scan", HelpText = "Input folder will be scanned recursively", Required = false, Default = false)]
+        public bool RecursiveScan { get; set; }
 
         [Usage(ApplicationAlias = "Dynamo docs generator")]
         public static IEnumerable<Example> Examples

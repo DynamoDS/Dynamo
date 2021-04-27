@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandLine;
-using Dynamo.Applications;
-using Dynamo.Engine;
-using Dynamo.Interfaces;
 using NodeDocumentationMarkdownGenerator.Verbs;
 
 namespace NodeDocumentationMarkdownGenerator
@@ -40,9 +36,6 @@ namespace NodeDocumentationMarkdownGenerator
                     _ => MakeError());
 
             printIfNotEmpty(text);
-
-            //var model = StartupUtils.MakeModel(false);
-
         }
 
         private static void ShowWelcomeMessages()
@@ -79,12 +72,5 @@ $$$$$$$/   $$$$$$$ |$$/   $$/  $$$$$$$/ $$/  $$/  $$/  $$$$$$/
         {
             return "Error";
         }
-
-        private static string FromDirectory(FromDirectoryOptions options)
-        {
-
-            return "...";
-        }
-
     }
 }

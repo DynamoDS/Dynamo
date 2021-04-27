@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
+using ProtoCore.Reflection;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -35,6 +36,25 @@ namespace Dynamo.Graph.Nodes
         ///     Specifies whether or not this Type is obsolete.
         /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
+
+        public TypeLoadData(Type type, string obsoleteMessage, IEnumerable<string> alsoKnownAs, bool isDeprecated, bool isMetaNode, 
+            bool isDSCompatible, bool isHidden, string name, IEnumerable<string> searchKeys, string description, 
+            IEnumerable<Tuple<string, string>> inputParameters, IEnumerable<string> outputParameters)
+        {
+            Type = type;
+            ObsoleteMessage = obsoleteMessage;
+            AlsoKnownAs = alsoKnownAs;
+            IsDeprecated = isDeprecated;
+            IsMetaNode = isMetaNode;
+            IsDSCompatible = isDSCompatible;
+            IsHidden = isHidden;
+            Name = name;
+            SearchKeys = searchKeys;
+            Description = description;
+            InputParameters = inputParameters;
+            OutputParameters = outputParameters;
+        }
+
 
         /// <summary>
         /// Creates TypeLoadData.
@@ -95,6 +115,102 @@ namespace Dynamo.Graph.Nodes
 
             OutputParameters = Type.GetCustomAttributes<OutPortTypesAttribute>(false)
                 .SelectMany(x => x.PortTypes);
+        }
+
+        internal static TypeLoadData FromReflectionType(Type type)
+        {
+            var attributes = type.AttributesFromReflectionContext();
+            var customAttributes = CustomAttributeData.GetCustomAttributes(type).ToList();
+            var customAttributeTypes = customAttributes.Select(x => x.AttributeType).ToList();
+
+            if (customAttributes is null || customAttributes.Count == 0)
+                return null;
+
+            var obsoleteMessage = string.Join(
+                "\n",
+                customAttributes.
+                    Where(x => x.AttributeType.Name == nameof(ObsoleteAttribute)).
+                    Select(x => x.ConstructorArguments.
+                    Select(arg => string.IsNullOrEmpty(arg.Value as string) ? "Obsolete" : arg.Value as string)));
+
+            var isDeprecated = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(NodeDeprecatedAttribute)).
+                Any();
+            var isMetaNode = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(IsMetaNodeAttribute)).
+                Any();
+            var isDSCompatible = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(IsDesignScriptCompatibleAttribute)).
+                Any();
+
+            var isHidden = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(IsVisibleInDynamoLibraryAttribute)).
+                Any(attr => attr.ConstructorArguments.Any(v => (bool)v.Value == true));
+
+
+            var attribs = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(NodeNameAttribute)).
+                Select(x => x.ConstructorArguments).
+                FirstOrDefault();
+
+            string name = null;
+            if (!(attribs is null) && attribs.Any() && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+            {
+                name = attribs.First().Value as string;
+            }
+            else
+                name = type.Name;
+
+            var alsoKnownAs = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(AlsoKnownAsAttribute))
+                    .SelectMany(aka => aka.ConstructorArguments.Select(x=>x.Value as string)
+                    .Concat(name.AsSingleton()));
+
+            var searchKeys = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(NodeSearchTagsAttribute)).
+                SelectMany(tag => tag.ConstructorArguments.Select(v => v.Value as string));
+
+
+            var category = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(NodeCategoryAttribute)).
+                SelectMany(x => x.ConstructorArguments).
+                FirstOrDefault().Value as string;
+
+            var description =  customAttributes.
+                Where(x => x.AttributeType.Name == nameof(NodeDescriptionAttribute)).
+                SelectMany(x => x.ConstructorArguments).
+                FirstOrDefault().Value as string;
+
+
+            var inputNames = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(InPortNamesAttribute)).
+                SelectMany(x => x.ConstructorArguments).
+                Select(x => x.Value as string).
+                ToList();                
+
+            var inputTypes = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(InPortTypesAttribute)).
+                SelectMany(x => x.ConstructorArguments).
+                Select(x => x.Value as string).
+                ToList();
+
+            IEnumerable<Tuple<string, string>> inputParameters = null;
+            if (inputNames.Any() && (inputNames.Count == inputTypes.Count))
+            {
+                inputParameters = inputNames.Zip(inputTypes, (n, t) => new Tuple<string, string>(name, t));
+            }
+            else
+            {
+                inputParameters = new List<Tuple<string, string>>();
+            }
+
+            var outputParameters = customAttributes.
+                Where(x => x.AttributeType.Name == nameof(OutPortTypesAttribute)).
+                SelectMany(x => x.ConstructorArguments).
+                Select(x => x.Value as string).
+                ToList();
+
+            return new TypeLoadData(type,obsoleteMessage,alsoKnownAs,isDeprecated,isMetaNode,isDSCompatible,isHidden,name,searchKeys,description,inputParameters,outputParameters);
         }
 
         /// <summary>
