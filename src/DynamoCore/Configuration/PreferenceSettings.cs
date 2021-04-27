@@ -382,7 +382,10 @@ namespace Dynamo.Configuration
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
         public bool DisableCustomPackageLocations { get; set; }
-
+        /// <summary>
+        /// If true the run mode will be set to Automatically, if false to Manual.
+        /// </summary>
+        public bool RunTypeAutomatic { get; set; }
         #endregion
 
         /// <summary>
@@ -417,6 +420,7 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
+            RunTypeAutomatic = true;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;

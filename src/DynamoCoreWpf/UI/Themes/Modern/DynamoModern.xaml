@@ -2286,6 +2286,8 @@
                              Color="DarkGray" />
     <SolidColorBrush x:Key="SecondaryGray" 
                              Color="#707070" />
+    <SolidColorBrush x:Key="SemiTransparent" 
+                             Color="#80000000" />
 
 
     <!--Usual button color for the Preferences Window-->
@@ -2636,6 +2638,10 @@
                                     Value="Visible" />
                             <Setter TargetName="_borderOn" Property="Visibility"
                                     Value="Collapsed" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="mainGrid" Property="OpacityMask"
+                                    Value="{StaticResource SemiTransparent}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

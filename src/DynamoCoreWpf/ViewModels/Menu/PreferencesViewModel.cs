@@ -1,7 +1,7 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +19,7 @@ namespace Dynamo.ViewModels
         private string selectedFontSize;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
+        private bool runPreviewEnabled;
         private bool runSettingsIsChecked;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
@@ -28,6 +29,8 @@ namespace Dynamo.ViewModels
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
+        private HomeWorkspaceModel homeSpace;
+        private DynamoViewModel dynamoViewModel;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -70,11 +73,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectedNumberFormat;
+                return preferenceSettings.NumberFormat;
             }
             set
             {
                 selectedNumberFormat = value;
+                preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
             }
         }
@@ -86,12 +90,24 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runSettingsIsChecked;
+                return !preferenceSettings.RunTypeAutomatic;
             }
             set
             {
+                preferenceSettings.RunTypeAutomatic = !value;
                 runSettingsIsChecked = value;
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return runPreviewEnabled;
             }
         }
 
@@ -102,11 +118,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runPreviewIsChecked;
+                return dynamoViewModel.ShowRunPreview;
             }
             set
             {
-                runPreviewIsChecked = value;
+                dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
         }
@@ -347,10 +363,13 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
-        public PreferencesViewModel(PreferenceSettings preferenceSettings, DynamoPythonScriptEditorTextOptions editTextOptions)
+        public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
-            this.preferenceSettings = preferenceSettings;
-            this.pythonScriptEditorTextOptions = editTextOptions;
+            this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
+            this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
+            this.homeSpace = dynamoViewModel.HomeSpace;
+            this.dynamoViewModel = dynamoViewModel;
 
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
@@ -374,10 +393,10 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
-            SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
+            SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             //By Default the Default Run Settings radio button will be in Manual
-            RunSettingsIsChecked = true;
+            RunSettingsIsChecked = !preferenceSettings.RunTypeAutomatic;
         }
     }
 }
