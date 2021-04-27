@@ -3,9 +3,14 @@
     public interface IRuleEvaluationResult
     {
         /// <summary>
-        /// Id of the rule that create this result
+        /// Id of the rule that created this result
         /// </summary>
         string RuleId { get; }
+
+        /// <summary>
+        /// Severity code of the rule that created this result
+        /// </summary>
+        SeverityCodesEnum SeverityCode { get; }
 
         /// <summary>
         /// Status of the evaluation (Passed or Failed)

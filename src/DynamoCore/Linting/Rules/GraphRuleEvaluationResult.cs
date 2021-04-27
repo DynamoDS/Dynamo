@@ -18,16 +18,19 @@ namespace Dynamo.Linting.Rules
         /// Evaluation status
         /// </summary>
         public RuleEvaluationStatusEnum Status { get; }
+        public SeverityCodesEnum SeverityCode { get; }
 
         /// <summary>
         /// List of nodes involved in the evaluation of this rule
         /// </summary>
         internal HashSet<string> NodeIds { get; }
 
-        internal GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, HashSet<string> nodeIds)
+
+        internal GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, SeverityCodesEnum severityCode, HashSet<string> nodeIds)
         {
             RuleId = ruleId ?? throw new ArgumentNullException(nameof(ruleId));
             Status = status;
+            SeverityCode = severityCode;
             NodeIds = nodeIds;
         }
 

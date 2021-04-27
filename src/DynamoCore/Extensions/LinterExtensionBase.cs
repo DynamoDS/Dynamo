@@ -263,7 +263,7 @@ namespace Dynamo.Extensions
 
             foreach (var rule in nodeRules)
             {
-                var result = new NodeRuleEvaluationResult(rule.Id, Linting.Interfaces.RuleEvaluationStatusEnum.Passed, node.GUID.ToString());
+                var result = new NodeRuleEvaluationResult(rule.Id, Linting.Interfaces.RuleEvaluationStatusEnum.Passed, rule.SeverityCode, node.GUID.ToString());
                 rule.OnRuleEvaluated(result);
             }
 

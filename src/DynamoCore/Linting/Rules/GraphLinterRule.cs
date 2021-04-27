@@ -26,7 +26,7 @@ namespace Dynamo.Linting.Rules
             if (pair is null)
                 return;
 
-            var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, pair.Item2);
+            var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, this.SeverityCode, pair.Item2);
             OnRuleEvaluated(result);
         }
 
@@ -55,7 +55,7 @@ namespace Dynamo.Linting.Rules
                 if (pair.Item1 == RuleEvaluationStatusEnum.Passed)
                     continue;
 
-                var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, pair.Item2);
+                var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, this.SeverityCode, pair.Item2);
                 results.Add(result);
             }
             return results;

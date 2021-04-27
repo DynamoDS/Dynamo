@@ -13,6 +13,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Linting;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
@@ -247,6 +248,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
         /// <param name="isTestMode">Indicates if current code is running in tests</param>
         /// <param name="fileName">Name of file where the workspace is saved</param>
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName = "")
             : this(engine,
@@ -262,6 +264,35 @@ namespace Dynamo.Graph.Workspaces
                 verboseLogging,
                 isTestMode) { }
 
+        /// <summary>
+        /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="linterManager">The linter manager from the DynamoModel that owns this workspace</param>
+        /// <param name="fileName">Name of file where the workspace is saved</param>
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
+            NodeFactory factory, bool verboseLogging, bool isTestMode, LinterManager linterManager, string fileName = "")
+            : this(engine,
+                scheduler,
+                factory,
+                Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(),
+                Enumerable.Empty<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
+                new ElementResolver(),
+                new WorkspaceInfo() { FileName = fileName, Name = "Home" },
+                verboseLogging,
+                isTestMode,
+                linterManager)
+        { }
+
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(Guid guid, EngineController engine,
             DynamoScheduler scheduler,
             NodeFactory factory,
@@ -275,6 +306,22 @@ namespace Dynamo.Graph.Workspaces
             bool verboseLogging,
             bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
                 annotations, presets, resolver, info, verboseLogging, isTestMode)
+        { Guid = guid; }
+
+        public HomeWorkspaceModel(Guid guid, EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode,
+            LinterManager linterManager) : this(engine, scheduler, factory, traceData, nodes, notes,
+                annotations, presets, resolver, info, verboseLogging, isTestMode, linterManager)
         { Guid = guid; }
 
         /// <summary>
@@ -295,6 +342,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
         /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
@@ -308,6 +356,78 @@ namespace Dynamo.Graph.Workspaces
             bool verboseLogging,
             bool isTestMode)
             : base(nodes, notes,annotations, info, factory,presets, resolver)
+        {
+            Debug.WriteLine("Creating a home workspace...");
+
+            EvaluationCount = 0;
+
+            // This protects the user from a file that might have crashed during
+            // its last run.  As a side effect, this also causes all files set to
+            // run auto but lacking the HasRunWithoutCrash flag to run manually.
+            if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
+            {
+                info.RunType = RunType.Manual;
+            }
+
+            RunSettings = new RunSettings(info.RunType, info.RunPeriod);
+
+            PreloadedTraceData = traceData;
+
+            this.scheduler = scheduler;
+            this.verboseLogging = verboseLogging;
+            IsTestMode = isTestMode;
+            EngineController = engine;
+            this.ExtensionData = new List<ExtensionData>();
+
+            // The first time the preloaded trace data is set, we cache
+            // the data as historical. This will be used after the initial
+            // run of this workspace, when the PreloadedTraceData has been
+            // nulled, to check for node deletions and reconcile the trace data.
+            // We do a deep copy of this data because the PreloadedTraceData is
+            // later set to null before the graph update.
+            var copiedData = new List<KeyValuePair<Guid, List<CallSite.RawTraceData>>>();
+            foreach (var kvp in PreloadedTraceData)
+            {
+                List<CallSite.RawTraceData> callSiteTraceData = new List<CallSite.RawTraceData>();
+                callSiteTraceData.AddRange(kvp.Value);
+                copiedData.Add(new KeyValuePair<Guid, List<CallSite.RawTraceData>>(kvp.Key, callSiteTraceData));
+            }
+            historicalTraceData = copiedData;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
+        /// by given information about it and specified item collections
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="traceData">Preloaded trace data</param>
+        /// <param name="nodes">Node collection of the workspace</param>
+        /// <param name="notes">Note collection of the workspace</param>
+        /// <param name="annotations">Group collection of the workspace</param>
+        /// <param name="presets">Preset collection of the workspace</param>
+        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// a partial class name to its fully resolved name</param>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="linterManager">The linter manager from the DynamoModel that owns this workspace</param>
+        public HomeWorkspaceModel(EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode,
+            LinterManager linterManager)
+            : base(nodes, notes, annotations, info, factory, presets, resolver, linterManager)
         {
             Debug.WriteLine("Creating a home workspace...");
 

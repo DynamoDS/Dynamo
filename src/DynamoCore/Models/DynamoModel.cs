@@ -1861,7 +1861,8 @@ namespace Dynamo.Models
                 NodeFactory,
                 IsTestMode,
                 false,
-                CustomNodeManager);
+                CustomNodeManager,
+                this.LinterManager);
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
@@ -2001,7 +2002,8 @@ namespace Dynamo.Models
                 nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging,
-                IsTestMode
+                IsTestMode,
+                LinterManager
                );
 
             RegisterHomeWorkspace(newWorkspace);
@@ -2223,7 +2225,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode, string.Empty);
+                IsTestMode, LinterManager, string.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
