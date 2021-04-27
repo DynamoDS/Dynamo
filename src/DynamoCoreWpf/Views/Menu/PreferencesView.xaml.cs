@@ -17,11 +17,13 @@ namespace Dynamo.Wpf.Views
     public partial class PreferencesView : Window
     {
         private PreferencesViewModel viewModel;
+        private DynamoViewModel dynViewModel;
 
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
             DataContext = new PreferencesViewModel(dynamoViewModel.Model.PreferenceSettings, dynamoViewModel.PythonScriptEditorTextOptions);
-            
+            dynViewModel = dynamoViewModel;
+
             InitializeComponent();
 
             //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
@@ -148,6 +150,22 @@ namespace Dynamo.Wpf.Views
                     expander.IsExpanded = false;
 
             }
+        }
+
+        private void Geometry_Scaling_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton selectedScaling = sender as RadioButton;
+            //if (dynViewModel.ScaleFactorLog != view.ScaleValue)
+            //{
+            //    dynViewModel.ScaleFactorLog = view.ScaleValue;
+            //    dynViewModel.CurrentSpace.HasUnsavedChanges = true;
+
+            //    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
+            //        view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
+
+            //    var allNodes = dynViewModel.HomeSpace.Nodes;
+            //    dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
+            //}
         }
     }
 }

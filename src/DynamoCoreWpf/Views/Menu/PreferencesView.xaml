@@ -534,6 +534,7 @@
                                                 GroupName="GeometryScaling"
                                                 MinWidth="80"
                                                 Margin="0,10,0,0"
+                                                Checked="Geometry_Scaling_Checked"
                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
@@ -546,6 +547,7 @@
                                                  Margin="0,10,0,0"
                                                  MinWidth="80"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
                                     <TextBlock  x:Name="RadioMediumDesc"
@@ -556,6 +558,7 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="0,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
