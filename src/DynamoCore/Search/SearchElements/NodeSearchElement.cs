@@ -9,7 +9,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     ///     Base class for all Dynamo Node search elements.
     /// </summary>
-    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : AutoCompletionNodeSearchElement, ISearchEntry, ISource<NodeModel>
     {
         protected string iconName;
 
@@ -29,7 +29,6 @@ namespace Dynamo.Search.SearchElements
             if (VisibilityChanged != null)
                 VisibilityChanged();
         }
-        internal int PortToConnect { get; set; }
 
         /// <summary>
         ///     Specifies whether or not this entry should appear in search.
