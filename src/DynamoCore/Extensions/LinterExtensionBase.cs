@@ -76,7 +76,6 @@ namespace Dynamo.Extensions
 
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
-            this.InitializeRules();
         }
 
         /// <summary>
@@ -86,6 +85,7 @@ namespace Dynamo.Extensions
         {
             ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             UnsubscribeGraphEvents(currentWorkspace);
+            this.linterManager.RuleEvaluationResults.Clear();
         }
 
         #endregion
@@ -200,9 +200,11 @@ namespace Dynamo.Extensions
             if (this.currentWorkspace != null)
                 UnsubscribeGraphEvents(this.currentWorkspace);
 
+            this.linterManager.RuleEvaluationResults.Clear();
             this.currentWorkspace = ReadyParamsRef.CurrentWorkspaceModel as WorkspaceModel;
             this.SubscribeNodeEvents();
             this.SubscribeGraphEvents();
+            this.InitializeRules();
         }
 
         private void SubscribeGraphEvents()
