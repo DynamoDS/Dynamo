@@ -526,10 +526,11 @@
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
-                                <StackPanel Width="300"
-                                           HorizontalAlignment="Left"
-                                           Margin="8,0,0,0"
-                                           VerticalAlignment="Top">
+                                <StackPanel x:Name="GeometryScalingRadiosPanel"
+                                            Width="300"
+                                            HorizontalAlignment="Left"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Top">
                                     <RadioButton x:Name="RadioSmall"
                                                 GroupName="GeometryScaling"
                                                 MinWidth="80"
@@ -570,6 +571,7 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="0,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
@@ -593,7 +595,7 @@
                                     <Slider Width="100"
                                             Minimum="8"
                                             Maximum="512"
-                                            Value="{Binding Path=RenderPackageFactoryViewModel.MaxTessellationDivisions, Mode=TwoWay}">
+                                            Value="{Binding Path=TessellationDivisions, Mode=TwoWay}">
                                     </Slider>
                                     <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                                Margin="10,0,0,0"></TextBlock>

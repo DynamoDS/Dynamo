@@ -27,7 +27,7 @@ namespace Dynamo.ViewModels
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
         private ObservableCollection<StyleItem> styleItemsList;
-        private StyleItem addStyleControl;  
+        private StyleItem addStyleControl;
         private ObservableCollection<string> _pythonEngineList;
 
         private string selectedLanguage;
@@ -47,6 +47,7 @@ namespace Dynamo.ViewModels
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScal = null;
+        private DynamoViewModel dynamoViewModel;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -250,7 +251,7 @@ namespace Dynamo.ViewModels
         /// This property is used as a container for the description text (GeometryScalingOptions.DescriptionScaleRange) for each radio button (Visual Settings -> Geometry Scaling section)
         /// </summary>
         public GeometryScalingOptions OptionsGeometryScal
-        {          
+        {
             get
             {
                 return optionsGeometryScal;
@@ -291,6 +292,23 @@ namespace Dynamo.ViewModels
             {
                 isolateSelectedGeometry = value;
                 RaisePropertyChanged(nameof(IsolateSelectedGeometry));
+            }
+        }
+
+        /// <summary>
+        /// This property is bind to the Render Precision Slider and control the amount of tessellation applied to objects in background preview
+        /// </summary>
+        public int TessellationDivisions
+        {
+            get
+            {
+                return dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions;
+            }
+            set
+            {
+                dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = value;
+                dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                RaisePropertyChanged(nameof(TessellationDivisions));
             }
         }
         #endregion
@@ -482,10 +500,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
-        public PreferencesViewModel(PreferenceSettings preferenceSettings, DynamoPythonScriptEditorTextOptions editTextOptions)
+        public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
-            this.preferenceSettings = preferenceSettings;
-            this.pythonScriptEditorTextOptions = editTextOptions;
+            this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
+            this.dynamoViewModel = dynamoViewModel;
 
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
@@ -524,7 +543,9 @@ namespace Dynamo.ViewModels
 
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScal = new GeometryScalingOptions();
-            optionsGeometryScal.EnumProperty = GeometryScaleSize.Medium;
+
+            optionsGeometryScal.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(dynamoViewModel.ScaleFactorLog);
+
             optionsGeometryScal.DescriptionScaleRange = new ObservableCollection<string>();
             optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
                                                                                               scaleRanges[GeometryScaleSize.Small].Item3));
@@ -625,5 +646,38 @@ namespace Dynamo.ViewModels
         /// This property will contain the description of each of the radio buttons in the Visual Settings -> Geometry Scaling section
         /// </summary>
         public ObservableCollection<string> DescriptionScaleRange { get; set; }
+
+        /// <summary>
+        /// This method is used to convert a index (representing a RadioButton in the UI) to a ScaleFactor
+        /// </summary>
+        /// <param name="index">This value is the index for the RadioButton in the Geometry Scaling section. 
+        /// It can have the values:
+        ///   0 - Small
+        ///   1 - Medium (Default)
+        ///   2 - Large
+        ///   3 - Extra Large
+        /// </param>
+        /// <returns>The Scale Factor (-2, 0, 2, 4)</returns>
+        public static int ConvertUIToScaleFactor (int index)
+        {
+            return (index - 1) * 2;
+        }
+
+        /// <summary>
+        /// This method is used to conver a Scale Factor to a index so we can Check a Radio Button in the UI
+
+        /// </summary>
+        /// <param name="scaleValue">This values is the Scale that we need to convert to index (representing a RadioButton)
+        /// It can have the values:
+        /// - 2 - Small
+        ///   0 - Medium (Default)
+        ///   2 - Large
+        ///   4 - Extra Large
+        /// </param>
+        /// <returns>The radiobutton index (0,1,2,3)</returns>
+        public static int ConvertScaleFactorToUI(int scaleValue)
+        {
+           return (scaleValue / 2) + 1;
+        }
     }
 }
