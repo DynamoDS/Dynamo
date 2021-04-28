@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LinterRules\DuplicatedNamesRule.cs" />
     <Compile Include="LinterRules\GraphNeedsOutputNodesRule.cs" />
     <Compile Include="LinterRules\InputNodesNotAllowedRule.cs" />
     <Compile Include="LinterRules\NodesCantBeNamedFooRule.cs" />

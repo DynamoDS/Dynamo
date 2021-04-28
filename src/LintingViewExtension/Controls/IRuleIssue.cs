@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Dynamo.Graph.Nodes;
 using Dynamo.Linting.Rules;
 
 namespace Dynamo.LintingViewExtension
@@ -9,7 +10,7 @@ namespace Dynamo.LintingViewExtension
         /// <summary>
         /// Collection of nodeIds affected by this rule issue
         /// </summary>
-        ObservableCollection<string> AffectedNodes { get; }
+        ObservableCollection<NodeModel> AffectedNodes { get; }
 
         /// <summary>
         /// Id of the rule this issue comes from
@@ -24,7 +25,7 @@ namespace Dynamo.LintingViewExtension
         /// <summary>
         /// Adds a list of affected nodes to this issue
         /// </summary>
-        /// <param name="nodeIds"></param>
-        void AddAffectedNodes(List<string> nodeIds);
+        /// <param name="nodes"></param>
+        void AddAffectedNodes(List<NodeModel> nodes);
     }
 }

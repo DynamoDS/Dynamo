@@ -69,6 +69,7 @@
     <Compile Include="Controls\GraphRuleIssue.cs" />
     <Compile Include="Converters\SeverityCodeToColorConverter.cs" />
     <Compile Include="Converters\SeverityCodeToIconConverter.cs" />
+    <Compile Include="Converters\ToStringConverter.cs" />
     <Compile Include="LinterView.xaml.cs">
       <DependentUpon>LinterView.xaml</DependentUpon>
     </Compile>
@@ -97,6 +98,10 @@
       <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
       <Name>DynamoUtilities</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

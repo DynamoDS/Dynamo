@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Graph.Nodes;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
 using Dynamo.LintingViewExtension.Controls;
@@ -69,29 +70,33 @@ namespace Dynamo.LintingViewExtension
 
         private void AddNewNodeIssue(string issueNodeId, string ruleId)
         {
+            var issueNode = NodeFromId(issueNodeId);
+
             var issue = NodeIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (!(issue is null))
             {
-                if (issue.AffectedNodes.Contains(issueNodeId))
+                if (issue.AffectedNodes.Contains(issueNode))
                     return;
 
-                issue.AffectedNodes.Add(issueNodeId);
+                issue.AffectedNodes.Add(issueNode);
                 return;
             }
 
             var newIssue = new NodeRuleIssue(
                 ruleId, GetLinterRule(ruleId) as NodeLinterRule);
-            newIssue.AddAffectedNodes(new List<string> { issueNodeId });
+            newIssue.AddAffectedNodes(new List<NodeModel> { issueNode });
 
             NodeIssues.Add(newIssue);
         }
 
         private void AddNewGraphIssue(List<string> issueNodeIds, string ruleId)
         {
+            var issueNodes = issueNodeIds.Select(i => NodeFromId(i)).ToList();
+
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (!(issue is null))
             {
-                foreach (var issueNode in issueNodeIds)
+                foreach (var issueNode in issueNodes)
                 {
                     if (issue.AffectedNodes.Contains(issueNode))
                         continue;
@@ -103,25 +108,26 @@ namespace Dynamo.LintingViewExtension
 
             var newIssue = new GraphRuleIssue(
                 ruleId, GetLinterRule(ruleId) as GraphLinterRule);
-            newIssue.AddAffectedNodes(issueNodeIds);
+            newIssue.AddAffectedNodes(issueNodes);
 
             GraphIssues.Add(newIssue);
         }
 
         private void RemoveNodeIssue(string issueNodeId, string ruleId)
         {
+            var issueNode = NodeFromId(issueNodeId);
             var issue = NodeIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (issue is null ||
-                !issue.AffectedNodes.Contains(issueNodeId))
+                !issue.AffectedNodes.Any(n => n.GUID.ToString() == issueNodeId))
                 return;
 
-            issue.AffectedNodes.Remove(issueNodeId);
+            issue.AffectedNodes.Remove(issueNode);
 
             if (issue.AffectedNodes.Count == 0)
                 NodeIssues.Remove(issue);
         }
 
-        private void RemoveGraphIssue(List<string> issueNodeIds, string ruleId)
+        private void RemoveGraphIssue(string ruleId)
         {
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (issue is null)
@@ -159,13 +165,26 @@ namespace Dynamo.LintingViewExtension
                         if (item is NodeRuleEvaluationResult nodeRuleEvaluationResult)
                             RemoveNodeIssue(nodeRuleEvaluationResult.NodeId, nodeRuleEvaluationResult.RuleId);
                         else if (item is GraphRuleEvaluationResult graphRuleEvaluationResult)
-                            RemoveGraphIssue(graphRuleEvaluationResult.NodeIds.ToList(), graphRuleEvaluationResult.RuleId);
+                            RemoveGraphIssue(graphRuleEvaluationResult.RuleId);
                     }
                     return;
 
                 default:
                     break;
             }
+        }
+
+        private NodeModel NodeFromId(string nodeId)
+        {
+            if (nodeId is null)
+                return null ;
+
+            var node = ViewLoadedParams.CurrentWorkspaceModel
+                .Nodes
+                .Where(n => n.GUID.ToString() == nodeId)
+                .FirstOrDefault();
+
+            return node;
         }
     }
 }

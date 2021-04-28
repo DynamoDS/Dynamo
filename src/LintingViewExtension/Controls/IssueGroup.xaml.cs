@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Graph.Nodes;
 using Dynamo.Linting.Interfaces;
 using Dynamo.Linting.Rules;
 
@@ -13,15 +14,15 @@ namespace Dynamo.LintingViewExtension.Controls
     {
         #region DependencyProperties
 
-        internal IEnumerable<string> NodeIds
+        internal IEnumerable<NodeModel> IssueNodes
         {
-            get { return (IEnumerable<string>)GetValue(ResultsProperty); }
-            set { SetValue(ResultsProperty, value); }
+            get { return (IEnumerable<NodeModel>)GetValue(IssueNodesProperty); }
+            set { SetValue(IssueNodesProperty, value); }
         }
 
-        public static readonly DependencyProperty ResultsProperty = DependencyProperty.Register(
-            nameof(NodeIds),
-            typeof(IEnumerable<string>),
+        public static readonly DependencyProperty IssueNodesProperty = DependencyProperty.Register(
+            nameof(IssueNodes),
+            typeof(IEnumerable<NodeModel>),
             typeof(IssueGroup)
         );
 

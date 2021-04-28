@@ -2,11 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:local="clr-namespace:Dynamo.LintingViewExtension"
-                    xmlns:core="clr-namespace:Dynamo.Linting.Rules;assembly=DynamoCore"
+                    xmlns:core="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
                     xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
                     xmlns:controls="clr-namespace:Dynamo.LintingViewExtension.Controls">
 
     <converter:DataBindingDebugger x:Key="Debug" />
+    <converter:ToStringConverter x:Key="ToString" />
 
     <SolidColorBrush Color="#444444"
                      x:Key="ExpanderBackground" />
@@ -58,12 +59,12 @@
     <!--#region Templates -->
 
     <DataTemplate x:Key="NodeIssuesItemTemplate"
-                  DataType="{x:Type sys:String}">
+                  DataType="{x:Type core:NodeModel}">
         <Button Style="{StaticResource NodeNameButtonStyle}"
                 Background="Transparent"
-                Content="{Binding}"
+                Content="{Binding Name }"
                 Command="{Binding Path=DataContext.SelectIssueNodeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:LinterView}}}"
-                CommandParameter="{Binding}" />
+                CommandParameter="{Binding GUID, Converter={StaticResource ToString}}" />
     </DataTemplate>
 
     <DataTemplate x:Key="GraphIssuesItemTemplate"
@@ -74,7 +75,7 @@
                   DataType="{x:Type controls:NodeRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
                              CallToAction="{Binding Rule.CallToAction}"
-                             NodeIds="{Binding AffectedNodes }"
+                             IssueNodes="{Binding AffectedNodes }"
                              SeverityCode="{Binding Rule.SeverityCode}"
                              Margin="5">
             <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
@@ -92,9 +93,16 @@
                   DataType="{x:Type controls:GraphRuleIssue}">
         <controls:IssueGroup Description="{Binding Rule.Description}"
                              CallToAction="{Binding Rule.CallToAction}"
-                             NodeIds="{Binding AffectedNodes}"
+                             IssueNodes="{Binding AffectedNodes}"
                              SeverityCode="{Binding Rule.SeverityCode}"
                              Margin="5">
+            <ListView ItemTemplate="{StaticResource NodeIssuesItemTemplate}"
+                      ItemsSource="{Binding AffectedNodes}"
+                      Style="{DynamicResource ListViewStyle}"
+                      ItemContainerStyle="{StaticResource ListViewItemStyle}"
+                      Grid.Row="1"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      Margin="0, 5" />
         </controls:IssueGroup>
     </DataTemplate>
 

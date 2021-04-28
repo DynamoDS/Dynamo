@@ -32,6 +32,7 @@ namespace Dynamo.TestLinterExtension
             this.AddLinterRule(new InputNodesNotAllowedRule());
             this.AddLinterRule(new GraphNeedsOutputNodesRule());
             this.AddLinterRule(new WarningSeverityRule());
+            this.AddLinterRule(new DuplicatedNamesRule());
         }
 
         public override void Dispose() { }
