@@ -106,7 +106,26 @@ namespace Dynamo.Linting
             else
             {
                 if (RuleEvaluationResults.Contains(result))
+                {
+                    if (result is GraphRuleEvaluationResult gRuleResult)
+                    {
+                        // With graph evaluations we need to check if the NodeIds collection has changed
+                        // as this collection might change without the rule Passed
+                        var storingResult = RuleEvaluationResults
+                            .Where(x => x.RuleId == gRuleResult.RuleId)
+                            .Cast<GraphRuleEvaluationResult>()
+                            .FirstOrDefault();
+
+                        if (storingResult.NodeIds != gRuleResult.NodeIds) 
+                        {
+                            // remove original result and replace with new one
+                            RuleEvaluationResults.Remove(storingResult);
+                            RuleEvaluationResults.Add(result);
+                        }
+                    }
+                    
                     return;
+                }
                 RuleEvaluationResults.Add(result);
             }
         }
