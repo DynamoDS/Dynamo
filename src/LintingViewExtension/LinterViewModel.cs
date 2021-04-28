@@ -17,12 +17,15 @@ namespace Dynamo.LintingViewExtension
 {
     public class LinterViewModel : NotificationObject
     {
+        private static Uri linterViewHelpLink = new Uri("LintingViewExtension;LinterViewHelpDoc.html", UriKind.Relative);
+
         private LinterExtensionDescriptor activeLinter;
         public LinterManager LinterManager { get; }
         public ViewLoadedParams ViewLoadedParams { get; }
         public ObservableCollection<IRuleIssue> NodeIssues { get; set; }
         public ObservableCollection<IRuleIssue> GraphIssues { get; set; }
         public DelegateCommand<string> SelectIssueNodeCommand { get; private set; }
+        public DelegateCommand OpenDocumentationBrowserCommand { get; private set; }
 
         public LinterExtensionDescriptor ActiveLinter
         {
@@ -52,6 +55,12 @@ namespace Dynamo.LintingViewExtension
         private void InitializeCommands()
         {
             this.SelectIssueNodeCommand = new DelegateCommand<string>(this.SelectIssueNodeCommandExecute);
+            this.OpenDocumentationBrowserCommand = new DelegateCommand(this.OpenDocumentationBrowserCommandExecute);
+        }
+
+        private void OpenDocumentationBrowserCommandExecute()
+        {
+            ViewLoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(linterViewHelpLink);
         }
 
         private void SelectIssueNodeCommandExecute(string nodeId)

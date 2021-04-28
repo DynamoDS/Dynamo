@@ -21,6 +21,28 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
+            <Style x:Key="SomeButtonStyle"
+                   TargetType="Button">
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Cursor"
+                                Value="Hand" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
             <DataTemplate x:Key="HeaderItemControlHeaderTemplate">
                 <TextBlock Text="{Binding}"
                            Foreground="{StaticResource HeaderFontColor}"
@@ -133,12 +155,16 @@
                           Height="30"
                           Margin="0 15" />
 
-                <fa:ImageAwesome Icon="InfoCircle"
-                                 Grid.Column="1"
-                                 Foreground="#808080"
-                                 Width="20"
-                                 Height="20"
-                                 ToolTip="Some Tooltip" />
+                <Button Background="Transparent"
+                        BorderBrush="Transparent"
+                        Command="{Binding OpenDocumentationBrowserCommand}"
+                        Grid.Column="1"
+                        Style="{StaticResource SomeButtonStyle}">
+                    <fa:ImageAwesome Icon="InfoCircle"
+                                     Foreground="#808080"
+                                     Width="20"
+                                     Height="20" />
+                </Button>
             </Grid>
         </HeaderedContentControl>
 
