@@ -93,6 +93,29 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_CanAutoCompleteOnCustomNodes()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Pick the % node
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("05d82f5627314cc9bf802c5d6d3ed907").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+
+            var port = inPorts[1].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("Color", type);
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = inPorts[1];
+
+            // The initial list will fill the FilteredResults with a few options - all basic input types
+            searchViewModel.PopulateAutoCompleteCandidates();
+            Assert.AreEqual(6, searchViewModel.FilteredResults.Count());
+        }
+
+        [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
