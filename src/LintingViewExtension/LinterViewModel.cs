@@ -17,16 +17,37 @@ namespace Dynamo.LintingViewExtension
 {
     public class LinterViewModel : NotificationObject
     {
+        #region Private Fields
         private static Uri linterViewHelpLink = new Uri("LintingViewExtension;LinterViewHelpDoc.html", UriKind.Relative);
-
         private LinterExtensionDescriptor activeLinter;
-        public LinterManager LinterManager { get; }
-        public ViewLoadedParams ViewLoadedParams { get; }
+        private LinterManager linterManager;
+        private ViewLoadedParams viewLoadedParams;
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Collection of node issues, this is used to bind to the UI
+        /// </summary>
         public ObservableCollection<IRuleIssue> NodeIssues { get; set; }
+
+        /// <summary>
+        /// Collection of graph issues, this is used to bind to the UI
+        /// </summary>
         public ObservableCollection<IRuleIssue> GraphIssues { get; set; }
+
+        /// <summary>
+        /// Command to select a node in the workspace from the linter view
+        /// </summary>
         public DelegateCommand<string> SelectIssueNodeCommand { get; private set; }
+
+        /// <summary>
+        /// Command to open a help page in the documentation browser
+        /// </summary>
         public DelegateCommand OpenDocumentationBrowserCommand { get; private set; }
 
+        /// <summary>
+        /// The selected linter, used to bind to the UI and activate a linter on the linter manager
+        /// </summary>
         public LinterExtensionDescriptor ActiveLinter
         {
             get { return activeLinter; }
@@ -36,22 +57,24 @@ namespace Dynamo.LintingViewExtension
                     return;
 
                 activeLinter = value;
-                LinterManager.ActiveLinter = activeLinter;
+                linterManager.ActiveLinter = activeLinter;
                 RaisePropertyChanged(nameof(ActiveLinter));
             }
         }
+        #endregion
 
         public LinterViewModel(LinterManager linterManager, ViewLoadedParams viewLoadedParams)
         {
-            LinterManager = linterManager ?? throw new ArgumentNullException(nameof(linterManager));
-            ViewLoadedParams = viewLoadedParams;
+            this.linterManager = linterManager ?? throw new ArgumentNullException(nameof(linterManager));
+            this.viewLoadedParams = viewLoadedParams;
             InitializeCommands();
 
             NodeIssues = new ObservableCollection<IRuleIssue>();
             GraphIssues = new ObservableCollection<IRuleIssue>();
-            LinterManager.RuleEvaluationResults.CollectionChanged += RuleEvaluationResultsCollectionChanged;
+            this.linterManager.RuleEvaluationResults.CollectionChanged += RuleEvaluationResultsCollectionChanged;
         }
 
+        #region Private methods
         private void InitializeCommands()
         {
             this.SelectIssueNodeCommand = new DelegateCommand<string>(this.SelectIssueNodeCommandExecute);
@@ -60,21 +83,21 @@ namespace Dynamo.LintingViewExtension
 
         private void OpenDocumentationBrowserCommandExecute()
         {
-            ViewLoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(linterViewHelpLink);
+            viewLoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(linterViewHelpLink);
         }
 
         private void SelectIssueNodeCommandExecute(string nodeId)
         {
-            var nodes = ViewLoadedParams.CurrentWorkspaceModel.Nodes;
+            var nodes = viewLoadedParams.CurrentWorkspaceModel.Nodes;
             if (nodes is null || !nodes.Any()) { return; }
 
             var selectedNode = nodes.Where(x => x.GUID.ToString() == nodeId).FirstOrDefault();
             if (selectedNode is null) { return; }
 
             var cmd = new DynamoModel.SelectInRegionCommand(selectedNode.Rect, false);
-            this.ViewLoadedParams.CommandExecutive.ExecuteCommand(cmd, null, null);
+            this.viewLoadedParams.CommandExecutive.ExecuteCommand(cmd, null, null);
 
-            (this.ViewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).FitViewCommand.Execute(null);
+            (this.viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).FitViewCommand.Execute(null);
         }
 
         private void AddNewNodeIssue(string issueNodeId, string ruleId)
@@ -147,7 +170,7 @@ namespace Dynamo.LintingViewExtension
 
         private LinterRule GetLinterRule(string id)
         {
-            var linterExt = LinterManager.GetLinterExtension(ActiveLinter);
+            var linterExt = linterManager.GetLinterExtension(ActiveLinter);
             return linterExt.
                 LinterRules.
                 Where(x => x.Id == id).
@@ -188,12 +211,13 @@ namespace Dynamo.LintingViewExtension
             if (nodeId is null)
                 return null ;
 
-            var node = ViewLoadedParams.CurrentWorkspaceModel
+            var node = viewLoadedParams.CurrentWorkspaceModel
                 .Nodes
                 .Where(n => n.GUID.ToString() == nodeId)
                 .FirstOrDefault();
 
             return node;
         }
+        #endregion
     }
 }

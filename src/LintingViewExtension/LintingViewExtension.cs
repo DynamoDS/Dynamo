@@ -11,14 +11,10 @@ using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.LintingViewExtension
 {
-    public class LintingViewExtension : ViewExtensionBase, IExtensionStorageAccess
+    public class LintingViewExtension : ViewExtensionBase
     {
         private const string EXTENSION_NAME = "Dynamo Linter";
         private const string EXTENSION_GUID = "3467481b-d20d-4918-a454-bf19fc5c25d7";
-        private const string GRAPH_USAGES_NAME_PROP = "GraphUsages";
-        private const string GRAPH_USAGES_ID_PROP = "GraphUsagesId";
-        private const string NODE_ISSUES_COUNT_PROP = "Unresolved Node Issues";
-        private const string GRAPH_ISSUES_COUNT_PROP = "Unresolved Graph Issues";
 
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParamsReference;
@@ -50,20 +46,11 @@ namespace Dynamo.LintingViewExtension
             this.viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem);
         }
 
-        private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
-        {
-            viewLoadedParamsReference.CloseExtensioninInSideBar(this);
-        }
-
-        private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
-        {
-            this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.linterView);
-        }
-
         public override void Shutdown()
         {
             // Do nothing for now 
         }
+
         public override void Dispose()
         {
             this.linterMenuItem.Checked -= MenuItemCheckHandler;
@@ -77,33 +64,14 @@ namespace Dynamo.LintingViewExtension
             
             this.linterMenuItem.IsChecked = false;
         }
-
-        public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
+        private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
         {
-            if (!extensionData.TryGetValue("GraphUsagesId", out string activeLinterId))
-                return;
-
-            var activeLitner = this.linterManager.AvailableLinters.
-                Where(x => x.Id == activeLinterId).
-                FirstOrDefault();
-
-            if (activeLitner is null)
-                return;
-
-            this.linterViewModel.ActiveLinter = activeLitner;
-
-            if (!this.linterMenuItem.IsChecked)
-            {
-                this.linterMenuItem.IsChecked = true;
-            }
+            viewLoadedParamsReference.CloseExtensioninInSideBar(this);
         }
 
-        public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)
+        private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
-            extensionData[GRAPH_USAGES_NAME_PROP] = this.linterViewModel.ActiveLinter.Name;
-            extensionData[GRAPH_USAGES_ID_PROP] = this.linterViewModel.ActiveLinter.Id;
-            extensionData[NODE_ISSUES_COUNT_PROP] = this.linterViewModel.NodeIssues.Count.ToString();
-            extensionData[GRAPH_ISSUES_COUNT_PROP] = this.linterViewModel.GraphIssues.Count.ToString();
+            this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.linterView);
         }
     }
 }
