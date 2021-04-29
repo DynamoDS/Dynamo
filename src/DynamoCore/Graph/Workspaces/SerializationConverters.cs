@@ -690,7 +690,11 @@ namespace Dynamo.Graph.Workspaces
                 !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
                 return;
 
+            if (!linter.HasValues)
+                return;
+
             var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
+
             if (activeLinterId is null)
                 return;
 
