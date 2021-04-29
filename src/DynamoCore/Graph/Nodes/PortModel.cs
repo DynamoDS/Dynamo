@@ -429,9 +429,8 @@ namespace Dynamo.Graph.Nodes
                 }
                 return type;
             }
-
-            var cusNode = Owner as CustomNodes.Function;
-            if (cusNode != null)
+          
+            if (Owner is CustomNodes.Function cusNode)
             {
                 var cd = cusNode.Controller.Definition;
                 var param = cd.Parameters.ElementAt(Index);
