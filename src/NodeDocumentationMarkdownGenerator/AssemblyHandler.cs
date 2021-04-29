@@ -15,6 +15,7 @@ using Dynamo.Models;
 using Autodesk.DesignScript.Runtime;
 using ProtoFFI;
 using ProtoCore.AST.AssociativeAST;
+using ProtoCore.Reflection;
 
 namespace NodeDocumentationMarkdownGenerator
 {
@@ -45,6 +46,13 @@ namespace NodeDocumentationMarkdownGenerator
                         Assembly asm = mlc.LoadFromAssemblyPath(path);
                         AssemblyName name = asm.GetName();
 
+                        if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
+                        {
+                            fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType));
+                            continue;
+                        }
+
+                        // Getting ZT imports from CLRModuleTypes
                         DLLModule dllModule = null;
                         string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
                         if (extension == ".dll" || extension == ".exe")
@@ -69,7 +77,7 @@ namespace NodeDocumentationMarkdownGenerator
                                 var ctorNodes = t.ClassNode.Procedures
                                     .Where(c => c is ConstructorDefinitionNode)
                                     .Cast<ConstructorDefinitionNode>()
-                                    .Where(c => !c.MethodAttributes.HiddenInLibrary || !c.MethodAttributes.IsObsolete)
+                                    .Where(c => !c.MethodAttributes.HiddenInLibrary && !c.MethodAttributes.IsObsolete)
                                     .ToList();
 
                                 var functionNodes = t.ClassNode.Procedures
@@ -80,61 +88,19 @@ namespace NodeDocumentationMarkdownGenerator
 
                                 var props = t.ClassNode.Variables;
 
-                                ctorNodes.ForEach(x => MarkdownHandler.GetMdFileInfoFromConstructorNode(x, t.ClassNode.ClassName, false));
-                                functionNodes.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromFunctionNode(x, t.ClassNode.ClassName, false)));
+                                ctorNodes.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
+                                functionNodes.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
+                                props.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
 
                             }
                             catch (Exception)
                             {
                                 continue;
                             }
-
-                        }
-
-
-                        //if (!NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(ass, nodeModelType))
-                        //{
-                        //    var definedTypes = ass.DefinedTypes;
-                        //    var module = new CLRDLLModule(ass.GetName().Name, ass);
-                        //    foreach (var type in definedTypes)
-                        //    {
-                        //        CLRModuleType.GetInstance(type, module, string.Empty);
-                        //    }
-
-                        //    libraryService.LoadNodeLibrary(ass.Location, true);
-                        //    var funcs = libraryService.ImportedFunctionGroups.SelectMany(x => x.Functions.Where(y => y.Assembly == path && y.IsVisibleInLibrary)).ToList();
-                        //    funcs.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileNameFromFunctionDescriptor(x)));
-                        //    continue;
-                        //}
-
-                        //System.Type[] typesInAsm = null;
-
-                        //try
-                        //{
-                        //    typesInAsm = ass.GetTypes();
-                        //}
-                        //catch (ReflectionTypeLoadException ex)
-                        //{
-                        //    typesInAsm = ex.Types;
-                        //}
-
-                        //var nodeTypes = typesInAsm.
-                        //    Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType)).
-                        //    Select(t => TypeLoadData.FromReflectionType(t)).
-                        //    ToList();
-
-                        //foreach (var nodeType in nodeTypes)
-                        //{
-                        //    if (nodeType is null ||
-                        //        nodeType.IsDeprecated ||
-                        //        nodeType.IsHidden)
-                        //        continue;
-                        //    fileInfos.Add(MarkdownHandler.GetMdFileNameFromType(nodeType));
-                        //}
+                        }                        
                     }
                     catch (Exception)
                     {
-
                         continue;
                     }
                 }
@@ -143,5 +109,36 @@ namespace NodeDocumentationMarkdownGenerator
             return fileInfos;
         }
 
+        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType)
+        {
+            var fileInfos = new List<MdFileInfo>();
+            System.Type[] typesInAsm = null;
+            try
+            {
+                typesInAsm = asm.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                typesInAsm = ex.Types;
+            }
+
+            var t1 = typesInAsm[0].AttributesFromReflectionContext();
+
+            var nodeTypes = typesInAsm.
+                Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType)).
+                Select(t => new TypeLoadData(t, t.AttributesFromReflectionContext())).
+                ToList();
+
+            foreach (var nodeType in nodeTypes)
+            {
+                if (nodeType is null ||
+                    nodeType.IsDeprecated ||
+                    nodeType.IsHidden)
+                    continue;
+                fileInfos.Add(MarkdownHandler.GetMdFileNameFromTypeLoadData(nodeType));
+            }
+
+            return fileInfos;
+        }
     }
 }

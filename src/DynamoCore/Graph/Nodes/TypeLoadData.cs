@@ -37,25 +37,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public bool IsObsolete { get { return !string.IsNullOrEmpty(ObsoleteMessage); } }
 
-        public TypeLoadData(Type type, string obsoleteMessage, IEnumerable<string> alsoKnownAs, bool isDeprecated, bool isMetaNode, 
-            bool isDSCompatible, bool isHidden, string name, IEnumerable<string> searchKeys, string description, 
-            IEnumerable<Tuple<string, string>> inputParameters, IEnumerable<string> outputParameters)
-        {
-            Type = type;
-            ObsoleteMessage = obsoleteMessage;
-            AlsoKnownAs = alsoKnownAs;
-            IsDeprecated = isDeprecated;
-            IsMetaNode = isMetaNode;
-            IsDSCompatible = isDSCompatible;
-            IsHidden = isHidden;
-            Name = name;
-            SearchKeys = searchKeys;
-            Description = description;
-            InputParameters = inputParameters;
-            OutputParameters = outputParameters;
-        }
-
-
         /// <summary>
         /// Creates TypeLoadData.
         /// </summary>
@@ -117,100 +98,70 @@ namespace Dynamo.Graph.Nodes
                 .SelectMany(x => x.PortTypes);
         }
 
-        internal static TypeLoadData FromReflectionType(Type type)
+        public TypeLoadData (Type typeIn, ICollection<Attribute> attributes)
         {
-            var attributes = type.AttributesFromReflectionContext();
-            var customAttributes = CustomAttributeData.GetCustomAttributes(type).ToList();
-            var customAttributeTypes = customAttributes.Select(x => x.AttributeType).ToList();
+            Type = typeIn;
 
-            if (customAttributes is null || customAttributes.Count == 0)
-                return null;
-
-            var obsoleteMessage = string.Join(
+            ObsoleteMessage = string.Join(
                 "\n",
-                customAttributes.
-                    Where(x => x.AttributeType.Name == nameof(ObsoleteAttribute)).
-                    Select(x => x.ConstructorArguments.
-                    Select(arg => string.IsNullOrEmpty(arg.Value as string) ? "Obsolete" : arg.Value as string)));
+                attributes.Where(x=>x is ObsoleteAttribute)
+                    .Cast<ObsoleteAttribute>()
+                    .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
-            var isDeprecated = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(NodeDeprecatedAttribute)).
-                Any();
-            var isMetaNode = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(IsMetaNodeAttribute)).
-                Any();
-            var isDSCompatible = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(IsDesignScriptCompatibleAttribute)).
-                Any();
+            IsDeprecated = attributes.Where(x=>x is NodeDeprecatedAttribute).Cast<NodeDeprecatedAttribute>().Any();
+            IsMetaNode = attributes.Where(x => x is NodeDeprecatedAttribute).Cast<IsMetaNodeAttribute>().Any();
+            IsDSCompatible = attributes.Where(x => x is NodeDeprecatedAttribute).Cast<IsDesignScriptCompatibleAttribute>().Any();
+            IsHidden = attributes.Where(x=>x is IsVisibleInDynamoLibraryAttribute).Cast<IsVisibleInDynamoLibraryAttribute>().Any(attr => !attr.Visible);
 
-            var isHidden = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(IsVisibleInDynamoLibraryAttribute)).
-                Any(attr => attr.ConstructorArguments.Any(v => (bool)v.Value == true));
-
-
-            var attribs = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(NodeNameAttribute)).
-                Select(x => x.ConstructorArguments).
-                FirstOrDefault();
-
-            string name = null;
-            if (!(attribs is null) && attribs.Any() && !isDeprecated && !isMetaNode && isDSCompatible && !isHidden)
+            var attribs = attributes.Where(x=>x is NodeNameAttribute).Cast<NodeNameAttribute>();
+            if (attribs.Any() && !IsDeprecated && !IsMetaNode && IsDSCompatible && !IsHidden)
             {
-                name = attribs.First().Value as string;
+                Name = attribs.First().Name;
             }
             else
-                name = type.Name;
+                Name = Type.Name;
 
-            var alsoKnownAs = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(AlsoKnownAsAttribute))
-                    .SelectMany(aka => aka.ConstructorArguments.Select(x=>x.Value as string)
-                    .Concat(name.AsSingleton()));
+            AlsoKnownAs =
+                attributes.Where(x=>x is AlsoKnownAsAttribute)
+                    .Cast<AlsoKnownAsAttribute>()
+                    .SelectMany(aka => aka.Values)
+                    .Concat(Name.AsSingleton());
 
-            var searchKeys = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(NodeSearchTagsAttribute)).
-                SelectMany(tag => tag.ConstructorArguments.Select(v => v.Value as string));
+            SearchKeys = attributes.Where(x => x is NodeSearchTagsAttribute).Cast<NodeSearchTagsAttribute>().SelectMany(x => x.Tags);
+            Category =
+                attributes.Where(x => x is NodeCategoryAttribute).Cast<NodeCategoryAttribute>()
+                    .Select(x => x.ElementCategory)
+                    .FirstOrDefault();
+            Description =
+                attributes.Where(x => x is NodeDescriptionAttribute).Cast<NodeDescriptionAttribute>()
+                    .Select(x => x.ElementDescription)
+                    .FirstOrDefault() ?? "";
 
+            var inputNames = attributes.Where(x => x is InPortNamesAttribute)
+                .Cast<InPortNamesAttribute>()
+                .SelectMany(x => x.PortNames).ToList();
+            var inputTypes = attributes.Where(x => x is InPortTypesAttribute)
+                .Cast<InPortTypesAttribute>()
+                .SelectMany(x => x.PortTypes).ToList();
 
-            var category = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(NodeCategoryAttribute)).
-                SelectMany(x => x.ConstructorArguments).
-                FirstOrDefault().Value as string;
-
-            var description =  customAttributes.
-                Where(x => x.AttributeType.Name == nameof(NodeDescriptionAttribute)).
-                SelectMany(x => x.ConstructorArguments).
-                FirstOrDefault().Value as string;
-
-
-            var inputNames = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(InPortNamesAttribute)).
-                SelectMany(x => x.ConstructorArguments).
-                Select(x => x.Value as string).
-                ToList();                
-
-            var inputTypes = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(InPortTypesAttribute)).
-                SelectMany(x => x.ConstructorArguments).
-                Select(x => x.Value as string).
-                ToList();
-
-            IEnumerable<Tuple<string, string>> inputParameters = null;
             if (inputNames.Any() && (inputNames.Count == inputTypes.Count))
             {
-                inputParameters = inputNames.Zip(inputTypes, (n, t) => new Tuple<string, string>(name, t));
+                InputParameters = inputNames.Zip(inputTypes, (name, type) => new Tuple<string, string>(name, type));
             }
             else
             {
-                inputParameters = new List<Tuple<string, string>>();
+                InputParameters = new List<Tuple<string, string>>();
             }
 
-            var outputParameters = customAttributes.
-                Where(x => x.AttributeType.Name == nameof(OutPortTypesAttribute)).
-                SelectMany(x => x.ConstructorArguments).
-                Select(x => x.Value as string).
-                ToList();
 
-            return new TypeLoadData(type,obsoleteMessage,alsoKnownAs,isDeprecated,isMetaNode,isDSCompatible,isHidden,name,searchKeys,description,inputParameters,outputParameters);
+            OutputParameters = attributes.Where(x=>x is OutPortTypesAttribute)
+                .Cast<OutPortTypesAttribute>()
+                .SelectMany(x => x.PortTypes);
+        }
+
+        private void InitializeProperties(ICollection<Attribute> attributes)
+        {
+
         }
 
         /// <summary>

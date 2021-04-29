@@ -2,7 +2,7 @@
   "profiles": {
     "NodeDocumentationMarkdownGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "fromdirectory -i \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\DynamoRevit\\bin\\AnyCPU\\Release\\Revit\" -f RevitNodes.dll -o \"C:\\Users\\SylvesterKnudsen\\Desktop\\TestMdOutputRevitNodes\" -d \"C:\\Users\\SylvesterKnudsen\\matterlab\\matterlab-Server - Dokumenter\\03 Client Projects\\Autodesk\\0175 - Dynamo Core docs generation\\06 Solution\\DynamoDictionary_Data_Revit.json\" -w"
+      "commandLineArgs": "fromdirectory -i \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\Dynamo\\bin\\AnyCPU\\Debug\\nodes\" -o \"C:\\Users\\SylvesterKnudsen\\Desktop\\TestMdOutput\" -f CoreNodeModels.dll -w -d \"C:\\Users\\SylvesterKnudsen\\matterlab\\matterlab-Server - Dokumenter\\03 Client Projects\\Autodesk\\0175 - Dynamo Core docs generation\\06 Solution\\DynamoDictionary_Data.json\""
     }
   }
 }

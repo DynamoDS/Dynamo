@@ -76,9 +76,12 @@ namespace NodeDocumentationMarkdownGenerator
             return content.ToString();
         }
 
-        internal static MdFileInfo GetMdFileInfoFromFunctionNode(FunctionDefinitionNode definitionNode, string className, bool isOverload)
+        internal static MdFileInfo GetMdFileInfoFromAssociativeNode(AssociativeNode node, string className, bool isOverload)
         {
-            var functionName = definitionNode.Name;
+            var functionName = node is VarDeclNode varNode ? 
+                varNode.NameNode.Name : 
+                node.Name;
+
             var nodeNamespace = $"{className}.{functionName}";
             if (isOverload)
             {
@@ -88,20 +91,6 @@ namespace NodeDocumentationMarkdownGenerator
             }
 
             return new MdFileInfo(functionName, nodeNamespace);
-        }
-
-        internal static MdFileInfo GetMdFileInfoFromConstructorNode(ConstructorDefinitionNode definitionNode, string className, bool isOverload)
-        {
-            var ctorName = definitionNode.Name;
-            var nodeNamespace = $"{className}.{ctorName}";
-            if (isOverload)
-            {
-                //var inputTypes = definitionNode.Parameters.Select(x => x.Type.Name).ToArray();
-                //var inputString = string.Join(",", inputTypes);
-                //nodeNamespace = $"{className}.{functionName}({inputString})";
-            }
-
-            return new MdFileInfo(ctorName, nodeNamespace);
         }
 
         internal static MdFileInfo GetMdFileInfoFromFromCustomNode(string path)
@@ -127,22 +116,7 @@ namespace NodeDocumentationMarkdownGenerator
             return new MdFileInfo(nodeName, nodeNamspace);
         }
 
-        internal static MdFileInfo GetMdFileNameFromFunctionDescriptor(FunctionDescriptor function)
-        {
-            var className = function.ClassName;
-            var functionName = function.FunctionName;
-            var nodeNamespace = $"{className}.{functionName}";
-            if (function.IsOverloaded)
-            {
-                var inputTypes = function.Parameters.Select(x => x.Type.Name).ToArray();
-                var inputString = string.Join(",", inputTypes);
-                nodeNamespace = $"{className}.{functionName}({inputString})";
-            }
-
-            return new MdFileInfo(functionName, nodeNamespace);
-        }
-
-        internal static MdFileInfo GetMdFileNameFromType(TypeLoadData type)
+        internal static MdFileInfo GetMdFileNameFromTypeLoadData(TypeLoadData type)
         {
             var nodeName = type.Name;
             var nodeNamespace = type.Type.FullName;
