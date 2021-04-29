@@ -843,10 +843,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Linter
             if(!(ws.linterManager is null))
-            {
-                writer.WritePropertyName(WorkspaceReadConverter.LINTING_PROP_STRING);
                 serializer.Serialize(writer, ws.linterManager);
-            }
 
 
             if (engine != null)
@@ -937,6 +934,7 @@ namespace Dynamo.Graph.Workspaces
                 return;
             }
 
+            writer.WritePropertyName(WorkspaceReadConverter.LINTING_PROP_STRING);
             writer.WriteStartObject();
             writer.WritePropertyName(ACTIVE_LINTER_OBJECT_NAME);
             writer.WriteValue(linterManager.ActiveLinter.Name);
