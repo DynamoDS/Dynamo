@@ -105,7 +105,7 @@ namespace DynamoCoreWpfTests
 
             var port = inPorts[1].PortModel;
             var type = port.GetInputPortType();
-            Assert.AreEqual("Color", type);
+            Assert.AreEqual("DSCore.Color", type);
 
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = inPorts[1];
