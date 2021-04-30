@@ -13,13 +13,13 @@ cbuffer cbTransforms : register(b0)
     float4x4 mView;
     float4x4 mProjection;
     float4x4 mViewProjection;
-	// camera frustum: 
-	// [fov,asepct-ratio,near,far]
+    // camera frustum: 
+    // [fov,asepct-ratio,near,far]
     float4 vFrustum;
-	// viewport:
-	// [w,h,1/w,1/h]
+    // viewport:
+    // [w,h,1/w,1/h]
     float4 vViewport;
-	// camera position
+    // camera position
     float3 vEyePos;
     bool SSAOEnabled;
     float SSAOBias;
@@ -29,13 +29,13 @@ cbuffer cbTransforms : register(b0)
     float OITPower;
     float OITSlope;
     int OITWeightMode;
-    int OITReserved;
+    float DpiScale;
 };
 
 #if defined(MESHSIMPLE)
 cbuffer cbMeshSimple : register(b1)
 {
-// Common Parameters
+    // Common Parameters
     float4x4 mWorld;
     bool bHasInstances = false;
     float3 padding1;
@@ -44,9 +44,9 @@ cbuffer cbMeshSimple : register(b1)
 
 #if defined(MESH)
 //Per model shares between Phong material and PBR material
-cbuffer cbMesh : register(b1) 
+cbuffer cbMesh : register(b1)
 {
-// Common Parameters
+    // Common Parameters
     float4x4 mWorld;
     bool bInvertNormal = false;
     bool bHasInstances = false;
@@ -58,11 +58,11 @@ cbuffer cbMesh : register(b1)
     bool3 bParams; // Shared with models for enable/disable features
     bool bBatched = false;
 
-// Material Parameters changable
-	float minTessDistance = 1;
-	float maxTessDistance = 100;
-	float minTessFactor = 4;
-	float maxTessFactor = 1;
+    // Material Parameters changable
+    float minTessDistance = 1;
+    float maxTessDistance = 100;
+    float minTessFactor = 4;
+    float maxTessFactor = 1;
 
     float4 vMaterialDiffuse = 0.5f; //Kd := surface material's diffuse coefficient
     float4 vMaterialAmbient = 0.25f; //Ka := surface material's ambient coefficient.
@@ -88,39 +88,41 @@ cbuffer cbMesh : register(b1)
     bool bHasEmissiveMap = false;
 #if !defined(PBR)
     bool bHasAlphaMap = false; // If using PBR, this is used as HasRMAMap.
-    bool bHasSpecularMap;    
+    bool bHasSpecularMap;
 #endif
 #if defined(PBR)
-    bool bHasRMMap;    
-    bool bHasIrradianceMap; 
+    bool bHasRMMap;
+    bool bHasIrradianceMap;
 #endif
     bool bAutoTengent;
     bool bHasDisplacementMap = false;
-    bool bRenderPBR = false;  
+    bool bRenderPBR = false;
     bool bRenderFlat = false; //Enable flat normal rendering
     float sMaterialShininess = 1.0f; //Ps := surface material's shininess
 
     float4 displacementMapScaleMask = float4(0, 0, 0, 1);
     float4 uvTransformR1;
     float4 uvTransformR2;
+    float vertColorBlending;
+    float3 padding4;
 };
 #endif
 
 #if defined(SCREENDUPLICATION)
-    cbuffer cbScreenClone : register(b9)
-    {
-        float4 VertCoord[4];
-        float4 TextureCoord[4];
-        float4 CursorVertCoord[4];
-    };
+cbuffer cbScreenClone : register(b9)
+{
+    float4 VertCoord[4];
+    float4 TextureCoord[4];
+    float4 CursorVertCoord[4];
+};
 #endif
 #if defined(SCREENQUAD)
-    cbuffer cbScreenQuad : register(b9)
-    {
-        float4x4 mWorld;
-        float4 VertCoord[4];
-        float4 TextureCoord[4];
-    };
+cbuffer cbScreenQuad : register(b9)
+{
+    float4x4 mWorld;
+    float4 VertCoord[4];
+    float4 TextureCoord[4];
+};
 #endif
 cbuffer cbLights : register(b3)
 {
@@ -139,11 +141,11 @@ cbuffer cbPointLineModel : register(b4)
     float4x4 mWorld;
     bool bHasInstances = false;
     bool bHasInstanceParams = false;
-	float2 padding1;
+    float2 padding1;
     float4 pfParams = float4(0, 0, 0, 0); //Shared with line, points and billboard
     float4 pColor = float4(1, 1, 1, 1); //Shared with line, points and billboard
     bool fixedSize;
-	bool3 pbParams;
+    bool3 pbParams;
     bool enableDistanceFading;
     float fadeNearDistance;
     float fadeFarDistance;
@@ -179,14 +181,14 @@ cbuffer cbParticleModel : register(b4)
     bool bHasInstances = false;
     bool bHasInstanceParams = false;
     bool bHasTexture = false;
-	float padding1;
+    float padding1;
 };
 #endif
 #if defined(PLANEGRID) 
 cbuffer cbPlaneGridModel : register(b4)
 {
     float4x4 mWorld;
-    float gridSpacing; 
+    float gridSpacing;
     float gridThickness;
     float fadingFactor;
     float planeD;
@@ -210,18 +212,18 @@ cbuffer cbShadow : register(b5)
 cbuffer cbClipping : register(b6)
 {
     bool4 EnableCrossPlane;
+    bool4 EnableCrossPlane5To8;
     float4 CrossSectionColors;
     int CuttingOperation;
     float3 paddingClipping;
-	// Format:
-	// M00M01M02 PlaneNormal1 M03 Plane1 Distance to origin
-	// M10M11M12 PlaneNormal2 M13 Plane2 Distance to origin
-	// M20M21M22 PlaneNormal3 M23 Plane3 Distance to origin
-	// M30M31M32 PlaneNormal4 M33 Plane4 Distance to origin
     float4 CrossPlane1Params;
     float4 CrossPlane2Params;
     float4 CrossPlane3Params;
     float4 CrossPlane4Params;
+    float4 CrossPlane5Params;
+    float4 CrossPlane6Params;
+    float4 CrossPlane7Params;
+    float4 CrossPlane8Params;
 }
 #endif
 
@@ -286,10 +288,16 @@ cbuffer cbSSAO : register(b1)
     float4 kernel[SSAOKernalSize];
     float2 noiseScale;
     int texScale; // Used when viewport size does not match texture size
-    float radius;    
+    float radius;
     float4x4 invProjection;
 }
 #endif
+
+cbuffer cbMorphTarget : register(b9)
+{
+    int mtCount; //Number of targets
+    int mtPitch; //Pitch between targets for deltas buffer
+}
 
 ///------------------Textures---------------------
 Texture2D texDiffuseMap : register(t0);
@@ -329,6 +337,10 @@ Texture1D texColorStripe1DX : register(t12);
 Texture1D texColorStripe1DY : register(t13);
 
 StructuredBuffer<matrix> skinMatrices : register(t40);
+
+StructuredBuffer<float> morphTargetWeights : register(t60);
+StructuredBuffer<float3> morphTargetDeltas : register(t61);
+StructuredBuffer<int> morphTargetOffsets : register(t62);
 
 Texture2D texSprite : register(t50);
 
