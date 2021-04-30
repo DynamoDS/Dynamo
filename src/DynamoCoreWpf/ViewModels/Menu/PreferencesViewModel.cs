@@ -544,6 +544,7 @@ namespace Dynamo.ViewModels
             //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
             optionsGeometryScal = new GeometryScalingOptions();
 
+            //This will set the default option for the Geometry Scaling Radio Buttons, the value is comming from the DynamoViewModel
             optionsGeometryScal.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(dynamoViewModel.ScaleFactorLog);
 
             optionsGeometryScal.DescriptionScaleRange = new ObservableCollection<string>();
@@ -665,7 +666,6 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// This method is used to conver a Scale Factor to a index so we can Check a Radio Button in the UI
-
         /// </summary>
         /// <param name="scaleValue">This values is the Scale that we need to convert to index (representing a RadioButton)
         /// It can have the values:
