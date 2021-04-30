@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using Dynamo.Configuration;
@@ -7,6 +8,7 @@ using Dynamo.ViewModels;
 
 namespace Dynamo.Prompts
 {
+    [Obsolete("This control is no longer displayed, it will be removed")]
     /// <summary>
     /// Interaction logic for NodeHelpPrompt.xaml
     /// </summary>
