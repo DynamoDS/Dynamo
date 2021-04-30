@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Configuration
 {
@@ -385,7 +386,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// If true the run mode will be set to Automatically, if false to Manual.
         /// </summary>
-        public bool RunTypeAutomatic { get; set; }
+        public RunType DefaultRunType { get; set; }
         #endregion
 
         /// <summary>
@@ -420,7 +421,7 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
-            RunTypeAutomatic = true;
+            DefaultRunType = RunType.Automatic;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;

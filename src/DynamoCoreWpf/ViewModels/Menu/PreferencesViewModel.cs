@@ -1,5 +1,6 @@
 ﻿using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,6 @@ namespace Dynamo.ViewModels
         private string selectedNumberFormat;
         private string selectedPythonEngine;
         private bool runPreviewEnabled;
-        private bool runSettingsIsChecked;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
         private bool showWhitespace;
@@ -44,6 +44,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private RunType runSettingsIsChecked;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
@@ -129,12 +130,20 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return !preferenceSettings.RunTypeAutomatic;
+                return runSettingsIsChecked == RunType.Manual;
             }
             set
             {
-                preferenceSettings.RunTypeAutomatic = !value;
-                runSettingsIsChecked = value;
+                if (value)
+                {
+                    preferenceSettings.DefaultRunType = RunType.Manual;
+                    runSettingsIsChecked = RunType.Manual;
+                }
+                else
+                {
+                    preferenceSettings.DefaultRunType = RunType.Automatic;
+                    runSettingsIsChecked = RunType.Automatic;
+                }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
             }
         }
@@ -530,7 +539,7 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
-            RunSettingsIsChecked = !preferenceSettings.RunTypeAutomatic;
+            runSettingsIsChecked = preferenceSettings.DefaultRunType;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
