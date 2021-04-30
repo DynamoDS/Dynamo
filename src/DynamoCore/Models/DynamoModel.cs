@@ -324,6 +324,9 @@ namespace Dynamo.Models
         /// </summary>
         public IExtensionManager ExtensionManager { get { return extensionManager; } }
 
+        /// <summary>
+        ///     Manages the active linter
+        /// </summary>
         public LinterManager LinterManager { get; }
 
         private readonly ExtensionManager extensionManager;
@@ -867,7 +870,9 @@ namespace Dynamo.Models
                     try
                     {
                         if (ext is LinterExtensionBase linter)
+                        {
                             linter.InitializeBase(this.LinterManager);
+                        }
 
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)

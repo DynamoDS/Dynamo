@@ -39,16 +39,14 @@ namespace Dynamo.Linting.Rules
 
         public bool Equals(NodeRuleEvaluationResult other)
         {
-            if (other is null)
-                return false;
+            if (other is null) return false;
 
             return this.NodeId == other.NodeId && this.RuleId == other.RuleId;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is null)
-                return false;
+            if (obj is null) return false;
 
             return Equals(obj as NodeRuleEvaluationResult);
         }

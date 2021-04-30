@@ -23,8 +23,7 @@ namespace Dynamo.Linting.Rules
         internal void Evaluate(WorkspaceModel workspaceModel, NodeModel modifiedNode = null)
         {
             var pair = EvaluateFunction(workspaceModel, modifiedNode);
-            if (pair is null)
-                return;
+            if (pair is null) return;
 
             var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, this.SeverityCode, pair.Item2);
             OnRuleEvaluated(result);
@@ -45,15 +44,14 @@ namespace Dynamo.Linting.Rules
         /// <returns></returns>
         protected abstract List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>> InitFunction(WorkspaceModel workspaceModel);
 
-        protected sealed override List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel)
+        private protected sealed override List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel)
         {
             var pairs = this.InitFunction(workspaceModel);
 
             var results = new List<IRuleEvaluationResult>();
             foreach (var pair in pairs)
             {
-                if (pair.Item1 == RuleEvaluationStatusEnum.Passed)
-                    continue;
+                if (pair.Item1 == RuleEvaluationStatusEnum.Passed) continue;
 
                 var result = new GraphRuleEvaluationResult(this.Id, pair.Item1, this.SeverityCode, pair.Item2);
                 results.Add(result);

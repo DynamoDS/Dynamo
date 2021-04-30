@@ -31,9 +31,9 @@ namespace Dynamo.Graph.Workspaces
 
         private string thumbnail;
         private Uri graphDocumentationURL;
-        private readonly DynamoScheduler scheduler;
+        private DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
-        private readonly bool verboseLogging;
+        private bool verboseLogging;
         private bool graphExecuted;
 
         // Event to handle closing of the workspace references extension when the workspace is closed. 
@@ -357,42 +357,7 @@ namespace Dynamo.Graph.Workspaces
             bool isTestMode)
             : base(nodes, notes,annotations, info, factory,presets, resolver)
         {
-            Debug.WriteLine("Creating a home workspace...");
-
-            EvaluationCount = 0;
-
-            // This protects the user from a file that might have crashed during
-            // its last run.  As a side effect, this also causes all files set to
-            // run auto but lacking the HasRunWithoutCrash flag to run manually.
-            if (info.RunType == RunType.Automatic && !info.HasRunWithoutCrash)
-            {
-                info.RunType = RunType.Manual;
-            }
-
-            RunSettings = new RunSettings(info.RunType, info.RunPeriod);
-
-            PreloadedTraceData = traceData;
-
-            this.scheduler = scheduler;
-            this.verboseLogging = verboseLogging;
-            IsTestMode = isTestMode;
-            EngineController = engine;
-            this.ExtensionData = new List<ExtensionData>();
-
-            // The first time the preloaded trace data is set, we cache
-            // the data as historical. This will be used after the initial
-            // run of this workspace, when the PreloadedTraceData has been
-            // nulled, to check for node deletions and reconcile the trace data.
-            // We do a deep copy of this data because the PreloadedTraceData is
-            // later set to null before the graph update.
-            var copiedData = new List<KeyValuePair<Guid, List<CallSite.RawTraceData>>>();
-            foreach (var kvp in PreloadedTraceData)
-            {
-                List<CallSite.RawTraceData> callSiteTraceData = new List<CallSite.RawTraceData>();
-                callSiteTraceData.AddRange(kvp.Value);
-                copiedData.Add(new KeyValuePair<Guid, List<CallSite.RawTraceData>>(kvp.Key, callSiteTraceData));
-            }
-            historicalTraceData = copiedData;
+            InitializeHomeWorkspace(engine, traceData, scheduler, info, verboseLogging, isTestMode);
         }
 
         /// <summary>
@@ -428,6 +393,17 @@ namespace Dynamo.Graph.Workspaces
             bool isTestMode,
             LinterManager linterManager)
             : base(nodes, notes, annotations, info, factory, presets, resolver, linterManager)
+        {
+            InitializeHomeWorkspace(engine, traceData, scheduler, info, verboseLogging, isTestMode);
+        }
+
+        private void InitializeHomeWorkspace
+            (EngineController engine, 
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData, 
+            DynamoScheduler scheduler,
+            WorkspaceInfo info, 
+            bool verboseLogging, 
+            bool isTestMode)
         {
             Debug.WriteLine("Creating a home workspace...");
 

@@ -14,6 +14,9 @@ using Dynamo.Models;
 
 namespace Dynamo.Linting
 {
+    /// <summary>
+    /// This class handles registration of Linter extensions and linter rule evaluation management.
+    /// </summary>
     public class LinterManager : NotificationObject, IDisposable
     {
         #region Private fields
@@ -31,7 +34,7 @@ namespace Dynamo.Linting
         /// <summary>
         /// Results from evaluated rules
         /// </summary>
-        public ObservableCollection<IRuleEvaluationResult> RuleEvaluationResults { get; set; }
+        internal ObservableCollection<IRuleEvaluationResult> RuleEvaluationResults { get; set; }
 
         /// <summary>
         /// The LinterDescripter that is currently set as active
@@ -41,15 +44,15 @@ namespace Dynamo.Linting
             get => activeLinter;
             set
             {
-                if (activeLinter == value)
-                    return;
+                if (activeLinter == value) return;
 
                 if (activeLinter != null)
+                {
                     GetLinterExtension(activeLinter).Deactivate();
+                }
 
                 var linterExt = GetLinterExtension(value);
-                if (linterExt is null)
-                    return;
+                if (linterExt is null) return;
 
                 linterExt.Activate();
                 activeLinter = value;
@@ -87,16 +90,14 @@ namespace Dynamo.Linting
 
         private void OnLinterExtensionReady(LinterExtensionDescriptor extensionDescriptor)
         {
-            if (AvailableLinters.Contains(extensionDescriptor))
-                return;
+            if (AvailableLinters.Contains(extensionDescriptor)) return;
 
             AvailableLinters.Add(extensionDescriptor);
         }
 
         private void OnRuleEvaluated(IRuleEvaluationResult result)
         {
-            if (result is null)
-                return;
+            if (result is null) return;
 
             if (result.Status == RuleEvaluationStatusEnum.Passed)
             {

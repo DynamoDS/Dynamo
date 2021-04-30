@@ -86,7 +86,7 @@
         {
           "Id": "52c34d69fe42408ca5c857f371168587",
           "Name": "x",
-          "Description": "x value.\n\nvar[]..[]",
+          "Description": "Integer or double value\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -95,7 +95,7 @@
         {
           "Id": "02afc74a897f47b4a939f9adde53d613",
           "Name": "y",
-          "Description": "y value.\n\nvar[]..[]",
+          "Description": "Integer or double value\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -105,8 +105,8 @@
       "Outputs": [
         {
           "Id": "b92ceaf7eae649c280a7e8e3206631ee",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "number",
+          "Description": "Remainder of the x input after being divided by the y input",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,7 +114,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Finds the remainder of x/y\n\n% (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Modulo: Finds the remainder of x/y\n\n% (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -244,6 +244,27 @@
       "Outputs": [],
       "Replication": "Disabled",
       "Description": "A function output, use with custom nodes"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Output, DynamoCore",
+      "NodeType": "OutputNode",
+      "ElementResolver": null,
+      "Symbol": "anewoutput",
+      "Id": "b7235532195348a6b5f7974f5282c3cc",
+      "Inputs": [
+        {
+          "Id": "0d9378b9164448179f1af52b39cd1b9d",
+          "Name": "",
+          "Description": "",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [],
+      "Replication": "Disabled",
+      "Description": "A function output, use with custom nodes"
     }
   ],
   "Connectors": [
@@ -285,113 +306,5 @@
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
-  "Bindings": [],
-  "View": {
-    "Dynamo": {
-      "ScaleFactor": 1.0,
-      "HasRunWithoutCrash": false,
-      "IsVisibleInDynamoLibrary": true,
-      "Version": "2.4.0.5577",
-      "RunType": "Manual",
-      "RunPeriod": "1000"
-    },
-    "Camera": {
-      "Name": "Background Preview",
-      "EyeX": -17.0,
-      "EyeY": 24.0,
-      "EyeZ": 50.0,
-      "LookX": 12.0,
-      "LookY": -13.0,
-      "LookZ": -58.0,
-      "UpX": 0.0,
-      "UpY": 1.0,
-      "UpZ": 0.0
-    },
-    "NodeViews": [
-      {
-        "ShowGeometry": true,
-        "Name": "Range",
-        "Id": "41fdfda5044b44f0b364e1a31d10bcb3",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 432.0,
-        "Y": -17.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "1713fa72580348369985b6d3ff43f6b6",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 6.0,
-        "Y": 226.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "%",
-        "Id": "1ddf4b4cc39f42acadd578db42bcb6d3",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 214.0,
-        "Y": 259.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Code Block",
-        "Id": "7151fed9e4db49ada604b0d42eb7f7f2",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 47.0,
-        "Y": 349.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Input",
-        "Id": "d1285386263b495388a76953bfc82357",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 193.0,
-        "Y": 74.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Input",
-        "Id": "6bbad8b9abae4e029957792104a3f50e",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 201.0,
-        "Y": -40.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Input",
-        "Id": "a8b1297e19224a30ba48e2bfca132423",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 396.0,
-        "Y": 445.0
-      },
-      {
-        "ShowGeometry": true,
-        "Name": "Output",
-        "Id": "2bcbfb454357477181db694346874e71",
-        "IsSetAsInput": false,
-        "IsSetAsOutput": false,
-        "Excluded": false,
-        "X": 727.0,
-        "Y": 266.0
-      }
-    ],
-    "Annotations": [],
-    "X": 121.0,
-    "Y": 52.0,
-    "Zoom": 1.0
-  }
+  "Author": "None provided"
 }

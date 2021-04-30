@@ -1,6 +1,6 @@
 ﻿namespace Dynamo.Linting.Interfaces
 {
-    public interface IRuleEvaluationResult
+    internal interface IRuleEvaluationResult
     {
         /// <summary>
         /// Id of the rule that created this result
