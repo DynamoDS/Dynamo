@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Dynamo.Applications;
 using Dynamo.Models;
 
@@ -26,6 +25,7 @@ namespace DynamoCLI
                 }
                 var runner = new CommandLineRunner(model);
                 runner.Run(cmdLineArgs);
+
             }
             catch (Exception e)
             {
