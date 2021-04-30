@@ -429,6 +429,15 @@ namespace Dynamo.Graph.Nodes
                 }
                 return type;
             }
+          
+            if (Owner is CustomNodes.Function cusNode)
+            {
+                var cd = cusNode.Controller.Definition;
+                var param = cd.Parameters.ElementAt(Index);
+                string type = param.Type.ToString();
+                
+                return type;
+            }
 
             if (Owner is NodeModel nmNode)
             {
