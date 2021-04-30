@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Xml;
-using Dynamo.Engine;
-using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
@@ -15,11 +12,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 {
     internal class FromPackageFolderCommand
     {
-        private readonly LibraryServices libraryService;
-
-        public FromPackageFolderCommand(LibraryServices libraryService)
+        public FromPackageFolderCommand()
         {
-            this.libraryService = libraryService;
         }
 
         internal string HandlePackageDocumentation(FromPackageOptions opts)
@@ -89,95 +83,5 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             return pkg;
         }
-        
-        //private System.Type[] GetNodeLibraries(Package pkg)
-        //{
-        //    AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
-
-        //    string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll", SearchOption.AllDirectories);
-        //    var dynamoDlls = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).EnumerateFiles("*.dll").Select(x => x.FullName);
-
-        //    var paths = new List<string>(runtimeAssemblies);
-        //    paths.AddRange(dynamoDlls);
-
-        //    if (pkg is null)
-        //        throw new ArgumentNullException(nameof(pkg));
-
-        //    var list = AppDomain.CurrentDomain.GetAssemblies().OrderByDescending(a => a.FullName).Select(a => a).ToList();
-        //    //Assembly.ReflectionOnlyLoad("PresentaitonFramework.dll");
-
-        //    foreach (var loc in paths)
-        //    {
-        //        try
-        //        {
-        //            Assembly.ReflectionOnlyLoadFrom(loc);
-        //        }
-        //        catch (Exception)
-        //        {
-
-        //            continue;
-        //        }
-        //    }
-
-        //    //list.Where(x => x.FullName.Contains("System") || x.FullName.Contains("PresentationFramework")).ToList().ForEach(a => Assembly.ReflectionOnlyLoad(a.FullName));
-        //    var reflectionAsses = AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies();
-
-        //    var ss = reflectionAsses.Where(x => x.FullName.Contains("DynamoCore")).ToList();
-        //    //var asses = pkg.EnumerateAssembliesInBinDirectory().Select(x => Assembly.ReflectionOnlyLoadFrom(x.Assembly.Location));
-
-        //    var normalDomainCore = list.Where(x => x.Location.EndsWith("DynamoCore.dll")).ToList();
-        //    var reflectionDomainCore = reflectionAsses.Where(x => x.Location.EndsWith("DynamoCore.dll")).ToList();
-
-        //    var normalDomainCoretype = normalDomainCore.FirstOrDefault().DefinedTypes.Where(x => x.FullName == "Dynamo.Graph.Nodes.NodeModel").ToList();
-        //    var reflectionDomainCoretype = reflectionDomainCore.FirstOrDefault().DefinedTypes.Where(x => x.FullName == "Dynamo.Graph.Nodes.NodeModel").ToList();
-
-        //    var asses = new DirectoryInfo(pkg.BinaryDirectory).
-        //        EnumerateFiles("*.dll").
-        //        Select(x=> Assembly.ReflectionOnlyLoadFrom(x.FullName)).
-        //        ToList();
-
-            
-        //    foreach (var lib in pkg.Header.node_libraries)
-        //    {
-        //        var ass = asses.
-        //            Where(a => a.FullName == lib).
-        //            FirstOrDefault();
-
-        //        var assTypes = ass.GetTypes();
-
-        //        foreach (var t in assTypes)
-        //        {
-        //            var NodeType = typeof(NodeModel);
-        //            var reflectionType = System.Type.ReflectionOnlyGetType(NodeType.AssemblyQualifiedName, false, false);
-        //            t.IsSubclassOf(reflectionType);
-        //            var baseNode = t.BaseType.BaseType;
-        //        }
-
-        //        if (!NodeModelAssemblyLoader.ContainsNodeModelSubType(ass))
-        //        {
-        //            libraryService.LoadNodeLibrary(ass.Location, false);
-        //            continue;
-        //        }
-
-
-        //        System.Type[] typesInAsm = null;
-
-        //        try
-        //        {
-        //            typesInAsm = ass.GetTypes();
-        //        }
-        //        catch (ReflectionTypeLoadException ex)
-        //        {
-        //            typesInAsm = ex.Types;
-        //        }
-
-        //        typesInAsm.ToList().ForEach(t => GetTypeLoadData(t));
-
-        //        // Ass.gettypes
-        //        // create typeloaddata
-        //    }
-
-        //    return null;
-        //}
     }
 }

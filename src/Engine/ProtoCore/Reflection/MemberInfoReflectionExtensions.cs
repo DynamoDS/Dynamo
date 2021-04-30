@@ -180,14 +180,4 @@ namespace ProtoCore.Reflection
 
         }
     }
-
-    //internal class ReflectionAttribute : Attribute
-    //{
-    //    public Attribute AttributeType { get; set; }
-
-    //    public ReflectionAttribute(Attribute type)
-    //    {
-    //        AttributeType = type;
-    //    }
-    //}
 }

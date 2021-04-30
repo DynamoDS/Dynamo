@@ -4,18 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
-using Autodesk.DesignScript.Runtime;
-using ProtoFFI;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Reflection;
+using ProtoFFI;
 
 namespace NodeDocumentationMarkdownGenerator
 {
@@ -99,7 +92,10 @@ namespace NodeDocumentationMarkdownGenerator
                                 var functionNodes = t.ClassNode.Procedures
                                     .Where(c => c is FunctionDefinitionNode)
                                     .Cast<FunctionDefinitionNode>()
-                                    .Where(f => !f.MethodAttributes.HiddenInLibrary && !f.MethodAttributes.IsObsolete && f.Name != "_Dispose" && !f.Name.StartsWith("get_") && !f.Name.StartsWith("set_"))
+                                    .Where(f => !f.MethodAttributes.HiddenInLibrary && 
+                                                !f.MethodAttributes.IsObsolete && f.Name != "_Dispose" && 
+                                                !f.Name.StartsWith("get_") && 
+                                                !f.Name.StartsWith("set_"))
                                     .ToList();
 
                                 var props = t.ClassNode.Variables;

@@ -26,9 +26,6 @@ namespace DynamoCLI
                 }
                 var runner = new CommandLineRunner(model);
                 runner.Run(cmdLineArgs);
-
-                var list = AppDomain.CurrentDomain.GetAssemblies().OrderByDescending(a => a.FullName).Select(a => a).ToList();
-
             }
             catch (Exception e)
             {
