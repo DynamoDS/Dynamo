@@ -384,7 +384,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool DisableCustomPackageLocations { get; set; }
         /// <summary>
-        /// If true the run mode will be set to Automatically, if false to Manual.
+        /// Defines the default run type when opening a workspace
         /// </summary>
         public RunType DefaultRunType { get; set; }
         #endregion
