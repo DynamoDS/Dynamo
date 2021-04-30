@@ -2,7 +2,7 @@
   "profiles": {
     "NodeDocumentationMarkdownGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "fromdirectory -i \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\Dynamo\\bin\\AnyCPU\\Debug\\nodes\" -o \"C:\\Users\\SylvesterKnudsen\\Desktop\\TestMdOutput\" -f CoreNodeModels.dll -w -d \"C:\\Users\\SylvesterKnudsen\\matterlab\\matterlab-Server - Dokumenter\\03 Client Projects\\Autodesk\\0175 - Dynamo Core docs generation\\06 Solution\\DynamoDictionary_Data.json\""
+      "commandLineArgs": "frompackage -i \"C:\\Users\\SylvesterKnudsen\\AppData\\Roaming\\Dynamo\\Dynamo Core\\2.12\\packages\\bimorphNodes\" -h \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\DynamoRevit\\bin\\AnyCPU\\Debug\" -w"
     }
   }
 }

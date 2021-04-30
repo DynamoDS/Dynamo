@@ -27,7 +27,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var package = PackageFromRoot(opts.InputFolderPath);
 
-            var nodeLibraryFileNames = ScanNodeLibraries(package);
+            var nodeLibraryFileNames = ScanNodeLibraries(package, opts.HostPaths);
             var customNodeFileNames = ScanCustomNodes(package);
 
             var fileInfos = new List<MdFileInfo>();
@@ -43,16 +43,28 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             return $"{fileInfos.Count} documentation files created for {package.Name} package, all documentation files are available in {package.NodeDocumentaionDirectory}\n" + "(•_•)\n" + "( •_•) >⌐■-■\n" + "(⌐■_■)";
         }
 
-        private List<MdFileInfo> ScanNodeLibraries(Package pkg)
+        private List<MdFileInfo> ScanNodeLibraries(Package pkg, IEnumerable<string> hostPaths)
         {
+            var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
+                .EnumerateFiles("*.dll")
+                .ToList();
 
-            var nodeLibraryPaths = new DirectoryInfo(pkg.BinaryDirectory).
-                EnumerateFiles("*.dll").
-                Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName)).
-                Select(x => x.FullName).
-                ToList();
+            var nodeLibraryPaths = binDlls
+                .Where(x => pkg.Header.node_libraries.Contains(AssemblyName.GetAssemblyName(x.FullName).FullName))
+                .Select(x => x.FullName)
+                .ToList();
 
-            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths);
+            var addtionalPathsToLoad = binDlls.Select(x => x.FullName).Except(nodeLibraryPaths).ToList();
+
+            var hostDllPaths = hostPaths
+                .SelectMany(p => new DirectoryInfo(p)
+                    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
+                    .Select(d => d.FullName)
+                    .ToList());
+
+            addtionalPathsToLoad.AddRange(hostDllPaths);
+
+            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, addtionalPathsToLoad);
         }
 
         private List<MdFileInfo> ScanCustomNodes(Package pkg)
@@ -62,8 +74,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             foreach (var path in Directory.EnumerateFiles(pkg.CustomNodeDirectory, "*.dyf"))
             {
                 var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(path);
-                if (fileInfo is null)
-                    continue;
+                if (fileInfo is null) continue;
 
                 fileInfos.Add(fileInfo);
             }

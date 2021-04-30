@@ -23,16 +23,30 @@ namespace NodeDocumentationMarkdownGenerator
     {
         internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths)
         {
-            string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll", SearchOption.AllDirectories);
-            var dynamoDlls = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).EnumerateFiles("*.dll").Select(x => x.FullName);
-
-            var paths = new List<string>(runtimeAssemblies);
-            paths.AddRange(dynamoDlls);
+            var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
 
-            var fileInfos = new List<MdFileInfo>();
             var resolver = new PathAssemblyResolver(paths);
             var mlc = new MetadataLoadContext(resolver);
+
+            return Scan(assemblyPaths, mlc, resolver);
+        }
+
+        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> addtionalPathsToLoad)
+        {
+            var paths = GetDefaultPaths();
+            paths.AddRange(assemblyPaths);
+            paths.AddRange(addtionalPathsToLoad);
+
+            var resolver = new PathAssemblyResolver(paths);
+            var mlc = new MetadataLoadContext(resolver);
+
+            return Scan(assemblyPaths, mlc, resolver);
+        }
+
+        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
+        {
+            var fileInfos = new List<MdFileInfo>();
 
             using (mlc)
             {
@@ -69,15 +83,17 @@ namespace NodeDocumentationMarkdownGenerator
 
                         foreach (var t in moduleTypes)
                         {
+                            var tn = t.FullName;
                             try
                             {
-                                if (t.ClassNode.ClassAttributes.HiddenInLibrary)
-                                    continue;
+                                // For some reason mscorelib sometimes gets pass to here, so filtering it away.
+                                if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
+                                    t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
 
                                 var ctorNodes = t.ClassNode.Procedures
-                                    .Where(c => c is ConstructorDefinitionNode)
+                                    .Where(c => c.Kind == AstKind.Constructor)
                                     .Cast<ConstructorDefinitionNode>()
-                                    .Where(c => !c.MethodAttributes.HiddenInLibrary && !c.MethodAttributes.IsObsolete)
+                                    .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public)
                                     .ToList();
 
                                 var functionNodes = t.ClassNode.Procedures
@@ -97,7 +113,7 @@ namespace NodeDocumentationMarkdownGenerator
                             {
                                 continue;
                             }
-                        }                        
+                        }
                     }
                     catch (Exception)
                     {
@@ -108,7 +124,6 @@ namespace NodeDocumentationMarkdownGenerator
 
             return fileInfos;
         }
-
         private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType)
         {
             var fileInfos = new List<MdFileInfo>();
@@ -139,6 +154,17 @@ namespace NodeDocumentationMarkdownGenerator
             }
 
             return fileInfos;
+        }
+
+        private static List<string> GetDefaultPaths()
+        {
+            string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll", SearchOption.AllDirectories);
+            var dynamoDlls = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).EnumerateFiles("*.dll").Select(x => x.FullName);
+
+            var paths = new List<string>(runtimeAssemblies);
+            paths.AddRange(dynamoDlls);
+
+            return paths;
         }
     }
 }
