@@ -26,6 +26,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Properties;
@@ -322,6 +323,11 @@ namespace Dynamo.Models
         ///     Manages all extensions for Dynamo
         /// </summary>
         public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        /// <summary>
+        ///     Manages the active linter
+        /// </summary>
+        public LinterManager LinterManager { get; }
 
         private readonly ExtensionManager extensionManager;
 
@@ -793,6 +799,8 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            LinterManager = new LinterManager(this.ExtensionManager);
+            
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
             {
@@ -861,6 +869,11 @@ namespace Dynamo.Models
 
                     try
                     {
+                        if (ext is LinterExtensionBase linter)
+                        {
+                            linter.InitializeBase(this.LinterManager);
+                        }
+
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
                         // then we can start the extension(s) (B) that it requested be loaded.
@@ -1181,6 +1194,8 @@ namespace Dynamo.Models
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
+
+            LinterManager.Dispose();
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
@@ -1851,7 +1866,8 @@ namespace Dynamo.Models
                 NodeFactory,
                 IsTestMode,
                 false,
-                CustomNodeManager);
+                CustomNodeManager,
+                this.LinterManager);
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
@@ -1991,7 +2007,8 @@ namespace Dynamo.Models
                 nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging,
-                IsTestMode
+                IsTestMode,
+                LinterManager
                );
 
             RegisterHomeWorkspace(newWorkspace);
@@ -2213,7 +2230,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode, string.Empty);
+                IsTestMode, LinterManager, string.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);

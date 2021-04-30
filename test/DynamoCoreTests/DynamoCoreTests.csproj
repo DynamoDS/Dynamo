@@ -112,6 +112,7 @@
     <Compile Include="InheritanceTests.cs" />
     <Compile Include="InputOutputDataTests.cs" />
     <Compile Include="libGPreloaderTests.cs" />
+    <Compile Include="Linting\LinterManagerTests.cs" />
     <Compile Include="ListAtLevelTests.cs" />
     <Compile Include="Logging\AnalyticsServiceTest.cs" />
     <Compile Include="Logging\DynamoLoggerTest.cs" />
