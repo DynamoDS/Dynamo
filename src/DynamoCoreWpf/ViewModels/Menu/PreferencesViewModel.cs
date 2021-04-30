@@ -307,7 +307,6 @@ namespace Dynamo.ViewModels
             set
             {
                 dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = value;
-                dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
                 RaisePropertyChanged(nameof(TessellationDivisions));
             }
         }
