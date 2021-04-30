@@ -211,6 +211,29 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_OutputPortBuiltInNode_AreCorrect()
+        {
+            Open(@"UI\builtin_outputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("a3412b9b1de54205a1fe6904697ffd5f").ToString());
+
+            // Get the output port type for the node. 
+            var outPorts = nodeView.ViewModel.OutPorts;
+            Assert.AreEqual(1, outPorts.Count());
+
+            var port = outPorts[0].PortModel;
+            var type = port.GetOutPortType();
+            Assert.IsTrue(type.Contains("Line"));
+
+            // Trigger node autocomplete on the output port and verify the results. 
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[0];
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(29, suggestions.Count());
+        }
+
+        [Test]
         public void NodeSearchElementComparerSortsBasedOnTypeDistance()
         {
             var core = Model.LibraryServices.LibraryManagementCore;
