@@ -278,7 +278,7 @@ namespace Dynamo.Wpf.ViewModels
 
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
-                    Model.CreationName, 0, Model.PortToConnect, adjustedX, 0, createAsDownStreamNode, false, true));
+                    Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, 0, createAsDownStreamNode, false, true));
             }
             else
             {

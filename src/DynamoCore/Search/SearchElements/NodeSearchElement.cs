@@ -9,7 +9,7 @@ namespace Dynamo.Search.SearchElements
     /// <summary>
     ///     Base class for all Dynamo Node search elements.
     /// </summary>
-    public abstract class NodeSearchElement : AutoCompletionNodeSearchElement, ISearchEntry, ISource<NodeModel>
+    public abstract class NodeSearchElement : ISearchEntry, ISource<NodeModel>
     {
         protected string iconName;
 
@@ -19,6 +19,8 @@ namespace Dynamo.Search.SearchElements
         private SearchElementGroup group;
         private string assembly;
         private bool isVisibleInSearch = true;
+
+        internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
 
         /// <summary>
         /// Event is fired when a node visibility in library search was changed.
@@ -281,6 +283,14 @@ namespace Dynamo.Search.SearchElements
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
+    }
+
+    /// <summary>
+    ///      This class will contain the information related to the node elements of Auto-completion feature.
+    /// </summary>
+    internal class AutoCompletionNodeElementInfo
+    {
+        internal int PortToConnect { get; set; }
     }
 
     /// <summary>
