@@ -148,7 +148,7 @@
                 </Grid.ColumnDefinitions>
                 <ComboBox Grid.Column="0"
                           Name="LinterSelector"
-                          ItemsSource="{Binding LinterManager.AvailableLinters}"
+                          ItemsSource="{Binding AvailableLinters}"
                           SelectedItem="{Binding ActiveLinter, Mode=TwoWay}"
                           DisplayMemberPath="Name"
                           Style="{StaticResource SComboBox}"

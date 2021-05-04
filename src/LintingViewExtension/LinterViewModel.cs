@@ -61,6 +61,12 @@ namespace Dynamo.LintingViewExtension
                 RaisePropertyChanged(nameof(ActiveLinter));
             }
         }
+
+        public List<LinterExtensionDescriptor> AvailableLinters
+        {
+            get => linterManager.AvailableLinters.ToList();
+        }
+
         #endregion
 
         public LinterViewModel(LinterManager linterManager, ViewLoadedParams viewLoadedParams)
