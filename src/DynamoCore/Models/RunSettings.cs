@@ -106,6 +106,7 @@ namespace Dynamo.Models
         internal void Reset()
         {
             RunEnabled = true;
+            RunType = RunType.Automatic;
             RunPeriod = DefaultRunPeriod;
         }
 
