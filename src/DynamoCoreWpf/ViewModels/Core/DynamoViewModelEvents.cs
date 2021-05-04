@@ -56,7 +56,19 @@ namespace Dynamo.ViewModels
             {
                 RequestSave3DImage(this, e);
             }
-        }     
+        }
+        [Obsolete("This event will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
+        public event EventHandler RequestScaleFactorDialog;
+
+        [Obsolete("This method will be removed later, now the Scaling Factor functionality is implemented in PreferencesViewModel.cs")]
+        public virtual void OnRequestScaleFactorDialog(object sender, EventArgs e)
+        {
+            var handler = RequestScaleFactorDialog;
+            if (handler != null)
+            {
+                handler(sender, e);
+            }
+        }
 
         public event EventHandler RequestClose;
         public virtual void OnRequestClose(Object sender, EventArgs e)
