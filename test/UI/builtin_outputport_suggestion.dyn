@@ -1,8 +1,8 @@
 {
-  "Uuid": "9cf92bef-15dc-4ee2-9189-6d98ecb63666",
+  "Uuid": "87442094-a012-4db1-9432-789dd1c20ba8",
   "IsCustomNode": false,
   "Description": null,
-  "Name": "OneDependentNode",
+  "Name": "builtin_outputport_suggestion",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -12,31 +12,31 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Examples.BasicExample.Create@double,double,double",
-      "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointDirectionLength@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "a3412b9b1de54205a1fe6904697ffd5f",
       "Inputs": [
         {
-          "Id": "3da7726524d7486cac6d223415947443",
-          "Name": "x",
-          "Description": "double\nDefault value : 42",
-          "UsingDefaultValue": true,
+          "Id": "c91dc446d4c743d0a2b7b6c6f7242b0e",
+          "Name": "startPoint",
+          "Description": "Point",
+          "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         },
         {
-          "Id": "8b64a771a32a451380bea7884fe80b78",
-          "Name": "y",
-          "Description": "double\nDefault value : 42",
-          "UsingDefaultValue": true,
+          "Id": "75074097aebb48019669c3b0d01713b4",
+          "Name": "direction",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         },
         {
-          "Id": "1db9a43499984ec08a45903fcb318945",
-          "Name": "z",
-          "Description": "double\nDefault value : 42",
+          "Id": "e54ffcac0df44a5e8c7ab2969ea74efc",
+          "Name": "length",
+          "Description": "double\nDefault value : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -45,9 +45,9 @@
       ],
       "Outputs": [
         {
-          "Id": "26609ae624b44111a56e6e743013dbd9",
-          "Name": "BasicExample",
-          "Description": "BasicExample",
+          "Id": "76e51c15f7c6442e920a58323848531d",
+          "Name": "Line",
+          "Description": "Line",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,18 +55,23 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "BasicExample.Create (x: double = 42, y: double = 42, z: double = 42): BasicExample"
+      "Description": "Create a straight Line starting at start Point, extending in Vector direction by specified length.\n\nLine.ByStartPointDirectionLength (startPoint: Point, direction: Vector, length: double = 1): Line"
     }
   ],
   "Connectors": [],
   "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.3.0.5204",
+      "Version": "2.12.0.4765",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -85,18 +90,18 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "BasicExample.Create",
-        "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
+        "Name": "Line.ByStartPointDirectionLength",
+        "Id": "a3412b9b1de54205a1fe6904697ffd5f",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 325.25,
-        "Y": 343.5
+        "X": 389.0,
+        "Y": 255.5
       }
     ],
     "Annotations": [],
-    "X": -159.93332356387242,
-    "Y": -279.00484355212529,
-    "Zoom": 1.476180239263613
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
   }
 }

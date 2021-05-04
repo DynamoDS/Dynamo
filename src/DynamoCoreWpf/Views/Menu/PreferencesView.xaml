@@ -30,6 +30,7 @@
             <controls:BrushColorToStringConverter x:Key="BrushColorToStringConverter"/>
             <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
             <controls:RadioButtonCheckedConverter x:Key="RadioButtonCheckedConverter"/>
+            <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
@@ -210,11 +211,12 @@
                                     <RadioButton Grid.Column="0" 
                                                  MinWidth="80"
                                                  Style="{StaticResource RunSettingsRadioButtons}"
-                                                 IsChecked="{Binding Path=RunSettingsIsChecked}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                  Content="{x:Static p:Resources.Manual}"/>
                                     <RadioButton Grid.Column="1" 
                                                  MinWidth="80"
                                                  Style="{StaticResource RunSettingsRadioButtons}"
+                                                 IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=False}"
                                                  Content="{x:Static p:Resources.Automatic}"/>
                                 </Grid>
                             </Grid>
@@ -254,7 +256,8 @@
                                     <ToggleButton Width="{StaticResource ToggleButtonWidth}"
                                                   Height="{StaticResource ToggleButtonHeight}"
                                                   VerticalAlignment="Center"
-                                                  Grid.Column="0"                              
+                                                  Grid.Column="0" 
+                                                  IsEnabled="{Binding Path=RunPreviewEnabled}"
                                                   IsChecked="{Binding Path=RunPreviewIsChecked}"
                                                   Style="{StaticResource EllipseToggleButton1}"/>
                                     <Label Grid.Column="1"
@@ -277,7 +280,7 @@
                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                 <ComboBox Name="numberFormatCmb"
                                           Grid.Row="1"                                         
-                                          SelectedItem="{Binding Path=SelectedNumberFormat}"
+                                          SelectedItem="{Binding Path=SelectedNumberFormat, Converter={StaticResource NumberFormatConverter}}"
                                           ItemsSource="{Binding NumberFormatList}"
                                           Style="{StaticResource NoBordersComboBoxStyle}"
                                           Width="213">

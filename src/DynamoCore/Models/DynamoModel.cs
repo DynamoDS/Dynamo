@@ -2223,6 +2223,8 @@ namespace Dynamo.Models
                 DebugSettings.VerboseLogging,
                 IsTestMode, string.Empty);
 
+            defaultWorkspace.RunSettings.RunType = PreferenceSettings.DefaultRunType;
+            
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
@@ -2591,6 +2593,11 @@ namespace Dynamo.Models
             OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
+            if (CurrentWorkspace is HomeWorkspaceModel)
+            {
+                //Sets the home workspace run type based on the preferences settings value
+                ((HomeWorkspaceModel)CurrentWorkspace).RunSettings.RunType = PreferenceSettings.DefaultRunType;
+            }
 
             //don't save the file path
             CurrentWorkspace.FileName = "";

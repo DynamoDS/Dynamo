@@ -20,7 +20,7 @@ namespace Dynamo.Wpf.Views
 
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
-            DataContext = new PreferencesViewModel(dynamoViewModel.Model.PreferenceSettings, dynamoViewModel.PythonScriptEditorTextOptions);
+            DataContext = new PreferencesViewModel(dynamoViewModel);
             
             InitializeComponent();
 

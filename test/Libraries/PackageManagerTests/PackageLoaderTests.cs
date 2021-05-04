@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
+using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -153,8 +154,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
@@ -185,8 +186,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -278,8 +279,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -889,6 +890,49 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
             Assert.AreEqual(2, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+        }
+
+        [Test]
+        public void LocalizedPackageLocalizedCorrectly()
+        {
+            var esculture = CultureInfo.CreateSpecificCulture("es-ES");
+
+            // Save current culture - usually "en-US"
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            // Set "es-ES"
+            Thread.CurrentThread.CurrentCulture = esculture;
+            Thread.CurrentThread.CurrentUICulture = esculture;
+
+            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] {string.Empty});
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var pkgDir = Path.Combine(PackagesDirectory, "Dynamo Samples");
+            var pkg = loader.ScanPackageDirectory(pkgDir, false);
+
+            // Assert that ScanPackageDirectory returns a package
+            Assert.IsNotNull(pkg);
+            loader.LoadPackages(new List<Package> { pkg });       
+
+            // Verify that the package are imported successfully
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            var nse = entries.Where(x => x.FullName == "SampleLibraryUI.Examples.LocalizedNode").FirstOrDefault();
+            Assert.IsNotNull(nse);
+
+            //verify that the node has the correctly localized description
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+                , nse.Description);
+            var node = nse.CreateNode();
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+               , nse.Description);
+
+            // Restore "en-US"
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
         }
 
         [Test]

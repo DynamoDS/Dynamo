@@ -1840,18 +1840,59 @@ namespace Dynamo.Controls
         }
     }
 
-    public class NumberFormatToBoolConverter : IValueConverter
+    public class BinaryRadioButtonCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(bool.Parse(parameter.ToString()));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(true) ? bool.Parse(parameter.ToString()) : Binding.DoNothing;
+        }
+    }
+
+    public class NumberFormatConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter.ToString() == SIUnit.NumberFormat)
-                return true;
-            return false;
+            switch (value)
+            {
+                case "f0":
+                    return Resources.DynamoViewSettingMenuNumber0;
+                case "f1":
+                    return Resources.DynamoViewSettingMenuNumber00;
+                case "f2":
+                    return Resources.DynamoViewSettingMenuNumber000;
+                case "f3":
+                    return Resources.DynamoViewSettingMenuNumber0000;
+                case "f4":
+                    return Resources.DynamoViewSettingMenuNumber00000;
+                default:
+                    return null;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            switch (value)
+            {
+                case "0":
+                    return "f0";
+                case "0.0":
+                    return "f1";
+                case "0.00":
+                    return "f2";
+                case "0.000":
+                    return "f3";
+                case "0.0000":
+                    return "f4";
+                default:
+                    return null;
+            }
         }
     }
 
