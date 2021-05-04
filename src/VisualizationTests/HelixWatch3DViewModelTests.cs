@@ -946,6 +946,55 @@ namespace WpfVisualizationTests
         }
 
         [Test]
+        public void Display_MultipleTextureMaps_HasUniqueMeshsAndCorrectPerSurface()
+        {
+            OpenVisualizationTest("Display.MultipleTextureMaps.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(6, BackgroundPreviewGeometry.Count());
+            Assert.True(BackgroundPreviewGeometry.HasAnyColorMappedMeshes());
+            Assert.AreEqual(3, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+
+            var meshes = BackgroundPreviewGeometry.Meshes().ToList();
+
+            var mesh1 = meshes[0];
+
+            // Expecting 6 color definitions for vertices in the DynamoGeometry
+            Assert.AreEqual(6, mesh1.Geometry.Colors.Count);
+            //decompress the texture to get the width
+            var width1 = new Bitmap(((PhongMaterial)mesh1.Material).DiffuseMap.CompressedStream).Width;
+            Assert.AreEqual(5, width1);
+
+            var mesh2 = meshes[1];
+
+            // Expecting 6 color definitions for vertices in the DynamoGeometry
+            Assert.AreEqual(6, mesh2.Geometry.Colors.Count);
+            //decompress the texture to get the width
+            var width2 = new Bitmap(((PhongMaterial)mesh2.Material).DiffuseMap.CompressedStream).Width;
+            Assert.AreEqual(9, width2);
+
+            //Mesh 3 is has no texture map
+            var mesh3 = meshes[2];
+            
+            Assert.IsTrue(((PhongMaterial)mesh3.Material).DiffuseMap == null);
+        }
+
+        [Test]
+        public void Display_HasOneGeometryEntityInBackgroundPreviewPerNode()
+        {
+            OpenVisualizationTest("Display.OneGeometryPerNode.dyn");
+            RunCurrentModel();
+            DispatcherUtil.DoEvents();
+            Assert.AreEqual(6, BackgroundPreviewGeometry.Count());
+
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleMeshes());
+
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisibleCurves());
+            
+            Assert.AreEqual(1, BackgroundPreviewGeometry.NumberOfVisiblePoints());
+        }
+
+        [Test]
         public void TurnGlobalPreviewOnAndOff()
         {
             var testDirectory = GetTestDirectory(ExecutingDirectory);
@@ -1189,7 +1238,7 @@ namespace WpfVisualizationTests
             return views.Last();
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void GeometryPreviewWhenClickingArrayItemInPreview()
         {
             OpenVisualizationTest("magn_10809.dyn");
@@ -1352,6 +1401,13 @@ namespace WpfVisualizationTests
             return points.Any() ? points.Count(g => g.Visibility == Visibility.Hidden) : 0;
         }
 
+        public static int NumberOfVisiblePoints(this IEnumerable<Element3D> dictionary)
+        {
+            var points = dictionary.Where(g => g is PointGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
+
+            return points.Any() ? points.Count(g => g.Visibility == Visibility.Visible) : 0;
+        }
+
         public static int NumberOfInvisibleCurves(this IEnumerable<Element3D> dictionary)
         {
             var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
@@ -1359,10 +1415,23 @@ namespace WpfVisualizationTests
             return lines.Any() ? lines.Count(g => g.Visibility == Visibility.Hidden) : 0;
         }
 
+        public static int NumberOfVisibleCurves(this IEnumerable<Element3D> dictionary)
+        {
+            var lines = dictionary.Where(g => g is LineGeometryModel3D && !keyList.Contains(g.Name)).ToArray();
+
+            return lines.Any() ? lines.Count(g => g.Visibility == Visibility.Visible) : 0;
+        }
+
         public static int NumberOfInvisibleMeshes(this IEnumerable<Element3D> dictionary)
         {
             var geoms = dictionary.Where(g => g is DynamoGeometryModel3D).ToArray();
             return geoms.Any() ? geoms.Count(g => g.Visibility == Visibility.Hidden) : 0;
+        }
+
+        public static int NumberOfVisibleMeshes(this IEnumerable<Element3D> dictionary)
+        {
+            var geoms = dictionary.Where(g => g is DynamoGeometryModel3D).ToArray();
+            return geoms.Any() ? geoms.Count(g => g.Visibility == Visibility.Visible) : 0;
         }
 
         public static bool HasVisibleObjects(this IEnumerable<Element3D> dictionary)

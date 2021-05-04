@@ -1890,29 +1890,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Isolate Selected Geometry.
-        /// </summary>
-        public static string DynamoViewSettingsMenuIsolationMode {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
         /// </summary>
         public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowCodeBlockNodeLineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Edges.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowEdges {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
             }
         }
         
@@ -3927,6 +3909,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Standard Library.
+        /// </summary>
+        public static string PackagePathViewModel_Standard_Library {
+            get {
+                return ResourceManager.GetString("PackagePathViewModel_Standard_Library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
         /// </summary>
         public static string PackagePathViewSummary1 {
@@ -3936,11 +3927,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top path is the default save location..
+        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location..
         /// </summary>
         public static string PackagePathViewSummary2 {
             get {
                 return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italicized locations are disabled..
+        /// </summary>
+        public static string PackagePathViewSummary3 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary3", resourceCulture);
             }
         }
         
@@ -4494,11 +4494,74 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Style name already in use.
+        /// </summary>
+        public static string PreferencesViewStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewStyleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         public static string PreferencesViewTitle {
             get {
                 return ResourceManager.GetString("PreferencesViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display Settings.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsDisplaySettings {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsDisplaySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geometry Scaling.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGeoScaling {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGroupStyles {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGroupStyles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Edges.
+        /// </summary>
+        public static string PreferencesViewVisualSettingShowEdges {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometry.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsIsolateSelectedGeo {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsIsolateSelectedGeo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Render Precision.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsRenderPrecision {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsRenderPrecision", resourceCulture);
             }
         }
         

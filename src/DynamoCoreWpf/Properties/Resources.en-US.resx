@@ -853,12 +853,6 @@ You will get a chance to save your work.</value>
     <value>Geometry Scaling...</value>
     <comment>Settings menu | Geometry Scaling</comment>
   </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
-    <value>Show Edges</value>
-  </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
     <comment>Settings menu | Show preview bubbles</comment>
@@ -1558,10 +1552,6 @@ Next assemblies were loaded several times:
   <data name="PackagePathViewSummary1" xml:space="preserve">
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
-  </data>
-  <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>Top path is the default save location.</value>
-    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
   </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
@@ -2353,5 +2343,43 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInStdLib" xml:space="preserve">
     <value>A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
+    <value>Geometry Scaling</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>Group Styles</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>Render Precision</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+    <value>Style name already in use</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Display Settings</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+    <comment>Show Edges</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
+    <comment>Toogle Button Content</comment>
+  </data>
+  <data name="PackagePathViewModel_Standard_Library" xml:space="preserve">
+    <value>Standard Library</value>
+  </data>
+  <data name="PackagePathViewSummary2" xml:space="preserve">
+    <value>The default install location is the first path that is not the Standard Library location.</value>
+    <comment>Package path management dialog content that displays the first non-standard library entry being the default save location.</comment>
+  </data>
+  <data name="PackagePathViewSummary3" xml:space="preserve">
+    <value>Italicized locations are disabled.</value>
+    <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
   </data>
 </root>

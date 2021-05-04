@@ -4,7 +4,16 @@
   "Description": null,
   "Name": "builtin_inputport_suggestion",
   "ElementResolver": {
-    "ResolutionMap": {}
+    "ResolutionMap": {
+      "Autodesk.DesignScript.Geometry.Geometry": {
+        "Key": "Autodesk.DesignScript.Geometry.Geometry",
+        "Value": "ProtoGeometry.dll"
+      },
+      "DSCore.Color": {
+        "Key": "DSCore.Color",
+        "Value": "DSCoreNodes.dll"
+      }
+    }
   },
   "Inputs": [],
   "Outputs": [],
@@ -18,7 +27,7 @@
         {
           "Id": "b090a79fa5914f049ad2fbc48d7fbf74",
           "Name": "list",
-          "Description": "list of values\n\nvar[]..[]",
+          "Description": "List to remove items from\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -27,7 +36,7 @@
         {
           "Id": "9c013fa7a7f84505abbba72579e32545",
           "Name": "type",
-          "Description": "type of element\n\nstring",
+          "Description": "Type of element\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -37,8 +46,8 @@
       "Outputs": [
         {
           "Id": "1211bcfe948c46a39eacb248569c4cce",
-          "Name": "var[]..[]",
-          "Description": "var[]..[]",
+          "Name": "list",
+          "Description": "List with everything removed except a specified type",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -116,18 +125,73 @@
       ],
       "Replication": "Auto",
       "Description": "Finds the natural logarithm of a number in the range (0, ∞).\n\nMath.Log (number: double): double"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CustomNodes.Function, DynamoCore",
+      "FunctionSignature": "6b2be57e-3f4b-4e3a-af98-e12d2831b86f",
+      "FunctionType": "Graph",
+      "NodeType": "FunctionNode",
+      "Id": "05d82f5627314cc9bf802c5d6d3ed907",
+      "Inputs": [
+        {
+          "Id": "6bf39f98a859419cbf4509b8fa7139b7",
+          "Name": "geo",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4edd71fa05ca43f09af4b439623e27cf",
+          "Name": "color",
+          "Description": "Color",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b16cfd6b33354f2f909e67662dffa972",
+          "Name": "BoundingBox",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4247f2858a3f4710a88df72fce92dba9",
+          "Name": "Color",
+          "Description": "return value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": ""
     }
   ],
   "Connectors": [],
-  "Dependencies": [],
+  "Dependencies": [
+    "6b2be57e-3f4b-4e3a-af98-e12d2831b86f"
+  ],
   "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2607",
+      "Version": "2.12.0.4836",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -173,11 +237,21 @@
         "Excluded": false,
         "X": 504.0,
         "Y": 452.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "cusTest",
+        "Id": "05d82f5627314cc9bf802c5d6d3ed907",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 57.656928067267813,
+        "Y": 214.30198945020112
       }
     ],
     "Annotations": [],
-    "X": 0.0,
-    "Y": 0.0,
-    "Zoom": 1.0
+    "X": 69.626740644615722,
+    "Y": -1.6992606605420519,
+    "Zoom": 1.1511757837314402
   }
 }

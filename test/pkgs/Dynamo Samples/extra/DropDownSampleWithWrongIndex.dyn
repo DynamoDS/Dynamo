@@ -10,7 +10,7 @@
   "Outputs": [],
   "Nodes": [
     {
-      "ConcreteType": "SampleLibraryUI.Examples.NEWDropDownExample, SampleLibraryUI",
+      "ConcreteType": "SampleLibraryUI.Examples.DropDownExample, SampleLibraryUI",
       "SelectedIndex": 0,
       "SelectedString": "Cersei",
       "NodeType": "ExtensionNode",

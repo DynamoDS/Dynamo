@@ -12,7 +12,7 @@
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
       "NodeType": "FunctionNode",
-      "FunctionSignature": "Examples.NEWBasicExample.Create@double,double,double",
+      "FunctionSignature": "Examples.BasicExample.Create@double,double,double",
       "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
       "Inputs": [
         {
@@ -46,8 +46,8 @@
       "Outputs": [
         {
           "Id": "26609ae624b44111a56e6e743013dbd9",
-          "Name": "NEWBasicExample",
-          "Description": "NEWBasicExample",
+          "Name": "BasicExample",
+          "Description": "BasicExample",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "NEWBasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
+      "Description": "BasicExample.Create (x: double = 42, y: double = 42, z: double = 42): NEWBasicExample"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -115,7 +115,7 @@
     "NodeViews": [
       {
         "ShowGeometry": true,
-        "Name": "NEWBasicExample.Create",
+        "Name": "BasicExample.Create",
         "Id": "a1aaeddb8aca4d55a17d185a36f3823c",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
