@@ -18,50 +18,6 @@ namespace DynamoShapeManager
 
         #region ASM DLLs per version (to be kept in sync with LibG)
 
-        private static readonly ISet<string> ASM225DllNames = new HashSet<string>()
-        {
-            "TBB.DLL",
-            "TBBMALLOC.DLL",
-            "TSPLINES7A.DLL",
-            "ASMMATRIX225A.DLL",
-            "ASMBASE225A.DLL",
-            "ASMLAW225A.DLL",
-            "ASMKERN225A.DLL",
-            "ASMGA225A.DLL",
-            "ASMINTR225A.DLL",
-            "ASMTOPT225A.DLL",
-            "ASMCT225A.DLL",
-            "ASMCSTR225A.DLL",
-            "ASMEULR225A.DLL",
-            "ASMBOOL225A.DLL",
-            "ASMFCT225A.DLL",
-            "ASMLOPT225A.DLL",
-            "ASMRB225A.DLL",
-            "ASMRBI225A.DLL",
-            "ASMAHL225A.DLL",
-            "ASMOFST225A.DLL",
-            "ASMREM225A.DLL",
-            "ASMCOVR225A.DLL",
-            "ASMSKIN225A.DLL",
-            "ASMSBOOL225A.DLL",
-            "ASMBLND225A.DLL",
-            "ASMDATAX225A.DLL",
-            "ASMHEAL225A.DLL",
-            "ASMSWP225A.DLL",
-            "ASMDEFM225A.DLL",
-            "ASMFREC225A.DLL",
-            "ASMNPCH225A.DLL",
-            "ASMOPER225A.DLL",
-            "ASMIMPORT225A.DLL",
-            "ASMLOP225A.DLL",
-            "ASMSBAP225A.DLL",
-            "ASMSHL225A.DLL",
-            "ASMTWK225A.DLL",
-            "ASMPID225A.DLL",
-            "ASMUFLD225A.DLL",
-            "ASMWELD225A.DLL"
-        };
-
         private static readonly ISet<string> ASM226DllNames = new HashSet<string>()
         {
             "TBB.DLL",
@@ -613,8 +569,6 @@ namespace DynamoShapeManager
                     return !ASM227DllNames.Except(fileNames).Any();
                 case 226:
                     return !ASM226DllNames.Except(fileNames).Any();
-                case 225:
-                    return !ASM225DllNames.Except(fileNames).Any();
                 default:
                     // We don't know this version so it's safest to assume it's not complete.
                     return false;
