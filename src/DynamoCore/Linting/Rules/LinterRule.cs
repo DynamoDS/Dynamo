@@ -44,7 +44,7 @@ namespace Dynamo.Linting.Rules
         /// </summary>
         /// <param name="workspaceModel"></param>
         /// <returns></returns>
-        protected abstract List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel);
+        private protected abstract List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel);
 
         /// <summary>
         /// Initializes this rule using the <see cref="InitFunction(WorkspaceModel)"/>

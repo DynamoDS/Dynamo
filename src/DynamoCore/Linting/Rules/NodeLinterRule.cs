@@ -23,7 +23,7 @@ namespace Dynamo.Linting.Rules
         internal void Evaluate(NodeModel nodeModel)
         {
             var status = EvaluateFunction(nodeModel);
-            var result = new NodeRuleEvaluationResult(this.Id, status, nodeModel.GUID.ToString());
+            var result = new NodeRuleEvaluationResult(this.Id, status, this.SeverityCode, nodeModel.GUID.ToString());
             OnRuleEvaluated(result);
         }
 
@@ -41,17 +41,16 @@ namespace Dynamo.Linting.Rules
         /// <returns></returns>
         protected abstract List<Tuple<RuleEvaluationStatusEnum, string>> InitFunction(WorkspaceModel workspaceModel);
 
-        protected sealed override List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel)
+        private protected sealed override List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel)
         {
             var pairs = InitFunction(workspaceModel);
 
             var results = new List<IRuleEvaluationResult>();
             foreach (var pair in pairs)
             {
-                if (pair.Item1 == RuleEvaluationStatusEnum.Passed)
-                    continue;
+                if (pair.Item1 == RuleEvaluationStatusEnum.Passed) continue;
 
-                var result = new NodeRuleEvaluationResult(this.Id, pair.Item1, pair.Item2);
+                var result = new NodeRuleEvaluationResult(this.Id, pair.Item1, this.SeverityCode, pair.Item2);
                 results.Add(result);
             }
             return results;

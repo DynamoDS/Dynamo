@@ -22,30 +22,31 @@ namespace Dynamo.Linting.Rules
         /// </summary>
         public RuleEvaluationStatusEnum Status { get; }
 
+        public SeverityCodesEnum SeverityCode { get; }
+
         /// <summary>
         /// Unique id of the node that has been evaluated
         /// </summary>
         internal string NodeId { get; }
 
-        internal NodeRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, string nodeId)
+        internal NodeRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, SeverityCodesEnum severityCode, string nodeId)
         {
             RuleId = ruleId;
             Status = status;
+            SeverityCode = severityCode;
             NodeId = nodeId;
         }
 
         public bool Equals(NodeRuleEvaluationResult other)
         {
-            if (other is null)
-                return false;
+            if (other is null) return false;
 
             return this.NodeId == other.NodeId && this.RuleId == other.RuleId;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is null)
-                return false;
+            if (obj is null) return false;
 
             return Equals(obj as NodeRuleEvaluationResult);
         }

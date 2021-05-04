@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dynamo.Linting.Interfaces
+﻿namespace Dynamo.Linting.Interfaces
 {
-    public interface IRuleEvaluationResult
+    internal interface IRuleEvaluationResult
     {
         /// <summary>
-        /// Id of the rule that create this result
+        /// Id of the rule that created this result
         /// </summary>
         string RuleId { get; }
+
+        /// <summary>
+        /// Severity code of the rule that created this result
+        /// </summary>
+        SeverityCodesEnum SeverityCode { get; }
 
         /// <summary>
         /// Status of the evaluation (Passed or Failed)

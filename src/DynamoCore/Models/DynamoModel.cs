@@ -324,6 +324,9 @@ namespace Dynamo.Models
         /// </summary>
         public IExtensionManager ExtensionManager { get { return extensionManager; } }
 
+        /// <summary>
+        ///     Manages the active linter
+        /// </summary>
         public LinterManager LinterManager { get; }
 
         private readonly ExtensionManager extensionManager;
@@ -867,7 +870,9 @@ namespace Dynamo.Models
                     try
                     {
                         if (ext is LinterExtensionBase linter)
+                        {
                             linter.InitializeBase(this.LinterManager);
+                        }
 
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
@@ -1861,7 +1866,8 @@ namespace Dynamo.Models
                 NodeFactory,
                 IsTestMode,
                 false,
-                CustomNodeManager);
+                CustomNodeManager,
+                this.LinterManager);
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
@@ -2001,7 +2007,8 @@ namespace Dynamo.Models
                 nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging,
-                IsTestMode
+                IsTestMode,
+                LinterManager
                );
 
             RegisterHomeWorkspace(newWorkspace);
@@ -2223,7 +2230,7 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode, string.Empty);
+                IsTestMode, LinterManager, string.Empty);
 
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);

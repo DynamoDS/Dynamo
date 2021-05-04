@@ -12,7 +12,7 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 
-namespace DynamoCoreWpfTests.Linter
+namespace Dynamo.Tests.Linting
 {
     [TestFixture]
     class LinterManagerTests

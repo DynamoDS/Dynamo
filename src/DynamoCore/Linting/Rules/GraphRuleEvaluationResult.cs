@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dynamo.Linting.Interfaces;
 
 namespace Dynamo.Linting.Rules
@@ -21,32 +18,32 @@ namespace Dynamo.Linting.Rules
         /// Evaluation status
         /// </summary>
         public RuleEvaluationStatusEnum Status { get; }
+        public SeverityCodesEnum SeverityCode { get; }
 
         /// <summary>
         /// List of nodes involved in the evaluation of this rule
         /// </summary>
         internal HashSet<string> NodeIds { get; }
 
-        internal GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, HashSet<string> nodeIds)
+
+        internal GraphRuleEvaluationResult(string ruleId, RuleEvaluationStatusEnum status, SeverityCodesEnum severityCode, HashSet<string> nodeIds)
         {
             RuleId = ruleId ?? throw new ArgumentNullException(nameof(ruleId));
             Status = status;
+            SeverityCode = severityCode;
             NodeIds = nodeIds;
         }
 
         public bool Equals(GraphRuleEvaluationResult other)
         {
-            if (other is null)
-                return false;
+            if (other is null) return false;
 
-            return this.RuleId == other.RuleId && 
-                this.NodeIds.SetEquals(other.NodeIds);
+            return this.RuleId == other.RuleId;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is null)
-                return false;
+            if (obj is null) return false;
 
             return Equals(obj as GraphRuleEvaluationResult);
         }

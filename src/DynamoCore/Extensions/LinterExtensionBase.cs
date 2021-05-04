@@ -63,8 +63,7 @@ namespace Dynamo.Extensions
         /// <param name="linterRule"></param>
         public void RemoveLinterRule(LinterRule linterRule)
         {
-            if (linterRules.Contains(linterRule))
-                linterRules.Remove(linterRule);
+            linterRules.Remove(linterRule);
         }
 
         /// <summary>
@@ -77,7 +76,6 @@ namespace Dynamo.Extensions
 
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
-            this.InitializeRules();
         }
 
         /// <summary>
@@ -87,6 +85,7 @@ namespace Dynamo.Extensions
         {
             ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             UnsubscribeGraphEvents(currentWorkspace);
+            this.linterManager.RuleEvaluationResults.Clear();
         }
 
         #endregion
@@ -201,9 +200,11 @@ namespace Dynamo.Extensions
             if (this.currentWorkspace != null)
                 UnsubscribeGraphEvents(this.currentWorkspace);
 
+            this.linterManager.RuleEvaluationResults.Clear();
             this.currentWorkspace = ReadyParamsRef.CurrentWorkspaceModel as WorkspaceModel;
             this.SubscribeNodeEvents();
             this.SubscribeGraphEvents();
+            this.InitializeRules();
         }
 
         private void SubscribeGraphEvents()
@@ -251,6 +252,7 @@ namespace Dynamo.Extensions
 
         private void OnNodeRemoved(Graph.Nodes.NodeModel node)
         {
+            UnsubscribeNodeEvents(node);
             EvaluateGraphRules(node, NODE_REMOVED_PROPERTY);
 
             var nodeRules = LinterRules.
@@ -263,11 +265,10 @@ namespace Dynamo.Extensions
 
             foreach (var rule in nodeRules)
             {
-                var result = new NodeRuleEvaluationResult(rule.Id, Linting.Interfaces.RuleEvaluationStatusEnum.Passed, node.GUID.ToString());
+                var result = new NodeRuleEvaluationResult(rule.Id, Linting.Interfaces.RuleEvaluationStatusEnum.Passed, rule.SeverityCode, node.GUID.ToString());
                 rule.OnRuleEvaluated(result);
             }
 
-            UnsubscribeNodeEvents(node);
         }
         #endregion
     }
