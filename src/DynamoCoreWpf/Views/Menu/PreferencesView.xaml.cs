@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.Views
             DataContext = new PreferencesViewModel(dynamoViewModel);
             dynViewModel = dynamoViewModel;
 
+            
             InitializeComponent();
 
             //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)

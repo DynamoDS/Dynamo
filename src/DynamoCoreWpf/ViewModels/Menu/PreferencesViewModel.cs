@@ -1,4 +1,6 @@
 ﻿using Dynamo.Configuration;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace Dynamo.ViewModels
         private string selectedFontSize;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
-        private bool runSettingsIsChecked;
+        private bool runPreviewEnabled;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
         private bool showWhitespace;
@@ -42,9 +44,12 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private RunType runSettingsIsChecked;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
+        private HomeWorkspaceModel homeSpace;
+        private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScal = null;
         private DynamoViewModel dynamoViewModel;
@@ -67,7 +72,6 @@ namespace Dynamo.ViewModels
             {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
             {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
-
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -110,11 +114,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectedNumberFormat;
+                return preferenceSettings.NumberFormat;
             }
             set
             {
                 selectedNumberFormat = value;
+                preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
             }
         }
@@ -126,12 +131,32 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runSettingsIsChecked;
+                return runSettingsIsChecked == RunType.Manual;
             }
             set
             {
-                runSettingsIsChecked = value;
+                if (value)
+                {
+                    preferenceSettings.DefaultRunType = RunType.Manual;
+                    runSettingsIsChecked = RunType.Manual;
+                }
+                else
+                {
+                    preferenceSettings.DefaultRunType = RunType.Automatic;
+                    runSettingsIsChecked = RunType.Automatic;
+                }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return runPreviewEnabled;
             }
         }
 
@@ -142,11 +167,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runPreviewIsChecked;
+                return dynamoViewModel.ShowRunPreview;
             }
             set
             {
-                runPreviewIsChecked = value;
+                dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
         }
@@ -503,6 +528,8 @@ namespace Dynamo.ViewModels
         {
             this.preferenceSettings = dynamoViewModel.PreferenceSettings;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
+            this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
+            this.homeSpace = dynamoViewModel.HomeSpace;
             this.dynamoViewModel = dynamoViewModel;
 
             PythonEnginesList = new ObservableCollection<string>();
@@ -527,10 +554,9 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
-            SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
+            SelectedNumberFormat = preferenceSettings.NumberFormat;
 
-            //By Default the Default Run Settings radio button will be in Manual
-            RunSettingsIsChecked = true;
+            runSettingsIsChecked = preferenceSettings.DefaultRunType;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;

@@ -418,7 +418,7 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = _node.DynamoViewModel;
             // If the feature is enabled from Dynamo experiment setting and if user interaction is on input port.
-            return dynamoViewModel.EnableNodeAutoComplete && this.PortType == PortType.Input;
+            return dynamoViewModel.EnableNodeAutoComplete;
         }
 
         /// <summary>

@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SampleLibraryUIMigrationTesting</name>
+    </assembly>
+    <members>
+        <member name="T:SampleLibraryUIMigrationTesting.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.CustomNodeModelDescription">
+            <summary>
+              Looks up a localized string similar to A sample UI node which displays custom UI..
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.CustomNodeModelPortDataInputToolTip">
+            <summary>
+              Looks up a localized string similar to Input a string..
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.CustomNodeModelPortDataOutputToolTip">
+            <summary>
+              Looks up a localized string similar to A result..
+            </summary>
+        </member>
+        <member name="P:SampleLibraryUIMigrationTesting.Properties.Resources.LocalStringResult">
+            <summary>
+              Looks up a localized string similar to I am a localized string..
+            </summary>
+        </member>
+    </members>
+</doc>
