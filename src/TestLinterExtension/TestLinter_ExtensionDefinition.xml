@@ -1,0 +1,4 @@
+<ExtensionDefinition>
+  <AssemblyPath>..\TestLinterExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.TestLinterExtension.TestLinterExtension</TypeName>
+</ExtensionDefinition>
