@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Configuration
 {
@@ -382,7 +383,10 @@ namespace Dynamo.Configuration
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
         public bool DisableCustomPackageLocations { get; set; }
-
+        /// <summary>
+        /// Defines the default run type when opening a workspace
+        /// </summary>
+        public RunType DefaultRunType { get; set; }
         #endregion
 
         /// <summary>
@@ -417,6 +421,7 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
+            DefaultRunType = RunType.Automatic;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
