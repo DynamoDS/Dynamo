@@ -52,7 +52,6 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScal = null;
-        private DynamoViewModel dynamoViewModel;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
