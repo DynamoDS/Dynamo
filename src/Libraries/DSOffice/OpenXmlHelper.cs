@@ -108,7 +108,8 @@ namespace DSOffice
         /// <param name="startColumn">Column where to begin writing from (zero-based)</param>
         /// <param name="overWrite">Whether the sheet should be re-created before writing</param>
         /// <param name="writeAsString">Whether data values should be written as strings or not</param>
-        internal static void Write(string filePath, string sheetName, object[][] data, int startRow, int startColumn, bool overWrite, bool writeAsString)
+        /// <returns>Cell values to write to the spreadsheet</returns>
+        internal static object[][] Write(string filePath, string sheetName, object[][] data, int startRow, int startColumn, bool overWrite, bool writeAsString)
         {
             using (var document = OpenOrCreate(filePath, sheetName))
             {
@@ -240,6 +241,7 @@ namespace DSOffice
 
                     currentRowIndex++;
                 }
+                return data;
             }
         }
 

@@ -902,9 +902,10 @@ namespace DSOffice
         /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
         /// <param name="writeAsString">Toggle to switch between writing cell values as strings</param>
         /// <search>office,excel,spreadsheet</search>
-        public static void OpenXMLExportExcel(string filePath, string sheetName, object[][] data, int startRow = 0, int startColumn = 0, bool overWrite = false, bool writeAsString = false)
+        /// <returns>Cell values to write to the spreadsheet</returns>
+        public static object[][] OpenXMLExportExcel(string filePath, string sheetName, object[][] data, int startRow = 0, int startColumn = 0, bool overWrite = false, bool writeAsString = false)
         {
-            OpenXmlHelper.Write(filePath, sheetName, data, startRow, startColumn, overWrite, writeAsString);
+            return OpenXmlHelper.Write(filePath, sheetName, data, startRow, startColumn, overWrite, writeAsString);
         }
     }
 }
