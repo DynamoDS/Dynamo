@@ -186,7 +186,8 @@
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=LanguagesList}"
                                               SelectedItem="{Binding Path=SelectedLanguage}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}">
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              IsEnabled="False">
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
@@ -240,9 +241,9 @@
                                           HorizontalAlignment="Left"
                                           ItemsSource="{Binding FontSizeList}"
                                           SelectedItem="{Binding Path=SelectedFontSize}"
-                                          Style="{StaticResource NoBordersComboBoxStyle}">
+                                          Style="{StaticResource NoBordersComboBoxStyle}"
+                                          IsEnabled="False">
                                 </ComboBox>
-                                
                             </Grid>
 
                             <!--This Grid contains controls for selecting Run Preview options-->
