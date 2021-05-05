@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Dynamo.Core;
+using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
@@ -22,6 +23,7 @@ namespace Dynamo.LintingViewExtension
         private LinterExtensionDescriptor activeLinter;
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParams;
+        private LinterExtensionDescriptor defaultDescriptor;
         #endregion
 
         #region Public Properties
@@ -62,10 +64,19 @@ namespace Dynamo.LintingViewExtension
             }
         }
 
+        /// <summary>
+        /// Collection of linters available on the LinterManager
+        /// </summary>
         public List<LinterExtensionDescriptor> AvailableLinters
         {
             get => linterManager.AvailableLinters.ToList();
         }
+        
+        /// <summary>
+        /// The default descriptor is used if no linter is needed for the graph. This is a dummy descriptor that has no extension associated to it.
+        /// This property returns the descriptor as a list for binding purposes.
+        /// </summary>
+        public IList<LinterExtensionDescriptor> DefaultDescriptor { get => new List<LinterExtensionDescriptor> { defaultDescriptor }; }
 
         #endregion
 
@@ -74,6 +85,13 @@ namespace Dynamo.LintingViewExtension
             this.linterManager = linterManager ?? throw new ArgumentNullException(nameof(linterManager));
             this.viewLoadedParams = viewLoadedParams;
             InitializeCommands();
+            CreateDefaultDummyLinterDescriptor();
+
+            // If there are no active linter we set it to the default one.
+            if (this.linterManager.ActiveLinter is null)
+            {
+                ActiveLinter = defaultDescriptor;
+            }
 
             NodeIssues = new ObservableCollection<IRuleIssue>();
             GraphIssues = new ObservableCollection<IRuleIssue>();
@@ -129,7 +147,9 @@ namespace Dynamo.LintingViewExtension
 
         private void AddNewGraphIssue(List<string> issueNodeIds, string ruleId)
         {
-            var issueNodes = issueNodeIds.Select(i => NodeFromId(i)).ToList();
+            var issueNodes = issueNodeIds.Any() ? 
+                issueNodeIds.Select(i => NodeFromId(i)).ToList() : 
+                new List<NodeModel>();
 
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (!(issue is null))
@@ -176,11 +196,15 @@ namespace Dynamo.LintingViewExtension
 
         private LinterRule GetLinterRule(string id)
         {
-            var linterExt = linterManager.GetLinterExtension(ActiveLinter);
-            return linterExt.
-                LinterRules.
-                Where(x => x.Id == id).
-                FirstOrDefault();
+            if(linterManager.TryGetLinterExtension(ActiveLinter, out LinterExtensionBase linterExt))
+            {
+                return linterExt.
+                    LinterRules.
+                    Where(x => x.Id == id).
+                    FirstOrDefault();
+            }
+
+            return null;
         }
 
         private void RuleEvaluationResultsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -207,6 +231,11 @@ namespace Dynamo.LintingViewExtension
                     }
                     return;
 
+                case NotifyCollectionChangedAction.Reset:
+                    this.GraphIssues.Clear();
+                    this.NodeIssues.Clear();
+                    return;
+
                 default:
                     break;
             }
@@ -215,7 +244,9 @@ namespace Dynamo.LintingViewExtension
         private NodeModel NodeFromId(string nodeId)
         {
             if (nodeId is null)
-                return null ;
+            {
+                throw new ArgumentNullException(nameof(nodeId));
+            }
 
             var node = viewLoadedParams.CurrentWorkspaceModel
                 .Nodes
@@ -223,6 +254,11 @@ namespace Dynamo.LintingViewExtension
                 .FirstOrDefault();
 
             return node;
+        }
+
+        private void CreateDefaultDummyLinterDescriptor()
+        {
+            defaultDescriptor = new LinterExtensionDescriptor("0000000", Properties.Resources.NoneLinterDescriptorName);
         }
         #endregion
     }

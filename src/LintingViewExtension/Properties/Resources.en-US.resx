@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="GraphTypeHelpTooltip" xml:space="preserve">
+    <value>What is a Graph Type?</value>
+  </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Dynamo Linter</value>
+    <value>Graph Status</value>
+  </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>None</value>
   </data>
 </root>

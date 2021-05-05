@@ -7,6 +7,7 @@
              xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:props="clr-namespace:Dynamo.LintingViewExtension.Properties"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="600"
@@ -148,18 +149,31 @@
                 </Grid.ColumnDefinitions>
                 <ComboBox Grid.Column="0"
                           Name="LinterSelector"
-                          ItemsSource="{Binding AvailableLinters}"
-                          SelectedItem="{Binding ActiveLinter, Mode=TwoWay}"
                           DisplayMemberPath="Name"
+                          SelectedItem="{Binding ActiveLinter, Mode=TwoWay}"
                           Style="{StaticResource SComboBox}"
                           Height="30"
-                          Margin="0 15" />
+                          Margin="0 15">
+                    <ComboBox.Resources>
+                        <CollectionViewSource x:Key="AvailableLinters"
+                                              Source="{Binding AvailableLinters}" />
+                        <CollectionViewSource x:Key="DefaultDescriptor" 
+                                        Source="{Binding DefaultDescriptor}" />
+                    </ComboBox.Resources>
+                    <ComboBox.ItemsSource>
+                        <CompositeCollection>
+                            <CollectionContainer Collection="{Binding Source={StaticResource DefaultDescriptor}}" />
+                            <CollectionContainer Collection="{Binding Source={StaticResource AvailableLinters}}" />
+                        </CompositeCollection>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
 
                 <Button Background="Transparent"
                         BorderBrush="Transparent"
                         Command="{Binding OpenDocumentationBrowserCommand}"
                         Grid.Column="1"
-                        Style="{StaticResource SomeButtonStyle}">
+                        Style="{StaticResource SomeButtonStyle}"
+                        ToolTip="{x:Static props:Resources.GraphTypeHelpTooltip }">
                     <fa:ImageAwesome Icon="InfoCircle"
                                      Foreground="#808080"
                                      Width="20"

@@ -20,7 +20,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
             nameof(NodeModel.IsSetAsInput)
         };
 
-        protected override RuleEvaluationStatusEnum EvaluateFunction(NodeModel nodeModel)
+        protected override RuleEvaluationStatusEnum EvaluateFunction(NodeModel nodeModel, string changedEvent)
         {
             var status = nodeModel.IsSetAsInput ?
                 RuleEvaluationStatusEnum.Failed :
@@ -34,7 +34,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
             var results = new List<Tuple<RuleEvaluationStatusEnum, string>>();
             foreach (var node in workspaceModel.Nodes)
             {
-                var evaluationStatus = EvaluateFunction(node);
+                var evaluationStatus = EvaluateFunction(node, "initialize");
 
                 if (evaluationStatus == RuleEvaluationStatusEnum.Passed)
                     continue;

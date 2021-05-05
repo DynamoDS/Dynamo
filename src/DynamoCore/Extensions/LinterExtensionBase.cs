@@ -115,7 +115,7 @@ namespace Dynamo.Extensions
                     !rule.EvaluationTriggerEvents.Contains(changedProperty))
                     continue;
 
-                rule.Evaluate(currentWorkspace, modifiedNode);
+                rule.Evaluate(currentWorkspace, changedProperty, modifiedNode);
             }
         }
 
@@ -137,7 +137,7 @@ namespace Dynamo.Extensions
                 if (changedProperty != NODE_ADDED_PROPERTY && !rule.EvaluationTriggerEvents.Contains(changedProperty))
                     continue;
 
-                rule.Evaluate(modifiedNode);
+                rule.Evaluate(modifiedNode, changedProperty);
             }
         }
 

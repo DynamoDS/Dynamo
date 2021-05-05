@@ -13,7 +13,7 @@ namespace Dynamo.LintingViewExtension
 {
     public class LintingViewExtension : ViewExtensionBase
     {
-        private const string EXTENSION_NAME = "Dynamo Linter";
+        private const string EXTENSION_NAME = "Graph Status";
         private const string EXTENSION_GUID = "3467481b-d20d-4918-a454-bf19fc5c25d7";
 
         private LinterManager linterManager;

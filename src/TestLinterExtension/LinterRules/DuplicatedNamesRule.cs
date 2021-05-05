@@ -27,7 +27,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
         };
 
 
-        protected override Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvaluateFunction(WorkspaceModel workspaceModel, NodeModel modifiedNode = null)
+        protected override Tuple<RuleEvaluationStatusEnum, HashSet<string>> EvaluateFunction(WorkspaceModel workspaceModel, string changedEvent, NodeModel modifiedNode = null)
         {
 
             // First we check if the id was already used on another node
@@ -54,7 +54,14 @@ namespace Dynamo.TestLinterExtension.LinterRules
                 duplicatedNodes[modifiedNode.Name] = ids;
             }
 
-            ids.Add(modifiedNode.GUID.ToString());
+            if (changedEvent == nameof(WorkspaceModel.NodeRemoved))
+            {
+                ids.Remove(modifiedNode.GUID.ToString());
+            }
+            else
+            {
+                ids.Add(modifiedNode.GUID.ToString());
+            }
 
             var issues = duplicatedNodes
                 .Where(x => x.Value.Count > 1)
@@ -73,7 +80,7 @@ namespace Dynamo.TestLinterExtension.LinterRules
             var results = new List<Tuple<RuleEvaluationStatusEnum, HashSet<string>>>();
             foreach (var node in workspaceModel.Nodes)
             {
-                results.Add(EvaluateFunction(workspaceModel, node));
+                results.Add(EvaluateFunction(workspaceModel, "initialize", node));
             }
             return results;
         }
