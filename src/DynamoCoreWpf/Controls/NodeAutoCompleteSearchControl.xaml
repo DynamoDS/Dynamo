@@ -100,6 +100,7 @@
                      ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
                      TargetUpdated="OnMembersListBoxUpdated"
                      PreviewMouseWheel="OnMembersListBoxMouseWheel"
+                     Margin="-25,0,0,0"
                      Visibility="Visible">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -135,7 +136,7 @@
                     BorderBrush="{StaticResource outerBorderSelection}"
                     BorderThickness="1"
                     Padding="5"
-                    Margin="10 8"
+                    Margin="10 7"
                     Grid.ColumnSpan="2">
                 <Grid>
                     <StackPanel Name="SearchIconAndTextBlockGrid"
@@ -144,7 +145,7 @@
                                 Orientation="Horizontal">
                         <Image x:Name="SearchIcon"
                                Width="18"
-                               Height="18"
+                               Height="14"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left">
                             <Image.Style>
@@ -164,7 +165,7 @@
                         </Image>
 
                         <TextBlock Name="SearchTextBlock"
-                                   FontSize="14"
+                                   FontSize="12"
                                    IsHitTestVisible="False"
                                    Foreground="{StaticResource DeafultSearchTextBlockText}"
                                    VerticalAlignment="Center"
@@ -172,7 +173,7 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="9,0,0,0"
+                                   Margin="4,0,0,0"
                                    Text="{x:Static resx:Resources.SearchTextBlockText}" />
 
                     </StackPanel>
@@ -181,13 +182,13 @@
                              Foreground="{StaticResource SearchBoxBackgroundColor}"
                              Background="Transparent"
                              BorderThickness="0"
-                             FontSize="14"
+                             FontSize="12"
                              IsEnabled="True"
                              VerticalAlignment="Center"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
-                             Margin="26,0,0,-1"
+                             Margin="20,0,0,0"
                              TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
