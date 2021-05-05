@@ -274,9 +274,6 @@
     <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
       <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
-      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
@@ -1026,12 +1023,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\GenericTaskDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
