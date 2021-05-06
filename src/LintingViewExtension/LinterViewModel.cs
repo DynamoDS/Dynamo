@@ -18,6 +18,8 @@ namespace Dynamo.LintingViewExtension
 {
     public class LinterViewModel : NotificationObject
     {
+        private const string NONE_DESCRIPTOR_GUID = "7b75fb44-43fd-4631-a878-29f4d5d8399a";
+
         #region Private Fields
         private static Uri linterViewHelpLink = new Uri("LintingViewExtension;LinterViewHelpDoc.html", UriKind.Relative);
         private LinterExtensionDescriptor activeLinter;
@@ -258,7 +260,7 @@ namespace Dynamo.LintingViewExtension
 
         private void CreateDefaultDummyLinterDescriptor()
         {
-            defaultDescriptor = new LinterExtensionDescriptor("0000000", Properties.Resources.NoneLinterDescriptorName);
+            defaultDescriptor = new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
         }
         #endregion
     }

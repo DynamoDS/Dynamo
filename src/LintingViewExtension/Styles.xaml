@@ -6,7 +6,6 @@
                     xmlns:converter="clr-namespace:Dynamo.LintingViewExtension.Converters"
                     xmlns:controls="clr-namespace:Dynamo.LintingViewExtension.Controls">
 
-    <converter:DataBindingDebugger x:Key="Debug" />
     <converter:ToStringConverter x:Key="ToString" />
 
     <SolidColorBrush Color="#444444"

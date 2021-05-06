@@ -62,7 +62,6 @@
     <Compile Include="Controls\IssueGroup.xaml.cs">
       <DependentUpon>IssueGroup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\DataBindingDebugger.cs" />
     <Compile Include="Converters\CollectionToVisibilityConverter.cs" />
     <Compile Include="Converters\RuleFromRuleIdConverter.cs" />
     <Compile Include="Controls\GraphRuleIssue.cs" />
