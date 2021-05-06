@@ -98,4 +98,3 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
-src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
