@@ -24,9 +24,18 @@ namespace Dynamo.GraphMetadata.Controls
     {
         public DelegateCommand EditPropertyNameCmd { get; set; }
         public DelegateCommand DeletePropertyNameCmd { get; set; }
-
-        public bool Deletable { get; set; }
         public bool PropertyNameEnabled { get; set; }
+
+        /// <summary>
+        /// Event raised when an instance of this class requires deleting.
+        /// </summary>
+        public event EventHandler RequestDelete;
+
+        public void DeleteRequested(EventArgs e)
+        {
+            EventHandler handler = RequestDelete;
+            handler?.Invoke(this, e);
+        }
 
 
         public CustomPropertyControl()
@@ -39,7 +48,6 @@ namespace Dynamo.GraphMetadata.Controls
             InitializeComponent();
             InitializeCommands();
             PropertyName = $"Custom Property {suffix}";
-            Deletable = false;
             PropertyNameEnabled = false;
         }
 
@@ -54,7 +62,6 @@ namespace Dynamo.GraphMetadata.Controls
             PropertyNameEnabled = !PropertyNameEnabled;
             propertyNameText.IsEnabled = PropertyNameEnabled;
             propertyNameText.Focus();
-            // FocusManager.SetFocusedElement(propertyNameText, true)
 
             propertyNameText.LostFocus += DisableEditable;
         }
@@ -70,8 +77,7 @@ namespace Dynamo.GraphMetadata.Controls
             if (string.IsNullOrEmpty(this.PropertyName))
                 return;
 
-            this.Deletable = true;
-            //this.PropertyName = "";
+            DeleteRequested(new EventArgs());
         }
 
         #region DependencyProperties

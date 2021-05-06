@@ -60,7 +60,7 @@ namespace Dynamo.GraphMetadata
             }
         }
 
-        public FullyObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
+        public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams)
         {
@@ -69,7 +69,7 @@ namespace Dynamo.GraphMetadata
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
 
-            CustomProperties = new FullyObservableCollection<CustomPropertyControl>(); //initializing this thing
+            CustomProperties = new ObservableCollection<CustomPropertyControl>(); //initializing this thing
             InitializeCommands();
            // CustomProperties. += CheckDeletion;
         }
@@ -178,9 +178,24 @@ namespace Dynamo.GraphMetadata
         /// <param name="obj"></param>
         private void AddCustomPropertyExectute(object obj)
         {
-            CustomProperties.Add(new CustomPropertyControl(suffixCount));
+            var cpc = new CustomPropertyControl(suffixCount);
+            cpc.RequestDelete += HandleDeleteRequest;
+            CustomProperties.Add(cpc);
+
             suffixCount++;
             //RaisePropertyChanged(nameof(CustomProperties));
+        }
+
+        private void HandleDeleteRequest(object sender, EventArgs e)
+        {
+            CustomPropertyControl castSender = sender as CustomPropertyControl;
+
+            if(sender!=null)
+            {
+                CustomProperties.Remove(castSender);
+            }
+
+
         }
     }
 }
