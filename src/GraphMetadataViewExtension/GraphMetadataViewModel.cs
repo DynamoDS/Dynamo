@@ -10,6 +10,11 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Media.Imaging;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.UI.Commands;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.ComponentModel;
 
 namespace Dynamo.GraphMetadata
 {
@@ -18,10 +23,14 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private HomeWorkspaceModel currentWorkspace;
 
-        public string GraphDescription 
-        { 
-            get { return currentWorkspace.Description; } 
-            set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); } 
+        public DelegateCommand AddCustomProperty { get; set; }
+        private int suffixCount = 1;
+
+
+        public string GraphDescription
+        {
+            get { return currentWorkspace.Description; }
+            set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); }
         }
 
         public string GraphAuthor
@@ -38,7 +47,7 @@ namespace Dynamo.GraphMetadata
 
         public BitmapImage Thumbnail
         {
-            get 
+            get
             {
                 var bitmap = ImageFromBase64(currentWorkspace.Thumbnail);
                 return bitmap;
@@ -51,7 +60,7 @@ namespace Dynamo.GraphMetadata
             }
         }
 
-        public List<CustomPropertyControl> CustomProperties { get; set; }
+        public FullyObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams)
         {
@@ -59,6 +68,10 @@ namespace Dynamo.GraphMetadata
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+
+            CustomProperties = new FullyObservableCollection<CustomPropertyControl>(); //initializing this thing
+            InitializeCommands();
+           // CustomProperties. += CheckDeletion;
         }
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
@@ -106,6 +119,68 @@ namespace Dynamo.GraphMetadata
             }
 
             return Convert.ToBase64String(data);
+        }
+
+        private void InitializeCommands()
+        {
+            this.AddCustomProperty = new DelegateCommand(AddCustomPropertyExectute);
+        }
+
+        //private void CheckDeletion(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        foreach (Object item in e.NewItems)
+        //        {
+        //            ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
+        //            var i = item as CustomPropertyControl;
+        //            if (i.Deletable)
+        //            {
+        //                CustomProperties.Remove(i);
+        //                return;
+        //            }
+        //        }
+        //    }
+        //    if (e.OldItems != null)
+        //    {
+        //        foreach (Object item in e.OldItems)
+        //        {
+        //            ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
+        //        }
+        //    }
+        //}
+
+        //private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        //{
+        //    //This will get called when the property of an object inside the collection changes
+        //    //if(e.PropertyName == "Deletable")
+        //    //{
+        //    //    var thisObject =e.PropertyNam
+        //    //    CustomProperties.Remove(sender);
+        //    //}
+        //}
+
+
+        //    if(e.Action == NotifyCollectionChangedAction.)
+        //    if (CustomProperties == null)
+        //        return;
+
+        //    var deletableItems = CustomProperties.Where(c => c.Deletable);
+
+        //    foreach(var d in deletableItems)
+        //        CustomProperties.Remove(d);
+
+        //}
+
+        /// <summary>
+        /// Adds new CustomPropertyControl item to observable collection while upping the 'suffix' count
+        /// </summary>
+        /// <param name="obj"></param>
+        private void AddCustomPropertyExectute(object obj)
+        {
+            CustomProperties.Add(new CustomPropertyControl(suffixCount));
+            suffixCount++;
+            //RaisePropertyChanged(nameof(CustomProperties));
         }
     }
 }

@@ -55,6 +55,7 @@
     <Compile Include="Converters\BooleanInverseConverter.cs" />
     <Compile Include="Converters\BooleansToVisibilityConverter.cs" />
     <Compile Include="Converters\UriToStringConverter.cs" />
+    <Compile Include="FullyObservableCollection.cs" />
     <Compile Include="GraphMetadataView.xaml.cs">
       <DependentUpon>GraphMetadataView.xaml</DependentUpon>
     </Compile>

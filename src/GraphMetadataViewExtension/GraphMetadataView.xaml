@@ -104,7 +104,7 @@
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <ContentPresenter ContentSource="Header" />
-                            <Button Grid.Column="1">
+                            <Button Grid.Column="1" Command="{Binding AddCustomProperty}">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <fa:ImageAwesome Icon="Plus"
@@ -123,16 +123,12 @@
 
             </GroupBox.Template>
 
-            <StackPanel Orientation="Vertical">
                 <ListView HorizontalContentAlignment="Stretch"
                           Background="Transparent"
-                          Margin="0,16">
-                    <ListViewItem>
-                        <controls:CustomPropertyControl PropertyName="SomeName"
-                                                        PropertyValue="SomeValue" />
-                    </ListViewItem>
+                          BorderBrush="Transparent"
+                          Margin="0,16"
+                          ItemsSource="{Binding CustomProperties}">
                 </ListView>
-            </StackPanel>
 
         </GroupBox>
     </Grid>
