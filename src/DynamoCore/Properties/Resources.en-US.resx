@@ -591,7 +591,10 @@ value : bool = false</value>
     <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
-    <value>Search</value>
+    <value>Search Autocomplete Results</value>
+  </data>
+  <data name="Autocomplete" xml:space="preserve">
+    <value>Autocomplete</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>

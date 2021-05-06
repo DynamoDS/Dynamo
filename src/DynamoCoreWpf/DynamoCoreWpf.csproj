@@ -664,6 +664,9 @@
     <Resource Include="UI\Images\closetab_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\whiteclosetab.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\closewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
