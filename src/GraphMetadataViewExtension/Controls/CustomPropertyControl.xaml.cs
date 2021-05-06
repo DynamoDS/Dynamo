@@ -26,16 +26,12 @@ namespace Dynamo.GraphMetadata.Controls
         public DelegateCommand DeletePropertyNameCmd { get; set; }
         public bool PropertyNameEnabled { get; set; }
 
-        /// <summary>
-        /// Event raised when an instance of this class requires deleting.
-        /// </summary>
         public event EventHandler RequestDelete;
 
         private void OnRequestDelete(EventArgs e)
         {
             RequestDelete?.Invoke(this, e);
         }
-
 
         public CustomPropertyControl()
         {
