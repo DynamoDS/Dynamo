@@ -1026,10 +1026,6 @@ namespace Dynamo.ViewModels
                         this.PublishCurrentWorkspaceCommand.RaiseCanExecuteChanged();
                     RaisePropertyChanged("IsPanning");
                     RaisePropertyChanged("IsOrbiting");
-                    if (ChangeScaleFactorCommand != null)
-                    {
-                        ChangeScaleFactorCommand.RaiseCanExecuteChanged();
-                    }
                     //RaisePropertyChanged("RunEnabled");
                     break;
 
