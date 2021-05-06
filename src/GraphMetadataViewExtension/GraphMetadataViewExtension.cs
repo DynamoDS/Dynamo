@@ -14,7 +14,7 @@ namespace Dynamo.GraphMetadata
 {
     public class GraphMetadataViewExtension : IViewExtension, IExtensionStorageAccess
     {
-        public GraphMetadataViewModel viewModel;
+        private GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem graphMetadataMenuItem;

@@ -20,7 +20,7 @@ namespace Dynamo.GraphMetadata.Controls
     /// <summary>
     /// Interaction logic for CustomPropertyControl.xaml
     /// </summary>
-    public partial class CustomPropertyControl : UserControl, INotifyPropertyChanged
+    public partial class CustomPropertyControl : UserControl
     {
         public DelegateCommand EditPropertyNameCmd { get; set; }
         public DelegateCommand DeletePropertyNameCmd { get; set; }
@@ -31,10 +31,9 @@ namespace Dynamo.GraphMetadata.Controls
         /// </summary>
         public event EventHandler RequestDelete;
 
-        public void DeleteRequested(EventArgs e)
+        private void OnRequestDelete(EventArgs e)
         {
-            EventHandler handler = RequestDelete;
-            handler?.Invoke(this, e);
+            RequestDelete?.Invoke(this, e);
         }
 
 
@@ -42,12 +41,6 @@ namespace Dynamo.GraphMetadata.Controls
         {
             InitializeComponent();
             InitializeCommands();
-        }
-        public CustomPropertyControl(int suffix)
-        {
-            InitializeComponent();
-            InitializeCommands();
-            PropertyName = $"Custom Property {suffix}";
             PropertyNameEnabled = false;
         }
 
@@ -77,7 +70,7 @@ namespace Dynamo.GraphMetadata.Controls
             if (string.IsNullOrEmpty(this.PropertyName))
                 return;
 
-            DeleteRequested(new EventArgs());
+            OnRequestDelete(EventArgs.Empty);
         }
 
         #region DependencyProperties
@@ -107,19 +100,5 @@ namespace Dynamo.GraphMetadata.Controls
         );
 
         #endregion
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
-        protected void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-                handler(this, e);
-        }
     }
 }

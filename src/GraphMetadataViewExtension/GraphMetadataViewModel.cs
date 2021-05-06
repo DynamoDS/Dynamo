@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
@@ -12,9 +9,7 @@ using System.Windows.Media.Imaging;
 using Dynamo.GraphMetadata.Controls;
 using Dynamo.UI.Commands;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.Linq;
-using System.ComponentModel;
+
 
 namespace Dynamo.GraphMetadata
 {
@@ -23,9 +18,7 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private HomeWorkspaceModel currentWorkspace;
 
-        public DelegateCommand AddCustomProperty { get; set; }
-        private int suffixCount = 1;
-
+        public DelegateCommand AddCustomPropertyCommand { get; set; }
 
         public string GraphDescription
         {
@@ -69,9 +62,8 @@ namespace Dynamo.GraphMetadata
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
 
-            CustomProperties = new ObservableCollection<CustomPropertyControl>(); //initializing this thing
+            CustomProperties = new ObservableCollection<CustomPropertyControl>(); //required
             InitializeCommands();
-           // CustomProperties. += CheckDeletion;
         }
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
@@ -123,22 +115,18 @@ namespace Dynamo.GraphMetadata
 
         private void InitializeCommands()
         {
-            this.AddCustomProperty = new DelegateCommand(AddCustomPropertyExectute);
+            this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExectute);
         }
 
-        /// <summary>
-        /// Adds new CustomPropertyControl item to observable collection while upping the 'suffix' count
-        /// </summary>
-        /// <param name="obj"></param>
         private void AddCustomPropertyExectute(object obj)
         {
-            var cpc = new CustomPropertyControl(suffixCount);
-            cpc.RequestDelete += HandleDeleteRequest;
-            CustomProperties.Add(cpc);
-
-            suffixCount++;
-            //RaisePropertyChanged(nameof(CustomProperties));
+            var control = new CustomPropertyControl();
+            control.Name = $"Custom Property {CustomProperties.Count}";
+            control.RequestDelete += HandleDeleteRequest;
+            CustomProperties.Add(control);
         }
+
+
 
         private void HandleDeleteRequest(object sender, EventArgs e)
         {

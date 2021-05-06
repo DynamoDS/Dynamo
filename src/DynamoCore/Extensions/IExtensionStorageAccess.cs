@@ -31,7 +31,6 @@ namespace Dynamo.Extensions
         /// <param name="extensionData">A copy of the ExtensionData dictionary</param>
         void OnWorkspaceOpen(Dictionary<string, string> extensionData);
 
-
         /// <summary>
         /// Action to be invoked when the workspace has begun its saving process.
         /// The passed extensionData dictionary is a direct reference to the stored <see cref="ExtensionData"/> data dictionary, modifications to this dictionary
