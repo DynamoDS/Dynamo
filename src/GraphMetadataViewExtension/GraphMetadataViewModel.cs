@@ -126,52 +126,6 @@ namespace Dynamo.GraphMetadata
             this.AddCustomProperty = new DelegateCommand(AddCustomPropertyExectute);
         }
 
-        //private void CheckDeletion(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        //{
-        //    if (e.NewItems != null)
-        //    {
-        //        foreach (Object item in e.NewItems)
-        //        {
-        //            ((INotifyPropertyChanged)item).PropertyChanged += ItemPropertyChanged;
-        //            var i = item as CustomPropertyControl;
-        //            if (i.Deletable)
-        //            {
-        //                CustomProperties.Remove(i);
-        //                return;
-        //            }
-        //        }
-        //    }
-        //    if (e.OldItems != null)
-        //    {
-        //        foreach (Object item in e.OldItems)
-        //        {
-        //            ((INotifyPropertyChanged)item).PropertyChanged -= ItemPropertyChanged;
-        //        }
-        //    }
-        //}
-
-        //private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
-        //{
-        //    //This will get called when the property of an object inside the collection changes
-        //    //if(e.PropertyName == "Deletable")
-        //    //{
-        //    //    var thisObject =e.PropertyNam
-        //    //    CustomProperties.Remove(sender);
-        //    //}
-        //}
-
-
-        //    if(e.Action == NotifyCollectionChangedAction.)
-        //    if (CustomProperties == null)
-        //        return;
-
-        //    var deletableItems = CustomProperties.Where(c => c.Deletable);
-
-        //    foreach(var d in deletableItems)
-        //        CustomProperties.Remove(d);
-
-        //}
-
         /// <summary>
         /// Adds new CustomPropertyControl item to observable collection while upping the 'suffix' count
         /// </summary>
@@ -194,8 +148,6 @@ namespace Dynamo.GraphMetadata
             {
                 CustomProperties.Remove(castSender);
             }
-
-
         }
     }
 }

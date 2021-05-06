@@ -6,10 +6,17 @@
              xmlns:local="clr-namespace:Dynamo.GraphMetadata.Controls"
              xmlns:properties="clr-namespace:Dynamo.GraphMetadata.Properties"
              xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+               xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              d:DesignHeight="198" d:DesignWidth="314">
     <UserControl.Resources>
         <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
             <convertes:BooleanInverseConverter x:Key="BooleanInverseConverter" />
             <convertes:BooleansToVisibilityConverter x:Key="BooleansToVisibilityConverter" />
 
@@ -47,9 +54,9 @@
     <Border
         DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImageSelector}}}"
         BorderThickness="1"
-        BorderBrush="Gray">
+        BorderBrush="#FF3F4040">
         <Grid
-            Background="Black">
+            Background="{StaticResource SearchBoxBackgroundColor}">
             <Image
                 Source="{Binding Image}"
                 Stretch="Uniform" />
