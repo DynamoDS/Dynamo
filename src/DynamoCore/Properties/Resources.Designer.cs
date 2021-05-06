@@ -1483,7 +1483,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search all nodes.
+        ///   Looks up a localized string similar to Search Autocomplete Results.
         /// </summary>
         public static string SearchTextBlockText {
             get {
