@@ -157,8 +157,6 @@ namespace Dynamo.ViewModels
 
             var core = dynamoViewModel.Model.LibraryServices.LibraryManagementCore;
 
-            portType = StripUnwantedStringFromOutputType(portType);
-
             //if inputPortType is an array, use just the typename
             var parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
             var ast = parseResult.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
@@ -262,16 +260,6 @@ namespace Dynamo.ViewModels
                 Debug.WriteLine($"failed to create class mirror for either {typea} or {typeb} during node autocomplete operation ");
                 return false;
             }
-        }
-
-        private String StripUnwantedStringFromOutputType(String portType)
-        {
-            String stringToRemove = "Node Output:";
-
-            int index = portType.IndexOf(stringToRemove);
-            portType = index < 0 ? portType : portType.Remove(index, stringToRemove.Length);
-
-            return portType;
         }
 
         /// <summary>
