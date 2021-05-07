@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Dynamo.GraphMetadata.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+             xmlns:vr="clr-namespace:Dynamo.GraphMetadata.ValidationRules"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              d:DesignHeight="850" d:DesignWidth="400"
@@ -21,6 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <convertes:UriToStringConverter x:Key="UriToStringConverter" />
+            <vr:UriValidationRule x:Key="UriValidationRule"/>
 
             <Style x:Key="TextBoxStyle"
                 TargetType="{x:Type TextBox}">
@@ -28,7 +30,17 @@
                     Value="{StaticResource SearchBoxBackgroundColor}" />
                 <Setter Property="BorderBrush" Value="{StaticResource BorderBrushWhite}" />
                 <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}"/>
+                
+            </Style>
 
+            <Style x:Key="ValidationTextBox" TargetType="TextBox">
+                <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                <Style.Triggers>
+                    <Trigger Property="Validation.HasError" Value="true">
+                        <Setter Property="Text" Value="Not a valid Uri. Please enter a valid one."/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type GroupBox}}">
@@ -122,9 +134,105 @@
             <GroupBox Header="Author Name">
                 <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" />
             </GroupBox>
-            <GroupBox Header="Learn more URL">
-                <TextBox Text="{Binding HelpLink, Converter={StaticResource UriToStringConverter}, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" />
-            </GroupBox>
+            <StackPanel>
+                <StackPanel.Resources>
+                    <ControlTemplate x:Key="errorTemplate">
+                        <StackPanel Orientation="Vertical">
+                            <AdornedElementPlaceholder/>
+                            <TextBlock FontStyle="Italic"
+                                       Foreground="Red"
+                                       HorizontalAlignment="Left"
+                                       Margin="4"
+                                       Text="{Binding Path=ErrorContent}"/>
+                        </StackPanel>
+                    </ControlTemplate>
+                </StackPanel.Resources>
+
+                <GroupBox Header="Learn more URL" Margin="10px,5px, 10px, 0px">
+                    <TextBox Margin="4" Validation.ErrorTemplate="{StaticResource ResourceKey=errorTemplate}"
+                             Name="UriTextBox" Style="{StaticResource TextBoxStyle}">
+                        <TextBox.Text>
+                            <Binding Path="HelpLink"
+                                 UpdateSourceTrigger="PropertyChanged"
+                                 ValidatesOnDataErrors="True"
+                                     Mode="TwoWay">
+                                <Binding.ValidationRules>
+                                    <vr:UriValidationRule ValidatesOnTargetUpdated="True"/>
+                                </Binding.ValidationRules>
+                                <Binding.Converter>
+                                    <convertes:UriToStringConverter/>
+                                </Binding.Converter>
+
+                            </Binding>
+                        </TextBox.Text>
+                    </TextBox>
+                </GroupBox>
+            </StackPanel>
+                
+            <!--<GroupBox Header="Learn more URL" Margin="10px,5px, 10px, 0px">
+                <TextBox Name="UriTextBox" Style="{StaticResource TextBoxStyle}">
+                    <TextBox.Text>
+                        <Binding Path="HelpLink" Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <vr:UriValidationRule />
+                            </Binding.ValidationRules>
+                            <Binding.Converter>
+                                <convertes:UriToStringConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBox.Text>
+                    <Validation.ErrorTemplate>
+                        <TextBlock Text="{Binding [0].ErrorContent}" DockPanel.Dock="Bottom" Foreground="Red"/>
+                        <ControlTemplate>
+                            <DockPanel>
+                                <Border BorderBrush="Red" BorderThickness="1">
+                                    <AdornedElementPlaceholder x:Name="controlWithError"/>
+                                </Border>
+                                <TextBlock Foreground="Red" FontSize="20" FontFamily="Segoe UI" Margin="3,0,0,0">!</TextBlock>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Validation.ErrorTemplate>
+                    
+                </TextBox>
+            </GroupBox>-->
+
+            <!--<Grid Margin="16px, 0px">
+                <TextBox>
+                    <TextBox.Text>
+                        <Binding Path="HelpLink" Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <vr:UriValidationRule />
+                            </Binding.ValidationRules>
+                            <Binding.Converter>
+                                <convertes:UriToStringConverter/>
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBox.Text>
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate>
+                            <DockPanel>
+                                <Border BorderBrush="Red" BorderThickness="1">
+                                    <AdornedElementPlaceholder x:Name="controlWithError"/>
+                                </Border>
+                                <TextBlock Foreground="Red" FontSize="20" FontFamily="Segoe UI" Margin="3,0,0,0">!</TextBlock>
+                            </DockPanel>
+                        </ControlTemplate>
+                    </Validation.ErrorTemplate>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError" Value="true">
+                                    <Setter Property="Text" Value="Not a valid Uri. Please enter a valid one."/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+
+                </TextBox>
+            </Grid>-->
+            
             <Separator Background="{StaticResource FilterIconColor}" Margin="0,12,0,20"/>
         </StackPanel>
 

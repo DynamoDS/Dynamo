@@ -53,12 +53,20 @@ namespace Dynamo.GraphMetadata
         #region Storage Access implementation
         public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
         {
-            throw new NotImplementedException();
+            foreach (var p in this.viewModel.CustomProperties)
+            {
+                extensionData[p.PropertyName] = p.PropertyValue;
+            }
+
+            ////throw new NotImplementedException();
         }
 
         public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)
         {
-            throw new NotImplementedException();
+            foreach (var p in this.viewModel.CustomProperties)
+            {
+                extensionData[p.PropertyName] = p.PropertyValue;
+            }
         }
         #endregion
 

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Dynamo.GraphMetadata.Converters
@@ -13,7 +14,7 @@ namespace Dynamo.GraphMetadata.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is Uri uri))
+           if (!(value is Uri uri))
                 return null;
 
             return uri.AbsoluteUri;
@@ -24,7 +25,10 @@ namespace Dynamo.GraphMetadata.Converters
             if (!(value is string str))
                 return null;
 
-            var uri = new Uri(str);
+            Uri uri = null;
+            if(!string.IsNullOrEmpty(str))
+                uri = new Uri(str);
+
             return uri;
         }
     }
