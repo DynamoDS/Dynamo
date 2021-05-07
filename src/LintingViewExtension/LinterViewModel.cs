@@ -181,7 +181,10 @@ namespace Dynamo.LintingViewExtension
                 !issue.AffectedNodes.Any(n => n.GUID.ToString() == issueNodeId))
                 return;
 
-            issue.AffectedNodes.Remove(issueNode);
+            issue.AffectedNodes
+                .Remove(issue.AffectedNodes
+                    .Where(x => x.GUID.ToString() == issueNodeId)
+                    .FirstOrDefault());
 
             if (issue.AffectedNodes.Count == 0)
                 NodeIssues.Remove(issue);
