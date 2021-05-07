@@ -14,7 +14,7 @@ namespace Dynamo.Extensions
     /// <summary>
     /// Base class for all LinterExtensions
     /// </summary>
-    public abstract class LinterExtensionBase : IExtension
+    internal abstract class LinterExtensionBase : IExtension
     {
         private const string NODE_ADDED_PROPERTY = "NodeAdded";
         private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
@@ -115,7 +115,7 @@ namespace Dynamo.Extensions
                     !rule.EvaluationTriggerEvents.Contains(changedProperty))
                     continue;
 
-                rule.Evaluate(currentWorkspace, modifiedNode);
+                rule.Evaluate(currentWorkspace, changedProperty, modifiedNode);
             }
         }
 
@@ -137,7 +137,7 @@ namespace Dynamo.Extensions
                 if (changedProperty != NODE_ADDED_PROPERTY && !rule.EvaluationTriggerEvents.Contains(changedProperty))
                     continue;
 
-                rule.Evaluate(modifiedNode);
+                rule.Evaluate(modifiedNode, changedProperty);
             }
         }
 

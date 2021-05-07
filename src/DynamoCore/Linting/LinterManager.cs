@@ -46,15 +46,17 @@ namespace Dynamo.Linting
             {
                 if (activeLinter == value) return;
 
-                if (activeLinter != null)
+                if (activeLinter != null &&
+                    TryGetLinterExtension(activeLinter, out LinterExtensionBase linterExtension))
                 {
-                    GetLinterExtension(activeLinter).Deactivate();
+                    linterExtension.Deactivate();
                 }
 
-                var linterExt = GetLinterExtension(value);
-                if (linterExt is null) return;
+                if (TryGetLinterExtension(value, out linterExtension))
+                {
+                    linterExtension.Activate();
+                }
 
-                linterExt.Activate();
                 activeLinter = value;
             }
         }
@@ -131,13 +133,16 @@ namespace Dynamo.Linting
             }
         }
 
-        private LinterExtensionBase GetLinterExtension(LinterExtensionDescriptor activeLinter)
+
+        internal bool TryGetLinterExtension(LinterExtensionDescriptor activeLinter, out LinterExtensionBase linterExtension)
         {
-            return this.extensionManager.
+            linterExtension =  this.extensionManager.
                 Extensions.
                 OfType<LinterExtensionBase>().
                 Where(x => x.UniqueId == activeLinter.Id).
                 FirstOrDefault();
+
+            return linterExtension != null;
         }
 
         public void Dispose()
