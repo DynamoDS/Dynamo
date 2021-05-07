@@ -171,14 +171,14 @@ namespace Dynamo.Tests.Linting
             rule.Setup(x => x.EvaluationTriggerEvents).
                 Returns(new List<string> { nameof(NodeModel.Name) });
 
-            rule.Protected().Setup<RuleEvaluationStatusEnum>("EvaluateFunction", ItExpr.IsAny<NodeModel>()).
-                Returns((NodeModel node) => NodeRuleEvaluateFunction(node));
+            rule.Protected().Setup<RuleEvaluationStatusEnum>("EvaluateFunction", ItExpr.IsAny<NodeModel>(), ItExpr.IsAny<string>()).
+                Returns((NodeModel node, string changedEvent) => NodeRuleEvaluateFunction(node, changedEvent));
 
             rule.Protected().Setup<List<Tuple<RuleEvaluationStatusEnum, string>>>("InitFunction", ItExpr.IsAny<WorkspaceModel>()).
                 Returns((WorkspaceModel wm) => NodeRuleInitFuction(wm));
         }
 
-        private RuleEvaluationStatusEnum NodeRuleEvaluateFunction(NodeModel node)
+        private RuleEvaluationStatusEnum NodeRuleEvaluateFunction(NodeModel node, string changedEvent)
         {
             return node.Name == "NewNodeName" ? 
                 RuleEvaluationStatusEnum.Failed : 
@@ -190,7 +190,7 @@ namespace Dynamo.Tests.Linting
             var results = new List<Tuple<RuleEvaluationStatusEnum, string>>();
             foreach (var node in wm.Nodes)
             {
-                var evaluationStatus = NodeRuleEvaluateFunction(node);
+                var evaluationStatus = NodeRuleEvaluateFunction(node, "init");
                 if (evaluationStatus == RuleEvaluationStatusEnum.Passed)
                     continue;
 
