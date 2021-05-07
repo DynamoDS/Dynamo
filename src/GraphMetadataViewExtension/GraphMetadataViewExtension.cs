@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace Dynamo.GraphMetadata
 {
-    public class GraphMetadataViewExtension : ViewExtensionBase, IViewExtension, IExtensionStorageAccess
+    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
     {
         public GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
