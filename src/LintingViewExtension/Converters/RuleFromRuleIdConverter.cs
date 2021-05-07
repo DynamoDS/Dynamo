@@ -15,7 +15,7 @@ namespace Dynamo.LintingViewExtension.Converters
     public class RuleFromRuleIdConverter : DependencyObject, IValueConverter
     {
         // The property used as a parameter
-        public LinterExtensionBase ActiveLinter
+        internal LinterExtensionBase ActiveLinter
         {
             get { return (LinterExtensionBase)GetValue(ActiveLinterProperty); }
             set { SetValue(ActiveLinterProperty, value); }

@@ -14,7 +14,7 @@ namespace Dynamo.Extensions
     /// <summary>
     /// Base class for all LinterExtensions
     /// </summary>
-    public abstract class LinterExtensionBase : IExtension
+    internal abstract class LinterExtensionBase : IExtension
     {
         private const string NODE_ADDED_PROPERTY = "NodeAdded";
         private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
