@@ -25,7 +25,7 @@ namespace Dynamo.GraphMetadata
 
         public override string Name => "Properties";
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
