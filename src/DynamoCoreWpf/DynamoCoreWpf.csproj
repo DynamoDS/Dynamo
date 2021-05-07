@@ -274,14 +274,8 @@
     <Compile Include="UI\Prompts\GenericTaskDialog.xaml.cs">
       <DependentUpon>GenericTaskDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\Prompts\NodeHelpPrompt.xaml.cs">
-      <DependentUpon>NodeHelpPrompt.xaml</DependentUpon>
-    </Compile>
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\Prompts\ChangeScaleFactorPrompt.xaml.cs">
-      <DependentUpon>ChangeScaleFactorPrompt.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
@@ -670,6 +664,9 @@
     <Resource Include="UI\Images\closetab_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\whiteclosetab.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\closewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1015,10 +1012,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="UI\Prompts\ChangeScaleFactorPrompt.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="UI\Prompts\FunctionNamePrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1026,12 +1019,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\Prompts\GenericTaskDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Prompts\NodeHelpPrompt.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

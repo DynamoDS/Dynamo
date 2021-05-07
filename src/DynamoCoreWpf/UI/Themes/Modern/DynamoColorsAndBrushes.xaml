@@ -61,6 +61,8 @@
     <!-- Node colors in selected state -->
     <SolidColorBrush x:Key="outerBorderSelection" Color="#4192d9" />
 
+    <SolidColorBrush x:Key="autocompletionWindow" Color="#4192d9" />
+
     <!-- NodeLabel background color -->
     <SolidColorBrush x:Key="renamedLabelBackground"
                      Color="#FCDC95" />

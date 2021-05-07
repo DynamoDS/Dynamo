@@ -186,7 +186,8 @@
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=LanguagesList}"
                                               SelectedItem="{Binding Path=SelectedLanguage}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}">
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              IsEnabled="False">
                                     </ComboBox>
                                 </StackPanel>
                             </Grid>
@@ -240,9 +241,9 @@
                                           HorizontalAlignment="Left"
                                           ItemsSource="{Binding FontSizeList}"
                                           SelectedItem="{Binding Path=SelectedFontSize}"
-                                          Style="{StaticResource NoBordersComboBoxStyle}">
+                                          Style="{StaticResource NoBordersComboBoxStyle}"
+                                          IsEnabled="False">
                                 </ComboBox>
-                                
                             </Grid>
 
                             <!--This Grid contains controls for selecting Run Preview options-->
@@ -529,14 +530,16 @@
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
-                                <StackPanel Width="300"
-                                           HorizontalAlignment="Left"
-                                           Margin="8,0,0,0"
-                                           VerticalAlignment="Top">
+                                <StackPanel x:Name="GeometryScalingRadiosPanel"
+                                            Width="300"
+                                            HorizontalAlignment="Left"
+                                            Margin="8,0,0,0"
+                                            VerticalAlignment="Top">
                                     <RadioButton x:Name="RadioSmall"
                                                 GroupName="GeometryScaling"
                                                 MinWidth="80"
                                                 Margin="0,10,0,0"
+                                                Checked="Geometry_Scaling_Checked"
                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
@@ -549,6 +552,7 @@
                                                  Margin="0,10,0,0"
                                                  MinWidth="80"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
                                     <TextBlock  x:Name="RadioMediumDesc"
@@ -559,6 +563,7 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="0,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
@@ -570,6 +575,7 @@
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
                                                  Margin="0,10,0,0"
+                                                 Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
@@ -593,7 +599,7 @@
                                     <Slider Width="100"
                                             Minimum="8"
                                             Maximum="512"
-                                            Value="{Binding Path=RenderPackageFactoryViewModel.MaxTessellationDivisions, Mode=TwoWay}">
+                                            Value="{Binding Path=TessellationDivisions, Mode=TwoWay}">
                                     </Slider>
                                     <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
                                                Margin="10,0,0,0"></TextBlock>
