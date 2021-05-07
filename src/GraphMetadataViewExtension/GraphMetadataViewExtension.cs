@@ -57,8 +57,6 @@ namespace Dynamo.GraphMetadata
             {
                 extensionData[p.PropertyName] = p.PropertyValue;
             }
-
-            ////throw new NotImplementedException();
         }
 
         public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)

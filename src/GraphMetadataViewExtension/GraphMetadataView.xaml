@@ -169,71 +169,7 @@
                 </GroupBox>
             </StackPanel>
                 
-            <!--<GroupBox Header="Learn more URL" Margin="10px,5px, 10px, 0px">
-                <TextBox Name="UriTextBox" Style="{StaticResource TextBoxStyle}">
-                    <TextBox.Text>
-                        <Binding Path="HelpLink" Mode="TwoWay">
-                            <Binding.ValidationRules>
-                                <vr:UriValidationRule />
-                            </Binding.ValidationRules>
-                            <Binding.Converter>
-                                <convertes:UriToStringConverter/>
-                            </Binding.Converter>
-                        </Binding>
-                    </TextBox.Text>
-                    <Validation.ErrorTemplate>
-                        <TextBlock Text="{Binding [0].ErrorContent}" DockPanel.Dock="Bottom" Foreground="Red"/>
-                        <ControlTemplate>
-                            <DockPanel>
-                                <Border BorderBrush="Red" BorderThickness="1">
-                                    <AdornedElementPlaceholder x:Name="controlWithError"/>
-                                </Border>
-                                <TextBlock Foreground="Red" FontSize="20" FontFamily="Segoe UI" Margin="3,0,0,0">!</TextBlock>
-                            </DockPanel>
-                        </ControlTemplate>
-                    </Validation.ErrorTemplate>
-                    
-                </TextBox>
-            </GroupBox>-->
-
-            <!--<Grid Margin="16px, 0px">
-                <TextBox>
-                    <TextBox.Text>
-                        <Binding Path="HelpLink" Mode="TwoWay">
-                            <Binding.ValidationRules>
-                                <vr:UriValidationRule />
-                            </Binding.ValidationRules>
-                            <Binding.Converter>
-                                <convertes:UriToStringConverter/>
-                            </Binding.Converter>
-                        </Binding>
-                    </TextBox.Text>
-                    <Validation.ErrorTemplate>
-                        <ControlTemplate>
-                            <DockPanel>
-                                <Border BorderBrush="Red" BorderThickness="1">
-                                    <AdornedElementPlaceholder x:Name="controlWithError"/>
-                                </Border>
-                                <TextBlock Foreground="Red" FontSize="20" FontFamily="Segoe UI" Margin="3,0,0,0">!</TextBlock>
-                            </DockPanel>
-                        </ControlTemplate>
-                    </Validation.ErrorTemplate>
-                    <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}">
-                            <Setter Property="Background" Value="Transparent"/>
-                            <Setter Property="BorderBrush" Value="Transparent"/>
-                            <Style.Triggers>
-                                <Trigger Property="Validation.HasError" Value="true">
-                                    <Setter Property="Text" Value="Not a valid Uri. Please enter a valid one."/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-
-                </TextBox>
-            </Grid>-->
-            
-            <Separator Background="{StaticResource FilterIconColor}" Margin="0,12,0,20"/>
+            <Separator Background="{StaticResource FilterIconColor}" Margin="0,20,0,20"/>
         </StackPanel>
 
         <GroupBox Grid.Row="1"
