@@ -52,11 +52,6 @@ namespace Dynamo.Wpf.Views
             RadioExtraLargeDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[2]);
         }
 
-        private void SaveChanges_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -98,7 +93,7 @@ namespace Dynamo.Wpf.Views
             //if the validation returns false it means that the new style that will be added doesn't exists
             if (viewModel.ValidateExistingStyle(newItem) == false)
             {
-                viewModel.StyleItemsList.Add(newItem);
+                viewModel.AddStyle(newItem);
                 viewModel.ResetAddStyleControl();
                 AddStyleBorder.Visibility = Visibility.Collapsed;
                 AddStyleButton.IsEnabled = true;
@@ -199,6 +194,7 @@ namespace Dynamo.Wpf.Views
 
                 var allNodes = dynViewModel.HomeSpace.Nodes;
                 dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
+                viewModel.UpdateSavedChangesLabel();
             }
         }
 

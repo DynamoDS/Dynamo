@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -25,6 +26,8 @@ namespace Dynamo.ViewModels
     public class PreferencesViewModel : ViewModelBase
     {
         #region Private Properties
+        private string savedChangesLabel;
+        private string savedChangesTooltip;
         private ObservableCollection<string> languagesList;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
@@ -72,6 +75,38 @@ namespace Dynamo.ViewModels
             {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
 
+        /// <summary>
+        /// Controls what the SavedChanges label will display
+        /// </summary>
+        public string SavedChangesLabel
+        {
+            get
+            {
+                return savedChangesLabel;
+            }
+            set
+            {
+                savedChangesLabel = value;
+                RaisePropertyChanged(nameof(SavedChangesLabel));
+            }
+        }
+
+        /// <summary>
+        /// Controls what SavedChanges label's tooltip will display
+        /// </summary>
+        public string SavedChangesTooltip
+        {
+            get
+            {
+                return savedChangesTooltip;
+            }
+            set
+            {
+                savedChangesTooltip = value;
+                RaisePropertyChanged(nameof(SavedChangesTooltip));
+
+            }
+        }
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -87,6 +122,7 @@ namespace Dynamo.ViewModels
             {
                 selectedLanguage = value;
                 RaisePropertyChanged(nameof(SelectedLanguage));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -103,6 +139,7 @@ namespace Dynamo.ViewModels
             {
                 selectedFontSize = value;
                 RaisePropertyChanged(nameof(SelectedFontSize));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -120,6 +157,7 @@ namespace Dynamo.ViewModels
                 selectedNumberFormat = value;
                 preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -145,17 +183,7 @@ namespace Dynamo.ViewModels
                     runSettingsIsChecked = RunType.Automatic;
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
-            }
-        }
-
-        /// <summary>
-        /// Controls the IsChecked property in the Show Run Preview toogle button
-        /// </summary>
-        public bool RunPreviewEnabled
-        {
-            get
-            {
-                return runPreviewEnabled;
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -172,6 +200,7 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -224,6 +253,7 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
+        //This includes all the properties that can be set on the Visual Settings tab
         #region VisualSettings Properties
         /// <summary>
         /// This will contain a list of all the Styles created by the user in the Styles list ( Visual Settings -> Group Styles section)
@@ -236,6 +266,17 @@ namespace Dynamo.ViewModels
                 styleItemsList = value;
                 RaisePropertyChanged(nameof(StyleItemsList));
             }
+        }
+
+        /// <summary>
+        /// Used to add styles to the StyleItemsListe while also update the saved changes label
+        /// </summary>
+        /// <param name="style"></param>
+        public void AddStyle(StyleItem style)
+        {
+            StyleItemsList.Add(style);
+            RaisePropertyChanged(nameof(StyleItemsList));
+            UpdateSavedChangesLabel();
         }
 
         /// <summary>
@@ -284,6 +325,7 @@ namespace Dynamo.ViewModels
             {
                 optionsGeometryScal = value;
                 RaisePropertyChanged(nameof(OptionsGeometryScal));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -300,6 +342,7 @@ namespace Dynamo.ViewModels
             {
                 showEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -316,6 +359,7 @@ namespace Dynamo.ViewModels
             {
                 isolateSelectedGeometry = value;
                 RaisePropertyChanged(nameof(IsolateSelectedGeometry));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -332,6 +376,7 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = value;
                 RaisePropertyChanged(nameof(TessellationDivisions));
+                UpdateSavedChangesLabel();
             }
         }
         #endregion
@@ -370,6 +415,7 @@ namespace Dynamo.ViewModels
                     selectedPythonEngine = value;
                     preferenceSettings.DefaultPythonEngine = value;
                     RaisePropertyChanged(nameof(SelectedPythonEngine));
+                    UpdateSavedChangesLabel();
                 }
             }
         }
@@ -388,6 +434,7 @@ namespace Dynamo.ViewModels
                 hideIronPAlerts = value;
                 preferenceSettings.IsIronPythonDialogDisabled = value;
                 RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -406,6 +453,7 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
                 showWhitespace = value;
                 RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -423,6 +471,7 @@ namespace Dynamo.ViewModels
                 preferenceSettings.EnableNodeAutoComplete = value;
                 nodeAutocomplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -441,6 +490,7 @@ namespace Dynamo.ViewModels
                 enableTSpline = value;
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -580,6 +630,16 @@ namespace Dynamo.ViewModels
                                                                                               scaleRanges[GeometryScaleSize.Large].Item3));
             optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
                                                                                               scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
+
+            SavedChangesLabel = string.Empty;
+            SavedChangesTooltip = string.Empty;
+        }
+
+        internal void UpdateSavedChangesLabel()
+        {
+            SavedChangesLabel = Res.PreferencesViewSavedChangesLabel;
+            //Sets the last saved time in the en-US format
+            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + DateTime.Now.ToString(@"hh:mm tt", new CultureInfo("en-US"));
         }
 
         /// <summary>
@@ -590,6 +650,7 @@ namespace Dynamo.ViewModels
         {
             StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
             StyleItemsList.Remove(itemToRemove);
+            UpdateSavedChangesLabel();
         }
 
         /// <summary>
