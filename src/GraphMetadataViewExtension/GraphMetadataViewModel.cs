@@ -130,12 +130,18 @@ namespace Dynamo.GraphMetadata
 
         private void HandleDeleteRequest(object sender, EventArgs e)
         {
-            CustomPropertyControl castSender = sender as CustomPropertyControl;
+            CustomPropertyControl customProperty = sender as CustomPropertyControl;
 
-            if(sender!=null)
+            if(customProperty!=null)
             {
-                CustomProperties.Remove(castSender);
+                customProperty.RequestDelete -= HandleDeleteRequest;
+                CustomProperties.Remove(customProperty);
             }
+        }
+
+       public void Dispose()
+        {
+            this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
     }
 }

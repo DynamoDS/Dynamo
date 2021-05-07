@@ -201,20 +201,23 @@
                         </Grid>
                         <ContentPresenter Margin="0,0,0,0"
                                           Grid.Row="1"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                     </Grid>
 
                 </ControlTemplate>
 
             </GroupBox.Template>
-
-                <ListView HorizontalContentAlignment="Stretch"
+            <StackPanel Orientation="Vertical" ScrollViewer.VerticalScrollBarVisibility="Visible">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="440">
+                    <ListView HorizontalContentAlignment="Stretch"
                           Background="Transparent"
                           BorderBrush="Transparent"
                           Margin="0,16"
                           ItemsSource="{Binding CustomProperties}">
-                </ListView>
-
+                    </ListView>
+                </ScrollViewer>
+                
+            </StackPanel>
         </GroupBox>
     </Grid>
 </UserControl>
