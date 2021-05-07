@@ -72,7 +72,6 @@ extern/ASM/
 
 /src/DynamoIcons/*.resources
 tools/CBNLanguageComparisonTests/GenerateTests.cs
-src/AssemblySharedInfoGenerator/AssemblySharedInfo.cs
 /src/DynamoCore/*.resources
 /src/Libraries/Analysis/*.resources
 /src/Libraries/CoreNodeModels/*.resources

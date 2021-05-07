@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Wpf.Extensions;
 using System.Windows.Media.Imaging;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.UI.Commands;
+using System.Collections.ObjectModel;
+
 
 namespace Dynamo.GraphMetadata
 {
@@ -18,10 +18,12 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private HomeWorkspaceModel currentWorkspace;
 
-        public string GraphDescription 
-        { 
-            get { return currentWorkspace.Description; } 
-            set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); } 
+        public DelegateCommand AddCustomPropertyCommand { get; set; }
+
+        public string GraphDescription
+        {
+            get { return currentWorkspace.Description; }
+            set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); }
         }
 
         public string GraphAuthor
@@ -38,7 +40,7 @@ namespace Dynamo.GraphMetadata
 
         public BitmapImage Thumbnail
         {
-            get 
+            get
             {
                 var bitmap = ImageFromBase64(currentWorkspace.Thumbnail);
                 return bitmap;
@@ -51,7 +53,7 @@ namespace Dynamo.GraphMetadata
             }
         }
 
-        public List<CustomPropertyControl> CustomProperties { get; set; }
+        public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams)
         {
@@ -59,6 +61,9 @@ namespace Dynamo.GraphMetadata
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+
+            CustomProperties = new ObservableCollection<CustomPropertyControl>(); //required
+            InitializeCommands();
         }
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
@@ -71,6 +76,8 @@ namespace Dynamo.GraphMetadata
             RaisePropertyChanged(nameof(GraphAuthor));
             RaisePropertyChanged(nameof(HelpLink));
             RaisePropertyChanged(nameof(Thumbnail));
+
+            CustomProperties.Clear();
         }
 
         private static BitmapImage ImageFromBase64(string b64string)
@@ -106,6 +113,49 @@ namespace Dynamo.GraphMetadata
             }
 
             return Convert.ToBase64String(data);
+        }
+
+        private void InitializeCommands()
+        {
+            this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExecute);
+        }
+
+        private void AddCustomPropertyExecute(object obj)
+        {
+            var control = new CustomPropertyControl();
+            control.PropertyName = $"Custom Property {CustomProperties.Count + 1}";
+            control.RequestDelete += HandleDeleteRequest;
+            CustomProperties.Add(control);
+        }
+
+        public void AddCustomProperty(string propertyName, string propertyValue)
+        {
+            var control = new CustomPropertyControl();
+            control.PropertyName = propertyName;
+            control.PropertyValue = propertyValue;
+            control.RequestDelete += HandleDeleteRequest;
+            CustomProperties.Add(control);
+        }
+
+        private void HandleDeleteRequest(object sender, EventArgs e)
+        {
+            CustomPropertyControl customProperty = sender as CustomPropertyControl;
+
+            if(customProperty!=null)
+            {
+                customProperty.RequestDelete -= HandleDeleteRequest;
+                CustomProperties.Remove(customProperty);
+            }
+        }
+
+       public void Dispose()
+        {
+            this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+
+            foreach (var cp in CustomProperties)
+            {
+                cp.RequestDelete -= HandleDeleteRequest;
+            }
         }
     }
 }

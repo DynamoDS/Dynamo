@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dynamo.Extensions;
 using Dynamo.Graph;
 using Dynamo.GraphMetadata.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows;
 
+
 namespace Dynamo.GraphMetadata
 {
-    public class GraphMetadataViewExtension : IViewExtension, IExtensionStorageAccess
+    public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
     {
-        private GraphMetadataViewModel viewModel;
+        public GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem graphMetadataMenuItem;
 
-        public string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
+        //public string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
-        public string Name => "Properties";
+        //public string Name => "Properties";
 
+        public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override string Name => "Properties";
+
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
@@ -53,21 +54,40 @@ namespace Dynamo.GraphMetadata
         #region Storage Access implementation
         public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
         {
-            throw new NotImplementedException();
+            foreach (var kv in extensionData)
+            {
+                if (String.IsNullOrEmpty(kv.Key))
+                    continue;
+
+                var valueModified = kv.Value == null ? string.Empty : kv.Value;
+
+                this.viewModel.AddCustomProperty(kv.Key, valueModified);
+            }
         }
 
         public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)
         {
-            throw new NotImplementedException();
+            foreach (var p in this.viewModel.CustomProperties)
+            {
+                extensionData[p.PropertyName] = p.PropertyValue;
+            }
         }
+
+
         #endregion
 
-        public void Shutdown() { }
-
-        public void Startup(ViewStartupParams viewStartupParams) { }
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            viewModel.Dispose();
+
+            this.graphMetadataMenuItem.Checked -= MenuItemCheckHandler;
+            this.graphMetadataMenuItem.Unchecked -= MenuItemUnCheckedHandler;
+        }
+
+        public override void Dispose()
+        {
+            Dispose(true);
+
         }
     }
 }

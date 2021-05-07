@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Dynamo.UI.Commands;
 
 namespace Dynamo.GraphMetadata.Controls
@@ -21,16 +10,31 @@ namespace Dynamo.GraphMetadata.Controls
     /// </summary>
     public partial class CustomPropertyControl : UserControl
     {
-        public DelegateCommand EditPropertyNameCmd;
-        public DelegateCommand DeletePropertyNameCmd;
+        /// <summary>
+        /// This command corresponds to an edit of a CustomProperty name.
+        /// </summary>
+        public DelegateCommand EditPropertyNameCmd { get; set; }
+        /// <summary>
+        /// This command corresponds to a deletion of a CustomProperty from a collection of CustomProperties in the ViewModel.
+        /// </summary>
+        public DelegateCommand DeletePropertyNameCmd { get; set; }
         public bool PropertyNameEnabled { get; set; }
 
+        /// <summary>
+        /// This event fires when the 'Delete' command is triggered. It signals to the ViewModel that the corresponding CustomProperty ought to be removed.
+        /// </summary>
+        public event EventHandler RequestDelete;
 
+        private void OnRequestDelete(EventArgs e)
+        {
+            RequestDelete?.Invoke(this, e);
+        }
 
         public CustomPropertyControl()
         {
             InitializeComponent();
             InitializeCommands();
+            PropertyNameEnabled = false;
         }
 
         private void InitializeCommands()
@@ -42,7 +46,16 @@ namespace Dynamo.GraphMetadata.Controls
         private void EditPropertyNameCmdExecute(object obj)
         {
             PropertyNameEnabled = !PropertyNameEnabled;
-            this.propertyNameText.IsEnabled = PropertyNameEnabled;
+            propertyNameText.IsEnabled = PropertyNameEnabled;
+            propertyNameText.Focus();
+
+            propertyNameText.LostFocus += DisableEditable;
+        }
+
+        private void DisableEditable(object sender, RoutedEventArgs e)
+        {
+            propertyNameText.IsEnabled = false;
+            propertyNameText.LostFocus -= DisableEditable;
         }
 
         private void DeletePropertyNameCmdExecute(object obj)
@@ -50,7 +63,7 @@ namespace Dynamo.GraphMetadata.Controls
             if (string.IsNullOrEmpty(this.PropertyName))
                 return;
 
-            this.PropertyName = "";
+            OnRequestDelete(EventArgs.Empty);
         }
 
         #region DependencyProperties
