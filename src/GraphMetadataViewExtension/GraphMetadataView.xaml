@@ -35,7 +35,7 @@
                 <Setter Property="BorderThickness"
                     Value="0" />
                 <Setter Property="Margin"
-                    Value="16px,5px" />
+                    Value="10px,5px" />
                 <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
@@ -54,7 +54,7 @@
                 <Setter Property="BorderThickness"
                     Value="0" />
                 <Setter Property="Margin"
-                    Value="16px,5px" />
+                    Value="10px,5px" />
                 <Setter Property="Foreground"
                     Value="{StaticResource NestedMemberTextColor}" />
                 <Setter Property="HeaderTemplate">
@@ -144,7 +144,7 @@
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <ContentPresenter ContentSource="Header"/>
-                            <Button Grid.Column="1" Command="{Binding AddCustomProperty}">
+                            <Button Grid.Column="1" Command="{Binding AddCustomPropertyCommand}">
                                 <Button.Template>
                                     <ControlTemplate>
                                         <fa:ImageAwesome Icon="Plus"

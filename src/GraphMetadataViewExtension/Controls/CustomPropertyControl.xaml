@@ -63,7 +63,7 @@
             </Grid>
             <TextBox BorderBrush="{StaticResource BorderBrushWhite}"
                      Background="{StaticResource SearchBoxBackgroundColor}"
-                     Foreground="{StaticResource FilterIconColor}"
+                     Foreground="{StaticResource NestedMemberTextColor}"
                      Margin="0,5" 
                      Text="{Binding PropertyValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
         </StackPanel>

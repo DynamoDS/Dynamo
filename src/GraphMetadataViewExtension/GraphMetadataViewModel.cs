@@ -115,13 +115,13 @@ namespace Dynamo.GraphMetadata
 
         private void InitializeCommands()
         {
-            this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExectute);
+            this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExecute);
         }
 
-        private void AddCustomPropertyExectute(object obj)
+        private void AddCustomPropertyExecute(object obj)
         {
             var control = new CustomPropertyControl();
-            control.Name = $"Custom Property {CustomProperties.Count}";
+            control.PropertyName = $"Custom Property {CustomProperties.Count + 1}";
             control.RequestDelete += HandleDeleteRequest;
             CustomProperties.Add(control);
         }
