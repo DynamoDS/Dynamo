@@ -54,9 +54,14 @@ namespace Dynamo.GraphMetadata
         #region Storage Access implementation
         public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
         {
-            foreach (var p in this.viewModel.CustomProperties)
+            foreach (var kv in extensionData)
             {
-                extensionData[p.PropertyName] = p.PropertyValue;
+                if (String.IsNullOrEmpty(kv.Key))
+                    continue;
+
+                var valueModified = kv.Value == null ? string.Empty : kv.Value;
+
+                this.viewModel.AddCustomProperty(kv.Key, valueModified);
             }
         }
 
@@ -67,6 +72,8 @@ namespace Dynamo.GraphMetadata
                 extensionData[p.PropertyName] = p.PropertyValue;
             }
         }
+
+
         #endregion
 
         protected virtual void Dispose(bool disposing)

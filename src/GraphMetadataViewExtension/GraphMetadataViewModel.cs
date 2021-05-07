@@ -76,6 +76,8 @@ namespace Dynamo.GraphMetadata
             RaisePropertyChanged(nameof(GraphAuthor));
             RaisePropertyChanged(nameof(HelpLink));
             RaisePropertyChanged(nameof(Thumbnail));
+
+            CustomProperties.Clear();
         }
 
         private static BitmapImage ImageFromBase64(string b64string)
@@ -126,7 +128,14 @@ namespace Dynamo.GraphMetadata
             CustomProperties.Add(control);
         }
 
-
+        public void AddCustomProperty(string propertyName, string propertyValue)
+        {
+            var control = new CustomPropertyControl();
+            control.PropertyName = propertyName;
+            control.PropertyValue = propertyValue;
+            control.RequestDelete += HandleDeleteRequest;
+            CustomProperties.Add(control);
+        }
 
         private void HandleDeleteRequest(object sender, EventArgs e)
         {
@@ -142,6 +151,11 @@ namespace Dynamo.GraphMetadata
        public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+
+            foreach (var cp in CustomProperties)
+            {
+                cp.RequestDelete -= HandleDeleteRequest;
+            }
         }
     }
 }
