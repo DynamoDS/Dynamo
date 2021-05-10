@@ -24,57 +24,41 @@
             <convertes:UriToStringConverter x:Key="UriToStringConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
+            <ControlTemplate x:Key="textboxErrorTemplate">
+                <StackPanel Orientation="Vertical">
+                    <AdornedElementPlaceholder />
+                    <TextBlock FontStyle="Italic"
+                               Foreground="Red"
+                               HorizontalAlignment="Left"
+                               Margin="4"
+                               Text="{Binding Path=ErrorContent}" />
+                </StackPanel>
+            </ControlTemplate>
+
             <Style x:Key="TextBoxStyle"
                 TargetType="{x:Type TextBox}">
                 <Setter Property="Background"
                     Value="{StaticResource SearchBoxBackgroundColor}" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrushWhite}" />
-                <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}"/>
-                
-            </Style>
-
-            <Style x:Key="ValidationTextBox" TargetType="TextBox">
-                <Setter Property="Background" Value="Transparent"/>
-                    <Setter Property="BorderBrush" Value="Transparent"/>
-                <Style.Triggers>
-                    <Trigger Property="Validation.HasError" Value="true">
-                        <Setter Property="Text" Value="Not a valid Uri. Please enter a valid one."/>
-                    </Trigger>
-                </Style.Triggers>
+                <Setter Property="BorderBrush" 
+                        Value="{StaticResource BorderBrushWhite}" />
+                <Setter Property="Foreground" 
+                        Value="{StaticResource NestedMemberTextColor}"/>
+                <Setter Property="Padding"
+                        Value="5" />
             </Style>
 
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type GroupBox}}">
                 <Setter Property="BorderThickness"
-                    Value="0" />
+                        Value="0" />
                 <Setter Property="Margin"
-                    Value="10px,5px" />
+                        Value="0,5px" />
                 <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
                             <TextBlock Text="{Binding}"
-                                   Margin="0,0,0,5"
-                                       Foreground="{StaticResource NestedMemberTextColor}"/>
-                            
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-
-            <Style TargetType="{x:Type GroupBox}" x:Key="CustomPropBox">
-                <Setter Property="BorderThickness"
-                    Value="0" />
-                <Setter Property="Margin"
-                    Value="10px,5px" />
-                <Setter Property="Foreground"
-                    Value="{StaticResource NestedMemberTextColor}" />
-                <Setter Property="HeaderTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"
-                                   Margin="0,0,0,5"
-                                       FontWeight="Bold"/>
+                                       Margin="0,0,0,5"
+                                       Style="{StaticResource headerStyle}" />
 
                         </DataTemplate>
                     </Setter.Value>
@@ -83,11 +67,11 @@
 
             <Style TargetType="{x:Type ListView}">
                 <Setter Property="Background"
-                    Value="Transparent" />
-                <Setter Property="Margin"
-                    Value="16px,5px" />
+                        Value="Transparent" />
                 <Setter Property="BorderBrush"
                     Value="Transparent" />
+                <Setter Property="Margin"
+                        Value="0" />
             </Style>
 
             <Style TargetType="{x:Type ListViewItem}">
@@ -109,10 +93,19 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style TargetType="{x:Type TextBlock}" x:Key="headerStyle">
+                <Setter Property="FontWeight"
+                        Value="Bold" />
+                <Setter Property="FontSize"
+                        Value="13" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource NestedMemberTextColor}" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid>
+    <Grid Margin="10px 10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -121,98 +114,123 @@
                     Grid.Row="0">
             <GroupBox Header="Description"
                       Height="100">
-                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}" Style="{StaticResource TextBoxStyle}"/>
+                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}" 
+                         Style="{StaticResource TextBoxStyle}"/>
             </GroupBox>
+            
             <GroupBox Header="Image">
                 <controls:ImageSelector MaxHeight="150"
                                         MinHeight="100"
                                         Image="{Binding Thumbnail, Mode=TwoWay}"/>
             </GroupBox>
+            
             <GroupBox Header="Author Name">
-                <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}" Style="{StaticResource TextBoxStyle}" />
+                <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
+                         Style="{StaticResource TextBoxStyle}" />
             </GroupBox>
-            <StackPanel>
-                <StackPanel.Resources>
-                    <ControlTemplate x:Key="errorTemplate">
-                        <StackPanel Orientation="Vertical">
-                            <AdornedElementPlaceholder/>
-                            <TextBlock FontStyle="Italic"
-                                       Foreground="Red"
-                                       HorizontalAlignment="Left"
-                                       Margin="4"
-                                       Text="{Binding Path=ErrorContent}"/>
-                        </StackPanel>
-                    </ControlTemplate>
-                </StackPanel.Resources>
-
-                <GroupBox Header="Learn more URL" Margin="10px,5px, 10px, 0px">
-                    <TextBox Margin="4" Validation.ErrorTemplate="{StaticResource ResourceKey=errorTemplate}"
-                             Name="UriTextBox" Style="{StaticResource TextBoxStyle}">
-                        <TextBox.Text>
-                            <Binding Path="HelpLink"
+            
+            <GroupBox Header="Learn more URL">
+                <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
+                         Name="UriTextBox"
+                         Style="{StaticResource TextBoxStyle}">
+                    <TextBox.Text>
+                        <Binding Path="HelpLink"
                                  UpdateSourceTrigger="PropertyChanged"
                                  ValidatesOnDataErrors="True"
-                                     Mode="TwoWay">
-                                <Binding.ValidationRules>
-                                    <vr:UriValidationRule ValidatesOnTargetUpdated="True"/>
-                                </Binding.ValidationRules>
-                                <Binding.Converter>
-                                    <convertes:UriToStringConverter/>
-                                </Binding.Converter>
-
-                            </Binding>
-                        </TextBox.Text>
-                    </TextBox>
-                </GroupBox>
-            </StackPanel>
-                
+                                 Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <vr:UriValidationRule ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                            <Binding.Converter>
+                                <convertes:UriToStringConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </GroupBox>
+            
             <Separator Background="{StaticResource FilterIconColor}" Margin="0,20,0,20"/>
         </StackPanel>
 
-        <GroupBox Grid.Row="1"
-                  Header="Custom Properties" Style="{StaticResource CustomPropBox}">
-            <GroupBox.Template>
-                <ControlTemplate TargetType="{x:Type GroupBox}">
-                    <Grid SnapsToDevicePixels="true">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
-                        <Grid Margin="10,0"
-                              Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="20" />
-                            </Grid.ColumnDefinitions>
-                            <ContentPresenter ContentSource="Header"/>
-                            <Button Grid.Column="1" Command="{Binding AddCustomPropertyCommand}">
-                                <Button.Template>
-                                    <ControlTemplate>
-                                        <fa:ImageAwesome Icon="Plus"
-                                                         VerticalAlignment="Stretch" 
-                                                         Foreground="{StaticResource FilterIconColor}"/>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="10px, 5px">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="20" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" 
+                           Text="Custom Properties"
+                           Style="{StaticResource headerStyle}"/>
+                <Button Grid.Column="1"
+                        Command="{Binding AddCustomPropertyCommand}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <fa:ImageAwesome Icon="Plus"
+                                             Height="20"
+                                             VerticalAlignment="Stretch"
+                                             Foreground="{StaticResource FilterIconColor}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
 
+            <ListView Grid.Row="1" 
+                      Margin="10px 5px"
+                      HorizontalContentAlignment="Stretch"
+                      Background="Transparent"
+                      BorderBrush="Transparent"
+                      ItemsSource="{Binding CustomProperties}">
+            </ListView>
+        </Grid>
+
+        <!--<StackPanel Grid.Row="1">
+            <GroupBox Header="Custom Properties">
+                <GroupBox.Template>
+                    <ControlTemplate TargetType="{x:Type GroupBox}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="20" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter ContentSource="Header" />
+                                <Button Grid.Column="1"
+                                        Command="{Binding AddCustomPropertyCommand}">
+                                    <Button.Template>
+                                        <ControlTemplate>
+                                            <fa:ImageAwesome Icon="Plus"
+                                                             VerticalAlignment="Stretch"
+                                                             Foreground="{StaticResource FilterIconColor}" />
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                            </Grid>
+                            <ContentPresenter Grid.Row="1"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              ScrollViewer.CanContentScroll="True">
+
+                            </ContentPresenter>
                         </Grid>
-                        <ContentPresenter Margin="0,0,0,0"
-                                          Grid.Row="1"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                          ScrollViewer.CanContentScroll="True">
+                    </ControlTemplate>
+                </GroupBox.Template>
 
-                        </ContentPresenter>
-                    </Grid>
-                </ControlTemplate>
-            </GroupBox.Template>
-
-            <ListView HorizontalContentAlignment="Stretch"
+                <ListView HorizontalContentAlignment="Stretch"
                           Background="Transparent"
                           BorderBrush="Transparent"
-                          Margin="0,16"
                           ItemsSource="{Binding CustomProperties}">
-            </ListView>
-        </GroupBox>
+                </ListView>
+            </GroupBox>
+        </StackPanel>-->
+        
     </Grid>
 </UserControl>

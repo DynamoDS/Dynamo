@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
+using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Wpf.Extensions;
-using System.Windows.Media.Imaging;
 using Dynamo.GraphMetadata.Controls;
 using Dynamo.UI.Commands;
-using System.Collections.ObjectModel;
-
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
 {
@@ -47,7 +44,7 @@ namespace Dynamo.GraphMetadata
             }
             set
             {
-                var base64 = Base64FromImage(value);
+                var base64 = value is null ? string.Empty : Base64FromImage(value);
                 currentWorkspace.Thumbnail = base64;
                 RaisePropertyChanged(nameof(Thumbnail));
             }
@@ -61,21 +58,37 @@ namespace Dynamo.GraphMetadata
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
+            // using this as CurrentWorkspaceChanged wont trigger if you:
+            // Close a saved workspace and open a New homeworkspace..
+            // This means that properties defined in the previous opened workspace will still be showed in the extension.
+            // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
+            this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
 
-            CustomProperties = new ObservableCollection<CustomPropertyControl>(); //required
+            CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
         }
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
-            if (!(obj is HomeWorkspaceModel hwm))
-                return;
+            if (!(obj is HomeWorkspaceModel hwm)) return;
 
-            currentWorkspace = hwm;
-            RaisePropertyChanged(nameof(GraphDescription));
-            RaisePropertyChanged(nameof(GraphAuthor));
-            RaisePropertyChanged(nameof(HelpLink));
-            RaisePropertyChanged(nameof(Thumbnail));
+            if (string.IsNullOrEmpty(hwm.FileName))
+            {
+                GraphDescription = string.Empty;
+                GraphAuthor = string.Empty;
+                HelpLink = null;
+                Thumbnail = null;
+            }
+
+            else
+            {
+                currentWorkspace = hwm;
+                RaisePropertyChanged(nameof(GraphDescription));
+                RaisePropertyChanged(nameof(GraphAuthor));
+                RaisePropertyChanged(nameof(HelpLink));
+                RaisePropertyChanged(nameof(Thumbnail));
+            }
+
 
             CustomProperties.Clear();
         }
@@ -83,17 +96,21 @@ namespace Dynamo.GraphMetadata
         private static BitmapImage ImageFromBase64(string b64string)
         {
             if (string.IsNullOrEmpty(b64string))
+            {
                 throw new ArgumentException($"'{nameof(b64string)}' cannot be null or empty.", nameof(b64string));
+            }
 
             var bytes = Convert.FromBase64String(b64string);
-            BitmapImage bitmapImage = new BitmapImage();
 
             using (var stream = new MemoryStream(bytes))
             {
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                 bitmapImage.StreamSource = stream;
-            }
-
-            return bitmapImage;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }            
         }
 
         private static string Base64FromImage(BitmapImage source)
@@ -122,26 +139,25 @@ namespace Dynamo.GraphMetadata
 
         private void AddCustomPropertyExecute(object obj)
         {
-            var control = new CustomPropertyControl();
-            control.PropertyName = $"Custom Property {CustomProperties.Count + 1}";
-            control.RequestDelete += HandleDeleteRequest;
-            CustomProperties.Add(control);
+            var propName = $"Custom Property {CustomProperties.Count + 1}";
+            AddCustomProperty(propName, string.Empty);
         }
 
-        public void AddCustomProperty(string propertyName, string propertyValue)
+        internal void AddCustomProperty(string propertyName, string propertyValue)
         {
-            var control = new CustomPropertyControl();
-            control.PropertyName = propertyName;
-            control.PropertyValue = propertyValue;
+            var control = new CustomPropertyControl
+            {
+                PropertyName = propertyName,
+                PropertyValue = propertyValue
+            };
+
             control.RequestDelete += HandleDeleteRequest;
             CustomProperties.Add(control);
         }
 
         private void HandleDeleteRequest(object sender, EventArgs e)
         {
-            CustomPropertyControl customProperty = sender as CustomPropertyControl;
-
-            if(customProperty!=null)
+            if (sender is CustomPropertyControl customProperty)
             {
                 customProperty.RequestDelete -= HandleDeleteRequest;
                 CustomProperties.Remove(customProperty);

@@ -17,10 +17,6 @@ namespace Dynamo.GraphMetadata
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem graphMetadataMenuItem;
 
-        //public string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
-
-        //public string Name => "Properties";
-
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
         public override string Name => "Properties";
@@ -56,7 +52,7 @@ namespace Dynamo.GraphMetadata
         {
             foreach (var kv in extensionData)
             {
-                if (String.IsNullOrEmpty(kv.Key))
+                if (string.IsNullOrEmpty(kv.Key))
                     continue;
 
                 var valueModified = kv.Value == null ? string.Empty : kv.Value;
@@ -67,6 +63,9 @@ namespace Dynamo.GraphMetadata
 
         public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)
         {
+            // Clearing the extensionData dictionary before adding new values
+            // as the GraphMetadataViewModel.CustomProperties is the true source of the custom properties
+            extensionData.Clear();
             foreach (var p in this.viewModel.CustomProperties)
             {
                 extensionData[p.PropertyName] = p.PropertyValue;
