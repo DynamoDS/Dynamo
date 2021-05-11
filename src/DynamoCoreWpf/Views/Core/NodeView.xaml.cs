@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.Prompts;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Controls;

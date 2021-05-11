@@ -20,7 +20,6 @@ namespace TestServices
                 {
                     new Version(227,0,0),
                     new Version(226,0,0),
-                    new Version(225,0,0)
                 };
 
         public string DynamoCorePath { get; private set; }

@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
 using Dynamo.Interfaces;
+using Dynamo.Models;
 
 namespace Dynamo.Configuration
 {
@@ -15,7 +16,7 @@ namespace Dynamo.Configuration
     /// from a XML file from DYNAMO_SETTINGS_FILE.
     /// When GUI is closed, the settings are saved back into the XML file.
     /// </summary>
-    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference
+    public class PreferenceSettings : NotificationObject, IPreferences, IRenderPrecisionPreference, IDisablePackageLoadingPreferences
     {
         private string numberFormat;
         private string lastUpdateDownloadPath;
@@ -277,7 +278,7 @@ namespace Dynamo.Configuration
         public List<string> BackupFiles { get; set; }
 
         /// <summary>
-        /// A list of folders containing zero-touch nodes and custom nodes.
+        /// A list of folders packages, custom nodes or direct paths to .dll and .ds files.
         /// </summary>
         public List<string> CustomPackageFolders { get; set; }
 
@@ -374,7 +375,18 @@ namespace Dynamo.Configuration
         /// Settings that apply to view extensions.
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
-
+        /// <summary>
+        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// </summary>
+        public bool DisableStandardLibrary { get; set; }
+        /// <summary>
+        /// If enabled user's custom package locations will not be loaded.
+        /// </summary>
+        public bool DisableCustomPackageLocations { get; set; }
+        /// <summary>
+        /// Defines the default run type when opening a workspace
+        /// </summary>
+        public RunType DefaultRunType { get; set; }
         #endregion
 
         /// <summary>
@@ -409,6 +421,7 @@ namespace Dynamo.Configuration
             OpenFileInManualExecutionMode = false;
             ShowDetailedLayout = true;
             NamespacesToExcludeFromLibrary = new List<string>();
+            DefaultRunType = RunType.Automatic;
 
             BackupInterval = 60000; // 1 minute
             BackupFilesCount = 1;
@@ -418,7 +431,7 @@ namespace Dynamo.Configuration
             PythonTemplateFilePath = "";
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
-            EnableNodeAutoComplete = false;
+            EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
         }

@@ -591,7 +591,7 @@ value : bool = false</value>
     <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
-    <value>Search</value>
+    <value>Search Autocomplete Results</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
     <value>Your code goes here</value>
@@ -734,5 +734,17 @@ Parameter name: {0}</value>
   <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
     <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
     <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+  </data>
+  <data name="DuplicatedOlderPackage" xml:space="preserve">
+    <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
+  </data>
+  <data name="InvalidPackageVersion" xml:space="preserve">
+    <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
+  </data>
+  <data name="DuplicatedNewerPackage" xml:space="preserve">
+    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
+  </data>
+  <data name="Autocomplete" xml:space="preserve">
+    <value>Autocomplete</value>
   </data>
 </root>

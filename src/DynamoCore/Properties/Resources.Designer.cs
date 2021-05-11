@@ -80,6 +80,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Autocomplete.
+        /// </summary>
+        public static string Autocomplete {
+            get {
+                return ResourceManager.GetString("Autocomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -447,6 +456,24 @@ namespace Dynamo.Properties {
         public static string DuplicatedModelGuidError {
             get {
                 return ResourceManager.GetString("DuplicatedModelGuidError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored..
+        /// </summary>
+        public static string DuplicatedNewerPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedNewerPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored..
+        /// </summary>
+        public static string DuplicatedOlderPackage {
+            get {
+                return ResourceManager.GetString("DuplicatedOlderPackage", resourceCulture);
             }
         }
         
@@ -833,6 +860,15 @@ namespace Dynamo.Properties {
         public static string InvalidLibraryFormat {
             get {
                 return ResourceManager.GetString("InvalidLibraryFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version of the package called {0} found at {1} is invalid (version: &quot;{2}&quot;). Ignoring it..
+        /// </summary>
+        public static string InvalidPackageVersion {
+            get {
+                return ResourceManager.GetString("InvalidPackageVersion", resourceCulture);
             }
         }
         
@@ -1447,7 +1483,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search.
+        ///   Looks up a localized string similar to Search Autocomplete Results.
         /// </summary>
         public static string SearchTextBlockText {
             get {

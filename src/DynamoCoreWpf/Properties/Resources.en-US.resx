@@ -709,13 +709,13 @@ You will get a chance to save your work.</value>
   <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
     <value>Show In Folder</value>
   </data>
-  <data name="DynamoViewSettingEnableTSplineNodes" xml:space="preserve">
-    <value>Enable T-Spline nodes (requires relaunch of Dynamo)</value>
-    <comment>Setting menu | Experimental | Enable T-Spline nodes</comment>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>Enable T-Spline nodes</value>
+    <comment>Preferences | Features | Experimental | Enable T-Spline nodes</comment>
   </data>
-  <data name="DynamoViewSettingExperimental" xml:space="preserve">
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
     <value>Experimental</value>
-    <comment>Setting menu | Experimental</comment>
+    <comment>Preferences | Features | Experimental</comment>
   </data>
   <data name="DynamoViewSettingMenu" xml:space="preserve">
     <value>_Settings</value>
@@ -852,12 +852,6 @@ You will get a chance to save your work.</value>
   <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
     <value>Geometry Scaling...</value>
     <comment>Settings menu | Geometry Scaling</comment>
-  </data>
-  <data name="DynamoViewSettingsMenuIsolationMode" xml:space="preserve">
-    <value>Isolate Selected Geometry</value>
-  </data>
-  <data name="DynamoViewSettingsMenuShowEdges" xml:space="preserve">
-    <value>Show Edges</value>
   </data>
   <data name="DynamoViewSettingsMenuShowPreviewBubbles" xml:space="preserve">
     <value>Show Preview Bubbles</value>
@@ -1559,10 +1553,6 @@ Next assemblies were loaded several times:
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
   </data>
-  <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>Top path is the default save location.</value>
-    <comment>Package path management dialog content that describes about the first entry being the default save location.</comment>
-  </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
     <comment>Package path management dialog title</comment>
@@ -2233,8 +2223,9 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
-  <data name="DynamoViewSettingsMenuIsIronPythonDialogDisabled" xml:space="preserve">
-    <value>Hide IronPython Alerts</value>
+  <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
+    <value>Hide IronPython alerts</value>
+    <comment>Preferences | Features | Python | Hide IronPython Alerts</comment>
   </data>
   <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
     <value>Failed to download version {0} of package with id: {1}.  Please try again and report the package if you continue to have problems.</value>
@@ -2261,18 +2252,21 @@ Uninstall the following packages: {0}?</value>
   <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor" xml:space="preserve">
-    <value>Show Whitespace Characters in Python Editor</value>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Show Whitespace in Python Editor</value>
+    <comment>Preferences | Features | Python | Show Whitspace Characters in Python editor</comment>
   </data>
-  <data name="DynamoViewSettingsDefaultPythonEngine" xml:space="preserve">
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
     <value>Default Python Engine</value>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
+    <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
-  <data name="DynamoViewSettingEnableNodeAutoComplete" xml:space="preserve">
-    <value>Enable Node Auto Complete</value>
-    <comment>Setting menu | Experimental | Enable Node Auto Complete</comment>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>Node Autocomplete</value>
+    <comment>Preferences | Features | Experimental | Enable Node Auto Complete</comment>
   </data>
   <data name="ErrorLoadingIcon" xml:space="preserve">
     <value>An error occurred when loading the application icon: {0}</value>
@@ -2302,7 +2296,7 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PublishPackageDocTooltipText" xml:space="preserve">
     <value>Learn More about publishing a package</value>
-  </data>  
+  </data>
   <data name="PreferencesViewFeaturesTab" xml:space="preserve">
     <value>Features</value>
   </data>
@@ -2332,5 +2326,66 @@ Uninstall the following packages: {0}?</value>
   <data name="DynamoViewExtensionsMenu" xml:space="preserve">
     <value>_Extensions</value>
     <comment>Extensions menu</comment>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+    <comment>Preferences | Features | Python</comment>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Requires relaunch of Dynamo</value>
+    <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
+  </data>
+  <data name="MessagePackageDepsInStdLib" xml:space="preserve">
+    <value>{1} has dependencies that conflict with the following Stadard Library packages : {2}. {0} cannot override packages in the Standard Library location.</value>
+  </data>
+  <data name="MessageSamePackageInStdLib" xml:space="preserve">
+    <value>The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location.</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInStdLib" xml:space="preserve">
+    <value>A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
+    <value>Geometry Scaling</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>Group Styles</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>Render Precision</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewStyleWarning" xml:space="preserve">
+    <value>Style name already in use</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Display Settings</value>
+    <comment>Expander Header Name</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Show Edges</value>
+    <comment>Show Edges</comment>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Isolate Selected Geometry</value>
+    <comment>Toogle Button Content</comment>
+  </data>
+  <data name="PackagePathViewModel_Standard_Library" xml:space="preserve">
+    <value>Standard Library</value>
+  </data>
+  <data name="PackagePathViewSummary2" xml:space="preserve">
+    <value>The default install location is the first path that is not the Standard Library location.</value>
+    <comment>Package path management dialog content that displays the first non-standard library entry being the default save location.</comment>
+  </data>
+  <data name="PackagePathViewSummary3" xml:space="preserve">
+    <value>Italicized locations are disabled.</value>
+    <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
+  </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>All changes saved automatically</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>Last saved: </value>
   </data>
 </root>

@@ -1,20 +1,114 @@
-﻿using System.Collections.ObjectModel;
+﻿using Dynamo.Configuration;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
+using Dynamo.Wpf.ViewModels.Core.Converters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Drawing;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// The next enum will contain the posible values for Scaling (Visual Settings -> Geometry Scaling section)
+    /// </summary>
+    public enum GeometryScaleSize
+    {
+        Small,
+        Medium,
+        Large,
+        ExtraLarge
+    }
     public class PreferencesViewModel : ViewModelBase
     {
+        #region Private Properties
+        private string savedChangesLabel;
+        private string savedChangesTooltip;
+        private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> fontSizeList;
+        private ObservableCollection<string> numberFormatList;
+        private ObservableCollection<StyleItem> styleItemsList;
+        private StyleItem addStyleControl;
+        private ObservableCollection<string> _pythonEngineList;
 
-        private ObservableCollection<string> _languagesList;
-        private ObservableCollection<string> _fontSizeList;
-        private ObservableCollection<string> _numberFormatList;
         private string selectedLanguage;
         private string selectedFontSize;
         private string selectedNumberFormat;
-        private bool runSettingsIsChecked;
+        private string selectedPythonEngine;
+        private bool runPreviewEnabled;
         private bool runPreviewIsChecked;
+        private bool hideIronPAlerts;
+        private bool showWhitespace;
+        private bool nodeAutocomplete;
+        private bool enableTSpline;
+        private bool showEdges;
+        private bool isolateSelectedGeometry;
+        private RunType runSettingsIsChecked;
 
+        private PreferenceSettings preferenceSettings;
+        private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
+        private HomeWorkspaceModel homeSpace;
+        private DynamoViewModel dynamoViewModel;
+        private bool isWarningEnabled;
+        private GeometryScalingOptions optionsGeometryScal = null;
+        #endregion Private Properties
+
+        public GeometryScaleSize ScaleSize { get; set; }
+
+        public Tuple<string, string, string> ScaleRange
+        {
+            get
+            {
+                return scaleRanges[ScaleSize];
+            }
+        }
+
+        private Dictionary<GeometryScaleSize, Tuple<string, string, string>> scaleRanges = new Dictionary<GeometryScaleSize, Tuple<string, string, string>>
+        {
+            {GeometryScaleSize.Medium, new Tuple<string, string, string>("medium", "0.0001", "10,000")},
+            {GeometryScaleSize.Small, new Tuple<string, string, string>("small", "0.000,001", "100")},
+            {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
+            {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
+        };
+
+        /// <summary>
+        /// Controls what the SavedChanges label will display
+        /// </summary>
+        public string SavedChangesLabel
+        {
+            get
+            {
+                return savedChangesLabel;
+            }
+            set
+            {
+                savedChangesLabel = value;
+                RaisePropertyChanged(nameof(SavedChangesLabel));
+            }
+        }
+
+        /// <summary>
+        /// Controls what SavedChanges label's tooltip will display
+        /// </summary>
+        public string SavedChangesTooltip
+        {
+            get
+            {
+                return savedChangesTooltip;
+            }
+            set
+            {
+                savedChangesTooltip = value;
+                RaisePropertyChanged(nameof(SavedChangesTooltip));
+
+            }
+        }
+        //This includes all the properties that can be set on the General tab
+        #region General Properties
         /// <summary>
         /// Controls the Selected option in Language ComboBox
         /// </summary>
@@ -27,7 +121,8 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedLanguage = value;
-                RaisePropertyChanged("SelectedLanguage");
+                RaisePropertyChanged(nameof(SelectedLanguage));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -43,7 +138,8 @@ namespace Dynamo.ViewModels
             set
             {
                 selectedFontSize = value;
-                RaisePropertyChanged("SelectedFontSize");
+                RaisePropertyChanged(nameof(SelectedFontSize));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -54,12 +150,14 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectedNumberFormat;
+                return preferenceSettings.NumberFormat;
             }
             set
             {
                 selectedNumberFormat = value;
-                RaisePropertyChanged("SelectedNumberFormat");
+                preferenceSettings.NumberFormat = value;
+                RaisePropertyChanged(nameof(SelectedNumberFormat));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -70,12 +168,22 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runSettingsIsChecked;
+                return runSettingsIsChecked == RunType.Manual;
             }
             set
             {
-                runSettingsIsChecked = value;
-                RaisePropertyChanged("RunSettingsIsChecked");
+                if (value)
+                {
+                    preferenceSettings.DefaultRunType = RunType.Manual;
+                    runSettingsIsChecked = RunType.Manual;
+                }
+                else
+                {
+                    preferenceSettings.DefaultRunType = RunType.Automatic;
+                    runSettingsIsChecked = RunType.Automatic;
+                }
+                RaisePropertyChanged(nameof(RunSettingsIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -86,12 +194,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return runPreviewIsChecked;
+                return dynamoViewModel.ShowRunPreview;
             }
             set
             {
-                runPreviewIsChecked = value;
-                RaisePropertyChanged("RunPreviewIsChecked");
+                dynamoViewModel.ShowRunPreview = value;
+                RaisePropertyChanged(nameof(RunPreviewIsChecked));
+                UpdateSavedChangesLabel();
             }
         }
 
@@ -102,12 +211,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _languagesList;
+                return languagesList;
             }
             set
             {
-                _languagesList = value;
-                RaisePropertyChanged("LanguagesList");
+                languagesList = value;
+                RaisePropertyChanged(nameof(LanguagesList));
             }
         }
 
@@ -118,12 +227,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _fontSizeList;
+                return fontSizeList;
             }
             set
             {
-                _fontSizeList = value;
-                RaisePropertyChanged("FontSizeList");
+                fontSizeList = value;
+                RaisePropertyChanged(nameof(FontSizeList));
             }
         }
 
@@ -134,20 +243,349 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _numberFormatList;
+                return numberFormatList;
             }
             set
             {
-                _numberFormatList = value;
-                RaisePropertyChanged("NumberFormatList");
+                numberFormatList = value;
+                RaisePropertyChanged(nameof(NumberFormatList));
+            }
+        }
+        #endregion
+
+        //This includes all the properties that can be set on the Visual Settings tab
+        #region VisualSettings Properties
+        /// <summary>
+        /// This will contain a list of all the Styles created by the user in the Styles list ( Visual Settings -> Group Styles section)
+        /// </summary>
+        public ObservableCollection<StyleItem> StyleItemsList
+        {
+            get { return styleItemsList; }
+            set
+            {
+                styleItemsList = value;
+                RaisePropertyChanged(nameof(StyleItemsList));
             }
         }
 
         /// <summary>
+        /// Used to add styles to the StyleItemsListe while also update the saved changes label
+        /// </summary>
+        /// <param name="style"></param>
+        public void AddStyle(StyleItem style)
+        {
+            StyleItemsList.Add(style);
+            RaisePropertyChanged(nameof(StyleItemsList));
+            UpdateSavedChangesLabel();
+        }
+
+        /// <summary>
+        /// This flag will be in true when the Style that user is trying to add already exists (otherwise will be false - Default)
+        /// </summary>
+        public bool IsWarningEnabled
+        {
+            get
+            {
+                return isWarningEnabled;
+            }
+            set
+            {
+                isWarningEnabled = value;
+                RaisePropertyChanged(nameof(IsWarningEnabled));
+            }
+        }
+
+        /// <summary>
+        /// This property was created just a container for default information when the user is adding a new Style
+        /// When users press the Add Style button some controls are shown so the user can populate them, this property will contain default values shown
+        /// </summary>
+        public StyleItem AddStyleControl
+        {
+            get
+            {
+                return addStyleControl;
+            }
+            set
+            {
+                addStyleControl = value;
+                RaisePropertyChanged(nameof(AddStyleControl));
+            }
+        }
+
+        /// <summary>
+        /// This property is used as a container for the description text (GeometryScalingOptions.DescriptionScaleRange) for each radio button (Visual Settings -> Geometry Scaling section)
+        /// </summary>
+        public GeometryScalingOptions OptionsGeometryScal
+        {
+            get
+            {
+                return optionsGeometryScal;
+            }
+            set
+            {
+                optionsGeometryScal = value;
+                RaisePropertyChanged(nameof(OptionsGeometryScal));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the ShowEdges toogle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool ShowEdges
+        {
+            get
+            {
+                return showEdges;
+            }
+            set
+            {
+                showEdges = value;
+                RaisePropertyChanged(nameof(ShowEdges));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// Controls the binding for the IsolateSelectedGeometry toogle in the Preferences->Visual Settings->Display Settings section
+        /// </summary>
+        public bool IsolateSelectedGeometry
+        {
+            get
+            {
+                return isolateSelectedGeometry;
+            }
+            set
+            {
+                isolateSelectedGeometry = value;
+                RaisePropertyChanged(nameof(IsolateSelectedGeometry));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// This property is bind to the Render Precision Slider and control the amount of tessellation applied to objects in background preview
+        /// </summary>
+        public int TessellationDivisions
+        {
+            get
+            {
+                return dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions;
+            }
+            set
+            {
+                dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = value;
+                RaisePropertyChanged(nameof(TessellationDivisions));
+                UpdateSavedChangesLabel();
+            }
+        }
+        #endregion
+
+        //This includes all the properties that can be set on the Features tab
+        #region Features Properties
+        /// <summary>
+        /// PythonEnginesList contains the list of Python engines available
+        /// </summary>
+        public ObservableCollection<string> PythonEnginesList
+        {
+            get
+            {
+                return _pythonEngineList;
+            }
+            set
+            {
+                _pythonEngineList = value;
+                RaisePropertyChanged(nameof(PythonEnginesList));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Selected option in Python Engine combobox
+        /// </summary>
+        public string SelectedPythonEngine
+        {
+            get
+            {
+                return preferenceSettings.DefaultPythonEngine;
+            }
+            set
+            {
+                if (value != preferenceSettings.DefaultPythonEngine)
+                {
+                    selectedPythonEngine = value;
+                    preferenceSettings.DefaultPythonEngine = value;
+                    RaisePropertyChanged(nameof(SelectedPythonEngine));
+                    UpdateSavedChangesLabel();
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
+        /// </summary>
+        public bool HideIronPythonAlertsIsChecked
+        {
+            get
+            {
+                return preferenceSettings.IsIronPythonDialogDisabled;
+            }
+            set
+            {
+                hideIronPAlerts = value;
+                preferenceSettings.IsIronPythonDialogDisabled = value;
+                RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Show Whitespace in Python editor" toogle button
+        /// </summary>
+        public bool ShowWhitespaceIsChecked
+        {
+            get
+            {
+                return preferenceSettings.ShowTabsAndSpacesInScriptEditor;
+            }
+            set
+            {
+                pythonScriptEditorTextOptions.ShowWhiteSpaceCharacters(value);
+                preferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
+                showWhitespace = value;
+                RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toogle button
+        /// </summary>
+        public bool NodeAutocompleteIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNodeAutoComplete;
+            }
+            set
+            {
+                preferenceSettings.EnableNodeAutoComplete = value;
+                nodeAutocomplete = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Enable T-spline nodes" toogle button
+        /// </summary>
+        public bool EnableTSplineIsChecked
+        {
+            get
+            {
+                return !preferenceSettings.NamespacesToExcludeFromLibrary.Contains(
+                    "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline");
+            }
+            set
+            {
+                enableTSpline = value;
+                HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
+                RaisePropertyChanged(nameof(EnableTSplineIsChecked));
+                UpdateSavedChangesLabel();
+            }
+        }
+
+        /// <summary>
+        /// This method updates the node search library to either hide or unhide nodes that belong
+        /// to a specified assembly name and namespace. These nodes will be hidden from the node
+        /// library sidebar and from the node search.
+        /// </summary>
+        /// <param name="hide">Set to true to hide, set to false to unhide.</param>
+        /// <param name="library">The assembly name of the library.</param>
+        /// <param name="namespc">The namespace of the nodes to be hidden.</param>
+        internal void HideUnhideNamespace(bool hide, string library, string namespc)
+        {
+            var str = library + ':' + namespc;
+            var namespaces = preferenceSettings.NamespacesToExcludeFromLibrary;
+
+            if (hide)
+            {
+                if (!namespaces.Contains(str))
+                {
+                    namespaces.Add(str);
+                }
+            }
+            else // unhide
+            {
+                namespaces.Remove(str);
+            }
+        }
+
+        /// <summary>
+        /// Gets the different Python Engine versions availables from PythonNodeModels.dll
+        /// </summary>
+        /// <returns>Strings array with the different names</returns>
+        private string[] GetPythonEngineOptions()
+        {
+            try
+            {
+                var enumType = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(s =>
+                    {
+                        try
+                        {
+                            return s.GetTypes();
+                        }
+                        catch (ReflectionTypeLoadException)
+                        {
+                            return new Type[0];
+                        }
+                    }).FirstOrDefault(t => t.FullName.Equals("PythonNodeModels.PythonEngineVersion"));
+
+                return Enum.GetNames(enumType);
+            }
+            catch
+            {
+                return Array.Empty<string>();
+            }
+        }
+
+        private void AddPythonEnginesOptions()
+        {
+            var pythonEngineOptions = GetPythonEngineOptions();
+            if (pythonEngineOptions.Length != 0)
+            {
+                foreach (var option in pythonEngineOptions)
+                {
+                    if (option != "Unspecified")
+                    {
+                        PythonEnginesList.Add(option);
+                    }
+                }
+            }
+            else
+            {
+                PythonEnginesList.Add("IronPython2");
+                PythonEnginesList.Add("CPython3");
+            }
+        }
+        #endregion
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
-        public PreferencesViewModel()
+        public PreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
+            this.preferenceSettings = dynamoViewModel.PreferenceSettings;
+            this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
+            this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
+            this.homeSpace = dynamoViewModel.HomeSpace;
+            this.dynamoViewModel = dynamoViewModel;
+
+            PythonEnginesList = new ObservableCollection<string>();
+            PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
+            AddPythonEnginesOptions();
+            SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -165,11 +603,166 @@ namespace Dynamo.ViewModels
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000);
             NumberFormatList.Add(Wpf.Properties.Resources.DynamoViewSettingMenuNumber00000);
-            SelectedNumberFormat = Wpf.Properties.Resources.DynamoViewSettingMenuNumber0000;
+            SelectedNumberFormat = preferenceSettings.NumberFormat;
 
-            //By Default the Default Run Settings radio button will be in Manual
-            RunSettingsIsChecked = true;
+            runSettingsIsChecked = preferenceSettings.DefaultRunType;
 
+            //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
+            isWarningEnabled = false;
+
+            StyleItemsList = new ObservableCollection<StyleItem>();
+          
+            //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
+            AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
+
+            //This piece of code will populate all the description text for the RadioButtons in the Geometry Scaling section.
+            optionsGeometryScal = new GeometryScalingOptions();
+
+            //This will set the default option for the Geometry Scaling Radio Buttons, the value is comming from the DynamoViewModel
+            optionsGeometryScal.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(dynamoViewModel.ScaleFactorLog);
+
+            optionsGeometryScal.DescriptionScaleRange = new ObservableCollection<string>();
+            optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Small].Item2,
+                                                                                              scaleRanges[GeometryScaleSize.Small].Item3));
+            optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Medium].Item2,
+                                                                                              scaleRanges[GeometryScaleSize.Medium].Item3));
+            optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.Large].Item2,
+                                                                                              scaleRanges[GeometryScaleSize.Large].Item3));
+            optionsGeometryScal.DescriptionScaleRange.Add(string.Format(Res.ChangeScaleFactorPromptDescriptionContent, scaleRanges[GeometryScaleSize.ExtraLarge].Item2,
+                                                                                              scaleRanges[GeometryScaleSize.ExtraLarge].Item3));
+
+            SavedChangesLabel = string.Empty;
+            SavedChangesTooltip = string.Empty;
+        }
+
+        internal void UpdateSavedChangesLabel()
+        {
+            SavedChangesLabel = Res.PreferencesViewSavedChangesLabel;
+            //Sets the last saved time in the en-US format
+            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + DateTime.Now.ToString(@"hh:mm tt", new CultureInfo("en-US"));
+        }
+
+        /// <summary>
+        /// This method will remove the current Style selected from the Styles list
+        /// </summary>
+        /// <param name="groupName"></param>
+        internal void RemoveStyleEntry(string groupName)
+        {
+            StyleItem itemToRemove = (from item in StyleItemsList where item.GroupName.Equals(groupName) select item).FirstOrDefault();
+            StyleItemsList.Remove(itemToRemove);
+            UpdateSavedChangesLabel();
+        }
+
+        /// <summary>
+        /// This method will check if the Style that is being created already exists in the Styles list
+        /// </summary>
+        /// <param name="item1"></param>
+        /// <returns></returns>
+        internal bool ValidateExistingStyle(StyleItem item1)
+        {
+            return StyleItemsList.Where(x => x.GroupName.Equals(item1.GroupName)).Any();
+        }
+
+        /// <summary>
+        /// This method will remove a specific style control from the Styles list
+        /// </summary>
+        internal void ResetAddStyleControl()
+        {
+            AddStyleControl.GroupName = String.Empty;
+            AddStyleControl.HexColorString = "#" + GetRandomHexStringColor();
+            IsWarningEnabled = false;
+        }
+
+        /// <summary>
+        /// This Method will generate a random color string in a Hexadecimal format
+        /// </summary>
+        /// <returns></returns>
+        internal string GetRandomHexStringColor()
+        {
+            Random r = new Random();
+            Color color = Color.FromArgb(255, (byte)r.Next(), (byte)r.Next(), (byte)r.Next());
+            return ColorTranslator.ToHtml(color).Replace("#", "");
+        }
+    }
+
+    /// <summary>
+    /// This Class will act as a container for each of the StyleItems in the Styles list located in in the Visual Settings -> Group Styles section
+    /// </summary>
+    public class StyleItem : ViewModelBase
+    {
+        private string groupName;
+        private string hexColorString;
+
+        /// <summary>
+        /// This property will containt the Group Name thas was added by the user when creating a new Style
+        /// </summary>
+        public string GroupName
+        {
+            get { return groupName; }
+            set
+            {
+                groupName = value;
+                RaisePropertyChanged(nameof(GroupName));
+            }
+        }
+
+        /// <summary>
+        /// This property represents a color in a hexadecimal representation (with the # character at the beginning of the string)
+        /// </summary>
+        public string HexColorString
+        {
+            get { return hexColorString; }
+            set
+            {
+                hexColorString = value;
+                RaisePropertyChanged(nameof(HexColorString));
+            }
+        }
+    }
+
+    /// <summary>
+    /// This class will contain the Enum value and the corresponding description for each radio button in the Visual Settings -> Geometry Scaling section
+    /// </summary>
+    public class GeometryScalingOptions
+    {
+        //The Enum values can be Small, Medium, Large or Extra Large
+        public GeometryScaleSize EnumProperty { get; set; }
+
+        /// <summary>
+        /// This property will contain the description of each of the radio buttons in the Visual Settings -> Geometry Scaling section
+        /// </summary>
+        public ObservableCollection<string> DescriptionScaleRange { get; set; }
+
+        /// <summary>
+        /// This method is used to convert a index (representing a RadioButton in the UI) to a ScaleFactor
+        /// </summary>
+        /// <param name="index">This value is the index for the RadioButton in the Geometry Scaling section. 
+        /// It can have the values:
+        ///   0 - Small
+        ///   1 - Medium (Default)
+        ///   2 - Large
+        ///   3 - Extra Large
+        /// </param>
+        /// <returns>The Scale Factor (-2, 0, 2, 4)</returns>
+        public static int ConvertUIToScaleFactor (int index)
+        {
+            return (index - 1) * 2;
+        }
+
+        /// <summary>
+        /// This method is used to conver a Scale Factor to a index so we can Check a Radio Button in the UI
+        /// </summary>
+        /// <param name="scaleValue">This values is the Scale that we need to convert to index (representing a RadioButton)
+        /// It can have the values:
+        /// - 2 - Small
+        ///   0 - Medium (Default)
+        ///   2 - Large
+        ///   4 - Extra Large
+        /// </param>
+        /// <returns>The radiobutton index (0,1,2,3)</returns>
+        public static int ConvertScaleFactorToUI(int scaleValue)
+        {
+           return (scaleValue / 2) + 1;
         }
     }
 }

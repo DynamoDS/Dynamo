@@ -1575,33 +1575,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable Node Auto Complete.
-        /// </summary>
-        public static string DynamoViewSettingEnableNodeAutoComplete {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingEnableNodeAutoComplete", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable T-Spline nodes (requires relaunch of Dynamo).
-        /// </summary>
-        public static string DynamoViewSettingEnableTSplineNodes {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingEnableTSplineNodes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Experimental.
-        /// </summary>
-        public static string DynamoViewSettingExperimental {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingExperimental", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to _Settings.
         /// </summary>
         public static string DynamoViewSettingMenu {
@@ -1899,15 +1872,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Default Python Engine.
-        /// </summary>
-        public static string DynamoViewSettingsDefaultPythonEngine {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsDefaultPythonEngine", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Run Preview.
         /// </summary>
         public static string DynamoViewSettingShowRunPreview {
@@ -1926,24 +1890,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide IronPython Alerts.
-        /// </summary>
-        public static string DynamoViewSettingsMenuIsIronPythonDialogDisabled {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuIsIronPythonDialogDisabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Isolate Selected Geometry.
-        /// </summary>
-        public static string DynamoViewSettingsMenuIsolationMode {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuIsolationMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
         /// </summary>
         public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
@@ -1953,29 +1899,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Edges.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowEdges {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowEdges", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Preview Bubbles.
         /// </summary>
         public static string DynamoViewSettingsMenuShowPreviewBubbles {
             get {
                 return ResourceManager.GetString("DynamoViewSettingsMenuShowPreviewBubbles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Whitespace Characters in Python Editor.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowTabsAndSpacesInScriptEditor", resourceCulture);
             }
         }
         
@@ -3344,6 +3272,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Stadard Library packages : {2}. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessagePackageDepsInStdLib {
+            get {
+                return ResourceManager.GetString("MessagePackageDepsInStdLib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The package or one of its dependencies use a newer version of {0} than you are currently using. Do you want to continue?.
         /// </summary>
         public static string MessagePackageNewerDynamo {
@@ -3367,6 +3304,24 @@ namespace Dynamo.Wpf.Properties {
         public static string MessagePackageVersionNotFound {
             get {
                 return ResourceManager.GetString("MessagePackageVersionNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessageSamePackageDiffVersInStdLib {
+            get {
+                return ResourceManager.GetString("MessageSamePackageDiffVersInStdLib", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        /// </summary>
+        public static string MessageSamePackageInStdLib {
+            get {
+                return ResourceManager.GetString("MessageSamePackageInStdLib", resourceCulture);
             }
         }
         
@@ -3954,6 +3909,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Standard Library.
+        /// </summary>
+        public static string PackagePathViewModel_Standard_Library {
+            get {
+                return ResourceManager.GetString("PackagePathViewModel_Standard_Library", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add paths to make nodes and packages show up in the library..
         /// </summary>
         public static string PackagePathViewSummary1 {
@@ -3963,11 +3927,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Top path is the default save location..
+        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location..
         /// </summary>
         public static string PackagePathViewSummary2 {
             get {
                 return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Italicized locations are disabled..
+        /// </summary>
+        public static string PackagePathViewSummary3 {
+            get {
+                return ResourceManager.GetString("PackagePathViewSummary3", resourceCulture);
             }
         }
         
@@ -4404,6 +4377,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Default Python Engine.
+        /// </summary>
+        public static string PreferencesViewDefaultPythonEngine {
+            get {
+                return ResourceManager.GetString("PreferencesViewDefaultPythonEngine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Autocomplete.
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoComplete {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable T-Spline nodes.
+        /// </summary>
+        public static string PreferencesViewEnableTSplineNodes {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableTSplineNodes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Experimental.
+        /// </summary>
+        public static string PreferencesViewExperimentalLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewExperimentalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Features.
         /// </summary>
         public static string PreferencesViewFeaturesTab {
@@ -4431,11 +4440,38 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide IronPython alerts.
+        /// </summary>
+        public static string PreferencesViewIsIronPythonDialogDisabled {
+            get {
+                return ResourceManager.GetString("PreferencesViewIsIronPythonDialogDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language.
         /// </summary>
         public static string PreferencesViewLanguageLabel {
             get {
                 return ResourceManager.GetString("PreferencesViewLanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Python.
+        /// </summary>
+        public static string PreferencesViewPython {
+            get {
+                return ResourceManager.GetString("PreferencesViewPython", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requires relaunch of Dynamo.
+        /// </summary>
+        public static string PreferencesViewRequiresRelaunchOfDynamo {
+            get {
+                return ResourceManager.GetString("PreferencesViewRequiresRelaunchOfDynamo", resourceCulture);
             }
         }
         
@@ -4449,11 +4485,101 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All changes saved automatically.
+        /// </summary>
+        public static string PreferencesViewSavedChangesLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewSavedChangesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last saved:.
+        /// </summary>
+        public static string PreferencesViewSavedChangesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewSavedChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Whitespace in Python Editor.
+        /// </summary>
+        public static string PreferencesViewShowWhitespaceInPythonEditor {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowWhitespaceInPythonEditor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Style name already in use.
+        /// </summary>
+        public static string PreferencesViewStyleWarning {
+            get {
+                return ResourceManager.GetString("PreferencesViewStyleWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Preferences.
         /// </summary>
         public static string PreferencesViewTitle {
             get {
                 return ResourceManager.GetString("PreferencesViewTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display Settings.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsDisplaySettings {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsDisplaySettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Geometry Scaling.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGeoScaling {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGeoScaling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsGroupStyles {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsGroupStyles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Edges.
+        /// </summary>
+        public static string PreferencesViewVisualSettingShowEdges {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingShowEdges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Isolate Selected Geometry.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsIsolateSelectedGeo {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsIsolateSelectedGeo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Render Precision.
+        /// </summary>
+        public static string PreferencesViewVisualSettingsRenderPrecision {
+            get {
+                return ResourceManager.GetString("PreferencesViewVisualSettingsRenderPrecision", resourceCulture);
             }
         }
         
