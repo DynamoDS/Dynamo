@@ -42,7 +42,7 @@ namespace Dynamo.LintingViewExtension
         /// <summary>
         /// Command to select a node in the workspace from the linter view
         /// </summary>
-        public DelegateCommand<string> SelectIssueNodeCommand { get; private set; }
+        public DelegateCommand SelectIssueNodeCommand { get; private set; }
 
         /// <summary>
         /// Command to open a help page in the documentation browser
@@ -103,7 +103,7 @@ namespace Dynamo.LintingViewExtension
         #region Private methods
         private void InitializeCommands()
         {
-            this.SelectIssueNodeCommand = new DelegateCommand<string>(this.SelectIssueNodeCommandExecute);
+            this.SelectIssueNodeCommand = new DelegateCommand(this.SelectIssueNodeCommandExecute);
             this.OpenDocumentationBrowserCommand = new DelegateCommand(this.OpenDocumentationBrowserCommandExecute);
         }
 
@@ -112,12 +112,14 @@ namespace Dynamo.LintingViewExtension
             viewLoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(linterViewHelpLink);
         }
 
-        private void SelectIssueNodeCommandExecute(string nodeId)
+        private void SelectIssueNodeCommandExecute(object nodeId)
         {
+            if (!(nodeId is string id)) return;
+
             var nodes = viewLoadedParams.CurrentWorkspaceModel.Nodes;
             if (nodes is null || !nodes.Any()) { return; }
 
-            var selectedNode = nodes.Where(x => x.GUID.ToString() == nodeId).FirstOrDefault();
+            var selectedNode = nodes.Where(x => x.GUID.ToString() == id).FirstOrDefault();
             if (selectedNode is null) { return; }
 
             var cmd = new DynamoModel.SelectInRegionCommand(selectedNode.Rect, false);
