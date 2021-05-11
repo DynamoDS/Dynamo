@@ -47,24 +47,6 @@
                         Value="5" />
             </Style>
 
-            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource {x:Type GroupBox}}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
-                <Setter Property="Margin"
-                        Value="0,5px" />
-                <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
-                <Setter Property="HeaderTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding}"
-                                       Margin="0,0,0,5"
-                                       Style="{StaticResource headerStyle}" />
-
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <Style TargetType="{x:Type ListView}">
                 <Setter Property="Background"
                         Value="Transparent" />
@@ -102,6 +84,27 @@
                 <Setter Property="Foreground"
                         Value="{StaticResource NestedMemberTextColor}" />
             </Style>
+
+            <Style TargetType="{x:Type GroupBox}"
+                   BasedOn="{StaticResource {x:Type GroupBox}}">
+                <Setter Property="BorderThickness"
+                        Value="0" />
+                <Setter Property="Margin"
+                        Value="0,5px" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource NestedMemberTextColor}" />
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}"
+                                       Margin="0,0,0,5"
+                                       Style="{StaticResource headerStyle}" />
+
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
     
