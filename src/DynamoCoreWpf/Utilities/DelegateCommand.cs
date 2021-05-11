@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Windows.Input;
 
 namespace Dynamo.UI.Commands
