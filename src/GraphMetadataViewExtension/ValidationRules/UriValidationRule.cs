@@ -12,19 +12,19 @@ namespace Dynamo.GraphMetadata.ValidationRules
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
             string input = value as string;
+
             if (String.IsNullOrEmpty(input)) // Valid input, converts to null.
             {
                 return new ValidationResult(true, null);
             }
-            Uri outUri;
-            if (Uri.TryCreate(input, UriKind.Absolute, out outUri))
+
+            if (Uri.TryCreate(input, UriKind.Absolute, out Uri outUri))
             {
                 return new ValidationResult(true, null);
             }
-            else
-            {
-                return new ValidationResult(false, "String is not a valid URI");
-            }
+
+            return new ValidationResult(false, "String is not a valid URI");
+
         }
     }
 }

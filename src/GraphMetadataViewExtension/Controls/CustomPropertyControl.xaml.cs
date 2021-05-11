@@ -60,8 +60,7 @@ namespace Dynamo.GraphMetadata.Controls
 
         private void DeletePropertyNameCmdExecute(object obj)
         {
-            if (string.IsNullOrEmpty(this.PropertyName))
-                return;
+            if (string.IsNullOrEmpty(this.PropertyName)) return;
 
             OnRequestDelete(EventArgs.Empty);
         }

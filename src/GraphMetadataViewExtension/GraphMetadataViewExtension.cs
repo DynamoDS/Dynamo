@@ -12,14 +12,15 @@ namespace Dynamo.GraphMetadata
 {
     public class GraphMetadataViewExtension : ViewExtensionBase, IExtensionStorageAccess
     {
-        public GraphMetadataViewModel viewModel;
+        internal static string extensionName = "Properties";
+        internal GraphMetadataViewModel viewModel;
         private GraphMetadataView graphMetadataView;
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem graphMetadataMenuItem;
 
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
-        public override string Name => "Properties";
+        public override string Name => extensionName;
 
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
@@ -52,8 +53,7 @@ namespace Dynamo.GraphMetadata
         {
             foreach (var kv in extensionData)
             {
-                if (string.IsNullOrEmpty(kv.Key))
-                    continue;
+                if (string.IsNullOrEmpty(kv.Key)) continue;
 
                 var valueModified = kv.Value == null ? string.Empty : kv.Value;
 

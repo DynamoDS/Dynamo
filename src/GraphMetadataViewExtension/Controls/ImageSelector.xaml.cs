@@ -144,6 +144,7 @@ namespace Dynamo.GraphMetadata.Controls
             {
                 this.UserFeedback = Properties.Resources.ImageSelector_Message_InvalidExtension;
             }
+
             else
             {
                 this.UserFeedback = Properties.Resources.ImageSelector_Message_DropImage;
