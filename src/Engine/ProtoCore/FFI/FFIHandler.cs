@@ -183,9 +183,14 @@ namespace ProtoFFI
             var moduleName = assembly.GetName();
             Module testDll = assembly.GetModule(moduleName.Name);
             if (testDll == null)
+            {
                 module = new CLRDLLModule(moduleName.Name, assembly);
+            }
+
             else
+            {
                 module = new CLRDLLModule(moduleName.Name, testDll);
+            }
 
             Modules.Add(moduleName.Name + ".dll", module);
             return module;

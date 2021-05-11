@@ -159,11 +159,6 @@ namespace Dynamo.Graph.Nodes
                 .SelectMany(x => x.PortTypes);
         }
 
-        private void InitializeProperties(ICollection<Attribute> attributes)
-        {
-
-        }
-
         /// <summary>
         ///     Other names this type might go by inside of Dynamo.
         /// </summary>

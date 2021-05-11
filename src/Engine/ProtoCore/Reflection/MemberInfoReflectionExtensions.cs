@@ -51,7 +51,6 @@ namespace ProtoCore.Reflection
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(member);
             return GetReflectionAttributes(customAttributes);
-
         }
 
         internal static Attribute[] AttributesFromReflectionContext(this ParameterInfo parameter)
@@ -101,9 +100,14 @@ namespace ProtoCore.Reflection
                     {
                         var array = paramValues.ToArray<object>();
                         if (TryConvertToTypeArray(array, out Array newArray))
+                        {
                             ctorParam = newArray;
+                        }
+
                         else
+                        {
                             ctorParam = array;
+                        }
                     }
                     else
                     {
@@ -111,16 +115,13 @@ namespace ProtoCore.Reflection
                     }  
 
                     var a = CreateInstance(type, ctorParam);
-                    if (a is null)
-                        continue;
+                    if (a is null) continue;
 
                     attributes.Add(a);
                 }
                 catch (Exception e)
                 {
-                    var t = e.GetType();
                 }
-
             }
 
             return attributes.ToArray();
@@ -161,8 +162,7 @@ namespace ProtoCore.Reflection
         {
             var loadedAssembly = Assembly.LoadFrom(type.Assembly.Location);
             var loadedType = loadedAssembly.GetType(type.FullName);
-            if (!loadedType.IsEnum)
-                return null;
+            if (!loadedType.IsEnum) return null;
 
             return Enum.ToObject(loadedType, value);
         }
@@ -171,8 +171,11 @@ namespace ProtoCore.Reflection
         {
             typeArray = array;
             var typesInArray = array.Select(x => x.GetType()).ToList();
-            if (!typesInArray.All(x => x.Equals(typesInArray.FirstOrDefault())))
+            if (!typesInArray
+                .All(x => x.Equals(typesInArray.FirstOrDefault())))
+            {
                 return false;
+            }
 
             typeArray = Array.CreateInstance(typesInArray.FirstOrDefault(), array.Length);
             Array.Copy(array, typeArray, typeArray.Length);

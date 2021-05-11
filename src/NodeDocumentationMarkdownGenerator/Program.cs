@@ -9,7 +9,6 @@ namespace NodeDocumentationMarkdownGenerator
 {
     class Program
     {
-        
         static void Main(string[] args)
         {
             ShowWelcomeMessages();

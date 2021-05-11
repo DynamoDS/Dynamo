@@ -33,7 +33,9 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             var outdir = package.NodeDocumentaionDirectory;
             if (!Directory.Exists(outdir))
+            {
                 Directory.CreateDirectory(outdir);
+            }
 
             MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite, logger);
 

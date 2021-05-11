@@ -22,7 +22,9 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             var fileInfos = new List<MdFileInfo>();
             fileInfos.AddRange(ScanAssembliesFromOpts(opts.InputFolderPath, opts.Filter, searchOption));
             if (opts.IncludeCustomNodes)
+            {
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
+            }
 
             MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, logger, opts.CompressImages, opts.DictionaryDirectory);
         }
@@ -34,8 +36,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             foreach (var cn in allDyfs)
             {
                 var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(cn.FullName, logger);
-                if (fileInfo is null)
-                    continue;
+                if (fileInfo is null) continue;
+
                 fileInfos.Add(fileInfo);
             }
             return fileInfos;

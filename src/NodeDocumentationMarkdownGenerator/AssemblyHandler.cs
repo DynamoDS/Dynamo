@@ -162,12 +162,10 @@ namespace NodeDocumentationMarkdownGenerator
                 typesInAsm = ex.Types;
             }
 
-            var t1 = typesInAsm[0].AttributesFromReflectionContext();
-
-            var nodeTypes = typesInAsm.
-                Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType)).
-                Select(t => new TypeLoadData(t, t.AttributesFromReflectionContext())).
-                ToList();
+            var nodeTypes = typesInAsm
+                .Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType))
+                .Select(t => new TypeLoadData(t, t.AttributesFromReflectionContext()))
+                .ToList();
 
             foreach (var nodeType in nodeTypes)
             {
