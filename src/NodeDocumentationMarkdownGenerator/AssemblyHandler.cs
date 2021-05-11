@@ -172,7 +172,10 @@ namespace NodeDocumentationMarkdownGenerator
                 if (nodeType is null ||
                     nodeType.IsDeprecated ||
                     nodeType.IsHidden)
+                {
                     continue;
+                }
+
                 fileInfos.Add(MarkdownHandler.GetMdFileNameFromTypeLoadData(nodeType));
             }
 
