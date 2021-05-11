@@ -14,8 +14,14 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
     <PackageReference Include="Greg" Version="2.0.7761.19338" />
+    <PackageReference Include="Magick.NET-Q8-AnyCPU" Version="7.23.4" />
     <PackageReference Include="Newtonsoft.Json" Version="8.0.3" />
     <PackageReference Include="System.Reflection.MetadataLoadContext" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj" />
   </ItemGroup>
 
 </Project>

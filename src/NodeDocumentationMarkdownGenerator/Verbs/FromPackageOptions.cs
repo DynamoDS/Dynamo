@@ -10,8 +10,8 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('i', "input", HelpText = "Package folder path")]
         public string InputFolderPath { get; set; }
 
-        [Option('h', "hosts", HelpText = "Folder paths to host installations", Required = false)]
-        public IEnumerable<string> HostPaths { get; set; }
+        [Option('r', "references", HelpText = "Folder paths to dlls that are used as references in the nodes", Required = false)]
+        public IEnumerable<string> ReferencePaths { get; set; }
 
         [Option('d', "dictionary", HelpText = "Dictionary ...", Required = false)]
         public string Dictionary { get; set; }

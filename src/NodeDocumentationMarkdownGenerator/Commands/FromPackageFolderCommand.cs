@@ -12,8 +12,11 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 {
     internal class FromPackageFolderCommand
     {
-        public FromPackageFolderCommand()
+        private readonly ILogger logger;
+
+        public FromPackageFolderCommand(ILogger logger)
         {
+            this.logger = logger;
         }
 
         internal string HandlePackageDocumentation(FromPackageOptions opts)
@@ -21,7 +24,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var package = PackageFromRoot(opts.InputFolderPath);
 
-            var nodeLibraryFileNames = ScanNodeLibraries(package, opts.HostPaths);
+            var nodeLibraryFileNames = ScanNodeLibraries(package, opts.ReferencePaths);
             var customNodeFileNames = ScanCustomNodes(package);
 
             var fileInfos = new List<MdFileInfo>();
@@ -32,7 +35,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             if (!Directory.Exists(outdir))
                 Directory.CreateDirectory(outdir);
 
-            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite);
+            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite, logger);
 
             return $"{fileInfos.Count} documentation files created for {package.Name} package, all documentation files are available in {package.NodeDocumentaionDirectory}\n" + "(•_•)\n" + "( •_•) >⌐■-■\n" + "(⌐■_■)";
         }
@@ -67,7 +70,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             foreach (var path in Directory.EnumerateFiles(pkg.CustomNodeDirectory, "*.dyf"))
             {
-                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(path);
+                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(path, logger);
                 if (fileInfo is null) continue;
 
                 fileInfos.Add(fileInfo);
@@ -77,9 +80,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
         private Package PackageFromRoot(string packageFolderPath)
         {
-            var log = new LogSourceBase();
             var headerPath = Path.Combine(packageFolderPath, "pkg.json");
-            Package pkg = Package.FromJson(headerPath, log.AsLogger());
+            Package pkg = Package.FromJson(headerPath, logger);
 
             return pkg;
         }

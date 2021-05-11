@@ -1,26 +1,54 @@
-﻿using NodeDocumentationMarkdownGenerator.Commands;
+﻿using System;
+using Dynamo.Configuration;
+using Dynamo.Logging;
+using NodeDocumentationMarkdownGenerator.Commands;
 using NodeDocumentationMarkdownGenerator.Verbs;
 
 namespace NodeDocumentationMarkdownGenerator
 {
-    internal class CommandHandler
+    internal static class CommandHandler
     {
-        internal CommandHandler()
+
+        internal static string HandleFromPackage(FromPackageOptions opts)
         {
+            var logger = CreateLogger(opts.InputFolderPath);
+            try
+            {
+                var command = new FromPackageFolderCommand(logger);
+                var t = command.HandlePackageDocumentation(opts);
+                Console.WriteLine(logger.LogText);
+                return t;
+            }
+            catch (Exception e)
+            {
+                logger.Log(e);
+                return "";
+            }
+        }
+
+        internal static string HandleFromDirectory(FromDirectoryOptions opts)
+        {
+            var logger = CreateLogger(opts.LoggerPath);
+            try
+            {
+                var command = new FromDirectoryCommand(logger);
+                command.HandleDocumentationFromDirectory(opts);
+                Console.WriteLine(logger.LogText);
+                return "";
+            }
+            catch (Exception e)
+            {
+                logger.Log(e);
+                return "";
+            }
 
         }
 
-        internal string HandleFromPackage(FromPackageOptions opts)
+        private static DynamoLogger CreateLogger(string directoryPath)
         {
-            var command = new FromPackageFolderCommand();
-            return command.HandlePackageDocumentation(opts);
-        }
-
-        internal string HandleFromDirectory(FromDirectoryOptions opts)
-        {
-            var command = new FromDirectoryCommand();
-            command.HandleDocumentationFromDirectory(opts);
-            return "";
+            var debugSettings = new DebugSettings();
+            var logger = new DynamoLogger(debugSettings, @"C:\Users\SylvesterKnudsen\Desktop\Logs", false);
+            return logger;
         }
     }
 }

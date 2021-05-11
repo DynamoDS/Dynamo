@@ -2,14 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Dynamo.Logging;
 using NodeDocumentationMarkdownGenerator.Verbs;
 
 namespace NodeDocumentationMarkdownGenerator.Commands
 {
     class FromDirectoryCommand
     {
-        public FromDirectoryCommand()
+        private readonly ILogger logger;
+
+        public FromDirectoryCommand(ILogger logger)
         {
+            this.logger = logger;
         }
 
         internal void HandleDocumentationFromDirectory(FromDirectoryOptions opts)
@@ -20,7 +24,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             if (opts.IncludeCustomNodes)
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
 
-            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, opts.Dictionary);
+            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, logger, opts.CompressImages, opts.DictionaryDirectory);
         }
 
         private List<MdFileInfo> ScanFolderForCustomNodes(string inputFolderPath, SearchOption searchOption)
@@ -29,7 +33,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             var fileInfos = new List<MdFileInfo>();
             foreach (var cn in allDyfs)
             {
-                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(cn.FullName);
+                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(cn.FullName, logger);
                 if (fileInfo is null)
                     continue;
                 fileInfos.Add(fileInfo);

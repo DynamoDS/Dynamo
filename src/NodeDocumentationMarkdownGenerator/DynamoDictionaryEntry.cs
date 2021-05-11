@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace NodeDocumentationMarkdownGenerator
@@ -19,5 +20,23 @@ namespace NodeDocumentationMarkdownGenerator
 
         [JsonProperty("inDepth")]
         public string InDepth { get; set; }
+
+        [JsonConstructor]
+        public DynamoDictionaryEntry(string name, List<string> imageFile, List<string> dynFile, string folderPath, string inDepth)
+        {
+            Name = name;
+            ImageFile = imageFile;
+            DynFile = dynFile;
+            FolderPath = folderPath;
+            InDepth = inDepth;
+        }
+
+        internal string EntryLog()
+        {
+            var containsImage = ImageFile.Any();
+            var containsDyn = DynFile.Any();
+            var containsInDepthDescription = !string.IsNullOrEmpty(InDepth);
+            return $"{containsImage},{containsDyn},{containsInDepthDescription}";
+        }
     }
 }

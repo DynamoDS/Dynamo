@@ -14,6 +14,11 @@ namespace NodeDocumentationMarkdownGenerator
 {
     internal static class AssemblyHandler
     {
+        /// <summary>
+        /// Scans a list of assemblies using a Reflection only load context to determine which nodes are in the assemblies
+        /// </summary>
+        /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
+        /// <returns></returns>
         internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths)
         {
             var paths = GetDefaultPaths();
@@ -25,6 +30,12 @@ namespace NodeDocumentationMarkdownGenerator
             return Scan(assemblyPaths, mlc, resolver);
         }
 
+        /// <summary>
+        /// Scans a list of assemblies using a Reflection only load context to determine which nodes are in the assemblies
+        /// </summary>
+        /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
+        /// <param name="addtionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
+        /// <returns></returns>
         internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> addtionalPathsToLoad)
         {
             var paths = GetDefaultPaths();
@@ -79,6 +90,8 @@ namespace NodeDocumentationMarkdownGenerator
                             var tn = t.FullName;
                             try
                             {
+                                var className = t.ClassNode.ClassName;
+                                
                                 // For some reason mscorelib sometimes gets pass to here, so filtering it away.
                                 if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
                                     t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
@@ -87,22 +100,22 @@ namespace NodeDocumentationMarkdownGenerator
                                     .Where(c => c.Kind == AstKind.Constructor)
                                     .Cast<ConstructorDefinitionNode>()
                                     .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public)
-                                    .ToList();
+                                    .GroupBy(x => x.Name);
 
                                 var functionNodes = t.ClassNode.Procedures
                                     .Where(c => c is FunctionDefinitionNode)
                                     .Cast<FunctionDefinitionNode>()
-                                    .Where(f => !f.MethodAttributes.HiddenInLibrary && 
-                                                !f.MethodAttributes.IsObsolete && f.Name != "_Dispose" && 
-                                                !f.Name.StartsWith("get_") && 
+                                    .Where(f => !f.MethodAttributes.HiddenInLibrary &&
+                                                !f.MethodAttributes.IsObsolete && f.Name != "_Dispose" &&
+                                                !f.Name.StartsWith("get_") &&
                                                 !f.Name.StartsWith("set_"))
-                                    .ToList();
+                                    .GroupBy(x => x.Name);
 
-                                var props = t.ClassNode.Variables;
+                                var props = t.ClassNode.Variables.GroupBy(x=>x.Name);
 
-                                ctorNodes.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
-                                functionNodes.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
-                                props.ForEach(x => fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, t.ClassNode.ClassName, false)));
+                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(ctorNodes, className));
+                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(functionNodes, className));
+                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(props, className));
 
                             }
                             catch (Exception)
@@ -118,6 +131,22 @@ namespace NodeDocumentationMarkdownGenerator
                 }
             }
 
+            return fileInfos;
+        }
+
+        private static List<MdFileInfo> FileInfosFromAsscociativeNodeGroups(IEnumerable<IGrouping<string,AssociativeNode>> associativeNodes, string className)
+        {
+            var fileInfos = new List<MdFileInfo>();
+            foreach (var group in associativeNodes)
+            {
+                if (group.Count() == 1)
+                {
+                    fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(group.FirstOrDefault(), className, false));
+                    continue;
+                }
+
+                fileInfos.AddRange(group.Select(x => MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, className, true)));
+            }
             return fileInfos;
         }
         private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType)

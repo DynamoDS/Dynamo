@@ -2,7 +2,7 @@
   "profiles": {
     "NodeDocumentationMarkdownGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "frompackage -i \"C:\\Users\\SylvesterKnudsen\\AppData\\Roaming\\Dynamo\\Dynamo Core\\2.12\\packages\\bimorphNodes\" -h \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\DynamoRevit\\bin\\AnyCPU\\Debug\" -w"
+      "commandLineArgs": "fromdirectory -i \"C:\\Users\\SylvesterKnudsen\\Documents\\AzureRepos\\matterlab-GD-Objects-library\\src\\matterlab.GD.Objects\\bin\\Debug\\netstandard2.0\" -f matterlab.GD.Objects.dll -o \"C:\\Users\\SylvesterKnudsen\\Desktop\\TestMdOutput_Objects\" -l \"C:\\Users\\SylvesterKnudsen\\Desktop\\Logs\" -w -s"
     }
   }
 }

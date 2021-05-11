@@ -14,6 +14,12 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('o', "output", HelpText = "Folder path to save generated documents in", Required = true)]
         public string OutputFolderPath { get; set; }
 
+        [Option('l', "logger-path", HelpText = "Directory path to where logger file should be saved", Required = true)]
+        public string LoggerPath { get; set; }
+
+        [Option('r', "references", HelpText = "Folder paths to dlls that are used as references in the nodes", Required = false)]
+        public IEnumerable<string> ReferencePaths { get; set; }
+
         [Option('f', "filter", HelpText = "Specifies which binary files documentation should be generated for", Required = false)]
         public IEnumerable<string> Filter { get; set; }
 
@@ -21,7 +27,7 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         public bool IncludeCustomNodes { get; set; }
 
         [Option('d', "dictionary", HelpText = "Dictionary ...", Required = false)]
-        public string Dictionary { get; set; }
+        public string DictionaryDirectory { get; set; }
 
         [Option('w', "overwrite", HelpText = "Overwrite ....", Required = false, Default = false)]
         public bool Overwrite { get; set; }
@@ -31,6 +37,9 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
 
         [Option('r', "recursive-scan", HelpText = "Input folder will be scanned recursively", Required = false, Default = false)]
         public bool RecursiveScan { get; set; }
+
+        [Option('s', "compress-images", HelpText = "When set, the tool will try to compress images from dictionary content", Required = false, Default = false)]
+        public bool CompressImages { get; set; }
 
         [Usage(ApplicationAlias = "Dynamo docs generator")]
         public static IEnumerable<Example> Examples

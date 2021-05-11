@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,6 +9,7 @@ using System.Xml;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using ImageMagick;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
@@ -15,15 +17,28 @@ namespace NodeDocumentationMarkdownGenerator
 {
     internal static class MarkdownHandler
     {
-        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, string dictionaryPath = null)
+        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, ILogger logger, bool compressImages = false, string dictionaryPath = null)
         {
+            ImageOptimizer optimizer = null;
             List<DynamoDictionaryEntry> dictEntrys = null;
+            string examplesDirectory = "";
             if (!string.IsNullOrEmpty(dictionaryPath) &&
                     File.Exists(dictionaryPath))
             {
                 var dictionaryJson = File.ReadAllText(dictionaryPath);
                 dictEntrys = JsonConvert.DeserializeObject<List<DynamoDictionaryEntry>>(dictionaryJson);
+                var mainDirectory = new FileInfo(dictionaryPath).Directory;
+                examplesDirectory = Path.Combine(mainDirectory.FullName, "EXAMPLES");
+
+                if (compressImages)
+                {
+                    optimizer = new ImageOptimizer();
+                    optimizer.OptimalCompression = true;
+                }
             }
+
+            // Log headers
+            logger.Log("TimeCreated, FileName, OutputLocation, ContainsImage, ContainsDyn, ContainsInDepthDescription");
 
             foreach (var info in fileInfos)
             {
@@ -40,13 +55,19 @@ namespace NodeDocumentationMarkdownGenerator
 
                 if (dictEntrys != null)
                 {
-                    var matchingEntry = dictEntrys.Where(x => x.Name == info.NodeName).FirstOrDefault();
+                    DynamoDictionaryEntry matchingEntry = GetMatchigDictionaryEntry(dictEntrys, info);
                     if (matchingEntry != null)
-                        fileContent = GetContentFormDictionaryEntry(matchingEntry);
+                    {
+                        fileContent = GetContentFormDictionaryEntry(matchingEntry, examplesDirectory, optimizer);
+                        logger.Log($"{DateTime.UtcNow}, {fileName}, {outputDir}, {matchingEntry.EntryLog()}");
+                    }
                 }
 
                 if (fileContent is null)
+                {
                     fileContent = GetDefaultContent(info.NodeName);
+                    logger.Log($"{DateTime.UtcNow}, {fileName}, {outputDir}");
+                }
 
                 using (StreamWriter sw = File.CreateText(filePath))
                 {
@@ -64,14 +85,78 @@ namespace NodeDocumentationMarkdownGenerator
             return content.ToString();
         }
 
-        private static string GetContentFormDictionaryEntry(DynamoDictionaryEntry entry)
+        private static string GetContentFormDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer)
         {
+            //var imageBase64 = ImageToBase64(Path.Combine(examplesDirectory, entry.FolderPath, $"img\\{entry.ImageFile.FirstOrDefault()}.jpg"));
+            var imageBase64 = ImageToBase64(
+                new DirectoryInfo(Path.Combine(examplesDirectory, entry.FolderPath, "img")), 
+                entry.ImageFile.FirstOrDefault(),
+                optimizer);
+
             var content = new StringBuilder();
             content.AppendLine("## In Depth");
             content.AppendLine(entry.InDepth);
             content.AppendLine("___");
             content.AppendLine("Example File:");
+            content.AppendLine();
+            content.AppendLine(imageBase64);
             return content.ToString();
+        }
+
+        private static string ImageToBase64(DirectoryInfo imgDir, string imgName, ImageOptimizer optimizer)
+        {
+            var imageFileInfo = imgDir.GetFiles($"{imgName}.*").FirstOrDefault();
+
+            using (Image image = Image.FromFile(imageFileInfo.FullName))
+            using (MemoryStream m = new MemoryStream())
+            {
+                image.Save(m, image.RawFormat);
+                //Console.WriteLine("Bytes Before:  " + m.ToArray().Length);
+
+                if (optimizer != null)
+                {
+                    m.Position = 0;
+                    optimizer.Compress(m);
+                }
+
+                byte[] imageBytes = m.ToArray();
+
+                //Console.WriteLine("Bytes After:  " + imageBytes.Length);
+
+                // Convert byte[] to Base64 String
+                string base64String = Convert.ToBase64String(imageBytes);
+                base64String = $"![{imgName}](data:image/{imageFileInfo.Extension};base64,{base64String})";
+                return base64String;
+            }
+        }
+
+        private static DynamoDictionaryEntry GetMatchigDictionaryEntry(List<DynamoDictionaryEntry> dictEntrys, MdFileInfo info)
+        {
+            // The DynamoDictionary only gives information about the name of the node and the folder path,
+            // the MdFileInfo know about the name of the node and its namespace.
+            // The DynamoDictionary Folder path is the same as the namespace except its separated by "/" instead of ".".
+            // In order to find the correct dict entry we need to convert the namespace into a folder path, and then get the entry
+            // where the folder path and name is matching.
+            var infoFolderPath = ConvertNamespaceToDictionaryFolderPath(info.NodeNamespace);
+            var matchingEntry = dictEntrys
+                .Where(x =>
+                    x.FolderPath.StartsWith(infoFolderPath) &&
+                    x.Name == info.NodeName)
+                .FirstOrDefault();
+            return matchingEntry;
+        }
+
+        private static string ConvertNamespaceToDictionaryFolderPath(string infoNamespace)
+        {
+            var stringWithoutName = "";
+            int index = infoNamespace.LastIndexOf(".");
+            if (index == 0) return stringWithoutName;
+            
+            stringWithoutName = infoNamespace
+                .Substring(0, index)
+                .Replace(".", "/");
+
+            return stringWithoutName;
         }
 
         internal static MdFileInfo GetMdFileInfoFromAssociativeNode(AssociativeNode node, string className, bool isOverload)
@@ -83,26 +168,46 @@ namespace NodeDocumentationMarkdownGenerator
             var nodeNamespace = $"{className}.{functionName}";
             if (isOverload)
             {
-                //var inputTypes = definitionNode.Parameters.Select(x => x.Type.Name).ToArray();
-                //var inputString = string.Join(",", inputTypes);
-                //nodeNamespace = $"{className}.{functionName}({inputString})";
+                string argNames = "";
+                switch (node)
+                {
+                    
+                    case ConstructorDefinitionNode ctor:
+                        argNames = string.Join(",", ctor.Signature
+                            .Arguments
+                            .Select(x=>x.NameNode.Name)
+                            .ToArray());
+                        break;
+                    case FunctionDefinitionNode func:
+                        argNames = string.Join(",",func.Signature
+                            .Arguments
+                            .Select(x => x.NameNode.Name)
+                            .ToArray());
+                        break;
+                    default:
+                        break;
+                }
+
+                if (argNames != string.Empty)
+                {
+                    nodeNamespace = $"{className}.{functionName}({argNames})";
+                }
             }
 
             return new MdFileInfo(functionName, nodeNamespace);
         }
 
-        internal static MdFileInfo GetMdFileInfoFromFromCustomNode(string path)
+        internal static MdFileInfo GetMdFileInfoFromFromCustomNode(string path, ILogger log)
         {
             WorkspaceInfo header = null;
-            var log = new LogSourceBase();
 
             if (DynamoUtilities.PathHelper.isValidXML(path, out XmlDocument xmlDoc, out Exception ex))
             {
-                WorkspaceInfo.FromXmlDocument(xmlDoc, path, true, false, log.AsLogger(), out header);
+                WorkspaceInfo.FromXmlDocument(xmlDoc, path, true, false, log, out header);
             }
             else if (DynamoUtilities.PathHelper.isValidJson(path, out string jsonDoc, out ex))
             {
-                WorkspaceInfo.FromJsonDocument(jsonDoc, path, true, false, log.AsLogger(), out header);
+                WorkspaceInfo.FromJsonDocument(jsonDoc, path, true, false, log, out header);
             }
             else throw ex;
 
