@@ -113,5 +113,14 @@ namespace Dynamo.GraphMetadata.Properties {
                 return ResourceManager.GetString("MenuItemText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to String is not a valid URI.
+        /// </summary>
+        public static string URIValidationRule_Fail_Message {
+            get {
+                return ResourceManager.GetString("URIValidationRule_Fail_Message", resourceCulture);
+            }
+        }
     }
 }

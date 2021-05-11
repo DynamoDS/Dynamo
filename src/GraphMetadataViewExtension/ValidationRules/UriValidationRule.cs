@@ -23,7 +23,7 @@ namespace Dynamo.GraphMetadata.ValidationRules
                 return new ValidationResult(true, null);
             }
 
-            return new ValidationResult(false, "String is not a valid URI");
+            return new ValidationResult(false, Properties.Resources.URIValidationRule_Fail_Message);
 
         }
     }

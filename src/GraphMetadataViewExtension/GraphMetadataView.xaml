@@ -160,14 +160,15 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="10px, 5px">
+            <Grid Grid.Row="0"
+                  Margin="10px, 5px">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" 
+                <TextBlock Grid.Column="0"
                            Text="Custom Properties"
-                           Style="{StaticResource headerStyle}"/>
+                           Style="{StaticResource headerStyle}" />
                 <Button Grid.Column="1"
                         Command="{Binding AddCustomPropertyCommand}">
                     <Button.Template>
@@ -181,7 +182,7 @@
                 </Button>
             </Grid>
 
-            <ListView Grid.Row="1" 
+            <ListView Grid.Row="1"
                       Margin="10px 5px"
                       HorizontalContentAlignment="Stretch"
                       Background="Transparent"
@@ -189,51 +190,5 @@
                       ItemsSource="{Binding CustomProperties}">
             </ListView>
         </Grid>
-
-        <!--<StackPanel Grid.Row="1">
-            <GroupBox Header="Custom Properties">
-                <GroupBox.Template>
-                    <ControlTemplate TargetType="{x:Type GroupBox}">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="20" />
-                                </Grid.ColumnDefinitions>
-                                <ContentPresenter ContentSource="Header" />
-                                <Button Grid.Column="1"
-                                        Command="{Binding AddCustomPropertyCommand}">
-                                    <Button.Template>
-                                        <ControlTemplate>
-                                            <fa:ImageAwesome Icon="Plus"
-                                                             VerticalAlignment="Stretch"
-                                                             Foreground="{StaticResource FilterIconColor}" />
-                                        </ControlTemplate>
-                                    </Button.Template>
-                                </Button>
-
-                            </Grid>
-                            <ContentPresenter Grid.Row="1"
-                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                              ScrollViewer.CanContentScroll="True">
-
-                            </ContentPresenter>
-                        </Grid>
-                    </ControlTemplate>
-                </GroupBox.Template>
-
-                <ListView HorizontalContentAlignment="Stretch"
-                          Background="Transparent"
-                          BorderBrush="Transparent"
-                          ItemsSource="{Binding CustomProperties}">
-                </ListView>
-            </GroupBox>
-        </StackPanel>-->
-        
     </Grid>
 </UserControl>

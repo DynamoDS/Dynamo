@@ -135,4 +135,7 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Graph Properties</value>
   </data>
+  <data name="URIValidationRule_Fail_Message" xml:space="preserve">
+    <value>String is not a valid URI</value>
+  </data>
 </root>
