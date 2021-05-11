@@ -19,6 +19,7 @@ using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Properties;
@@ -193,6 +194,8 @@ namespace Dynamo.Graph.Workspaces
         ///     The maximum paste offset before reset
         /// </summary>
         internal static readonly int PasteOffsetMax = 60;
+
+        internal readonly LinterManager linterManager;
 
         private string fileName;
         private string name;
@@ -1059,7 +1062,6 @@ namespace Dynamo.Graph.Workspaces
 
             this.presets = new List<PresetModel>(presets);
             ElementResolver = resolver;
-
             foreach (var node in this.nodes)
                 RegisterNode(node);
 
@@ -1068,6 +1070,19 @@ namespace Dynamo.Graph.Workspaces
 
             SetModelEventOnAnnotation();
             WorkspaceEvents.WorkspaceAdded += computeUpstreamNodesWhenWorkspaceAdded;
+        }
+
+        protected WorkspaceModel(
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            WorkspaceInfo info,
+            NodeFactory factory,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            LinterManager linterManager) : this(nodes, notes, annotations, info, factory, presets, resolver)
+        {
+            this.linterManager = linterManager;
         }
 
         /// <summary>
@@ -1930,6 +1945,43 @@ namespace Dynamo.Graph.Workspaces
                 Converters = new List<JsonConverter>{
                         new ConnectorConverter(logger),
                         new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
+                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
+                        new TypedParameterConverter(),
+                        new NodeLibraryDependencyConverter(logger)
+                    },
+                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+            };
+
+            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+
+            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
+            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
+
+            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
+
+            return ws;
+        }
+
+        public static WorkspaceModel FromJson(string json, LibraryServices libraryServices,
+            EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
+            bool isTestMode, bool verboseLogging, CustomNodeManager manager, LinterManager linterManager)
+        {
+            var logger = engineController != null ? engineController.AsLogger() : null;
+
+            var settings = new JsonSerializerSettings
+            {
+                Error = (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                    Console.WriteLine(args.ErrorContext.Error);
+                },
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                TypeNameHandling = TypeNameHandling.Auto,
+                Formatting = Newtonsoft.Json.Formatting.Indented,
+                Culture = CultureInfo.InvariantCulture,
+                Converters = new List<JsonConverter>{
+                        new ConnectorConverter(logger),
+                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging, linterManager),
                         new NodeReadConverter(manager, libraryServices, factory, isTestMode),
                         new TypedParameterConverter(),
                         new NodeLibraryDependencyConverter(logger)
