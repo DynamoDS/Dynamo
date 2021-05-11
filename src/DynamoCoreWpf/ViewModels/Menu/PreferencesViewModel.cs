@@ -5,6 +5,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace Dynamo.ViewModels
         Large,
         ExtraLarge
     }
-    public class PreferencesViewModel : ViewModelBase
+    public class PreferencesViewModel : ViewModelBase, INotifyPropertyChanged
     {
         #region Private Properties
         private string savedChangesLabel;
@@ -122,7 +123,6 @@ namespace Dynamo.ViewModels
             {
                 selectedLanguage = value;
                 RaisePropertyChanged(nameof(SelectedLanguage));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -139,7 +139,6 @@ namespace Dynamo.ViewModels
             {
                 selectedFontSize = value;
                 RaisePropertyChanged(nameof(SelectedFontSize));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -157,7 +156,6 @@ namespace Dynamo.ViewModels
                 selectedNumberFormat = value;
                 preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -183,7 +181,6 @@ namespace Dynamo.ViewModels
                     runSettingsIsChecked = RunType.Automatic;
                 }
                 RaisePropertyChanged(nameof(RunSettingsIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -200,7 +197,6 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -276,7 +272,6 @@ namespace Dynamo.ViewModels
         {
             StyleItemsList.Add(style);
             RaisePropertyChanged(nameof(StyleItemsList));
-            UpdateSavedChangesLabel();
         }
 
         /// <summary>
@@ -325,7 +320,6 @@ namespace Dynamo.ViewModels
             {
                 optionsGeometryScal = value;
                 RaisePropertyChanged(nameof(OptionsGeometryScal));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -342,7 +336,6 @@ namespace Dynamo.ViewModels
             {
                 showEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -359,7 +352,6 @@ namespace Dynamo.ViewModels
             {
                 isolateSelectedGeometry = value;
                 RaisePropertyChanged(nameof(IsolateSelectedGeometry));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -376,7 +368,6 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.RenderPackageFactoryViewModel.MaxTessellationDivisions = value;
                 RaisePropertyChanged(nameof(TessellationDivisions));
-                UpdateSavedChangesLabel();
             }
         }
         #endregion
@@ -415,7 +406,6 @@ namespace Dynamo.ViewModels
                     selectedPythonEngine = value;
                     preferenceSettings.DefaultPythonEngine = value;
                     RaisePropertyChanged(nameof(SelectedPythonEngine));
-                    UpdateSavedChangesLabel();
                 }
             }
         }
@@ -434,7 +424,6 @@ namespace Dynamo.ViewModels
                 hideIronPAlerts = value;
                 preferenceSettings.IsIronPythonDialogDisabled = value;
                 RaisePropertyChanged(nameof(HideIronPythonAlertsIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -453,7 +442,6 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowTabsAndSpacesInScriptEditor = value;
                 showWhitespace = value;
                 RaisePropertyChanged(nameof(ShowWhitespaceIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -471,7 +459,6 @@ namespace Dynamo.ViewModels
                 preferenceSettings.EnableNodeAutoComplete = value;
                 nodeAutocomplete = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -490,7 +477,6 @@ namespace Dynamo.ViewModels
                 enableTSpline = value;
                 HideUnhideNamespace(!value, "ProtoGeometry.dll", "Autodesk.DesignScript.Geometry.TSpline");
                 RaisePropertyChanged(nameof(EnableTSplineIsChecked));
-                UpdateSavedChangesLabel();
             }
         }
 
@@ -633,8 +619,42 @@ namespace Dynamo.ViewModels
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
+
+            this.PropertyChanged += model_PropertyChanged;
         }
 
+        /// <summary>
+        /// Listen for the PropertyChanged event and updates the saved changes label accordingly
+        /// </summary>
+        private void model_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "SelectedLanguage":
+                case "SelectedFontSize":
+                case "SelectedNumberFormat":
+                case "RunSettingsIsChecked":
+                case "RunPreviewIsChecked":
+                case "StyleItemsList":
+                case "OptionsGeometryScal":
+                case "ShowEdges":
+                case "IsolateSelectedGeometry":
+                case "TessellationDivisions":
+                case "SelectedPythonEngine":
+                case "HideIronPythonAlertsIsChecked":
+                case "ShowWhitespaceIsChecked":
+                case "NodeAutocompleteIsChecked":
+                case "EnableTSplineIsChecked":
+                    UpdateSavedChangesLabel();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Updates the contents to display by the SavedChanges label and its tooltip
+        /// </summary>
         internal void UpdateSavedChangesLabel()
         {
             SavedChangesLabel = Res.PreferencesViewSavedChangesLabel;
