@@ -10,9 +10,9 @@ using Dynamo.Linting;
 using Dynamo.Linting.Rules;
 using Dynamo.LintingViewExtension.Controls;
 using Dynamo.Models;
+using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
-using Microsoft.Practices.Prism.Commands;
 
 namespace Dynamo.LintingViewExtension
 {
@@ -107,7 +107,7 @@ namespace Dynamo.LintingViewExtension
             this.OpenDocumentationBrowserCommand = new DelegateCommand(this.OpenDocumentationBrowserCommandExecute);
         }
 
-        private void OpenDocumentationBrowserCommandExecute()
+        private void OpenDocumentationBrowserCommandExecute(object param)
         {
             viewLoadedParams.ViewModelCommandExecutive.OpenDocumentationLinkCommand(linterViewHelpLink);
         }
@@ -123,7 +123,7 @@ namespace Dynamo.LintingViewExtension
             var cmd = new DynamoModel.SelectInRegionCommand(selectedNode.Rect, false);
             this.viewLoadedParams.CommandExecutive.ExecuteCommand(cmd, null, null);
 
-            (this.viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).FitViewCommand.Execute(null);
+            this.viewLoadedParams.ViewModelCommandExecutive.FitViewCommand();
         }
 
         private void AddNewNodeIssue(string issueNodeId, string ruleId)
@@ -133,15 +133,13 @@ namespace Dynamo.LintingViewExtension
             var issue = NodeIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (!(issue is null))
             {
-                if (issue.AffectedNodes.Contains(issueNode))
-                    return;
+                if (issue.AffectedNodes.Contains(issueNode)) return;
 
                 issue.AffectedNodes.Add(issueNode);
                 return;
             }
 
-            var newIssue = new NodeRuleIssue(
-                ruleId, GetLinterRule(ruleId) as NodeLinterRule);
+            var newIssue = new NodeRuleIssue(ruleId, GetLinterRule(ruleId) as NodeLinterRule);
             newIssue.AddAffectedNodes(new List<NodeModel> { issueNode });
 
             NodeIssues.Add(newIssue);
@@ -158,16 +156,14 @@ namespace Dynamo.LintingViewExtension
             {
                 foreach (var issueNode in issueNodes)
                 {
-                    if (issue.AffectedNodes.Contains(issueNode))
-                        continue;
+                    if (issue.AffectedNodes.Contains(issueNode)) continue;
 
                     issue.AffectedNodes.Add(issueNode);
                     return;
                 }
             }
 
-            var newIssue = new GraphRuleIssue(
-                ruleId, GetLinterRule(ruleId) as GraphLinterRule);
+            var newIssue = new GraphRuleIssue(ruleId, GetLinterRule(ruleId) as GraphLinterRule);
             newIssue.AddAffectedNodes(issueNodes);
 
             GraphIssues.Add(newIssue);
@@ -179,7 +175,9 @@ namespace Dynamo.LintingViewExtension
             var issue = NodeIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (issue is null ||
                 !issue.AffectedNodes.Any(n => n.GUID.ToString() == issueNodeId))
+            {
                 return;
+            }
 
             issue.AffectedNodes
                 .Remove(issue.AffectedNodes
@@ -187,14 +185,15 @@ namespace Dynamo.LintingViewExtension
                     .FirstOrDefault());
 
             if (issue.AffectedNodes.Count == 0)
+            {
                 NodeIssues.Remove(issue);
+            }
         }
 
         private void RemoveGraphIssue(string ruleId)
         {
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
-            if (issue is null)
-                return;
+            if (issue is null) return;
 
             GraphIssues.Remove(issue);
         }
@@ -220,9 +219,14 @@ namespace Dynamo.LintingViewExtension
                     foreach (var item in e.NewItems)
                     {
                         if (item is NodeRuleEvaluationResult nodeRuleEvaluationResult)
+                        {
                             AddNewNodeIssue(nodeRuleEvaluationResult.NodeId, nodeRuleEvaluationResult.RuleId);
+                        }
+
                         else if (item is GraphRuleEvaluationResult graphRuleEvaluationResult)
+                        {
                             AddNewGraphIssue(graphRuleEvaluationResult.NodeIds.ToList(), graphRuleEvaluationResult.RuleId);
+                        }
                     }
                     return;
 
@@ -230,9 +234,14 @@ namespace Dynamo.LintingViewExtension
                     foreach (var item in e.OldItems)
                     {
                         if (item is NodeRuleEvaluationResult nodeRuleEvaluationResult)
+                        {
                             RemoveNodeIssue(nodeRuleEvaluationResult.NodeId, nodeRuleEvaluationResult.RuleId);
+                        }
+
                         else if (item is GraphRuleEvaluationResult graphRuleEvaluationResult)
+                        {
                             RemoveGraphIssue(graphRuleEvaluationResult.RuleId);
+                        }
                     }
                     return;
 

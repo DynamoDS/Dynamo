@@ -843,7 +843,9 @@ namespace Dynamo.Graph.Workspaces
 
             // Linter
             if(!(ws.linterManager is null))
+            {
                 serializer.Serialize(writer, ws.linterManager);
+            }
 
 
             if (engine != null)
@@ -949,8 +951,7 @@ namespace Dynamo.Graph.Workspaces
 
         private int GetIssueCount(LinterManager linterManager, Linting.Interfaces.SeverityCodesEnum severity)
         {
-            if (linterManager.RuleEvaluationResults.Count() == 0)
-                return 0;
+            if (linterManager.RuleEvaluationResults.Count() == 0) return 0;
 
             var issueCount = linterManager.RuleEvaluationResults
                 .Where(x => x.SeverityCode == severity)
