@@ -4485,6 +4485,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All changes saved automatically.
+        /// </summary>
+        public static string PreferencesViewSavedChangesLabel {
+            get {
+                return ResourceManager.GetString("PreferencesViewSavedChangesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last saved:.
+        /// </summary>
+        public static string PreferencesViewSavedChangesTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewSavedChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Whitespace in Python Editor.
         /// </summary>
         public static string PreferencesViewShowWhitespaceInPythonEditor {

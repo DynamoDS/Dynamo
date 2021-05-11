@@ -2382,4 +2382,10 @@ Uninstall the following packages: {0}?</value>
     <value>Italicized locations are disabled.</value>
     <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
   </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>All changes saved automatically</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>Last saved:</value>
+  </data>
 </root>
