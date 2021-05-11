@@ -14,6 +14,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeDescription("ListMapDescription", typeof(Resources))]
     [NodeSearchTags("ListMapSearchTags",typeof(Resources))]
     [IsDesignScriptCompatible]
+    [OutPortTypes("List")]
     [AlsoKnownAs("DSCore.Map", "DSCoreNodesUI.HigherOrder.Map")]
     public class Map : NodeModel
     {
@@ -92,6 +93,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListCombineDescription", typeof(Resources))]
     [NodeSearchTags("ListCombineSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Combine", "DSCoreNodesUI.HigherOrder.Combine")]
     public class Combine : CombinatorNode
@@ -270,6 +272,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListReduceDescription", typeof(Resources))]
     [NodeSearchTags("ListReduceSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Reduce", "DSCoreNodesUI.HigherOrder.Reduce")]
     public class Reduce : VariableInputNode
@@ -335,6 +338,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListScanDescription", typeof(Resources))]
     [NodeSearchTags("ListScanSearchTags", typeof(Resources))]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.ScanList", "DSCoreNodesUI.HigherOrder.ScanList")]
     public class ScanList : VariableInputNode
@@ -400,6 +404,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ListFilterDescription", typeof(Resources))]
     [NodeSearchTags("ListFilterSearchTags", typeof(Resources))]
+    [OutPortTypes("List", "List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Filter", "DSCoreNodesUI.HigherOrder.Filter")]
     public class Filter : NodeModel
@@ -447,6 +452,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_ACTION)]
     [NodeDescription("ReplaceByConditionDescription", typeof(Resources))]
     [NodeSearchTags("ReplaceByConditionSearchTags", typeof(Resources))]
+    [OutPortTypes("var[]..[]")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCore.Replace", "DSCoreNodesUI.HigherOrder.Replace")]
     public class Replace : NodeModel

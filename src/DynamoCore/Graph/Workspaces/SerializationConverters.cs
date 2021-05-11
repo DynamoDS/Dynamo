@@ -930,7 +930,7 @@ namespace Dynamo.Graph.Workspaces
 
             if (linterManager.ActiveLinter is null)
             {
-                logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object as there is no linter selected.", Logging.WarningLevel.Moderate);
+                //logger.LogWarning("Unnsuccessful attempt to serialize a LinterManager object as there is no linter selected.", Logging.WarningLevel.Moderate);
                 return;
             }
 

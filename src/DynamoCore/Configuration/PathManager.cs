@@ -11,6 +11,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Properties;
 using DynamoUtilities;
+using Dynamo.Models;
 
 namespace Dynamo.Core
 {
@@ -93,7 +94,7 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders : rootDirectories; }
+            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != DynamoModel.StandardLibraryToken) : rootDirectories; }
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface

@@ -17,14 +17,14 @@
         d:DesignWidth="300"
         Background="#515151"
         Style="{DynamicResource DynamoWindowStyle}"
-        d:DataContext="{d:DesignInstance ViewModels:InstalledPackagesViewModel, IsDesignTimeCreatable=False}">
+        d:DataContext="{d:DesignInstance ViewModels:PackagePathViewModel, IsDesignTimeCreatable=False}">
 
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-
+            <ViewModels:PathEnabledConverter x:Key="PathEnabledConverter" />
             <Style x:Key="PathListBoxStyle"
                    TargetType="ListBox">
                 <Setter Property="SnapsToDevicePixels"
@@ -88,7 +88,6 @@
                                     Background="Transparent">
                                 <ContentPresenter />
                             </Border>
-
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected"
                                          Value="True">
@@ -107,6 +106,10 @@
                                             Property="Background"
                                             Value="#666666" />
                                 </MultiTrigger>
+                                <DataTrigger Binding="{Binding Converter={StaticResource PathEnabledConverter}, ConverterParameter={x:Static ViewModels:PackagePathViewModel.DisableStandardLibrary}, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                                    <Setter Property="FontStyle"
+                                            Value="Italic" />
+                                </DataTrigger>
                             </ControlTemplate.Triggers>
 
                         </ControlTemplate>
@@ -141,6 +144,9 @@
             <TextBlock TextWrapping="Wrap"
                        FontStyle="Italic"
                        Text="{x:Static p:Resources.PackagePathViewSummary2}" />
+            <TextBlock TextWrapping="Wrap"
+                       FontStyle="Italic"
+                       Text="{x:Static p:Resources.PackagePathViewSummary3}" />
         </StackPanel>
 
         <TextBlock Grid.Row="1"
