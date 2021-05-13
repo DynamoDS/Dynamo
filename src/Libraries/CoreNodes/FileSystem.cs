@@ -190,7 +190,7 @@ namespace DSCore.IO
         /// </summary>
         /// <param name="path">Path to get the file name of</param>
         /// <param name="withExtension">Toggle to include extension in result</param>
-        /// <returns name="bool">File name from file path</returns>
+        /// <returns name="string">File name from file path</returns>
         public static string FileName(string path, bool withExtension = true)
         {
             return withExtension ? Path.GetFileName(path) : Path.GetFileNameWithoutExtension(path);
