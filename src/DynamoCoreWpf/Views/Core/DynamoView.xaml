@@ -8,6 +8,7 @@
         xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
+        xmlns:service="clr-namespace:Dynamo.Services"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:views="clr-namespace:Dynamo.Views"
         xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
@@ -296,12 +297,19 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuAbout}"
                                   Command="{Binding ShowAboutWindowCommand}"
                                   Focusable="False" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialog}"
+                                  Name="ToggleIsAnalyticsReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+                                  Focusable="False"/>
+                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
                                   Click="OnPreferencesWindowClick"
                                   Visibility="Collapsed"
                                   Name="preferencesOption"/>
-                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
                                   Command="{Binding ExitCommand}"
                                   Name="exit"
