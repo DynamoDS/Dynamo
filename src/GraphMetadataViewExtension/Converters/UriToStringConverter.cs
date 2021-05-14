@@ -11,7 +11,7 @@ namespace Dynamo.GraphMetadata.Converters
         {
             if (!(value is Uri uri)) return null;
 
-            return uri.AbsoluteUri;
+            return uri;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -21,7 +21,7 @@ namespace Dynamo.GraphMetadata.Converters
             Uri uri = null;
             if (!string.IsNullOrEmpty(str))
             {
-                uri = new Uri(str);
+                uri = new Uri(str, UriKind.RelativeOrAbsolute);
             }
 
             return uri;

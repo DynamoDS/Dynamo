@@ -165,13 +165,13 @@ namespace Dynamo.GraphMetadata
         }
 
        public void Dispose()
-        {
+       {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
 
             foreach (var cp in CustomProperties)
             {
                 cp.RequestDelete -= HandleDeleteRequest;
             }
-        }
+       }
     }
 }

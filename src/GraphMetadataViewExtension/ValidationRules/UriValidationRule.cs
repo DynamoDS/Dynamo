@@ -18,7 +18,7 @@ namespace Dynamo.GraphMetadata.ValidationRules
                 return new ValidationResult(true, null);
             }
 
-            if (Uri.TryCreate(input, UriKind.Absolute, out Uri outUri))
+            if (Uri.TryCreate(input, UriKind.RelativeOrAbsolute, out Uri outUri))
             {
                 return new ValidationResult(true, null);
             }

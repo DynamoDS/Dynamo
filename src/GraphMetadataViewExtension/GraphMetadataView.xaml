@@ -114,11 +114,11 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical"
-                    Grid.Row="0">
-            <GroupBox Header="Description"
-                      Height="100">
+                    Grid.Row="0" KeyDown="StackPanel_KeyDown">
+            <GroupBox Header="Description">
                 <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}" 
-                         Style="{StaticResource TextBoxStyle}"/>
+                         Style="{StaticResource TextBoxStyle}"
+                         TextWrapping="WrapWithOverflow"/>
             </GroupBox>
             
             <GroupBox Header="Image">
@@ -129,13 +129,15 @@
             
             <GroupBox Header="Author Name">
                 <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
-                         Style="{StaticResource TextBoxStyle}" />
+                         Style="{StaticResource TextBoxStyle}"
+                         TextWrapping="WrapWithOverflow" />
             </GroupBox>
             
             <GroupBox Header="Learn more URL">
                 <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
                          Name="UriTextBox"
-                         Style="{StaticResource TextBoxStyle}">
+                         Style="{StaticResource TextBoxStyle}"
+                         TextWrapping="WrapWithOverflow">
                     <TextBox.Text>
                         <Binding Path="HelpLink"
                                  UpdateSourceTrigger="PropertyChanged"

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.GraphMetadata
 {
@@ -10,6 +12,22 @@ namespace Dynamo.GraphMetadata
         public GraphMetadataView()
         {
             InitializeComponent();
-        } 
+        }
+
+        private void StackPanel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                TraversalRequest tRequest = new TraversalRequest(FocusNavigationDirection.Next);
+                UIElement keyboardFocus = Keyboard.FocusedElement as UIElement;
+
+                if (keyboardFocus != null)
+                {
+                    keyboardFocus.MoveFocus(tRequest);
+                }
+
+                e.Handled = true;
+            }
+        }
     }
 }
