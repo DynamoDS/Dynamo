@@ -95,6 +95,22 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
+        /// <summary>
+        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
+        /// </summary>
+        public List<ExpanderSettings> ExpandersSettings
+        {
+            get 
+            { 
+                return Model.ExpandersSettings; 
+            }
+            set
+            {
+                Model.ExpandersSettings = value;
+                RaisePropertyChanged(nameof(ExpandersSettings));
+            }
+        }
+
         public Point TransformOrigin
         {
             get { return transformOrigin; }

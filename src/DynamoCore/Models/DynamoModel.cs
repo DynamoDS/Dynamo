@@ -380,6 +380,11 @@ namespace Dynamo.Models
         public readonly PreferenceSettings PreferenceSettings;
 
         /// <summary>
+        /// This list contains the settings (current status) of the expanders located in the Preferences panel
+        /// </summary>
+        public List<ExpanderSettings> ExpandersSettings;
+
+        /// <summary>
         ///     Node Factory, used for creating and intantiating loaded Dynamo nodes.
         /// </summary>
         public readonly NodeFactory NodeFactory;
@@ -652,6 +657,10 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
+
+            //Due that the Expanders settings are stored by session (when dynamo is closed, settings are lost) then we read the settings from a json string
+            string jsonExpandersSettings = Resources.PreferencesExpandersSettings;
+            ExpandersSettings = JsonConvert.DeserializeObject<List<ExpanderSettings>>(jsonExpandersSettings);
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 

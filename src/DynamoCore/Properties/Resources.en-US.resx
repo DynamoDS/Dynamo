@@ -747,4 +747,8 @@ Parameter name: {0}</value>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
     <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
   </data>
+  <data name="PreferencesExpandersSettings" xml:space="preserve">
+    <value>[{"name":"PythonExpander","tab":"Features","isexpanded":false},{"name":"ExperimentalExpander","tab":"Features","isexpanded":false},{"name":"Styles","tab":"Visual Settings","isexpanded":false},{"name":"Scale","tab":"Visual Settings","isexpanded":false},{"name":"Precision","tab":"Visual Settings","isexpanded":false},{"name":"Display","tab":"Visual Settings","isexpanded":false}]</value>
+    <comment>Json that contains the setting for the expanders in the Preferences window</comment>
+  </data>
 </root>

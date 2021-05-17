@@ -303,65 +303,24 @@
                             </Grid.RowDefinitions>
 
                             <!--This Grid row contains the Python section-->
-                            <Grid Grid.Row="0">
-                                <Expander x:Name="PythonExpander" 
-                                          IsExpanded="True"
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                          Header="{x:Static p:Resources.PreferencesViewPython}">
-                                    <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                        <Label  Content="{x:Static p:Resources.PreferencesViewDefaultPythonEngine}" 
-                                                Padding="0,5,5,5"
-                                                FontSize="13"
-                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        <ComboBox Name="PythonEngineSelector" 
-                                                  Width="213"
-                                                  HorizontalAlignment="Left"
-                                                  ItemsSource="{Binding Path=PythonEnginesList}"
-                                                  SelectedItem="{Binding Path=SelectedPythonEngine}"
-                                                  Style="{StaticResource NoBordersComboBoxStyle}">
-                                        </ComboBox>
-                                        
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
+                            <Expander x:Name="PythonExpander"
+                                        Grid.Row="0"
+                                        Style="{StaticResource MenuExpanderStyle}" 
+                                        Expanded="Expander_Expanded"
+                                        Header="{x:Static p:Resources.PreferencesViewPython}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewDefaultPythonEngine}" 
+                                            Padding="0,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Name="PythonEngineSelector" 
+                                                Width="213"
+                                                HorizontalAlignment="Left"
+                                                ItemsSource="{Binding Path=PythonEnginesList}"
+                                                SelectedItem="{Binding Path=SelectedPythonEngine}"
+                                                Style="{StaticResource NoBordersComboBoxStyle}">
+                                    </ComboBox>
 
-                                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
-                                                <ToggleButton Name="IronPythonAlertsToggle"
-                                                              Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Content="Hide IronPython alerts" 
-                                                       Margin="10,0,0,0"
-                                                       VerticalAlignment="Center"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
-                                                <ToggleButton Name="ShowWhitespaceToggle"
-                                                              Width="{StaticResource ToggleButtonWidth}"
-                                                              Height="{StaticResource ToggleButtonHeight}"
-                                                              VerticalAlignment="Center"
-                                                              IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
-                                                              Style="{StaticResource EllipseToggleButton1}"/>
-                                                <Label Content="{x:Static p:Resources.PreferencesViewShowWhitespaceInPythonEditor}" 
-                                                       VerticalAlignment="Center"
-                                                       Margin="10,0,0,0"
-                                                       Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </StackPanel>
-                                </Expander>
-                            </Grid>
-
-                            <!--This Grid row contains the Experimental section-->
-                            <Grid Grid.Row="1">
-                                <Expander x:Name="ExperimentalExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
@@ -369,40 +328,80 @@
                                         </Grid.RowDefinitions>
 
                                         <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
-                                            <ToggleButton Name="NodeAutocompleteToggle"
+                                            <ToggleButton Name="IronPythonAlertsToggle"
+                                                            Width="{StaticResource ToggleButtonWidth}"
+                                                            Height="{StaticResource ToggleButtonHeight}"
+                                                            VerticalAlignment="Center"
+                                                            IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
+                                                            Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="Hide IronPython alerts" 
+                                                    Margin="10,0,0,0"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                            <ToggleButton Name="ShowWhitespaceToggle"
+                                                            Width="{StaticResource ToggleButtonWidth}"
+                                                            Height="{StaticResource ToggleButtonHeight}"
+                                                            VerticalAlignment="Center"
+                                                            IsChecked="{Binding Path=ShowWhitespaceIsChecked}"
+                                                            Style="{StaticResource EllipseToggleButton1}"/>
+                                            <Label Content="{x:Static p:Resources.PreferencesViewShowWhitespaceInPythonEditor}" 
+                                                    VerticalAlignment="Center"
+                                                    Margin="10,0,0,0"
+                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Expander>
+
+                                <!--This Grid row contains the Experimental section-->
+                            <Expander x:Name="ExperimentalExpander" 
+                                          Style="{StaticResource MenuExpanderStyle}" 
+                                          Grid.Row="1"
+                                          Expanded="Expander_Expanded"
+                                          Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
+                                        <ToggleButton Name="NodeAutocompleteToggle"
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
                                                       IsChecked="{Binding Path=NodeAutocompleteIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}" 
                                                    Margin="10,0,0,0"
                                                    VerticalAlignment="Center"
                                                    Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                        </StackPanel>
+                                    </StackPanel>
 
-                                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
-                                            <ToggleButton Name="EnableTSplineToggle"
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
+                                        <ToggleButton Name="EnableTSplineToggle"
                                                           Width="{StaticResource ToggleButtonWidth}"
                                                           Height="{StaticResource ToggleButtonHeight}"
                                                           VerticalAlignment="Center"
                                                           IsChecked="{Binding Path=EnableTSplineIsChecked}"
                                                           Style="{StaticResource EllipseToggleButton1}"/>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
+                                        <StackPanel VerticalAlignment="Center">
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableTSplineNodes}"
                                                        Padding="5,5,5,0"
                                                        Margin="10,0,0,0"
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                                <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
+                                            <Label Content="{x:Static p:Resources.PreferencesViewRequiresRelaunchOfDynamo}" 
                                                        FontSize="10"
                                                        Margin="10,0,0,0"
                                                        Padding="5,0,5,5"
                                                        Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            </StackPanel>
                                         </StackPanel>
-                                    </Grid>
-                                </Expander>
-                            </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </Expander>
                         </Grid>
                     </TabItem>
                     
@@ -421,7 +420,6 @@
                             <!--Group Styles Expander-->
                             <Expander x:Name="Styles"
                                       Grid.Row="0"
-                                      IsExpanded="True"
                                       Expanded="Expander_Expanded"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
                                       Style="{StaticResource MenuExpanderStyle}">

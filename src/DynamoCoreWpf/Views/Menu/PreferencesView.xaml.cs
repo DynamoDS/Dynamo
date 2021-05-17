@@ -10,6 +10,7 @@ using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
 using System.Linq;
 using Dynamo.Logging;
+using System.Windows.Data;
 
 namespace Dynamo.Wpf.Views
 {
@@ -37,8 +38,58 @@ namespace Dynamo.Wpf.Views
                 viewModel = viewModelTemp;
             }
 
+            SetAllExpanderBindings();
+
             InitRadioButtonsDescription();
         }
+
+        /// <summary>
+        /// Due that all the settings for the expanders is stored in DynamoModel in a List property, we need to create expanders bindings dynamically
+        /// </summary>
+        private void SetAllExpanderBindings()
+        {
+            AssignExpanderBinding(PythonExpander);
+            AssignExpanderBinding(ExperimentalExpander);
+            AssignExpanderBinding(Styles);
+            AssignExpanderBinding(Scale);
+            AssignExpanderBinding(Precision);
+            AssignExpanderBinding(Display);
+        }
+
+        //For each expander passed as a parameter, it binds the right IsExpanded property.
+        private void AssignExpanderBinding(Expander expanderTarget)
+        {
+            var expanderStoredSetting = (from setting
+                                        in dynViewModel.ExpandersSettings
+                                         where setting.Name.Equals(expanderTarget.Name)
+                                         select setting).FirstOrDefault();
+
+            if (expanderStoredSetting != null)
+            {
+                Binding expanderBinding = new Binding("IsExpanded");
+                expanderBinding.Source = expanderStoredSetting;
+                expanderTarget.SetBinding(Expander.IsExpandedProperty, expanderBinding);
+            }
+        }
+
+        /// <summary>
+        /// When closing the Preferences window all the expander bindings are cleared
+        /// </summary>
+        private void ClearAllExpanderBindings()
+        {
+            ClearExpanderBinding(PythonExpander);
+            ClearExpanderBinding(ExperimentalExpander);
+            ClearExpanderBinding(Styles);
+            ClearExpanderBinding(Scale);
+            ClearExpanderBinding(Precision);
+            ClearExpanderBinding(Display);
+        }
+
+        private void ClearExpanderBinding(Expander expanderTarget)
+        {
+            BindingOperations.ClearBinding(expanderTarget, Expander.IsExpandedProperty);
+        }
+
 
         private void InitRadioButtonsDescription()
         {
@@ -54,6 +105,7 @@ namespace Dynamo.Wpf.Views
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            ClearAllExpanderBindings();
             this.Close();
         }
 
