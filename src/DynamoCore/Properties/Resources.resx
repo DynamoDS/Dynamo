@@ -747,8 +747,4 @@ Parameter name: {0}</value>
   <data name="Autocomplete" xml:space="preserve">
     <value>Autocomplete</value>
   </data>
-  <data name="PreferencesExpandersSettings" xml:space="preserve">
-    <value>[{"name":"PythonExpander","tab":"Features","isexpanded":false},{"name":"ExperimentalExpander","tab":"Features","isexpanded":false},{"name":"Styles","tab":"Visual Settings","isexpanded":false},{"name":"Scale","tab":"Visual Settings","isexpanded":false},{"name":"Precision","tab":"Visual Settings","isexpanded":false},{"name":"Display","tab":"Visual Settings","isexpanded":false}]</value>
-    <comment>Json that contains the setting for the expanders in the Preferences window</comment>
-  </data>
 </root>

@@ -658,9 +658,16 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
-            //Due that the Expanders settings are stored by session (when dynamo is closed, settings are lost) then we read the settings from a json string
-            string jsonExpandersSettings = Resources.PreferencesExpandersSettings;
-            ExpandersSettings = JsonConvert.DeserializeObject<List<ExpanderSettings>>(jsonExpandersSettings);
+            //Expanders settings are stored by session (when dynamo is closed, settings are lost)
+            ExpandersSettings = new List<ExpanderSettings>
+            {
+                new ExpanderSettings{ Name = "PythonExpander", IsExpanded = false, Tab = "Features" },
+                new ExpanderSettings{ Name = "ExperimentalExpander", IsExpanded = false, Tab = "Features" },
+                new ExpanderSettings{ Name = "Styles", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Scale", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Precision", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Display", IsExpanded = false, Tab = "Visual Settings" },
+            };
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 

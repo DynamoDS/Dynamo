@@ -20,10 +20,16 @@ namespace Dynamo.Configuration
         }
 
         private bool isExpanded;
-        public ExpanderSettings(string name, bool isExpanded)
+        public ExpanderSettings(string name, bool isExpanded, string tab)
         {
             Name = name;
             IsExpanded = isExpanded;
+            Tab = tab;
+        }
+
+        public ExpanderSettings()
+        {
+
         }
         public string Name { get; set; }
         public string Tab { get; set; }

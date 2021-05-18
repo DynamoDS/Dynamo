@@ -1263,15 +1263,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to [{&quot;name&quot;:&quot;PythonExpander&quot;,&quot;tab&quot;:&quot;Features&quot;,&quot;isexpanded&quot;:false},{&quot;name&quot;:&quot;ExperimentalExpander&quot;,&quot;tab&quot;:&quot;Features&quot;,&quot;isexpanded&quot;:false},{&quot;name&quot;:&quot;Styles&quot;,&quot;tab&quot;:&quot;Visual Settings&quot;,&quot;isexpanded&quot;:false},{&quot;name&quot;:&quot;Scale&quot;,&quot;tab&quot;:&quot;Visual Settings&quot;,&quot;isexpanded&quot;:false},{&quot;name&quot;:&quot;Precision&quot;,&quot;tab&quot;:&quot;Visual Settings&quot;,&quot;isexpanded&quot;:false},{&quot;name&quot;:&quot;Display&quot;,&quot;tab&quot;:&quot;Visual Settings&quot;,&quot;isexpanded&quot;:false}].
-        /// </summary>
-        public static string PreferencesExpandersSettings {
-            get {
-                return ResourceManager.GetString("PreferencesExpandersSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to 3D preview has been deactivated.
         /// </summary>
         public static string Preview3DOutageTitle {
