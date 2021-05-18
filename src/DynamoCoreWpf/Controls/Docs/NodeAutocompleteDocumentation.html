@@ -1,0 +1,160 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="UTF-8" />
+</head>
+
+<style>
+    body {
+        color: white;
+        font-size: 14px;
+        font-family: "Artifakt Element";
+        src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+        padding: 1%;
+    }
+
+    a {
+        color: lightgray;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid white;
+    }
+
+    th,
+    td {
+        border: 1px solid white;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    samp {
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .hidden-lg {
+        display: none;
+    }
+
+    .button {
+        background-color: transparent;
+        border-color: #3c3c3c;
+        color: #bbbbbb;
+    }
+
+    .button:hover {
+        border-color: #656565;
+        background-color: #373737;
+        opacity: 1.0;
+    }
+    .questionmark:after {
+        content: '?';
+        display: inline-block;
+        font-family: sans-serif;
+        font-weight: bold;
+        text-align: center;
+        font-size: 0.8em;
+        line-height: 0.8em;
+        border-radius: 50%;
+        margin-left: 6px;
+        padding: 0.13em 0.2em 0.09em 0.2em;
+        color: inherit;
+        border: 1px solid;
+        text-decoration: none;
+    }
+    @media screen and (max-width: 600px) {
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
+
+        td,
+        th {
+            display: block;
+        }
+
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+
+        .hidden-sm {
+            display: none;
+        }
+
+        .spaced-sm {
+            margin-top: 20px;
+        }
+
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>How to access Node Autocomplete</h3>
+    <p>
+        Node autocomplete can be accessed on any input or output port by right clicking it, and a popup window will appear next to the target port.
+    </p>
+    <h3>How the ranking mechanism works</h3>
+    <p>
+        Nodes that are closest to the type (Have the smallest type distance) and match the input/output port type appear higher in the ranking than those
+        nodes that have a are further away from the type (Have a greater type distance). After this initial ranking, nodes are then sorted by 
+        Group (Such as Curve, List or Math) and then by their returned value (Output parameters) before being ranked by their names alphabetically.
+    </p>
+    <h3>How the auto-layout mechanism works</h3>
+    <p>
+        The node auto-layout mechanism takes into consideration the entire node graph, paying particular attention to the local context,
+        the parent node and the margins between them before placing the new node.
+        You may notice that your graph changes minimally with every new node placed through the Node  Autocomplete feature.
+    </p>
+    <h3>How the auto-wire mechanism works</h3>
+    <p>
+        The auto-wiring mechanism will automatically attach the input/output port of the new node to the target output/input port and place it on teh workspace.
+    </p>
+    <h3>What nodes are hardcoded in and out of results</h3>
+    <p>
+        For nodes that do not match any criteria, such as some primitive type input/output ports, Node Autocomplete will show a 
+        fixed list of suggestions that contain: String, Number Slider, Integer Slider, Number and Boolean.
+    </p>
+</body>

@@ -2388,4 +2388,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
     <value>Last saved: </value>
   </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
 </root>
