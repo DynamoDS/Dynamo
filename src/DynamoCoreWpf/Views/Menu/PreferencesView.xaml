@@ -545,7 +545,7 @@
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
                                                 Content="{x:Static p:Resources.ScalingSmallButton}"/>
                                     <TextBlock x:Name="RadioSmallDesc"
-                                                Margin="20,0,0,0"
+                                                Margin="21,0,0,0"
                                                 Style="{StaticResource GeometryScaleDescTextBox}"
                                                 Visibility="{Binding IsChecked, ElementName=RadioSmall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <RadioButton x:Name="RadioMedium"
@@ -557,7 +557,7 @@
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingMediumButton}"/>
                                     <TextBlock  x:Name="RadioMediumDesc"
-                                                Margin="20,0,0,0"
+                                                Margin="21,0,0,0"
                                                 Style="{StaticResource GeometryScaleDescTextBox}"
                                                 Visibility="{Binding IsChecked, ElementName=RadioMedium, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <RadioButton x:Name="RadioLarge" 
@@ -569,7 +569,7 @@
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingLargeButton}"/>
                                     <TextBlock  x:Name="RadioLargeDesc"
-                                                Margin="20,0,0,0"
+                                                Margin="21,0,0,0"
                                                 Style="{StaticResource GeometryScaleDescTextBox}"
                                                 Visibility="{Binding IsChecked, ElementName=RadioLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <RadioButton x:Name="RadioExtraLarge"
@@ -581,7 +581,7 @@
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
                                                  Content="{x:Static p:Resources.ScalingExtraLargeButton}"/>
                                     <TextBlock  x:Name="RadioExtraLargeDesc"
-                                                Margin="20,0,0,0"
+                                                Margin="21,0,0,0"
                                                 Style="{StaticResource GeometryScaleDescTextBox}"
                                                 Visibility="{Binding IsChecked, ElementName=RadioExtraLarge, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                 </StackPanel>
