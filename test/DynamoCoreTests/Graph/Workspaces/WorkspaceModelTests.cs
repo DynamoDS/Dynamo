@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Properties;
 using Dynamo.Selection;
 using NUnit.Framework;
 
@@ -56,7 +58,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LoadLegacyNotes_AllNewNotesTest()
+        public void LoadLegacyNotesAllNewNotesTest()
         {
             //Generating tests data
             var mockViewBlock = new ExtraWorkspaceViewInfo();
@@ -85,7 +87,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void LoadLegacyNotes_DuplicatedNoteIdTest()
+        public void LoadLegacyNotesDuplicatedNoteIdTest()
         {
             Guid toBeDuplicatedId = Guid.NewGuid();
 
@@ -132,7 +134,7 @@ namespace Dynamo.Tests
         /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSomeGroup_True_ShouldNotCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroupTrueShouldNotCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -176,7 +178,7 @@ namespace Dynamo.Tests
         /// </summary>
         [Test]
         [Category("UnitTests")]
-        public void CheckIfModelExistsInSomeGroup_False_ShouldCreateNewAnnotation()
+        public void CheckIfModelExistsInSomeGroupFalseShouldCreateNewAnnotation()
         {
             //Add a Node
             var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
@@ -211,6 +213,111 @@ namespace Dynamo.Tests
             //Create new annotation with selected nodes.
             var result = CurrentDynamoModel.CurrentWorkspace.AddAnnotation("This is a test group", Guid.NewGuid());
             Assert.IsNotNull(result);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetHangingNodesTestCaseHangingNodeExist()
+        {
+            //Loads workspace with hanging nodes
+            OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
+            var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(customWorkspace);
+
+            //Checks for hanging nodes
+            var hangingNodes = customWorkspace.GetHangingNodes();
+            Assert.AreEqual(1,hangingNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetHangingNodesTestCaseNoHangingNodes()
+        {
+            //Checks for hanging nodes in empty workspace
+            var hangingNodes = CurrentDynamoModel.CurrentWorkspace.GetHangingNodes();
+            Assert.AreEqual(0, hangingNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSourceNodesTestCaseSourceNodesExist()
+        {
+            //Loads workspace with hanging nodes
+            OpenTestFile(@"core\CustomNodes", "add_Read_only.dyf");
+            var customWorkspace = CurrentDynamoModel.Workspaces.FirstOrDefault(x => x is CustomNodeWorkspaceModel);
+            Assert.IsNotNull(customWorkspace);
+
+            //Checks for source nodes
+            var sourceNodes = customWorkspace.GetSourceNodes();
+            Assert.AreEqual(2, sourceNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void GetSourceNodesTestCaseNoSourceNodes()
+        {
+            //Checks for source nodes in empty workspace
+            var sourceNodes = CurrentDynamoModel.CurrentWorkspace.GetSourceNodes();
+            Assert.AreEqual(0, sourceNodes.Count());
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateModelValueInvalidParameters()
+        {
+            var workspace = CurrentDynamoModel.CurrentWorkspace;
+
+            //Case: Empty Guid list
+            var ex1 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(new List<Guid>(), "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual(string.Format(Resources.ArgumentNullException,"modelGuids"), ex1.Message);
+            
+            //Case: Null Guid list
+            var ex2 = Assert.Throws<ArgumentNullException>(() => workspace.UpdateModelValue(null, "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual(string.Format(Resources.ArgumentNullException, "modelGuids"), ex2.Message);
+
+            //Case: No model found in workspace with given Guids
+            var guidList = new List<Guid>{ Guid.NewGuid() };
+            var ex3 = Assert.Throws<InvalidOperationException>(() => workspace.UpdateModelValue(guidList, "property name", "value"));
+            //Checks that not only the exception type is correct but also the message
+            Assert.AreEqual(Resources.ModelNotFoundError, ex3.Message);
+
+        }
+
+        [Test]
+        public void CanStoreBase64EncodedImageInThumbnailProperty()
+        {
+            // Arrange
+            var imagePath = Path.Combine(TestDirectory, @"DynamoCoreTests\Graph\Workspaces\thumbnailTestImage.png");
+            Assert.That(File.Exists(imagePath));
+
+            // Act
+            byte[] imageArray = System.IO.File.ReadAllBytes(imagePath);
+            string base64ImageRepresentation = Convert.ToBase64String(imageArray);
+            if (!(this.CurrentDynamoModel.CurrentWorkspace is HomeWorkspaceModel hws))
+                throw new Exception("current workspace is not a HomeWorkspaceModel");
+
+            hws.Thumbnail = base64ImageRepresentation;
+
+            // Assert
+            Assert.NotNull(base64ImageRepresentation);
+            Assert.AreEqual(hws.Thumbnail, base64ImageRepresentation);
+        }
+
+        [Test]
+        public void WillNotStoreInvalidBase64StringInThumbnailProperty()
+        {
+            // Arrange
+            var invalidImagePath = "GenericString";
+
+            // Act
+            if (!(this.CurrentDynamoModel.CurrentWorkspace is HomeWorkspaceModel hws))
+                throw new Exception("current workspace is not a HomeWorkspaceModel");
+            hws.Thumbnail = invalidImagePath;
+
+            // Assert
+            Assert.IsNull(hws.Thumbnail);
         }
     }
 }
