@@ -330,11 +330,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return showEdges;
+                return dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges;
             }
             set
             {
                 showEdges = value;
+                dynamoViewModel.RenderPackageFactoryViewModel.ShowEdges = value;
                 RaisePropertyChanged(nameof(ShowEdges));
             }
         }
@@ -346,11 +347,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return isolateSelectedGeometry;
+                return dynamoViewModel.BackgroundPreviewViewModel.IsolationMode;
             }
             set
             {
                 isolateSelectedGeometry = value;
+                dynamoViewModel.BackgroundPreviewViewModel.IsolationMode = value;
                 RaisePropertyChanged(nameof(IsolateSelectedGeometry));
             }
         }
