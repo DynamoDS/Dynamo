@@ -3474,6 +3474,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DynamoCoreWpf;NodeAutocompleteDocumentation.html.
+        /// </summary>
+        public static string NodeAutocompleteDocumentationUriString {
+            get {
+                return ResourceManager.GetString("NodeAutocompleteDocumentationUriString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Periodic Update.
         /// </summary>
         public static string NodeContextMenuEnablePeriodicUpdate {

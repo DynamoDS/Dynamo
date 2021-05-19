@@ -667,6 +667,9 @@
     <Resource Include="UI\Images\whiteclosetab.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\whiteinfotab.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="UI\Images\closewindow_hover.png" />
   </ItemGroup>
   <ItemGroup>
@@ -1296,6 +1299,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1318,6 +1322,7 @@
     <Resource Include="UI\Images\icon-whats-new-small.png" />
     <Resource Include="UI\Images\icon-dictionary-small.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
