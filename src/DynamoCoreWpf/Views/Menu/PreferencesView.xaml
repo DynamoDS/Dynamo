@@ -527,7 +527,7 @@
                             <!--Geometry Scaling Expander-->
                             <Expander x:Name="Scale"
                                       Grid.Row="1"
-                                      DataContext="{Binding OptionsGeometryScal}"
+                                      DataContext="{Binding OptionsGeometryScale}"
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
