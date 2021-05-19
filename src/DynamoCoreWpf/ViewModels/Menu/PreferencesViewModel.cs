@@ -123,13 +123,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if (selectedLanguage != value && selectedLanguage != null)
-                {
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.PreferencesViewLanguageLabel);
-                }
                 selectedLanguage = value;
                 RaisePropertyChanged(nameof(SelectedLanguage));
             }
@@ -146,13 +139,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if (SelectedFontSize != value && SelectedFontSize != null)
-                {
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.PreferencesViewFontSizeLabel);
-                }
                 selectedFontSize = value;
                 RaisePropertyChanged(nameof(SelectedFontSize));
             }
@@ -169,13 +155,6 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if(selectedNumberFormat != value && selectedNumberFormat != null)
-                {
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        Res.DynamoViewSettingMenuNumberFormat);
-                }
                 selectedNumberFormat = value;
                 preferenceSettings.NumberFormat = value;
                 RaisePropertyChanged(nameof(SelectedNumberFormat));
@@ -676,23 +655,40 @@ namespace Dynamo.ViewModels
                 case nameof(OptionsGeometryScale):
                     description = Res.DynamoViewSettingsMenuChangeScaleFactor;
                     goto default;
-                case "ShowEdges":
-                case "IsolateSelectedGeometry":
-                case "TessellationDivisions":
-                case "SelectedPythonEngine":
-                case "HideIronPythonAlertsIsChecked":
-                case "ShowWhitespaceIsChecked":
-                case "NodeAutocompleteIsChecked":
-                case "EnableTSplineIsChecked":
+                case nameof(ShowEdges):
+                    description = Res.PreferencesViewVisualSettingShowEdges;
+                    goto default;
+                case nameof(IsolateSelectedGeometry):
+                    description = Res.PreferencesViewVisualSettingsIsolateSelectedGeo;
+                    goto default;
+                case nameof(TessellationDivisions):
+                    description = Res.PreferencesViewVisualSettingsRenderPrecision;
+                    goto default;
+                case nameof(SelectedPythonEngine):
+                    description = Res.PreferencesViewDefaultPythonEngine;
+                    goto default;
+                case nameof(HideIronPythonAlertsIsChecked):
+                    description = Res.PreferencesViewIsIronPythonDialogDisabled;
+                    goto default;
+                case nameof(ShowWhitespaceIsChecked):
+                    description = Res.PreferencesViewShowWhitespaceInPythonEditor;
+                    goto default;
+                case nameof(NodeAutocompleteIsChecked):
+                    description = Res.PreferencesViewEnableNodeAutoComplete;
+                    goto default;
+                case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
                     goto default;
                 default:
-                    // Log switch on each setting and use description equals to label name
-                    Dynamo.Logging.Analytics.TrackEvent(
-                        Actions.Switch,
-                        Categories.Preferences,
-                        description);
-                    UpdateSavedChangesLabel();
+                    if (!string.IsNullOrEmpty(description))
+                    {
+                        // Log switch on each setting and use description equals to label name
+                        Dynamo.Logging.Analytics.TrackEvent(
+                            Actions.Switch,
+                            Categories.Preferences,
+                            description);
+                        UpdateSavedChangesLabel();
+                    }
                     break;
             }
         }
