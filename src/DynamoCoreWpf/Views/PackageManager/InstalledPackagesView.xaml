@@ -89,12 +89,33 @@
                                                    FontSize="11"
                                                    Foreground="#CCC"></TextBlock>
                                         <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                   Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                   Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                    FontSize="11"
                                                    FontStyle="Italic"
                                                    Foreground="Red"></TextBlock>
+                                        <Grid
+                                            Visibility="{Binding Path=Model.EnablePackageStates, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                            >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="25*"/>
+                                                <ColumnDefinition Width="68*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Background="DimGray"
+                                                    HorizontalAlignment="Stretch"
+                                                    Height="17"
+                                                    CornerRadius="5"
+                                                    ToolTip="{Binding Path=Model.PackageStateTooltip}"
+                                                    Grid.Column="0" Margin="30,0,55,0"
+                                                    Width="Auto" Padding="5,0,5,0">
+                                                <TextBlock Text="{Binding Path=Model.PackageStateText}"
+                                                        FontSize="11"
+                                                        FontStyle="Italic"
+                                                        HorizontalAlignment="Center"
+                                                        Foreground="WhiteSmoke"
+                                                        Grid.Column="0" Width="Auto"/>
+                                            </Border>
+                                        </Grid>
                                     </StackPanel>
-
                                     <Button Name="MoreButton"
                                             HorizontalAlignment="Right"
                                             Content="⋮"

@@ -15,6 +15,7 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Newtonsoft.Json;
+using Dynamo.Configuration;// Used for DebugModes
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -111,6 +112,60 @@ namespace Dynamo.PackageManager
         {
             get { return markedForUninstall; }
             internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+        }
+
+        public bool EnableOldMarkedForUnistallState
+        {
+            get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
+        }
+
+        public bool EnablePackageStates
+        {
+            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
+        }
+
+        internal enum PackageStates
+        {
+            Loaded, Unloaded, PendingUninstall, Error
+        }
+
+        internal PackageStates PackageState;
+
+        public string PackageStateTooltip
+        {
+            get
+            {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                switch (PackageState)
+                {
+                    case PackageStates.PendingUninstall: return Resources.PackageStatePendingUninstallTooltip;
+                    case PackageStates.Unloaded: return Resources.PackageStateUnloadedTooltip;
+                    case PackageStates.Loaded: return Resources.PackageStateLoadedTooltip;
+                    case PackageStates.Error: return Resources.PackageStateErrorTooltip;
+                    default: return "Unkonwn package state";
+                }
+            }
+        }
+
+        public string PackageStateText { get {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                switch (PackageState)
+                {
+                    case PackageStates.PendingUninstall: return Resources.PackageStatePendingUninstall;
+                    case PackageStates.Unloaded: return Resources.PackageStateUnloaded;
+                    case PackageStates.Loaded: return Resources.PackageStateLoaded;
+                    case PackageStates.Error: return Resources.PackageStateError;
+                    default: return "Unkonwn package state";
+                }
+            }
         }
 
         private string _group = "";
@@ -425,6 +480,10 @@ namespace Dynamo.PackageManager
         internal void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                PackageState = PackageStates.PendingUninstall;
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -435,6 +494,10 @@ namespace Dynamo.PackageManager
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                PackageState = PackageStates.Loaded;
+            }
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 

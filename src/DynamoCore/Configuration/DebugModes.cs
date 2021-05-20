@@ -48,6 +48,7 @@ namespace Dynamo.Configuration
         {
             // Register app wide new debug modes here.
             AddDebugMode("DynamoPreferencesMenuDebugMode", "Enable/Disable the Preferences MenuItem in the Dynamo menu.", true);
+            AddDebugMode("DynamoPackageStates", "Enable/Disable package states in the InstalledPackages UI.", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)
