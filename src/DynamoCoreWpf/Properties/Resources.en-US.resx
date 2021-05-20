@@ -817,10 +817,6 @@ You will get a chance to save your work.</value>
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
-  <data name="DynamoViewSettingMenuRenderPrecision" xml:space="preserve">
-    <value>Render Precision</value>
-    <comment>Setting menu | Render precision</comment>
-  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>

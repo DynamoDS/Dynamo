@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using System.Windows.Media;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
-using System.Linq;
-using Dynamo.Logging;
 
 namespace Dynamo.Wpf.Views
 {
@@ -18,9 +16,13 @@ namespace Dynamo.Wpf.Views
     /// </summary>
     public partial class PreferencesView : Window
     {
-        private PreferencesViewModel viewModel;
-        private DynamoViewModel dynViewModel;
+        private readonly PreferencesViewModel viewModel;
+        private readonly DynamoViewModel dynViewModel;
 
+        /// <summary>
+        /// Constructor of Preferences View
+        /// </summary>
+        /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
             DataContext = new PreferencesViewModel(dynamoViewModel);
@@ -28,6 +30,9 @@ namespace Dynamo.Wpf.Views
 
             
             InitializeComponent();
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Open,
+                Categories.Preferences);
 
             //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
             this.Owner = Application.Current.MainWindow;
@@ -40,30 +45,48 @@ namespace Dynamo.Wpf.Views
             InitRadioButtonsDescription();
         }
 
+        /// <summary>
+        /// Add inline description for each geometry scalling radio button
+        /// </summary>
         private void InitRadioButtonsDescription()
         {
-            RadioSmallDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[0]);
+            RadioSmallDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[0]);
 
             RadioMediumDesc.Inlines.Add(new Run(Res.ChangeScaleFactorPromptDescriptionDefaultSetting) { FontWeight = FontWeights.Bold });
-            RadioMediumDesc.Inlines.Add(" " + viewModel.OptionsGeometryScal.DescriptionScaleRange[1]);
+            RadioMediumDesc.Inlines.Add(" " + viewModel.OptionsGeometryScale.DescriptionScaleRange[1]);
 
-            RadioLargeDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[1]);
+            RadioLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[1]);
 
-            RadioExtraLargeDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[2]);
+            RadioExtraLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[2]);
         }
 
+        /// <summary>
+        /// Dialog close button handler
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Close,
+                Categories.Preferences);
             this.Close();
         }
 
-        //When the TitleBar is clicked this method will be executed
+        /// <summary>
+        /// handler for preferences dialog dragging action. When the TitleBar is clicked this method will be executed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PreferencesPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //Drag functionality when the TitleBar is clicked with the left button and dragged to another place
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
+                Dynamo.Logging.Analytics.TrackEvent(
+                    Actions.Move,
+                    Categories.Preferences);
             }
         }
 
@@ -190,6 +213,10 @@ namespace Dynamo.Wpf.Views
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
                     viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Switch,
+                        Categories.Preferences,
+                        Res.PreferencesViewVisualSettingsGeoScaling);
                 }                 
 
                 var allNodes = dynViewModel.HomeSpace.Nodes;
