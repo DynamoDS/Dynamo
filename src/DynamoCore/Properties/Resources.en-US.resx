@@ -760,15 +760,19 @@ Parameter name: {0}</value>
     <value>Skipped</value>
   </data>
   <data name="PackageStatePendingUninstallTooltip" xml:space="preserve">
-    <value>This package will be uninstalled after the next Dynamo restart.</value>
+    <value>Scheduled for uninstall.
+This package will be uninstalled after the next Dynamo restart.</value>
   </data>
     <data name="PackageStateErrorTooltip" xml:space="preserve">
-    <value>This package has not been installed due to an unexpected error.</value>
+    <value>Error.
+This package has not been installed due to an unexpected error.</value>
   </data>
     <data name="PackageStateLoadedTooltip" xml:space="preserve">
-    <value>This package is loaded and ready to be used.</value>
+    <value>Loaded.
+This package is loaded and ready to be used.</value>
   </data>
     <data name="PackageStateUnloadedTooltip" xml:space="preserve">
-    <value>This package has not been loaded because another conflicting package was loaded before it.</value>
+    <value>Skipped.
+This package has not been loaded because another conflicting package was loaded before it.</value>
   </data>
 </root>

@@ -95,24 +95,21 @@
                                                    Foreground="Red"></TextBlock>
                                         <Grid
                                             Visibility="{Binding Path=Model.EnablePackageStates, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                            Height="18"
+                                            MaxWidth="150"
                                             >
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="25*"/>
-                                                <ColumnDefinition Width="68*"/>
-                                            </Grid.ColumnDefinitions>
                                             <Border Background="DimGray"
                                                     HorizontalAlignment="Stretch"
-                                                    Height="17"
                                                     CornerRadius="5"
                                                     ToolTip="{Binding Path=Model.PackageStateTooltip}"
-                                                    Grid.Column="0" Margin="30,0,55,0"
-                                                    Width="Auto" Padding="5,0,5,0">
+                                                    Margin="5,0,0,0"
+                                                    Padding="5,0,5,0">
                                                 <TextBlock Text="{Binding Path=Model.PackageStateText}"
+                                                        TextTrimming="CharacterEllipsis"
                                                         FontSize="11"
                                                         FontStyle="Italic"
                                                         HorizontalAlignment="Center"
-                                                        Foreground="WhiteSmoke"
-                                                        Grid.Column="0" Width="Auto"/>
+                                                        Foreground="WhiteSmoke"/>
                                             </Border>
                                         </Grid>
                                     </StackPanel>

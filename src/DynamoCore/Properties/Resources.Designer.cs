@@ -1173,7 +1173,8 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package has not been installed due to an unexpected error..
+        ///   Looks up a localized string similar to Error.
+        ///This package has not been installed due to an unexpected error..
         /// </summary>
         public static string PackageStateErrorTooltip {
             get {
@@ -1191,7 +1192,8 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package is loaded and ready to be used..
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
         /// </summary>
         public static string PackageStateLoadedTooltip {
             get {
@@ -1209,7 +1211,8 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package will be uninstalled after the next Dynamo restart..
+        ///   Looks up a localized string similar to Scheduled for uninstall.
+        ///This package will be uninstalled after the next Dynamo restart..
         /// </summary>
         public static string PackageStatePendingUninstallTooltip {
             get {
@@ -1227,7 +1230,8 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This package has not been loaded because another conflicting package was loaded before it..
+        ///   Looks up a localized string similar to Skipped.
+        ///This package has not been loaded because another conflicting package was loaded before it..
         /// </summary>
         public static string PackageStateUnloadedTooltip {
             get {
