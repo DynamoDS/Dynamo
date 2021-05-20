@@ -552,10 +552,6 @@
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
-  <data name="DynamoViewSettingMenuRenderPrecision" xml:space="preserve">
-    <value>Render Precision</value>
-    <comment>Setting menu | Render precision</comment>
-  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2387,5 +2383,8 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
     <value>Last saved:</value>
+  </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>
 </root>
