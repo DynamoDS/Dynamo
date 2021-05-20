@@ -68,6 +68,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
+        private PreferencesViewModel preferencesViewModel;
 
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
@@ -95,19 +96,16 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
-        /// <summary>
-        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
-        /// </summary>
-        public List<ExpanderSettings> ExpandersSettings
+        public PreferencesViewModel PreferencesViewModel
         {
-            get 
-            { 
-                return Model.ExpandersSettings; 
+            get
+            {
+                return preferencesViewModel;
             }
             set
             {
-                Model.ExpandersSettings = value;
-                RaisePropertyChanged(nameof(ExpandersSettings));
+                preferencesViewModel = value;
+                RaisePropertyChanged(nameof(PreferencesViewModel));
             }
         }
 
@@ -690,6 +688,8 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+
+            preferencesViewModel = new PreferencesViewModel(this);
         }
 
         /// <summary>

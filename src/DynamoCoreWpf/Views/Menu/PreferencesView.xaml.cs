@@ -24,7 +24,7 @@ namespace Dynamo.Wpf.Views
 
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
-            DataContext = new PreferencesViewModel(dynamoViewModel);
+            DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
 
             
@@ -60,7 +60,7 @@ namespace Dynamo.Wpf.Views
         private void AssignExpanderBinding(Expander expanderTarget)
         {
             var expanderStoredSetting = (from setting
-                                        in dynViewModel.ExpandersSettings
+                                        in viewModel.ExpandersSettings
                                          where setting.Name.Equals(expanderTarget.Name)
                                          select setting).FirstOrDefault();
 

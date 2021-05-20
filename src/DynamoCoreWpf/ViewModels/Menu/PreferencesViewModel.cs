@@ -56,6 +56,10 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScal = null;
+        /// <summary>
+        /// This list contains the settings (current status) of the expanders located in the Preferences panel
+        /// </summary>
+        private List<ExpanderSettings> expandersSettings;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -108,6 +112,23 @@ namespace Dynamo.ViewModels
 
             }
         }
+
+        /// <summary>
+        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
+        /// </summary>
+        public List<ExpanderSettings> ExpandersSettings
+        {
+            get
+            {
+                return expandersSettings;
+            }
+            set
+            {
+                expandersSettings = value;
+                RaisePropertyChanged(nameof(ExpandersSettings));
+            }
+        }
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -621,6 +642,17 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             this.PropertyChanged += model_PropertyChanged;
+
+            //Expanders settings are stored by session (when dynamo is closed, settings are lost)
+            ExpandersSettings = new List<ExpanderSettings>
+            {
+                new ExpanderSettings{ Name = "PythonExpander", IsExpanded = false, Tab = "Features" },
+                new ExpanderSettings{ Name = "ExperimentalExpander", IsExpanded = false, Tab = "Features" },
+                new ExpanderSettings{ Name = "Styles", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Scale", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Precision", IsExpanded = false, Tab = "Visual Settings" },
+                new ExpanderSettings{ Name = "Display", IsExpanded = false, Tab = "Visual Settings" },
+            };
         }
 
         /// <summary>
