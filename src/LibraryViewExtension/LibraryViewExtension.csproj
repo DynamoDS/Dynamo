@@ -176,6 +176,7 @@
     <EmbeddedResource Include="web\library\resources\Category.Revit.svg" />
     <EmbeddedResource Include="web\library\resources\Category.Script.svg" />
     <EmbeddedResource Include="web\library\resources\Category.String.svg" />
+    <EmbeddedResource Include="web\library\resources\Category.Units.svg" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.eot" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.ttf" />
     <EmbeddedResource Include="web\library\resources\fontawesome-webfont.woff" />
