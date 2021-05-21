@@ -157,6 +157,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool _showDefaultValueMenu;
+        /// <summary>
+        /// If Dynamo should display default value menu on target port
+        /// </summary>
+        public bool ShowDefaultValueMenu
+        {
+            get
+            {
+                return _showDefaultValueMenu;
+            }
+            set
+            {
+                _showDefaultValueMenu = value;
+                RaisePropertyChanged(nameof(ShowDefaultValueMenu));
+            }
+        }
+
         /// <summary>
         /// If UseLevel is enabled on this port.
         /// </summary>
@@ -451,6 +468,24 @@ namespace Dynamo.ViewModels
         {
             if (MouseLeftButtonDown != null)
                 MouseLeftButtonDown(parameter, null);
+        }
+
+        /// <summary>
+        /// Handles the Alt + Mouse left button down on port which user could set default value.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private void OnPortDefaultValueMenuTrigger(object parameter)
+        {
+            ShowDefaultValueMenu = true;
+        }
+
+        /// <summary>
+        /// Returns if default value menu can be displayed on target port.
+        /// </summary>
+        /// <param name="parameter"></param>
+        private bool CanPortDefaultValueMenuTrigger(object parameter)
+        {
+            return DefaultValueEnabled;
         }
 
         /// <summary>

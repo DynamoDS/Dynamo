@@ -9,6 +9,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
+        private DelegateCommand portDefaultValueCommand;
         private DelegateCommand portMouseLeftButtonOnLevelCommand;
         private DelegateCommand portMouseLeftUseLevelCommand;
 
@@ -67,6 +68,17 @@ namespace Dynamo.ViewModels
                     portMouseLeftButtonCommand = new DelegateCommand(OnRectangleMouseLeftButtonDown, CanConnect);
 
                 return portMouseLeftButtonCommand;
+            }
+        }
+
+        public DelegateCommand PortDefaultValueCommand
+        {
+            get
+            {
+                if (portDefaultValueCommand == null)
+                    portDefaultValueCommand = new DelegateCommand(OnPortDefaultValueMenuTrigger, CanPortDefaultValueMenuTrigger);
+
+                return portDefaultValueCommand;
             }
         }
 
