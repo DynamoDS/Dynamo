@@ -129,7 +129,7 @@ namespace Dynamo.PackageManager
 
         internal enum PackageStates
         {
-            Loaded, Unloaded, PendingUninstall, Error
+            Loaded, Unloaded, PendingUnload, Error
         }
 
         internal PackageStates PackageState;
@@ -146,7 +146,7 @@ namespace Dynamo.PackageManager
 
                 switch (PackageState)
                 {
-                    case PackageStates.PendingUninstall: return Resources.PackageStatePendingUninstallTooltip;
+                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnloadTooltip;
                     case PackageStates.Unloaded: return Resources.PackageStateUnloadedTooltip;
                     case PackageStates.Loaded: return Resources.PackageStateLoadedTooltip;
                     case PackageStates.Error: return Resources.PackageStateErrorTooltip;
@@ -164,7 +164,7 @@ namespace Dynamo.PackageManager
 
                 switch (PackageState)
                 {
-                    case PackageStates.PendingUninstall: return Resources.PackageStatePendingUninstall;
+                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnload;
                     case PackageStates.Unloaded: return Resources.PackageStateUnloaded;
                     case PackageStates.Loaded: return Resources.PackageStateLoaded;
                     case PackageStates.Error: return Resources.PackageStateError;
@@ -487,7 +487,7 @@ namespace Dynamo.PackageManager
             MarkedForUninstall = true;
             if (DebugModes.IsEnabled("DynamoPackageStates"))
             {
-                PackageState = PackageStates.PendingUninstall;
+                PackageState = PackageStates.PendingUnload;
             }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
@@ -501,6 +501,8 @@ namespace Dynamo.PackageManager
             MarkedForUninstall = false;
             if (DebugModes.IsEnabled("DynamoPackageStates"))
             {
+                // Should this be a "Loaded state" or something else ?
+                // Or maybe state should only be set when trying to Load the package...not here.
                 PackageState = PackageStates.Loaded;
             }
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));

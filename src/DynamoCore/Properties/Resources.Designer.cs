@@ -1173,8 +1173,8 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error.
-        ///This package has not been installed due to an unexpected error..
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded due to an unexpected error..
         /// </summary>
         public static string PackageStateErrorTooltip {
             get {
@@ -1202,26 +1202,26 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled for uninstall.
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
         /// </summary>
-        public static string PackageStatePendingUninstall {
+        public static string PackageStatePendingUnload {
             get {
-                return ResourceManager.GetString("PackageStatePendingUninstall", resourceCulture);
+                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Scheduled for uninstall.
-        ///This package will be uninstalled after the next Dynamo restart..
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///This package will be unloaded after the next Dynamo restart..
         /// </summary>
-        public static string PackageStatePendingUninstallTooltip {
+        public static string PackageStatePendingUnloadTooltip {
             get {
-                return ResourceManager.GetString("PackageStatePendingUninstallTooltip", resourceCulture);
+                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipped.
+        ///   Looks up a localized string similar to Unloaded.
         /// </summary>
         public static string PackageStateUnloaded {
             get {
@@ -1230,7 +1230,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Skipped.
+        ///   Looks up a localized string similar to Unloaded.
         ///This package has not been loaded because another conflicting package was loaded before it..
         /// </summary>
         public static string PackageStateUnloadedTooltip {

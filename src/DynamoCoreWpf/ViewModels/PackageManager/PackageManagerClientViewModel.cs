@@ -778,12 +778,15 @@ namespace Dynamo.ViewModels
             Package dynPkg;
             if (packageDownloadHandle.Extract(DynamoViewModel.Model, downloadPath, out dynPkg))
             {
-                if (DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    dynPkg.PackageState = Package.PackageStates.Loaded;
-                }
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+
+                if (DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    // Temporary location for setting the package state.
+                    // Should be moved somewhere with more visibility into possible errors.
+                    dynPkg.PackageState = Package.PackageStates.Loaded;
+                }
             }
             else
             {
