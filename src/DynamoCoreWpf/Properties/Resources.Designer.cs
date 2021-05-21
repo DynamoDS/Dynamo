@@ -4404,6 +4404,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Learn more about Node Autocomplete feature..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteTooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteTooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable T-Spline nodes.
         /// </summary>
         public static string PreferencesViewEnableTSplineNodes {
