@@ -52,6 +52,7 @@ namespace Dynamo.ViewModels
         private bool showEdges;
         private bool isolateSelectedGeometry;
         private RunType runSettingsIsChecked;
+        private List<TabSettings> preferencesTabs;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
@@ -62,7 +63,6 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This list contains the settings (current status) of the expanders located in the Preferences panel
         /// </summary>
-        private List<ExpanderSettings> expandersSettings;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -82,6 +82,22 @@ namespace Dynamo.ViewModels
             {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
             {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
+
+        /// <summary>
+        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
+        /// </summary>
+        public List<TabSettings> PreferencesTabs
+        {
+            get
+            {
+                return preferencesTabs;
+            }
+            set
+            {
+                preferencesTabs = value;
+                RaisePropertyChanged(nameof(PreferencesTabs));
+            }
+        }
 
         /// <summary>
         /// Controls what the SavedChanges label will display
@@ -113,22 +129,6 @@ namespace Dynamo.ViewModels
                 savedChangesTooltip = value;
                 RaisePropertyChanged(nameof(SavedChangesTooltip));
 
-            }
-        }
-
-        /// <summary>
-        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
-        /// </summary>
-        public List<ExpanderSettings> ExpandersSettings
-        {
-            get
-            {
-                return expandersSettings;
-            }
-            set
-            {
-                expandersSettings = value;
-                RaisePropertyChanged(nameof(ExpandersSettings));
             }
         }
 
@@ -645,17 +645,10 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             this.PropertyChanged += model_PropertyChanged;
-
-            //Expanders settings are stored by session (when dynamo is closed, settings are lost)
-            ExpandersSettings = new List<ExpanderSettings>
-            {
-                new ExpanderSettings{ Name = "PythonExpander", IsExpanded = false, Tab = "Features" },
-                new ExpanderSettings{ Name = "ExperimentalExpander", IsExpanded = false, Tab = "Features" },
-                new ExpanderSettings{ Name = "Styles", IsExpanded = false, Tab = "Visual Settings" },
-                new ExpanderSettings{ Name = "Scale", IsExpanded = false, Tab = "Visual Settings" },
-                new ExpanderSettings{ Name = "Precision", IsExpanded = false, Tab = "Visual Settings" },
-                new ExpanderSettings{ Name = "Display", IsExpanded = false, Tab = "Visual Settings" },
-            };
+           
+            preferencesTabs = new List<TabSettings>();
+            preferencesTabs.Add(new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
+            preferencesTabs.Add(new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
         }
 
         /// <summary>
@@ -818,6 +811,43 @@ namespace Dynamo.ViewModels
         public static int ConvertScaleFactorToUI(int scaleValue)
         {
            return (scaleValue / 2) + 1;
+        }
+    }
+
+    /// <summary>
+    /// This class represent a Tab and is used for store just one Expander info(due that just one Expander can be expanded at one time)
+    /// </summary>
+    public class TabSettings : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Tab Name (e.g. Features o Visual Settings)
+        /// </summary>
+        public string Name;
+        private string expanderActive;
+
+        /// <summary>
+        /// This property hold the name for the current Expander expanded
+        /// </summary>
+        public string ExpanderActive
+        {
+            get
+            {
+                return expanderActive;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    expanderActive = value;
+                    OnPropertyChanged(nameof(ExpanderActive));
+                }          
+            }
         }
     }
 }

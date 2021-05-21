@@ -39,8 +39,6 @@ namespace Dynamo.Wpf.Views
             }
             
             //Find all the Expanders in the LogicalTree (XAML)
-            allExpandersList = FindLogicalChildren<Expander>(mainGrid).ToList();
-            SetAllExpanderBindings();
             InitRadioButtonsDescription();
         }
 
@@ -73,50 +71,6 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        /// <summary>
-        /// Due that all the settings for the expanders is stored in DynamoModel in a List property, we need to create expanders bindings dynamically
-        /// </summary>
-        private void SetAllExpanderBindings()
-        {
-            foreach (var expander in allExpandersList)
-            {
-                AssignExpanderBinding(expander);
-            }
-        }
-
-        //For each expander passed as a parameter, it binds the right IsExpanded property.
-        private void AssignExpanderBinding(Expander expanderTarget)
-        {
-            var expanderStoredSetting = (from setting
-                                        in viewModel.ExpandersSettings
-                                         where setting.Name.Equals(expanderTarget.Name)
-                                         select setting).FirstOrDefault();
-
-            if (expanderStoredSetting != null)
-            {
-                Binding expanderBinding = new Binding("IsExpanded");
-                expanderBinding.Source = expanderStoredSetting;
-                expanderTarget.SetBinding(Expander.IsExpandedProperty, expanderBinding);
-            }
-        }
-
-        /// <summary>
-        /// When closing the Preferences window all the expander bindings are cleared
-        /// </summary>
-        private void ClearAllExpanderBindings()
-        {
-            foreach (var expander in allExpandersList)
-            {
-                ClearExpanderBinding(expander);
-            }
-        }
-
-        private void ClearExpanderBinding(Expander expanderTarget)
-        {
-            BindingOperations.ClearBinding(expanderTarget, Expander.IsExpandedProperty);
-        }
-
-
         private void InitRadioButtonsDescription()
         {
             RadioSmallDesc.Inlines.Add(viewModel.OptionsGeometryScal.DescriptionScaleRange[0]);
@@ -131,7 +85,6 @@ namespace Dynamo.Wpf.Views
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            ClearAllExpanderBindings();
             this.Close();
         }
 
@@ -222,7 +175,7 @@ namespace Dynamo.Wpf.Views
             Grid parentGrid = currentExpander.Parent as Grid;
             foreach (Expander expander in parentGrid.Children)
             {
-                if (expander != currentExpander)
+                if (expander != currentExpander && expander.IsExpanded)
                     expander.IsExpanded = false;
 
             }
