@@ -89,6 +89,15 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search Autocomplete Results.
+        /// </summary>
+        public static string AutocompleteSearchTextBlockText {
+            get {
+                return ResourceManager.GetString("AutocompleteSearchTextBlockText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Original file &apos;{0}&apos; gets backed up at &apos;{1}&apos;.
         /// </summary>
         public static string BackUpOriginalFileMessage {
@@ -1483,7 +1492,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search Autocomplete Results.
+        ///   Looks up a localized string similar to Search.
         /// </summary>
         public static string SearchTextBlockText {
             get {

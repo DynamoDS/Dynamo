@@ -81,8 +81,8 @@
                             </Image.Style>
                         </Image>
                         </Button>
-                        <Button Name="CloseButton" Margin="0,7,5,7" BorderThickness="0"  Background="{StaticResource autocompletionWindow}">
-                            <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Name="CloseButton" Margin="0,7,5,7" Height="14" Width="14" BorderThickness="0" Click="CloseAutocompletionWindow" Background="{StaticResource autocompletionWindow}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Style.Triggers>
@@ -188,7 +188,7 @@
                                    HorizontalAlignment="Center"
                                    Height="18"
                                    Margin="2,0,0,0"
-                                   Text="{x:Static resx:Resources.SearchTextBlockText}" />
+                                   Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>
 
