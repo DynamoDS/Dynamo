@@ -49,8 +49,6 @@ namespace Dynamo.PackageManager
         /// </summary>
         public string Name { get { return Header != null ? Header.name : _name; } set { _name = value; } }
 
-        internal bool IsStdLibPkg = false;
-
         private string _id;
         /// <summary>
         /// Identifier of the package
@@ -156,8 +154,6 @@ namespace Dynamo.PackageManager
 
             // Update root directory to final path
             pkg.RootDirectory = installedPath;
-
-            pkg.PackageState = Package.PackageStates.Loaded;
 
             return true;
         }
