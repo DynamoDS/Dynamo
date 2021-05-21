@@ -96,7 +96,7 @@ namespace Dynamo.ViewModels
             get { return Model.PreferenceSettings; }
         }
 
-        public PreferencesViewModel PreferencesViewModel
+        internal PreferencesViewModel PreferencesViewModel
         {
             get
             {

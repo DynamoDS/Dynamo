@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using Dynamo.Configuration;
 using System.Windows.Media;
+using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
-using System.Linq;
-using Dynamo.Logging;
-using System.Windows.Data;
 
 namespace Dynamo.Wpf.Views
 {
@@ -21,6 +20,7 @@ namespace Dynamo.Wpf.Views
     {
         private PreferencesViewModel viewModel;
         private DynamoViewModel dynViewModel;
+        private List<Expander> allExpandersList;
 
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
@@ -37,10 +37,40 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel = viewModelTemp;
             }
-
+            
+            //Find all the Expanders in the LogicalTree (XAML)
+            allExpandersList = FindLogicalChildren<Expander>(mainGrid).ToList();
             SetAllExpanderBindings();
-
             InitRadioButtonsDescription();
+        }
+
+        /// <summary>
+        /// Finds all the logical children that match the Type (T) in the XAML Tree
+        /// </summary>
+        /// <typeparam name="T">Type of Object to search in the XAML</typeparam>
+        /// <param name="depObj">Root of a XAML element in which the method will find the matching children</param>
+        /// <returns></returns>
+        public static IEnumerable<T> FindLogicalChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                foreach (object rawChild in LogicalTreeHelper.GetChildren(depObj))
+                {
+                    if (rawChild is DependencyObject)
+                    {
+                        DependencyObject child = (DependencyObject)rawChild;
+                        if (child is T)
+                        {
+                            yield return (T)child;
+                        }
+
+                        foreach (T childOfChild in FindLogicalChildren<T>(child))
+                        {
+                            yield return childOfChild;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -48,12 +78,10 @@ namespace Dynamo.Wpf.Views
         /// </summary>
         private void SetAllExpanderBindings()
         {
-            AssignExpanderBinding(PythonExpander);
-            AssignExpanderBinding(ExperimentalExpander);
-            AssignExpanderBinding(Styles);
-            AssignExpanderBinding(Scale);
-            AssignExpanderBinding(Precision);
-            AssignExpanderBinding(Display);
+            foreach (var expander in allExpandersList)
+            {
+                AssignExpanderBinding(expander);
+            }
         }
 
         //For each expander passed as a parameter, it binds the right IsExpanded property.
@@ -77,12 +105,10 @@ namespace Dynamo.Wpf.Views
         /// </summary>
         private void ClearAllExpanderBindings()
         {
-            ClearExpanderBinding(PythonExpander);
-            ClearExpanderBinding(ExperimentalExpander);
-            ClearExpanderBinding(Styles);
-            ClearExpanderBinding(Scale);
-            ClearExpanderBinding(Precision);
-            ClearExpanderBinding(Display);
+            foreach (var expander in allExpandersList)
+            {
+                ClearExpanderBinding(expander);
+            }
         }
 
         private void ClearExpanderBinding(Expander expanderTarget)
