@@ -115,13 +115,13 @@ namespace Dynamo.PackageManager
             internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
-        [Obsolete("This is a temporary method. Please do not use it")]
+        [Obsolete("This is a temporary property. Please do not use it")]
         public bool EnableOldMarkedForUnistallState
         {
             get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
         }
 
-        [Obsolete("This is a temporary method. Please do not use it")]
+        [Obsolete("This is a temporary property. Please do not use it")]
         public bool EnablePackageStates
         {
             get { return DebugModes.IsEnabled("DynamoPackageStates"); }
@@ -134,7 +134,7 @@ namespace Dynamo.PackageManager
 
         internal PackageStates PackageState;
 
-        [Obsolete("This is a temporary method. Please do not use it")]
+        [Obsolete("This is a temporary property. Please do not use it")]
         public string PackageStateTooltip
         {
             get
@@ -155,7 +155,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("This is a temporary method. Please do not use it")]
+        [Obsolete("This is a temporary property. Please do not use it")]
         public string PackageStateText { get {
                 if (!DebugModes.IsEnabled("DynamoPackageStates"))
                 {
