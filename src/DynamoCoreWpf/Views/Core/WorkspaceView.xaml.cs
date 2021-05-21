@@ -62,7 +62,6 @@ namespace Dynamo.Views
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
-        private bool isAutoCompleteLoading;
 
         public WorkspaceViewModel ViewModel
         {
