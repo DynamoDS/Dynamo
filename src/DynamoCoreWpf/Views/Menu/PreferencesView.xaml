@@ -534,7 +534,7 @@
                                       IsExpanded="{Binding PreferencesTabs[1].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
                                 <StackPanel x:Name="GeometryScalingRadiosPanel"
-                                            DataContext="{Binding OptionsGeometryScal}"
+                                            DataContext="{Binding OptionsGeometryScale}"
                                             Width="300"
                                             HorizontalAlignment="Left"
                                             Margin="8,0,0,0"

@@ -78,6 +78,7 @@ namespace Dynamo.Wpf.Views
             }
         }
 
+        /// <summary>
         /// Add inline description for each geometry scalling radio button
         /// </summary>
         private void InitRadioButtonsDescription()

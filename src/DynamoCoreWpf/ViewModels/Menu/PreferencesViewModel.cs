@@ -1,21 +1,14 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.Wpf.ViewModels.Core.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -648,7 +641,7 @@ namespace Dynamo.ViewModels
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
-            this.PropertyChanged += model_PropertyChanged;
+            this.PropertyChanged += Model_PropertyChanged;
            
             preferencesTabs = new List<TabSettings>();
             preferencesTabs.Add(new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
