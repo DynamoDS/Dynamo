@@ -58,6 +58,7 @@ namespace Dynamo.Linting
                 }
 
                 activeLinter = value;
+                RaisePropertyChanged("ActiveLinter");
             }
         }
 

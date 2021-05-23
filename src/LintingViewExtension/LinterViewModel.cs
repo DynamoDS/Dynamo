@@ -101,6 +101,7 @@ namespace Dynamo.LintingViewExtension
             NodeIssues = new ObservableCollection<IRuleIssue>();
             GraphIssues = new ObservableCollection<IRuleIssue>();
             this.linterManager.RuleEvaluationResults.CollectionChanged += RuleEvaluationResultsCollectionChanged;
+            this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
         }
 
         #region Private methods
@@ -260,6 +261,12 @@ namespace Dynamo.LintingViewExtension
             }
         }
 
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e )
+        {
+            if (e.PropertyName == "ActiveLinter")
+                ActiveLinter = (sender as LinterManager)?.ActiveLinter;
+        }
+        
         private NodeModel NodeFromId(string nodeId)
         {
             if (nodeId is null)
@@ -278,6 +285,12 @@ namespace Dynamo.LintingViewExtension
         private void CreateDefaultDummyLinterDescriptor()
         {
             defaultDescriptor = new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
+        }
+
+        public void Dispose()
+        {
+            this.linterManager.RuleEvaluationResults.CollectionChanged -= RuleEvaluationResultsCollectionChanged;
+            this.linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
         }
         #endregion
     }
