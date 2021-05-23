@@ -45,7 +45,6 @@ namespace Dynamo.Wpf.Views
                 viewModel = viewModelTemp;
             }
             
-            //Find all the Expanders in the LogicalTree (XAML)
             InitRadioButtonsDescription();
         }
 
