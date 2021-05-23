@@ -50,7 +50,7 @@ namespace Dynamo.ViewModels
         private bool showEdges;
         private bool isolateSelectedGeometry;
         private RunType runSettingsIsChecked;
-        private List<TabSettings> preferencesTabs;
+        private Dictionary<string, TabSettings> preferencesTabs;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
@@ -81,7 +81,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
         /// </summary>
-        public List<TabSettings> PreferencesTabs
+        public Dictionary<string, TabSettings> PreferencesTabs
         {
             get
             {
@@ -642,10 +642,11 @@ namespace Dynamo.ViewModels
             SavedChangesTooltip = string.Empty;
 
             this.PropertyChanged += Model_PropertyChanged;
-           
-            preferencesTabs = new List<TabSettings>();
-            preferencesTabs.Add(new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add(new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
+
+            preferencesTabs = new Dictionary<string, TabSettings>();
+            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
+            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
             this.PropertyChanged += Model_PropertyChanged;
         }
 

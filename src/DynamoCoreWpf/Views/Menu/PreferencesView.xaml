@@ -306,7 +306,7 @@
                             <Expander x:Name="PythonExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
-                                        IsExpanded="{Binding PreferencesTabs[0].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PythonExpander}"
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PythonExpander}"
                                         Expanded="Expander_Expanded"
                                         Header="{x:Static p:Resources.PreferencesViewPython}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
@@ -360,7 +360,7 @@
                                 <!--This Grid row contains the Experimental section-->
                             <Expander x:Name="ExperimentalExpander" 
                                           Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[0].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
+                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
                                           Grid.Row="1"
                                           Expanded="Expander_Expanded"
                                           Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
@@ -433,7 +433,7 @@
                             <Expander x:Name="Styles"
                                       Grid.Row="0"
                                       Expanded="Expander_Expanded"
-                                      IsExpanded="{Binding PreferencesTabs[1].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
                                       Style="{StaticResource MenuExpanderStyle}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
@@ -540,7 +540,7 @@
                                       Grid.Row="1"                   
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
-                                      IsExpanded="{Binding PreferencesTabs[1].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
                                 <StackPanel x:Name="GeometryScalingRadiosPanel"
                                             DataContext="{Binding OptionsGeometryScale}"
@@ -603,7 +603,7 @@
                                       Grid.Row="2"
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
-                                      IsExpanded="{Binding PreferencesTabs[1].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Precision}"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Precision}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsRenderPrecision}">
                                 <StackPanel Orientation="Horizontal" 
                                             Margin="10"
@@ -623,7 +623,7 @@
                                       Grid.Row="3"
                                       Style="{StaticResource MenuExpanderStyle}" 
                                       Expanded="Expander_Expanded"
-                                      IsExpanded="{Binding PreferencesTabs[1].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Display}"
+                                      IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Display}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsDisplaySettings}">
                                 <Grid>
                                     <Grid.RowDefinitions>
