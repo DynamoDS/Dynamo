@@ -2387,4 +2387,7 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
   </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>Learn more about Node Autocomplete feature.</value>
+  </data>
 </root>
