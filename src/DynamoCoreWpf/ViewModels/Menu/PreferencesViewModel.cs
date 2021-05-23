@@ -863,7 +863,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Tab Name (e.g. Features o Visual Settings)
+        /// Tab Name (e.g. Features or Visual Settings)
         /// </summary>
         public string Name;
         private string expanderActive;
