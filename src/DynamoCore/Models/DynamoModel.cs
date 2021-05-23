@@ -891,6 +891,11 @@ namespace Dynamo.Models
                             {
                                 if (loadedExtension is IExtension)
                                 {
+                                    if (loadedExtension is LinterExtensionBase loadedLinter)
+                                    {
+                                        loadedLinter.InitializeBase(this.LinterManager);
+                                    }
+                                    
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
