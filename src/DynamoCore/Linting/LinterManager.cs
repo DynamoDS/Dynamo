@@ -103,7 +103,7 @@ namespace Dynamo.Linting
 
             if (result.Status == RuleEvaluationStatusEnum.Passed)
             {
-                RuleEvaluationResults.Remove(result);
+                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Remove(result); });
             }
 
             else
@@ -122,14 +122,18 @@ namespace Dynamo.Linting
                         if (storingResult.NodeIds != gRuleResult.NodeIds) 
                         {
                             // remove original result and replace with new one
-                            RuleEvaluationResults.Remove(storingResult);
-                            RuleEvaluationResults.Add(result);
+                            DynamoModel.OnRequestDispatcherInvoke(() =>
+                            {
+                                RuleEvaluationResults.Remove(storingResult);
+                                RuleEvaluationResults.Add(result);
+                            });
                         }
                     }
                     
                     return;
                 }
-                RuleEvaluationResults.Add(result);
+
+                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Add(result); });
             }
         }
 

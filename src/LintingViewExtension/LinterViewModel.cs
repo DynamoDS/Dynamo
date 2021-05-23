@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -25,6 +26,7 @@ namespace Dynamo.LintingViewExtension
         private LinterExtensionDescriptor activeLinter;
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParams;
+        private Dispatcher dispatcher;
         private LinterExtensionDescriptor defaultDescriptor;
         #endregion
 
@@ -86,6 +88,7 @@ namespace Dynamo.LintingViewExtension
         {
             this.linterManager = linterManager ?? throw new ArgumentNullException(nameof(linterManager));
             this.viewLoadedParams = viewLoadedParams;
+            this.dispatcher = viewLoadedParams.DynamoWindow.Dispatcher;
             InitializeCommands();
             CreateDefaultDummyLinterDescriptor();
 
@@ -144,7 +147,7 @@ namespace Dynamo.LintingViewExtension
             var newIssue = new NodeRuleIssue(ruleId, GetLinterRule(ruleId) as NodeLinterRule);
             newIssue.AddAffectedNodes(new List<NodeModel> { issueNode });
 
-            NodeIssues.Add(newIssue);
+            this.dispatcher.Invoke(() => { NodeIssues.Add(newIssue); });
         }
 
         private void AddNewGraphIssue(List<string> issueNodeIds, string ruleId)
@@ -168,7 +171,7 @@ namespace Dynamo.LintingViewExtension
             var newIssue = new GraphRuleIssue(ruleId, GetLinterRule(ruleId) as GraphLinterRule);
             newIssue.AddAffectedNodes(issueNodes);
 
-            GraphIssues.Add(newIssue);
+            this.dispatcher.Invoke(() => { GraphIssues.Add(newIssue); });
         }
 
         private void RemoveNodeIssue(string issueNodeId, string ruleId)
@@ -188,7 +191,7 @@ namespace Dynamo.LintingViewExtension
 
             if (issue.AffectedNodes.Count == 0)
             {
-                NodeIssues.Remove(issue);
+                this.dispatcher.Invoke(() => { NodeIssues.Remove(issue); });
             }
         }
 
@@ -197,7 +200,7 @@ namespace Dynamo.LintingViewExtension
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (issue is null) return;
 
-            GraphIssues.Remove(issue);
+            this.dispatcher.Invoke(() => { GraphIssues.Remove(issue); });
         }
 
         private LinterRule GetLinterRule(string id)
