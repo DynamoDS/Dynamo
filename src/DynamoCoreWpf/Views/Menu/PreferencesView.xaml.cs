@@ -267,5 +267,10 @@ namespace Dynamo.Wpf.Views
         {
             Log(LogMessage.Info(message));
         }
+
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
     }
 }
