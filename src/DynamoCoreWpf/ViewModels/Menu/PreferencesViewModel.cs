@@ -79,7 +79,7 @@ namespace Dynamo.ViewModels
         };
 
         /// <summary>
-        /// This property will be used by the Preferences screen to store and retrieve all the seetings from the expanders
+        /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
         /// </summary>
         public List<TabSettings> PreferencesTabs
         {
