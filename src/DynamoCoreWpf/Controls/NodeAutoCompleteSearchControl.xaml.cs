@@ -270,5 +270,10 @@ namespace Dynamo.UI.Controls
             // do not propagate to child items with scrollable content
             e.Handled = true;
         }
+
+        private void OnMoreInfoClicked(object sender, RoutedEventArgs e)
+        {
+            ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
+        }
     }
 }

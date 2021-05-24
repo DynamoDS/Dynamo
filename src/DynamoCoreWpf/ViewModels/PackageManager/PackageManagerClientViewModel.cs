@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
@@ -779,6 +780,13 @@ namespace Dynamo.ViewModels
             {
                 PackageManagerExtension.PackageLoader.LoadPackages(new List<Package> { dynPkg });
                 packageDownloadHandle.DownloadState = PackageDownloadHandle.State.Installed;
+
+                if (DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    // Temporary location for setting the package state.
+                    // Should be moved somewhere with more visibility into possible errors.
+                    dynPkg.PackageState = Package.PackageStates.Loaded;
+                }
             }
             else
             {
