@@ -44,7 +44,9 @@
                 <Setter Property="Foreground" 
                         Value="{StaticResource NestedMemberTextColor}"/>
                 <Setter Property="Padding"
-                        Value="5" />
+                        Value="0,5" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
             </Style>
 
             <Style TargetType="{x:Type ListView}">
@@ -64,6 +66,12 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
+                <Setter Property="Margin"
+                        Value="0" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="BorderThickness"
+                        Value="0" />
             </Style>
 
             <Style TargetType="{x:Type Button}">
@@ -83,12 +91,14 @@
                         Value="13" />
                 <Setter Property="Foreground"
                         Value="{StaticResource NestedMemberTextColor}" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="Margin"
+                        Value="0,0" />
             </Style>
 
-            <Style TargetType="{x:Type GroupBox}"
-                   BasedOn="{StaticResource {x:Type GroupBox}}">
-                <Setter Property="BorderThickness"
-                        Value="0" />
+            <Style TargetType="{x:Type HeaderedContentControl}"
+                   BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
                 <Setter Property="Margin"
                         Value="0,5px" />
                 <Setter Property="Foreground"
@@ -105,35 +115,48 @@
                 </Setter>
             </Style>
 
+            <Style TargetType="{x:Type ScrollViewer}"
+                   BasedOn="{StaticResource {x:Type ScrollViewer}}">
+                <Setter Property="Padding"
+                        Value="0" />
+            </Style>
+
+            <Style TargetType="{x:Type ScrollContentPresenter}"
+                   BasedOn="{StaticResource {x:Type ScrollContentPresenter}}">
+                <Setter Property="Margin"
+                        Value="0" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid Margin="10px 10px">
+    <Grid Margin="10px, 10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical"
                     Grid.Row="0" KeyDown="StackPanel_KeyDown">
-            <GroupBox Header="Description">
-                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}" 
+
+            <HeaderedContentControl Header="Description">
+                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"
                          Style="{StaticResource TextBoxStyle}"
-                         TextWrapping="WrapWithOverflow"/>
-            </GroupBox>
-            
-            <GroupBox Header="Image">
+                         TextWrapping="WrapWithOverflow" />
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Header="Image">
                 <controls:ImageSelector MaxHeight="150"
                                         MinHeight="100"
                                         Image="{Binding Thumbnail, Mode=TwoWay}"/>
-            </GroupBox>
-            
-            <GroupBox Header="Author Name">
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Header="Author Name">
                 <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
                          Style="{StaticResource TextBoxStyle}"
                          TextWrapping="WrapWithOverflow" />
-            </GroupBox>
-            
-            <GroupBox Header="Learn more URL">
+            </HeaderedContentControl>
+
+            <HeaderedContentControl Header="Learn more URL">
                 <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
                          Name="UriTextBox"
                          Style="{StaticResource TextBoxStyle}"
@@ -152,7 +175,7 @@
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-            </GroupBox>
+            </HeaderedContentControl>
             
             <Separator Background="{StaticResource FilterIconColor}" Margin="0,20,0,20"/>
         </StackPanel>
@@ -163,7 +186,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0"
-                  Margin="10px, 5px">
+                  Margin="0, 5px">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
@@ -175,21 +198,20 @@
                         Command="{Binding AddCustomPropertyCommand}">
                     <Button.Template>
                         <ControlTemplate>
-                            <fa:ImageAwesome Icon="Plus"
-                                             Height="20"
-                                             VerticalAlignment="Stretch"
-                                             Foreground="{StaticResource FilterIconColor}" />
+                            <Image Width="16px" Height="16px"
+                                   Source="/GraphMetadataViewExtension;component/Resources/add-thick-grey-16px.png" />
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
             </Grid>
 
-            <ListView Grid.Row="1"
-                      Margin="10px 5px"
-                      HorizontalContentAlignment="Stretch"
+            <ListView Grid.Row="1" 
+                      Margin="0px 5px"
+                      HorizontalContentAlignment="Left"
                       Background="Transparent"
                       BorderBrush="Transparent"
-                      ItemsSource="{Binding CustomProperties}">
+                      ItemsSource="{Binding CustomProperties}"
+                      BorderThickness="0">
             </ListView>
         </Grid>
     </Grid>
