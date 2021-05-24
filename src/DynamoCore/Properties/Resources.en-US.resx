@@ -591,6 +591,9 @@ value : bool = false</value>
     <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
     <value>Search Autocomplete Results</value>
   </data>
   <data name="Autocomplete" xml:space="preserve">
