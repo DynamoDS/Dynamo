@@ -1791,15 +1791,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Render Precision.
-        /// </summary>
-        public static string DynamoViewSettingMenuRenderPrecision {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuRenderPrecision", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Agreement to Collect Usability Data.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
@@ -4400,6 +4391,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewEnableNodeAutoComplete {
             get {
                 return ResourceManager.GetString("PreferencesViewEnableNodeAutoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Learn more about Node Autocomplete feature..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteTooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteTooltipText", resourceCulture);
             }
         }
         
