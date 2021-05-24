@@ -656,8 +656,6 @@ namespace Dynamo.ViewModels
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
-            this.PropertyChanged += Model_PropertyChanged;
-
             preferencesTabs = new Dictionary<string, TabSettings>();
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
