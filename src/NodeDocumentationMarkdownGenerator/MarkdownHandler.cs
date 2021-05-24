@@ -46,6 +46,7 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 var fileName = $"{info.QualifiedFileName}.md";
                 var filePath = Path.Combine(outputDir, fileName);
+                var fileInfo = new FileInfo(filePath);
 
                 if (File.Exists(filePath))
                 {
@@ -65,7 +66,7 @@ namespace NodeDocumentationMarkdownGenerator
                     DynamoDictionaryEntry matchingEntry = GetMatchigDictionaryEntry(dictEntrys, info, spec);
                     if (matchingEntry != null)
                     {
-                        fileContent = GetContentFormDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileName, logger);    
+                        fileContent = GetContentFormDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileInfo, logger);    
                     }
                 }
 
@@ -105,30 +106,27 @@ namespace NodeDocumentationMarkdownGenerator
             return content.ToString();
         }
 
-        private static string GetContentFormDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer, string fileName, ILogger logger)
+        private static string GetContentFormDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer, FileInfo fileInfo, ILogger logger)
         {
             var imgDir = new DirectoryInfo(Path.Combine(examplesDirectory, entry.FolderPath, "img"));
 
-            string imageBase64 = string.Empty;
+            var missingFields = new string[2];
 
             // Sometimes the dictionary specifies an image file without it actually existing
             // so we check both if the directory and the file exist
+            string imageString = string.Empty;
             if (imgDir.Exists &&
-                imgDir.GetFiles($"{entry.ImageFile.FirstOrDefault()}.*").Length > 0)
+                imgDir.GetFiles($"{entry.ImageFile.FirstOrDefault()}.*").Length > 0 &&
+                !TrySaveImage(imgDir, entry.ImageFile.FirstOrDefault(), optimizer, fileInfo, out imageString))
             {
-                imageBase64 = ImageToBase64(
-                    imgDir,
-                    entry.ImageFile.FirstOrDefault(),
-                    optimizer);
+                missingFields[0] = "Image";
             }
-
-            var missingFields = new string[2];
-            if (imageBase64 == string.Empty) missingFields[0] = "Image";
+  
             if (entry.InDepth == string.Empty) missingFields[1] = "In Depth description";
 
             if (!missingFields.Any())
             {
-                logger.Log($"{fileName} missing {string.Join(", ", missingFields)}");
+                logger.Log($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
             }
 
             var content = new StringBuilder();
@@ -137,34 +135,43 @@ namespace NodeDocumentationMarkdownGenerator
             content.AppendLine("___");
             content.AppendLine("## Example File:");
             content.AppendLine();
-            content.AppendLine(imageBase64);
+            content.AppendLine(imageString);
             return content.ToString();
         }
 
-        private static string ImageToBase64(DirectoryInfo imgDir, string imgName, ImageOptimizer optimizer)
+        private static bool TrySaveImage(DirectoryInfo imgDir, string imgName, ImageOptimizer optimizer, FileInfo fileInfo, out string mdImage)
         {
+            mdImage = string.Empty;
             var imageFileInfo = imgDir.GetFiles($"{imgName}.*").FirstOrDefault();
 
-            if (!imageFileInfo.Exists) return string.Empty;
+            if (!imageFileInfo.Exists) return false;
 
-            using (Image image = Image.FromFile(imageFileInfo.FullName))
-            using (MemoryStream m = new MemoryStream())
+            try
             {
-                image.Save(m, image.RawFormat);
-
-                if (optimizer != null)
+                using (Image image = Image.FromFile(imageFileInfo.FullName))
+                using (MemoryStream m = new MemoryStream())
                 {
-                    m.Position = 0;
-                    optimizer.Compress(m);
+                    image.Save(m, image.RawFormat);
+
+                    if (optimizer != null)
+                    {
+                        m.Position = 0;
+                        optimizer.Compress(m);
+                    }
+
+                    var img = Image.FromStream(m);
+                    var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}.{imageFileInfo.Name}";
+                    var path = Path.Combine(fileInfo.Directory.FullName, fileName);
+                    img.Save(path);
+                    mdImage = $"![{imgName}](./{fileName})";
+                    return true;
                 }
-
-                byte[] imageBytes = m.ToArray();
-
-                // Convert byte[] to Base64 String
-                string base64String = Convert.ToBase64String(imageBytes);
-                base64String = $"![{imgName}](data:image/{imageFileInfo.Extension};base64,{base64String})";
-                return base64String;
             }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
 
         private static DynamoDictionaryEntry GetMatchigDictionaryEntry(List<DynamoDictionaryEntry> dictEntrys, MdFileInfo info, LayoutSpecification spec)
