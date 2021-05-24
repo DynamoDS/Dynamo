@@ -49,6 +49,11 @@ namespace Dynamo.GraphMetadata
         }
 
         #region Storage Access implementation
+
+        /// <summary>
+        /// Adds custom properties serialized in the graph to the viewModels CustomProperty collection
+        /// </summary>
+        /// <param name="extensionData"></param>
         public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
         {
             foreach (var kv in extensionData)
@@ -61,6 +66,11 @@ namespace Dynamo.GraphMetadata
             }
         }
 
+        /// <summary>
+        /// Adds all CustomProperties to this extensions extensionData
+        /// </summary>
+        /// <param name="extensionData"></param>
+        /// <param name="saveContext"></param>
         public void OnWorkspaceSaving(Dictionary<string, string> extensionData, SaveContext saveContext)
         {
             // Clearing the extensionData dictionary before adding new values

@@ -15,26 +15,41 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private HomeWorkspaceModel currentWorkspace;
 
+        /// <summary>
+        /// Command used to add new custom properties to the CustomProperty collection
+        /// </summary>
         public DelegateCommand AddCustomPropertyCommand { get; set; }
 
+        /// <summary>
+        /// Description of the current workspace
+        /// </summary>
         public string GraphDescription
         {
             get { return currentWorkspace.Description; }
             set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); }
         }
 
+        /// <summary>
+        /// Author name of the current workspace
+        /// </summary>
         public string GraphAuthor
         {
             get { return currentWorkspace.Author; }
             set { currentWorkspace.Author = value; RaisePropertyChanged(nameof(GraphAuthor)); }
         }
 
+        /// <summary>
+        /// Link to documentation page for current workspace
+        /// </summary>
         public Uri HelpLink
         {
             get { return currentWorkspace.GraphDocumentationURL; }
             set { currentWorkspace.GraphDocumentationURL = value; RaisePropertyChanged(nameof(HelpLink)); }
         }
 
+        /// <summary>
+        /// Workspace thumbnail as BitmapImage.
+        /// </summary>
         public BitmapImage Thumbnail
         {
             get
@@ -50,6 +65,9 @@ namespace Dynamo.GraphMetadata
             }
         }
 
+        /// <summary>
+        /// Collection of CustomProperties
+        /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams)
