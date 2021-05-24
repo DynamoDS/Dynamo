@@ -28,6 +28,10 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
+            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
+            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
+            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+
             DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
 
