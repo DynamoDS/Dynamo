@@ -3053,4 +3053,49 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// This converter was designed for Expanders, so it will store/fetch the current Expander state
+    /// </summary>
+    public class ExpandersBindingConverter : IValueConverter
+    {
+        /// <summary>
+        /// Fetch the current expansion state for binding it to a Expander.IsExpanded property
+        /// </summary>
+        /// <param name="value">string representing the current Expander expanded name</param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter">seleted expander name</param>
+        /// <param name="culture"></param>
+        /// <returns>bool indicating if the Expander should be expanded or not</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string)
+            {
+                var expanderValue = value as string;
+                var expanderName = parameter as string;
+                return expanderName.Equals(expanderValue);
+            }
+            return false;
+        }
+        /// <summary>
+        /// Store the current expansion state of the Expander selected
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter">seleted expander name</param>
+        /// <param name="culture"></param>
+        /// <returns>a string that represents the Expander expanded name</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool expanderExpanded = (bool)value;
+            string expanderName = string.Empty; 
+            if (expanderExpanded == true)
+            {
+                expanderName = parameter as string;
+                var expanderValue = expanderName;
+                return expanderValue;
+            }
+            return null;
+        }
+    }
+
 }
