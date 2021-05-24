@@ -197,6 +197,7 @@
                              Background="Transparent"
                              BorderThickness="0"
                              FontSize="12"
+                             Height="18"
                              IsEnabled="True"
                              VerticalAlignment="Center"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
