@@ -79,6 +79,28 @@ namespace ProtoCore.Reflection
                     for (int i = 0; i < ca.ConstructorArguments.Count; i++)
                     {
                         var item = ca.ConstructorArguments[i];
+                        if (item.ArgumentType.IsArray)
+                        {
+                            var valueColl = item.Value as ICollection;
+                            var argsArray = new object[valueColl.Count];
+                            var idx = 0;
+                            foreach (var e in item.Value as ICollection)
+                            {
+                                if (e is CustomAttributeTypedArgument cs)
+                                    argsArray[idx] = cs.Value.InstanceFromObject(cs.ArgumentType);
+                                else
+                                    argsArray[idx] = e;
+                                idx++;
+                            }
+                            if (TryConvertToTypeArray(argsArray, out Array typeArray))
+                            {
+                                paramValues.Add(typeArray);
+                                continue;
+                            }
+                            paramValues.Add(argsArray);
+                            continue;
+                        }
+
                         if (item.Value is ICollection enumerable)
                         {
                             foreach (var e in enumerable)
@@ -139,8 +161,11 @@ namespace ProtoCore.Reflection
             if (args is null)
                 return (Attribute)Activator.CreateInstance(loadedType);
 
+            var attr = args is ICollection ?
+                (Attribute)Activator.CreateInstance(loadedType, (object[])args) :
+                (Attribute)Activator.CreateInstance(loadedType, args);
 
-            return (Attribute)Activator.CreateInstance(loadedType, args);
+            return attr;
         }
 
         private static object InstanceFromObject(this object obj, System.Type type)

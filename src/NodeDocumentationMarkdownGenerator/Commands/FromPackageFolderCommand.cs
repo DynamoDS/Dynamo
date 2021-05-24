@@ -19,7 +19,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             this.logger = logger;
         }
 
-        internal string HandlePackageDocumentation(FromPackageOptions opts)
+        internal void HandlePackageDocumentation(FromPackageOptions opts)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             var package = PackageFromRoot(opts.InputFolderPath);
@@ -38,8 +38,6 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             }
 
             MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite, logger);
-
-            return $"{fileInfos.Count} documentation files created for {package.Name} package, all documentation files are available in {package.NodeDocumentaionDirectory}\n" + "(•_•)\n" + "( •_•) >⌐■-■\n" + "(⌐■_■)";
         }
 
         private List<MdFileInfo> ScanNodeLibraries(Package pkg, IEnumerable<string> hostPaths)
@@ -63,7 +61,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             addtionalPathsToLoad.AddRange(hostDllPaths);
 
-            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, addtionalPathsToLoad);
+            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, addtionalPathsToLoad, logger);
         }
 
         private List<MdFileInfo> ScanCustomNodes(Package pkg)
@@ -72,7 +70,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             foreach (var path in Directory.EnumerateFiles(pkg.CustomNodeDirectory, "*.dyf"))
             {
-                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(path, logger);
+                var fileInfo = MdFileInfo.FromCustomNode(path, logger);
                 if (fileInfo is null) continue;
 
                 fileInfos.Add(fileInfo);

@@ -20,8 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj" />
-    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj" />
+    <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoPackages\DynamoPackages.csproj">
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

@@ -43,7 +43,7 @@ namespace Dynamo.Search.SearchElements
             this.functionDescriptor = functionDescriptor;
 
             Name = functionDescriptor.UserFriendlyName;
-            
+
             if (functionDescriptor.IsOverloaded)
             {
                 var parameters = new StringBuilder();
@@ -53,7 +53,7 @@ namespace Dynamo.Search.SearchElements
 
                 Parameters = parameters.ToString();
             }
-            
+
             FullCategoryName = functionDescriptor.Category;
             Description = functionDescriptor.Description;
             Assembly = functionDescriptor.Assembly;
@@ -134,6 +134,53 @@ namespace Dynamo.Search.SearchElements
                 string shortName = Graph.Nodes.Utilities.NormalizeAsResourceName(functionDescriptor.FunctionName);
                 return Graph.Nodes.Utilities.TypedParametersToString(functionDescriptor, name + shortName);
             }
+        }
+    }
+
+    internal class ReflectionZeroTouhSearchElement : NodeSearchElement
+    {
+        private readonly ReflectionFunctionDescriptor functionDescriptor;
+        private readonly string fullname;
+        public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
+
+        public override string FullName { get { return fullname; } }
+
+        internal ReflectionFunctionDescriptor Descriptor => functionDescriptor;
+
+        public ReflectionZeroTouhSearchElement(ReflectionFunctionDescriptor functionDescriptor)
+        {
+            this.functionDescriptor = functionDescriptor;
+
+            Name = functionDescriptor.UserFriendlyName;
+
+            if (functionDescriptor.IsOverloaded)
+            {
+                var parameters = new StringBuilder();
+                parameters.Append("(");
+                parameters.Append(String.Join(", ", functionDescriptor.Parameters.Select(x => x.Name)));
+                parameters.Append(")");
+
+                Parameters = parameters.ToString();
+            }
+
+            FullCategoryName = functionDescriptor.Category;
+            Description = functionDescriptor.Description;
+            Assembly = functionDescriptor.Assembly;
+
+            //Create full name including assembly name
+            fullname = string.Format("{0}.{1}", System.IO.Path.GetFileNameWithoutExtension(Assembly), functionDescriptor.QualifiedName);
+            ElementType = ElementTypes.ZeroTouch;
+
+            if (functionDescriptor.IsBuiltIn)
+                ElementType |= ElementTypes.BuiltIn;
+
+            if (functionDescriptor.IsPackageMember)
+                ElementType |= ElementTypes.Packaged;
+        }
+
+        protected override NodeModel ConstructNewNodeModel()
+        {
+            throw new NotImplementedException();
         }
     }
 }

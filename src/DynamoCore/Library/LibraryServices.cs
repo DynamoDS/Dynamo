@@ -1190,7 +1190,7 @@ namespace Dynamo.Engine
             public string LibraryPath { get; private set; }
         }
 
-        private class LibraryPathComparer : IEqualityComparer<string>
+        internal class LibraryPathComparer : IEqualityComparer<string>
         {
             public bool Equals(string path1, string path2)
             {

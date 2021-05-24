@@ -1446,9 +1446,14 @@ namespace ProtoFFI
         public FFIMethodAttributes(FieldInfo f)
         {
             var reflectionOnly = f.DeclaringType.Assembly.ReflectionOnly;
-            var atts = reflectionOnly ? f.AttributesFromReflectionContext() : f.GetCustomAttributes(false).Cast<Attribute>();
+            var atts = reflectionOnly ? 
+                f.AttributesFromReflectionContext() : 
+                f.GetCustomAttributes(false).Cast<Attribute>();
 
-            var parentAtts = reflectionOnly ? f.DeclaringType.AttributesFromReflectionContext() : f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
+            var parentAtts = reflectionOnly ? 
+                f.DeclaringType.AttributesFromReflectionContext() : 
+                f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
+
             var isObsolete = false;
             var hidden = false;
             var message = "";
@@ -1495,6 +1500,7 @@ namespace ProtoFFI
             if (method == null)
                 throw new ArgumentNullException("method");
 
+            var mName = method.Name;
             var reflectionContext = method.DeclaringType.Assembly.ReflectionOnly;
 
             FFIClassAttributes baseAttributes = null;
@@ -1502,16 +1508,6 @@ namespace ProtoFFI
             if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
             {
                 baseAttributes = new FFIClassAttributes(type);
-                //if (reflectionContext)
-                //{
-                //    baseAttributes = new FFIClassAttributes();
-                //    baseAttributes.FromReflectionContext(type);
-                //}
-                //else
-                //{
-                //    baseAttributes = new FFIClassAttributes(type);
-                //}
-
                 CLRModuleType.SetTypeAttributes(type, baseAttributes);
             }
 

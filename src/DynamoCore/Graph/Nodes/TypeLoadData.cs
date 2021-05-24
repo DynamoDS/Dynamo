@@ -109,8 +109,8 @@ namespace Dynamo.Graph.Nodes
                     .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
             IsDeprecated = attributes.Where(x=>x is NodeDeprecatedAttribute).Cast<NodeDeprecatedAttribute>().Any();
-            IsMetaNode = attributes.Where(x => x is NodeDeprecatedAttribute).Cast<IsMetaNodeAttribute>().Any();
-            IsDSCompatible = attributes.Where(x => x is NodeDeprecatedAttribute).Cast<IsDesignScriptCompatibleAttribute>().Any();
+            IsMetaNode = attributes.Where(x => x is IsMetaNodeAttribute).Cast<IsMetaNodeAttribute>().Any();
+            IsDSCompatible = attributes.Where(x => x is IsDesignScriptCompatibleAttribute).Cast<IsDesignScriptCompatibleAttribute>().Any();
             IsHidden = attributes.Where(x=>x is IsVisibleInDynamoLibraryAttribute).Cast<IsVisibleInDynamoLibraryAttribute>().Any(attr => !attr.Visible);
 
             var attribs = attributes.Where(x=>x is NodeNameAttribute).Cast<NodeNameAttribute>();

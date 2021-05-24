@@ -26,7 +26,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
             }
 
-            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, logger, opts.CompressImages, opts.DictionaryDirectory);
+            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, opts.OutputFolderPath, opts.Overwrite, logger, opts.CompressImages, opts.DictionaryDirectory, opts.LayoutSpecPath);
         }
 
         private List<MdFileInfo> ScanFolderForCustomNodes(string inputFolderPath, SearchOption searchOption)
@@ -35,7 +35,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             var fileInfos = new List<MdFileInfo>();
             foreach (var cn in allDyfs)
             {
-                var fileInfo = MarkdownHandler.GetMdFileInfoFromFromCustomNode(cn.FullName, logger);
+                var fileInfo = MdFileInfo.FromCustomNode(cn.FullName, logger);
                 if (fileInfo is null) continue;
 
                 fileInfos.Add(fileInfo);
@@ -49,13 +49,17 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             if (filter.Count() != 0)
             {
-                var dllPaths = allDlls.Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName)).Select(x => x.FullName).ToList();
-                return AssemblyHandler.ScanAssemblies(dllPaths);
+                var dllPaths = allDlls
+                    .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
+                    .Select(x => x.FullName)
+                    .ToList();
+
+                return AssemblyHandler.ScanAssemblies(dllPaths, logger);
             }
 
             return AssemblyHandler.
                 ScanAssemblies(allDlls.
-                Select(x => x.FullName).ToList());
+                Select(x => x.FullName).ToList(), logger);
         }
     }
 }

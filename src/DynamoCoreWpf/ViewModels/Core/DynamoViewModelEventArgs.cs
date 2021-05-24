@@ -183,6 +183,12 @@ namespace Dynamo.ViewModels
         /// Nodes category.
         /// </summary>
         public string Category { get; }
+
+        /// <summary>
+        /// Name of the package this node belongs to
+        /// </summary>
+        public string PkgName => Category.Split('.').FirstOrDefault();
+
         /// <summary>
         /// Collection of the nodes input names.
         /// </summary>
@@ -270,7 +276,7 @@ namespace Dynamo.ViewModels
                     var descriptor = dSFunction.Controller.Definition;
                     var className = descriptor.ClassName;
                     var functionName = descriptor.FunctionName;
-                    if (descriptor.IsOverloaded)
+                    if (descriptor.IsOverloaded && NodeModelHasCollisions(functionName, viewModel))
                     {
                         var inputString = GetInputNames(nodeModel);
                         return $"{className}.{functionName}({inputString})";

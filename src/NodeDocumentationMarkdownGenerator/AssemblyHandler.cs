@@ -4,11 +4,19 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
+using Dynamo.Library;
+using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Search;
+using Dynamo.Search.SearchElements;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Reflection;
+using ProtoCore.Utils;
 using ProtoFFI;
+using static Dynamo.Engine.LibraryServices;
 
 namespace NodeDocumentationMarkdownGenerator
 {
@@ -19,7 +27,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// </summary>
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
         /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths)
+        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, ILogger logger)
         {
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
@@ -27,7 +35,7 @@ namespace NodeDocumentationMarkdownGenerator
             var resolver = new PathAssemblyResolver(paths);
             var mlc = new MetadataLoadContext(resolver);
 
-            return Scan(assemblyPaths, mlc, resolver);
+            return Scan(assemblyPaths, mlc, resolver, logger);
         }
 
         /// <summary>
@@ -36,7 +44,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
         /// <param name="addtionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
         /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> addtionalPathsToLoad)
+        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> addtionalPathsToLoad, ILogger logger)
         {
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
@@ -45,17 +53,21 @@ namespace NodeDocumentationMarkdownGenerator
             var resolver = new PathAssemblyResolver(paths);
             var mlc = new MetadataLoadContext(resolver);
 
-            return Scan(assemblyPaths, mlc, resolver);
+            return Scan(assemblyPaths, mlc, resolver, logger);
         }
 
-        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
+        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver, ILogger logger)
         {
             var fileInfos = new List<MdFileInfo>();
+            var nodeSearchModel = new NodeSearchModel();
 
             using (mlc)
             {
                 var dynamoCoreAss = resolver.Resolve(mlc, new AssemblyName("DynamoCore"));
                 var nodeModelType = dynamoCoreAss.GetType("Dynamo.Graph.Nodes.NodeModel");
+
+                var functionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
+                var functionDescriptors = new List<FunctionDescriptor>();
 
                 foreach (var path in assemblyPaths)
                 {
@@ -64,9 +76,11 @@ namespace NodeDocumentationMarkdownGenerator
                         Assembly asm = mlc.LoadFromAssemblyPath(path);
                         AssemblyName name = asm.GetName();
 
+                        TryGetCustomizationFile(asm, out LibraryCustomization customization);
+
                         if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                         {
-                            fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType));
+                            fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, logger, ref nodeSearchModel));
                             continue;
                         }
 
@@ -88,10 +102,12 @@ namespace NodeDocumentationMarkdownGenerator
                         foreach (var t in moduleTypes)
                         {
                             var tn = t.FullName;
+
                             try
                             {
                                 var className = t.ClassNode.ClassName;
-                                
+                                var externalLib = t.ClassNode.ExternLibName;
+
                                 // For some reason mscorelib sometimes gets pass to here, so filtering it away.
                                 if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
                                     t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
@@ -99,29 +115,54 @@ namespace NodeDocumentationMarkdownGenerator
                                 var ctorNodes = t.ClassNode.Procedures
                                     .Where(c => c.Kind == AstKind.Constructor)
                                     .Cast<ConstructorDefinitionNode>()
-                                    .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public)
-                                    .GroupBy(x => x.Name);
+                                    .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public &&
+                                                c.MethodAttributes != null ? 
+                                                    !c.MethodAttributes.IsObsolete && !c.MethodAttributes.HiddenInLibrary : 
+                                                    true)
+                                    .Cast<AssociativeNode>();
 
                                 var functionNodes = t.ClassNode.Procedures
                                     .Where(c => c is FunctionDefinitionNode)
                                     .Cast<FunctionDefinitionNode>()
                                     .Where(f => !f.MethodAttributes.HiddenInLibrary &&
-                                                !f.MethodAttributes.IsObsolete && f.Name != "_Dispose" &&
-                                                !f.Name.StartsWith("get_") &&
-                                                !f.Name.StartsWith("set_"))
-                                    .GroupBy(x => x.Name);
+                                                !f.MethodAttributes.IsObsolete && 
+                                                f.Name != "_Dispose")
+                                    .Cast<AssociativeNode>();
 
-                                var props = t.ClassNode.Variables.GroupBy(x=>x.Name);
+                                var associativeNodes = ctorNodes.ToList();
+                                if (functionNodes.Any()) associativeNodes.AddRange(functionNodes);
 
-                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(ctorNodes, className));
-                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(functionNodes, className));
-                                fileInfos.AddRange(FileInfosFromAsscociativeNodeGroups(props, className));
-
+                                foreach (var node in associativeNodes)
+                                {
+                                    if (TryGetFunctionDescriptor(node, asm, className, customization, out ReflectionFunctionDescriptor des))
+                                    {
+                                        functionDescriptors.Add(des);
+                                    }
+                                }
                             }
                             catch (Exception)
                             {
                                 continue;
                             }
+                        }
+
+                        foreach (var descriptor in functionDescriptors)
+                        {
+                            Dictionary<string, FunctionGroup> fptrs;
+                            if (!functionGroups.TryGetValue(descriptor.Assembly, out fptrs))
+                            {
+                                fptrs = new Dictionary<string, FunctionGroup>();
+                                functionGroups[descriptor.Assembly] = fptrs;
+                            }
+
+                            string qualifiedName = descriptor.QualifiedName;
+                            FunctionGroup functionGroup;
+                            if (!fptrs.TryGetValue(qualifiedName, out functionGroup))
+                            {
+                                functionGroup = new FunctionGroup(qualifiedName);
+                                fptrs[qualifiedName] = functionGroup;
+                            }
+                            functionGroup.AddFunctionDescriptor(descriptor);
                         }
                     }
                     catch (Exception)
@@ -129,28 +170,36 @@ namespace NodeDocumentationMarkdownGenerator
                         continue;
                     }
                 }
+
+                AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
+                fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel, logger));
             }
 
             return fileInfos;
         }
 
-        private static List<MdFileInfo> FileInfosFromAsscociativeNodeGroups(IEnumerable<IGrouping<string,AssociativeNode>> associativeNodes, string className)
+        private static void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups, ref NodeSearchModel nodeSearchModel)
         {
-            var fileInfos = new List<MdFileInfo>();
-            foreach (var group in associativeNodes)
+            foreach (var funcGroup in functionGroups)
             {
-                if (group.Count() == 1)
-                {
-                    fileInfos.Add(MarkdownHandler.GetMdFileInfoFromAssociativeNode(group.FirstOrDefault(), className, false));
-                    continue;
-                }
-
-                fileInfos.AddRange(group.Select(x => MarkdownHandler.GetMdFileInfoFromAssociativeNode(x, className, true)));
+                AddZeroTouchNodeToSearch(funcGroup, ref nodeSearchModel);
             }
-            return fileInfos;
         }
-        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType)
+
+        private static void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, ref NodeSearchModel nodeSearchModel)
         {
+            foreach (var functionDescriptor in funcGroup.Functions)
+            {
+                if (functionDescriptor.IsVisibleInLibrary)
+                {
+                    nodeSearchModel.Add(new ReflectionZeroTouhSearchElement(functionDescriptor as ReflectionFunctionDescriptor));
+                }
+            }
+        }
+
+        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ILogger logger, ref NodeSearchModel searchModel)
+        {
+
             var fileInfos = new List<MdFileInfo>();
             System.Type[] typesInAsm = null;
             try
@@ -165,21 +214,15 @@ namespace NodeDocumentationMarkdownGenerator
             var nodeTypes = typesInAsm
                 .Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType))
                 .Select(t => new TypeLoadData(t, t.AttributesFromReflectionContext()))
+                .Where(type => type != null && !type.IsDeprecated && !type.IsHidden)
                 .ToList();
 
-            foreach (var nodeType in nodeTypes)
+            foreach (var type in nodeTypes)
             {
-                if (nodeType is null ||
-                    nodeType.IsDeprecated ||
-                    nodeType.IsHidden)
-                {
-                    continue;
-                }
-
-                fileInfos.Add(MarkdownHandler.GetMdFileNameFromTypeLoadData(nodeType));
+                searchModel.Add(new NodeModelSearchElement(type, nodeModelType));
             }
 
-            return fileInfos;
+            return FileInfosFromSearchModel(searchModel, logger);
         }
 
         private static List<string> GetDefaultPaths()
@@ -191,6 +234,142 @@ namespace NodeDocumentationMarkdownGenerator
             paths.AddRange(dynamoDlls);
 
             return paths;
+        }
+
+        private static bool TryGetCustomizationFile(Assembly asm, out LibraryCustomization customization)
+        {
+            customization = null;
+            try
+            {
+                var customizationFileName = asm.GetName().Name + "_DynamoCustomization.xml";
+                var customizationPath = Path.Combine(Path.GetDirectoryName(asm.Location), customizationFileName);
+                var xDocument = XDocument.Load(customizationPath);
+
+                customization = new LibraryCustomization(asm, xDocument);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        
+        }
+
+        private static bool TryGetFunctionDescriptor(
+            AssociativeNode associativeNode, Assembly asm, 
+            string className, LibraryCustomization customization,
+            out ReflectionFunctionDescriptor descriptor)
+        {
+            descriptor = null;
+            string name = associativeNode.Name;
+            if (CoreUtils.IsSetter(name) ||
+                CoreUtils.IsDisposeMethod(name) ||
+                CoreUtils.StartsWithDoubleUnderscores(name))
+            {
+                return false;
+            }
+
+            FunctionDescriptorParams functionParams = null;
+            switch (associativeNode.Kind)
+            {
+                case AstKind.Constructor:
+                    functionParams = FunctionParamsFromConstructor(associativeNode as ConstructorDefinitionNode, asm.Location, className);
+                    break;
+                case AstKind.FunctionDefintion:
+                    functionParams = FunctionParamsFromFunction(associativeNode as FunctionDefinitionNode, asm.Location, className);
+                    break;
+                default:
+                    break;
+            }
+
+            descriptor = new ReflectionFunctionDescriptor(functionParams, customization, asm);
+            return true;
+        }
+
+        private static FunctionDescriptorParams FunctionParamsFromFunction(FunctionDefinitionNode funcDefinitionNode, string location, string className)
+        {
+            FunctionType type;
+            var name = funcDefinitionNode.Name;
+
+            if (CoreUtils.IsGetter(name))
+            {
+                type = funcDefinitionNode.IsStatic
+                    ? FunctionType.StaticProperty
+                    : FunctionType.InstanceProperty;
+
+                string property;
+                if (CoreUtils.TryGetPropertyName(name, out property))
+                    name = property;
+            }
+            else
+            {
+                if (funcDefinitionNode.IsStatic)
+                    type = FunctionType.StaticMethod;
+                else
+                    type = FunctionType.InstanceMethod;
+            }
+
+
+            var functionParams = new FunctionDescriptorParams
+            {
+                Assembly = location,
+                ClassName = className,
+                FunctionName = name,
+                ReturnType = funcDefinitionNode.ReturnType,
+                Parameters = BuildParameters(funcDefinitionNode.Signature),
+                FunctionType = type,
+            };
+
+            return functionParams;
+        }
+
+        private static FunctionDescriptorParams FunctionParamsFromConstructor(ConstructorDefinitionNode constructorDefinitionNode, string asmLoc, string className)
+        {
+            var functionParams = new FunctionDescriptorParams
+            {
+                Assembly = asmLoc,
+                ClassName = className,
+                FunctionName = constructorDefinitionNode.Name,
+                ReturnType = constructorDefinitionNode.ReturnType,
+                Parameters = BuildParameters(constructorDefinitionNode.Signature),
+                FunctionType = FunctionType.Constructor,
+            };
+
+            return functionParams;
+        }
+
+        private static List<TypedParameter> BuildParameters(ArgumentSignatureNode signatureNode)
+        {
+            var typeParams = new List<TypedParameter>();
+            foreach (var arg in signatureNode.Arguments)
+            {
+                var name = !string.IsNullOrEmpty(arg.Name) ?
+                    arg.Name :
+                    arg.NameNode.Kind == AstKind.Identifier ?
+                        arg.NameNode.Name :
+                        arg.NameNode.Kind == AstKind.BinaryExpression ?
+                            ((BinaryExpressionNode)arg.NameNode).LeftNode.Name :
+                            string.Empty;
+
+                typeParams.Add(new TypedParameter(name));
+            }
+
+            return typeParams;
+        }
+
+        private static List<MdFileInfo> FileInfosFromSearchModel(NodeSearchModel nodeSearchModel, ILogger logger)
+        {
+            var fileInfos = new List<MdFileInfo>();
+
+            foreach (var entry in nodeSearchModel.SearchEntries)
+            {
+                if (MdFileInfo.TryGetFromSearchEntry(entry, logger,  out MdFileInfo info))
+                {
+                    fileInfos.Add(info);
+                }              
+            }
+
+            return fileInfos;
         }
     }
 }

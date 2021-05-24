@@ -9,6 +9,7 @@ using Dynamo.Interfaces;
 using Dynamo.Library;
 using ProtoCore;
 using ProtoCore.DSASM;
+using ProtoCore.Reflection;
 using ProtoCore.Utils;
 
 namespace Dynamo.Engine
@@ -568,4 +569,217 @@ namespace Dynamo.Engine
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
     }
+
+    internal class ReflectionFunctionDescriptor : FunctionDescriptor
+    {
+        private readonly LibraryCustomization libraryCustomization;
+        private readonly Assembly reflectionAsm;
+
+        public new string Category
+        {
+            get
+            {
+                var categoryBuf = new StringBuilder();
+                categoryBuf.Append(GetRootCategory());
+
+                //if this is not BuiltIn function search NodeCategoryAttribute for it
+                if (ClassName != null)
+                {
+
+                    if (reflectionAsm != null && reflectionAsm.GetType(ClassName) != null)
+                    {
+                        try
+                        {
+                            //get class type of function
+                            var type = reflectionAsm.DefinedTypes
+                                .Where(x=>x.FullName == ClassName)
+                                .FirstOrDefault();
+
+                            //get NodeCategoryAttribute for this function if it was been defined
+                            //var nodeCat = type.DeclaredMembers
+                            //    .Where(x => x.Name == FunctionName)
+                            //    .Select(x => x.AttributesFromReflectionContext())
+                            //    .FirstOrDefault()
+                            //    .Where(x => x != null && x is NodeCategoryAttribute)
+                            //    .Cast<NodeCategoryAttribute>()
+                            //    .Select(x => x?.ElementCategory)
+                            //    .FirstOrDefault();
+
+                            var nodeCat = string.Empty;
+                            foreach (var t in type.DeclaredMembers)
+                            {
+                                if (t.Name == FunctionName)
+                                {
+                                    var attrs = t.AttributesFromReflectionContext();
+                                    foreach (var a in attrs)
+                                    {
+                                        if (a != null && a is NodeCategoryAttribute catAttr)
+                                        {
+                                            nodeCat = catAttr.ElementCategory;
+                                        }
+                                    }
+                                }
+                            }
+
+                            //if attribute is found compose node category string with last part from attribute
+                            if (!string.IsNullOrEmpty(nodeCat) && (
+                                nodeCat == LibraryServices.Categories.Constructors
+                                || nodeCat == LibraryServices.Categories.Properties
+                                || nodeCat == LibraryServices.Categories.MemberFunctions))
+                            {
+                                categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                                return categoryBuf.ToString();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            var t = e;
+                        }
+
+                    }
+                }
+
+                switch (Type)
+                {
+                    case FunctionType.Constructor:
+                        categoryBuf.Append(
+                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Constructors);
+                        break;
+
+                    case FunctionType.StaticMethod:
+                    case FunctionType.InstanceMethod:
+                        categoryBuf.Append(
+                            "." + UnqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
+                        break;
+
+                    case FunctionType.StaticProperty:
+                    case FunctionType.InstanceProperty:
+                        categoryBuf.Append(
+                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
+                        break;
+                }
+                return categoryBuf.ToString();
+            }
+        }
+
+        public ReflectionFunctionDescriptor(FunctionDescriptorParams descriptorParams, LibraryCustomization libraryCustomization, Assembly asm) : base(descriptorParams)
+        {
+            this.libraryCustomization = libraryCustomization;
+            this.reflectionAsm = asm;
+        }
+
+        private string GetRootCategory()
+        {
+            if (string.IsNullOrEmpty(Assembly))
+            {
+                return CoreUtils.IsInternalMethod(FunctionName)
+                    ? LibraryServices.Categories.Operators
+                    : LibraryServices.Categories.BuiltIn;
+            }
+
+            if (libraryCustomization != null)
+            {
+                string f = libraryCustomization.GetNamespaceCategory(Namespace);
+                if (!String.IsNullOrEmpty(f))
+                    return f;
+            }
+
+            string filename = Path.GetFileNameWithoutExtension(Assembly);
+
+            return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
+        }
+    }
+
+    //internal static class FunctionDescriptorUtils
+    //{
+    //    internal static string GetCategory(
+    //        string className, 
+    //        string assembly, 
+    //        string functionName, 
+    //        string unqualifedClassName, 
+    //        FunctionType funcType, 
+    //        LibraryCustomization customization,
+    //        IEnumerable<Attribute> )
+    //    {
+    //        var categoryBuf = new StringBuilder();
+    //        categoryBuf.Append(GetRootCategory(assembly, functionName, className, customization));
+
+    //        //if this is not BuiltIn function search NodeCategoryAttribute for it
+    //        if (className != null)
+    //        {
+    //            //get function assembly
+    //            var asm = AppDomain.CurrentDomain.GetAssemblies()
+    //                .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(assembly))
+    //                .ToArray();
+
+    //            if (asm.Any() && asm.First().GetType(className) != null)
+    //            {
+    //                //get class type of function
+    //                var type = asm.First().GetType(className);
+
+    //                //get NodeCategoryAttribute for this function if it was been defined
+    //                var nodeCat = type.GetMethods().Where(x => x.Name == functionName)
+    //                    .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
+    //                    .Where(x => x != null)
+    //                    .Cast<NodeCategoryAttribute>()
+    //                    .Select(x => x.ElementCategory)
+    //                    .FirstOrDefault();
+
+    //                //if attribute is found compose node category string with last part from attribute
+    //                if (!string.IsNullOrEmpty(nodeCat) && (
+    //                    nodeCat == LibraryServices.Categories.Constructors
+    //                    || nodeCat == LibraryServices.Categories.Properties
+    //                    || nodeCat == LibraryServices.Categories.MemberFunctions))
+    //                {
+    //                    categoryBuf.Append("." + unqualifedClassName + "." + nodeCat);
+    //                    return categoryBuf.ToString();
+    //                }
+    //            }
+    //        }
+
+    //        switch (funcType)
+    //        {
+    //            case FunctionType.Constructor:
+    //                categoryBuf.Append(
+    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.Constructors);
+    //                break;
+
+    //            case FunctionType.StaticMethod:
+    //            case FunctionType.InstanceMethod:
+    //                categoryBuf.Append(
+    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
+    //                break;
+
+    //            case FunctionType.StaticProperty:
+    //            case FunctionType.InstanceProperty:
+    //                categoryBuf.Append(
+    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.Properties);
+    //                break;
+    //        }
+    //        return categoryBuf.ToString();
+    //    }
+
+    //    private static string GetRootCategory(string assembly, string functionName, string funcNamespace, LibraryCustomization cust)
+    //    {
+    //        if (string.IsNullOrEmpty(assembly))
+    //        {
+    //            return CoreUtils.IsInternalMethod(functionName)
+    //                ? LibraryServices.Categories.Operators
+    //                : LibraryServices.Categories.BuiltIn;
+    //        }
+
+    //        //LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);
+
+    //        if (cust != null)
+    //        {
+    //            string f = cust.GetNamespaceCategory(funcNamespace);
+    //            if (!String.IsNullOrEmpty(f))
+    //                return f;
+    //        }
+
+    //        string filename = Path.GetFileNameWithoutExtension(assembly);
+
+    //        return string.IsNullOrEmpty(funcNamespace) ? filename : filename + "." + funcNamespace;
+    //    }
+    //}
 }

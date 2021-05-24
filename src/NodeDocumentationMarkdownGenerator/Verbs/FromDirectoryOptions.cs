@@ -23,23 +23,23 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('f', "filter", HelpText = "Specifies which binary files documentation should be generated for", Required = false)]
         public IEnumerable<string> Filter { get; set; }
 
-        [Option('c', "includedyfs", HelpText = "Include custom dyf nodes ....", Required = false, Default = true)]
+        [Option('c', "includedyfs", HelpText = "Include custom dyf nodes", Required = false, Default = true)]
         public bool IncludeCustomNodes { get; set; }
 
-        [Option('d', "dictionary", HelpText = "Dictionary ...", Required = false)]
+        [Option('d', "dictionary", HelpText = "File path to DynamoDictionary json", Required = false)]
         public string DictionaryDirectory { get; set; }
 
-        [Option('w', "overwrite", HelpText = "Overwrite ....", Required = false, Default = false)]
+        [Option('w', "overwrite", HelpText = "When specified the tool will overwrite files in the output path", Required = false, Default = false)]
         public bool Overwrite { get; set; }
 
-        [Option('p', "preview", HelpText = "Preview....", Required = false, Default = false)]
-        public bool Preview { get; set; }
-
-        [Option('r', "recursive-scan", HelpText = "Input folder will be scanned recursively", Required = false, Default = false)]
+        [Option('y', "recursive-scan", HelpText = "Input folder will be scanned recursively", Required = false, Default = false)]
         public bool RecursiveScan { get; set; }
 
         [Option('s', "compress-images", HelpText = "When set, the tool will try to compress images from dictionary content", Required = false, Default = false)]
         public bool CompressImages { get; set; }
+
+        [Option('x', "layout-spec", HelpText = "Path to a LayoutSpecification json file", Required = false)]
+        public string LayoutSpecPath { get; set; }
 
         [Usage(ApplicationAlias = "Dynamo docs generator")]
         public static IEnumerable<Example> Examples

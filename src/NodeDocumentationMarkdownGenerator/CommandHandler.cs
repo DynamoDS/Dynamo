@@ -8,22 +8,21 @@ namespace NodeDocumentationMarkdownGenerator
 {
     internal static class CommandHandler
     {
-
         internal static string HandleFromPackage(FromPackageOptions opts)
         {
             var logger = CreateLogger(opts.InputFolderPath);
             try
             {
                 var command = new FromPackageFolderCommand(logger);
-                var t = command.HandlePackageDocumentation(opts);
-                Console.WriteLine(logger.LogText);
-                return t;
+                command.HandlePackageDocumentation(opts);
             }
             catch (Exception e)
             {
                 logger.Log(e);
-                return "";
             }
+
+            Console.WriteLine(logger.LogText);
+            return "";
         }
 
         internal static string HandleFromDirectory(FromDirectoryOptions opts)
@@ -33,21 +32,20 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 var command = new FromDirectoryCommand(logger);
                 command.HandleDocumentationFromDirectory(opts);
-                Console.WriteLine(logger.LogText);
-                return "";
             }
             catch (Exception e)
             {
                 logger.Log(e);
-                return "";
             }
 
+            Console.WriteLine(logger.LogText);
+            return "";
         }
 
         private static DynamoLogger CreateLogger(string directoryPath)
         {
             var debugSettings = new DebugSettings();
-            var logger = new DynamoLogger(debugSettings, @"C:\Users\SylvesterKnudsen\Desktop\Logs", false);
+            var logger = new DynamoLogger(debugSettings, directoryPath, false);
             return logger;
         }
     }
