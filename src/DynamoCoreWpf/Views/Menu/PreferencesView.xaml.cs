@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,6 +18,7 @@ namespace Dynamo.Wpf.Views
     /// </summary>
     public partial class PreferencesView : Window
     {
+        private List<Expander> allExpandersList;
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
@@ -25,7 +28,7 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
-            DataContext = new PreferencesViewModel(dynamoViewModel);
+            DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
 
             
@@ -41,7 +44,7 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel = viewModelTemp;
             }
-
+            
             InitRadioButtonsDescription();
         }
 
@@ -167,7 +170,7 @@ namespace Dynamo.Wpf.Views
             Grid parentGrid = currentExpander.Parent as Grid;
             foreach (Expander expander in parentGrid.Children)
             {
-                if (expander != currentExpander)
+                if (expander != currentExpander && expander.IsExpanded)
                     expander.IsExpanded = false;
 
             }
