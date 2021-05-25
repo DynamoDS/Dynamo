@@ -8,6 +8,10 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public class DefaultValuePopup : Popup
     {
+        /// <summary>
+        /// Override this so that popup does not dismiss itself
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnPreviewMouseLeftButtonUp(MouseButtonEventArgs e)
         {
             bool isOpen = this.IsOpen;

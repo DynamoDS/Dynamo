@@ -802,6 +802,7 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
+                    // Handle Alt + Left click
                     if (Keyboard.Modifiers == ModifierKeys.Alt &&
                         portViewModel.PortDefaultValueCommand.CanExecute(portViewModel))
                     {
