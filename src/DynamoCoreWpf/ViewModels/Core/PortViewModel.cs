@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
-using Dynamo.UI.Controls;
 using Dynamo.Utilities;
 
 namespace Dynamo.ViewModels
@@ -444,10 +444,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseEnter(object parameter)
         {
-            if (MouseEnter != null)
-            {
-                MouseEnter(parameter, null);
-            }
+            MouseEnter?.Invoke(parameter, null);
         }
 
         /// <summary>
@@ -456,8 +453,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseLeave(object parameter)
         {
-            if (MouseLeave != null)
-                MouseLeave(parameter, null);
+            MouseLeave?.Invoke(parameter, null);
         }
 
         /// <summary>
