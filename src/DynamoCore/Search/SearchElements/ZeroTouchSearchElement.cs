@@ -143,7 +143,7 @@ namespace Dynamo.Search.SearchElements
         private readonly string fullname;
         public override string CreationName { get { return functionDescriptor != null ? functionDescriptor.MangledName : this.Name; } }
 
-        public override string FullName { get { return fullname; } }
+        public override string FullName => fullname;
 
         internal ReflectionFunctionDescriptor Descriptor => functionDescriptor;
 

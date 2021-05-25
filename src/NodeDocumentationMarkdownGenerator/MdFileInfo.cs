@@ -29,8 +29,33 @@ namespace NodeDocumentationMarkdownGenerator
 
         public MdFileInfo(string nodeName, string nodeNamespace, string fullCategory, string externalLib, string qualifiedName)
         {
-            NodeName = nodeName ?? throw new ArgumentNullException(nameof(nodeName));
-            NodeNamespace = nodeNamespace ?? throw new ArgumentNullException(nameof(nodeNamespace));
+            if (string.IsNullOrEmpty(nodeName))
+            {
+                throw new ArgumentException($"'{nameof(nodeName)}' cannot be null or empty.", nameof(nodeName));
+            }
+
+            if (string.IsNullOrEmpty(nodeNamespace))
+            {
+                throw new ArgumentException($"'{nameof(nodeNamespace)}' cannot be null or empty.", nameof(nodeNamespace));
+            }
+
+            if (string.IsNullOrEmpty(fullCategory))
+            {
+                throw new ArgumentException($"'{nameof(fullCategory)}' cannot be null or empty.", nameof(fullCategory));
+            }
+
+            if (string.IsNullOrEmpty(externalLib))
+            {
+                throw new ArgumentException($"'{nameof(externalLib)}' cannot be null or empty.", nameof(externalLib));
+            }
+
+            if (string.IsNullOrEmpty(qualifiedName))
+            {
+                throw new ArgumentException($"'{nameof(qualifiedName)}' cannot be null or empty.", nameof(qualifiedName));
+            }
+
+            NodeName = nodeName;
+            NodeNamespace = nodeNamespace;
             FullCategory = fullCategory;
             ExternalLib = externalLib;
             QualifiedFileName = qualifiedName;

@@ -315,7 +315,7 @@ namespace Dynamo.Engine
         /// <summary>
         ///     The category of this function.
         /// </summary>
-        public string Category
+        public virtual string Category
         {
             get
             {
@@ -575,7 +575,7 @@ namespace Dynamo.Engine
         private readonly LibraryCustomization libraryCustomization;
         private readonly Assembly reflectionAsm;
 
-        public new string Category
+        public override string Category
         {
             get
             {
@@ -586,46 +586,39 @@ namespace Dynamo.Engine
                 if (ClassName != null)
                 {
 
-                    if (reflectionAsm != null && reflectionAsm.GetType(ClassName) != null)
+                    if (reflectionAsm != null && reflectionAsm.GetType(ClassName) is System.Type type)
                     {
                         try
                         {
                             //get class type of function
-                            var type = reflectionAsm.DefinedTypes
-                                .Where(x=>x.FullName == ClassName)
-                                .FirstOrDefault();
-
-                            //get NodeCategoryAttribute for this function if it was been defined
-                            //var nodeCat = type.DeclaredMembers
-                            //    .Where(x => x.Name == FunctionName)
-                            //    .Select(x => x.AttributesFromReflectionContext())
-                            //    .FirstOrDefault()
-                            //    .Where(x => x != null && x is NodeCategoryAttribute)
-                            //    .Cast<NodeCategoryAttribute>()
-                            //    .Select(x => x?.ElementCategory)
+                            //var type2 = reflectionAsm.DefinedTypes
+                            //    .Where(x => x.FullName == ClassName)
                             //    .FirstOrDefault();
 
                             var nodeCat = string.Empty;
-                            foreach (var t in type.DeclaredMembers)
+                            foreach (var t in type.GetMembers())
                             {
-                                if (t.Name == FunctionName)
+                                if (t.Name != FunctionName)
                                 {
-                                    var attrs = t.AttributesFromReflectionContext();
-                                    foreach (var a in attrs)
+                                    continue;
+                                }
+
+                                var attrs = t.AttributesFromReflectionContext();
+                                foreach (var a in attrs)
+                                {
+                                    if (a != null && a is NodeCategoryAttribute catAttr)
                                     {
-                                        if (a != null && a is NodeCategoryAttribute catAttr)
-                                        {
-                                            nodeCat = catAttr.ElementCategory;
-                                        }
+                                        nodeCat = catAttr.ElementCategory;
                                     }
                                 }
+
                             }
 
                             //if attribute is found compose node category string with last part from attribute
                             if (!string.IsNullOrEmpty(nodeCat) && (
-                                nodeCat == LibraryServices.Categories.Constructors
-                                || nodeCat == LibraryServices.Categories.Properties
-                                || nodeCat == LibraryServices.Categories.MemberFunctions))
+                                nodeCat == LibraryServices.Categories.Constructors || 
+                                nodeCat == LibraryServices.Categories.Properties || 
+                                nodeCat == LibraryServices.Categories.MemberFunctions))
                             {
                                 categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
                                 return categoryBuf.ToString();
@@ -689,97 +682,4 @@ namespace Dynamo.Engine
             return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
         }
     }
-
-    //internal static class FunctionDescriptorUtils
-    //{
-    //    internal static string GetCategory(
-    //        string className, 
-    //        string assembly, 
-    //        string functionName, 
-    //        string unqualifedClassName, 
-    //        FunctionType funcType, 
-    //        LibraryCustomization customization,
-    //        IEnumerable<Attribute> )
-    //    {
-    //        var categoryBuf = new StringBuilder();
-    //        categoryBuf.Append(GetRootCategory(assembly, functionName, className, customization));
-
-    //        //if this is not BuiltIn function search NodeCategoryAttribute for it
-    //        if (className != null)
-    //        {
-    //            //get function assembly
-    //            var asm = AppDomain.CurrentDomain.GetAssemblies()
-    //                .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(assembly))
-    //                .ToArray();
-
-    //            if (asm.Any() && asm.First().GetType(className) != null)
-    //            {
-    //                //get class type of function
-    //                var type = asm.First().GetType(className);
-
-    //                //get NodeCategoryAttribute for this function if it was been defined
-    //                var nodeCat = type.GetMethods().Where(x => x.Name == functionName)
-    //                    .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
-    //                    .Where(x => x != null)
-    //                    .Cast<NodeCategoryAttribute>()
-    //                    .Select(x => x.ElementCategory)
-    //                    .FirstOrDefault();
-
-    //                //if attribute is found compose node category string with last part from attribute
-    //                if (!string.IsNullOrEmpty(nodeCat) && (
-    //                    nodeCat == LibraryServices.Categories.Constructors
-    //                    || nodeCat == LibraryServices.Categories.Properties
-    //                    || nodeCat == LibraryServices.Categories.MemberFunctions))
-    //                {
-    //                    categoryBuf.Append("." + unqualifedClassName + "." + nodeCat);
-    //                    return categoryBuf.ToString();
-    //                }
-    //            }
-    //        }
-
-    //        switch (funcType)
-    //        {
-    //            case FunctionType.Constructor:
-    //                categoryBuf.Append(
-    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.Constructors);
-    //                break;
-
-    //            case FunctionType.StaticMethod:
-    //            case FunctionType.InstanceMethod:
-    //                categoryBuf.Append(
-    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
-    //                break;
-
-    //            case FunctionType.StaticProperty:
-    //            case FunctionType.InstanceProperty:
-    //                categoryBuf.Append(
-    //                    "." + unqualifedClassName + "." + LibraryServices.Categories.Properties);
-    //                break;
-    //        }
-    //        return categoryBuf.ToString();
-    //    }
-
-    //    private static string GetRootCategory(string assembly, string functionName, string funcNamespace, LibraryCustomization cust)
-    //    {
-    //        if (string.IsNullOrEmpty(assembly))
-    //        {
-    //            return CoreUtils.IsInternalMethod(functionName)
-    //                ? LibraryServices.Categories.Operators
-    //                : LibraryServices.Categories.BuiltIn;
-    //        }
-
-    //        //LibraryCustomization cust = LibraryCustomizationServices.GetForAssembly(Assembly, pathManager);
-
-    //        if (cust != null)
-    //        {
-    //            string f = cust.GetNamespaceCategory(funcNamespace);
-    //            if (!String.IsNullOrEmpty(f))
-    //                return f;
-    //        }
-
-    //        string filename = Path.GetFileNameWithoutExtension(assembly);
-
-    //        return string.IsNullOrEmpty(funcNamespace) ? filename : filename + "." + funcNamespace;
-    //    }
-    //}
 }

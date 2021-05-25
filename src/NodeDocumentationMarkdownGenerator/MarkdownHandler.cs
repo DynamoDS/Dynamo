@@ -15,6 +15,16 @@ namespace NodeDocumentationMarkdownGenerator
 {
     internal static class MarkdownHandler
     {
+        /// <summary>
+        /// Creates markdown files from the given collection of fileInfos
+        /// </summary>
+        /// <param name="fileInfos">Collection of files to create</param>
+        /// <param name="outputDir">Folder path where files should be created</param>
+        /// <param name="overWrite">if true, files in outputDir will be overwritten</param>
+        /// <param name="logger">logger instance</param>
+        /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
+        /// <param name="dictionaryPath">path to dictionary json file</param>
+        /// <param name="layoutSpec">path to layout spec json</param>
         internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, ILogger logger, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
         {
             ImageOptimizer optimizer = null;

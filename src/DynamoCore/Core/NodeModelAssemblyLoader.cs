@@ -201,9 +201,10 @@ namespace Dynamo.Models
 
         internal static bool ContainsNodeModelSubTypeReflectionLoaded(Assembly assem, Type nodeModelType = null)
         {
-            if(!(nodeModelType is null))
-                return assem.GetTypes().Any(x => IsNodeSubTypeReflectionLoaded(x, nodeModelType));
-            return assem.GetTypes().Any(x => IsNodeSubType(x));
+            if(nodeModelType is null)
+                return assem.GetTypes().Any(x => IsNodeSubType(x));
+            
+            return assem.GetTypes().Any(x => IsNodeSubTypeReflectionLoaded(x, nodeModelType));
         }
 
         internal static bool IsNodeSubTypeReflectionLoaded(Type t, Type nodeModelType)

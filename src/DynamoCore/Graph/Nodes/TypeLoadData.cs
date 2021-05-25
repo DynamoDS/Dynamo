@@ -108,12 +108,12 @@ namespace Dynamo.Graph.Nodes
                     .Cast<ObsoleteAttribute>()
                     .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
-            IsDeprecated = attributes.Where(x=>x is NodeDeprecatedAttribute).Cast<NodeDeprecatedAttribute>().Any();
-            IsMetaNode = attributes.Where(x => x is IsMetaNodeAttribute).Cast<IsMetaNodeAttribute>().Any();
-            IsDSCompatible = attributes.Where(x => x is IsDesignScriptCompatibleAttribute).Cast<IsDesignScriptCompatibleAttribute>().Any();
-            IsHidden = attributes.Where(x=>x is IsVisibleInDynamoLibraryAttribute).Cast<IsVisibleInDynamoLibraryAttribute>().Any(attr => !attr.Visible);
+            IsDeprecated = attributes.OfType<NodeDeprecatedAttribute>().Any();
+            IsMetaNode = attributes.OfType<IsMetaNodeAttribute>().Any();
+            IsDSCompatible = attributes.OfType<IsDesignScriptCompatibleAttribute>().Any();
+            IsHidden = attributes.OfType<IsVisibleInDynamoLibraryAttribute>().Any(attr => !attr.Visible);
 
-            var attribs = attributes.Where(x=>x is NodeNameAttribute).Cast<NodeNameAttribute>();
+            var attribs = attributes.OfType<NodeNameAttribute>();
             if (attribs.Any() && !IsDeprecated && !IsMetaNode && IsDSCompatible && !IsHidden)
             {
                 Name = attribs.First().Name;
@@ -122,26 +122,27 @@ namespace Dynamo.Graph.Nodes
                 Name = Type.Name;
 
             AlsoKnownAs =
-                attributes.Where(x=>x is AlsoKnownAsAttribute)
-                    .Cast<AlsoKnownAsAttribute>()
+                attributes
+                    .OfType<AlsoKnownAsAttribute>()
                     .SelectMany(aka => aka.Values)
                     .Concat(Name.AsSingleton());
 
-            SearchKeys = attributes.Where(x => x is NodeSearchTagsAttribute).Cast<NodeSearchTagsAttribute>().SelectMany(x => x.Tags);
-            Category =
-                attributes.Where(x => x is NodeCategoryAttribute).Cast<NodeCategoryAttribute>()
+            SearchKeys = attributes.OfType<NodeSearchTagsAttribute>().SelectMany(x => x.Tags);
+            Category = attributes
+                    .OfType<NodeCategoryAttribute>()
                     .Select(x => x.ElementCategory)
                     .FirstOrDefault();
-            Description =
-                attributes.Where(x => x is NodeDescriptionAttribute).Cast<NodeDescriptionAttribute>()
+            
+            Description = attributes
+                    .OfType<NodeDescriptionAttribute>()
                     .Select(x => x.ElementDescription)
                     .FirstOrDefault() ?? "";
 
-            var inputNames = attributes.Where(x => x is InPortNamesAttribute)
-                .Cast<InPortNamesAttribute>()
+            var inputNames = attributes
+                .OfType<InPortNamesAttribute>()
                 .SelectMany(x => x.PortNames).ToList();
-            var inputTypes = attributes.Where(x => x is InPortTypesAttribute)
-                .Cast<InPortTypesAttribute>()
+            var inputTypes = attributes
+                .OfType<InPortTypesAttribute>()
                 .SelectMany(x => x.PortTypes).ToList();
 
             if (inputNames.Any() && (inputNames.Count == inputTypes.Count))
@@ -154,8 +155,8 @@ namespace Dynamo.Graph.Nodes
             }
 
 
-            OutputParameters = attributes.Where(x=>x is OutPortTypesAttribute)
-                .Cast<OutPortTypesAttribute>()
+            OutputParameters = attributes
+                .OfType<OutPortTypesAttribute>()
                 .SelectMany(x => x.PortTypes);
         }
 
