@@ -1881,15 +1881,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
-        /// </summary>
-        public static string DynamoViewSettingsMenuShowCodeBlockNodeLineNumber {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingsMenuShowCodeBlockNodeLineNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Preview Bubbles.
         /// </summary>
         public static string DynamoViewSettingsMenuShowPreviewBubbles {
@@ -4508,6 +4499,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSavedChangesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewSavedChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show CodeBlockNode Line Numbers.
+        /// </summary>
+        public static string PreferencesViewShowCodeBlockNodeLineNumber {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowCodeBlockNodeLineNumber", resourceCulture);
             }
         }
         

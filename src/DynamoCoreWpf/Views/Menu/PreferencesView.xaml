@@ -629,6 +629,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" 
@@ -656,6 +657,21 @@
                                                       IsChecked="{Binding Path=ShowEdges}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                         <Label Content="{x:Static p:Resources.PreferencesViewVisualSettingShowEdges}" 
+                                               VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </StackPanel>
+                                    
+                                    <StackPanel Orientation="Horizontal" 
+                                                Margin="0,12,0,0" 
+                                                Grid.Row="2">
+                                        <ToggleButton Name="CodeBlockNodeLineNumbersToggle"
+                                                      Width="{StaticResource ToggleButtonWidth}"
+                                                      Height="{StaticResource ToggleButtonHeight}"
+                                                      VerticalAlignment="Center"
+                                                      IsChecked="{Binding Path=ShowCodeBlockLineNumber}"
+                                                      Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewShowCodeBlockNodeLineNumber}" 
                                                VerticalAlignment="Center"
                                                Margin="10,0,0,0"
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>

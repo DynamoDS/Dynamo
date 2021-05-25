@@ -154,9 +154,6 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
             // Hide Node AutoCompleteSearchBar
-            // Note the event handler needs to be called twice. The first one is ignore because it is
-            // assumed to come from releasing the left mouse button when popping up AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
