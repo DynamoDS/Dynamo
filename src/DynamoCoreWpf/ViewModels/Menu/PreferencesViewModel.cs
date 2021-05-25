@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
 
@@ -391,6 +392,20 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(TessellationDivisions));
             }
         }
+
+        public bool ShowCodeBlockLineNumber
+        {
+            get
+            {
+                return preferenceSettings.ShowCodeBlockLineNumber;
+            }
+            set
+            {
+                preferenceSettings.ShowCodeBlockLineNumber = value;
+                showCodeBlockLineNumber = value;
+                RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
         #endregion
 
         //This includes all the properties that can be set on the Features tab
@@ -641,8 +656,6 @@ namespace Dynamo.ViewModels
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
-            this.PropertyChanged += Model_PropertyChanged;
-
             preferencesTabs = new Dictionary<string, TabSettings>();
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
@@ -703,6 +716,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowCodeBlockLineNumber):
+                    description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))
