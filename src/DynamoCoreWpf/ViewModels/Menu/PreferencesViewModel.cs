@@ -1,9 +1,4 @@
-﻿using Dynamo.Configuration;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.Wpf.ViewModels.Core.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -11,6 +6,11 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -49,7 +49,9 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
+        private Dictionary<string, TabSettings> preferencesTabs;
 
         private PreferenceSettings preferenceSettings;
         private DynamoPythonScriptEditorTextOptions pythonScriptEditorTextOptions;
@@ -76,6 +78,22 @@ namespace Dynamo.ViewModels
             {GeometryScaleSize.Large, new Tuple<string, string, string>("large", "0.01", "1,000,000")},
             {GeometryScaleSize.ExtraLarge, new Tuple<string, string, string>("extra large", "1", "100,000,000")}
         };
+
+        /// <summary>
+        /// This property will be used by the Preferences screen to store and retrieve all the settings from the expanders
+        /// </summary>
+        public Dictionary<string, TabSettings> PreferencesTabs
+        {
+            get
+            {
+                return preferencesTabs;
+            }
+            set
+            {
+                preferencesTabs = value;
+                RaisePropertyChanged(nameof(PreferencesTabs));
+            }
+        }
 
         /// <summary>
         /// Controls what the SavedChanges label will display
@@ -374,6 +392,20 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(TessellationDivisions));
             }
         }
+
+        public bool ShowCodeBlockLineNumber
+        {
+            get
+            {
+                return preferenceSettings.ShowCodeBlockLineNumber;
+            }
+            set
+            {
+                preferenceSettings.ShowCodeBlockLineNumber = value;
+                showCodeBlockLineNumber = value;
+                RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
         #endregion
 
         //This includes all the properties that can be set on the Features tab
@@ -624,6 +656,10 @@ namespace Dynamo.ViewModels
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
 
+            preferencesTabs = new Dictionary<string, TabSettings>();
+            preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
+            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
             this.PropertyChanged += Model_PropertyChanged;
         }
 
@@ -680,6 +716,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowCodeBlockLineNumber):
+                    description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))
@@ -826,6 +865,43 @@ namespace Dynamo.ViewModels
         public static int ConvertScaleFactorToUI(int scaleValue)
         {
            return (scaleValue / 2) + 1;
+        }
+    }
+
+    /// <summary>
+    /// This class represent a Tab and is used for store just one Expander info(due that just one Expander can be expanded at one time)
+    /// </summary>
+    public class TabSettings : INotifyPropertyChanged
+    {
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Tab Name (e.g. Features or Visual Settings)
+        /// </summary>
+        public string Name;
+        private string expanderActive;
+
+        /// <summary>
+        /// This property hold the name for the current Expander expanded
+        /// </summary>
+        public string ExpanderActive
+        {
+            get
+            {
+                return expanderActive;
+            }
+            set
+            {
+                if(value != null)
+                {
+                    expanderActive = value;
+                    OnPropertyChanged(nameof(ExpanderActive));
+                }          
+            }
         }
     }
 }
