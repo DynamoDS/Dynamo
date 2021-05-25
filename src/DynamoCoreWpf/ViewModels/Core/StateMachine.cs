@@ -802,16 +802,6 @@ namespace Dynamo.ViewModels
 
                 if (this.currentState != State.Connection) // Not in a connection attempt...
                 {
-                    if (Keyboard.Modifiers == ModifierKeys.Alt &&
-                        portViewModel.NodeAutoCompleteCommand.CanExecute(portViewModel))
-                    {
-                        portViewModel.NodeAutoCompleteCommand.Execute(portViewModel);
-                        this.currentState = State.Connection;
-                        owningWorkspace.CurrentCursor = CursorLibrary.GetCursor(CursorSet.ArcSelect);
-                        owningWorkspace.IsCursorForced = false;
-                        return true;
-                    }
-
                     Guid nodeId = portModel.Owner.GUID;
                     int portIndex = portModel.Index;
 
