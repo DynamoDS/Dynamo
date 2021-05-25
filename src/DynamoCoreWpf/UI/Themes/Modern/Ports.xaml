@@ -165,7 +165,7 @@
                 </Grid>
                 </StackPanel>
 
-                <!--<dynui:DefaultValuePopup 
+                <dynui:DefaultValuePopup 
                     x:Name="DefaultValuePopup" 
                     Placement="Right"
                     AllowsTransparency="True"
@@ -198,12 +198,12 @@
                                     Content="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
                                     IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
                                     IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}"
-                                    Name="UseLevel"/>
+                                    Name="UseDefaultValueCheckBox"/>
                             </StackPanel>
                         </Border>
                         <Path Grid.Column="1" Stroke="#E5E2DE" Fill="#E5E2DE" Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"/>
                     </Grid>
-                </dynui:DefaultValuePopup>-->
+                </dynui:DefaultValuePopup>
             </Grid>
 
             <Grid Name="useLevelGrid"
