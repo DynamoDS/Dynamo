@@ -9,7 +9,9 @@ from lib2to3.fixer_util import Name
 
 class FixAddReferenceToFileAndPath(BaseFix):
 
-    PATTERN = "fixnode='AddReferenceToFileAndPath'"
+    PATTERN = """
+              power< any+ trailer< '.' fixnode='AddReferenceToFileAndPath'> any* >
+              """
 
     def transform(self, node, results):
         fixnode = results['fixnode']
