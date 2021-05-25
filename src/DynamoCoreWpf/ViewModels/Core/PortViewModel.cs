@@ -408,9 +408,9 @@ namespace Dynamo.ViewModels
         private void AutoComplete(object parameter)
         {
             var wsViewModel = _node.WorkspaceViewModel;
-            var svm = wsViewModel.NodeAutoCompleteSearchViewModel;
-            svm.PortViewModel = this;
-
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
@@ -427,10 +427,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseEnter(object parameter)
         {
-            if (MouseEnter != null)
-            {
-                MouseEnter(parameter, null);
-            }
+            MouseEnter?.Invoke(parameter, null);
         }
 
         /// <summary>
@@ -439,8 +436,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseLeave(object parameter)
         {
-            if (MouseLeave != null)
-                MouseLeave(parameter, null);
+            MouseLeave?.Invoke(parameter, null);
         }
 
         /// <summary>
@@ -449,8 +445,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameter">The parameter.</param>
         private void OnRectangleMouseLeftButtonDown(object parameter)
         {
-            if (MouseLeftButtonDown != null)
-                MouseLeftButtonDown(parameter, null);
+            MouseLeftButtonDown?.Invoke(parameter, null);
         }
 
         /// <summary>
