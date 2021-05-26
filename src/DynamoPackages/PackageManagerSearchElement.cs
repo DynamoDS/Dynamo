@@ -64,6 +64,11 @@ namespace Dynamo.PackageManager
                         hostsString += host + "  ";
                     }
                 }
+                //added to this dummy package for representation, to be removed and replace space at the end with newline above
+                if (Name == "dronovBIM_v2")
+                {
+                    hostsString += "CPython3"+ Environment.NewLine + "IronPython2"+ Environment.NewLine + "Revit";
+                }
                 return hostsString;
             }
         }
