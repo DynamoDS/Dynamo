@@ -2626,6 +2626,8 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
+            this.LinterManager?.SetDefaultLinter();
+
             OnWorkspaceCleared(CurrentWorkspace);
         }
 

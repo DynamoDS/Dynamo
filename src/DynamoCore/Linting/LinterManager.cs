@@ -20,8 +20,10 @@ namespace Dynamo.Linting
     public class LinterManager : NotificationObject, IDisposable
     {
         #region Private fields
+        private const string NONE_DESCRIPTOR_GUID = "7b75fb44-43fd-4631-a878-29f4d5d8399a";
         private readonly IExtensionManager extensionManager;
         private LinterExtensionDescriptor activeLinter;
+        internal LinterExtensionDescriptor DefaultDescriptor => new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
         #endregion
 
         #region Public properties
@@ -70,6 +72,9 @@ namespace Dynamo.Linting
             AvailableLinters = new HashSet<LinterExtensionDescriptor>();
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
 
+            activeLinter = DefaultDescriptor;
+            AvailableLinters.Add(DefaultDescriptor);
+
             SubscribeLinterEvents();
         }
 
@@ -81,6 +86,11 @@ namespace Dynamo.Linting
         internal bool IsExtensionActive(string uniqueId)
         {
             return ActiveLinter?.Id == uniqueId;
+        }
+        
+        internal void SetDefaultLinter()
+        {
+            ActiveLinter = DefaultDescriptor;
         }
 
         #region Private methods

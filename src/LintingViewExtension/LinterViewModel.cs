@@ -19,15 +19,12 @@ namespace Dynamo.LintingViewExtension
 {
     public class LinterViewModel : NotificationObject
     {
-        private const string NONE_DESCRIPTOR_GUID = "7b75fb44-43fd-4631-a878-29f4d5d8399a";
-
         #region Private Fields
         private static Uri linterViewHelpLink = new Uri("LintingViewExtension;LinterViewHelpDoc.html", UriKind.Relative);
         private LinterExtensionDescriptor activeLinter;
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParams;
         private Dispatcher dispatcher;
-        private LinterExtensionDescriptor defaultDescriptor;
         #endregion
 
         #region Public Properties
@@ -76,12 +73,6 @@ namespace Dynamo.LintingViewExtension
             get => linterManager.AvailableLinters.ToList();
         }
         
-        /// <summary>
-        /// The default descriptor is used if no linter is needed for the graph. This is a dummy descriptor that has no extension associated to it.
-        /// This property returns the descriptor as a list for binding purposes.
-        /// </summary>
-        public IList<LinterExtensionDescriptor> DefaultDescriptor { get => new List<LinterExtensionDescriptor> { defaultDescriptor }; }
-
         #endregion
 
         public LinterViewModel(LinterManager linterManager, ViewLoadedParams viewLoadedParams)
@@ -90,13 +81,8 @@ namespace Dynamo.LintingViewExtension
             this.viewLoadedParams = viewLoadedParams;
             this.dispatcher = viewLoadedParams.DynamoWindow.Dispatcher;
             InitializeCommands();
-            CreateDefaultDummyLinterDescriptor();
 
-            // If there are no active linter we set it to the default one.
-            if (this.linterManager.ActiveLinter is null)
-            {
-                ActiveLinter = defaultDescriptor;
-            }
+            this.activeLinter = this.linterManager.ActiveLinter;
 
             NodeIssues = new ObservableCollection<IRuleIssue>();
             GraphIssues = new ObservableCollection<IRuleIssue>();
@@ -280,11 +266,6 @@ namespace Dynamo.LintingViewExtension
                 .FirstOrDefault();
 
             return node;
-        }
-
-        private void CreateDefaultDummyLinterDescriptor()
-        {
-            defaultDescriptor = new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
         }
 
         public void Dispose()
