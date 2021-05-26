@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Dynamo.Interfaces;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -24,8 +26,11 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         private Dictionary<string, FileSystemWatcher> markdownFileWatchers = new Dictionary<string, FileSystemWatcher>();
 
-        private const string fileExtension = "*.md";
+        private const string FILE_EXTENSION = "*.md";
+        private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private static PackageDocumentationManager instance;
+        private DirectoryInfo dynamoCoreFallbackHostPath;
+        private DirectoryInfo hostDynamoFallbackDocPath;
 
         /// <summary>
         /// PackageDocManager singleton instance.
@@ -39,6 +44,26 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
+        public void AddDynamoPaths(IPathManager pathManager)
+        {
+            if (pathManager is null)
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(pathManager.DynamoCoreDirectory))
+            {
+                var coreDir = new DirectoryInfo(Path.Combine(pathManager.DynamoCoreDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                dynamoCoreFallbackHostPath = coreDir.Exists ? coreDir : null;
+            }
+
+            if (!string.IsNullOrEmpty(pathManager.HostApplicationDirectory))
+            {
+                var hostDir = new DirectoryInfo(Path.Combine(pathManager.HostApplicationDirectory, FALLBACK_DOC_DIRECTORY_NAME));
+                hostDynamoFallbackDocPath = hostDir.Exists ? hostDir : null;
+            }   
+        }
+
         private PackageDocumentationManager() { }
 
         /// <summary>
@@ -46,10 +71,31 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="nodeNamespace">Namespace of the node to lookup documentation for</param>
         /// <returns></returns>
-        public string GetAnnotationDoc(string nodeNamespace)
+        public string GetAnnotationDoc(string nodeNamespace, string packageName)
         {
-            nodeDocumentationFileLookup.TryGetValue(nodeNamespace, out string output);
-            return output;
+            if(nodeDocumentationFileLookup
+                .TryGetValue(Path.Combine(packageName, nodeNamespace), 
+                out string output))
+            {
+                return output;
+            }
+
+            FileInfo matchingDoc = null;
+            if (hostDynamoFallbackDocPath != null)
+            {
+                matchingDoc = hostDynamoFallbackDocPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+                if (matchingDoc != null)
+                {
+                    return matchingDoc.FullName;
+                }
+            }
+
+            if (dynamoCoreFallbackHostPath != null)
+            {
+                matchingDoc = dynamoCoreFallbackHostPath.GetFiles($"{nodeNamespace}.md").FirstOrDefault();
+            }
+
+            return matchingDoc is null ? string.Empty : matchingDoc.FullName;
         }
 
         /// <summary>
@@ -67,7 +113,7 @@ namespace Dynamo.DocumentationBrowser
         /// Note this only works for Markdown files.
         /// </summary>
         /// <param name="package"></param>
-        internal void AddPackageDocumentation(string packageDocumentationPath)
+        internal void AddPackageDocumentation(string packageDocumentationPath, string packageName)
         {
             if (string.IsNullOrWhiteSpace(packageDocumentationPath))
                 return;
@@ -77,8 +123,8 @@ namespace Dynamo.DocumentationBrowser
                 return;
 
             MonitorDirectory(directoryInfo);
-            var files = directoryInfo.GetFiles(fileExtension, SearchOption.AllDirectories);
-            TrackDocumentationFiles(files);
+            var files = directoryInfo.GetFiles(FILE_EXTENSION, SearchOption.AllDirectories);
+            TrackDocumentationFiles(files, packageName);
         }
 
         private void MonitorDirectory(DirectoryInfo directoryInfo)
@@ -86,18 +132,25 @@ namespace Dynamo.DocumentationBrowser
             if (markdownFileWatchers.ContainsKey(directoryInfo.FullName))
                 return;
             
-            var watcher = new FileSystemWatcher(directoryInfo.FullName, fileExtension) { EnableRaisingEvents = true };
+            var watcher = new FileSystemWatcher(directoryInfo.FullName, FILE_EXTENSION) { EnableRaisingEvents = true };
             watcher.Renamed += OnFileRenamed;
             watcher.Deleted += OnFileDeleted;
             watcher.Created += OnFileCreated;
             markdownFileWatchers.Add(watcher.Path, watcher);
         }
 
-        private void TrackDocumentationFiles(FileInfo[] files)
+        private void TrackDocumentationFiles(FileInfo[] files, string packageName)
         {
             foreach (var file in files)
             {
-                nodeDocumentationFileLookup.Add(Path.GetFileNameWithoutExtension(file.Name), file.FullName);
+                try
+                {
+                    nodeDocumentationFileLookup.Add(Path.Combine(packageName,Path.GetFileNameWithoutExtension(file.Name)), file.FullName);
+                }
+                catch (Exception e)
+                {
+                    continue;
+                }
             }
         }
 

@@ -54,6 +54,15 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                     .Select(x => x.FullName)
                     .ToList();
 
+                if (filter.Any(x=>x.EndsWith(".ds")))
+                {
+                    var dsFiles = Directory.GetFiles(inputFolderPath, "*.ds").Select(x => new FileInfo(x)).ToList();
+                    dllPaths.AddRange(dsFiles
+                        .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
+                        .Select(x => x.FullName)
+                        .ToList());
+                }
+
                 return AssemblyHandler.ScanAssemblies(dllPaths, logger);
             }
 

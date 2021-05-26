@@ -92,19 +92,23 @@ namespace NodeDocumentationMarkdownGenerator
                     entry.Name + entry.Parameters;
 
                 var category = entry.FullCategoryName;
-                var nodeNamespace = entry.FullName
-                    .Remove(entry.FullName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);
+                var nodeNamespace = "";
 
                 string fileName = "";
                 if (entry is ReflectionZeroTouhSearchElement reflectionSearch)
                 {
+                    nodeNamespace = entry.FullName
+                        .Remove(entry.FullName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);
+
                     var qualifiedNameWithOutNodeName = reflectionSearch.Descriptor.QualifiedName
                         .Remove(reflectionSearch.Descriptor.QualifiedName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);
+
                     fileName = $"{qualifiedNameWithOutNodeName}.{nodeName}";
                 }
                 else
                 {
-                    fileName = $"{nodeNamespace}.{nodeName}"; ;
+                    nodeNamespace = entry.CreationName;
+                    fileName = $"{nodeNamespace}.{nodeName}";
                 }
 
                 info = new MdFileInfo(nodeName, nodeNamespace, category, entry.Assembly, fileName);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using Dynamo.Core;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Library;
@@ -60,6 +61,7 @@ namespace NodeDocumentationMarkdownGenerator
         {
             var fileInfos = new List<MdFileInfo>();
             var nodeSearchModel = new NodeSearchModel();
+            var pathManager = new PathManager(new PathManagerParams());
 
             using (mlc)
             {
@@ -67,84 +69,40 @@ namespace NodeDocumentationMarkdownGenerator
                 var nodeModelType = dynamoCoreAss.GetType("Dynamo.Graph.Nodes.NodeModel");
 
                 var functionGroups = new Dictionary<string, Dictionary<string, FunctionGroup>>(new LibraryPathComparer());
-                var functionDescriptors = new List<FunctionDescriptor>();
-
+                
                 foreach (var path in assemblyPaths)
                 {
                     try
                     {
-                        Assembly asm = mlc.LoadFromAssemblyPath(path);
-                        AssemblyName name = asm.GetName();
+                        var functionDescriptors = new List<FunctionDescriptor>();
 
-                        TryGetCustomizationFile(asm, out LibraryCustomization customization);
-
-                        if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
+                        if (new FileInfo(path).Extension == ".ds")
                         {
-                            fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, logger, ref nodeSearchModel));
-                            continue;
+                            var dsDescriptors = GetFunctionDescriptorsFromDs(pathManager, path);
+                            if (dsDescriptors != null)
+                            {
+                                functionDescriptors.AddRange(dsDescriptors);
+                            }
                         }
 
-                        // Getting ZT imports from CLRModuleTypes
-                        DLLModule dllModule = null;
-                        string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
-                        if (extension == ".dll" || extension == ".exe")
+                        else
                         {
-                            try
+                            Assembly asm = mlc.LoadFromAssemblyPath(path);
+                            AssemblyName name = asm.GetName();
+                            TryGetCustomizationFile(asm, out LibraryCustomization customization);
+
+                            if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                             {
-                                dllModule = DLLFFIHandler.GetModuleForInspection(asm);
-                            }
-                            catch { }
-                        }
-
-                        dllModule.ScanModule();
-                        List<CLRModuleType> moduleTypes = CLRModuleType.GetTypes((CLRModuleType mtype) => { return mtype.Module == dllModule; });
-
-                        foreach (var t in moduleTypes)
-                        {
-                            var tn = t.FullName;
-
-                            try
-                            {
-                                var className = t.ClassNode.ClassName;
-                                var externalLib = t.ClassNode.ExternLibName;
-
-                                // For some reason mscorelib sometimes gets pass to here, so filtering it away.
-                                if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
-                                    t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
-
-                                var ctorNodes = t.ClassNode.Procedures
-                                    .Where(c => c.Kind == AstKind.Constructor)
-                                    .Cast<ConstructorDefinitionNode>()
-                                    .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public &&
-                                                c.MethodAttributes != null ? 
-                                                    !c.MethodAttributes.IsObsolete && !c.MethodAttributes.HiddenInLibrary : 
-                                                    true)
-                                    .Cast<AssociativeNode>();
-
-                                var functionNodes = t.ClassNode.Procedures
-                                    .Where(c => c is FunctionDefinitionNode)
-                                    .Cast<FunctionDefinitionNode>()
-                                    .Where(f => !f.MethodAttributes.HiddenInLibrary &&
-                                                !f.MethodAttributes.IsObsolete && 
-                                                f.Name != "_Dispose")
-                                    .Cast<AssociativeNode>();
-
-                                var associativeNodes = ctorNodes.ToList();
-                                if (functionNodes.Any()) associativeNodes.AddRange(functionNodes);
-
-                                foreach (var node in associativeNodes)
-                                {
-                                    if (TryGetFunctionDescriptor(node, asm, className, customization, out ReflectionFunctionDescriptor des))
-                                    {
-                                        functionDescriptors.Add(des);
-                                    }
-                                }
-                            }
-                            catch (Exception)
-                            {
+                                fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, logger, ref nodeSearchModel));
                                 continue;
                             }
-                        }
+
+                            var dllDescriptors = GetFunctionDescriptorsFromDll(pathManager, asm);
+                            if (dllDescriptors != null)
+                            {
+                                functionDescriptors.AddRange(dllDescriptors);
+                            }
+                        }                  
 
                         foreach (var descriptor in functionDescriptors)
                         {
@@ -176,6 +134,96 @@ namespace NodeDocumentationMarkdownGenerator
             }
 
             return fileInfos;
+        }
+
+        private static List<FunctionDescriptor> GetFunctionDescriptorsFromDll(PathManager pathManager, Assembly asm)
+        {
+            var descriptors = new List<FunctionDescriptor>();
+
+            // Getting ZT imports from CLRModuleTypes
+            DLLModule dllModule = null;
+            string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
+            if (extension == ".dll" || extension == ".exe")
+            {
+                try
+                {
+                    dllModule = DLLFFIHandler.GetModuleForInspection(asm);
+                }
+                catch { }
+            }
+
+            dllModule.ScanModule();
+            List<CLRModuleType> moduleTypes = CLRModuleType.GetTypes((CLRModuleType mtype) => { return mtype.Module == dllModule; });
+
+            var customizationFile = LibraryCustomizationServices.GetForAssembly(asm.Location, pathManager);
+
+            foreach (var t in moduleTypes)
+            {
+                var tn = t.FullName;
+
+                try
+                {
+                    var className = t.ClassNode.ClassName;
+                    var externalLib = t.ClassNode.ExternLibName;
+
+                    // For some reason mscorelib sometimes gets pass to here, so filtering it away.
+                    if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
+                        t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
+
+                    var ctorNodes = t.ClassNode.Procedures
+                        .Where(c => c.Kind == AstKind.Constructor)
+                        .Cast<ConstructorDefinitionNode>()
+                        .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public &&
+                                    c.MethodAttributes != null ?
+                                        !c.MethodAttributes.IsObsolete && !c.MethodAttributes.HiddenInLibrary :
+                                        true)
+                        .Cast<AssociativeNode>();
+
+                    var functionNodes = t.ClassNode.Procedures
+                        .Where(c => c is FunctionDefinitionNode)
+                        .Cast<FunctionDefinitionNode>()
+                        .Where(f => !f.MethodAttributes.HiddenInLibrary &&
+                                    !f.MethodAttributes.IsObsolete &&
+                                    f.Name != "_Dispose")
+                        .Cast<AssociativeNode>();
+
+                    var associativeNodes = ctorNodes.ToList();
+                    if (functionNodes.Any()) associativeNodes.AddRange(functionNodes);
+
+                    foreach (var node in associativeNodes)
+                    {
+                        if (TryGetFunctionDescriptor(node, asm, asm.Location, className, customizationFile, out ReflectionFunctionDescriptor des))
+                        {
+                            descriptors.Add(des);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            return descriptors;
+        }
+
+        private static List<FunctionDescriptor> GetFunctionDescriptorsFromDs(PathManager pathManager, string dsFilePath)
+        {
+            var descriptors = new List<FunctionDescriptor>();
+
+            var t = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
+            var dsCodeNode = t.Import(dsFilePath, "", "");
+            var classNode = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>().FirstOrDefault();
+            var associativeNodes = classNode.Procedures;
+            var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
+            foreach (var node in associativeNodes)
+            {
+                if (TryGetFunctionDescriptor(node, null, dsFilePath, classNode.ClassName, customizationFile, out ReflectionFunctionDescriptor des))
+                {
+                    descriptors.Add(des);
+                }
+            }
+            return descriptors;
         }
 
         private static void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups, ref NodeSearchModel nodeSearchModel)
@@ -256,7 +304,7 @@ namespace NodeDocumentationMarkdownGenerator
         }
 
         private static bool TryGetFunctionDescriptor(
-            AssociativeNode associativeNode, Assembly asm, 
+            AssociativeNode associativeNode, Assembly asm, string asmPath,
             string className, LibraryCustomization customization,
             out ReflectionFunctionDescriptor descriptor)
         {
@@ -273,10 +321,10 @@ namespace NodeDocumentationMarkdownGenerator
             switch (associativeNode.Kind)
             {
                 case AstKind.Constructor:
-                    functionParams = FunctionParamsFromConstructor(associativeNode as ConstructorDefinitionNode, asm.Location, className);
+                    functionParams = FunctionParamsFromConstructor(associativeNode as ConstructorDefinitionNode, asmPath, className);
                     break;
                 case AstKind.FunctionDefintion:
-                    functionParams = FunctionParamsFromFunction(associativeNode as FunctionDefinitionNode, asm.Location, className);
+                    functionParams = FunctionParamsFromFunction(associativeNode as FunctionDefinitionNode, asmPath, className);
                     break;
                 default:
                     break;

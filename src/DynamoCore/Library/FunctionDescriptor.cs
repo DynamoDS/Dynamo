@@ -583,7 +583,7 @@ namespace Dynamo.Engine
                 categoryBuf.Append(GetRootCategory());
 
                 //if this is not BuiltIn function search NodeCategoryAttribute for it
-                if (ClassName != null)
+                if (ClassName != null || !(reflectionAsm is null))
                 {
 
                     if (reflectionAsm != null && reflectionAsm.GetType(ClassName) is System.Type type)

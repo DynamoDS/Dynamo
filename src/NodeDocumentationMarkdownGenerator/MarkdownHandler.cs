@@ -170,10 +170,10 @@ namespace NodeDocumentationMarkdownGenerator
                     }
 
                     var img = Image.FromStream(m);
-                    var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}.{imageFileInfo.Name}";
+                    var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}_img{imageFileInfo.Extension}";
                     var path = Path.Combine(fileInfo.Directory.FullName, fileName);
                     img.Save(path);
-                    mdImage = $"![{imgName}](./{fileName})";
+                    mdImage = $"![{imgName}](./{fileName.Replace(" ", "%20")})";
                     return true;
                 }
             }
@@ -214,6 +214,9 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static bool TryGetMatchingEntryFromLayoutSpec(List<LayoutElement> sections, List<DynamoDictionaryEntry> dictEntrys, MdFileInfo info, string matchingPath, out DynamoDictionaryEntry matchingEntry)
         {
+            var nodeNameWithoutArgs = info.NodeName.IndexOf("(") > 0 ? 
+                info.NodeName.Remove(info.NodeName.IndexOf("(")) : 
+                info.NodeName;
 
             matchingEntry = null;
             foreach (var item in sections)
@@ -223,9 +226,14 @@ namespace NodeDocumentationMarkdownGenerator
 
                 if (item.include.Count > 0)
                 {
+                    // We need to test a lot of options here, the dictionary json paths can come from different places it seems
+                    // Mostly when delaing with ZT nodes the full category name works, with NodeModels we need to use the namespace
                     var mathcingLayoutInfo = item.include.Where(x => 
+                            info.FullCategory.StartsWith(x.path) ||
+                            $"{info.FullCategory}.{nodeNameWithoutArgs}" == x.path ||
+                            info.NodeNamespace == x.path ||
                             info.NodeNamespace.StartsWith(x.path) ||
-                            $"{info.NodeNamespace}.{info.NodeName}" == x.path
+                            $"{info.NodeNamespace}.{nodeNameWithoutArgs}" == x.path
                             )
                         .FirstOrDefault();
                     if (mathcingLayoutInfo != null)

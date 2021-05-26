@@ -288,11 +288,12 @@ namespace Dynamo.ViewModels
                     var type = node.GetType();
                     if (NodeModelHasCollisions(node.Name, viewModel))
                     {
-                        return $"{type.FullName}({GetInputNames(nodeModel)})";
+                        return $"{type.FullName}.{node.Name}({GetInputNames(nodeModel)})";
                     }
                     
-                    return type.FullName;
-                     
+                    return $"{type.FullName}.{node.Name}";
+
+
 
                 default:
                     return string.Empty;
