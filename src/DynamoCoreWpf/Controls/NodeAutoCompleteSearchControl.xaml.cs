@@ -275,5 +275,10 @@ namespace Dynamo.UI.Controls
         {
             ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
+
+        internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
+        {
+            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+        }
     }
 }

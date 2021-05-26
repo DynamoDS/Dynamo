@@ -2224,7 +2224,7 @@ Uninstall the following packages: {0}?</value>
   <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="DynamoViewSettingsMenuShowCodeBlockNodeLineNumber" xml:space="preserve">
+  <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
     <value>Show CodeBlockNode Line Numbers</value>
   </data>
   <data name="PreferencesViewIsIronPythonDialogDisabled" xml:space="preserve">
@@ -2386,5 +2386,8 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
     <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>Learn more about Node Autocomplete feature.</value>
   </data>
 </root>

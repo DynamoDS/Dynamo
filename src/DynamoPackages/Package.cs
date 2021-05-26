@@ -15,6 +15,7 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Newtonsoft.Json;
+using Dynamo.Configuration;// Used for DebugModes
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -107,10 +108,69 @@ namespace Dynamo.PackageManager
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
         private bool markedForUninstall;
+
         public bool MarkedForUninstall
         {
             get { return markedForUninstall; }
             internal set { markedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public bool EnableOldMarkedForUnistallState
+        {
+            get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public bool EnablePackageStates
+        {
+            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
+        }
+
+        internal enum PackageStates
+        {
+            Loaded, Unloaded, PendingUnload, Error
+        }
+
+        internal PackageStates PackageState;
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageStateTooltip
+        {
+            get
+            {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                switch (PackageState)
+                {
+                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnloadTooltip;
+                    case PackageStates.Unloaded: return Resources.PackageStateUnloadedTooltip;
+                    case PackageStates.Loaded: return Resources.PackageStateLoadedTooltip;
+                    case PackageStates.Error: return Resources.PackageStateErrorTooltip;
+                    default: return "Unkonwn package state";
+                }
+            }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageStateText { get {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                switch (PackageState)
+                {
+                    case PackageStates.PendingUnload: return Resources.PackageStatePendingUnload;
+                    case PackageStates.Unloaded: return Resources.PackageStateUnloaded;
+                    case PackageStates.Loaded: return Resources.PackageStateLoaded;
+                    case PackageStates.Error: return Resources.PackageStateError;
+                    default: return "Unkonwn package state";
+                }
+            }
         }
 
         private string _group = "";
@@ -425,6 +485,10 @@ namespace Dynamo.PackageManager
         internal void MarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = true;
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                PackageState = PackageStates.PendingUnload;
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -435,6 +499,12 @@ namespace Dynamo.PackageManager
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                // Should this be a "Loaded state" or something else ?
+                // Or maybe state should only be set when trying to Load the package...not here.
+                PackageState = PackageStates.Loaded;
+            }
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
 

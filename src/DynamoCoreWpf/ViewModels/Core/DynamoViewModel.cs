@@ -68,6 +68,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoModel model;
         private Point transformOrigin;
         private bool showStartPage = false;
+        private PreferencesViewModel preferencesViewModel;
 
         private ObservableCollection<DefaultWatch3DViewModel> watch3DViewModels = new ObservableCollection<DefaultWatch3DViewModel>();
 
@@ -93,6 +94,19 @@ namespace Dynamo.ViewModels
         public PreferenceSettings PreferenceSettings
         {
             get { return Model.PreferenceSettings; }
+        }
+
+        internal PreferencesViewModel PreferencesViewModel
+        {
+            get
+            {
+                return preferencesViewModel;
+            }
+            set
+            {
+                preferencesViewModel = value;
+                RaisePropertyChanged(nameof(PreferencesViewModel));
+            }
         }
 
         public Point TransformOrigin
@@ -279,6 +293,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowCodeBlockLineNumber
         {
             get
@@ -674,6 +689,8 @@ namespace Dynamo.ViewModels
             WatchHandler.RequestSelectGeometry += BackgroundPreviewViewModel.AddLabelForPath;
             RegisterWatch3DViewModel(BackgroundPreviewViewModel, RenderPackageFactoryViewModel.Factory);
             model.ComputeModelDeserialized += model_ComputeModelDeserialized;
+
+            preferencesViewModel = new PreferencesViewModel(this);
         }
 
         /// <summary>
