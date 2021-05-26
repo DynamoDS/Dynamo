@@ -670,8 +670,11 @@ namespace Dynamo.Graph.Workspaces
                 // ExtensionData
                 homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
 
-                // If there is a active linter serialized in the graph we set it to the active linter.
-                SetActiveLinter(obj);
+                // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
+                if (!CanSetActiveLinter(obj))
+                {
+                    linterManager?.SetDefaultLinter();
+                }
 
                 ws = homeWorkspace;
             }
@@ -684,28 +687,30 @@ namespace Dynamo.Graph.Workspaces
             return ws;
         }
 
-        private void SetActiveLinter(JObject obj)
+        private bool CanSetActiveLinter(JObject obj)
         {
             if (linterManager is null || 
                 !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
-                return;
+                return false;
 
             if (!linter.HasValues)
-                return;
+                return false;
 
             var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
 
             if (activeLinterId is null)
-                return;
+                return false;
 
             var linterDescriptor = linterManager.AvailableLinters
                 .Where(x => x.Id == activeLinterId)
                 .FirstOrDefault();
 
             if (linterDescriptor is null)
-                return;
+                return false;
 
             linterManager.ActiveLinter = linterDescriptor;
+            
+            return true;
         }
 
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
