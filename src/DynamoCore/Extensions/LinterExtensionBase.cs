@@ -71,9 +71,6 @@ namespace Dynamo.Extensions
         /// </summary>
         internal void Activate()
         {
-            if (IsActive)
-                return;
-
             ReadyParamsRef.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             OnCurrentWorkspaceChanged(ReadyParamsRef.CurrentWorkspaceModel);
         }
@@ -85,6 +82,7 @@ namespace Dynamo.Extensions
         {
             ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             UnsubscribeGraphEvents(currentWorkspace);
+            currentWorkspace = null;
             this.linterManager.RuleEvaluationResults.Clear();
         }
 
