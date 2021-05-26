@@ -18,6 +18,7 @@ namespace Dynamo.Tests.Linting
     class LinterManagerTests
     {
         const string MOCK_GUID = "358321af-2633-4697-b475-81632582eba0";
+        const string MOCK_Name = "Test Extension";
         const string MOCK_RULE_ID = "1";
 
         readonly Mock<LinterExtensionBase> mockExtension = new Mock<LinterExtensionBase>() { CallBase = true };
@@ -34,6 +35,7 @@ namespace Dynamo.Tests.Linting
             
             // Setup mock LinterExtension
             mockExtension.Setup(e => e.UniqueId).Returns(MOCK_GUID);
+            mockExtension.Setup(e => e.Name).Returns(MOCK_Name);
 
             model = DynamoModel.Start(
                 new DynamoModel.DefaultStartConfiguration()
@@ -114,8 +116,10 @@ namespace Dynamo.Tests.Linting
         {
             // Arrange
             var secondLinterExtId = "cddab693-9f38-4a66-a600-a758f2c6c817";
+            var secondLinterExtName = "Another Test Extension";
             var secondLinterExt = new Mock<LinterExtensionBase>() { CallBase = true };
             secondLinterExt.Setup(e => e.UniqueId).Returns(secondLinterExtId);
+            secondLinterExt.Setup(e => e.Name).Returns(secondLinterExtName);
 
             var nodeRuleId = "999";
             var nodeRule = new Mock<NodeLinterRule> { CallBase = true };
@@ -152,7 +156,7 @@ namespace Dynamo.Tests.Linting
             failureNode.Name = "NewNodeName";
 
             // Assert
-            Assert.That(model.LinterManager.AvailableLinters.Count == 2);
+            Assert.That(model.LinterManager.AvailableLinters.Count == 3);
             Assert.That(model.LinterManager.RuleEvaluationResults.Count == 1);
             Assert.That(model.LinterManager.RuleEvaluationResults.
                 Any(x => x.RuleId == nodeRuleId));
