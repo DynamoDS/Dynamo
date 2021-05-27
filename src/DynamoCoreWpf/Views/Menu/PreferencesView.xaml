@@ -354,6 +354,17 @@
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
                                     </Grid>
+                                    <Button x:Name="RestartCPythonEngine"
+                                                Style="{StaticResource FlatButtonStyle}" 
+                                                HorizontalAlignment="Left"                                             
+                                                Width="100"
+                                                Height="25"
+                                                Grid.Row="0"
+                                                Margin="0,10,0,10"
+                                                Click="RestartCPythonEngine_Click"
+                                                Content="Restart CPython">
+                                    </Button>
+                                    
                                 </StackPanel>
                             </Expander>
 

@@ -3083,7 +3083,8 @@
                                     CornerRadius="4" 
                                     BorderBrush="#E0E0E0"
                                     Background="Transparent">
-                        <TextBlock VerticalAlignment="Center">
+                        <TextBlock VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
                                 <ContentPresenter />
                         </TextBlock>
                     </Border>

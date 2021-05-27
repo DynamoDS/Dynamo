@@ -357,6 +357,8 @@ namespace Dynamo.Models
                 ComputeModelDeserialized();
         }
 
+        //TODO move all dynamoModel events here?
+
         #endregion
     }
 

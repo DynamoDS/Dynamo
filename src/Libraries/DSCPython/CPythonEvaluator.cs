@@ -151,10 +151,34 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+        private static DynamoLogger dynamoLogger;
+        private static IntPtr ts = new IntPtr();
 
         static CPythonEvaluator()
         {
-            InitializeEncoders();
+            //TODO how to clean this up so it does not lead to memory leaks in tests (keeping multiple dynamoModel around)
+            //it's possible no problem will occur because publisher holds ref to listener - not the other way around... I think.
+            Dynamo.Models.DynamoModel.RequestPythonRestart += RequestPythonRestartHandler;
+
+            // Session is null when running unit tests.
+            if (ExecutionEvents.ActiveSession != null)
+            {
+                dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+            }
+        }
+
+        internal static void RequestPythonRestartHandler(string pythonEngine)
+        {
+            //check if python engine is correct one
+            if (PythonEngine.IsInitialized)
+            {
+               // dynamoLogger?.Log("restarting cpython3 engine", LogLevel.Console);
+                //TODO add analytics
+                PythonEngine.EndAllowThreads(ts);
+                PythonEngine.Shutdown();
+                globalScope = null;
+                PyScopeManager.Global.Clear();
+            }
         }
 
         /// <summary>
@@ -178,16 +202,13 @@ namespace DSCPython
             }
 
             InstallPython();
-
             if (!PythonEngine.IsInitialized)
             {
+                InitializeEncoders();
                 PythonEngine.Initialize();
-                PythonEngine.BeginAllowThreads();
+                ts = PythonEngine.BeginAllowThreads();
+                
             }
-
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
-            {
                 using (Py.GIL())
                 {
                     if (globalScope == null)
@@ -238,11 +259,6 @@ namespace DSCPython
                         }
                     }
                 }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
         }
 
         private static bool isPythonInstalled = false;
@@ -302,8 +318,9 @@ clr.setPreload(True)
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
-                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                //TODO why do I need to do this again...
+                dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                Action<string> logFunction = msg => dynamoLogger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set(DynamoPrintFuncName, logFunction.ToPython());
                 scope.Exec(RedirectPrint());
             }

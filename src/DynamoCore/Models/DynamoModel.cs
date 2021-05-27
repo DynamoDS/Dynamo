@@ -157,7 +157,7 @@ namespace Dynamo.Models
             if (WorkspaceSaving != null)
             {
                 WorkspaceSaving(workspace, saveContext);
-                if (workspace is HomeWorkspaceModel hws) 
+                if (workspace is HomeWorkspaceModel hws)
                     HandleStorageExtensionsOnWorkspaceSaving(hws, saveContext);
             }
         }
@@ -193,10 +193,10 @@ namespace Dynamo.Models
         public event WorkspaceHandler WorkspaceOpened;
         internal void OnWorkspaceOpened(WorkspaceModel workspace)
         {
-            if(WorkspaceOpened != null)
+            if (WorkspaceOpened != null)
             {
                 WorkspaceOpened.Invoke(workspace);
-                if (workspace is HomeWorkspaceModel hws) 
+                if (workspace is HomeWorkspaceModel hws)
                     HandleStorageExtensionsOnWorkspaceOpened(hws);
             }
         }
@@ -235,6 +235,13 @@ namespace Dynamo.Models
         /// </summary>
         public event Action<ReadyParams> DynamoReady;
         private bool dynamoReady;
+
+        internal static event Action<string> RequestPythonRestart;
+        internal void OnRequestPythonRestart(string pythonEngine)
+        {
+            RequestPythonRestart?.Invoke(pythonEngine);
+            //TODO now mark everything dirty.
+        }    
 
         #endregion
 
