@@ -387,7 +387,7 @@ OUT = reload_test.value";
             }
             finally
             {
-                //File.Delete(tempPath);
+                File.Delete(tempPath);
             }
         }
 
