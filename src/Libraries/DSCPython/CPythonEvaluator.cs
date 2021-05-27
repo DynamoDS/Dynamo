@@ -156,10 +156,7 @@ namespace DSCPython
 
         static CPythonEvaluator()
         {
-            //TODO how to clean this up so it does not lead to memory leaks in tests (keeping multiple dynamoModel around)
-            //it's possible no problem will occur because publisher holds ref to listener - not the other way around... I think.
             Dynamo.Models.DynamoModel.RequestPythonRestart += RequestPythonRestartHandler;
-
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
@@ -169,15 +166,18 @@ namespace DSCPython
 
         internal static void RequestPythonRestartHandler(string pythonEngine)
         {
-            //check if python engine is correct one
-            if (PythonEngine.IsInitialized)
+            //check if python engine request is for this engine, and engine is currently started
+            if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
             {
-               // dynamoLogger?.Log("restarting cpython3 engine", LogLevel.Console);
-                //TODO add analytics
+                dynamoLogger?.Log("restarting cpython3 engine", LogLevel.Console);
                 PythonEngine.EndAllowThreads(ts);
                 PythonEngine.Shutdown();
+                //set to null so that globalScope is recreated in evaluation function.
                 globalScope = null;
-                PyScopeManager.Global.Clear();
+                Analytics.TrackEvent(
+                   Dynamo.Logging.Actions.Start,
+                   Dynamo.Logging.Categories.PythonOperations,
+                   "CPythonEngineReset");
             }
         }
 
