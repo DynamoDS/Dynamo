@@ -133,6 +133,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Style.
+        /// </summary>
+        public static string AddStyleButton {
+            get {
+                return ResourceManager.GetString("AddStyleButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string AddToLibraryButton {
@@ -5043,6 +5052,24 @@ namespace Dynamo.Wpf.Properties {
         public static string RerunButtonToolTip {
             get {
                 return ResourceManager.GetString("RerunButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart CPython.
+        /// </summary>
+        public static string RestartCPythonButtonText {
+            get {
+                return ResourceManager.GetString("RestartCPythonButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restart the CPython engine and reload python modules..
+        /// </summary>
+        public static string RestartCPythonButtonToolTip {
+            get {
+                return ResourceManager.GetString("RestartCPythonButtonToolTip", resourceCulture);
             }
         }
         

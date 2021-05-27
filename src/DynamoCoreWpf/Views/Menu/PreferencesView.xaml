@@ -362,7 +362,8 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="RestartCPythonEngine_Click"
-                                                Content="Restart CPython">
+                                                Content="{x:Static p:Resources.RestartCPythonButtonText}"
+                                                ToolTip="{x:Static p:Resources.RestartCPythonButtonToolTip}">
                                     </Button>
                                     
                                 </StackPanel>
@@ -463,7 +464,7 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="AddStyleButton_Click"
-                                                Content="Add Style" />
+                                                Content="{x:Static p:Resources.AddStyleButton}" />
                                         <Border x:Name="AddStyleBorder"
                                                 Visibility="Collapsed"
                                                 CornerRadius="4" 
