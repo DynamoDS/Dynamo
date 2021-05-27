@@ -5,10 +5,11 @@ using NUnit.Framework;
 using System.Linq;
 using DSCPython;
 using System.IO;
+using Dynamo;
 
 namespace DSPythonTests
 {
-    public class PythonEvalTests
+    public class PythonEvalTests : UnitTestBase
     {
         public delegate object PythonEvaluatorDelegate(string code, IList bindingNames, IList bindingValues);
 
@@ -174,7 +175,7 @@ print 'hello'
         [Test]
         public void CPythonEngineWithErrorRaisesCorrectEvent()
         {
-          
+
             var count = 0;
             DSCPython.EvaluationEventHandler CPythonEvaluator_EvaluationEnd = (state, scope, codeString, bindings) =>
             {
@@ -353,32 +354,43 @@ OUT = s,fs,dk,dv,di
         [Test]
         public void ImportedLibrariesReloadedOnNewEvaluation()
         {
-            //clear file.
-            File.WriteAllText(@"C:\Users\kirschm\Desktop\dyn-3514\reload_test.py", "value ='Hello World!'\n");
 
-            var script = @"import sys
-sys.path.append(r'C:\Users\kirschm\Desktop\dyn-3514')
+            var tempPath = Path.Combine(TempFolder, "reload_test.py");
+
+            //clear file.
+            File.WriteAllText(tempPath, "value ='Hello World!'\n");
+            try
+            {
+                var script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
 import reload_test
 OUT = reload_test.value";
 
-            var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
-               script,
-               new ArrayList { "IN" },
-               new ArrayList { new ArrayList { " ", "  " } });
+                var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                   script,
+                   new ArrayList { "IN" },
+                   new ArrayList { new ArrayList { " ", "  " } });
 
-            Assert.AreEqual("Hello World!", output);
+                Assert.AreEqual("Hello World!", output);
 
-            //mock raise event
-            DSCPython.CPythonEvaluator.RequestPythonRestartHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
+                //mock raise event
+                DSCPython.CPythonEvaluator.RequestPythonRestartHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
 
-            //now modify the file.
-            File.AppendAllLines(@"C:\Users\kirschm\Desktop\dyn-3514\reload_test.py", new string[] { "value ='bye'" });
-            output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
-             script,
-             new ArrayList { "IN" },
-             new ArrayList { new ArrayList { " ", "  " } });
+                //now modify the file.
+                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
+                output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
+                 script,
+                 new ArrayList { "IN" },
+                 new ArrayList { new ArrayList { " ", "  " } });
+                Assert.AreEqual("bye", output);
 
-            Assert.AreEqual("bye", output);
+            }
+            finally
+            {
+                //File.Delete(tempPath);
+            }
         }
+
+
     }
 }
