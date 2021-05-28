@@ -307,7 +307,6 @@
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PythonExpander}"
-                                        Expanded="Expander_Expanded"
                                         Header="{x:Static p:Resources.PreferencesViewPython}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
                                     <Label  Content="{x:Static p:Resources.PreferencesViewDefaultPythonEngine}" 
@@ -362,7 +361,6 @@
                                           Style="{StaticResource MenuExpanderStyle}" 
                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=ExperimentalExpander}"
                                           Grid.Row="1"
-                                          Expanded="Expander_Expanded"
                                           Header="{x:Static p:Resources.PreferencesViewExperimentalLabel}">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -432,7 +430,6 @@
                             <!--Group Styles Expander-->
                             <Expander x:Name="Styles"
                                       Grid.Row="0"
-                                      Expanded="Expander_Expanded"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
                                       Style="{StaticResource MenuExpanderStyle}">
@@ -538,8 +535,7 @@
                             <!--Geometry Scaling Expander-->
                             <Expander x:Name="Scale"
                                       Grid.Row="1"                   
-                                      Style="{StaticResource MenuExpanderStyle}" 
-                                      Expanded="Expander_Expanded"
+                                      Style="{StaticResource MenuExpanderStyle}"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
                                 <StackPanel x:Name="GeometryScalingRadiosPanel"
@@ -602,7 +598,6 @@
                             <Expander x:Name="Precision"
                                       Grid.Row="2"
                                       Style="{StaticResource MenuExpanderStyle}" 
-                                      Expanded="Expander_Expanded"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Precision}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsRenderPrecision}">
                                 <StackPanel Orientation="Horizontal" 
@@ -622,7 +617,6 @@
                             <Expander x:Name="Display"
                                       Grid.Row="3"
                                       Style="{StaticResource MenuExpanderStyle}" 
-                                      Expanded="Expander_Expanded"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Display}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsDisplaySettings}">
                                 <Grid>

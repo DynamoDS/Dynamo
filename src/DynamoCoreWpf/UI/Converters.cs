@@ -3068,9 +3068,11 @@ namespace Dynamo.Controls
         /// <returns>bool indicating if the Expander should be expanded or not</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string)
+            var expanderValue = value as string;
+
+            if (expanderValue != null &&
+                !string.IsNullOrEmpty(expanderValue))
             {
-                var expanderValue = value as string;
                 var expanderName = parameter as string;
                 return expanderName.Equals(expanderValue);
             }
