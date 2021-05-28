@@ -2390,4 +2390,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
+  <data name="HideIronPythonAlertsLabel" xml:space="preserve">
+    <value>Hide IronPython alerts</value>
+  </data>
 </root>
