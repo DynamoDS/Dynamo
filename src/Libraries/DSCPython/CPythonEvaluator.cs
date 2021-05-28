@@ -169,11 +169,53 @@ namespace DSCPython
             //check if python engine request is for this engine, and engine is currently started
             if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
             {
-                dynamoLogger?.Log("restarting cpython3 engine", LogLevel.Console);
-                PythonEngine.EndAllowThreads(ts);
-                PythonEngine.Shutdown();
-                //set to null so that globalScope is recreated in evaluation function.
-                globalScope = null;
+                dynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
+                using (Py.GIL())
+                {
+                //the following is inspired by:
+                //TODO add attribution to aboutbox/license. clause3 BSD3 (preapproved)
+                //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+                    var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    global?.Exec(@"import sys
+import importlib
+import importlib.util
+import pprint
+import os
+def getInfoFile(module):
+    ##pprint.pprint(module)
+    if not hasattr(module, '__file__') or module.__file__ is None:
+        return None
+
+    if getattr(module, '__name__', None) in [None, '__mp_main__', '__main__']:
+        # we cannot reload(__main__) or reload(__mp_main__)
+        return None
+
+    filename = module.__file__
+    path, ext = os.path.splitext(filename)
+
+    if ext.lower() == '.py':
+        py_filename = filename
+    else:
+        try:
+            py_filename = importlib.util.source_from_cache(filename)
+        except ValueError:
+            return None
+    return py_filename
+
+
+for modname,mod in sys.modules.copy().items():
+    print('considering', modname)
+    file = getInfoFile(mod)
+    if file is None:
+        continue
+    print('reloading', modname)
+    try:
+        importlib.reload(mod)
+    except Exception as inst:
+        print('failed to reload', modname, inst)
+
+");
+                }
                 Analytics.TrackEvent(
                    Dynamo.Logging.Actions.Start,
                    Dynamo.Logging.Categories.PythonOperations,

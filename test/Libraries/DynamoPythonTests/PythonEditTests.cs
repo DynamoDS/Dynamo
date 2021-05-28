@@ -523,7 +523,7 @@ namespace Dynamo.Tests
 
             var downstream1 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream1");
             var downstream2 = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "downstream2");
-            
+
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream1.GUID.ToString(), "firstName");
             AssertPreviewValue(downstream2.GUID.ToString(), "firstNamelastname");
@@ -553,7 +553,7 @@ namespace Dynamo.Tests
             var classdef = ViewModel.Model.CurrentWorkspace.Nodes.First(x => x.Name == "classdef");
 
             ViewModel.HomeSpace.Run();
-            var handles = classdef.CachedValue.GetElements().Select(x=>x.Data).Cast<DynamoCPythonHandle>().ToList<DynamoCPythonHandle>();
+            var handles = classdef.CachedValue.GetElements().Select(x => x.Data).Cast<DynamoCPythonHandle>().ToList<DynamoCPythonHandle>();
             var firstMemLoc = handles.First().PythonObjectID;
             Assert.IsTrue(handles.All(x => x.PythonObjectID == firstMemLoc));
         }
@@ -590,7 +590,7 @@ namespace Dynamo.Tests
 
             ViewModel.HomeSpace.Run();
             AssertPreviewValue(downstream2.GUID.ToString(), "joe");
-            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x=>x.ToString().Contains("myClass")).Value);
+            Assert.AreEqual(2, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("myClass")).Value);
 
 
             ViewModel.Model.CurrentWorkspace.Nodes.OfType<CodeBlockNodeModel>().First().UpdateValue(new UpdateValueParams("Code", "\"foo\";"));
@@ -649,5 +649,109 @@ namespace Dynamo.Tests
             var getItemAtIndex2 = "ad1f2ed7-6373-4381-aa93-df707c5e6339";
             AssertPreviewValue(getItemAtIndex2, new string[] { "TSplineVertex", "TSplineVertex" });
         }
+
+        [Test]
+        public void CpythonRestart_ReloadsModules()
+        {
+            var modName = "reload_test2";
+            (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
+            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
+
+            //clear file.
+            File.WriteAllText(tempPath, "value ='Hello World!'\n");
+
+            //we have to shutdown python before this test to make sure we're starting in a clean state.
+            this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+            try
+            {
+                var script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
+import {modName}
+OUT = {modName}.value";
+
+
+                var pythonNode = new PythonNode();
+                ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+                pythonNode.Engine = PythonEngineVersion.CPython3;
+                UpdatePythonNodeContent(pythonNode, script);
+                RunCurrentModel();
+                AssertPreviewValue(pythonNode.GUID.ToString(), "Hello World!");
+
+                //now modify the file.
+                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
+
+                //user restarts manually, this will cause a dynamo and python engine reset
+                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+
+                RunCurrentModel();
+                AssertPreviewValue(pythonNode.GUID.ToString(), "bye");
+
+            }
+            finally
+            {
+                File.Delete(tempPath);
+            }
+        }
+
+        /// <summary>
+        /// Currently unsupported use case - if a python module imported, and then moved on disk, reload will fail unless it is manually removed from
+        /// sys.modules as well. This should be rare.
+        /// </summary>
+        [Test]
+        [Category("Failure")]
+        [Category("TechDebt")]
+        public void CpythonRestart_ReloadModuleFromDifferentLocationFails()
+        {
+            var modName = "reload_test3";
+            (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Manual;
+            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
+
+            //clear file.
+            File.WriteAllText(tempPath, "value ='Hello World!'\n");
+            try
+            {
+                var script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
+import {modName}
+OUT = {modName}.value";
+
+
+                var pythonNode = new PythonNode();
+                ViewModel.CurrentSpace.AddAndRegisterNode(pythonNode);
+                pythonNode.Engine = PythonEngineVersion.CPython3;
+                UpdatePythonNodeContent(pythonNode, script);
+                RunCurrentModel();
+                AssertPreviewValue(pythonNode.GUID.ToString(), "Hello World!");
+
+                //delete the .py file, and create a new module with the same name, but a new location
+                File.Delete(tempPath);
+                var dynamoTemp = new DirectoryInfo(TempFolder).Parent.FullName;
+                tempPath = Path.Combine(dynamoTemp, Guid.NewGuid().ToString("N"), $"{modName}.py");
+                var modfile = new System.IO.FileInfo(tempPath);
+                modfile.Directory.Create(); 
+                File.WriteAllText(modfile.FullName, "value ='bye'\n");
+
+                //update script to point to new location
+                script = $@"import sys
+sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
+import {modName}
+OUT = {modName}.value";
+                UpdatePythonNodeContent(pythonNode, script);
+
+                //user restarts manually, this will cause a dynamo and python reset
+                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+
+                RunCurrentModel();
+                //this failure is currently expected.
+                AssertPreviewValue(pythonNode.GUID.ToString(), "bye");
+
+            }
+            finally
+            {
+                File.Delete(tempPath);
+            }
+        }
+
+
     }
 }

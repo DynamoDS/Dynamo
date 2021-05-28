@@ -355,7 +355,9 @@ OUT = s,fs,dk,dv,di
         public void ImportedLibrariesReloadedOnNewEvaluation()
         {
 
-            var tempPath = Path.Combine(TempFolder, "reload_test.py");
+            var modName = "reload_test1";
+
+            var tempPath = Path.Combine(TempFolder, $"{modName}.py");
 
             //clear file.
             File.WriteAllText(tempPath, "value ='Hello World!'\n");
@@ -363,8 +365,8 @@ OUT = s,fs,dk,dv,di
             {
                 var script = $@"import sys
 sys.path.append(r'{Path.GetDirectoryName(tempPath)}')
-import reload_test
-OUT = reload_test.value";
+import {modName}
+OUT = {modName}.value";
 
                 var output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                    script,
@@ -373,11 +375,12 @@ OUT = reload_test.value";
 
                 Assert.AreEqual("Hello World!", output);
 
+                //now modify the file.
+                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
+
                 //mock raise event
                 DSCPython.CPythonEvaluator.RequestPythonRestartHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
 
-                //now modify the file.
-                File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
                 output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                  script,
                  new ArrayList { "IN" },
