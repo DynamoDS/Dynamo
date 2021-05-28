@@ -903,7 +903,7 @@ namespace Dynamo.ViewModels
                 }
                 else
                 {
-                    expanderActive = "";
+                    expanderActive = string.Empty;
                 }
             }
         }
