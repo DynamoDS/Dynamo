@@ -187,7 +187,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Name of the package this node belongs to
         /// </summary>
-        public string PkgName => Category.Split('.').FirstOrDefault();
+        public string PackageName => Category.Split('.').FirstOrDefault();
 
         /// <summary>
         /// Collection of the nodes input names.

@@ -180,21 +180,19 @@ namespace ProtoFFI
         public static CLRDLLModule GetModuleForInspection(Assembly assembly)
         {
             CLRDLLModule module;
-            var moduleName = assembly.GetName();
-            Module testDll = assembly.GetModule(moduleName.Name);
+            var moduleName = assembly.GetName().Name;
+            Module testDll = assembly.GetModule(moduleName);
             if (testDll == null)
             {
-                module = new CLRDLLModule(moduleName.Name, assembly);
+                module = new CLRDLLModule(moduleName, assembly);
             }
-
             else
             {
-                module = new CLRDLLModule(moduleName.Name, testDll);
+                module = new CLRDLLModule(moduleName, testDll);
             }
 
-            Modules.Add(moduleName.Name + ".dll", module);
+            Modules.Add($"{moduleName}.dll", module);
             return module;
-
         }
     }
 

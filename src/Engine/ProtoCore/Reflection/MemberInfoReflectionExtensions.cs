@@ -47,19 +47,19 @@ namespace ProtoCore.Reflection
         }
 
 
-        internal static Attribute[] AttributesFromReflectionContext(this MemberInfo member)
+        internal static Attribute[] GetAttributesFromReflectionContext(this MemberInfo member)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(member);
             return GetReflectionAttributes(customAttributes);
         }
 
-        internal static Attribute[] AttributesFromReflectionContext(this ParameterInfo parameter)
+        internal static Attribute[] GetAttributesFromReflectionContext(this ParameterInfo parameter)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(parameter);
             return GetReflectionAttributes(customAttributes);
         }
 
-        internal static Attribute[] AttributesFromReflectionContext(this System.Type type)
+        internal static Attribute[] GetAttributesFromReflectionContext(this System.Type type)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(type);
             return GetReflectionAttributes(customAttributes);
@@ -87,7 +87,7 @@ namespace ProtoCore.Reflection
                             foreach (var e in item.Value as ICollection)
                             {
                                 if (e is CustomAttributeTypedArgument cs)
-                                    argsArray[idx] = cs.Value.InstanceFromObject(cs.ArgumentType);
+                                    argsArray[idx] = cs.Value.CreateInstanceFromObject(cs.ArgumentType);
                                 else
                                     argsArray[idx] = e;
                                 idx++;
@@ -106,14 +106,14 @@ namespace ProtoCore.Reflection
                             foreach (var e in enumerable)
                             {
                                 if (e is CustomAttributeTypedArgument cs)
-                                    paramValues.Add(cs.Value.InstanceFromObject(cs.ArgumentType));
+                                    paramValues.Add(cs.Value.CreateInstanceFromObject(cs.ArgumentType));
                                 else
                                     paramValues.Add(e);
                             }
 
                             continue;
                         }
-                        paramValues.Add(item.Value.InstanceFromObject(item.ArgumentType));
+                        paramValues.Add(item.Value.CreateInstanceFromObject(item.ArgumentType));
                     }
 
 
@@ -141,9 +141,7 @@ namespace ProtoCore.Reflection
 
                     attributes.Add(a);
                 }
-                catch (Exception e)
-                {
-                }
+                catch {}
             }
 
             return attributes.ToArray();
@@ -152,7 +150,6 @@ namespace ProtoCore.Reflection
         private static Attribute CreateInstance(System.Type type, object args)
         {
             var loadedAssembly = Assembly.LoadFrom(type.Assembly.Location);
-            // Check if in right assembly before laoding...
             var loadedType = loadedAssembly.GetType(type.FullName);
 
             if (!loadedType.GetConstructors().Any())
@@ -168,7 +165,7 @@ namespace ProtoCore.Reflection
             return attr;
         }
 
-        private static object InstanceFromObject(this object obj, System.Type type)
+        private static object CreateInstanceFromObject(this object obj, System.Type type)
         {
             if (type.IsPrimitive || type.Name == typeof(string).Name)
                 return obj;

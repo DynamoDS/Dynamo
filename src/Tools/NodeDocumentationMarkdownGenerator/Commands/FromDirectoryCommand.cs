@@ -67,8 +67,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             }
 
             return AssemblyHandler.
-                ScanAssemblies(allDlls.
-                Select(x => x.FullName).ToList(), logger);
+                ScanAssemblies(allDlls.Select(x => x.FullName).ToList(), logger);
         }
     }
 }

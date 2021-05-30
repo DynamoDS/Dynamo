@@ -27,29 +27,16 @@ namespace NodeDocumentationMarkdownGenerator
         /// Scans a list of assemblies using a Reflection only load context to determine which nodes are in the assemblies
         /// </summary>
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
+        /// <param name="additionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
         /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, ILogger logger)
+        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, ILogger logger, List<string> additionalPathsToLoad = null)
         {
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
-
-            var resolver = new PathAssemblyResolver(paths);
-            var mlc = new MetadataLoadContext(resolver);
-
-            return Scan(assemblyPaths, mlc, resolver, logger);
-        }
-
-        /// <summary>
-        /// Scans a list of assemblies using a Reflection only load context to determine which nodes are in the assemblies
-        /// </summary>
-        /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
-        /// <param name="addtionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
-        /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> addtionalPathsToLoad, ILogger logger)
-        {
-            var paths = GetDefaultPaths();
-            paths.AddRange(assemblyPaths);
-            paths.AddRange(addtionalPathsToLoad);
+            if (additionalPathsToLoad != null)
+            {
+                paths.AddRange(additionalPathsToLoad);
+            }
 
             var resolver = new PathAssemblyResolver(paths);
             var mlc = new MetadataLoadContext(resolver);
@@ -89,7 +76,6 @@ namespace NodeDocumentationMarkdownGenerator
                         {
                             Assembly asm = mlc.LoadFromAssemblyPath(path);
                             AssemblyName name = asm.GetName();
-                            TryGetCustomizationFile(asm, out LibraryCustomization customization);
 
                             if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                             {
@@ -138,19 +124,18 @@ namespace NodeDocumentationMarkdownGenerator
 
         private static List<FunctionDescriptor> GetFunctionDescriptorsFromDll(PathManager pathManager, Assembly asm)
         {
+            var objectAsmName = typeof(object).Assembly.GetName().Name;
             var descriptors = new List<FunctionDescriptor>();
+
+            string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
+            if (extension != ".dll" && extension != ".exe")
+            {
+                return new List<FunctionDescriptor>();
+            }
 
             // Getting ZT imports from CLRModuleTypes
             DLLModule dllModule = null;
-            string extension = System.IO.Path.GetExtension(asm.Location).ToLower();
-            if (extension == ".dll" || extension == ".exe")
-            {
-                try
-                {
-                    dllModule = DLLFFIHandler.GetModuleForInspection(asm);
-                }
-                catch { }
-            }
+            dllModule = DLLFFIHandler.GetModuleForInspection(asm);
 
             dllModule.ScanModule();
             List<CLRModuleType> moduleTypes = CLRModuleType.GetTypes((CLRModuleType mtype) => { return mtype.Module == dllModule; });
@@ -159,20 +144,17 @@ namespace NodeDocumentationMarkdownGenerator
 
             foreach (var t in moduleTypes)
             {
-                var tn = t.FullName;
-
                 try
                 {
                     var className = t.ClassNode.ClassName;
                     var externalLib = t.ClassNode.ExternLibName;
 
                     // For some reason mscorelib sometimes gets pass to here, so filtering it away.
-                    if (t.CLRType.Assembly.GetName().Name == typeof(object).Assembly.GetName().Name ||
+                    if (t.CLRType.Assembly.GetName().Name == objectAsmName ||
                         t.ClassNode.ClassAttributes.HiddenInLibrary) continue;
 
                     var ctorNodes = t.ClassNode.Procedures
-                        .Where(c => c.Kind == AstKind.Constructor)
-                        .Cast<ConstructorDefinitionNode>()
+                        .OfType<ConstructorDefinitionNode>()
                         .Where(c => c.Access == ProtoCore.CompilerDefinitions.AccessModifier.Public &&
                                     c.MethodAttributes != null ?
                                         !c.MethodAttributes.IsObsolete && !c.MethodAttributes.HiddenInLibrary :
@@ -180,15 +162,13 @@ namespace NodeDocumentationMarkdownGenerator
                         .Cast<AssociativeNode>();
 
                     var functionNodes = t.ClassNode.Procedures
-                        .Where(c => c is FunctionDefinitionNode)
-                        .Cast<FunctionDefinitionNode>()
+                        .OfType<FunctionDefinitionNode>()
                         .Where(f => !f.MethodAttributes.HiddenInLibrary &&
                                     !f.MethodAttributes.IsObsolete &&
                                     f.Name != "_Dispose")
                         .Cast<AssociativeNode>();
 
-                    var associativeNodes = ctorNodes.ToList();
-                    if (functionNodes.Any()) associativeNodes.AddRange(functionNodes);
+                    var associativeNodes = ctorNodes.Union(functionNodes);
 
                     foreach (var node in associativeNodes)
                     {
@@ -261,7 +241,7 @@ namespace NodeDocumentationMarkdownGenerator
 
             var nodeTypes = typesInAsm
                 .Where(x => NodeModelAssemblyLoader.IsNodeSubTypeReflectionLoaded(x, nodeModelType))
-                .Select(t => new TypeLoadData(t, t.AttributesFromReflectionContext()))
+                .Select(t => new TypeLoadData(t, t.GetAttributesFromReflectionContext()))
                 .Where(type => type != null && !type.IsDeprecated && !type.IsHidden)
                 .ToList();
 
@@ -282,25 +262,6 @@ namespace NodeDocumentationMarkdownGenerator
             paths.AddRange(dynamoDlls);
 
             return paths;
-        }
-
-        private static bool TryGetCustomizationFile(Assembly asm, out LibraryCustomization customization)
-        {
-            customization = null;
-            try
-            {
-                var customizationFileName = asm.GetName().Name + "_DynamoCustomization.xml";
-                var customizationPath = Path.Combine(Path.GetDirectoryName(asm.Location), customizationFileName);
-                var xDocument = XDocument.Load(customizationPath);
-
-                customization = new LibraryCustomization(asm, xDocument);
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        
         }
 
         private static bool TryGetFunctionDescriptor(

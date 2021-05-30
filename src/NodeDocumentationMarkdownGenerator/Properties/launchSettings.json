@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "NodeDocumentationMarkdownGenerator": {
-      "commandName": "Project",
-      "commandLineArgs": "fromdirectory -i \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\Dynamo\\bin\\AnyCPU\\Debug\" -f BuiltIn.ds -o \"C:\\Users\\SylvesterKnudsen\\Desktop\\TestMdOutput_CoreNodeModels\" -d \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\DynamoDictionary\\public\\data\\Dynamo_Nodes_Documentation.json\" -l \"C:\\Users\\SylvesterKnudsen\\Desktop\\Logs\" -x \"C:\\Users\\SylvesterKnudsen\\Documents\\GitHub\\Dynamo\\src\\LibraryViewExtension\\web\\library\\layoutSpecs.json\" -w -s"
-    }
-  }
-}

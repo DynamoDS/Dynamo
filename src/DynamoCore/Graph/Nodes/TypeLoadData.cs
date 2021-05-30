@@ -98,14 +98,21 @@ namespace Dynamo.Graph.Nodes
                 .SelectMany(x => x.PortTypes);
         }
 
+        /// <summary>
+        /// Creates a TypeLoadData from a type and a list of attributes.
+        /// This is used when the type is Reflection only loaded as that 
+        /// requires different ways of getting type Attributes
+        /// </summary>
+        /// <param name="typeIn"></param>
+        /// <param name="attributes"></param>
         public TypeLoadData (Type typeIn, ICollection<Attribute> attributes)
         {
             Type = typeIn;
 
             ObsoleteMessage = string.Join(
                 "\n",
-                attributes.Where(x=>x is ObsoleteAttribute)
-                    .Cast<ObsoleteAttribute>()
+                attributes
+                    .OfType<ObsoleteAttribute>()
                     .Select(x => string.IsNullOrEmpty(x.Message) ? "Obsolete" : x.Message));
 
             IsDeprecated = attributes.OfType<NodeDeprecatedAttribute>().Any();

@@ -61,7 +61,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             addtionalPathsToLoad.AddRange(hostDllPaths);
 
-            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, addtionalPathsToLoad, logger);
+            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, logger, addtionalPathsToLoad);
         }
 
         private List<MdFileInfo> ScanCustomNodes(Package pkg)

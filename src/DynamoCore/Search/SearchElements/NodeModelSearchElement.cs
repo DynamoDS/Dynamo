@@ -28,7 +28,6 @@ namespace Dynamo.Search.SearchElements
 
         internal NodeModelSearchElement(TypeLoadData typeLoadData, Type baseType) : base(typeLoadData)
         {
-            //constructor = typeLoadData.Type.GetDefaultConstructor < baseType.GetType() > (;
             creationName = typeLoadData.Type.ToString();
         }
 

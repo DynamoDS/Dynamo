@@ -18,16 +18,22 @@ namespace NodeDocumentationMarkdownGenerator
         /// </summary>
         public string NodeNamespace { get; }
 
+        /// <summary>
+        /// Full node category, as showed in the dynamo library
+        /// </summary>
         public string FullCategory { get; }
 
-        public string QualifiedFileName { get; }
+        /// <summary>
+        /// Name of markdown file
+        /// </summary>
+        public string FileName { get; }
 
         /// <summary>
         /// Name of external library this node belongs to
         /// </summary>
-        public string ExternalLib { get; }
+        public string ExternalLibraryName { get; }
 
-        public MdFileInfo(string nodeName, string nodeNamespace, string fullCategory, string externalLib, string qualifiedName)
+        public MdFileInfo(string nodeName, string nodeNamespace, string fullCategory, string externalLib, string fileName)
         {
             if (string.IsNullOrEmpty(nodeName))
             {
@@ -49,16 +55,16 @@ namespace NodeDocumentationMarkdownGenerator
                 throw new ArgumentException($"'{nameof(externalLib)}' cannot be null or empty.", nameof(externalLib));
             }
 
-            if (string.IsNullOrEmpty(qualifiedName))
+            if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException($"'{nameof(qualifiedName)}' cannot be null or empty.", nameof(qualifiedName));
+                throw new ArgumentException($"'{nameof(fileName)}' cannot be null or empty.", nameof(fileName));
             }
 
             NodeName = nodeName;
             NodeNamespace = nodeNamespace;
             FullCategory = fullCategory;
-            ExternalLib = externalLib;
-            QualifiedFileName = qualifiedName;
+            ExternalLibraryName = externalLib;
+            FileName = fileName;
         }
 
         internal static MdFileInfo FromCustomNode(string path, ILogger log)

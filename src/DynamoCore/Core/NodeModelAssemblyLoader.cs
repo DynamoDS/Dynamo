@@ -210,7 +210,6 @@ namespace Dynamo.Models
         internal static bool IsNodeSubTypeReflectionLoaded(Type t, Type nodeModelType)
         {
             bool isNodeSubType = false;
-
             try
             {
                 isNodeSubType = !t.IsAbstract &&

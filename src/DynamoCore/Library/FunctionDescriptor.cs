@@ -590,11 +590,6 @@ namespace Dynamo.Engine
                     {
                         try
                         {
-                            //get class type of function
-                            //var type2 = reflectionAsm.DefinedTypes
-                            //    .Where(x => x.FullName == ClassName)
-                            //    .FirstOrDefault();
-
                             var nodeCat = string.Empty;
                             foreach (var t in type.GetMembers())
                             {
@@ -603,7 +598,7 @@ namespace Dynamo.Engine
                                     continue;
                                 }
 
-                                var attrs = t.AttributesFromReflectionContext();
+                                var attrs = t.GetAttributesFromReflectionContext();
                                 foreach (var a in attrs)
                                 {
                                     if (a != null && a is NodeCategoryAttribute catAttr)
@@ -651,6 +646,7 @@ namespace Dynamo.Engine
                             "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
                         break;
                 }
+
                 return categoryBuf.ToString();
             }
         }
