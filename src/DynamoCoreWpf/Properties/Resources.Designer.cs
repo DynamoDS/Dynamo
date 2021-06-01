@@ -5065,7 +5065,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to resets CPython environment by reloading modules..
+        ///   Looks up a localized string similar to Resets CPython environment by reloading modules..
         /// </summary>
         public static string ResetCPythonButtonToolTip {
             get {
