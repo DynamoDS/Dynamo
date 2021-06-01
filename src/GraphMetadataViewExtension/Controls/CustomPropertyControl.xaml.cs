@@ -48,6 +48,7 @@ namespace Dynamo.GraphMetadata.Controls
             PropertyNameEnabled = !PropertyNameEnabled;
             propertyNameText.IsEnabled = PropertyNameEnabled;
             propertyNameText.Focus();
+            propertyNameText.CaretIndex = PropertyName.Length;
 
             propertyNameText.LostFocus += DisableEditable;
         }

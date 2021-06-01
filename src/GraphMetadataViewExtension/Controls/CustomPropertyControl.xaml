@@ -31,15 +31,17 @@
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="propertyNameText"
-                        Grid.Column="0"
-                        Background="Transparent"
-                        BorderBrush="Transparent"
-                        Foreground="{StaticResource NodeNameForeground}"
-                        Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                        IsEnabled="False"
-                        BorderThickness="0"
-                        Padding="-3,0"
-                        Margin="0"/>
+                     Grid.Column="0"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     Foreground="{StaticResource NodeNameForeground}"
+                     Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                     IsEnabled="False"
+                     BorderThickness="1"
+                     Padding="-3,0"
+                     Margin="0"
+                     CaretBrush="White">
+            </TextBox>
             <Button Grid.Column="1"
                     Background="Transparent"
                     BorderThickness="0"
@@ -71,7 +73,6 @@
                  Foreground="{StaticResource NestedMemberTextColor}"
                  Margin="0,5"
                  Padding="0,5"
-                 BorderThickness="0"
                  Text="{Binding PropertyValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
     </Grid>
 </UserControl>

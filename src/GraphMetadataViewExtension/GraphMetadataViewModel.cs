@@ -13,6 +13,7 @@ namespace Dynamo.GraphMetadata
     public class GraphMetadataViewModel : NotificationObject
     {
         private readonly ViewLoadedParams viewLoadedParams;
+        private readonly GraphMetadataViewExtension extension;
         private HomeWorkspaceModel currentWorkspace;
 
         /// <summary>
@@ -70,9 +71,10 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
-        public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams)
+        public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams, GraphMetadataViewExtension extension)
         {
             this.viewLoadedParams = viewLoadedParams;
+            this.extension = extension;
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
@@ -88,7 +90,11 @@ namespace Dynamo.GraphMetadata
 
         private void OnCurrentWorkspaceChanged(Graph.Workspaces.IWorkspaceModel obj)
         {
-            if (!(obj is HomeWorkspaceModel hwm)) return;
+            if (!(obj is HomeWorkspaceModel hwm))
+            {
+                extension.Closed();
+                return;
+            }
 
             if (string.IsNullOrEmpty(hwm.FileName))
             {
@@ -106,7 +112,6 @@ namespace Dynamo.GraphMetadata
                 RaisePropertyChanged(nameof(HelpLink));
                 RaisePropertyChanged(nameof(Thumbnail));
             }
-
 
             CustomProperties.Clear();
         }

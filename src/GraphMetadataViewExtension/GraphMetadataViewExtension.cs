@@ -6,7 +6,7 @@ using Dynamo.Graph;
 using Dynamo.GraphMetadata.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows;
-
+using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.GraphMetadata
 {
@@ -27,7 +27,7 @@ namespace Dynamo.GraphMetadata
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.viewLoadedParamsReference = viewLoadedParams;
-            this.viewModel = new GraphMetadataViewModel(viewLoadedParams);
+            this.viewModel = new GraphMetadataViewModel(viewLoadedParams, this);
             this.graphMetadataView = new GraphMetadataView();
             graphMetadataView.DataContext = viewModel;
 
@@ -45,6 +45,13 @@ namespace Dynamo.GraphMetadata
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
+            // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
+            if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
+            {
+                this.Closed();
+                return;
+            }
+
             this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.graphMetadataView);
         }
 
@@ -85,6 +92,14 @@ namespace Dynamo.GraphMetadata
 
         #endregion
 
+        public override void Closed()
+        {
+            if (this.graphMetadataMenuItem != null)
+            {
+                this.graphMetadataMenuItem.IsChecked = false;
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             viewModel.Dispose();
@@ -96,7 +111,6 @@ namespace Dynamo.GraphMetadata
         public override void Dispose()
         {
             Dispose(true);
-
         }
     }
 }
