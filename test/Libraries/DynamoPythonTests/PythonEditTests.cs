@@ -752,6 +752,8 @@ OUT = {modName}.value";
             }
         }
 
+        //This test creates some instances with a class defined in a loaded module
+        //then calls a method on these instances - then reloads the module and runs the graph again.
         [Test]
         public void Cpython_reloaded_class_instances()
         {
@@ -778,6 +780,48 @@ OUT = {modName}.value";
                 this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
                 RunCurrentModel();
                 AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
+                //after a second run - the old instance shoud have been disposed
+                //only the new one should remain.
+                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
+
+            }
+            finally
+            {
+                File.WriteAllText(modulePath, originalContents);
+            }
+        }
+
+        [Test]
+        public void Cpython_reloaded_class_instances_AUTO()
+        {
+            this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
+            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
+            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
+
+            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
+
+            var originalContents = File.ReadAllText(modulePath);
+            try
+            {
+                //now we modify the module and force reload.
+                var newContent =
+@"class reloaded_class:
+    def __init__(self):
+        self.data = 'reloaded'
+
+    def get_data(self):
+        return self.data";
+                File.WriteAllText(modulePath, newContent);
+
+                (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Automatic;
+                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                
+                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
+                //after a second run - the old instance shoud have been disposed
+                //only the new one should remain.
+                Assert.AreEqual(1, DynamoCPythonHandle.HandleCountMap.First(x => x.ToString().Contains("reloaded_class")).Value);
+
             }
             finally
             {
