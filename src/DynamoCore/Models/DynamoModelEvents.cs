@@ -472,15 +472,18 @@ namespace Dynamo.Models
         /// </summary>
         public event Action<ReadyParams> DynamoReady;
         private bool dynamoReady;
-
-        internal static event Action<string> RequestPythonRestart;
-        internal void OnRequestPythonRestart(string pythonEngine)
+        /// <summary>
+        /// Event that is raised when Dynamo model requests a particular python engine
+        /// to reset. String parameter is engine name.
+        /// </summary>
+        internal static event Action<string> RequestPythonReset;
+        internal void OnRequestPythonReset(string pythonEngine)
         {
             //only reset if current workspace is a homeworkspace
-            //can't guarantee which workspace to 
+            //can't guarantee which workspace to mark dirty otherwise
             if (CurrentWorkspace is HomeWorkspaceModel hmwsm)
             {
-                RequestPythonRestart?.Invoke(pythonEngine);
+                RequestPythonReset?.Invoke(pythonEngine);
                 ResetEngine(true);
             }
 

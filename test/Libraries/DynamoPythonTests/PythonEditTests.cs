@@ -661,7 +661,7 @@ namespace Dynamo.Tests
             File.WriteAllText(tempPath, "value ='Hello World!'\n");
 
             //we have to shutdown python before this test to make sure we're starting in a clean state.
-            this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+            this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
             try
             {
                 var script = $@"import sys
@@ -681,7 +681,7 @@ OUT = {modName}.value";
                 File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
                 //user restarts manually, this will cause a dynamo and python engine reset
-                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
 
                 RunCurrentModel();
                 AssertPreviewValue(pythonNode.GUID.ToString(), "bye");
@@ -739,7 +739,7 @@ OUT = {modName}.value";
                 UpdatePythonNodeContent(pythonNode, script);
 
                 //user restarts manually, this will cause a dynamo and python reset
-                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
 
                 RunCurrentModel();
                 //this failure is currently expected.
@@ -777,7 +777,7 @@ OUT = {modName}.value";
         return self.data";
                 File.WriteAllText(modulePath, newContent);
 
-                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
                 RunCurrentModel();
                 AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
                 //after a second run - the old instance shoud have been disposed
@@ -794,7 +794,7 @@ OUT = {modName}.value";
         [Test]
         public void Cpython_reloaded_class_instances_AUTO()
         {
-            this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+            this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
             RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
             var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
             AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
@@ -815,7 +815,7 @@ OUT = {modName}.value";
                 File.WriteAllText(modulePath, newContent);
 
                 (ViewModel.CurrentSpace as HomeWorkspaceModel).RunSettings.RunType = RunType.Automatic;
-                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                this.ViewModel.Model.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
                 
                 AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
                 //after a second run - the old instance shoud have been disposed

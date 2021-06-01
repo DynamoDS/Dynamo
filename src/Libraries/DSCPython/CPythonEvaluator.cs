@@ -156,7 +156,7 @@ namespace DSCPython
 
         static CPythonEvaluator()
         {
-            Dynamo.Models.DynamoModel.RequestPythonRestart += RequestPythonRestartHandler;
+            Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonRestartHandler;
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {

@@ -2393,10 +2393,10 @@ Uninstall the following packages: {0}?</value>
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
-  <data name="RestartCPythonButtonText" xml:space="preserve">
-    <value>Restart CPython</value>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Reset CPython</value>
   </data>
-  <data name="RestartCPythonButtonToolTip" xml:space="preserve">
-    <value>Restart the CPython engine and reload python modules.</value>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>resets CPython environment by reloading modules.</value>
   </data>
 </root>

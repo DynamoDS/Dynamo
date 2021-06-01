@@ -5056,20 +5056,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restart CPython.
+        ///   Looks up a localized string similar to Reset CPython.
         /// </summary>
-        public static string RestartCPythonButtonText {
+        public static string ResetCPythonButtonText {
             get {
-                return ResourceManager.GetString("RestartCPythonButtonText", resourceCulture);
+                return ResourceManager.GetString("ResetCPythonButtonText", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Restart the CPython engine and reload python modules..
+        ///   Looks up a localized string similar to resets CPython environment by reloading modules..
         /// </summary>
-        public static string RestartCPythonButtonToolTip {
+        public static string ResetCPythonButtonToolTip {
             get {
-                return ResourceManager.GetString("RestartCPythonButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("ResetCPythonButtonToolTip", resourceCulture);
             }
         }
         

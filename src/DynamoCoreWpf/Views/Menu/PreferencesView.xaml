@@ -354,16 +354,16 @@
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
                                     </Grid>
-                                    <Button x:Name="RestartCPythonEngine"
+                                    <Button x:Name="ReloadCPython"
                                                 Style="{StaticResource FlatButtonStyle}" 
                                                 HorizontalAlignment="Left"                                             
                                                 Width="100"
                                                 Height="25"
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
-                                                Click="RestartCPythonEngine_Click"
-                                                Content="{x:Static p:Resources.RestartCPythonButtonText}"
-                                                ToolTip="{x:Static p:Resources.RestartCPythonButtonToolTip}">
+                                                Click="ReloadCPython_Click"
+                                                Content="{x:Static p:Resources.ResetCPythonButtonText}"
+                                                ToolTip="{x:Static p:Resources.ResetCPythonButtonToolTip}">
                                     </Button>
                                     
                                 </StackPanel>
