@@ -334,7 +334,7 @@
                                                             VerticalAlignment="Center"
                                                             IsChecked="{Binding Path=HideIronPythonAlertsIsChecked}"
                                                             Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Content="{x:Static p:Resources.HideIronPythonAlertsLabel}" 
+                                            <Label Content="{x:Static p:Resources.PreferencesViewIsIronPythonDialogDisabled}" 
                                                     Margin="10,0,0,0"
                                                     VerticalAlignment="Center"
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>

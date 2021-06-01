@@ -2505,15 +2505,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hide IronPython alerts.
-        /// </summary>
-        public static string HideIronPythonAlertsLabel {
-            get {
-                return ResourceManager.GetString("HideIronPythonAlertsLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Import Library.
         /// </summary>
         public static string ImportLibraryDialogTitle {
