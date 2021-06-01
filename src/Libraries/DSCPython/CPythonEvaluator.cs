@@ -179,10 +179,8 @@ namespace DSCPython
                     global?.Exec(@"import sys
 import importlib
 import importlib.util
-import pprint
 import os
 def getInfoFile(module):
-    ##pprint.pprint(module)
     if not hasattr(module, '__file__') or module.__file__ is None:
         return None
 

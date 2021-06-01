@@ -752,6 +752,37 @@ OUT = {modName}.value";
             }
         }
 
+        [Test]
+        public void Cpython_reloaded_class_instances()
+        {
+           
+            RunModel(@"core\python\cpython_reloaded_class_instances.dyn");
+            var leafPythonNode = "27af4862d5e7446babea7ff42f5bc80c";
+            AssertPreviewValue(leafPythonNode, new string[] { "initial", "initial" });
 
+            var modulePath = Path.Combine(TestDirectory, "core", "python", "module_reload", "reloaded_class.py");
+
+            var originalContents = File.ReadAllText(modulePath);
+            try
+            {
+                //now we modify the module and force reload.
+                var newContent =
+@"class reloaded_class:
+    def __init__(self):
+        self.data = 'reloaded'
+
+    def get_data(self):
+        return self.data";
+                File.WriteAllText(modulePath, newContent);
+
+                this.ViewModel.Model.OnRequestPythonRestart(nameof(PythonEngineVersion.CPython3));
+                RunCurrentModel();
+                AssertPreviewValue(leafPythonNode, new string[] { "reloaded", "reloaded" });
+            }
+            finally
+            {
+                File.WriteAllText(modulePath, originalContents);
+            }
+        }
     }
 }
