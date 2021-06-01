@@ -177,7 +177,7 @@
 
                                 <!--The first Grid Row will contain the Language label and combobox added in a StackPanel vertical-->
                                 <Grid Grid.Row="0" 
-                                  Margin="0,0,0,20">
+                                  Margin="4,0,0,20">
                                     <StackPanel Orientation="Vertical">
                                         <Label  Content="{x:Static p:Resources.PreferencesViewLanguageLabel}" 
                                             Margin="-3,0,10,0"
@@ -197,7 +197,7 @@
 
                                 <!--This Grid contains controls for selecting Run Settings options-->
                                 <Grid Grid.Row="1"
-                                  Margin="0,0,0,20">
+                                  Margin="4,0,0,20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -214,6 +214,7 @@
                                         </Grid.ColumnDefinitions>
                                         <RadioButton Grid.Column="0" 
                                                  MinWidth="80"
+                                                 Margin="2,0,0,0"
                                                  Style="{StaticResource RunSettingsRadioButtons}"
                                                  IsChecked="{Binding Path=RunSettingsIsChecked, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                                  Content="{x:Static p:Resources.Manual}"/>
@@ -225,9 +226,31 @@
                                     </Grid>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Font Size-->
+                                <!--This Grid contains controls for selecting Run Preview options-->
                                 <Grid Grid.Row="2"
-                                  Margin="0,0,0,20">
+                                  Margin="4,0,0,20">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
+                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                  VerticalAlignment="Center"
+                                                  Margin="2,0,0,0"
+                                                  Grid.Column="0" 
+                                                  IsEnabled="{Binding Path=RunPreviewEnabled}"
+                                                  IsChecked="{Binding Path=RunPreviewIsChecked}"
+                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Grid.Column="1"
+                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}" 
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    </Grid>
+                                </Grid>
+                                
+                                <!--This Grid contains controls for selecting Font Size-->
+                                <Grid Grid.Row="3"
+                                  Margin="4,0,0,20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -250,30 +273,9 @@
                                     </ComboBox>
                                 </Grid>
 
-                                <!--This Grid contains controls for selecting Run Preview options-->
-                                <Grid Grid.Row="3"
-                                  Margin="0,0,0,20">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        <ToggleButton Width="{StaticResource ToggleButtonWidth}"
-                                                  Height="{StaticResource ToggleButtonHeight}"
-                                                  VerticalAlignment="Center"
-                                                  Grid.Column="0" 
-                                                  IsEnabled="{Binding Path=RunPreviewEnabled}"
-                                                  IsChecked="{Binding Path=RunPreviewIsChecked}"
-                                                  Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Grid.Column="1"
-                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}" 
-                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                    </Grid>
-                                </Grid>
-
                                 <!--This Grid contains controls for selecting Number Format options-->
                                 <Grid Grid.Row="4"
-                                  Margin="0,0,0,20">
+                                  Margin="4,0,0,20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
@@ -296,9 +298,9 @@
 
                                 <!--Geometry Scaling Expander-->
                                 <Grid Grid.Row="5"
-                                  Margin="0,0,0,20">
+                                  Margin="-10,0,0,20">
                                     <Expander x:Name="Scale"
-                                      Grid.Row="1"                   
+                                      Grid.Row="1" 
                                       Style="{StaticResource MenuExpanderStyle}"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Scale}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGeoScaling}">
@@ -306,12 +308,11 @@
                                             DataContext="{Binding OptionsGeometryScale}"
                                             Width="300"
                                             HorizontalAlignment="Left"
-                                            Margin="8,0,0,0"
                                             VerticalAlignment="Top">
                                             <RadioButton x:Name="RadioSmall"
                                                 GroupName="GeometryScaling"
                                                 MinWidth="80"
-                                                Margin="0,10,0,0"
+                                                Margin="3,10,0,0"
                                                 Checked="Geometry_Scaling_Checked"
                                                 IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Small}}"
                                                 Style="{StaticResource GeometryScaleRadioButtons}"
@@ -322,7 +323,7 @@
                                                 Visibility="{Binding IsChecked, ElementName=RadioSmall, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                             <RadioButton x:Name="RadioMedium"
                                                  GroupName="GeometryScaling"
-                                                 Margin="0,10,0,0"
+                                                 Margin="3,10,0,0"
                                                  MinWidth="80"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Medium}}"
                                                  Checked="Geometry_Scaling_Checked"
@@ -335,7 +336,7 @@
                                             <RadioButton x:Name="RadioLarge" 
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
-                                                 Margin="0,10,0,0"
+                                                 Margin="3,10,0,0"
                                                  Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.Large}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
@@ -347,7 +348,7 @@
                                             <RadioButton x:Name="RadioExtraLarge"
                                                  GroupName="GeometryScaling"
                                                  MinWidth="80"
-                                                 Margin="0,10,0,0"
+                                                 Margin="3,10,0,0"
                                                  Checked="Geometry_Scaling_Checked"
                                                  IsChecked="{Binding EnumProperty, Converter={StaticResource RadioButtonCheckedConverter}, ConverterParameter={x:Static viewModels:GeometryScaleSize.ExtraLarge}}"
                                                  Style="{StaticResource GeometryScaleRadioButtons}"
