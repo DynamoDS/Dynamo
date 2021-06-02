@@ -83,8 +83,7 @@ namespace Dynamo.Extensions
         public event Action<Logging.NotificationMessage> NotificationRecieved;
         private void OnNotificationRecieved(Logging.NotificationMessage notification)
         {
-            if (NotificationRecieved != null)
-                NotificationRecieved(notification);
+            NotificationRecieved?.Invoke(notification);
         }
 
         /// <summary>
@@ -93,8 +92,7 @@ namespace Dynamo.Extensions
         public event Action<IWorkspaceModel> CurrentWorkspaceChanged;
         private void OnCurrentWorkspaceModelChanged(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceChanged != null)
-                CurrentWorkspaceChanged(ws);
+            CurrentWorkspaceChanged?.Invoke(ws);
         }
 
         /// <summary>
@@ -103,8 +101,7 @@ namespace Dynamo.Extensions
         public event Action<IWorkspaceModel> CurrentWorkspaceCleared;
         private void OnCurrentWorkspaceModelCleared(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceCleared != null)
-                CurrentWorkspaceCleared(ws);
+            CurrentWorkspaceCleared?.Invoke(ws);
         }
 
         /// <summary>
@@ -113,8 +110,7 @@ namespace Dynamo.Extensions
         public event Action<IWorkspaceModel> CurrentWorkspaceClearingStarted;
         private void OnCurrentWorkspaceModelClearingStarted(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceClearingStarted != null)
-                CurrentWorkspaceClearingStarted(ws);
+            CurrentWorkspaceClearingStarted?.Invoke(ws);
         }
 
         /// <summary>
@@ -123,8 +119,7 @@ namespace Dynamo.Extensions
         public event Action<IWorkspaceModel> CurrentWorkspaceOpened;
         private void OnCurrentWorkspaceModelOpened(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceOpened != null)
-                CurrentWorkspaceOpened(ws);
+            CurrentWorkspaceOpened?.Invoke(ws);
         }
 
         /// <summary>
@@ -133,13 +128,12 @@ namespace Dynamo.Extensions
         public event Action<IWorkspaceModel> CurrentWorkspaceRemoveStarted;
         private void OnCurrentWorkspaceRemoveStarted(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceRemoveStarted != null)
-                CurrentWorkspaceRemoveStarted(ws);
+            CurrentWorkspaceRemoveStarted?.Invoke(ws);
         }
 
         private void OnDynamoModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentWorkspace")
+            if (e.PropertyName == nameof(DynamoModel.CurrentWorkspace))
                 OnCurrentWorkspaceModelChanged((sender as DynamoModel).CurrentWorkspace);
         }
 

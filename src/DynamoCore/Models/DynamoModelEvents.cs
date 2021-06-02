@@ -117,9 +117,7 @@ namespace Dynamo.Models
         /// <param name="workspace">Workspace about to be cleared</param>
         public virtual void OnWorkspaceClearingStarted(WorkspaceModel workspace)
         {
-            if (WorkspaceClearingStarted != null)
-                WorkspaceClearingStarted(workspace);
-
+            WorkspaceClearingStarted?.Invoke(workspace);
             WorkspaceEvents.OnWorkspaceClearing();
         }
 
