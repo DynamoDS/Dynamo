@@ -26,6 +26,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Linting;
 using Dynamo.Logging;
 using Dynamo.Migration;
 using Dynamo.Properties;
@@ -156,7 +157,8 @@ namespace Dynamo.Models
             if (WorkspaceSaving != null)
             {
                 WorkspaceSaving(workspace, saveContext);
-                HandleStorageExtensionsOnWorkspaceSaving(workspace, saveContext);
+                if (workspace is HomeWorkspaceModel hws) 
+                    HandleStorageExtensionsOnWorkspaceSaving(hws, saveContext);
             }
         }
 
@@ -194,7 +196,8 @@ namespace Dynamo.Models
             if(WorkspaceOpened != null)
             {
                 WorkspaceOpened.Invoke(workspace);
-                HandleStorageExtensionsOnWorkspaceOpened(workspace);
+                if (workspace is HomeWorkspaceModel hws) 
+                    HandleStorageExtensionsOnWorkspaceOpened(hws);
             }
         }
 
@@ -320,6 +323,11 @@ namespace Dynamo.Models
         ///     Manages all extensions for Dynamo
         /// </summary>
         public IExtensionManager ExtensionManager { get { return extensionManager; } }
+
+        /// <summary>
+        ///     Manages the active linter
+        /// </summary>
+        public LinterManager LinterManager { get; }
 
         private readonly ExtensionManager extensionManager;
 
@@ -584,6 +592,9 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        // Token representing the standard library directory
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
+
         /// <summary>
         /// Default constructor for DynamoModel
         /// </summary>
@@ -722,7 +733,12 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { StandardLibraryToken, pathManager.UserDataDirectory };
+
+            if (!PreferenceSettings.CustomPackageFolders.Contains(StandardLibraryToken))
+            {
+                PreferenceSettings.CustomPackageFolders.Insert(0, StandardLibraryToken);
+            }
 
             // Make sure that the default package folder is added in the list if custom packages folder.
             var userDataFolder = pathManager.GetUserDataFolder(); // Get the default user data path
@@ -791,6 +807,8 @@ namespace Dynamo.Models
             extensionManager.MessageLogged += LogMessage;
             var extensions = config.Extensions ?? LoadExtensions();
 
+            LinterManager = new LinterManager(this.ExtensionManager);
+            
             // when dynamo is ready, alert the loaded extensions
             DynamoReady += (readyParams) =>
             {
@@ -859,6 +877,11 @@ namespace Dynamo.Models
 
                     try
                     {
+                        if (ext is LinterExtensionBase linter)
+                        {
+                            linter.InitializeBase(this.LinterManager);
+                        }
+
                         ext.Startup(startupParams);
                         // if we are starting extension (A) which is a source of other extensions (like packageManager)
                         // then we can start the extension(s) (B) that it requested be loaded.
@@ -972,7 +995,7 @@ namespace Dynamo.Models
         }
 
 
-        private void HandleStorageExtensionsOnWorkspaceOpened(WorkspaceModel workspace)
+        private void HandleStorageExtensionsOnWorkspaceOpened(HomeWorkspaceModel workspace)
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
@@ -980,7 +1003,7 @@ namespace Dynamo.Models
             }
         }
 
-        private void HandleStorageExtensionsOnWorkspaceSaving(WorkspaceModel workspace, SaveContext saveContext)
+        private void HandleStorageExtensionsOnWorkspaceSaving(HomeWorkspaceModel workspace, SaveContext saveContext)
         {
             foreach (var extension in extensionManager.StorageAccessExtensions)
             {
@@ -988,7 +1011,7 @@ namespace Dynamo.Models
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(WorkspaceModel workspace, IExtensionStorageAccess extension, ILogger logger)
+        internal static void RaiseIExtensionStorageAccessWorkspaceOpened(HomeWorkspaceModel workspace, IExtensionStorageAccess extension, ILogger logger)
         {
             workspace.TryGetMatchingWorkspaceData(extension.UniqueId, out Dictionary<string, string> data);
             var extensionDataCopy = new Dictionary<string, string>(data);
@@ -1004,7 +1027,7 @@ namespace Dynamo.Models
             }
         }
 
-        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(WorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext, ILogger logger)
+        internal static void RaiseIExtensionStorageAccessWorkspaceSaving(HomeWorkspaceModel workspace, IExtensionStorageAccess extension, SaveContext saveContext, ILogger logger)
         {
             var assemblyName = Assembly.GetAssembly(extension.GetType()).GetName();
             var version = $"{assemblyName.Version.Major}.{assemblyName.Version.Minor}";
@@ -1179,6 +1202,8 @@ namespace Dynamo.Models
 
             ExtensionManager.Dispose();
             extensionManager.MessageLogged -= LogMessage;
+
+            LinterManager.Dispose();
 
             LibraryServices.Dispose();
             LibraryServices.LibraryManagementCore.Cleanup();
@@ -1849,7 +1874,8 @@ namespace Dynamo.Models
                 NodeFactory,
                 IsTestMode,
                 false,
-                CustomNodeManager);
+                CustomNodeManager,
+                this.LinterManager);
 
             workspace.FileName = filePath;
             workspace.ScaleFactor = dynamoPreferences.ScaleFactor;
@@ -1989,7 +2015,8 @@ namespace Dynamo.Models
                 nodeGraph.ElementResolver,
                 workspaceInfo,
                 DebugSettings.VerboseLogging,
-                IsTestMode
+                IsTestMode,
+                LinterManager
                );
 
             RegisterHomeWorkspace(newWorkspace);
@@ -2211,8 +2238,10 @@ namespace Dynamo.Models
                 Scheduler,
                 NodeFactory,
                 DebugSettings.VerboseLogging,
-                IsTestMode, string.Empty);
+                IsTestMode, LinterManager, string.Empty);
 
+            defaultWorkspace.RunSettings.RunType = PreferenceSettings.DefaultRunType;
+            
             RegisterHomeWorkspace(defaultWorkspace);
             AddWorkspace(defaultWorkspace);
             CurrentWorkspace = defaultWorkspace;
@@ -2581,6 +2610,11 @@ namespace Dynamo.Models
             OnWorkspaceClearing();
 
             CurrentWorkspace.Clear();
+            if (CurrentWorkspace is HomeWorkspaceModel)
+            {
+                //Sets the home workspace run type based on the preferences settings value
+                ((HomeWorkspaceModel)CurrentWorkspace).RunSettings.RunType = PreferenceSettings.DefaultRunType;
+            }
 
             //don't save the file path
             CurrentWorkspace.FileName = "";

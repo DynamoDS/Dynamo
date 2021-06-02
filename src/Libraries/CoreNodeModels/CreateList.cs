@@ -12,6 +12,7 @@ namespace CoreNodeModels
     [NodeDescription("ListCreateDescription", typeof(Resources))]
     [NodeSearchTags("ListCreateSearchTags", typeof(Resources))]
     [NodeCategory(BuiltinNodeCategories.CORE_LISTS_CREATE)]
+    [OutPortTypes("List")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.CreateList", "List.Create")]
     public class CreateList : VariableInputNode

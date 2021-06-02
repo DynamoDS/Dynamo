@@ -697,7 +697,7 @@ namespace DSOffice
             var ws = wb.Worksheets.Cast<Worksheet>().FirstOrDefault(sheet => sheet.Name == sheetName);
 
             if (ws == null)
-                throw new ArgumentException("No worksheet matches the given string.", "sheetName");
+                throw new ArgumentException(string.Format(Properties.Resources.WorksheetNotFound, sheetName));
 
             return new WorkSheet(ws, this);
         }
@@ -868,6 +868,44 @@ namespace DSOffice
         public static object[][] ExportToExcel(string filePath, string sheetName, int startRow, int startColumn, object[][] data, bool overWrite = false, bool writeAsString = false)
         {
             return Excel.WriteData(filePath, sheetName, startRow, startColumn, data, overWrite, writeAsString);
+        }
+
+        /// <summary>
+        /// Read data from a Microsoft Excel spreadsheet by using the Open XML standard.
+        /// Data is read by row and returned in a series of lists by row.
+        /// Rows and columns are zero-indexed; for example, the value in cell A1 will
+        /// appear in the data list at [0,0].
+        /// </summary>
+        /// <param name="filePath">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
+        /// <param name="startRow">Start row for reading data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startColumn">Start column for reading data. Enter 0 for Column A, 1 for Column B, etc.</param>
+        /// <param name="readAsString">Toggle to read cells as strings</param>
+        /// <returns name="data">Rows of data from the Excel worksheet</returns>
+        /// <search>office,excel,spreadsheet</search>
+        public static object[][] OpenXMLImportExcel(string filePath, string sheetName, int startRow = 0, int startColumn = 0, bool readAsString = false)
+        {
+            return OpenXmlHelper.Read(filePath, sheetName, startRow, startColumn, readAsString);
+        }
+
+        /// <summary>
+        /// Write data to a Microsoft Excel spreadsheet by using the Open XML standard.
+        /// Data is written by row with sublists to be written in successive rows.
+        /// Rows and columns are zero-indexed; for example, the value in the data list at [0,0] will
+        /// be written to cell A1. Null values and empty lists are written as empty cells.
+        /// </summary>
+        /// <param name="filePath">File representing the Excel workbook</param>
+        /// <param name="sheetName">Name of the worksheet containing data</param>
+        /// <param name="startRow">Start row for writing data. Enter 0 for Row 1, 1 for Row 2, etc.</param>
+        /// <param name="startColumn">Start column for writing data. Enter 0 for Column A, 1 for Column B, etc.</param>
+        /// <param name="data">Data to write to the spreadsheet</param>
+        /// <param name="overWrite"> Toggle to clear spreadsheet before writing</param>
+        /// <param name="writeAsString">Toggle to switch between writing cell values as strings</param>
+        /// <search>office,excel,spreadsheet</search>
+        /// <returns>Boolean indicating if writing to spreadsheet is successful.</returns>
+        public static bool OpenXMLExportExcel(string filePath, string sheetName, object[][] data, int startRow = 0, int startColumn = 0, bool overWrite = false, bool writeAsString = false)
+        {
+            return OpenXmlHelper.Write(filePath, sheetName, data, startRow, startColumn, overWrite, writeAsString);
         }
     }
 }

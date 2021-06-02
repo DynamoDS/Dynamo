@@ -36,3 +36,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]
+[assembly: InternalsVisibleTo("LintingViewExtension")]

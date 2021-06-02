@@ -227,17 +227,23 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension, dynamoViewModel.Model.Logger);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext, dynamoViewModel.Model.Logger);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
         }
 
@@ -937,7 +943,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
             dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
-            dynamoViewModel.RequestScaleFactorDialog += DynamoViewModelChangeScaleFactor;
 
             #endregion
 
@@ -1172,25 +1177,6 @@ namespace Dynamo.Controls
             var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
-        }
-
-        private void DynamoViewModelChangeScaleFactor(object sender, EventArgs e)
-        {
-            var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
-            if (view.ShowDialog() == true)
-            {
-                if (dynamoViewModel.ScaleFactorLog != view.ScaleValue)
-                {
-                    dynamoViewModel.ScaleFactorLog = view.ScaleValue;
-                    dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                        view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
-
-                    var allNodes = dynamoViewModel.HomeSpace.Nodes;
-                    dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-                }
-            }
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -1627,7 +1613,6 @@ namespace Dynamo.Controls
             //COMMANDS
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
-            dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
 
@@ -1849,7 +1834,7 @@ namespace Dynamo.Controls
 
         private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
         {
-            var preferencesWindow = new PreferencesWindow();
+            var preferencesWindow = new PreferencesView(dynamoViewModel);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             preferencesWindow.ShowDialog();
         }

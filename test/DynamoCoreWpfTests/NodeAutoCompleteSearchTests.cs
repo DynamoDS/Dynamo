@@ -93,6 +93,29 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeSuggestions_CanAutoCompleteOnCustomNodes()
+        {
+            Open(@"UI\builtin_inputport_suggestion.dyn");
+
+            // Pick the % node
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("05d82f5627314cc9bf802c5d6d3ed907").ToString());
+
+            var inPorts = nodeView.ViewModel.InPorts;
+            Assert.AreEqual(2, inPorts.Count());
+
+            var port = inPorts[1].PortModel;
+            var type = port.GetInputPortType();
+            Assert.AreEqual("DSCore.Color", type);
+
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = inPorts[1];
+
+            // The initial list will fill the FilteredResults with a few options - all basic input types
+            searchViewModel.PopulateAutoCompleteCandidates();
+            Assert.AreEqual(8, searchViewModel.FilteredResults.Count());
+        }
+
+        [Test]
         public void NodeSuggestions_InputPortZeroTouchNode_AreCorrect()
         {
             Open(@"UI\ffitarget_inputport_suggestion.dyn");
@@ -131,9 +154,6 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
 
             // Hide Node AutoCompleteSearchBar
-            // Note the event handler needs to be called twice. The first one is ignore because it is
-            // assumed to come from releasing the left mouse button when popping up AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
             Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
         }
@@ -208,6 +228,29 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = inPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
             Assert.AreEqual(0, suggestions.Count());
+        }
+
+        [Test]
+        public void NodeSuggestions_OutputPortBuiltInNode_AreCorrect()
+        {
+            Open(@"UI\builtin_outputport_suggestion.dyn");
+
+            // Get the node view for a specific node in the graph
+            NodeView nodeView = NodeViewWithGuid(Guid.Parse("a3412b9b1de54205a1fe6904697ffd5f").ToString());
+
+            // Get the output port type for the node. 
+            var outPorts = nodeView.ViewModel.OutPorts;
+            Assert.AreEqual(1, outPorts.Count());
+
+            var port = outPorts[0].PortModel;
+            var type = port.GetOutPortType();
+            Assert.IsTrue(type.Contains("Line"));
+
+            // Trigger node autocomplete on the output port and verify the results. 
+            var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
+            searchViewModel.PortViewModel = outPorts[0];
+            var suggestions = searchViewModel.GetMatchingSearchElements();
+            Assert.AreEqual(29, suggestions.Count());
         }
 
         [Test]
@@ -286,13 +329,15 @@ namespace DynamoCoreWpfTests
             searchViewModel.PortViewModel = inPorts[0];
 
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(6, suggestions.Count());
+            Assert.AreEqual(8, suggestions.Count());
 
             var suggestedNodes = suggestions.Select(s => s.FullName);
             var expectedNodes = new[] { "DSCoreNodes.DSCore.Color.Add",
                 "DSCoreNodes.DSCore.Color.ByARGB",
                 "DSCoreNodes.DSCore.Color.Divide",
                 "DSCoreNodes.DSCore.Color.Multiply",
+                "Core.Color.Color Palette",
+                "Core.Color.Color Range",
                 "DSCoreNodes.DSCore.ColorRange.GetColorAtParameter",
                 "DSCoreNodes.DSCore.IO.Image.Pixels"};
 
@@ -349,7 +394,7 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(2 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]

@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\LintingViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.LintingViewExtension.LintingViewExtension</TypeName>
+</ViewExtensionDefinition>

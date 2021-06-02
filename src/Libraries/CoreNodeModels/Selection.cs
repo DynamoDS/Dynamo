@@ -32,7 +32,23 @@ namespace CoreNodeModels
         
         #region public properties
 
-        public IEnumerable<TSelection> Selection { get { return selection; } } 
+        public IEnumerable<TSelection> Selection { get { return selection; } }
+
+
+        public override NodeInputData InputData
+        {
+            get
+            {
+                return new NodeInputData()
+                {
+                    Id = this.GUID,
+                    Name = this.Name,
+                    Type = NodeInputTypes.hostSelection,
+                    Description = this.Description,
+                    Value = string.Join(",", this.SelectionIdentifier.ToArray())
+                };  
+            }
+        }
 
         /// <summary>
         /// A list of selected model objects

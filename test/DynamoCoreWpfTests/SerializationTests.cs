@@ -336,6 +336,36 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void NodeUserDescriptionTest()
+        {
+            // Arrange
+            var userDescription = "Some description set by user...";
+            var testFile = Path.Combine(TestDirectory, @"core\serialization\NodeUserDescriptionDeserilizationTest.dyn");         
+
+            OpenModel(testFile);
+
+            // Act
+            // Stage 1: Serialize the workspace view.
+            var jobject1 = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionBefore = jobject1["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Stage 2: set UserDescription
+            var nodeViewModel = this.ViewModel.CurrentSpaceViewModel.Nodes.First();
+            nodeViewModel.UserDescription = userDescription;
+
+            // Stage 3: Serialize the workspace view again to make sure UserDescription is now serialized.
+            var jobject2 = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var userDescriptionAfter = jobject2["NodeViews"].FirstOrDefault()["UserDescription"];
+
+            // Assert
+            Assert.That(nodeViewModel.UserDescription == userDescription);
+            Assert.That(nodeViewModel.UserDescription == this.ViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault().UserDescription);
+            Assert.That(userDescriptionBefore is null);
+            Assert.AreNotEqual(userDescriptionBefore, userDescriptionAfter);
+            Assert.IsTrue(userDescriptionAfter.ToString() == userDescription);
+        }
+
+        [Test]
         public void TestDummyNodeInternals00()
         {
             var folder = Path.Combine(TestDirectory, @"core\dummy_node\");
@@ -433,7 +463,9 @@ namespace DynamoCoreWpfTests
 
             // Ignoring the ExtensionWorkspaceData property as this is added after the re-save,
             // this will cause a difference between jobject1 and jobject2 if it is not ignored.
-            jobject2.Remove("ExtensionWorkspaceData");
+            // Same thing goes for the Linting property...
+            jobject2.Remove(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
+            jobject2.Remove(LinterManagerConverter.LINTER_START_OBJECT_NAME);
 
             var jsonText2 = jobject2.ToString();
 

@@ -1840,18 +1840,59 @@ namespace Dynamo.Controls
         }
     }
 
-    public class NumberFormatToBoolConverter : IValueConverter
+    public class BinaryRadioButtonCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(bool.Parse(parameter.ToString()));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            return value.Equals(true) ? bool.Parse(parameter.ToString()) : Binding.DoNothing;
+        }
+    }
+
+    public class NumberFormatConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter.ToString() == SIUnit.NumberFormat)
-                return true;
-            return false;
+            switch (value)
+            {
+                case "f0":
+                    return Resources.DynamoViewSettingMenuNumber0;
+                case "f1":
+                    return Resources.DynamoViewSettingMenuNumber00;
+                case "f2":
+                    return Resources.DynamoViewSettingMenuNumber000;
+                case "f3":
+                    return Resources.DynamoViewSettingMenuNumber0000;
+                case "f4":
+                    return Resources.DynamoViewSettingMenuNumber00000;
+                default:
+                    return null;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return null;
+            switch (value)
+            {
+                case "0":
+                    return "f0";
+                case "0.0":
+                    return "f1";
+                case "0.00":
+                    return "f2";
+                case "0.000":
+                    return "f3";
+                case "0.0000":
+                    return "f4";
+                default:
+                    return null;
+            }
         }
     }
 
@@ -2953,6 +2994,109 @@ namespace Dynamo.Controls
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// It converts a Brush type to a string representation of the hex color, removing the initial ## and the alpha values (last 2 chars in the string)
+    /// </summary>
+    public class BrushColorToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is Brush)
+            {
+                var strColor = value.ToString().Replace("#", "");
+                return strColor.Substring(2);                
+            }
+            return "000000";
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Receives an string containing a hexadecimal color value and returs a Brush color corresponding to the string value
+    /// </summary>
+    public class StringToBrushColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string)
+            {
+                var strColor = "#" + value;
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom(strColor));
+            }
+            return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFFFFF"));
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Receive a enum value corresponding to the radio button option and returs true if is the same otherwise does nothing
+    /// This is used when we have multiple radio buttons and we want just one enabled at one time
+    /// </summary>
+    public class RadioButtonCheckedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(parameter);
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.Equals(true) ? parameter : Binding.DoNothing;
+        }
+    }
+
+    /// <summary>
+    /// This converter was designed for Expanders, so it will store/fetch the current Expander state
+    /// </summary>
+    public class ExpandersBindingConverter : IValueConverter
+    {
+        /// <summary>
+        /// Fetch the current expansion state for binding it to a Expander.IsExpanded property
+        /// </summary>
+        /// <param name="value">string representing the current Expander expanded name</param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter">seleted expander name</param>
+        /// <param name="culture"></param>
+        /// <returns>bool indicating if the Expander should be expanded or not</returns>
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var expanderValue = value as string;
+
+            if (expanderValue != null &&
+                !string.IsNullOrEmpty(expanderValue))
+            {
+                var expanderName = parameter as string;
+                return expanderName.Equals(expanderValue);
+            }
+            return false;
+        }
+        /// <summary>
+        /// Store the current expansion state of the Expander selected
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="targetType"></param>
+        /// <param name="parameter">seleted expander name</param>
+        /// <param name="culture"></param>
+        /// <returns>a string that represents the Expander expanded name</returns>
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool expanderExpanded = (bool)value;
+            string expanderName = string.Empty; 
+            if (expanderExpanded == true)
+            {
+                expanderName = parameter as string;
+                var expanderValue = expanderName;
+                return expanderValue;
+            }
+            return null;
         }
     }
 

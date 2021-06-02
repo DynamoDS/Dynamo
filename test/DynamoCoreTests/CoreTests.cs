@@ -423,6 +423,27 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void UpdateModelValue_MissingNode_ThrowsException()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(addNode);
+
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, addNode.GUID, "Code", "");
+            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateModelValue_EmptyList_ThrowsException()
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanCopyAndPasteAndUndoInputState()
         {
             var numberNode = new DoubleInput();
@@ -697,6 +718,23 @@ namespace Dynamo.Tests
             Assert.AreEqual(oldX, sumNode.X);
 
             Assert.IsFalse(sumNode.IsModified);
+        }
+
+        /// <summary>
+        /// This test is added to test if the HasUnsavedChanges can be set 
+        /// correctly after node removal using an edge case
+        /// </summary>
+        [Test]
+        public void TestHasUnsavedChangesOnNodeRemovalEdgeCase()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\logic\comparison\testToleranceEquals_defaultTolerance.dyn");
+            OpenModel(openPath);
+            // Default state after graph open
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            CurrentDynamoModel.CurrentWorkspace.RecordAndDeleteModels(
+                CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x=>x.GUID.Equals(new Guid("c2f69bf434be47fa8f0a4a0ceca5910b"))).ToList<ModelBase>());
+            // Assert HasUnsavedChanges is true after a downstream node removal
+            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
         [Test]

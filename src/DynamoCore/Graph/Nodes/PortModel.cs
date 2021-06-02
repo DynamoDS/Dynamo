@@ -9,6 +9,7 @@ using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -403,8 +404,7 @@ namespace Dynamo.Graph.Nodes
         {
             if (PortType == PortType.Output) return null;
 
-            var ztNode = Owner as DSFunction;
-            if (ztNode != null)
+            if (Owner is DSFunction ztNode)
             {
                 var fd = ztNode.Controller.Definition;
                 string type;
@@ -429,14 +429,68 @@ namespace Dynamo.Graph.Nodes
                 }
                 return type;
             }
+          
+            if (Owner is CustomNodes.Function cusNode)
+            {
+                var cd = cusNode.Controller.Definition;
+                var param = cd.Parameters.ElementAt(Index);
+                string type = param.Type.ToString();
+                
+                return type;
+            }
 
-            var nmNode = Owner as NodeModel;
-            if (nmNode != null)
+            if (Owner is NodeModel nmNode)
             {
                 var classType = nmNode.GetType();
                 var inPortAttribute = classType.GetCustomAttributes().OfType<InPortTypesAttribute>().FirstOrDefault();
 
-                return inPortAttribute?.PortTypes.ElementAt(Index);
+                try
+                {
+                    return inPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch (Exception e)
+                {
+                    Log(e.Message);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the string representation of the fully qualified typename
+        /// where possible for the port if it's an output port. This method currently
+        /// returns a valid type for only Zero Touch, Builtin and NodeModel nodes,
+        /// and returns null otherwise. The string representation of the type also
+        /// contains the rank information of the type, e.g. Point[], or var[]..[]. 
+        /// </summary>
+        /// <returns>output port type</returns>
+        internal string GetOutPortType()
+        {
+            if (PortType == PortType.Input) return null;
+
+            if (Owner is DSFunction ztNode)
+            {
+                var fd = ztNode.Controller.Definition;
+
+                string type = fd.ReturnType.ToString();
+              
+                return type;
+            }
+
+            if (Owner is NodeModel nmNode)
+            {
+                var classType = nmNode.GetType();
+
+                var outPortAttribute = classType.GetCustomAttributes().OfType<OutPortTypesAttribute>().FirstOrDefault();
+
+                try
+                {
+                    return outPortAttribute?.PortTypes.ElementAt(Index);
+                }
+                catch(Exception e)
+                {
+                   Log(e.Message);
+                }
             }
             return null;
         }

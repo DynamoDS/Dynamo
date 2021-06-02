@@ -122,6 +122,10 @@ http://www.nunit.org/index.php?p=license&r=2.6.2
 http://www.google.com/fonts/specimen/Open+Sans
 http://www.apache.org/licenses/LICENSE-2.0.html
 
+### Open XML SDK
+https://github.com/OfficeDev/Open-XML-SDK
+https://github.com/OfficeDev/Open-XML-SDK/blob/main/LICENSE
+
 ### Prism
 http://msdn.microsoft.com/en-us/library/gg406140.aspx
 http://msdn.microsoft.com/en-us/library/gg405489(PandP.40).aspx

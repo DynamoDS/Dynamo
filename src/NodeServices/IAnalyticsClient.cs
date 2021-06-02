@@ -114,7 +114,7 @@ namespace Dynamo.Logging
         Delete,
 
         /// <summary>
-        /// Move Event, such as Node move
+        /// Move Event, such as Node move, dialog move
         /// </summary>
         Move,
 

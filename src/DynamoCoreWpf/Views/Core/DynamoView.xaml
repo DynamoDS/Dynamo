@@ -1,21 +1,21 @@
 <Window x:Class="Dynamo.Controls.DynamoView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:views="clr-namespace:Dynamo.Views"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
         xmlns:controls="clr-namespace:Dynamo.Controls"
+        xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
+        xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:uictrls="clr-namespace:Dynamo.UI.Controls"
         xmlns:service="clr-namespace:Dynamo.Services"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+        xmlns:views="clr-namespace:Dynamo.Views"
+        xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
+        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         d:DataContext="{d:DesignInstance viewModels:DynamoViewModel, IsDesignTimeCreatable=False}"
         mc:Ignorable="d"
-        xmlns:ui="clr-namespace:Dynamo.UI"
-        xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-        xmlns:controls1="clr-namespace:Dynamo.Wpf.Controls"
-        xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
-        xmlns:workspaces="clr-namespace:Dynamo.Graph.Workspaces;assembly=DynamoCore"
         x:Name="_this"
         Height="768"
         Width="1024"
@@ -297,12 +297,19 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuAbout}"
                                   Command="{Binding ShowAboutWindowCommand}"
                                   Focusable="False" />
+                        <MenuItem Header="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialog}"
+                                  Name="ToggleIsAnalyticsReportingApprovedCommand"
+                                  Command="{Binding Path=ToggleIsAnalyticsReportingApprovedCommand, Source={x:Static service:UsageReportingManager.Instance} }"
+                                  CommandParameter="{Binding  RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
+                                  ToolTip="{x:Static p:Resources.DynamoViewSettingMenuShowDataReportingDialogTooltip}"
+                                  Visibility="{Binding HideReportOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+                                  Focusable="False"/>
+                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
                                   Click="OnPreferencesWindowClick"
                                   Visibility="Collapsed"
                                   Name="preferencesOption"/>
-                        <Separator />
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
                                   Command="{Binding ExitCommand}"
                                   Name="exit"
@@ -647,10 +654,17 @@
 
                     <!--The menu will be enabled when at least one MenuItem is added-->
                     <MenuItem Header="{x:Static p:Resources.DynamoViewExtensionsMenu}"
+                              Style="{StaticResource ExtensionsStyle}"
                               Name="ExtensionsMenu"
                               Focusable="False"
-                              IsEnabled="False"/>
-
+                              IsEnabled="True">
+                        <MenuItem.Icon>
+                            <Image Source="/DynamoCoreWpf;component/UI/Images/pin.png"
+                                   Width="14"
+                                   Height="14"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+					
                     <MenuItem Header="{x:Static p:Resources.DynamoViewDebugMenu}"
                               Focusable="False"
                               Visibility="{Binding IsDebugBuild, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -697,7 +711,11 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
                                   IsCheckable="False" />
-               </MenuItem>
+                        <MenuItem Focusable="False"
+                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
+                                  Command="{Binding ManagePackagePathsCommand}"
+                                  Name="managePackagePaths" />
+                    </MenuItem>
                 </Menu>
 
                 <!--Titlebar buttons-->
