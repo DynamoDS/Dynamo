@@ -24,7 +24,7 @@ namespace Dynamo.Extensions
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
             dynamoModel.WorkspaceOpened += OnCurrentWorkspaceModelOpened;
-            dynamoModel.WorkspaceClearing += OnCurrentWorkspaceModelClearing;
+            dynamoModel.WorkspaceClearingStarted += OnCurrentWorkspaceModelClearingStarted;
             dynamoModel.WorkspaceCleared += OnCurrentWorkspaceModelCleared;
             dynamoModel.WorkspaceRemoveStarted += OnCurrentWorkspaceRemoveStarted;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
@@ -110,11 +110,11 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Occurs when current workspace is clearing
         /// </summary>
-        public event Action<IWorkspaceModel> CurrentWorkspaceClearing;
-        private void OnCurrentWorkspaceModelClearing(IWorkspaceModel ws)
+        public event Action<IWorkspaceModel> CurrentWorkspaceClearingStarted;
+        private void OnCurrentWorkspaceModelClearingStarted(IWorkspaceModel ws)
         {
-            if (CurrentWorkspaceClearing != null)
-                CurrentWorkspaceClearing(ws);
+            if (CurrentWorkspaceClearingStarted != null)
+                CurrentWorkspaceClearingStarted(ws);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Dynamo.Extensions
         {
             dynamoModel.PropertyChanged -= OnDynamoModelPropertyChanged;
             dynamoModel.WorkspaceOpened -= OnCurrentWorkspaceModelOpened;
-            dynamoModel.WorkspaceClearing -= OnCurrentWorkspaceModelClearing;
+            dynamoModel.WorkspaceClearingStarted -= OnCurrentWorkspaceModelClearingStarted;
             dynamoModel.WorkspaceCleared -= OnCurrentWorkspaceModelCleared;
             dynamoModel.WorkspaceRemoveStarted -= OnCurrentWorkspaceRemoveStarted;
             dynamoModel.Logger.NotificationLogged -= OnNotificationRecieved;
