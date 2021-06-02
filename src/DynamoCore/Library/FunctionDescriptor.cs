@@ -315,7 +315,7 @@ namespace Dynamo.Engine
         /// <summary>
         ///     The category of this function.
         /// </summary>
-        public virtual string Category
+        public string Category
         {
             get
             {
@@ -575,7 +575,7 @@ namespace Dynamo.Engine
         private readonly LibraryCustomization libraryCustomization;
         private readonly Assembly reflectionAsm;
 
-        public override string Category
+        public new string Category
         {
             get
             {

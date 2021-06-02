@@ -247,7 +247,7 @@ namespace NodeDocumentationMarkdownGenerator
 
             foreach (var type in nodeTypes)
             {
-                searchModel.Add(new NodeModelSearchElement(type, nodeModelType));
+                searchModel.Add(new NodeModelSearchElement(type, false));
             }
 
             return FileInfosFromSearchModel(searchModel, logger);
