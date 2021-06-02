@@ -122,8 +122,7 @@ namespace DSCPython
             }
             catch (Exception e)
             {
-                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
-                System.Diagnostics.Debug.WriteLine($"error removing python object from global scope {e.Message}");
+                CPythonEvaluator.DynamoLogger?.Log($"error removing python object from global scope {e.Message}");
             }
             finally
             {
@@ -151,16 +150,16 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
-        private static DynamoLogger dynamoLogger;
-        private static IntPtr ts = new IntPtr();
+        internal static DynamoLogger DynamoLogger { get; set; }
 
         static CPythonEvaluator()
         {
+            InitializeEncoders();
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonRestartHandler;
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                DynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
             }
         }
 
@@ -169,7 +168,7 @@ namespace DSCPython
             //check if python engine request is for this engine, and engine is currently started
             if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
             {
-                dynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
+                DynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
                 using (Py.GIL())
                 {
                 //the following is inspired by:
@@ -217,7 +216,7 @@ for modname,mod in sys.modules.copy().items():
                 Analytics.TrackEvent(
                    Dynamo.Logging.Actions.Start,
                    Dynamo.Logging.Categories.PythonOperations,
-                   "CPythonEngineReset");
+                   "CPythonReset");
             }
         }
 
@@ -244,9 +243,8 @@ for modname,mod in sys.modules.copy().items():
             InstallPython();
             if (!PythonEngine.IsInitialized)
             {
-                InitializeEncoders();
                 PythonEngine.Initialize();
-                ts = PythonEngine.BeginAllowThreads();
+                PythonEngine.BeginAllowThreads();
                 
             }
                 using (Py.GIL())
@@ -358,9 +356,9 @@ clr.setPreload(True)
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                //TODO why do I need to do this again...
-                dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
-                Action<string> logFunction = msg => dynamoLogger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                DynamoLogger = DynamoLogger != null ? DynamoLogger :
+                    ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                Action<string> logFunction = msg => DynamoLogger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set(DynamoPrintFuncName, logFunction.ToPython());
                 scope.Exec(RedirectPrint());
             }
