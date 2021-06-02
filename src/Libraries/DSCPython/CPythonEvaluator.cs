@@ -81,8 +81,7 @@ namespace DSCPython
             }
             catch (Exception e)
             {
-                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
-                System.Diagnostics.Debug.WriteLine($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
+                CPythonEvaluator.DynamoLogger?.Log($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
                 return this.PythonObjectID.ToString();
             }
             finally
@@ -150,17 +149,22 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
-        internal static DynamoLogger DynamoLogger { get; set; }
+        internal static DynamoLogger DynamoLogger {
+            get
+            { // Session is null when running unit tests.
+                if (ExecutionEvents.ActiveSession != null)
+                {
+                    return ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                }
+                return null;
+            }
+        }
 
         static CPythonEvaluator()
         {
             InitializeEncoders();
             Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonRestartHandler;
-            // Session is null when running unit tests.
-            if (ExecutionEvents.ActiveSession != null)
-            {
-                DynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
-            }
+           
         }
 
         internal static void RequestPythonRestartHandler(string pythonEngine)
@@ -172,7 +176,6 @@ namespace DSCPython
                 using (Py.GIL())
                 {
                 //the following is inspired by:
-                //TODO add attribution to aboutbox/license. clause3 BSD3 (preapproved)
                 //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
                     var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
                     global?.Exec(@"import sys
@@ -356,9 +359,7 @@ clr.setPreload(True)
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                DynamoLogger = DynamoLogger != null ? DynamoLogger :
-                    ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
-                Action<string> logFunction = msg => DynamoLogger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                Action<string> logFunction = msg => DynamoLogger?.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set(DynamoPrintFuncName, logFunction.ToPython());
                 scope.Exec(RedirectPrint());
             }
