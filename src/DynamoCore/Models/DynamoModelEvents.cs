@@ -90,16 +90,34 @@ namespace Dynamo.Models
         /// <summary>
         /// Occurs before current workspace is cleared
         /// </summary>
+        [Obsolete("Do not use! Use WorkspaceClearingStarted event instead")]
         public event Action WorkspaceClearing;
 
         /// <summary>
         /// Triggers WorkspaceClearing event
         /// </summary>
+
+        [Obsolete("Do not use! Use OnWorkspaceClearingStarted virtual instead")]
         public virtual void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
                 WorkspaceClearing();
 
+            WorkspaceEvents.OnWorkspaceClearing();
+        }
+
+        /// <summary>
+        /// Occurs before current workspace is cleared
+        /// </summary>
+        public event Action<WorkspaceModel> WorkspaceClearingStarted;
+
+        /// <summary>
+        /// Triggers WorkspaceClearing event
+        /// </summary>
+        /// <param name="workspace">Workspace about to be cleared</param>
+        public virtual void OnWorkspaceClearingStarted(WorkspaceModel workspace)
+        {
+            WorkspaceClearingStarted?.Invoke(workspace);
             WorkspaceEvents.OnWorkspaceClearing();
         }
 

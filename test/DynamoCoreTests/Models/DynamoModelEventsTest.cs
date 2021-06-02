@@ -23,6 +23,7 @@ namespace Dynamo.Tests.ModelsTest
         private bool migrationStatusDialog = false;
         private bool layoutUpdate = false;
         private bool workspaceClearing = false;
+        private bool workspaceClearingStarted = false;
         private bool workspaceRemoveStarted = false;
         private bool deletionStarted = false;
         private bool deletionComplete = false;
@@ -153,6 +154,27 @@ namespace Dynamo.Tests.ModelsTest
             CurrentDynamoModel.WorkspaceClearing -= CurrentDynamoModel_WorkspaceClearing;
             //This will validate that the local handler was executed and set the flag in true
             Assert.IsTrue(workspaceClearing);
+        }
+
+        /// <summary>
+        /// This test method will execute the event OnWorkspaceClearing
+        /// </summary>
+        [Test]
+        [Category("UnitTests")]
+        public void TestOnWorkspaceClearingStarted()
+        {
+            //Arrange
+            //This will subscribe our local method to the RequestLayoutUpdate event
+            CurrentDynamoModel.WorkspaceClearingStarted += CurrentDynamoModel_WorkspaceClearingStarted;
+
+            //Act
+            //Internally this will execute the OnWorkspaceClearing() method in DynamoModelEvents
+            CurrentDynamoModel.ClearCurrentWorkspace();
+
+            //Assert
+            CurrentDynamoModel.WorkspaceClearingStarted -= CurrentDynamoModel_WorkspaceClearingStarted;
+            //This will validate that the local handler was executed and set the flag in true
+            Assert.IsTrue(workspaceClearingStarted);
         }
 
         /// <summary>
@@ -507,6 +529,11 @@ namespace Dynamo.Tests.ModelsTest
         private void CurrentDynamoModel_WorkspaceClearing()
         {
             workspaceClearing = true;
+        }
+
+        private void CurrentDynamoModel_WorkspaceClearingStarted(Graph.Workspaces.WorkspaceModel obj)
+        {
+            workspaceClearingStarted = true;
         }
 
         private void Model_RequestLayoutUpdate(object sender, EventArgs e)
