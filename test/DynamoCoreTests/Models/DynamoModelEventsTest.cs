@@ -504,7 +504,7 @@ namespace Dynamo.Tests.ModelsTest
             workspaceRemoveStarted = true;
         }
 
-        private void CurrentDynamoModel_WorkspaceClearing()
+        private void CurrentDynamoModel_WorkspaceClearing(Graph.Workspaces.WorkspaceModel obj)
         {
             workspaceClearing = true;
         }

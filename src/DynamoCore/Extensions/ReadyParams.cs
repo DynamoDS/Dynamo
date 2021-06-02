@@ -23,7 +23,10 @@ namespace Dynamo.Extensions
         {
             dynamoModel = dynamoM;
             dynamoModel.PropertyChanged += OnDynamoModelPropertyChanged;
+            dynamoModel.WorkspaceOpened += OnCurrentWorkspaceModelOpened;
+            dynamoModel.WorkspaceClearing += OnCurrentWorkspaceModelClearing;
             dynamoModel.WorkspaceCleared += OnCurrentWorkspaceModelCleared;
+            dynamoModel.WorkspaceRemoveStarted += OnCurrentWorkspaceRemoveStarted;
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
@@ -104,6 +107,36 @@ namespace Dynamo.Extensions
                 CurrentWorkspaceCleared(ws);
         }
 
+        /// <summary>
+        /// Occurs when current workspace is clearing
+        /// </summary>
+        public event Action<IWorkspaceModel> CurrentWorkspaceClearing;
+        private void OnCurrentWorkspaceModelClearing(IWorkspaceModel ws)
+        {
+            if (CurrentWorkspaceClearing != null)
+                CurrentWorkspaceClearing(ws);
+        }
+
+        /// <summary>
+        /// Occurs when current workspace has finished opening
+        /// </summary>
+        public event Action<IWorkspaceModel> CurrentWorkspaceOpened;
+        private void OnCurrentWorkspaceModelOpened(IWorkspaceModel ws)
+        {
+            if (CurrentWorkspaceOpened != null)
+                CurrentWorkspaceOpened(ws);
+        }
+
+        /// <summary>
+        /// Occurs when a worspace is about to be removed
+        /// </summary>
+        public event Action<IWorkspaceModel> CurrentWorkspaceRemoveStarted;
+        private void OnCurrentWorkspaceRemoveStarted(IWorkspaceModel ws)
+        {
+            if (CurrentWorkspaceRemoveStarted != null)
+                CurrentWorkspaceRemoveStarted(ws);
+        }
+
         private void OnDynamoModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "CurrentWorkspace")
@@ -117,7 +150,10 @@ namespace Dynamo.Extensions
         public void Dispose()
         {
             dynamoModel.PropertyChanged -= OnDynamoModelPropertyChanged;
+            dynamoModel.WorkspaceOpened -= OnCurrentWorkspaceModelOpened;
+            dynamoModel.WorkspaceClearing -= OnCurrentWorkspaceModelClearing;
             dynamoModel.WorkspaceCleared -= OnCurrentWorkspaceModelCleared;
+            dynamoModel.WorkspaceRemoveStarted -= OnCurrentWorkspaceRemoveStarted;
             dynamoModel.Logger.NotificationLogged -= OnNotificationRecieved;
         }
     }

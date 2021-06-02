@@ -2607,7 +2607,7 @@ namespace Dynamo.Models
         /// </summary>
         public void ClearCurrentWorkspace()
         {
-            OnWorkspaceClearing();
+            OnWorkspaceClearing(CurrentWorkspace);
 
             CurrentWorkspace.Clear();
             if (CurrentWorkspace is HomeWorkspaceModel)
