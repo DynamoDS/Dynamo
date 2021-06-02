@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Interfaces;
+
 using NotificationObject = Dynamo.Core.NotificationObject;
 
 namespace Dynamo.Services
@@ -48,7 +50,8 @@ namespace Dynamo.Services
             get {
                 return !DynamoModel.IsTestMode
                     && (dynamoViewModel != null
-                        && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
+                    && !AnalyticsService.DisableAnalytics
+                    && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
             private set
             {
@@ -94,8 +97,13 @@ namespace Dynamo.Services
                     return false;
 
                 if (dynamoViewModel.Model != null)
+                {
+                    if (AnalyticsService.DisableAnalytics)
+                    {
+                        return false;
+                    }
                     return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
-
+                }
                 return true;
             }
 
@@ -148,6 +156,7 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
+                && !AnalyticsService.DisableAnalytics
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting

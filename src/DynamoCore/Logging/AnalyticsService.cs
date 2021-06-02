@@ -17,32 +17,10 @@ namespace Dynamo.Logging
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
         /// <param name="model">DynamoModel</param>
-        /// <param name="disableADP">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
         /// <param name="isHeadless">Analytics won't be started if IsHeadless, but ADP may be loaded to be disabled.</param>
         /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
-        internal static void Start(DynamoModel model, bool disableADP, bool isHeadless, bool isTestMode)
+        internal static void Start(DynamoModel model, bool isHeadless, bool isTestMode)
         {
-            if (isTestMode)
-            {
-                if (disableADP)
-                {
-                    model.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled] ");
-                }
-                return;
-            }
-            if (disableADP)
-            {
-                //if this returns false something has gone wrong.
-                //the client requested ADP be disabled, but we cannot disable it.
-                if (!adpAnalyticsUI.DisableADPForProcessLifetime())
-                {
-                    model.Logger.LogNotification("Dynamo",
-                        "Dynamo Startup Error",
-                        "Analytics could not be disabled",
-                        "Dynamo was started with configuration requesting ADP be disabled - but ADP could not be disabled.");
-                }
-            }
-
             if (isHeadless)
             {
                 return;
@@ -72,6 +50,35 @@ namespace Dynamo.Logging
             set
             {
                 adpAnalyticsUI.SetOptedIn(value);
+            }
+        }
+
+        internal static bool DisableADPForProcessLifetime()
+        {
+            return adpAnalyticsUI.DisableADPForProcessLifetime();
+        }
+
+        internal static bool IsADPDisabledForProcessLifetime()
+        {
+            return adpAnalyticsUI.IsADPDisabledForProcessLifetime();
+        }
+
+        private static bool disableAnalytics;
+
+        /// <summary>
+        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// </summary>
+        public static bool DisableAnalytics
+        {
+            get
+            {
+                return disableAnalytics;
+            }
+            set
+            {
+                disableAnalytics = value;
+                // Can fail in edge conditions but not mandatory to happen.
+                DisableADPForProcessLifetime();
             }
         }
 

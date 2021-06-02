@@ -459,7 +459,6 @@ namespace Dynamo.Models
         public AuthenticationManager AuthenticationManager { get; set; }
 
         internal static string DefaultPythonEngine { get; private set; }
-        private bool disableADP;
         #endregion
 
         #region initialization and disposal
@@ -566,6 +565,7 @@ namespace Dynamo.Models
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
+            [Obsolete("This method will be removed in Dynamo 3.0 - please use ...")]
             public bool DisableADP { get; set; }
         }
 
@@ -606,8 +606,6 @@ namespace Dynamo.Models
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
                 // TODO: This fact should probably be revisited in 3.0.
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
-                disableADP = defaultStartConfig.DisableADP;
-
             }
 
             ClipBoard = new ObservableCollection<ModelBase>();
@@ -689,15 +687,15 @@ namespace Dynamo.Models
             // these configuration options are incompatible, one requires loading ADP binaries
             // the other depends on not loading those same binaries.
 
-            if (areAnalyticsDisabledFromConfig && disableADP)
+            if (areAnalyticsDisabledFromConfig && AnalyticsService.DisableAnalytics)
             {
-                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both [Analytics disabled] and [ADP disabled] config options enabled");
+                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both configuration file and disableAnalytics options enabled");
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            if (!areAnalyticsDisabledFromConfig)
+            if (!areAnalyticsDisabledFromConfig && !AnalyticsService.DisableAnalytics)
             {
-                InitializeAnalyticsService();
+                AnalyticsService.Start(this, IsHeadless, IsTestMode);
             }
 
             if (!IsTestMode && PreferenceSettings.IsFirstRun)
@@ -1462,11 +1460,6 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-        }
-
-        private void InitializeAnalyticsService()
-        {
-           AnalyticsService.Start(this,disableADP, IsHeadless, IsTestMode);
         }
 
         private IPreferences CreateOrLoadPreferences(IPreferences preferences)
