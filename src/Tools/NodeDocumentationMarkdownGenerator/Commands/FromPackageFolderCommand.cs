@@ -21,7 +21,6 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
         internal void HandlePackageDocumentation(FromPackageOptions opts)
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
             var package = PackageFromRoot(opts.InputFolderPath);
 
             var nodeLibraryFileNames = ScanNodeLibraries(package, opts.ReferencePaths);
