@@ -153,14 +153,17 @@
             <HeaderedContentControl Header="Author Name">
                 <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
                          Style="{StaticResource TextBoxStyle}"
-                         TextWrapping="WrapWithOverflow" />
+                         TextWrapping="WrapWithOverflow"/>
             </HeaderedContentControl>
 
             <HeaderedContentControl Header="Learn more URL">
                 <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
                          Name="UriTextBox"
                          Style="{StaticResource TextBoxStyle}"
-                         TextWrapping="WrapWithOverflow">
+                         TextWrapping="WrapWithOverflow"
+                         TextDecorations="Underline"
+                         FontWeight="SemiBold"
+                         MouseDoubleClick="TextBox_MouseDoubleClick">
                     <TextBox.Text>
                         <Binding Path="HelpLink"
                                  UpdateSourceTrigger="PropertyChanged"

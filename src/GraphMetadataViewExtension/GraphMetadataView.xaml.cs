@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Dynamo.GraphMetadata
 {
@@ -14,6 +17,11 @@ namespace Dynamo.GraphMetadata
             InitializeComponent();
         }
 
+        /// <summary>
+        /// This enables moving to next textbox by pressing tab
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StackPanel_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Tab)
@@ -27,6 +35,22 @@ namespace Dynamo.GraphMetadata
                 }
 
                 e.Handled = true;
+            }
+        }
+
+        private void TextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (Uri.TryCreate(textBox.Text, UriKind.RelativeOrAbsolute, out Uri uri))
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo(uri.ToString()));
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
     }

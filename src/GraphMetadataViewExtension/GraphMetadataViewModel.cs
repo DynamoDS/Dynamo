@@ -27,7 +27,16 @@ namespace Dynamo.GraphMetadata
         public string GraphDescription
         {
             get { return currentWorkspace.Description; }
-            set { currentWorkspace.Description = value; RaisePropertyChanged(nameof(GraphDescription)); }
+            set
+            {
+                if (this.currentWorkspace != null && GraphDescription != value)
+                {
+                    this.currentWorkspace.HasUnsavedChanges = true;
+                }
+
+                currentWorkspace.Description = value;
+                RaisePropertyChanged(nameof(GraphDescription));
+            }
         }
 
         /// <summary>
@@ -36,7 +45,16 @@ namespace Dynamo.GraphMetadata
         public string GraphAuthor
         {
             get { return currentWorkspace.Author; }
-            set { currentWorkspace.Author = value; RaisePropertyChanged(nameof(GraphAuthor)); }
+            set 
+            {
+                if (this.currentWorkspace != null && GraphAuthor != value)
+                {
+                    this.currentWorkspace.HasUnsavedChanges = true;
+                }
+                currentWorkspace.Author = value; 
+                RaisePropertyChanged(nameof(GraphAuthor));
+
+            }
         }
 
         /// <summary>
@@ -45,7 +63,16 @@ namespace Dynamo.GraphMetadata
         public Uri HelpLink
         {
             get { return currentWorkspace.GraphDocumentationURL; }
-            set { currentWorkspace.GraphDocumentationURL = value; RaisePropertyChanged(nameof(HelpLink)); }
+            set 
+            {
+                if (this.currentWorkspace != null && HelpLink != value)
+                {
+                    this.currentWorkspace.HasUnsavedChanges = true;
+                }
+
+                currentWorkspace.GraphDocumentationURL = value; 
+                RaisePropertyChanged(nameof(HelpLink)); 
+            }
         }
 
         /// <summary>
@@ -61,6 +88,11 @@ namespace Dynamo.GraphMetadata
             set
             {
                 var base64 = value is null ? string.Empty : Base64FromImage(value);
+                if (this.currentWorkspace != null && base64 != currentWorkspace.Thumbnail)
+                {
+                    this.currentWorkspace.HasUnsavedChanges = true;
+                }
+
                 currentWorkspace.Thumbnail = base64;
                 RaisePropertyChanged(nameof(Thumbnail));
             }
@@ -120,7 +152,7 @@ namespace Dynamo.GraphMetadata
         {
             if (string.IsNullOrEmpty(b64string))
             {
-                throw new ArgumentException($"'{nameof(b64string)}' cannot be null or empty.", nameof(b64string));
+                return null;
             }
 
             var bytes = Convert.FromBase64String(b64string);
@@ -176,6 +208,11 @@ namespace Dynamo.GraphMetadata
 
             control.RequestDelete += HandleDeleteRequest;
             CustomProperties.Add(control);
+
+            if (this.currentWorkspace != null)
+            {
+                this.currentWorkspace.HasUnsavedChanges = true;
+            }
         }
 
         private void HandleDeleteRequest(object sender, EventArgs e)
@@ -184,6 +221,10 @@ namespace Dynamo.GraphMetadata
             {
                 customProperty.RequestDelete -= HandleDeleteRequest;
                 CustomProperties.Remove(customProperty);
+                if (this.currentWorkspace != null)
+                {
+                    this.currentWorkspace.HasUnsavedChanges = true;
+                }
             }
         }
 
