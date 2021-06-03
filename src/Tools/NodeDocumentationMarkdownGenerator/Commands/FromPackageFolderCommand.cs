@@ -10,16 +10,9 @@ using NodeDocumentationMarkdownGenerator.Verbs;
 
 namespace NodeDocumentationMarkdownGenerator.Commands
 {
-    internal class FromPackageFolderCommand
+    internal static class FromPackageFolderCommand
     {
-        private readonly ILogger logger;
-
-        public FromPackageFolderCommand(ILogger logger)
-        {
-            this.logger = logger;
-        }
-
-        internal void HandlePackageDocumentation(FromPackageOptions opts)
+        internal static void HandlePackageDocumentation(FromPackageOptions opts)
         {
             var package = PackageFromRoot(opts.InputFolderPath);
 
@@ -36,10 +29,10 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                 Directory.CreateDirectory(outdir);
             }
 
-            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite, logger);
+            MarkdownHandler.CreateMdFilesFromFileNames(fileInfos, outdir, opts.Overwrite);
         }
 
-        private List<MdFileInfo> ScanNodeLibraries(Package pkg, IEnumerable<string> hostPaths)
+        private static List<MdFileInfo> ScanNodeLibraries(Package pkg, IEnumerable<string> hostPaths)
         {
             var binDlls = new DirectoryInfo(pkg.BinaryDirectory)
                 .EnumerateFiles("*.dll")
@@ -60,16 +53,16 @@ namespace NodeDocumentationMarkdownGenerator.Commands
 
             addtionalPathsToLoad.AddRange(hostDllPaths);
 
-            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, logger, addtionalPathsToLoad);
+            return AssemblyHandler.ScanAssemblies(nodeLibraryPaths, addtionalPathsToLoad);
         }
 
-        private List<MdFileInfo> ScanCustomNodes(Package pkg)
+        private static List<MdFileInfo> ScanCustomNodes(Package pkg)
         {
             var fileInfos = new List<MdFileInfo>();
 
             foreach (var path in Directory.EnumerateFiles(pkg.CustomNodeDirectory, "*.dyf"))
             {
-                var fileInfo = MdFileInfo.FromCustomNode(path, logger);
+                var fileInfo = MdFileInfo.FromCustomNode(path);
                 if (fileInfo is null) continue;
 
                 fileInfos.Add(fileInfo);
@@ -77,10 +70,10 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             return fileInfos;
         }
 
-        private Package PackageFromRoot(string packageFolderPath)
+        private static Package PackageFromRoot(string packageFolderPath)
         {
             var headerPath = Path.Combine(packageFolderPath, "pkg.json");
-            Package pkg = Package.FromJson(headerPath, logger);
+            Package pkg = Package.FromJson(headerPath, new DummyConsoleLogger());
 
             return pkg;
         }

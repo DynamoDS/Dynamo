@@ -67,9 +67,10 @@ namespace NodeDocumentationMarkdownGenerator
             FileName = fileName;
         }
 
-        internal static MdFileInfo FromCustomNode(string path, ILogger log)
+        internal static MdFileInfo FromCustomNode(string path)
         {
             WorkspaceInfo header = null;
+            ILogger log = new DummyConsoleLogger();
 
             if (DynamoUtilities.PathHelper.isValidXML(path, out XmlDocument xmlDoc, out Exception ex))
             {
@@ -89,7 +90,7 @@ namespace NodeDocumentationMarkdownGenerator
             return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, nodeNamspace);
         }
 
-        internal static bool TryGetFromSearchEntry(NodeSearchElement entry, ILogger logger, out MdFileInfo info)
+        internal static bool TryGetFromSearchEntry(NodeSearchElement entry, out MdFileInfo info)
         {
             try
             {
@@ -122,7 +123,7 @@ namespace NodeDocumentationMarkdownGenerator
             }
             catch (Exception e)
             {
-                logger.Log(e);
+                CommandHandler.LogExceptionToConsole(e);
                 info = null;
                 return false;
             }

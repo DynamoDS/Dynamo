@@ -25,12 +25,15 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
         /// <param name="dictionaryPath">path to dictionary json file</param>
         /// <param name="layoutSpec">path to layout spec json</param>
-        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, ILogger logger, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
+        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
         {
             ImageOptimizer optimizer = null;
             LayoutSpecification spec = null;
             List<DynamoDictionaryEntry> dictEntrys = null;
             string examplesDirectory = "";
+
+            Console.WriteLine($"Starting generation of {fileInfos.Count} markdown files...");
+
             if (!string.IsNullOrEmpty(dictionaryPath) &&
                     File.Exists(dictionaryPath))
             {
@@ -72,7 +75,7 @@ namespace NodeDocumentationMarkdownGenerator
                     DynamoDictionaryEntry matchingEntry = GetMatchingDictionaryEntry(dictEntrys, info, spec);
                     if (matchingEntry != null)
                     {
-                        fileContent = GetContentFromDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileInfo, logger);    
+                        fileContent = GetContentFromDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileInfo);    
                     }
                 }
 
@@ -81,7 +84,7 @@ namespace NodeDocumentationMarkdownGenerator
                     fileContent = GetDefaultContent(info.NodeName);
                     if (dictEntrys != null)
                     {
-                        logger.Log($"No matching Dictionary entry found for {fileName}");
+                        Console.WriteLine($"No matching Dictionary entry found for {fileName}");
                     }
                 }
 
@@ -94,13 +97,13 @@ namespace NodeDocumentationMarkdownGenerator
                 }
                 catch (Exception e)
                 {
-                    logger.Log(e);
+                    CommandHandler.LogExceptionToConsole(e);
                     continue;
                 }
                 filesCreatedCount++;
             }
 
-            logger.Log($"{filesCreatedCount} documentation files created");
+            Console.WriteLine($"{filesCreatedCount} documentation files created");
         }
 
         private static string GetDefaultContent(string nodeName)
@@ -113,7 +116,7 @@ namespace NodeDocumentationMarkdownGenerator
             return content.ToString();
         }
 
-        private static string GetContentFromDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer, FileInfo fileInfo, ILogger logger)
+        private static string GetContentFromDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer, FileInfo fileInfo)
         {
             var imgDir = new DirectoryInfo(Path.Combine(examplesDirectory, entry.FolderPath, "img"));
 
@@ -133,7 +136,7 @@ namespace NodeDocumentationMarkdownGenerator
 
             if (!missingFields.Any())
             {
-                logger.Log($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
+                Console.WriteLine($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
             }
 
             var content = new StringBuilder();

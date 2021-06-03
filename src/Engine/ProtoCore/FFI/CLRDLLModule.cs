@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
@@ -1127,7 +1128,15 @@ namespace ProtoFFI
                 {
                     CLRModuleType.GetInstance(type, this, "");
                 }
-                catch { continue; }                
+                catch(Exception e)
+                {
+                    var strBuilder = new StringBuilder();
+                    strBuilder.AppendLine($"While scanning {type.Name}, the following exception was encountered - {e.GetType()} :");
+                    strBuilder.AppendLine($"{e.Message}");
+                    strBuilder.AppendLine($"{e.StackTrace}");
+                    Console.WriteLine(strBuilder.ToString());
+                    continue;
+                }                
             }
         }
 

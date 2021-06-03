@@ -29,7 +29,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
         /// <param name="additionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
         /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, ILogger logger, List<string> additionalPathsToLoad = null)
+        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> additionalPathsToLoad = null)
         {
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
@@ -41,14 +41,16 @@ namespace NodeDocumentationMarkdownGenerator
             var resolver = new PathAssemblyResolver(paths);
             var mlc = new MetadataLoadContext(resolver);
 
-            return Scan(assemblyPaths, mlc, resolver, logger);
+            return Scan(assemblyPaths, mlc, resolver);
         }
 
-        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver, ILogger logger)
+        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
         {
             var fileInfos = new List<MdFileInfo>();
             var nodeSearchModel = new NodeSearchModel();
             var pathManager = new PathManager(new PathManagerParams());
+
+            Console.WriteLine($"Starting scan of following assemblies: {string.Join(", ", assemblyPaths)}");
 
             using (mlc)
             {
@@ -79,7 +81,7 @@ namespace NodeDocumentationMarkdownGenerator
 
                             if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                             {
-                                fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, logger, ref nodeSearchModel));
+                                fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, ref nodeSearchModel));
                                 continue;
                             }
 
@@ -116,7 +118,8 @@ namespace NodeDocumentationMarkdownGenerator
                 }
 
                 AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
-                fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel, logger));
+                Console.WriteLine($"{nodeSearchModel.SearchEntries.Count()} nodes found during scan");
+                fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
             }
 
             return fileInfos;
@@ -225,7 +228,7 @@ namespace NodeDocumentationMarkdownGenerator
             }
         }
 
-        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ILogger logger, ref NodeSearchModel searchModel)
+        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ref NodeSearchModel searchModel)
         {
 
             var fileInfos = new List<MdFileInfo>();
@@ -250,7 +253,7 @@ namespace NodeDocumentationMarkdownGenerator
                 searchModel.Add(new NodeModelSearchElement(type, false));
             }
 
-            return FileInfosFromSearchModel(searchModel, logger);
+            return FileInfosFromSearchModel(searchModel);
         }
 
         private static List<string> GetDefaultPaths()
@@ -366,13 +369,13 @@ namespace NodeDocumentationMarkdownGenerator
             return typeParams;
         }
 
-        private static List<MdFileInfo> FileInfosFromSearchModel(NodeSearchModel nodeSearchModel, ILogger logger)
+        private static List<MdFileInfo> FileInfosFromSearchModel(NodeSearchModel nodeSearchModel)
         {
             var fileInfos = new List<MdFileInfo>();
 
             foreach (var entry in nodeSearchModel.SearchEntries)
             {
-                if (MdFileInfo.TryGetFromSearchEntry(entry, logger,  out MdFileInfo info))
+                if (MdFileInfo.TryGetFromSearchEntry(entry,  out MdFileInfo info))
                 {
                     fileInfos.Add(info);
                 }              

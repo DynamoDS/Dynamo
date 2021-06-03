@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Dynamo.Configuration;
 using Dynamo.Logging;
 using NodeDocumentationMarkdownGenerator.Commands;
@@ -10,43 +11,67 @@ namespace NodeDocumentationMarkdownGenerator
     {
         internal static string HandleFromPackage(FromPackageOptions opts)
         {
-            var logger = CreateLogger(opts.InputFolderPath);
             try
             {
-                var command = new FromPackageFolderCommand(logger);
-                command.HandlePackageDocumentation(opts);
+                FromPackageFolderCommand.HandlePackageDocumentation(opts);
             }
             catch (Exception e)
             {
-                logger.Log(e);
+                LogExceptionToConsole(e);
             }
 
-            Console.WriteLine(logger.LogText);
             return "";
         }
 
         internal static string HandleFromDirectory(FromDirectoryOptions opts)
         {
-            var logger = CreateLogger(opts.LoggerPath);
             try
             {
-                var command = new FromDirectoryCommand(logger);
-                command.HandleDocumentationFromDirectory(opts);
+                FromDirectoryCommand.HandleDocumentationFromDirectory(opts);
             }
             catch (Exception e)
             {
-                logger.Log(e);
+                LogExceptionToConsole(e);
             }
 
-            Console.WriteLine(logger.LogText);
             return "";
         }
 
-        private static DynamoLogger CreateLogger(string directoryPath)
+        internal static void LogExceptionToConsole(Exception e)
         {
-            var debugSettings = new DebugSettings();
-            var logger = new DynamoLogger(debugSettings, directoryPath, false);
-            return logger;
+            var strBuilder = new StringBuilder();
+            strBuilder.AppendLine($"{e.GetType()} :");
+            strBuilder.AppendLine(e.Message);
+            strBuilder.AppendLine(e.StackTrace);
+            Console.WriteLine(strBuilder.ToString());
+        }
+    }
+
+    internal class DummyConsoleLogger : ILogger
+    {
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
+        }
+
+        public void Log(string tag, string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Log(Exception e)
+        {
+            CommandHandler.LogExceptionToConsole(e);
+        }
+
+        public void LogError(string error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogWarning(string warning, WarningLevel level)
+        {
+            throw new NotImplementedException();
         }
     }
 }
