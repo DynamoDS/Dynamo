@@ -573,15 +573,6 @@ namespace Dynamo.PackageManager
         private void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
-
-            //added dummy values for representation, to be removed
-            if (element.Model.Name == "dronovBIM_v2")
-            {
-                element.Versions[0].Item1.full_dependency_ids.Add(new Dependency() { name = "CPython", _id = "3.0" });
-                element.Versions[1].Item1.full_dependency_ids.Add(new Dependency() { name = "IronPython", _id = "2.0" });
-                element.Versions[2].Item1.full_dependency_ids.Add(new Dependency() { name = "IronPython", _id = "2.0" });
-                element.Versions[2].Item1.full_dependency_ids.Add(new Dependency() { name = "CPython", _id = "3.0" });
-            }
             this.SearchResults.Add(element);
         }
 

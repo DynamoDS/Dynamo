@@ -407,7 +407,7 @@
                                                                 </Button>
                                                             </StackPanel>
                                                         </Border>
-                                                        <TextBlock FontSize="14" FontWeight="Bold" Text="ⓘ    " Foreground="WhiteSmoke" MinWidth="50" Margin="5 10 5 5" Visibility="{Binding Path=Item1.full_dependency_ids, Converter={StaticResource EmptyDepStringToCollapsedConverter}}" ToolTip="{Binding Path=Item1.full_dependency_ids, Converter={StaticResource DependencyListToStringConverter}}" />
+                                                        <TextBlock FontSize="14" FontWeight="Bold" Text="ⓘ    " Foreground="WhiteSmoke" MinWidth="50" Margin="5 10 5 5" Visibility="{Binding Path=Item1.host_dependencies, Converter={StaticResource EmptyDepStringToCollapsedConverter}}" ToolTip="{Binding Path=Item1.host_dependencies, Converter={StaticResource DependencyListToStringConverter}}" />
                                                         </StackPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>

@@ -82,21 +82,19 @@ namespace Dynamo.Controls
     /// </summary>
     public class DependencyListToStringConverter : IValueConverter
     {
-
-        private const string CPython = "CPython";
-        private const string IronPython = "IronPython";
+        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string depString = string.Empty;
             bool flag = false;
             if (value != null)
             {
-                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                List<string> depList = (List<string>)value;
                 foreach (var dep in depList)
                 {
-                    if (dep.name == CPython || dep.name == IronPython)
+                    if (PythonEngineList.IndexOf(dep) != -1)
                     {
-                        depString += dep.name + " " + dep._id + ", ";
+                        depString += dep + ", ";
                         flag = true;
                     }
                 }
@@ -113,17 +111,16 @@ namespace Dynamo.Controls
 
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
-        private const string CPython = "CPython";
-        private const string IronPython = "IronPython";
+        private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
         public object Convert(object value, Type targetType, object parameter,
           CultureInfo culture)
         {
             if (value != null)
             {
-                List<Greg.Responses.Dependency> depList = (List<Greg.Responses.Dependency>)value;
+                List<string> depList = (List<string>)value;
                 foreach (var dep in depList)
                 {
-                    if (dep.name == CPython || dep.name == IronPython)
+                    if (PythonEngineList.IndexOf(dep) != -1)
                     {
                         return Visibility.Visible;
                     }

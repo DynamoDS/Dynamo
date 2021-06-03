@@ -61,15 +61,10 @@ namespace Dynamo.PackageManager
                 {
                     foreach (var host in Header.versions.Last().host_dependencies)
                     {
-                        hostsString += host + "  ";
+                        hostsString += host + Environment.NewLine;
                     }
                 }
-                //added to this dummy package for representation, to be removed and replace space at the end with newline above
-                if (Name == "dronovBIM_v2")
-                {
-                    hostsString += "CPython3"+ Environment.NewLine + "IronPython2"+ Environment.NewLine + "Revit";
-                }
-                return hostsString;
+                return hostsString.TrimEnd('\r', '\n');
             }
         }
 
