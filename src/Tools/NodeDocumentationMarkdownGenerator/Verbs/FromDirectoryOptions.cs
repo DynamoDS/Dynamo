@@ -14,9 +14,6 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('o', "output", HelpText = "Folder path to save generated documents in", Required = true)]
         public string OutputFolderPath { get; set; }
 
-        [Option('l', "logger-path", HelpText = "Directory path to where logger file should be saved", Required = true)]
-        public string LoggerPath { get; set; }
-
         [Option('r', "references", HelpText = "Folder paths to dlls that are used as references in the nodes", Required = false)]
         public IEnumerable<string> ReferencePaths { get; set; }
 
