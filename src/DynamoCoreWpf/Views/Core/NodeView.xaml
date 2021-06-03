@@ -112,6 +112,11 @@
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />
+                <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedHeader}">
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstream}"/>
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedDownstream}"/>
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstreamDownstream}"/>
+                </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>
 
