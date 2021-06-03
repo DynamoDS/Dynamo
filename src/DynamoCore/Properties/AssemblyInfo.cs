@@ -36,3 +36,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("LibraryViewExtensionMSWebBrowser")]
 [assembly: InternalsVisibleTo("PythonMigrationViewExtension")]
 [assembly: InternalsVisibleTo("LintingViewExtension")]
+[assembly: InternalsVisibleTo("DSCPython")]
+[assembly: InternalsVisibleTo("DynamoPythonTests")]

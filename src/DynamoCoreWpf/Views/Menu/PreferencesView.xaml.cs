@@ -234,5 +234,11 @@ namespace Dynamo.Wpf.Views
         {
             dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
+
+        private void ReloadCPython_Click(object sender, RoutedEventArgs e)
+        {
+            dynViewModel.Model.OnRequestPythonReset("CPython3");
+        }
+
     }
 }

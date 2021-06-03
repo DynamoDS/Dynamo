@@ -427,6 +427,18 @@
                                                     Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                         </StackPanel>
                                     </Grid>
+                                    <Button x:Name="ReloadCPython"
+                                                Style="{StaticResource FlatButtonStyle}" 
+                                                HorizontalAlignment="Left"                                             
+                                                Width="100"
+                                                Height="25"
+                                                Grid.Row="0"
+                                                Margin="0,10,0,10"
+                                                Click="ReloadCPython_Click"
+                                                Content="{x:Static p:Resources.ResetCPythonButtonText}"
+                                                ToolTip="{x:Static p:Resources.ResetCPythonButtonToolTip}">
+                                    </Button>
+                                    
                                 </StackPanel>
                             </Expander>
 
@@ -522,7 +534,7 @@
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="AddStyleButton_Click"
-                                                Content="Add Style" />
+                                                Content="{x:Static p:Resources.AddStyleButton}" />
                                         <Border x:Name="AddStyleBorder"
                                                 Visibility="Collapsed"
                                                 CornerRadius="4" 
