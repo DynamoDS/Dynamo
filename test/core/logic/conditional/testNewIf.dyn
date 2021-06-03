@@ -216,6 +216,53 @@
       ],
       "Replication": "Auto",
       "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "28de98953bde49ada92c8da05dd25a1c",
+      "Inputs": [
+        {
+          "Id": "d20da47c999446848bdf09eef78f74e1",
+          "Name": "test",
+          "Description": "Boolean test",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "7654305235264494aceb02b276acc442",
+          "Name": "true",
+          "Description": "Returned if test is true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "603d1dc08b45424f900a13bcea57842b",
+          "Name": "false",
+          "Description": "Returned if test is false",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "9d457b12f4654485a4a35fa6fb1dcf37",
+          "Name": "result",
+          "Description": "Result block produced",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
     }
   ],
   "Connectors": [
@@ -228,6 +275,11 @@
       "Start": "f73d32ffd2e94e8383063af06f67712e",
       "End": "41ee33583a374165b80f91057f35b0d0",
       "Id": "6dcd8689135e4b03a7bbb503dc2b548c"
+    },
+    {
+      "Start": "f73d32ffd2e94e8383063af06f67712e",
+      "End": "603d1dc08b45424f900a13bcea57842b",
+      "Id": "9c75b63571f848fea54d14c48c58393e"
     },
     {
       "Start": "38333ca1b5044f94a665ce92fa26006f",
@@ -258,18 +310,31 @@
       "Start": "3f90288806474ec2a7184fb87a41c006",
       "End": "5e6245f62649422383512c2431a25c7d",
       "Id": "e9a81a2163b7489c85eb4677687d5fa9"
+    },
+    {
+      "Start": "3f90288806474ec2a7184fb87a41c006",
+      "End": "d20da47c999446848bdf09eef78f74e1",
+      "Id": "1de1cc27f3f24a9782e98f9444f4ead2"
+    },
+    {
+      "Start": "48125a118e0d4abfb1ca533166d6ac60",
+      "End": "7654305235264494aceb02b276acc442",
+      "Id": "939d7a3756944eb4a82aebafa13ddcd1"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [],
+  "Author": "None provided",
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.11.0.5135",
+      "Version": "2.12.0.5196",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
@@ -293,8 +358,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 115.0,
-        "Y": 221.0
+        "X": 68.0,
+        "Y": 297.0
       },
       {
         "ShowGeometry": true,
@@ -303,8 +368,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 160.0,
-        "Y": 109.5
+        "X": 103.0,
+        "Y": 138.5
       },
       {
         "ShowGeometry": true,
@@ -313,8 +378,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 471.0,
-        "Y": 41.5
+        "X": 472.0,
+        "Y": 13.5
       },
       {
         "ShowGeometry": true,
@@ -323,8 +388,8 @@
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 470.0,
-        "Y": 217.5
+        "X": 473.0,
+        "Y": 175.5
       },
       {
         "ShowGeometry": true,
@@ -334,7 +399,17 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "X": 470.0,
-        "Y": 383.5
+        "Y": 342.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "If",
+        "Id": "28de98953bde49ada92c8da05dd25a1c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 472.0,
+        "Y": 508.5
       }
     ],
     "Annotations": [],

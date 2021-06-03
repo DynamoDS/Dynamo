@@ -82,7 +82,7 @@ namespace Dynamo.Tests
         }
 
         [Test]
-        [Category("SmokeTest")]
+        [Category("SmokeTest")] 
         public void TestIfNodeForPreview()
         {
             string testFilePath = Path.Combine(testFolder, "testNewIf.dyn");
@@ -92,14 +92,21 @@ namespace Dynamo.Tests
             boolSelectorNode.Value = true;
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", true);
             AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1", "b1", "c1" });
-            // The output preview for partially connected "IF" node should return the function itself irrespective of test value.
-            AssertPreviewValue("e1630959-8338-4b1a-9832-248246aef8a0", "Function");
+
+            /* The downstream node has the following inputs:
+             *              truevalue: partially connected "If" node
+             *              falsevalue: [["a2"],"b2"];
+             *              
+             * This downstream node which is connected to partially connected "IF" node should return the truevalue.
+            */
+            AssertPreviewValue("28de9895-3bde-49ad-a92c-8da05dd25a1c", "Function");
 
             boolSelectorNode.Value = false;
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", false);
             AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }, "b2" });
-            // The output preview for partially connected "IF" node should return the function itself irrespective of test value.
-            AssertPreviewValue("e1630959-8338-4b1a-9832-248246aef8a0", "Function");
+
+            // The downstream node which is connected to partially connected "IF" node should return the falsevalue.
+            AssertPreviewValue("28de9895-3bde-49ad-a92c-8da05dd25a1c", new object[] { new object[] { "a2" }, "b2" });
         }
 
         [Test]
