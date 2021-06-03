@@ -379,7 +379,7 @@ OUT = {modName}.value";
                 File.AppendAllLines(tempPath, new string[] { "value ='bye'" });
 
                 //mock raise event
-                DSCPython.CPythonEvaluator.RequestPythonRestartHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
+                DSCPython.CPythonEvaluator.RequestPythonResetHandler(nameof(PythonNodeModels.PythonEngineVersion.CPython3));
 
                 output = DSCPython.CPythonEvaluator.EvaluatePythonScript(
                  script,

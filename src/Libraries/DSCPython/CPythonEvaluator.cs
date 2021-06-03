@@ -163,11 +163,11 @@ namespace DSCPython
         static CPythonEvaluator()
         {
             InitializeEncoders();
-            Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonRestartHandler;
+            Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
            
         }
 
-        internal static void RequestPythonRestartHandler(string pythonEngine)
+        internal static void RequestPythonResetHandler(string pythonEngine)
         {
             //check if python engine request is for this engine, and engine is currently started
             if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
@@ -182,17 +182,19 @@ namespace DSCPython
 import importlib
 import importlib.util
 import os
-def getInfoFile(module):
+## Reloading sys, __main__, builtins and other key modules is not recommended.
+## don't reload modules without file attributes
+def should_reload(module):
     if not hasattr(module, '__file__') or module.__file__ is None:
         return None
-
+## don't reload modules that are currently running ie __main__, __mp_main__ is renamed by multiprocessing module.
     if getattr(module, '__name__', None) in [None, '__mp_main__', '__main__']:
         # we cannot reload(__main__) or reload(__mp_main__)
         return None
 
     filename = module.__file__
     path, ext = os.path.splitext(filename)
-
+## only reload .py files.
     if ext.lower() == '.py':
         py_filename = filename
     else:
@@ -202,10 +204,10 @@ def getInfoFile(module):
             return None
     return py_filename
 
-
+## copy sys.modules so it's not modified during reload.
 for modname,mod in sys.modules.copy().items():
     print('considering', modname)
-    file = getInfoFile(mod)
+    file = should_reload(mod)
     if file is None:
         continue
     print('reloading', modname)
