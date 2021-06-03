@@ -52,12 +52,14 @@ namespace Dynamo.Linting
                     linterExtension.Deactivate();
                 }
 
+                activeLinter = value;
+
                 if (TryGetLinterExtension(value, out linterExtension))
                 {
                     linterExtension.Activate();
                 }
 
-                activeLinter = value;
+                RaisePropertyChanged(nameof(ActiveLinter));
             }
         }
 
