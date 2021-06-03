@@ -167,6 +167,22 @@ namespace Dynamo.Interfaces
     }
 
     /// <summary>
+    /// Temporary interface to avoid breaking changes.
+    /// TODO: Merge with IPreferences for 3.0 (DYN-1699)
+    /// </summary>
+    internal interface IDisablePackageLoadingPreferences
+    {
+        /// <summary>
+        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// </summary>
+        bool DisableStandardLibrary { get; set; }
+        /// <summary>
+        /// If enabled user's custom package locations will not be loaded.
+        /// </summary>
+        bool DisableCustomPackageLocations { get; set; }
+    }
+
+    /// <summary>
     /// Represents data about active state of preview background
     /// </summary>
     public class BackgroundPreviewActiveState

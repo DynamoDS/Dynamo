@@ -423,6 +423,27 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
+        public void UpdateModelValue_MissingNode_ThrowsException()
+        {
+            var addNode = new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("+"));
+
+            CurrentDynamoModel.CurrentWorkspace.AddAndRegisterNode(addNode, false);
+            CurrentDynamoModel.CurrentWorkspace.RemoveAndDisposeNode(addNode);
+
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, addNode.GUID, "Code", "");
+            Assert.Throws<InvalidOperationException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void UpdateModelValue_EmptyList_ThrowsException()
+        {
+            var command = new DynCmd.UpdateModelValueCommand(Guid.Empty, new Guid[] { }, "", "");
+            Assert.Throws<ArgumentNullException>(() => CurrentDynamoModel.ExecuteCommand(command));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public void CanCopyAndPasteAndUndoInputState()
         {
             var numberNode = new DoubleInput();
@@ -674,6 +695,46 @@ namespace Dynamo.Tests
             Assert.AreEqual(2, homeNodes.Count());
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes.ElementAt(0));
             Assert.IsInstanceOf<CodeBlockNodeModel>(homeNodes.ElementAt(1));
+        }
+
+        [Test]
+        public void UndoMoveDoesNotForceExecution()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\LacingTest.dyn");
+            OpenModel(openPath);
+            RunCurrentModel();
+
+            var sumNodeGuid = new Guid("088365b5-4543-4e73-9430-463475147e19");
+            var sumNode = CurrentDynamoModel.CurrentWorkspace.Nodes.First(node => node.GUID == sumNodeGuid);
+            Assert.IsFalse(sumNode.IsModified);
+
+            var oldX = sumNode.X;
+            var newX = sumNode.X + 100;
+            var newPosition = $"{newX};{sumNode.Y}";
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UpdateModelValueCommand(Guid.Empty, sumNodeGuid, nameof(NodeModel.Position), newPosition));
+            Assert.AreEqual(newX, sumNode.X);
+
+            CurrentDynamoModel.ExecuteCommand(new DynCmd.UndoRedoCommand(DynCmd.UndoRedoCommand.Operation.Undo));
+            Assert.AreEqual(oldX, sumNode.X);
+
+            Assert.IsFalse(sumNode.IsModified);
+        }
+
+        /// <summary>
+        /// This test is added to test if the HasUnsavedChanges can be set 
+        /// correctly after node removal using an edge case
+        /// </summary>
+        [Test]
+        public void TestHasUnsavedChangesOnNodeRemovalEdgeCase()
+        {
+            string openPath = Path.Combine(TestDirectory, @"core\logic\comparison\testToleranceEquals_defaultTolerance.dyn");
+            OpenModel(openPath);
+            // Default state after graph open
+            Assert.AreEqual(false, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
+            CurrentDynamoModel.CurrentWorkspace.RecordAndDeleteModels(
+                CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x=>x.GUID.Equals(new Guid("c2f69bf434be47fa8f0a4a0ceca5910b"))).ToList<ModelBase>());
+            // Assert HasUnsavedChanges is true after a downstream node removal
+            Assert.AreEqual(true, CurrentDynamoModel.CurrentWorkspace.HasUnsavedChanges);
         }
 
         [Test]

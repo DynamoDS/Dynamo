@@ -275,22 +275,27 @@ namespace Dynamo.Wpf.ViewModels
             {
                 // Placing the new node to the right of initial node
                 adjustedX += initialNode.Width + 50;
+
+                // Create a new node based on node creation name and connection ports
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
+                    Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, 0, createAsDownStreamNode, false, true));
             }
             else
             {
                 // Placing the new node to the left of initial node
                 adjustedX -= initialNode.Width + 50;
+
+                // Create a new node based on node creation name and connection ports
+                dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
+                      Model.CreationName, 0, portModel.Index, adjustedX, 0, createAsDownStreamNode, false, true));
             }
 
-            // Create a new node based on node creation name and connection ports
-            dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
-                Model.CreationName, 0, portModel.Index, adjustedX, 0, createAsDownStreamNode, false, true));
+            var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
 
             // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
             DynamoSelection.Instance.ClearSelection();
-            var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-
             DynamoSelection.Instance.Selection.AddRange(inputNodes);
+            DynamoSelection.Instance.Selection.Add(initialNode);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
@@ -306,8 +311,17 @@ namespace Dynamo.Wpf.ViewModels
             var nodeView = (NodeView) sender;
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true);
-
+            if (nodeView.ViewModel.NodeModel.OutputNodes.Count() > 0)
+            {
+                var originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
+                dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
+            }
+            else if (nodeView.ViewModel.NodeModel.InputNodes.Count() > 0)
+            {
+                var originalNodeId = nodeView.ViewModel.NodeModel.InputNodes.Values.Select(s => s.Item2).Distinct().FirstOrDefault().GUID;
+                dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
+            }
+          
             DynamoSelection.Instance.ClearSelection();
 
             // Close the undo action group once the node is created, connected and placed.

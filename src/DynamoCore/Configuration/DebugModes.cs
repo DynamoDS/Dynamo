@@ -47,8 +47,8 @@ namespace Dynamo.Configuration
         private static void RegisterDebugModes()
         {
             // Register app wide new debug modes here.
-            AddDebugMode("PythonEngineSelectionUIDebugMode", "Enable/disable PythonEngineSelectionUI.", true);
-            AddDebugMode("Python2ObsoleteMode", "Enable/disable warnings regarding Python 2 obsoletion.");
+            AddDebugMode("DynamoPreferencesMenuDebugMode", "Enable/Disable the Preferences MenuItem in the Dynamo menu.", true);
+            AddDebugMode("DynamoPackageStates", "Enable/Disable package states in the InstalledPackages UI.", false);
         }
 
         internal static void LoadDebugModesStatusFromConfig(string configPath)

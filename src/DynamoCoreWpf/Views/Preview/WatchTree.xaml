@@ -5,13 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
              xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
-             d:DesignHeight="161"
-             d:DesignWidth="410"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             BorderBrush="Black"
-             MaxHeight="300">
+             BorderBrush="Black">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -114,7 +112,7 @@
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="HorizontalContentAlignment" Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
                 <Setter Property="VerticalContentAlignment" Value="{Binding Path=VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
-                <Setter Property="Padding" Value="1,0,0,0"/>
+                <Setter Property="Padding" Value="2,0,0,0"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
                 <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}"/>
                 <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
@@ -169,7 +167,7 @@
                                     <Rectangle 
                                            x:Name="VerLn" Width="1" 
                                            Stroke="Gray" 
-                                           Margin="8,0,0,0" 
+                                           Margin="9,0,0,0" 
                                            Grid.RowSpan="2" 
                                            SnapsToDevicePixels="true"
                                            HorizontalAlignment="Center"
@@ -240,8 +238,8 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
 
+    <Grid Name ="inputGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height ="*" />
             <RowDefinition Height="Auto" />
@@ -333,12 +331,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="8" />
             </Grid.ColumnDefinitions>
-            
+            <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!-- Shows counts of all items in List -->
             
-            <TextBlock Name="ListItems" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
+            <TextBlock Name="ListItems" Grid.Row="0" Grid.Column="2" Margin="0,3,0,7" Foreground="Gray" FontStyle="Italic"
                        Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             {<Run Foreground="DarkRed" Text="{Binding NumberOfItems}" />}
                 </TextBlock>
@@ -346,6 +347,7 @@
             <!-- Shows list@level labels in List -->
             
             <ListView Name="listLevelsView"
+                      Grid.Row="0"
                       Grid.Column ="0" Margin="6,3,0,7" 
                       Background="Transparent"
                       Visibility="{Binding IsCollection, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
@@ -385,7 +387,14 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </Grid>
+
+            <Thumb Name ="resizeThumb" Grid.Row="1" Grid.Column ="2"
+               Width="10" Height="10" 
+               HorizontalAlignment="Right"
+               Margin="2,2,10,2"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Visibility="Hidden"/>
+          </Grid>
         </Border>
     </Grid>
 </UserControl>

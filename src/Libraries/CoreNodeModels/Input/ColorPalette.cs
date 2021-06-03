@@ -20,7 +20,7 @@ namespace CoreNodeModels.Input
     [NodeSearchTags("ColorUISearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [OutPortNames("Color")]
-    [OutPortTypes("Color")]
+    [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions("Selected Color.")]
     public class ColorPalette : NodeModel
     {
@@ -168,15 +168,6 @@ namespace CoreNodeModels.Input
                     new Func<int, int, int, int, DSColor>(DSColor.ByARGB), new List<AssociativeNode> { av, ar, ag, ab });
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), colorNode) };
-        }
-
-        /// <summary>
-        ///     Indicates whether node is input node. 
-        ///     Used to bind visibility of UI for user selection.
-        /// </summary>
-        public override bool IsInputNode
-        {
-            get { return false; }
         }
     }
 }

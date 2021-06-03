@@ -39,11 +39,108 @@
 
     <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <Grid Name="SearchText"
+
+        <Grid Name="Header"
               Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Background="{StaticResource autocompletionWindow}"
+                    Padding="0">
+                <Grid>
+                    <StackPanel Name="AutoCompletionHeader"
+                                Grid.ColumnSpan="1"
+                                Width="Auto"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBlock Text="{x:Static resx:Resources.Autocomplete}"
+                               TextWrapping="Wrap"
+                               Padding="4"
+                               Margin="80,0,0,0"
+                               Foreground="{StaticResource SearchTextBoxBackground}"
+                               TextAlignment="Center"
+                               FontSize="14">
+                        </TextBlock>
+                        <Button Name="InfoButton" Click="OnMoreInfoClicked" Margin="50,7,5,7" BorderThickness="0"  Background="{StaticResource autocompletionWindow}">
+                        <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteinfotab.png" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        </Button>
+                        <Button Name="CloseButton" Margin="0,7,5,7" Height="14" Width="14" BorderThickness="0" Click="CloseAutocompletionWindow" Background="{StaticResource autocompletionWindow}">
+                                <Image Width="14" Height="14" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+        
+        <Border Opacity=".9"
+                Background="{StaticResource LibraryCommonBackground}"
+                Grid.Row="1"
+                Name="AutoCompleteCandidates"
+                MaxHeight="250">
+            <ListBox Name="MembersListBox"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
+                     ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
+                     TargetUpdated="OnMembersListBoxUpdated"
+                     PreviewMouseWheel="OnMembersListBoxMouseWheel"
+                     Margin="-15,0,5,0"
+                     Visibility="Visible">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
+                                      Style="{StaticResource InCanvasScrollViewerStyle}"
+                                      CanContentScroll="True"
+                                      Width="250">
+                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
+                        </ScrollViewer>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Border Margin="-4,2,-2,2" Grid.RowSpan="2">
+            <Popup StaysOpen="True"
+                   AllowsTransparency="True"
+                   Placement="Right"
+                   x:Name="toolTipPopup">
+                <uicontrols:ToolTipWindow />
+            </Popup>
+        </Border>
+
+        <Grid Name="SearchText"
+              Background="{StaticResource LibraryCommonBackground}"
+              Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -53,7 +150,7 @@
                     BorderBrush="{StaticResource outerBorderSelection}"
                     BorderThickness="1"
                     Padding="5"
-                    Margin="1 3"
+                    Margin="10 7"
                     Grid.ColumnSpan="2">
                 <Grid>
                     <StackPanel Name="SearchIconAndTextBlockGrid"
@@ -62,7 +159,7 @@
                                 Orientation="Horizontal">
                         <Image x:Name="SearchIcon"
                                Width="18"
-                               Height="18"
+                               Height="14"
                                VerticalAlignment="Center"
                                HorizontalAlignment="Left">
                             <Image.Style>
@@ -82,7 +179,7 @@
                         </Image>
 
                         <TextBlock Name="SearchTextBlock"
-                                   FontSize="14"
+                                   FontSize="12"
                                    IsHitTestVisible="False"
                                    Foreground="{StaticResource DeafultSearchTextBlockText}"
                                    VerticalAlignment="Center"
@@ -90,8 +187,8 @@
                                                     Converter={StaticResource NonEmptyStringToCollapsedConverter}}"
                                    HorizontalAlignment="Center"
                                    Height="18"
-                                   Margin="9,0,0,0"
-                                   Text="{x:Static resx:Resources.SearchTextBlockText}" />
+                                   Margin="2,0,0,0"
+                                   Text="{x:Static resx:Resources.AutocompleteSearchTextBlockText}" />
 
                     </StackPanel>
 
@@ -99,54 +196,18 @@
                              Foreground="{StaticResource SearchBoxBackgroundColor}"
                              Background="Transparent"
                              BorderThickness="0"
-                             FontSize="14"
+                             FontSize="12"
+                             Height="18"
                              IsEnabled="True"
                              VerticalAlignment="Center"
                              Text="{Binding Path=SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              MinWidth="200"
                              CaretBrush="{StaticResource CommonSidebarTextColor}"
-                             Margin="26,0,0,-1"
+                             Margin="20,0,0,0"
                              TextChanged="OnSearchTextBoxTextChanged" />
                 </Grid>
             </Border>
         </Grid>
-
-        <Border Opacity=".9"
-                Background="{StaticResource LibraryCommonBackground}"
-                Margin="1,2,1,0"
-                Grid.Row="1"
-                Name="AutoCompleteCandidates"
-                MaxHeight="250">
-            <ListBox Name="MembersListBox"
-                     Background="Transparent"
-                     BorderBrush="Transparent"
-                     ItemContainerStyle="{StaticResource SearchMemberStyle}"
-                     ItemsSource="{Binding FilteredResults, NotifyOnTargetUpdated=True}"
-                     TargetUpdated="OnMembersListBoxUpdated"
-                     PreviewMouseWheel="OnMembersListBoxMouseWheel"
-                     Visibility="Visible">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <ScrollViewer Template="{StaticResource InCanvasScrollViewerControlTemplate}"
-                                      Style="{StaticResource InCanvasScrollViewerStyle}"
-                                      CanContentScroll="True"
-                                      Width="250">
-                            <ContentPresenter ContentTemplate="{StaticResource MemberTemplate}" />
-                        </ScrollViewer>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Border>
-
-
-        <Border Margin="-3,0,-3,0">
-            <Popup StaysOpen="True"
-                   AllowsTransparency="True"
-                   Placement="Right"
-                   x:Name="toolTipPopup">
-                <uicontrols:ToolTipWindow />
-            </Popup>
-        </Border>
 
     </Grid>
 </UserControl>

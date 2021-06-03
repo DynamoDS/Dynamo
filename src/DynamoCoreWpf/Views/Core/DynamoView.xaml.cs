@@ -40,6 +40,7 @@ using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Extensions;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
+using Dynamo.Wpf.Views;
 using Dynamo.Wpf.Views.Debug;
 using Dynamo.Wpf.Views.Gallery;
 using Dynamo.Wpf.Views.PackageManager;
@@ -190,6 +191,17 @@ namespace Dynamo.Controls
                 }
             }
 
+            // Sets the visibility of the preferences option in the Dynamo menu depending on the debug mode being enabled
+            // This will be deleted once the option goes into production
+            if (Dynamo.Configuration.DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode"))
+            {
+                preferencesOption.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                preferencesOption.Visibility = Visibility.Collapsed;
+            }
+
             // when an extension is added if dynamoView is loaded, call loaded on
             // that extension (this alerts late loaded extensions).
             this.viewExtensionManager.ExtensionAdded += (extension) =>
@@ -215,17 +227,23 @@ namespace Dynamo.Controls
 
         private void OnWorkspaceOpened(WorkspaceModel workspace)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(workspace, extension);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceOpened(hws, extension, dynamoViewModel.Model.Logger);
             }
         }
 
         private void OnWorkspaceSaving(WorkspaceModel workspace, Graph.SaveContext saveContext)
         {
+            if (!(workspace is HomeWorkspaceModel hws))
+                return;
+
             foreach (var extension in viewExtensionManager.StorageAccessViewExtensions)
             {
-                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(workspace, extension, saveContext);
+                DynamoModel.RaiseIExtensionStorageAccessWorkspaceSaving(hws, extension, saveContext, dynamoViewModel.Model.Logger);
             }
         }
 
@@ -898,11 +916,9 @@ namespace Dynamo.Controls
             //Backing up IsFirstRun to determine whether to show Gallery
             var isFirstRun = dynamoViewModel.Model.PreferenceSettings.IsFirstRun;
 
-            if (!dynamoViewModel.HideReportOptions)
-            {
-                // If first run, Collect Info Prompt will appear
-                UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
-            }
+            // If first run, Collect Info Prompt will appear
+            UsageReportingManager.Instance.CheckIsFirstRun(this, dynamoViewModel.BrandingResourceProvider);
+            
 
             WorkspaceTabs.SelectedIndex = 0;
             dynamoViewModel = (DataContext as DynamoViewModel);
@@ -927,7 +943,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
             dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
-            dynamoViewModel.RequestScaleFactorDialog += DynamoViewModelChangeScaleFactor;
 
             #endregion
 
@@ -1162,25 +1177,6 @@ namespace Dynamo.Controls
             var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             var view = new PackagePathView(viewModel) { Owner = this };
             view.ShowDialog();
-        }
-
-        private void DynamoViewModelChangeScaleFactor(object sender, EventArgs e)
-        {
-            var view = new Prompts.ChangeScaleFactorPrompt(dynamoViewModel.ScaleFactorLog) { Owner = this };
-            if (view.ShowDialog() == true)
-            {
-                if (dynamoViewModel.ScaleFactorLog != view.ScaleValue)
-                {
-                    dynamoViewModel.ScaleFactorLog = view.ScaleValue;
-                    dynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
-
-                    Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
-                        view.ScaleRange.Item1, view.ScaleRange.Item2, view.ScaleRange.Item3));
-
-                    var allNodes = dynamoViewModel.HomeSpace.Nodes;
-                    dynamoViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-                }
-            }
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -1617,7 +1613,6 @@ namespace Dynamo.Controls
             //COMMANDS
             this.dynamoViewModel.RequestPaste -= OnRequestPaste;
             this.dynamoViewModel.RequestReturnFocusToView -= OnRequestReturnFocusToView;
-            dynamoViewModel.RequestScaleFactorDialog -= DynamoViewModelChangeScaleFactor;
             this.dynamoViewModel.Model.WorkspaceSaving -= OnWorkspaceSaving;
             this.dynamoViewModel.Model.WorkspaceOpened -= OnWorkspaceOpened;
 
@@ -1836,6 +1831,14 @@ namespace Dynamo.Controls
             debugModesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             debugModesWindow.ShowDialog();
         }
+
+        private void OnPreferencesWindowClick(object sender, RoutedEventArgs e)
+        {
+            var preferencesWindow = new PreferencesView(dynamoViewModel);
+            preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            preferencesWindow.ShowDialog();
+        }
+
         /// <summary>
         /// Setup the "Samples" sub-menu with contents of samples directory.
         /// </summary>
@@ -2278,11 +2281,6 @@ namespace Dynamo.Controls
 
             sidebarExtensionsGrid.Visibility = Visibility.Collapsed;
             collapsedExtensionSidebar.Visibility = Visibility.Visible;
-        }
-
-        private void OnSettingsSubMenuOpened(object sender, RoutedEventArgs e)
-        {
-            this.ChangeScaleFactorMenu.IsEnabled = !dynamoViewModel.ShowStartPage;
         }
 
         private void Workspace_SizeChanged(object sender, SizeChangedEventArgs e)
