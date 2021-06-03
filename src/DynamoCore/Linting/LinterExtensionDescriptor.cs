@@ -54,5 +54,9 @@ namespace Dynamo.Linting
         {
             return Name.GetHashCode() ^ Id.GetHashCode();
         }
+
+        private const string NONE_DESCRIPTOR_GUID = "7b75fb44-43fd-4631-a878-29f4d5d8399a";
+        
+        internal static LinterExtensionDescriptor DefaultDescriptor => new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
     }
 }
