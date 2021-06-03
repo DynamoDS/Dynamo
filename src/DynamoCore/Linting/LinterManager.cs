@@ -60,7 +60,7 @@ namespace Dynamo.Linting
                     linterExtension.Activate();
                 }
 
-                RaisePropertyChanged("ActiveLinter");
+                RaisePropertyChanged(nameof(ActiveLinter));
             }
         }
 
@@ -106,6 +106,8 @@ namespace Dynamo.Linting
             if (AvailableLinters.Contains(extensionDescriptor)) return;
 
             AvailableLinters.Add(extensionDescriptor);
+
+            RaisePropertyChanged(nameof(AvailableLinters));
         }
 
         private void OnRuleEvaluated(IRuleEvaluationResult result)
