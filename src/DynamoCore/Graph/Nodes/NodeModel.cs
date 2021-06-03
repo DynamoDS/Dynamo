@@ -1591,6 +1591,30 @@ namespace Dynamo.Graph.Nodes
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
+        public void SelectDownStreamNeighbours()
+        {
+            IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
+
+            foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+            {
+                var downstreamNeighbour = c.End.Owner;
+                DynamoSelection.Instance.Selection.Add(downstreamNeighbour);
+                downstreamNeighbour.SelectDownStreamNeighbours();
+            }
+        }
+
+        public void SelectUpStreamNeighbours()
+        {
+            IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
+
+            foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
+            {
+                var upstreamNeighboar = c.Start.Owner;
+                DynamoSelection.Instance.Selection.Add(upstreamNeighboar);
+                upstreamNeighboar.SelectUpStreamNeighbours();
+            }
+        }
+
         #region Node State
 
         /// <summary>

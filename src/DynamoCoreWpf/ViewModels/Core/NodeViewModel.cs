@@ -1303,6 +1303,40 @@ namespace Dynamo.ViewModels
             return false;
         }
 
+        private void SelectUpstream(object parameters)
+        {
+            NodeModel.SelectUpStreamNeighbours();
+        }
+
+        private bool CanSelectUpstream(object parameters)
+        {
+            //Add checks for can stream
+            return true;
+        }
+
+        private void SelectDownstream(object parameters)
+        {
+            NodeModel.SelectDownStreamNeighbours();
+        }
+
+        private bool CanSelectDownstream(object parameters)
+        {
+            //Add checks for can stream
+            return true;
+        }
+
+        private void SelectDownAndUpstream(object parameters)
+        {
+            NodeModel.SelectUpStreamNeighbours();
+            NodeModel.SelectDownStreamNeighbours();
+        }
+
+        private bool CanSelectDownAndUpstream(object parameters)
+        {
+            //Add checks for can stream
+            return true;
+        }
+
 
         #region Private Helper Methods
         private Point GetTopLeft()

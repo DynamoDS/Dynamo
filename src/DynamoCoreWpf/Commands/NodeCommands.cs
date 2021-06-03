@@ -20,6 +20,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
         private DelegateCommand _computeRunStateOfTheNodeCommand;
+        private DelegateCommand _selectConnectedUpstreamCommand;
+        private DelegateCommand _selectConnectedDownstreamCommand;
+        private DelegateCommand _selectConnectedDownAndUpstreamCommand;
 
         [JsonIgnore]
         public DelegateCommand RenameCommand
@@ -195,6 +198,48 @@ namespace Dynamo.ViewModels
                 }
 
                 return _computeRunStateOfTheNodeCommand;
+            }
+        }
+
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedUpstreamCommand
+        {
+            get
+            {
+                if (_selectConnectedUpstreamCommand == null)
+                {
+                    _selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstream, CanSelectUpstream);
+                }
+
+                return _selectConnectedUpstreamCommand;
+            }
+        }
+
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedDownstreamCommand
+        {
+            get
+            {
+                if (_selectConnectedDownstreamCommand == null)
+                {
+                    _selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstream, CanSelectDownstream);
+                }
+
+                return _selectConnectedDownstreamCommand;
+            }
+        }
+
+        [JsonIgnore]
+        public DelegateCommand SelectConnectedUpAndDownstreamCommand
+        {
+            get
+            {
+                if (_selectConnectedDownAndUpstreamCommand == null)
+                {
+                    _selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownAndUpstream, CanSelectDownAndUpstream);
+                }
+
+                return _selectConnectedDownAndUpstreamCommand;
             }
         }
     }
