@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
+using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
@@ -83,7 +84,8 @@ namespace Dynamo.Extensions
             ReadyParamsRef.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
             UnsubscribeGraphEvents(currentWorkspace);
             currentWorkspace = null;
-            this.linterManager.RuleEvaluationResults.Clear();
+
+            DynamoModel.OnRequestDispatcherInvoke(() => { this.linterManager.RuleEvaluationResults.Clear(); });
         }
 
         #endregion
@@ -198,7 +200,8 @@ namespace Dynamo.Extensions
             if (this.currentWorkspace != null)
                 UnsubscribeGraphEvents(this.currentWorkspace);
 
-            this.linterManager.RuleEvaluationResults.Clear();
+            DynamoModel.OnRequestDispatcherInvoke(() => { this.linterManager.RuleEvaluationResults.Clear(); });
+            
             this.currentWorkspace = ReadyParamsRef.CurrentWorkspaceModel as WorkspaceModel;
             this.SubscribeNodeEvents();
             this.SubscribeGraphEvents();
