@@ -28,6 +28,10 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
+            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
+            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
+            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+
             DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
 
@@ -161,18 +165,6 @@ namespace Dynamo.Wpf.Views
                 Button colorButton = sender as Button;
                 if (colorButton != null)
                     colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
-            }
-        }
-
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander currentExpander = sender as Expander;
-            Grid parentGrid = currentExpander.Parent as Grid;
-            foreach (Expander expander in parentGrid.Children)
-            {
-                if (expander != currentExpander && expander.IsExpanded)
-                    expander.IsExpanded = false;
-
             }
         }
 

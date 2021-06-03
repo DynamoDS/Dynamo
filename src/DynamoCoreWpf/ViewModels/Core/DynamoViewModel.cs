@@ -293,6 +293,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if line numbers should be displayed on code block nodes.
         /// </summary>
+        [Obsolete("This was moved to PreferencesViewModel.cs")]
         public bool ShowCodeBlockLineNumber
         {
             get
