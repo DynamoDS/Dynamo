@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dynamo.Logging;
 using NodeDocumentationMarkdownGenerator.Verbs;
 
 namespace NodeDocumentationMarkdownGenerator.Commands

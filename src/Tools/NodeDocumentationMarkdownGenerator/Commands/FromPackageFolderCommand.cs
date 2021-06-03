@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Dynamo.Logging;
 using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using NodeDocumentationMarkdownGenerator.Verbs;

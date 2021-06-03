@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Dynamo.Configuration;
 using Dynamo.Logging;
 using NodeDocumentationMarkdownGenerator.Commands;
 using NodeDocumentationMarkdownGenerator.Verbs;
