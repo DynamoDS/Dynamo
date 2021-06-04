@@ -93,20 +93,19 @@ namespace Dynamo.Tests
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", true);
             AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { "a1", "b1", "c1" });
 
-            /* The downstream node has the following inputs:
-             *              truevalue: partially connected "If" node
-             *              falsevalue: [["a2"],"b2"];
-             *              
-             * This downstream node which is connected to partially connected "IF" node should return the truevalue.
-            */
-            AssertPreviewValue("28de9895-3bde-49ad-a92c-8da05dd25a1c", "Function");
-
             boolSelectorNode.Value = false;
             AssertPreviewValue("886a464b-9b2b-4e66-a033-c18d0753c2cf", false);
             AssertPreviewValue("f945529e-62e3-4c7a-b07a-0b18d7449f9b", new object[] { new object[] { "a2" }, "b2" });
 
-            // The downstream node which is connected to partially connected "IF" node should return the falsevalue.
-            AssertPreviewValue("28de9895-3bde-49ad-a92c-8da05dd25a1c", new object[] { new object[] { "a2" }, "b2" });
+            /* Test partially connected 'If' node.
+             * The 'Function Apply' node has the following inputs:
+             *              function: partially connected 'If' node whose truevalue is [1,[2],3] and falsevalue is [4,5].
+             *              argument0: [true,false]
+             *              
+             * This 'Function Apply' node will call the partially connected "If" function 2 times. One for true and the other one for false.
+             * So the output should be [[1,[2],3], [4,5]]
+            */
+            AssertPreviewValue("d38be78d-1d6d-4c4d-a67f-e16208f5feb6", new object[] { new object[] { 1, new object[] { 2 }, 3 }, new object[] { 4, 5 } });
         }
 
         [Test]

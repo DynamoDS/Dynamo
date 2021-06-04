@@ -218,32 +218,24 @@
       "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
     },
     {
-      "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
+      "ConcreteType": "CoreNodeModels.HigherOrder.ApplyFunction, CoreNodeModels",
+      "VariableInputPorts": true,
       "NodeType": "ExtensionNode",
-      "Id": "28de98953bde49ada92c8da05dd25a1c",
+      "Id": "d38be78d1d6d4c4da67fe16208f5feb6",
       "Inputs": [
         {
-          "Id": "d20da47c999446848bdf09eef78f74e1",
-          "Name": "test",
-          "Description": "Boolean test",
+          "Id": "95f063b2f31e4a01a0fffcc09f86e3f4",
+          "Name": "function",
+          "Description": "Function to apply.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         },
         {
-          "Id": "7654305235264494aceb02b276acc442",
-          "Name": "true",
-          "Description": "Returned if test is true",
-          "UsingDefaultValue": false,
-          "Level": 2,
-          "UseLevels": false,
-          "KeepListStructure": false
-        },
-        {
-          "Id": "603d1dc08b45424f900a13bcea57842b",
-          "Name": "false",
-          "Description": "Returned if test is false",
+          "Id": "4376b937246a41cf8c8544cf4467e010",
+          "Name": "argument0",
+          "Description": "Argument #0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,17 +244,37 @@
       ],
       "Outputs": [
         {
-          "Id": "9d457b12f4654485a4a35fa6fb1dcf37",
+          "Id": "b02f8c5b20b74ab6ace112a30280784e",
           "Name": "result",
-          "Description": "Result block produced",
+          "Description": "Result of application.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
           "KeepListStructure": false
         }
       ],
-      "Replication": "Auto",
-      "Description": "Returns the result of either the True or False input depending on what boolean value is toggled in the test input."
+      "Replication": "Disabled",
+      "Description": "Returns the result of a function with supplied arguments. Ex: arguments of a point and vector are applied to a translate function returning a translated point."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "[true,false];",
+      "Id": "8b3c24770f324e38ab1efde87fc223d2",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "5f1e9ab0a3dc49318cef16f480068f41",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
     }
   ],
   "Connectors": [
@@ -277,14 +289,14 @@
       "Id": "6dcd8689135e4b03a7bbb503dc2b548c"
     },
     {
-      "Start": "f73d32ffd2e94e8383063af06f67712e",
-      "End": "603d1dc08b45424f900a13bcea57842b",
-      "Id": "9c75b63571f848fea54d14c48c58393e"
-    },
-    {
       "Start": "38333ca1b5044f94a665ce92fa26006f",
       "End": "9c598ef3a9104fa2ac626654f284f60c",
       "Id": "e07d1c06f58b4d7ead58b01599087864"
+    },
+    {
+      "Start": "38333ca1b5044f94a665ce92fa26006f",
+      "End": "dcd3ff62e1e84e05a8137be36b095305",
+      "Id": "408d14c757dd4c499ce197860d4eaaf1"
     },
     {
       "Start": "df20aa41822f4c9a854fb8124ddb4655",
@@ -307,24 +319,19 @@
       "Id": "91ad2fe63dab4e8b986596dd1b3c2686"
     },
     {
-      "Start": "3f90288806474ec2a7184fb87a41c006",
-      "End": "5e6245f62649422383512c2431a25c7d",
-      "Id": "e9a81a2163b7489c85eb4677687d5fa9"
-    },
-    {
-      "Start": "3f90288806474ec2a7184fb87a41c006",
-      "End": "d20da47c999446848bdf09eef78f74e1",
-      "Id": "1de1cc27f3f24a9782e98f9444f4ead2"
-    },
-    {
       "Start": "48125a118e0d4abfb1ca533166d6ac60",
-      "End": "7654305235264494aceb02b276acc442",
-      "Id": "939d7a3756944eb4a82aebafa13ddcd1"
+      "End": "95f063b2f31e4a01a0fffcc09f86e3f4",
+      "Id": "88ff4136e0f44bd783d77e0169d00e40"
+    },
+    {
+      "Start": "5f1e9ab0a3dc49318cef16f480068f41",
+      "End": "4376b937246a41cf8c8544cf4467e010",
+      "Id": "2f1e69d4c2ba4b9caa9f658fa63618bf"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
-  "Thumbnail": null,
+  "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [],
   "Author": "None provided",
@@ -403,13 +410,23 @@
       },
       {
         "ShowGeometry": true,
-        "Name": "If",
-        "Id": "28de98953bde49ada92c8da05dd25a1c",
+        "Name": "Function Apply",
+        "Id": "d38be78d1d6d4c4da67fe16208f5feb6",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 472.0,
-        "Y": 508.5
+        "X": 752.0,
+        "Y": 459.5
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "8b3c24770f324e38ab1efde87fc223d2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 496.0,
+        "Y": 515.0
       }
     ],
     "Annotations": [],
