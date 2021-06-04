@@ -41,7 +41,7 @@ namespace Dynamo.GraphMetadata
         private void TextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var textBox = sender as TextBox;
-            if (Uri.TryCreate(textBox.Text, UriKind.RelativeOrAbsolute, out Uri uri))
+            if (Uri.TryCreate(textBox.Text, UriKind.Absolute, out Uri uri))
             {
                 try
                 {

@@ -159,10 +159,7 @@
             <HeaderedContentControl Header="Learn more URL">
                 <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
                          Name="UriTextBox"
-                         Style="{StaticResource TextBoxStyle}"
                          TextWrapping="WrapWithOverflow"
-                         TextDecorations="Underline"
-                         FontWeight="SemiBold"
                          MouseDoubleClick="TextBox_MouseDoubleClick">
                     <TextBox.Text>
                         <Binding Path="HelpLink"
@@ -177,6 +174,23 @@
                             </Binding.Converter>
                         </Binding>
                     </TextBox.Text>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}"
+                               BasedOn="{StaticResource TextBoxStyle}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError"
+                                         Value="True">
+                                    <Setter Property="TextDecorations"
+                                            Value="None" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError"
+                                         Value="False">
+                                    <Setter Property="TextDecorations"
+                                            Value="Underline" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
                 </TextBox>
             </HeaderedContentControl>
             
