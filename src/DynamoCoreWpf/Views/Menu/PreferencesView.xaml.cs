@@ -18,7 +18,6 @@ namespace Dynamo.Wpf.Views
     /// </summary>
     public partial class PreferencesView : Window
     {
-        private List<Expander> allExpandersList;
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
@@ -142,7 +141,7 @@ namespace Dynamo.Wpf.Views
             viewModel.ResetAddStyleControl();
         }
 
-        private void removeStyle_Click(object sender, RoutedEventArgs e)
+        private void RemoveStyle_Click(object sender, RoutedEventArgs e)
         {
            var removeButton = sender as Button;
 
@@ -156,7 +155,7 @@ namespace Dynamo.Wpf.Views
             viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
         }
 
-        private void buttonColorPicker_Click(object sender, RoutedEventArgs e)
+        private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
 

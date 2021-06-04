@@ -18,7 +18,7 @@
         ResizeMode="NoResize"
         mc:Ignorable="d" 
         Height="474" 
-        Width="530" >
+        Width="580" >
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -75,7 +75,7 @@
                                     Margin="0,0,8,0"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
-                                    Click="removeStyle_Click"
+                                    Click="RemoveStyle_Click"
                                     Style="{StaticResource RemoveStyleButtonStyle}"
                                     Width="20"
                                     Height="30">
@@ -574,7 +574,7 @@
                                                         <Button x:Name="buttonColorPicker"
                                                                 Style="{StaticResource ButtonColorPickerStyle}"
                                                                 Background="{Binding AddStyleControl.HexColorString}" 
-                                                                Click="buttonColorPicker_Click"
+                                                                Click="ButtonColorPicker_Click"
                                                                 Width="25" 
                                                                 Height="15"/>
                                                         <Label x:Name="colorHexVal" 
@@ -695,6 +695,42 @@
                                                Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     </StackPanel>
                                 </Grid>
+                            </Expander>
+                        </Grid>
+                    </TabItem>
+
+                    <!--Package Manager Settings Tab-->
+                    <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
+                             Style="{StaticResource LeftTab}">
+                        <!--This Grid contains the package mangager settings tab-->
+                        <Grid x:Name="PackageManagerTab" 
+                              Margin="1"
+                              HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--This Grid row contains the Package Paths section-->
+                            <Expander x:Name="PackagePathsExpander"
+                                        Grid.Row="0"
+                                        Style="{StaticResource MenuExpanderStyle}" 
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
+                                        Header="{x:Static p:Resources.PackagePathsExpanderName}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label>SOME CONTENT</Label>
+                                </StackPanel>
+                            </Expander>
+
+                            <!--This Grid row contains the Installed Packages section-->
+                            <Expander x:Name="InstalledPackagesExpander" 
+                                          Style="{StaticResource MenuExpanderStyle}" 
+                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                          Grid.Row="1"
+                                          Header="{x:Static p:Resources.InstalledPackagesExpanderName}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label>SOME CONTENT</Label>
+                                </StackPanel>
                             </Expander>
                         </Grid>
                     </TabItem>
