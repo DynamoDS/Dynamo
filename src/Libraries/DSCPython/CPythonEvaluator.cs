@@ -149,14 +149,16 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+        private static DynamoLogger dynamoLogger;
         internal static DynamoLogger DynamoLogger {
             get
             { // Session is null when running unit tests.
                 if (ExecutionEvents.ActiveSession != null)
                 {
-                    return ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                    dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                    return dynamoLogger;
                 }
-                return null;
+                return dynamoLogger;
             }
         }
 
@@ -361,7 +363,8 @@ clr.setPreload(True)
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                Action<string> logFunction = msg => DynamoLogger?.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
+                var logger = DynamoLogger;
+                Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set(DynamoPrintFuncName, logFunction.ToPython());
                 scope.Exec(RedirectPrint());
             }
