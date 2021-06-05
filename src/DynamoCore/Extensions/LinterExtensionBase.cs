@@ -71,7 +71,7 @@ namespace Dynamo.Extensions
         /// <summary>
         /// Activate this linter by subscribing the workspace and initializing its rules
         /// </summary>
-        internal void Activate()
+        internal void Activate(bool linkToWorkspace = true)
         {
             //Nothing left to do if initial setup is complete and we are already linked to application events
             if (SetupComplete)
@@ -85,8 +85,12 @@ namespace Dynamo.Extensions
             ReadyParamsRef.CurrentWorkspaceClearingStarted += OnCurrentWorkspaceClosing;
             ReadyParamsRef.CurrentWorkspaceRemoveStarted += OnCurrentWorkspaceClosing;
 
-            LinkToWorkspace(ReadyParamsRef.CurrentWorkspaceModel as HomeWorkspaceModel);
-            SetupComplete = true;
+            if (linkToWorkspace)
+            {
+                LinkToWorkspace(ReadyParamsRef.CurrentWorkspaceModel as HomeWorkspaceModel);
+            }            
+
+            SetupComplete = true;                       
         }
 
         /// <summary>
@@ -182,12 +186,6 @@ namespace Dynamo.Extensions
         public virtual void Ready(ReadyParams sp)
         {
             currentWorkspace = null;
-            HomeWorkspaceModel newWorkspace = sp.CurrentWorkspaceModel as HomeWorkspaceModel;
-            if (newWorkspace != null && !String.IsNullOrEmpty(newWorkspace.FileName))
-            {
-                currentWorkspace = newWorkspace;
-            }
-
             ReadyParamsRef = sp;
         }
 

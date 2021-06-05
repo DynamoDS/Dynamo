@@ -60,9 +60,9 @@ namespace Dynamo.Tests.Linting
             Assert.That(!model.LinterManager.IsExtensionActive(MOCK_GUID));
 
             // Act
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             // Assert
             Assert.That(model.LinterManager.ActiveLinter != activeLinterBefore);
@@ -87,9 +87,9 @@ namespace Dynamo.Tests.Linting
             // When setting a linter as the active linter, that linters Activate() gets called
             // which will initialize the rules using the init function. As we only have one mock rule
             // that checks if the node name is "NewNodeName" no failed evaluation results should be created here.
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             // Update graph nodes name to trigger the node rule evaluation
             failureNode.Name = "NewNodeName";
@@ -141,13 +141,13 @@ namespace Dynamo.Tests.Linting
             // and subscribe everything. Then we change the active linter again but to the mock extension created in this test
             // this is to simulate a change in the active linter and to make sure we are only getting results from the active linter
             // even though two linters have been initialized.
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == MOCK_GUID)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
-            model.LinterManager.ActiveLinter = model.LinterManager.AvailableLinters
+            model.LinterManager.SetActiveLinter(model.LinterManager.AvailableLinters
                 .Where(x => x.Id == secondLinterExtId)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             failureNode.Name = "NewNodeName";
 

@@ -61,7 +61,7 @@ namespace Dynamo.LintingViewExtension
                     return;
 
                 activeLinter = value;
-                linterManager.ActiveLinter = activeLinter;
+                linterManager.SetActiveLinter(activeLinter);
                 RaisePropertyChanged(nameof(ActiveLinter));
             }
         }
