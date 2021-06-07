@@ -116,8 +116,8 @@ namespace NodeDocumentationMarkdownGenerator
                 }
 
                 AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
-                Console.WriteLine($"{nodeSearchModel.SearchEntries.Count()} nodes found during scan");
                 fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
+                Console.WriteLine($"{fileInfos.Count()} nodes found during scan");
             }
 
             return fileInfos;
