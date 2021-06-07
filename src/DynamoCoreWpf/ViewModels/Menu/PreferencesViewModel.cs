@@ -433,14 +433,21 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.DefaultPythonEngine;
+                return selectedPythonEngine;
             }
             set
             {
-                if (value != preferenceSettings.DefaultPythonEngine)
+                if (value != selectedPythonEngine)
                 {
                     selectedPythonEngine = value;
-                    preferenceSettings.DefaultPythonEngine = value;
+                    if(value != Res.DefaultPythonEngineNone)
+                    {
+                        preferenceSettings.DefaultPythonEngine = value;
+                    }
+                    else{
+                        preferenceSettings.DefaultPythonEngine = string.Empty;
+                    }
+
                     RaisePropertyChanged(nameof(SelectedPythonEngine));
                 }
             }
@@ -606,7 +613,12 @@ namespace Dynamo.ViewModels
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
             AddPythonEnginesOptions();
-            SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+
+            //Sets SelectedPythonEngine.
+            //If the setting is empty it corresponds to the default python engine
+            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
+                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
+                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
