@@ -1,0 +1,305 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using Dynamo.Wpf.Interfaces;
+using ImageMagick;
+using Newtonsoft.Json;
+
+namespace NodeDocumentationMarkdownGenerator
+{
+    internal static class MarkdownHandler
+    {
+        /// <summary>
+        /// Creates markdown files from the given collection of fileInfos
+        /// </summary>
+        /// <param name="fileInfos">Collection of files to create</param>
+        /// <param name="outputDir">Folder path where files should be created</param>
+        /// <param name="overWrite">if true, files in outputDir will be overwritten</param>
+        /// <param name="logger">logger instance</param>
+        /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
+        /// <param name="dictionaryPath">path to dictionary json file</param>
+        /// <param name="layoutSpec">path to layout spec json</param>
+        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
+        {
+            ImageOptimizer optimizer = null;
+            LayoutSpecification spec = null;
+            List<DynamoDictionaryEntry> dictEntrys = null;
+            string examplesDirectory = "";
+
+            Console.WriteLine($"Starting generation of {fileInfos.Count} markdown files...");
+
+            if (!string.IsNullOrEmpty(dictionaryPath) &&
+                    File.Exists(dictionaryPath))
+            {
+                var dictionaryJson = File.ReadAllText(dictionaryPath);
+                dictEntrys = JsonConvert.DeserializeObject<List<DynamoDictionaryEntry>>(dictionaryJson);
+                var mainDirectory = new FileInfo(dictionaryPath).Directory;
+                examplesDirectory = Path.Combine(mainDirectory.FullName, "EXAMPLES");
+
+                if (compressImages)
+                {
+                    optimizer = new ImageOptimizer();
+                    optimizer.OptimalCompression = true;
+                }
+                if (!string.IsNullOrEmpty(layoutSpec))
+                {
+                    var layoutSpecString = File.ReadAllText(layoutSpec);
+                    spec = JsonConvert.DeserializeObject<LayoutSpecification>(layoutSpecString);
+                }
+            }
+
+            var filesCreatedCount = 0;
+            foreach (var info in fileInfos)
+            {
+                var fileName = $"{info.FileName}.md";
+                var filePath = Path.Combine(outputDir, fileName);
+
+                var fileInfo = new FileInfo(filePath);
+
+                if (File.Exists(filePath) &&
+                    !overWrite)
+                {
+                    continue;
+                }
+
+                string fileContent = null;
+
+                if (dictEntrys != null)
+                {
+                    DynamoDictionaryEntry matchingEntry = GetMatchingDictionaryEntry(dictEntrys, info, spec);
+                    if (matchingEntry != null)
+                    {
+                        fileContent = GetContentFromDictionaryEntry(matchingEntry, examplesDirectory, optimizer, fileInfo);    
+                    }
+                }
+
+                if (fileContent is null)
+                {
+                    fileContent = GetDefaultContent(info.NodeName);
+                    if (dictEntrys != null)
+                    {
+                        Console.WriteLine($"No matching Dictionary entry found for {fileName}");
+                    }
+                }
+
+                try
+                {
+                    using (StreamWriter sw = File.CreateText(filePath))
+                    {
+                        sw.WriteLine(fileContent);
+                    }
+                }
+                catch (Exception e)
+                {
+                    CommandHandler.LogExceptionToConsole(e);
+                    continue;
+                }
+                filesCreatedCount++;
+            }
+
+            Console.WriteLine($"{filesCreatedCount} documentation files created");
+        }
+
+        private static string GetDefaultContent(string nodeName)
+        {
+            var content = new StringBuilder();
+            content.AppendLine(string.Format(Properties.Resources.DocumentationHeader, nodeName));
+            content.AppendLine(string.Format(Properties.Resources.DefaultContentInfo, Assembly.GetExecutingAssembly().GetName()));
+            content.AppendLine();
+            content.AppendLine(Properties.Resources.DefaultContentSeeMore);
+            return content.ToString();
+        }
+
+        private static string GetContentFromDictionaryEntry(DynamoDictionaryEntry entry, string examplesDirectory, ImageOptimizer optimizer, FileInfo fileInfo)
+        {
+            var imgDir = new DirectoryInfo(Path.Combine(examplesDirectory, entry.FolderPath, "img"));
+
+            var missingFields = new string[2];
+
+            // Sometimes the dictionary specifies an image file without it actually existing
+            // so we check both if the directory and the file exist
+            string imageString = string.Empty;
+            if (imgDir.Exists &&
+                imgDir.GetFiles($"{entry.ImageFile.FirstOrDefault()}.*").Length > 0 &&
+                !TrySaveImage(imgDir, entry.ImageFile.FirstOrDefault(), optimizer, fileInfo, out imageString))
+            {
+                missingFields[0] = "Image";
+            }
+  
+            if (entry.InDepth == string.Empty) missingFields[1] = "In Depth description";
+
+            if (!missingFields.Any())
+            {
+                Console.WriteLine($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
+            }
+
+            var content = new StringBuilder();
+            content.AppendLine(Properties.Resources.DictionaryContentInDepthHeader);
+            content.AppendLine(entry.InDepth);
+            content.AppendLine("___");
+            content.AppendLine(Properties.Resources.DictionaryContentExampleFileHeader);
+            content.AppendLine();
+            content.AppendLine(imageString);
+            return content.ToString();
+        }
+
+        private static bool TrySaveImage(DirectoryInfo imgDir, string imgName, ImageOptimizer optimizer, FileInfo fileInfo, out string mdImage)
+        {
+            mdImage = string.Empty;
+            var imageFileInfo = imgDir.GetFiles($"{imgName}.*").FirstOrDefault();
+
+            if (!imageFileInfo.Exists) return false;
+
+            try
+            {
+                using (Image image = Image.FromFile(imageFileInfo.FullName))
+                using (MemoryStream m = new MemoryStream())
+                {
+                    image.Save(m, image.RawFormat);
+
+                    if (optimizer != null)
+                    {
+                        m.Position = 0;
+                        optimizer.Compress(m);
+                    }
+
+                    var img = Image.FromStream(m);
+                    var fileName = $"{Path.GetFileNameWithoutExtension(fileInfo.FullName)}_img{imageFileInfo.Extension}";
+                    var path = Path.Combine(fileInfo.Directory.FullName, fileName);
+                    img.Save(path);
+                    mdImage = $"![{imgName}](./{fileName.Replace(" ", "%20")})";
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+        }
+
+        private static DynamoDictionaryEntry GetMatchingDictionaryEntry(List<DynamoDictionaryEntry> dictEntrys, MdFileInfo info, LayoutSpecification spec)
+        {
+            // The DynamoDictionary only gives information about the name of the node and the folder path,
+            // the MdFileInfo know about the name of the node and its namespace.
+            // The DynamoDictionary Folder path is the same as the namespace except its separated by "/" instead of ".".
+            // In order to find the correct dict entry we need to convert the namespace into a folder path, and then get the entry
+            // where the folder path and name is matching.
+            var infoNameSpaceFolderPath = ConvertNamespaceToDictionaryFolderPath(info.NodeNamespace);
+            var infoCategoryFolderPath = ConvertNamespaceToDictionaryFolderPath(info.FullCategory);
+
+            var matchingEntry = dictEntrys
+                .Where(x =>
+                    x.FolderPath.StartsWith(infoNameSpaceFolderPath) ||
+                    x.FolderPath.StartsWith(infoCategoryFolderPath) &&
+                    x.Name == info.NodeName)
+                .FirstOrDefault();
+
+            if (matchingEntry is null)
+            {
+                if (TryGetMatchingEntryFromLayoutSpec(spec.sections.Cast<LayoutElement>().ToList(), dictEntrys, info, string.Empty, out matchingEntry))
+                {
+                    return matchingEntry;
+                }
+            }
+
+            return matchingEntry;
+        }
+
+        private static bool TryGetMatchingEntryFromLayoutSpec(List<LayoutElement> sections, List<DynamoDictionaryEntry> dictEntrys, MdFileInfo info, string matchingPath, out DynamoDictionaryEntry matchingEntry)
+        {
+            var nodeNameWithoutArgs = info.NodeName.IndexOf("(") > 0 ? 
+                info.NodeName.Remove(info.NodeName.IndexOf("(")) : 
+                info.NodeName;
+
+            matchingEntry = null;
+            foreach (var item in sections)
+            {
+                if (!(item is LayoutSection))
+                    matchingPath = $"{matchingPath}/{item.text}";
+
+                if (item.include.Count > 0)
+                {
+                    // We need to test a lot of options here, the dictionary json paths can come from different places it seems
+                    // Mostly when delaing with ZT nodes the full category name works, with NodeModels we need to use the namespace
+                    var mathcingLayoutInfo = item.include.Where(x => 
+                            info.FullCategory.StartsWith(x.path) ||
+                            $"{info.FullCategory}.{nodeNameWithoutArgs}" == x.path ||
+                            info.NodeNamespace == x.path ||
+                            info.NodeNamespace.StartsWith(x.path) ||
+                            $"{info.NodeNamespace}.{nodeNameWithoutArgs}" == x.path
+                            )
+                        .FirstOrDefault();
+                    if (mathcingLayoutInfo != null)
+                    {
+                        // At this point matchingPath looks something like : "/Display/Color"
+                        // therefor we need to remove the first '/'
+                        var path = matchingPath.Remove(0, 1);
+
+                        // There are cases where the NodeName has two words separated by a "."
+                        // this is true for many of the List nodes in CoreNodeModels, e.g. List.LaceLongest.
+                        // The dictionary entry for List.LaceLongest only has LaceLongest in the name
+                        // therefor we need to first try and match with the name, and after that try and match with the "List." part removed.
+                        var endIndex = info.NodeName.LastIndexOf(".");
+                        var nodeNameWithoutPrefix = endIndex > 0 ?
+                            info.NodeName.Remove(0, endIndex + 1) :
+                            info.NodeName;
+
+                        // First we try and match the folder path that we create in this recursive func with the folder path in the dict entry.
+                        // Then we check if either the NodeName on the info object or the nodeNameWithoutPrefix matches the Name from the dict entry.
+                        // Lastly we need to make sure that the last part of the infos FullCategory is contained in the folder path of the dict entry.
+                        // The last check is needed because the layoutspec does not always match what is in the dictionary json,
+                        // heres an example:
+                        // When trying to get a matching entry for the node "ByThreePoints" which namespace is ProtoGeometry.Autodesk.DesignScript.Geometry.Arc,
+                        // the DynamoCore layout spec puts all ProtoGeometry.Autodesk.DesignScript.Geometry.Arc under "Curves", which means we get a mathcingLayoutInfo
+                        // when the matching path is Geometry/Curves, but in the dictionary json "ByThreePoints" folder path is specified as "Geometry/Curves/Arc/Query"
+                        // meaning we are missing the "Arc" part, we can get Arc from the last part of the FullCategory. If we do not add that part to the matching we might
+                        // end up with an incorrect entry.
+                        var matchingEntries = dictEntrys
+                            .Where(x =>
+                                x.FolderPath.StartsWith(path) &&
+                                (Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(info.NodeName, @"\s+", "") ||
+                                Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(nodeNameWithoutPrefix, @"\s+", "")));
+
+                        if (matchingEntries.Count() > 1)
+                        {
+                            matchingEntry = matchingEntries
+                                .Where(x => x.FolderPath.Contains(info.FullCategory.Split(new char[] { '.' }).Last()))
+                                .FirstOrDefault();
+                        }
+                        else
+                        {
+                            matchingEntry = matchingEntries.FirstOrDefault();
+                        }
+
+                        if (matchingEntry != null) return true;
+                    }
+                }
+
+                if(TryGetMatchingEntryFromLayoutSpec(item.childElements, dictEntrys, info, matchingPath, out matchingEntry))
+                {
+                    return true;
+                }
+
+                if (string.IsNullOrEmpty(matchingPath)) continue;
+
+                matchingPath = matchingPath.Substring(0, matchingPath.LastIndexOf('/'));
+            }
+
+            return false;
+        }
+
+        private static string ConvertNamespaceToDictionaryFolderPath(string infoNamespace)
+        {           
+            var folderPath = infoNamespace
+                .Replace(".", "/");
+
+            return folderPath;
+        }
+    }
+}
