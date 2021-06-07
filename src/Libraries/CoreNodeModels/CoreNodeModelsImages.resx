@@ -768,6 +768,25 @@
         L0B4qfoOUL6IiIiIiIiIiIiIiIiIiIiIiIiIyG73B7BuavcidkHUAAAAAElFTkSuQmCC
 </value>
   </data>
+  <data name="CoreNodeModels.Logic.RefactoredIf.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+      iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+      dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAMNSURBVHhe7ZfNbRsxFAZVgktICS7BOQbIwSWklHRg
+      IA24BJcQpAKfc0oHTgkKZ/NRXhsr7q+UCJoBHmBzl4/kfNJK2omIiIiIiIiIiIiIiIiIiIiIiIiIyO7l
+      5eWm1GPqJsNyDiL/udQ+xd+GcA4QHeGIr+8AQzgHCI7oTn6GGTeEU4PYCH4jv8JYrhnC1iA0YgflV7iW
+      ewxhKxAZoU35Fe7JvYawFgRG5CT5Fe7NHENYCuIicJb8CnMy1xDmgrCIWyS/wtz0MISpICrCVsmv0CO9
+      DGEMBEXUJvIr9EpPQzgGYiKoKX+/39+Uuiv1tVd3uXwUeqa3IbwHIRFzVH6kP5U6xu9S97l9EHpnDUOo
+      ICJCxl753zvN4zTfDayRtQwBARHRlA+I/eu347nUQykeP48M9HjKlKOwVta83hA4eASMyq8UuQj/kH8P
+      lDHCOJDhJqyZta8vBA6cg0+W36I47wfwK8OjsHb2cJkh/Pj8aT+nmMNBc+Ct5N+W4gO4Mqsne8heLi+E
+      Icmt4oA56Fby70v15fPZMFsie8meLiuEIcmtKod7ykG3kP+lU/7KIvkV9pS9jX6IXywcLodcFUAR3f9G
+      BKsDZU91bx+//dzPqbT4/ymH2+QRVIT3f5CtfsWyl+ypewQNSW5V2lwGHDAHXRxCkd7/Udb89TsGe8he
+      Ds//Icmt6hpdEhw0B14UQpHONx8eQ9QWz/2D/KuBA+fgi98Ja2DNrH198iscPAJmhcBjpxSPIT4LbjM8
+      GdbKmtcrv4KAiJgcQpHeZ/IvX2CNrKX8CiIiZFIIEX8gw6PQO2so/z0IiZjREIrz/reghww3oWd6K/8Y
+      iImgKSHwDWjS859e6an8MRAUUaMhTIEe6aX8qSAqwlaFwNz0UP5cEBZxi0JgTuYqfymIi8BZIXBv5ih/
+      LQiMyEkhcE/uVf5WIDJCmyFwLfcof2sQGrGDITCWa8o/FYiN4Dch8HfGlH9qEBzRXQgp5Z8TREc44pX/
+      L0B4qfoOUL6IiIiIiIiIiIiIiIiIiIiIiIiIyG73B7BuavcidkHUAAAAAElFTkSuQmCC
+    </value>
+  </data>
   <data name="CoreNodeModels.Logic.If.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
@@ -777,6 +796,16 @@
         73KgBXbnJdvw+Htk2cebb02O73DUBizkYnsfvPwDOOM1Y54EC2Y86yNXIKColsB7zvrKFYgohHisXIGQ
         4vFyx3GcdoTwBFY/QCbgVq/KAAAAAElFTkSuQmCC
 </value>
+  </data>
+  <data name="CoreNodeModels.Logic.RefactoredIf.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+      iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+      dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADcSURBVFhH7ZPRCQIxEERTwpViCfopWERKsARrsJEr
+      QazA7/uyg1hC3AmzYRU5EJOAsA8GdXPuG+UuOI7j/C0ppUlyYyaOx2DkkRlXAiIKI0eYjSkBAUVVrmDG
+      sz4lsJiCIs85HyUXySwpUpzxmrYlsJCL6y8XaZRsWeDEcZsS18M+28iy2coVEW8kd7xyVNAS/Pg7KwUe
+      73KgBXbnJdvw+Htk2cebb02O73DUBizkYnsfvPwDOOM1Y54EC2Y86yNXIKColsB7zvrKFYgohHisXIGQ
+      4vFyx3GcdoTwBFY/QCbgVq/KAAAAAElFTkSuQmCC
+    </value>
   </data>
   <data name="CoreNodeModels.Logic.ScopedIf.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
