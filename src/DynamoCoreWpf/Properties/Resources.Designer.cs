@@ -2613,15 +2613,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Installed Packages.
-        /// </summary>
-        public static string InstalledPackagesExpanderName {
-            get {
-                return ResourceManager.GetString("InstalledPackagesExpanderName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Additional Files.
         /// </summary>
         public static string InstalledPackageViewAdditionalFileLabel {
@@ -3900,7 +3891,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Paths.
+        ///   Looks up a localized string similar to Node and Package Paths.
         /// </summary>
         public static string PackagePathsExpanderName {
             get {

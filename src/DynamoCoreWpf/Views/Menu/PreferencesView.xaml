@@ -18,7 +18,7 @@
         ResizeMode="NoResize"
         mc:Ignorable="d" 
         Height="474" 
-        Width="580" >
+        Width="530" >
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -727,7 +727,7 @@
                                           Style="{StaticResource MenuExpanderStyle}" 
                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
                                           Grid.Row="1"
-                                          Header="{x:Static p:Resources.InstalledPackagesExpanderName}">
+                                          Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
                                     <Label>SOME CONTENT</Label>
                                 </StackPanel>

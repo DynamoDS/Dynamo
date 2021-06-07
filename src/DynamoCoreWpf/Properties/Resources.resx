@@ -2399,11 +2399,8 @@ Uninstall the following packages: {0}?</value>
   <data name="ResetCPythonButtonToolTip" xml:space="preserve">
     <value>Resets CPython environment by reloading modules.</value>
   </data>
-  <data name="InstalledPackagesExpanderName" xml:space="preserve">
-    <value>Installed Packages</value>
-  </data>
   <data name="PackagePathsExpanderName" xml:space="preserve">
-    <value>Package Paths</value>
+    <value>Node and Package Paths</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
