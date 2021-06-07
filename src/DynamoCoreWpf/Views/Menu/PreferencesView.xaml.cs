@@ -168,18 +168,6 @@ namespace Dynamo.Wpf.Views
             }
         }
 
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander currentExpander = sender as Expander;
-            Grid parentGrid = currentExpander.Parent as Grid;
-            foreach (Expander expander in parentGrid.Children)
-            {
-                if (expander != currentExpander && expander.IsExpanded)
-                    expander.IsExpanded = false;
-
-            }
-        }
-
         /// <summary>
         /// This event is generated every time the user clicks a Radio Button in the Geometry Scaling section
         /// This are the values used for the scales:
@@ -246,5 +234,11 @@ namespace Dynamo.Wpf.Views
         {
             dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
+
+        private void ReloadCPython_Click(object sender, RoutedEventArgs e)
+        {
+            dynViewModel.Model.OnRequestPythonReset("CPython3");
+        }
+
     }
 }

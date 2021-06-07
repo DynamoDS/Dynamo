@@ -7,6 +7,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using System.Collections.Generic;
 using Dynamo.Graph;
+using Dynamo.Extensions;
 
 namespace Dynamo.Models
 {
@@ -90,16 +91,34 @@ namespace Dynamo.Models
         /// <summary>
         /// Occurs before current workspace is cleared
         /// </summary>
+        [Obsolete("Do not use! Use WorkspaceClearingStarted event instead")]
         public event Action WorkspaceClearing;
 
         /// <summary>
         /// Triggers WorkspaceClearing event
         /// </summary>
+
+        [Obsolete("Do not use! Use OnWorkspaceClearingStarted virtual instead")]
         public virtual void OnWorkspaceClearing()
         {
             if (WorkspaceClearing != null)
                 WorkspaceClearing();
 
+            WorkspaceEvents.OnWorkspaceClearing();
+        }
+
+        /// <summary>
+        /// Occurs before current workspace is cleared
+        /// </summary>
+        public event Action<WorkspaceModel> WorkspaceClearingStarted;
+
+        /// <summary>
+        /// Triggers WorkspaceClearing event
+        /// </summary>
+        /// <param name="workspace">Workspace about to be cleared</param>
+        public virtual void OnWorkspaceClearingStarted(WorkspaceModel workspace)
+        {
+            WorkspaceClearingStarted?.Invoke(workspace);
             WorkspaceEvents.OnWorkspaceClearing();
         }
 
@@ -355,6 +374,137 @@ namespace Dynamo.Models
         {
             if (ComputeModelDeserialized != null)
                 ComputeModelDeserialized();
+        }
+
+        internal delegate void FunctionNamePromptRequestHandler(object sender, FunctionNamePromptEventArgs e);
+        internal event FunctionNamePromptRequestHandler RequestsFunctionNamePrompt;
+        internal void OnRequestsFunctionNamePrompt(Object sender, FunctionNamePromptEventArgs e)
+        {
+            if (RequestsFunctionNamePrompt != null)
+                RequestsFunctionNamePrompt(this, e);
+        }
+
+        internal event Action<PresetsNamePromptEventArgs> RequestPresetsNamePrompt;
+        internal void OnRequestPresetNamePrompt(PresetsNamePromptEventArgs e)
+        {
+            if (RequestPresetsNamePrompt != null)
+                RequestPresetsNamePrompt(e);
+        }
+
+        /// <summary>
+        /// Occurs when a workspace is saved to a file.
+        /// </summary>
+        public event WorkspaceHandler WorkspaceSaved;
+        internal void OnWorkspaceSaved(WorkspaceModel workspace)
+        {
+            if (WorkspaceSaved != null)
+            {
+                WorkspaceSaved(workspace);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when a workspace is about to be saved to a file.
+        /// </summary>
+        public event WorkspaceSaveHandler WorkspaceSaving;
+        internal void OnWorkspaceSaving(WorkspaceModel workspace, SaveContext saveContext)
+        {
+            if (WorkspaceSaving != null)
+            {
+                WorkspaceSaving(workspace, saveContext);
+                if (workspace is HomeWorkspaceModel hws)
+                    HandleStorageExtensionsOnWorkspaceSaving(hws, saveContext);
+            }
+        }
+
+        /// <summary>
+        /// Occurs when a workspace is scheduled to be saved to a backup file.
+        /// </summary>
+        public event Action<string, bool> RequestWorkspaceBackUpSave;
+        internal void OnRequestWorkspaceBackUpSave(string path, bool isBackUp)
+        {
+            if (RequestWorkspaceBackUpSave != null)
+            {
+                RequestWorkspaceBackUpSave(path, isBackUp);
+            }
+        }
+
+        /// <summary>
+        /// Event that is fired during the opening of the workspace.
+        ///
+        /// Use the XmlDocument object provided to conduct additional
+        /// workspace opening operations.
+        /// </summary>
+        public event Action<object> WorkspaceOpening;
+        internal void OnWorkspaceOpening(object obj)
+        {
+            var handler = WorkspaceOpening;
+            if (handler != null) handler(obj);
+        }
+
+        /// <summary>
+        /// Occurs when a workspaces is opened
+        /// </summary>
+        public event WorkspaceHandler WorkspaceOpened;
+        internal void OnWorkspaceOpened(WorkspaceModel workspace)
+        {
+            if (WorkspaceOpened != null)
+            {
+                WorkspaceOpened.Invoke(workspace);
+                if (workspace is HomeWorkspaceModel hws)
+                    HandleStorageExtensionsOnWorkspaceOpened(hws);
+            }
+        }
+
+        /// <summary>
+        /// This event is raised right before the shutdown of DynamoModel started.
+        /// When this event is raised, the shutdown is guaranteed to take place
+        /// (i.e. user has had a chance to save the work and decided to proceed
+        /// with shutting down Dynamo). Handlers of this event can still safely
+        /// access the DynamoModel, the WorkspaceModel (along with its contents),
+        /// and the DynamoScheduler.
+        /// </summary>
+        public event DynamoModelHandler ShutdownStarted;
+
+        private void OnShutdownStarted()
+        {
+            if (ShutdownStarted != null)
+                ShutdownStarted(this);
+        }
+
+        /// <summary>
+        /// This event is raised after DynamoModel has been shut down. At this
+        /// point the DynamoModel is no longer valid and access to it should be
+        /// avoided.
+        /// </summary>
+        public event DynamoModelHandler ShutdownCompleted;
+
+        private void OnShutdownCompleted()
+        {
+            if (ShutdownCompleted != null)
+                ShutdownCompleted(this);
+        }
+
+        /// <summary>
+        /// This event is raised when Dynamo is ready for user interaction.
+        /// </summary>
+        public event Action<ReadyParams> DynamoReady;
+        private bool dynamoReady;
+        /// <summary>
+        /// Event that is raised when Dynamo model requests a particular python engine
+        /// to reset. String parameter is engine name.
+        /// </summary>
+        internal static event Action<string> RequestPythonReset;
+        internal void OnRequestPythonReset(string pythonEngine)
+        {
+            //only reset if current workspace is a homeworkspace
+            //can't guarantee which workspace to mark dirty otherwise
+            if (CurrentWorkspace is HomeWorkspaceModel hmwsm)
+            {
+                RequestPythonReset?.Invoke(pythonEngine);
+                ResetEngine(true);
+            }
+
         }
 
         #endregion
