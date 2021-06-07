@@ -20,14 +20,16 @@ namespace Dynamo.Tests.Linting
         const string MOCK_GUID = "358321af-2633-4697-b475-81632582eba0";
         const string MOCK_RULE_ID = "1";
 
-        readonly Mock<LinterExtensionBase> mockExtension = new Mock<LinterExtensionBase>() { CallBase = true };
-        readonly Mock<NodeLinterRule> mockRule = new Mock<NodeLinterRule> { CallBase = true };
+        private Mock<LinterExtensionBase> mockExtension;
+        private Mock<NodeLinterRule> mockRule;
 
         private DynamoModel model;
 
         [SetUp]
         public void Init()
         {
+            mockExtension = new Mock<LinterExtensionBase>() { CallBase = true };
+            mockRule = new Mock<NodeLinterRule> { CallBase = true };
 
             // Setup mock rule
             mockRule.Setup(r => r.Id).Returns(MOCK_RULE_ID);
