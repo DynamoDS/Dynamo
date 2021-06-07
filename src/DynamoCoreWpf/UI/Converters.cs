@@ -108,7 +108,9 @@ namespace Dynamo.Controls
             return null;
         }
     }
-
+    /// <summary>
+    /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
+    /// </summary>
     public class EmptyDepStringToCollapsedConverter : IValueConverter
     {
         private readonly string[] PythonEngineList = { PythonNodeModels.PythonEngineVersion.CPython3.ToString(), PythonNodeModels.PythonEngineVersion.IronPython2.ToString() };
