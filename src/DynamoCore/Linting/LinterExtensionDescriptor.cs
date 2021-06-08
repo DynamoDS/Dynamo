@@ -33,16 +33,17 @@ namespace Dynamo.Linting
             {
                 return false;
             }
-            if (!(obj is LinterExtensionDescriptor))
+            
+            if (!(obj is LinterExtensionDescriptor other))
             {
                 return false;
             }
 
-            var other = obj as LinterExtensionDescriptor;
             if (other.Name == this.Name && other.Id == this.Id)
             {
                 return true;
             }
+            
             return false;
         }
 
