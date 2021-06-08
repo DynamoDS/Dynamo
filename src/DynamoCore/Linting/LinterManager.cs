@@ -74,7 +74,7 @@ namespace Dynamo.Linting
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
 
             activeLinter = LinterExtensionDescriptor.DefaultDescriptor;
-            AvailableLinters.Add(LinterExtensionDescriptor.DefaultDescriptor);
+            AvailableLinters.Add(activeLinter);
 
             SubscribeLinterEvents();
         }
@@ -91,7 +91,14 @@ namespace Dynamo.Linting
         
         internal void SetDefaultLinter()
         {
-            ActiveLinter = LinterExtensionDescriptor.DefaultDescriptor;
+            var linterDescriptor = AvailableLinters
+                .Where(x => x.Id == LinterExtensionDescriptor.DefaultDescriptor.Id)
+                .FirstOrDefault();
+
+            if (linterDescriptor != null)
+            {
+                SetActiveLinter(linterDescriptor);
+            }
         }
 
         #region Private methods
