@@ -749,7 +749,7 @@
         KBgFo2CIAwYGADGe0Dftz7JCAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="CoreNodeModels.Logic.If.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Logic.RefactoredIf.Large" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAMNSURBVHhe7ZfNbRsxFAZVgktICS7BOQbIwSWklHRg
@@ -768,7 +768,7 @@
         L0B4qfoOUL6IiIiIiIiIiIiIiIiIiIiIiIiIyG73B7BuavcidkHUAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="CoreNodeModels.Logic.If.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="CoreNodeModels.Logic.RefactoredIf.Small" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
         dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAADcSURBVFhH7ZPRCQIxEERTwpViCfopWERKsARrsJEr
