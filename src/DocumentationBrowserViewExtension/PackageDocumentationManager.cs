@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Dynamo.Interfaces;
+using Dynamo.Logging;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -20,13 +21,14 @@ namespace Dynamo.DocumentationBrowser
         /// key: node namespace - value: file path to markdown file.
         /// </summary>
         private Dictionary<string, string> nodeDocumentationFileLookup = new Dictionary<string, string>();
+
         /// <summary>
         /// Dictionary to keep track of each FileSystemWatcher created for the package node annotation directory path
         /// key: directory path - value: FileSystemWatcher
         /// </summary>
         private Dictionary<string, FileSystemWatcher> markdownFileWatchers = new Dictionary<string, FileSystemWatcher>();
 
-        private const string FILE_EXTENSION = "*.md";
+        private const string VALID_DOC_FILEEXTENSION = "*.md";
         private const string FALLBACK_DOC_DIRECTORY_NAME = "fallback_docs";
         private static PackageDocumentationManager instance;
         private DirectoryInfo dynamoCoreFallbackHostPath;
@@ -44,7 +46,13 @@ namespace Dynamo.DocumentationBrowser
             }
         }
 
-        public void AddDynamoPaths(IPathManager pathManager)
+        internal Action<ILogMessage> MessageLogged;
+
+        /// <summary>
+        /// Uses the path manager to set the fallback_doc path for DynamoCore and any Host running
+        /// </summary>
+        /// <param name="pathManager"></param>
+        internal void AddDynamoPaths(IPathManager pathManager)
         {
             if (pathManager is null)
             {
@@ -123,7 +131,7 @@ namespace Dynamo.DocumentationBrowser
                 return;
 
             MonitorDirectory(directoryInfo);
-            var files = directoryInfo.GetFiles(FILE_EXTENSION, SearchOption.AllDirectories);
+            var files = directoryInfo.GetFiles(VALID_DOC_FILEEXTENSION, SearchOption.AllDirectories);
             TrackDocumentationFiles(files, packageName);
         }
 
@@ -132,7 +140,7 @@ namespace Dynamo.DocumentationBrowser
             if (markdownFileWatchers.ContainsKey(directoryInfo.FullName))
                 return;
             
-            var watcher = new FileSystemWatcher(directoryInfo.FullName, FILE_EXTENSION) { EnableRaisingEvents = true };
+            var watcher = new FileSystemWatcher(directoryInfo.FullName, VALID_DOC_FILEEXTENSION) { EnableRaisingEvents = true };
             watcher.Renamed += OnFileRenamed;
             watcher.Deleted += OnFileDeleted;
             watcher.Created += OnFileCreated;
@@ -149,7 +157,7 @@ namespace Dynamo.DocumentationBrowser
                 }
                 catch (Exception e)
                 {
-                    continue;
+                    LogWarning(e.Message, WarningLevel.Error);
                 }
             }
         }
@@ -163,19 +171,27 @@ namespace Dynamo.DocumentationBrowser
         {
             var fileName = Path.GetFileNameWithoutExtension(e.Name);
             if (nodeDocumentationFileLookup.ContainsKey(fileName))
+            {
                 nodeDocumentationFileLookup.Remove(fileName);
+            }
         }
 
         private void OnFileRenamed(object sender, RenamedEventArgs e)
         {
             var oldFileName = Path.GetFileNameWithoutExtension(e.OldName);
             if (nodeDocumentationFileLookup.ContainsKey(oldFileName))
+            {
                 nodeDocumentationFileLookup.Remove(oldFileName);
+            }
 
             var newFileName = Path.GetFileNameWithoutExtension(e.Name);
             if (!nodeDocumentationFileLookup.ContainsKey(newFileName))
+            {
                 nodeDocumentationFileLookup.Add(newFileName, e.FullPath);
+            }
         }
+
+        private void LogWarning(string msg, WarningLevel level) => this.MessageLogged?.Invoke(LogMessage.Warning(msg, level));
 
         public void Dispose()
         {

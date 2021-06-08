@@ -64,6 +64,7 @@ namespace Dynamo.DocumentationBrowser
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
 
             this.ViewModel.MessageLogged += OnViewModelMessageLogged;
+            PackageDocumentationManager.Instance.MessageLogged += OnMessageLogged;
 
             this.viewLoadedParamsReference = viewLoadedParams; 
 

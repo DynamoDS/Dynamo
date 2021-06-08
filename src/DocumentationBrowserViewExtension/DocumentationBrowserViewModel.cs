@@ -157,7 +157,10 @@ namespace Dynamo.DocumentationBrowser
                 switch (e)
                 {
                     case OpenNodeAnnotationEventArgs openNodeAnnotationEventArgs:
-                        var mdLink = packageManagerDoc.GetAnnotationDoc(openNodeAnnotationEventArgs.MinimumQualifiedName, openNodeAnnotationEventArgs.PackageName);
+                        var mdLink = packageManagerDoc.GetAnnotationDoc(
+                            openNodeAnnotationEventArgs.MinimumQualifiedName, 
+                            openNodeAnnotationEventArgs.PackageName);
+
                         link = string.IsNullOrEmpty(mdLink) ? new Uri(String.Empty, UriKind.Relative) : new Uri(mdLink);
                         targetContent = CreateNodeAnnotationContent(openNodeAnnotationEventArgs);
                         break;

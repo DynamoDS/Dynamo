@@ -137,7 +137,7 @@ namespace Dynamo.Search.SearchElements
         }
     }
 
-    internal class ReflectionZeroTouhSearchElement : NodeSearchElement
+    internal class ReflectionZeroTouchSearchElement : NodeSearchElement
     {
         private readonly ReflectionFunctionDescriptor functionDescriptor;
         private readonly string fullname;
@@ -147,7 +147,7 @@ namespace Dynamo.Search.SearchElements
 
         internal ReflectionFunctionDescriptor Descriptor => functionDescriptor;
 
-        public ReflectionZeroTouhSearchElement(ReflectionFunctionDescriptor functionDescriptor)
+        public ReflectionZeroTouchSearchElement(ReflectionFunctionDescriptor functionDescriptor)
         {
             this.functionDescriptor = functionDescriptor;
 

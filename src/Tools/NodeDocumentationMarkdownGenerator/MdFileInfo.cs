@@ -102,7 +102,7 @@ namespace NodeDocumentationMarkdownGenerator
                 var nodeNamespace = "";
 
                 string fileName = "";
-                if (entry is ReflectionZeroTouhSearchElement reflectionSearch)
+                if (entry is ReflectionZeroTouchSearchElement reflectionSearch)
                 {
                     nodeNamespace = entry.FullName
                         .Remove(entry.FullName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);

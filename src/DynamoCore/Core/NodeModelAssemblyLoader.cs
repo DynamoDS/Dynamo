@@ -207,6 +207,13 @@ namespace Dynamo.Models
             return assem.GetTypes().Any(x => IsNodeSubTypeReflectionLoaded(x, nodeModelType));
         }
 
+        /// <summary>
+        /// Similar to IsNodeSubType this will Determine if a Type is a node.
+        /// This implementation is meant to be used when scanning types in ReflectionContext.
+        /// </summary>
+        /// <param name="t">Type to check</param>
+        /// <param name="nodeModelType">Type of NodeModel, this is needed to be sure we are comparing the same NodeModel type reference</param>
+        /// <returns></returns>
         internal static bool IsNodeSubTypeReflectionLoaded(Type t, Type nodeModelType)
         {
             bool isNodeSubType = false;
@@ -216,9 +223,10 @@ namespace Dynamo.Models
                     t.IsSubclassOf(nodeModelType) &&
                     t.GetConstructor(Type.EmptyTypes) != null;
             }
-            catch (Exception)
+            catch
             {
-
+                // If for any reason the above fails we try to determine if the type is a node by checking for NodeModel attributes.
+                // Above can potentially fail if there is a reference to a type which is not included in the path resolver.
                 var customAttributes = CustomAttributeData.GetCustomAttributes(t).ToList();
                 var customAttributeTypes = customAttributes.Select(x => x.AttributeType).ToList();
 

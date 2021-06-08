@@ -1114,19 +1114,17 @@ namespace ProtoFFI
             return null;
         }
 
+        /// <summary>
+        /// Creates CLRModuleTypes for all types in this module.
+        /// </summary>
+        /// <param name="isReflectionContext">When true the behavior for creating AST Nodes for the module types is using specific ReflectionOnly methods</param>
         public override void ScanModule(bool isReflectionContext)
         {
-            Type[] types;
-            if (isReflectionContext)
-            {
-                types = GetReflectionTypes(string.Empty);
-                CLRModuleType.IsReflectionContext = true;
-            }
-            else
-            {
-                types = GetTypes("");
-                CLRModuleType.IsReflectionContext = false;
-            }
+            CLRModuleType.IsReflectionContext = isReflectionContext;
+
+            Type[] types = isReflectionContext ? 
+                GetReflectionTypes(string.Empty) : 
+                GetTypes("");
 
             foreach (var type in types)
             {

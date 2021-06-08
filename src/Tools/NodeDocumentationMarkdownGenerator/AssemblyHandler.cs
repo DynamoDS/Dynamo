@@ -225,7 +225,7 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 if (functionDescriptor.IsVisibleInLibrary)
                 {
-                    nodeSearchModel.Add(new ReflectionZeroTouhSearchElement(functionDescriptor as ReflectionFunctionDescriptor));
+                    nodeSearchModel.Add(new ReflectionZeroTouchSearchElement(functionDescriptor as ReflectionFunctionDescriptor));
                 }
             }
         }
