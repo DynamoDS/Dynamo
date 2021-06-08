@@ -130,7 +130,7 @@
     },
     {
       "fullyQualifiedName": "Core.Logic.RefactoredIf",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.If.Small?path=nodes\\CoreNodeModels.dll",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.RefactoredIf.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "If",
       "parameters": null,
       "itemType": "action",
