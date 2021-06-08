@@ -533,7 +533,8 @@ namespace Dynamo.PackageManager
 
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            LoadState.Type = PackageLoadState.Types.PendingUnload;
+            // Should this be a "Loaded state" or something else (like Error or Unkown) ?
+            LoadState.Type = PackageLoadState.Types.Loaded;
             RaisePropertyChanged("PendingUnload");
 
             // Keep this until we remove the MarkedForUninstall property ?
