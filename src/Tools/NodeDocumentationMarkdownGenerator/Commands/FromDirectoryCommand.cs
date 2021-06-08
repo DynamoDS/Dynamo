@@ -16,7 +16,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         {
             var searchOption = opts.RecursiveScan ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var fileInfos = new List<MdFileInfo>();
-            fileInfos.AddRange(ScanAssembliesFromOpts(opts.InputFolderPath, opts.Filter, searchOption));
+            fileInfos.AddRange(ScanAssembliesFromOpts(opts.InputFolderPath, opts.Filter, opts.ReferencePaths, searchOption));
             if (opts.IncludeCustomNodes)
             {
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
@@ -39,9 +39,15 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             return fileInfos;
         }
 
-        private static List<MdFileInfo> ScanAssembliesFromOpts(string inputFolderPath, IEnumerable<string> filter, SearchOption searchOption)
+        private static List<MdFileInfo> ScanAssembliesFromOpts(string inputFolderPath, IEnumerable<string> filter, IEnumerable<string> references, SearchOption searchOption)
         {
             var allDlls = Directory.GetFiles(inputFolderPath, "*.dll", searchOption).Select(x => new FileInfo(x)).ToList();
+
+            var referencesDllPaths = references
+                .SelectMany(p => new DirectoryInfo(p)
+                    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
+                    .Select(d => d.FullName)
+                    .ToList());
 
             if (filter.Count() != 0)
             {
@@ -49,6 +55,12 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                     .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
                     .Select(x => x.FullName)
                     .ToList();
+
+                var addtionalPathsToLoad = allDlls.Select(x => x.FullName).Except(dllPaths).ToList();
+                if (referencesDllPaths.Count() > 0)
+                {
+                    addtionalPathsToLoad.AddRange(referencesDllPaths);
+                }
 
                 if (filter.Any(x=>x.EndsWith(".ds")))
                 {
@@ -59,11 +71,11 @@ namespace NodeDocumentationMarkdownGenerator.Commands
                         .ToList());
                 }
 
-                return AssemblyHandler.ScanAssemblies(dllPaths);
+                return AssemblyHandler.ScanAssemblies(dllPaths, addtionalPathsToLoad);
             }
 
             return AssemblyHandler.
-                ScanAssemblies(allDlls.Select(x => x.FullName).ToList());
+                ScanAssemblies(allDlls.Select(x => x.FullName), referencesDllPaths);
         }
     }
 }

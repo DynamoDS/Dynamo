@@ -182,11 +182,6 @@ namespace ProtoFFI
         public CLRDLLModule Module { get; private set; }
 
         /// <summary>
-        /// True if the Module assembly is ReflectionOnly loaded
-        /// </summary>
-        public bool IsReflectionContext => Module.Assembly?.ReflectionOnly ?? Module.Module.Assembly.ReflectionOnly;
-
-        /// <summary>
         /// System.Type that was imported
         /// </summary>
         public Type CLRType { get; private set; }
@@ -255,6 +250,12 @@ namespace ProtoFFI
 
             return null;
         }
+
+        /// <summary>
+        /// If true reflection methods will be used to get module types
+        /// </summary>
+        internal static bool IsReflectionContext { get; set; }
+
         #endregion
 
         #region PRIVATE_METHODS_AND_FIELDS
@@ -318,7 +319,7 @@ namespace ProtoFFI
             }
 
             //Get all the attributes on this type and set it to the classnode.
-            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            FFIClassAttributes cattrs = new FFIClassAttributes(type, IsReflectionContext);
             classnode.ClassAttributes = cattrs;
             SetTypeAttributes(type, cattrs);
 
@@ -408,7 +409,7 @@ namespace ProtoFFI
                     continue;
 
                 MethodInfo baseDefinition;
-                if (m.DeclaringType.Assembly.ReflectionOnly)
+                if (IsReflectionContext)
                 {
                     baseDefinition = m.GetBaseDefinitionReflectionContext();
                     if (baseDefinition is null)
@@ -471,7 +472,7 @@ namespace ProtoFFI
                     RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
             }
 
-            FFIClassAttributes cattrs = new FFIClassAttributes(type);
+            FFIClassAttributes cattrs = new FFIClassAttributes(type, IsReflectionContext);
             classnode.ClassAttributes = cattrs;
             SetTypeAttributes(type, cattrs);
 
@@ -651,9 +652,8 @@ namespace ProtoFFI
             if (null == member)
                 return true;
 
-            var isReflectionContext = member.Module.Assembly.ReflectionOnly;
             object[] atts = null;
-            if (isReflectionContext)
+            if (IsReflectionContext)
             {
                 atts = member.GetAttributesFromReflectionContext();
             }
@@ -777,7 +777,7 @@ namespace ProtoFFI
                 IsExternLib = true,
                 ExternLibName = Module.Name,
                 IsStatic = f.IsStatic,
-                MethodAttributes = new FFIMethodAttributes(f),
+                MethodAttributes = new FFIMethodAttributes(f, IsReflectionContext),
             };
             
             return func;
@@ -787,7 +787,7 @@ namespace ProtoFFI
         {
             ProtoCore.Type retype = new ProtoCore.Type();
             var func = new ProtoCore.AST.AssociativeAST.FunctionDefinitionNode();
-            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes);
+            FFIMethodAttributes mattrs = new FFIMethodAttributes(method, mGetterAttributes, IsReflectionContext);
             bool isOperator = isOverloadedOperator(method);
 
             // GetProtoCoreType and isPropertyAccessor might break in ReflectionMode.
@@ -1114,9 +1114,20 @@ namespace ProtoFFI
             return null;
         }
 
-        public override void ScanModule()
+        public override void ScanModule(bool isReflectionContext)
         {
-            var types = GetReflectionTypes(string.Empty);
+            Type[] types;
+            if (isReflectionContext)
+            {
+                types = GetReflectionTypes(string.Empty);
+                CLRModuleType.IsReflectionContext = true;
+            }
+            else
+            {
+                types = GetTypes("");
+                CLRModuleType.IsReflectionContext = false;
+            }
+
             foreach (var type in types)
             {
                 //For now there is no support for generic type.
@@ -1387,7 +1398,11 @@ namespace ProtoFFI
             get { return attributes; }
         }
 
-        public FFIClassAttributes(Type type)
+        public FFIClassAttributes(Type type) : this(type, false)
+        {
+        }
+
+        public FFIClassAttributes(Type type, bool isReflectionContext)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
@@ -1395,7 +1410,7 @@ namespace ProtoFFI
             // Hide all interfaces from library and search
             if (type.IsInterface) HiddenInLibrary = true;
 
-            attributes = type.Assembly.ReflectionOnly ?
+            attributes = isReflectionContext ?
                 type.GetAttributesFromReflectionContext() :
                 type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
 
@@ -1436,23 +1451,27 @@ namespace ProtoFFI
         public bool RequireTracing { get; protected set; }
 
         //Set the MethodAttributes for Enum fields.
-        public FFIMethodAttributes(FieldInfo f)
+        public FFIMethodAttributes(FieldInfo f) : this(f, false)
         {
-            var reflectionOnly = f.DeclaringType.Assembly.ReflectionOnly;
-            var atts = reflectionOnly ? 
-                f.GetAttributesFromReflectionContext() : 
+
+        }
+
+        public FFIMethodAttributes(FieldInfo f, bool isReflectionContext)
+        {
+            var atts = isReflectionContext ?
+                f.GetAttributesFromReflectionContext() :
                 f.GetCustomAttributes(false).Cast<Attribute>();
 
-            var parentAtts = reflectionOnly ? 
-                f.DeclaringType.GetAttributesFromReflectionContext() : 
+            var parentAtts = isReflectionContext ?
+                f.DeclaringType.GetAttributesFromReflectionContext() :
                 f.DeclaringType.GetCustomAttributes(false).Cast<Attribute>();
 
             var isObsolete = false;
             var hidden = false;
             var message = "";
-            foreach(var attr in parentAtts)
+            foreach (var attr in parentAtts)
             {
-                if(attr is ObsoleteAttribute)
+                if (attr is ObsoleteAttribute)
                 {
                     isObsolete = true;
                     message = (attr as ObsoleteAttribute).Message;
@@ -1476,7 +1495,7 @@ namespace ProtoFFI
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
                 }
-                else if(attr is IsVisibleInDynamoLibraryAttribute)
+                else if (attr is IsVisibleInDynamoLibraryAttribute)
                 {
                     HiddenInLibrary = !((IsVisibleInDynamoLibraryAttribute)attr).Visible;
                 }
@@ -1488,13 +1507,10 @@ namespace ProtoFFI
             }
         }
 
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes)
+        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes, bool isReflectionContext)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
-
-            var mName = method.Name;
-            var reflectionContext = method.DeclaringType.Assembly.ReflectionOnly;
 
             FFIClassAttributes baseAttributes = null;
             Type type = method.DeclaringType;
@@ -1516,7 +1532,7 @@ namespace ProtoFFI
             }
             else
             {
-                if (reflectionContext)
+                if (isReflectionContext)
                 {
                     attributes = method.GetAttributesFromReflectionContext();
                 }
@@ -1525,7 +1541,7 @@ namespace ProtoFFI
                     attributes = method.GetCustomAttributes(false).Cast<Attribute>().ToArray();
                 }
             }
-            
+
             foreach (var attr in attributes)
             {
                 if (attr is AllowRankReductionAttribute)
@@ -1541,7 +1557,7 @@ namespace ProtoFFI
                     var multiReturnAttr = (attr as MultiReturnAttribute);
                     returnKeys = multiReturnAttr.ReturnKeys.ToList();
                 }
-                else if(attr.HiddenInDynamoLibrary())
+                else if (attr.HiddenInDynamoLibrary())
                 {
                     HiddenInLibrary = true;
                 }
@@ -1569,13 +1585,19 @@ namespace ProtoFFI
                 }
                 else if (attr is IsLacingDisabledAttribute)
                 {
-                    IsLacingDisabled = true; 
+                    IsLacingDisabled = true;
                 }
                 else if (attr is AllowArrayPromotionAttribute)
                 {
                     AllowArrayPromotion = (attr as AllowArrayPromotionAttribute).IsAllowed;
                 }
             }
+        }
+
+        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes) : 
+            this(method, getterAttributes, false)
+        {
+            
         }
 
     }

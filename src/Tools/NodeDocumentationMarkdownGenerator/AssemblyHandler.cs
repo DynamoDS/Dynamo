@@ -27,7 +27,7 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="assemblyPaths">List of dll paths that should be scanned</param>
         /// <param name="additionalPathsToLoad">List of dll paths that should be added to the PathAssemblyResolver</param>
         /// <returns></returns>
-        internal static List<MdFileInfo> ScanAssemblies(List<string> assemblyPaths, List<string> additionalPathsToLoad = null)
+        internal static List<MdFileInfo> ScanAssemblies(IEnumerable<string> assemblyPaths, IEnumerable<string> additionalPathsToLoad = null)
         {
             var paths = GetDefaultPaths();
             paths.AddRange(assemblyPaths);
@@ -42,7 +42,7 @@ namespace NodeDocumentationMarkdownGenerator
             return Scan(assemblyPaths, mlc, resolver);
         }
 
-        private static List<MdFileInfo> Scan(List<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
+        private static List<MdFileInfo> Scan(IEnumerable<string> assemblyPaths, MetadataLoadContext mlc, PathAssemblyResolver resolver)
         {
             var fileInfos = new List<MdFileInfo>();
             var nodeSearchModel = new NodeSearchModel();
@@ -79,7 +79,7 @@ namespace NodeDocumentationMarkdownGenerator
 
                             if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                             {
-                                fileInfos.AddRange(FileInfosFromNodeModels(asm, nodeModelType, ref nodeSearchModel));
+                                FileInfosFromNodeModels(asm, nodeModelType, ref nodeSearchModel);
                                 continue;
                             }
 
@@ -115,7 +115,11 @@ namespace NodeDocumentationMarkdownGenerator
                     }
                 }
 
-                AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
+                if (functionGroups.Count > 0)
+                {
+                    AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
+                }
+
                 fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
                 Console.WriteLine($"{fileInfos.Count()} nodes found during scan");
             }
@@ -138,7 +142,7 @@ namespace NodeDocumentationMarkdownGenerator
             DLLModule dllModule = null;
             dllModule = DLLFFIHandler.GetModuleForInspection(asm);
 
-            dllModule.ScanModule();
+            dllModule.ScanModule(true);
             List<CLRModuleType> moduleTypes = CLRModuleType.GetTypes((CLRModuleType mtype) => { return mtype.Module == dllModule; });
 
             var customizationFile = LibraryCustomizationServices.GetForAssembly(asm.Location, pathManager);
@@ -226,7 +230,7 @@ namespace NodeDocumentationMarkdownGenerator
             }
         }
 
-        private static List<MdFileInfo> FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ref NodeSearchModel searchModel)
+        private static void FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ref NodeSearchModel searchModel)
         {
 
             var fileInfos = new List<MdFileInfo>();
@@ -250,8 +254,6 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 searchModel.Add(new NodeModelSearchElement(type, false));
             }
-
-            return FileInfosFromSearchModel(searchModel);
         }
 
         private static List<string> GetDefaultPaths()

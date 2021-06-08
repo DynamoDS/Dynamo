@@ -30,7 +30,7 @@ namespace ProtoFFI
     {
         public abstract List<FFIFunctionPointer> GetFunctionPointers(string className, string name);
         public abstract FFIFunctionPointer GetFunctionPointer(string className, string name, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType);
-        public virtual void ScanModule() { }
+        public virtual void ScanModule(bool isReflectionContext) { }
         public virtual CodeBlockNode ImportCodeBlock(string typeName, string alias, CodeBlockNode refnode) { return null; } //All modules don't support import
         public virtual FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore) { return null; }
         public virtual Type GetExtensionAppType() { return null; }
