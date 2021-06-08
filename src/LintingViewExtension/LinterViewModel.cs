@@ -259,8 +259,10 @@ namespace Dynamo.LintingViewExtension
 
         private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e )
         {
-            if (e.PropertyName == "ActiveLinter")
+            if (e.PropertyName == nameof(linterManager.ActiveLinter))
+            {
                 ActiveLinter = (sender as LinterManager)?.ActiveLinter;
+            }
         }
         
         private NodeModel NodeFromId(string nodeId)

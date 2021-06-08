@@ -70,8 +70,10 @@ namespace Dynamo.LintingViewExtension
 
         private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "AvailableLinters")
+            if (e.PropertyName == nameof(linterManager.AvailableLinters))
+            {
                 viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem);
+            }
         }
 
         private void MenuItemUnCheckedHandler(object sender, RoutedEventArgs e)
