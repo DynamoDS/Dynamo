@@ -1173,8 +1173,9 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unloaded.
-        ///This package has not been loaded due to an unexpected error..
+        ///   Looks up a localized string similar to Error.
+        ///This package has not been loaded due to the following error:
+        ///{0}..
         /// </summary>
         public static string PackageStateErrorTooltip {
             get {

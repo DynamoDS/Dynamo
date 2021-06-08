@@ -75,7 +75,7 @@ namespace DynamoCoreWpfTests
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.Type = PackageLoadState.Types.PendingUnload;
 
             // Once choosing to install the specified version, info.State should reflect RequireRestart
             viewExtension.DependencyView.DependencyRegen(CurrentWorkspace);
@@ -196,7 +196,7 @@ namespace DynamoCoreWpfTests
 
             // This is equivalent to uninstall the package
             var package = viewExtension.pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == "Dynamo Samples").FirstOrDefault();
-            package.MarkedForUninstall = true;
+            package.LoadState.Type = PackageLoadState.Types.PendingUnload;
 
             // Closing the dyf will trigger DependencyRegen of HomeWorkspaceModel.
             // The HomeWorkspaceModel does not contain any dependency info since it's empty

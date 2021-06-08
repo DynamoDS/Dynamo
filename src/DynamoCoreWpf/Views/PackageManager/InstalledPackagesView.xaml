@@ -89,7 +89,7 @@
                                                    FontSize="11"
                                                    Foreground="#CCC"></TextBlock>
                                         <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                   Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                   Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                    FontSize="11"
                                                    FontStyle="Italic"
                                                    Foreground="Red"></TextBlock>
@@ -101,10 +101,10 @@
                                             <Border Background="DimGray"
                                                     HorizontalAlignment="Stretch"
                                                     CornerRadius="5"
-                                                    ToolTip="{Binding Path=Model.PackageStateTooltip}"
+                                                    ToolTip="{Binding Path=Model.PackageLoadStateTooltip}"
                                                     Margin="5,0,0,0"
                                                     Padding="5,0,5,0">
-                                                <TextBlock Text="{Binding Path=Model.PackageStateText}"
+                                                <TextBlock Text="{Binding Path=Model.PackageLoadStateText}"
                                                         TextTrimming="CharacterEllipsis"
                                                         FontSize="11"
                                                         FontStyle="Italic"

@@ -73,7 +73,6 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-
         /// <summary>
         /// Returns the default package directory where new packages will be installed
         /// This is the first non standard library directory
@@ -278,10 +277,13 @@ namespace Dynamo.PackageManager
                         }
                         catch (LibraryLoadFailedException ex)
                         {
+                            package.LoadState.Type = PackageLoadState.Types.Error;
+                            package.LoadState.ErrorMessage = ex.Message;
                             Log(ex.GetType() + ": " + ex.Message);
                         }
                     }
                 }
+
                 // load custom nodes
                 var packageInfo = new Graph.Workspaces.PackageInfo(package.Name, new Version(package.VersionName));
                 var customNodes = OnRequestLoadCustomNodeDirectory(package.CustomNodeDirectory, packageInfo);
@@ -301,7 +303,7 @@ namespace Dynamo.PackageManager
                     requestedExtensions.Add(extension);
                 }
 
-                package.Loaded = true;
+                package.LoadState.Type = PackageLoadState.Types.Loaded;
                 PackgeLoaded?.Invoke(package);
             }
             catch (CustomNodePackageLoadException e)
@@ -309,9 +311,14 @@ namespace Dynamo.PackageManager
                 Package originalPackage =
                     localPackages.FirstOrDefault(x => x.CustomNodeDirectory == e.InstalledPath);
                 OnConflictingPackageLoaded(originalPackage, package);
+
+                package.LoadState.ErrorMessage = e.Message;
+                package.LoadState.Type = PackageLoadState.Types.Error;
             }
             catch (Exception e)
             {
+                package.LoadState.ErrorMessage = e.Message;
+                package.LoadState.Type = PackageLoadState.Types.Error;
                 Log("Exception when attempting to load package " + package.Name + " from " + package.RootDirectory);
                 Log(e.GetType() + ": " + e.Message);
             }
