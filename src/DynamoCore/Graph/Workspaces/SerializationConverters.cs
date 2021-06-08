@@ -705,7 +705,7 @@ namespace Dynamo.Graph.Workspaces
             if (linterDescriptor is null)
                 return;
 
-            linterManager.ActiveLinter = linterDescriptor;
+            linterManager.SetActiveLinter(linterDescriptor, false);
         }
 
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)
