@@ -89,7 +89,7 @@
                                                    FontSize="11"
                                                    Foreground="#CCC"></TextBlock>
                                         <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                   Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                   Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                    FontSize="11"
                                                    FontStyle="Italic"
                                                    Foreground="Red"></TextBlock>

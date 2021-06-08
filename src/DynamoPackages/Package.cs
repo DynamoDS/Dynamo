@@ -169,6 +169,12 @@ namespace Dynamo.PackageManager
         }
 
         [Obsolete("This is a temporary property. Please do not use it")]
+        public bool EnableOldMarkedForUnistallState
+        {
+            get { return !DebugModes.IsEnabled("DynamoPackageStates") && LoadState.Type == PackageLoadState.Types.PendingUnload; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
         public bool EnablePackageStates
         {
             get { return DebugModes.IsEnabled("DynamoPackageStates"); }
