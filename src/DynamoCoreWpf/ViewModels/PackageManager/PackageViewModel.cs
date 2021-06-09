@@ -161,7 +161,7 @@ namespace Dynamo.ViewModels
         private bool CanUninstall()
         {
             return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
-                && !Model.MarkedForUninstall;
+                && !Model.MarkedForUninstall && (Model.LoadState.Type != PackageLoadState.Types.Unloaded);
         }
 
         private void GoToRootDirectory()

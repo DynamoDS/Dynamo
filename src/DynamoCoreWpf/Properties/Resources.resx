@@ -1114,10 +1114,10 @@ You will get a chance to save your work.</value>
     <value>Additional Libraries</value>
   </data>
   <data name="InstalledPackageViewContextMenuCancelUninstall" xml:space="preserve">
-    <value>Cancel pending uninstall...</value>
+    <value>Cancel scheduled unload...</value>
   </data>
   <data name="InstalledPackageViewContextMenuCancelUninstallTooltip" xml:space="preserve">
-    <value>Remove the pending uninstall status</value>
+    <value>Remove the scheduled unload status</value>
   </data>
   <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
     <value>Deprecate</value>
@@ -1162,10 +1162,10 @@ You will get a chance to save your work.</value>
     <value>Go to the root folder of this package</value>
   </data>
   <data name="InstalledPackageViewContextMenuUninstall" xml:space="preserve">
-    <value>Uninstall...</value>
+    <value>Unload...</value>
   </data>
   <data name="InstalledPackageViewContextMenuUninstallTooltip" xml:space="preserve">
-    <value>Uninstall this package, only allowed if none of the types are currently in use</value>
+    <value>Unloading this package is only allowed if none of the types are currently in use</value>
   </data>
   <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
     <value>Custom Nodes</value>

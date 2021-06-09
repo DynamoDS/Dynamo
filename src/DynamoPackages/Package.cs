@@ -36,18 +36,23 @@ namespace Dynamo.PackageManager
     {
         internal enum Types
         {
-            Loaded, Unloaded, PendingUnload, Error
+            Loaded, Unloaded, Error
         }
 
         internal Types Type = Types.Unloaded;
+
+        internal bool MarkedForUninstall;
 
         internal string Tooltip
         {
             get
             {
+                if (MarkedForUninstall)
+                {
+                    return Resources.PackageStatePendingUnloadTooltip;
+                }
                 switch (Type)
                 {
-                    case Types.PendingUnload: return Resources.PackageStatePendingUnloadTooltip;
                     case Types.Unloaded: return Resources.PackageStateUnloadedTooltip;
                     case Types.Loaded: return Resources.PackageStateLoadedTooltip;
                     case Types.Error:
@@ -58,7 +63,8 @@ namespace Dynamo.PackageManager
                             }
                             return String.Format(Resources.PackageStateErrorTooltip, "Unknown error");
                         }
-                    default: return "Unkonwn package state";
+                    default:
+                            return "Unkonwn package state";
                 }
             }
         }
@@ -67,13 +73,17 @@ namespace Dynamo.PackageManager
         {
             get
             {
+                if (MarkedForUninstall)
+                {
+                    return Resources.PackageStatePendingUnload;
+                }
                 switch (Type)
                 {
-                    case Types.PendingUnload: return Resources.PackageStatePendingUnload;
                     case Types.Unloaded: return Resources.PackageStateUnloaded;
                     case Types.Loaded: return Resources.PackageStateLoaded;
                     case Types.Error: return Resources.PackageStateError;
-                    default: return "Unkonwn package state";
+                    default:
+                            return "Unkonwn package state";
                 }
             }
         }
@@ -162,16 +172,16 @@ namespace Dynamo.PackageManager
         /// </summary>
         public IEnumerable<string> HostDependencies { get { return hostDependencies; } set { hostDependencies = value; RaisePropertyChanged("HostDependencies"); } }
 
-        [Obsolete("This property will be removed in 3.0. Please use the LoadState property instead.")]
         public bool MarkedForUninstall
         {
-            get { return LoadState.Type == PackageLoadState.Types.PendingUnload; }
+            get { return LoadState.MarkedForUninstall; }
+            internal set { LoadState.MarkedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
         [Obsolete("This is a temporary property. Please do not use it")]
         public bool EnableOldMarkedForUnistallState
         {
-            get { return !DebugModes.IsEnabled("DynamoPackageStates") && LoadState.Type == PackageLoadState.Types.PendingUnload; }
+            get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
         }
 
         [Obsolete("This is a temporary property. Please do not use it")]
@@ -519,10 +529,8 @@ namespace Dynamo.PackageManager
 
         internal void MarkForUninstall(IPreferences prefs)
         {
-            LoadState.Type = PackageLoadState.Types.PendingUnload;
-            RaisePropertyChanged("PendingUnload");
+            MarkedForUninstall = true;
 
-            // Keep this until we remove the MarkedForUninstall property ?
             RaisePropertyChanged("MarkedForUninstall");
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
@@ -533,11 +541,8 @@ namespace Dynamo.PackageManager
 
         internal void UnmarkForUninstall(IPreferences prefs)
         {
-            // Should this be a "Loaded state" or something else (like Error or Unkown) ?
-            LoadState.Type = PackageLoadState.Types.Loaded;
-            RaisePropertyChanged("PendingUnload");
+            MarkedForUninstall = false;
 
-            // Keep this until we remove the MarkedForUninstall property ?
             RaisePropertyChanged("MarkedForUninstall");
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
