@@ -39,7 +39,7 @@ namespace Dynamo.PackageManager
             Loaded, Unloaded, PendingUnload, Error
         }
 
-        internal Types Type;
+        internal Types Type = Types.Unloaded;
 
         internal string Tooltip
         {
