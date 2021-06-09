@@ -8,6 +8,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
+using Dynamo.Models;
 
 namespace Dynamo.Extensions
 {
@@ -245,7 +246,7 @@ namespace Dynamo.Extensions
             if (currentWorkspace != null)
             {
                 UnsubscribeGraphEvents(currentWorkspace);
-                linterManager.RuleEvaluationResults.Clear();
+                DynamoModel.OnRequestDispatcherInvoke(() => { this.linterManager.RuleEvaluationResults.Clear(); });
                 currentWorkspace = null;
 
                 OnUnlink();
