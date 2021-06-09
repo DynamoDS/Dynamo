@@ -140,15 +140,11 @@
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
                         Width="*">
-                        <DataGridTextColumn.CellStyle>
-                            <Style TargetType="DataGridCell">
-                                <Setter Property="ToolTip" Value="{Binding Path}" />
-                            </Style>
-                        </DataGridTextColumn.CellStyle>
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
                                 <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
