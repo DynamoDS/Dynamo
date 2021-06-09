@@ -363,7 +363,10 @@
 </value>
   </data>
   <data name="PackageHeaderText" xml:space="preserve">
-    <value>Package</value>
+    <value>Name</value>
+  </data>
+  <data name="PackagePathText" xml:space="preserve">
+    <value>Path</value>
   </data>
   <data name="ProvideFeedbackButton" xml:space="preserve">
     <value>Provide Feedback</value>

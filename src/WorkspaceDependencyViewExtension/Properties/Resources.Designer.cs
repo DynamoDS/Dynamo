@@ -181,11 +181,20 @@ namespace Dynamo.WorkspaceDependency.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package.
+        ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string PackageHeaderText {
             get {
                 return ResourceManager.GetString("PackageHeaderText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path.
+        /// </summary>
+        public static string PackagePathText {
+            get {
+                return ResourceManager.GetString("PackagePathText", resourceCulture);
             }
         }
         

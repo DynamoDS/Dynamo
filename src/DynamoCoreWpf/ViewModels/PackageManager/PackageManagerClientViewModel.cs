@@ -531,7 +531,7 @@ namespace Dynamo.ViewModels
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
-                var duplicateLocalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == dep.name));
+                var duplicateLocalPackages = dependencyVersionHeaders.Select(dep => localPkgs.FirstOrDefault(v => v.Name == name));
                 foreach (var localPkg in duplicateLocalPackages)
                 {
                     if (localPkg == null) continue;
@@ -689,9 +689,9 @@ namespace Dynamo.ViewModels
                     .Select((dep, i) => {
                         return new PackageDownloadHandle()
                         {
-                            Id = dep.id,
+                            Id = dep.full_dependency_ids[i].ToString(),
                             VersionName = dep.version,
-                            Name = dep.name
+                            Name = name
                         };
                     })
                     .ToList()
