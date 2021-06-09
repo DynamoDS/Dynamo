@@ -131,8 +131,10 @@ Python Script: considering importlib.util";
           
             RunCurrentModel();
             CurrentDynamoModel.OnRequestPythonReset(nameof(PythonEngineVersion.CPython3));
-
-            StringAssert.Contains(expectedOutput, CurrentDynamoModel.Logger.LogText);
+            foreach(var line in expectedOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                StringAssert.Contains(line, CurrentDynamoModel.Logger.LogText);
+            }
         }
     }
 }
