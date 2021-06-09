@@ -531,12 +531,13 @@ namespace DynamoCoreWpfTests
         public void CanGetNodeDocumentationMarkdownFromPackageDocumentationManager()
         {
             // Arrange
+            var packageName = "Package";
             var nodeWithDocumentation = "Package.Package.Hello";
             var nodeWithoutDocumentation = "Package.Package.Package";
 
             // Assert
-            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithDocumentation));
-            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(nodeWithoutDocumentation));
+            Assert.That(PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithDocumentation)));
+            Assert.That(!PackageDocumentationManager.Instance.ContainsAnnotationDoc(Path.Combine(packageName, nodeWithoutDocumentation)));
         }
 
         #region Helpers
