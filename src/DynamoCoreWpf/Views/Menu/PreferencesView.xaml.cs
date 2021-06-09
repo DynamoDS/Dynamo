@@ -18,7 +18,6 @@ namespace Dynamo.Wpf.Views
     /// </summary>
     public partial class PreferencesView : Window
     {
-        private List<Expander> allExpandersList;
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
@@ -28,6 +27,10 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
+            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
+            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
+            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+
             DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
 
@@ -58,9 +61,9 @@ namespace Dynamo.Wpf.Views
             RadioMediumDesc.Inlines.Add(new Run(Res.ChangeScaleFactorPromptDescriptionDefaultSetting) { FontWeight = FontWeights.Bold });
             RadioMediumDesc.Inlines.Add(" " + viewModel.OptionsGeometryScale.DescriptionScaleRange[1]);
 
-            RadioLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[1]);
+            RadioLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[2]);
 
-            RadioExtraLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[2]);
+            RadioExtraLargeDesc.Inlines.Add(viewModel.OptionsGeometryScale.DescriptionScaleRange[3]);
         }
 
         /// <summary>
@@ -138,7 +141,7 @@ namespace Dynamo.Wpf.Views
             viewModel.ResetAddStyleControl();
         }
 
-        private void removeStyle_Click(object sender, RoutedEventArgs e)
+        private void RemoveStyle_Click(object sender, RoutedEventArgs e)
         {
            var removeButton = sender as Button;
 
@@ -152,7 +155,7 @@ namespace Dynamo.Wpf.Views
             viewModel.RemoveStyleEntry(groupNameLabel.Content.ToString());
         }
 
-        private void buttonColorPicker_Click(object sender, RoutedEventArgs e)
+        private void ButtonColorPicker_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
 
@@ -161,18 +164,6 @@ namespace Dynamo.Wpf.Views
                 Button colorButton = sender as Button;
                 if (colorButton != null)
                     colorButton.Background = new SolidColorBrush(Color.FromRgb(colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B));
-            }
-        }
-
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander currentExpander = sender as Expander;
-            Grid parentGrid = currentExpander.Parent as Grid;
-            foreach (Expander expander in parentGrid.Children)
-            {
-                if (expander != currentExpander && expander.IsExpanded)
-                    expander.IsExpanded = false;
-
             }
         }
 
@@ -242,5 +233,11 @@ namespace Dynamo.Wpf.Views
         {
             dynViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
+
+        private void ReloadCPython_Click(object sender, RoutedEventArgs e)
+        {
+            dynViewModel.Model.OnRequestPythonReset("CPython3");
+        }
+
     }
 }

@@ -1,0 +1,4 @@
+<ViewExtensionDefinition>
+  <AssemblyPath>..\GraphMetadataViewExtension.dll</AssemblyPath>
+  <TypeName>Dynamo.GraphMetadata.GraphMetadataViewExtension</TypeName>
+</ViewExtensionDefinition>

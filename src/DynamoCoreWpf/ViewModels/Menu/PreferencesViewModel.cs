@@ -49,6 +49,7 @@ namespace Dynamo.ViewModels
         private bool enableTSpline;
         private bool showEdges;
         private bool isolateSelectedGeometry;
+        private bool showCodeBlockLineNumber;
         private RunType runSettingsIsChecked;
         private Dictionary<string, TabSettings> preferencesTabs;
 
@@ -391,6 +392,20 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(TessellationDivisions));
             }
         }
+
+        public bool ShowCodeBlockLineNumber
+        {
+            get
+            {
+                return preferenceSettings.ShowCodeBlockLineNumber;
+            }
+            set
+            {
+                preferenceSettings.ShowCodeBlockLineNumber = value;
+                showCodeBlockLineNumber = value;
+                RaisePropertyChanged(nameof(ShowCodeBlockLineNumber));
+            }
+        }
         #endregion
 
         //This includes all the properties that can be set on the Features tab
@@ -418,14 +433,21 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.DefaultPythonEngine;
+                return selectedPythonEngine;
             }
             set
             {
-                if (value != preferenceSettings.DefaultPythonEngine)
+                if (value != selectedPythonEngine)
                 {
                     selectedPythonEngine = value;
-                    preferenceSettings.DefaultPythonEngine = value;
+                    if(value != Res.DefaultPythonEngineNone)
+                    {
+                        preferenceSettings.DefaultPythonEngine = value;
+                    }
+                    else{
+                        preferenceSettings.DefaultPythonEngine = string.Empty;
+                    }
+
                     RaisePropertyChanged(nameof(SelectedPythonEngine));
                 }
             }
@@ -591,7 +613,12 @@ namespace Dynamo.ViewModels
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
             AddPythonEnginesOptions();
-            SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+
+            //Sets SelectedPythonEngine.
+            //If the setting is empty it corresponds to the default python engine
+            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
+                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
+                SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
@@ -640,8 +667,6 @@ namespace Dynamo.ViewModels
 
             SavedChangesLabel = string.Empty;
             SavedChangesTooltip = string.Empty;
-
-            this.PropertyChanged += Model_PropertyChanged;
 
             preferencesTabs = new Dictionary<string, TabSettings>();
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
@@ -703,6 +728,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(EnableTSplineIsChecked):
                     description = Res.PreferencesViewEnableTSplineNodes;
+                    goto default;
+                case nameof(ShowCodeBlockLineNumber):
+                    description = Res.PreferencesViewShowCodeBlockNodeLineNumber;
                     goto default;
                 default:
                     if (!string.IsNullOrEmpty(description))
@@ -884,7 +912,11 @@ namespace Dynamo.ViewModels
                 {
                     expanderActive = value;
                     OnPropertyChanged(nameof(ExpanderActive));
-                }          
+                }
+                else
+                {
+                    expanderActive = string.Empty;
+                }
             }
         }
     }
