@@ -182,6 +182,9 @@ namespace Dynamo.ViewModels
         private void UnmarkForUninstallation()
         {
             Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
+
+            RaisePropertyChanged("PackageLoadStateTooltip");
+            RaisePropertyChanged("PackageLoadStateText");
         }
 
         private bool CanUnmarkForUninstallation()
@@ -213,6 +216,9 @@ namespace Dynamo.ViewModels
                 var dynModel = dynamoViewModel.Model;
                 var pmExtension = dynModel.GetPackageManagerExtension();
                 Model.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
+
+                RaisePropertyChanged("PackageLoadStateTooltip");
+                RaisePropertyChanged("PackageLoadStateText");
             }
             catch (Exception)
             {

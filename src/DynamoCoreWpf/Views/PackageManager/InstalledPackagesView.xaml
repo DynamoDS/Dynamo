@@ -101,10 +101,10 @@
                                             <Border Background="DimGray"
                                                     HorizontalAlignment="Stretch"
                                                     CornerRadius="5"
-                                                    ToolTip="{Binding Path=PackageLoadStateTooltip}"
                                                     Margin="5,0,0,0"
                                                     Padding="5,0,5,0">
                                                 <TextBlock Text="{Binding Path=PackageLoadStateText}"
+                                                        ToolTip="{Binding Path=PackageLoadStateTooltip}"
                                                         TextTrimming="CharacterEllipsis"
                                                         FontSize="11"
                                                         FontStyle="Italic"
