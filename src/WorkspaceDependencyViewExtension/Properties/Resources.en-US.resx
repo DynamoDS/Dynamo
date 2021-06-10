@@ -362,8 +362,11 @@
         jDoyqebiAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="PackageHeaderText" xml:space="preserve">
+  <data name="PackageHeaderName" xml:space="preserve">
     <value>Name</value>
+  </data>
+  <data name="PackageHeaderText" xml:space="preserve">
+    <value>Packages</value>
   </data>
   <data name="PackagePathText" xml:space="preserve">
     <value>Path</value>

@@ -84,7 +84,7 @@
         <Expander x:Name="Packages"
                   Grid.Row="0"  
                   Style="{StaticResource WorkspaceReferencesExpanderStyle}"
-                  Header="Packages">
+                  Header="{x:Static w:Resources.PackageHeaderText}">
             <DataGrid 
                 Name="PackageDependencyTable" 
                 AutoGenerateColumns="False"
@@ -121,7 +121,7 @@
                     </DataGridTemplateColumn>
                     <!-- Package Name -->
                     <DataGridTextColumn 
-                        Header="{x:Static w:Resources.PackageHeaderText}" 
+                        Header="{x:Static w:Resources.PackageHeaderName}" 
                         Binding="{Binding Name}" 
                         Foreground="#aaaaaa" 
                         IsReadOnly="True" 
