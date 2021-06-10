@@ -183,8 +183,15 @@ namespace Dynamo.ViewModels
         {
             Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
 
-            RaisePropertyChanged("PackageLoadStateTooltip");
-            RaisePropertyChanged("PackageLoadStateText");
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                RaisePropertyChanged("PackageLoadStateTooltip");
+                RaisePropertyChanged("PackageLoadStateText");
+            }
+            else
+            {
+                RaisePropertyChanged("EnableOldMarkedForUnistallState");
+            }
         }
 
         private bool CanUnmarkForUninstallation()
@@ -217,8 +224,14 @@ namespace Dynamo.ViewModels
                 var pmExtension = dynModel.GetPackageManagerExtension();
                 Model.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
 
-                RaisePropertyChanged("PackageLoadStateTooltip");
-                RaisePropertyChanged("PackageLoadStateText");
+                if (DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    RaisePropertyChanged("PackageLoadStateTooltip");
+                    RaisePropertyChanged("PackageLoadStateText");
+                } else
+                {
+                    RaisePropertyChanged("EnableOldMarkedForUnistallState");
+                }
             }
             catch (Exception)
             {

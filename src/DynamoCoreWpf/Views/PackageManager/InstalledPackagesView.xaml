@@ -80,10 +80,12 @@
                                                 Orientation="Horizontal"
                                                 Margin="5,5,5,7">
                                         <TextBlock Text="{Binding Path=Model.Name}"
+                                                   ToolTip="{Binding Path=Model.Name}"
                                                    FontSize="15"
-                                                   MinWidth="200"
+                                                   Width="200"
                                                    Margin="10,0,10,0"
-                                                   Foreground="WhiteSmoke"></TextBlock>
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="WhiteSmoke" ></TextBlock>
                                         <TextBlock Text="{Binding Path=Model.VersionName}"
                                                    MinWidth="50"
                                                    FontSize="11"
