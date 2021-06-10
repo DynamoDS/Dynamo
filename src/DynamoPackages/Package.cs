@@ -15,7 +15,6 @@ using Dynamo.Properties;
 using Dynamo.Utilities;
 using Greg.Requests;
 using Newtonsoft.Json;
-using Dynamo.Configuration;// Used for DebugModes
 using String = System.String;
 
 namespace Dynamo.PackageManager
@@ -39,56 +38,11 @@ namespace Dynamo.PackageManager
             Loaded, Unloaded, Error
         }
 
-        internal Types Type = Types.Unloaded;
+        internal Types Type = Types.Unloaded;// Default to Unloaded type.
 
         internal bool MarkedForUninstall;
 
-        internal string Tooltip
-        {
-            get
-            {
-                if (MarkedForUninstall)
-                {
-                    return Resources.PackageStatePendingUnloadTooltip;
-                }
-                switch (Type)
-                {
-                    case Types.Unloaded: return Resources.PackageStateUnloadedTooltip;
-                    case Types.Loaded: return Resources.PackageStateLoadedTooltip;
-                    case Types.Error:
-                        {
-                            if (ErrorMessage.Length > 0)
-                            {
-                                return String.Format(Resources.PackageStateErrorTooltip, ErrorMessage);
-                            }
-                            return String.Format(Resources.PackageStateErrorTooltip, "Unknown error");
-                        }
-                    default:
-                            return "Unkonwn package state";
-                }
-            }
-        }
-
-        internal string Text
-        {
-            get
-            {
-                if (MarkedForUninstall)
-                {
-                    return Resources.PackageStatePendingUnload;
-                }
-                switch (Type)
-                {
-                    case Types.Unloaded: return Resources.PackageStateUnloaded;
-                    case Types.Loaded: return Resources.PackageStateLoaded;
-                    case Types.Error: return Resources.PackageStateError;
-                    default:
-                            return "Unkonwn package state";
-                }
-            }
-        }
-
-        internal string ErrorMessage;
+        internal string ErrorMessage;// Used when Type == Types.Error
     }
 
     public class Package : NotificationObject, ILogSource
@@ -178,45 +132,7 @@ namespace Dynamo.PackageManager
             internal set { LoadState.MarkedForUninstall = value; RaisePropertyChanged("MarkedForUninstall"); }
         }
 
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnableOldMarkedForUnistallState
-        {
-            get { return !DebugModes.IsEnabled("DynamoPackageStates") && MarkedForUninstall; }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public bool EnablePackageStates
-        {
-            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
-        }
-
         internal PackageLoadState LoadState = new PackageLoadState();
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public string PackageLoadStateText
-        {
-            get
-            {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-                return LoadState.Text;
-            }
-        }
-
-        [Obsolete("This is a temporary property. Please do not use it")]
-        public string PackageLoadStateTooltip
-        {
-            get
-            {
-                if (!DebugModes.IsEnabled("DynamoPackageStates"))
-                {
-                    return "DO NOT USE THIS";
-                }
-                return LoadState.Tooltip;
-            }
-        }
 
         private string _group = "";
         public string Group { get { return _group; } set { _group = value; RaisePropertyChanged("Group"); } }
