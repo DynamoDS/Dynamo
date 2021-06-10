@@ -359,6 +359,28 @@ namespace Dynamo.Configuration
         /// </summary>
         private static string defaultPythonEngine;
 
+        private string selectedPackagePathForInstall;
+        /// <summary>
+        /// Currently selected package path where all packages downloaded from the Package Manager
+        /// will be installed.
+        /// </summary>
+        public string SelectedPackagePathForInstall {
+            get
+            {
+                if (string.IsNullOrEmpty(selectedPackagePathForInstall))
+                {
+                    var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    selectedPackagePathForInstall = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"), "2.12");
+                }
+
+                return selectedPackagePathForInstall;
+            }
+            set
+            {
+                selectedPackagePathForInstall = value;
+            }
+        }
+
         /// <summary>
         /// Indicates (if any) which namespaces should not be displayed in the Dynamo node library.
         /// String format: "[library name]:[fully qualified namespace]"
@@ -434,6 +456,7 @@ namespace Dynamo.Configuration
             EnableNodeAutoComplete = true;
             DefaultPythonEngine = string.Empty;
             ViewExtensionSettings = new List<ViewExtensionSettings>();
+
         }
 
         /// <summary>

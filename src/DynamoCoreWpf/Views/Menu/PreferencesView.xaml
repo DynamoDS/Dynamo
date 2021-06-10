@@ -702,7 +702,7 @@
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
-                        <!--This Grid contains the package mangager settings tab-->
+                        <!--This Grid contains the package manager settings tab-->
                         <Grid x:Name="PackageManagerTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
@@ -711,14 +711,20 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <!--This Grid row contains the Package Paths section-->
+                            <!--This Grid row contains the Node and Package Paths section-->
                             <Expander x:Name="PackagePathsExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                                    <ComboBox Grid.Row="1" 
+                                              Width="213"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}">
+                                    </ComboBox>
                                 </StackPanel>
                             </Expander>
 

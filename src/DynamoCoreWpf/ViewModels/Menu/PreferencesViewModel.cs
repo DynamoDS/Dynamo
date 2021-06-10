@@ -10,6 +10,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -31,16 +32,18 @@ namespace Dynamo.ViewModels
         private string savedChangesLabel;
         private string savedChangesTooltip;
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
         private ObservableCollection<StyleItem> styleItemsList;
         private StyleItem addStyleControl;
-        private ObservableCollection<string> _pythonEngineList;
+        private ObservableCollection<string> pythonEngineList;
 
         private string selectedLanguage;
         private string selectedFontSize;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
+        private string selectedPackagePathForInstall;
         private bool runPreviewEnabled;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
@@ -221,7 +224,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// LanguagesList property containt the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
+        /// LanguagesList property contains the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
         /// </summary>
         public ObservableCollection<string> LanguagesList
         {
@@ -233,6 +236,49 @@ namespace Dynamo.ViewModels
             {
                 languagesList = value;
                 RaisePropertyChanged(nameof(LanguagesList));
+            }
+        }
+
+        /// <summary>
+        /// PackagePathsForInstall contains the list of all package paths where
+        /// packages can be installed.
+        /// </summary>
+        public ObservableCollection<string> PackagePathsForInstall
+        {
+            get
+            {
+                if (packagePathsForInstall == null || !packagePathsForInstall.Any())
+                {
+                    packagePathsForInstall = new ObservableCollection<string>();
+                    packagePathsForInstall.AddRange(preferenceSettings.CustomPackageFolders.Where(
+                        x => x != DynamoModel.StandardLibraryToken));
+                }
+                return packagePathsForInstall;
+            }
+            set
+            {
+                packagePathsForInstall = value;
+                RaisePropertyChanged(nameof(PackagePathsForInstall));
+            }
+        }
+
+        /// <summary>
+        /// Currently selected package path where new packages will be downloaded.
+        /// </summary>
+        public string SelectedPackagePathForInstall
+        {
+            get
+            {
+                return selectedPackagePathForInstall;
+            }
+            set
+            {
+                if (selectedPackagePathForInstall != value)
+                {
+                    selectedPackagePathForInstall = value;
+                    preferenceSettings.SelectedPackagePathForInstall = value;
+                    RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                }
             }
         }
 
@@ -417,11 +463,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _pythonEngineList;
+                return pythonEngineList;
             }
             set
             {
-                _pythonEngineList = value;
+                pythonEngineList = value;
                 RaisePropertyChanged(nameof(PythonEnginesList));
             }
         }
@@ -620,6 +666,8 @@ namespace Dynamo.ViewModels
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -693,6 +741,9 @@ namespace Dynamo.ViewModels
                 case nameof(SelectedNumberFormat):
                     description = Res.DynamoViewSettingMenuNumberFormat;
                     goto default;
+                case nameof(SelectedPackagePathForInstall):
+                    // Do nothing for now
+                    break;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
                     goto default;
