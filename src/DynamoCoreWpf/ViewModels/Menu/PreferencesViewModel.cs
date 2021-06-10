@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
@@ -250,8 +251,17 @@ namespace Dynamo.ViewModels
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     packagePathsForInstall = new ObservableCollection<string>();
-                    packagePathsForInstall.AddRange(preferenceSettings.CustomPackageFolders.Where(
-                        x => x != DynamoModel.StandardLibraryToken));
+                    var customPaths = preferenceSettings.CustomPackageFolders.Where(
+                        x => x != DynamoModel.StandardLibraryToken);
+
+                    foreach (var path in customPaths)
+                    {
+                        var attr = File.GetAttributes(path);
+
+                        // Add only directory paths
+                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                            packagePathsForInstall.Add(path);
+                    }
                 }
                 return packagePathsForInstall;
             }
