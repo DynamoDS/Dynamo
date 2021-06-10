@@ -719,7 +719,7 @@
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
                                     <ComboBox Grid.Row="1" 
-                                              Width="213"
+                                              Width="Auto"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=PackagePathsForInstall}"
                                               SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
