@@ -4494,6 +4494,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Package Download Directory.
+        /// </summary>
+        public static string PreferencesViewPackageDownloadDirectory {
+            get {
+                return ResourceManager.GetString("PreferencesViewPackageDownloadDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python.
         /// </summary>
         public static string PreferencesViewPython {

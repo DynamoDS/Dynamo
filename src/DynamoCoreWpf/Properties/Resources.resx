@@ -2268,6 +2268,10 @@ Uninstall the following packages: {0}?</value>
     <value>Default Python Engine</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>New Package Download Directory</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
