@@ -447,8 +447,6 @@ namespace Dynamo.PackageManager
         {
             MarkedForUninstall = true;
 
-            RaisePropertyChanged("MarkedForUninstall");
-
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
                 prefs.PackageDirectoriesToUninstall.Add(RootDirectory);
@@ -458,8 +456,6 @@ namespace Dynamo.PackageManager
         internal void UnmarkForUninstall(IPreferences prefs)
         {
             MarkedForUninstall = false;
-
-            RaisePropertyChanged("MarkedForUninstall");
 
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
