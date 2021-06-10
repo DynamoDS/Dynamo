@@ -1800,15 +1800,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Selected package path for download.
-        /// </summary>
-        public static string DynamoViewSettingMenuSelectedPackagePathForDownload {
-            get {
-                return ResourceManager.GetString("DynamoViewSettingMenuSelectedPackagePathForDownload", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Agreement to Collect Usability Data.
         /// </summary>
         public static string DynamoViewSettingMenuShowDataReportingDialog {
@@ -4544,6 +4535,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSavedChangesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewSavedChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected package path for download.
+        /// </summary>
+        public static string PreferencesViewSelectedPackagePathForDownload {
+            get {
+                return ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", resourceCulture);
             }
         }
         

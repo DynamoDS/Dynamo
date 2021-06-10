@@ -552,9 +552,9 @@
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
-  <data name="DynamoViewSettingMenuSelectedPackagePathForDownload" xml:space="preserve">
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
     <value>Selected package path for download</value>
-    <comment>Setting menu | Selected package path for download</comment>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
   </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
