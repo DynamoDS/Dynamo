@@ -79,7 +79,7 @@ namespace NodeDocumentationMarkdownGenerator
 
                             if (NodeModelAssemblyLoader.ContainsNodeModelSubTypeReflectionLoaded(asm, nodeModelType))
                             {
-                                FileInfosFromNodeModels(asm, nodeModelType, ref nodeSearchModel);
+                                FileInfosFromNodeModels(asm, nodeModelType, nodeSearchModel);
                                 continue;
                             }
 
@@ -117,7 +117,7 @@ namespace NodeDocumentationMarkdownGenerator
 
                 if (functionGroups.Count > 0)
                 {
-                    AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), ref nodeSearchModel);
+                    AddZeroTouchNodesToSearch(functionGroups.Values.SelectMany(x => x.Values.Select(g => g)), nodeSearchModel);
                 }
 
                 fileInfos.AddRange(FileInfosFromSearchModel(nodeSearchModel));
@@ -196,14 +196,16 @@ namespace NodeDocumentationMarkdownGenerator
         {
             var descriptors = new List<FunctionDescriptor>();
 
-            var t = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
-            var dsCodeNode = t.Import(dsFilePath, "", "");
-            var classNode = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>().FirstOrDefault();
-            var associativeNodes = classNode.Procedures;
+            var importModuleHandler = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
+            var dsCodeNode = importModuleHandler.Import(dsFilePath, "", "");
+            var classNodes = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>();
             var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
+            
+            var associativeNodes = classNodes?.SelectMany(x => x.Procedures).ToList();
+            associativeNodes.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>());
             foreach (var node in associativeNodes)
             {
-                if (TryGetFunctionDescriptor(node, null, dsFilePath, classNode.ClassName, customizationFile, out ReflectionFunctionDescriptor des))
+                if (TryGetFunctionDescriptor(node, null, dsFilePath, ""/* classNode.ClassName*/, customizationFile, out ReflectionFunctionDescriptor des))
                 {
                     descriptors.Add(des);
                 }
@@ -211,15 +213,15 @@ namespace NodeDocumentationMarkdownGenerator
             return descriptors;
         }
 
-        private static void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups, ref NodeSearchModel nodeSearchModel)
+        private static void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups, NodeSearchModel nodeSearchModel)
         {
             foreach (var funcGroup in functionGroups)
             {
-                AddZeroTouchNodeToSearch(funcGroup, ref nodeSearchModel);
+                AddZeroTouchNodeToSearch(funcGroup, nodeSearchModel);
             }
         }
 
-        private static void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, ref NodeSearchModel nodeSearchModel)
+        private static void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, NodeSearchModel nodeSearchModel)
         {
             foreach (var functionDescriptor in funcGroup.Functions)
             {
@@ -230,7 +232,7 @@ namespace NodeDocumentationMarkdownGenerator
             }
         }
 
-        private static void FileInfosFromNodeModels(Assembly asm, Type nodeModelType, ref NodeSearchModel searchModel)
+        private static void FileInfosFromNodeModels(Assembly asm, Type nodeModelType, NodeSearchModel searchModel)
         {
 
             var fileInfos = new List<MdFileInfo>();
