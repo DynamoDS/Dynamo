@@ -1514,7 +1514,7 @@ namespace ProtoFFI
             Type type = method.DeclaringType;
             if (!CLRModuleType.TryGetTypeAttributes(type, out baseAttributes))
             {
-                baseAttributes = new FFIClassAttributes(type);
+                baseAttributes = new FFIClassAttributes(type, isReflectionContext);
                 CLRModuleType.SetTypeAttributes(type, baseAttributes);
             }
 

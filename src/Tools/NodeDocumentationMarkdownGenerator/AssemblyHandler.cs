@@ -200,7 +200,7 @@ namespace NodeDocumentationMarkdownGenerator
             var dsCodeNode = importModuleHandler.Import(dsFilePath, "", "");
             var classNodes = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>();
             var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
-            
+
             var associativeNodes = classNodes?.SelectMany(x => x.Procedures).ToList();
             associativeNodes.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>());
             foreach (var node in associativeNodes)
@@ -261,6 +261,11 @@ namespace NodeDocumentationMarkdownGenerator
         private static List<string> GetDefaultPaths()
         {
             string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll", SearchOption.AllDirectories);
+            
+            //var dynamoDlls = new DirectoryInfo(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin")))
+            //    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
+            //    .Select(x => x.FullName);
+
             var dynamoDlls = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)).EnumerateFiles("*.dll").Select(x => x.FullName);
 
             var paths = new List<string>(runtimeAssemblies);
