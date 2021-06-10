@@ -2662,7 +2662,7 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
-        enum ButtonId
+        internal enum ButtonId
         {
             Ok = 43420,
             Cancel,

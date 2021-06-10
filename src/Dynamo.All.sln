@@ -239,6 +239,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Md2Html", "Tools\Md2Html\Md
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LintingViewExtension", "LintingViewExtension\LintingViewExtension.csproj", "{C86F9058-229D-40A9-95D5-D6F081AA9230}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLinterExtension", "TestLinterExtension\TestLinterExtension.csproj", "{74A99E4A-671E-4B99-B8E9-602AE5A86323}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -879,6 +881,14 @@ Global
 		{C86F9058-229D-40A9-95D5-D6F081AA9230}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C86F9058-229D-40A9-95D5-D6F081AA9230}.Release|x64.ActiveCfg = Release|x64
 		{C86F9058-229D-40A9-95D5-D6F081AA9230}.Release|x64.Build.0 = Release|x64
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Debug|x64.Build.0 = Debug|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Release|x64.ActiveCfg = Release|Any CPU
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -957,6 +967,7 @@ Global
 		{51511AFD-F326-4995-8E27-5D711419EF6F} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 		{0893F745-CB1A-427A-8E87-CA927273039A} = {D114C59C-CF66-4CC2-980F-9301FB4EA4E1}
 		{C86F9058-229D-40A9-95D5-D6F081AA9230} = {88D45B00-E564-41DB-B57C-9509646CAA49}
+		{74A99E4A-671E-4B99-B8E9-602AE5A86323} = {88D45B00-E564-41DB-B57C-9509646CAA49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89CB19C6-BF0A-4E6A-BFDA-79D143EAB59D}

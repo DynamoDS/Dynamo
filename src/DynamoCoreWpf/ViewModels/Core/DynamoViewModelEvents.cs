@@ -162,5 +162,15 @@ namespace Dynamo.ViewModels
             if (RequestReturnFocusToView != null)
                 RequestReturnFocusToView();
         }
+
+        /// <summary>
+        /// Event used to verify that the correct dialog is being showed when saving a graph with unresolved linter issues.
+        /// This is only meant to be used for unit testing purposes.
+        /// </summary>
+        internal event SaveWarningOnUnresolvedIssuesShows SaveWarningOnUnresolvedIssuesShows;
+        internal virtual void OnSaveWarningOnUnresolvedIssues(Object sender, SaveWarningOnUnresolvedIssuesArgs e)
+        {
+            SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
+        }
     }
 }

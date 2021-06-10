@@ -20,6 +20,7 @@ using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Dynamo.Wpf.ViewModels.Core;
@@ -556,7 +557,9 @@ namespace Dynamo.ViewModels
             try
             {
                 if (!isBackup)
+                {
                     Model.OnSaving(saveContext);
+                }
 
                 //set the name before serializing model.
                 this.Model.setNameBasedOnFileName(filePath, isBackup);

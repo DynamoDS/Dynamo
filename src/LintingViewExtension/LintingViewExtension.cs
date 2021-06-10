@@ -39,11 +39,19 @@ namespace Dynamo.LintingViewExtension
             this.linterViewModel = new LinterViewModel(linterManager, viewLoadedParamsReference);
             this.linterView = new LinterView() { DataContext = linterViewModel };
 
+            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).RequestOpenLinterView += OnRequestOpenLinterView;
+
             // Add a button to Dynamo View menu to manually show the window
             this.linterMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
             this.linterMenuItem.Checked += MenuItemCheckHandler;
             this.linterMenuItem.Unchecked += MenuItemUnCheckedHandler;
             this.viewLoadedParamsReference.AddExtensionMenuItem(this.linterMenuItem);
+        }
+
+        private void OnRequestOpenLinterView(object sender, System.EventArgs e)
+        {
+            if (linterMenuItem.IsChecked) return;
+            linterMenuItem.IsChecked = true;
         }
 
         public override void Shutdown()
