@@ -817,6 +817,10 @@ You will get a chance to save your work.</value>
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
+  <data name="DynamoViewSettingMenuSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Selected package path for download</value>
+    <comment>Setting menu | Selected package path for download</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>

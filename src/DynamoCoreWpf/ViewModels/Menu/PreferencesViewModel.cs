@@ -742,8 +742,8 @@ namespace Dynamo.ViewModels
                     description = Res.DynamoViewSettingMenuNumberFormat;
                     goto default;
                 case nameof(SelectedPackagePathForInstall):
-                    // Do nothing for now
-                    break;
+                    description = Res.DynamoViewSettingMenuSelectedPackagePathForDownload;
+                    goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
                     goto default;
