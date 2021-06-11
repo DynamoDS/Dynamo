@@ -750,4 +750,7 @@ Parameter name: {0}</value>
   <data name="Autocomplete" xml:space="preserve">
     <value>Autocomplete</value>
   </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>None</value>
+  </data>
 </root>
