@@ -2482,6 +2482,7 @@
         </Setter>
     </Style>
 
+    <!-- This expander style is similar to the MenuExpanderStyle and the only difference is the left-margin spacing -->
     <Style TargetType="Expander" x:Key="WorkspaceReferencesExpanderStyle">
         <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
