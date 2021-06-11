@@ -727,7 +727,8 @@
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=PackagePathsForInstall}"
                                               SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
-                                              Style="{StaticResource NoBordersComboBoxStyle}">
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
                                     </ComboBox>
                                 </StackPanel>
                             </Expander>
