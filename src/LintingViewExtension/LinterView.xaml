@@ -157,9 +157,12 @@
                     <ComboBox.Resources>
                         <CollectionViewSource x:Key="AvailableLinters"
                                               Source="{Binding AvailableLinters}" />
+                        <CollectionViewSource x:Key="DefaultDescriptor" 
+                                        Source="{Binding DefaultDescriptor}" />
                     </ComboBox.Resources>
                     <ComboBox.ItemsSource>
                         <CompositeCollection>
+                            <CollectionContainer Collection="{Binding Source={StaticResource DefaultDescriptor}}" />
                             <CollectionContainer Collection="{Binding Source={StaticResource AvailableLinters}}" />
                         </CompositeCollection>
                     </ComboBox.ItemsSource>

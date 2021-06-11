@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -19,12 +18,14 @@ namespace Dynamo.LintingViewExtension
 {
     public class LinterViewModel : NotificationObject
     {
+        private const string NONE_DESCRIPTOR_GUID = "7b75fb44-43fd-4631-a878-29f4d5d8399a";
+
         #region Private Fields
         private static Uri linterViewHelpLink = new Uri("LintingViewExtension;LinterViewHelpDoc.html", UriKind.Relative);
         private LinterExtensionDescriptor activeLinter;
         private LinterManager linterManager;
         private ViewLoadedParams viewLoadedParams;
-        private Dispatcher dispatcher;
+        private LinterExtensionDescriptor defaultDescriptor;
         #endregion
 
         #region Public Properties
@@ -73,21 +74,30 @@ namespace Dynamo.LintingViewExtension
             get => linterManager.AvailableLinters.ToList();
         }
         
+        /// <summary>
+        /// The default descriptor is used if no linter is needed for the graph. This is a dummy descriptor that has no extension associated to it.
+        /// This property returns the descriptor as a list for binding purposes.
+        /// </summary>
+        public IList<LinterExtensionDescriptor> DefaultDescriptor { get => new List<LinterExtensionDescriptor> { defaultDescriptor }; }
+
         #endregion
 
         public LinterViewModel(LinterManager linterManager, ViewLoadedParams viewLoadedParams)
         {
             this.linterManager = linterManager ?? throw new ArgumentNullException(nameof(linterManager));
             this.viewLoadedParams = viewLoadedParams;
-            dispatcher = viewLoadedParams.DynamoWindow.Dispatcher;
             InitializeCommands();
+            CreateDefaultDummyLinterDescriptor();
 
-            this.activeLinter = this.linterManager.ActiveLinter;
+            // If there are no active linter we set it to the default one.
+            if (this.linterManager.ActiveLinter is null)
+            {
+                ActiveLinter = defaultDescriptor;
+            }
 
             NodeIssues = new ObservableCollection<IRuleIssue>();
             GraphIssues = new ObservableCollection<IRuleIssue>();
             this.linterManager.RuleEvaluationResults.CollectionChanged += RuleEvaluationResultsCollectionChanged;
-            this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
         }
 
         #region Private methods
@@ -127,17 +137,14 @@ namespace Dynamo.LintingViewExtension
             {
                 if (issue.AffectedNodes.Contains(issueNode)) return;
 
-                dispatcher.Invoke(() => { issue.AffectedNodes.Add(issueNode); });
+                issue.AffectedNodes.Add(issueNode);
                 return;
             }
 
             var newIssue = new NodeRuleIssue(ruleId, GetLinterRule(ruleId) as NodeLinterRule);
+            newIssue.AddAffectedNodes(new List<NodeModel> { issueNode });
 
-            dispatcher.Invoke(() =>
-            {
-                newIssue.AddAffectedNodes(new List<NodeModel> { issueNode });
-                NodeIssues.Add(newIssue);
-            });
+            NodeIssues.Add(newIssue);
         }
 
         private void AddNewGraphIssue(List<string> issueNodeIds, string ruleId)
@@ -153,17 +160,15 @@ namespace Dynamo.LintingViewExtension
                 {
                     if (issue.AffectedNodes.Contains(issueNode)) continue;
 
-                    dispatcher.Invoke(() => { issue.AffectedNodes.Add(issueNode); });
+                    issue.AffectedNodes.Add(issueNode);
                     return;
                 }
             }
 
             var newIssue = new GraphRuleIssue(ruleId, GetLinterRule(ruleId) as GraphLinterRule);
-            
-            dispatcher.Invoke(() => {
-                newIssue.AddAffectedNodes(issueNodes);
-                GraphIssues.Add(newIssue);
-            });
+            newIssue.AddAffectedNodes(issueNodes);
+
+            GraphIssues.Add(newIssue);
         }
 
         private void RemoveNodeIssue(string issueNodeId, string ruleId)
@@ -176,17 +181,15 @@ namespace Dynamo.LintingViewExtension
                 return;
             }
 
-            dispatcher.Invoke(() => {
-                issue.AffectedNodes
-                    .Remove(issue.AffectedNodes
-                        .Where(x => x.GUID.ToString() == issueNodeId)
-                        .FirstOrDefault());
+            issue.AffectedNodes
+                .Remove(issue.AffectedNodes
+                    .Where(x => x.GUID.ToString() == issueNodeId)
+                    .FirstOrDefault());
 
-                if (issue.AffectedNodes.Count == 0)
-                {
-                    NodeIssues.Remove(issue);
-                }
-            });
+            if (issue.AffectedNodes.Count == 0)
+            {
+                NodeIssues.Remove(issue);
+            }
         }
 
         private void RemoveGraphIssue(string ruleId)
@@ -194,7 +197,7 @@ namespace Dynamo.LintingViewExtension
             var issue = GraphIssues.Where(x => x.Id == ruleId).FirstOrDefault();
             if (issue is null) return;
 
-            dispatcher.Invoke(() => { GraphIssues.Remove(issue); });
+            GraphIssues.Remove(issue);
         }
 
         private LinterRule GetLinterRule(string id)
@@ -245,11 +248,8 @@ namespace Dynamo.LintingViewExtension
                     return;
 
                 case NotifyCollectionChangedAction.Reset:
-                    dispatcher.Invoke(() =>
-                    {
-                        GraphIssues.Clear();
-                        NodeIssues.Clear();
-                    });
+                    this.GraphIssues.Clear();
+                    this.NodeIssues.Clear();
                     return;
 
                 default:
@@ -257,14 +257,6 @@ namespace Dynamo.LintingViewExtension
             }
         }
 
-        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e )
-        {
-            if (e.PropertyName == nameof(linterManager.ActiveLinter))
-            {
-                ActiveLinter = (sender as LinterManager)?.ActiveLinter;
-            }
-        }
-        
         private NodeModel NodeFromId(string nodeId)
         {
             if (nodeId is null)
@@ -280,10 +272,9 @@ namespace Dynamo.LintingViewExtension
             return node;
         }
 
-        public void Dispose()
+        private void CreateDefaultDummyLinterDescriptor()
         {
-            this.linterManager.RuleEvaluationResults.CollectionChanged -= RuleEvaluationResultsCollectionChanged;
-            this.linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            defaultDescriptor = new LinterExtensionDescriptor(NONE_DESCRIPTOR_GUID, Properties.Resources.NoneLinterDescriptorName);
         }
         #endregion
     }

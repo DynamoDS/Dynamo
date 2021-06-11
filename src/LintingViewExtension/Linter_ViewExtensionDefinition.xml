@@ -1,4 +1,5 @@
 <ViewExtensionDefinition>
   <AssemblyPath>..\LintingViewExtension.dll</AssemblyPath>
   <TypeName>Dynamo.LintingViewExtension.LintingViewExtension</TypeName>
+  <IsEnabled>False</IsEnabled>
 </ViewExtensionDefinition>

@@ -22,7 +22,6 @@ namespace Dynamo.Linting
         #region Private fields
         private readonly IExtensionManager extensionManager;
         private LinterExtensionDescriptor activeLinter;
-
         #endregion
 
         #region Public properties
@@ -73,9 +72,6 @@ namespace Dynamo.Linting
             AvailableLinters = new HashSet<LinterExtensionDescriptor>();
             RuleEvaluationResults = new ObservableCollection<IRuleEvaluationResult>();
 
-            activeLinter = LinterExtensionDescriptor.DefaultDescriptor;
-            AvailableLinters.Add(activeLinter);
-
             SubscribeLinterEvents();
         }
 
@@ -87,18 +83,6 @@ namespace Dynamo.Linting
         internal bool IsExtensionActive(string uniqueId)
         {
             return ActiveLinter?.Id == uniqueId;
-        }
-        
-        internal void SetDefaultLinter()
-        {
-            var linterDescriptor = AvailableLinters
-                .Where(x => x.Id == LinterExtensionDescriptor.DefaultDescriptor.Id)
-                .FirstOrDefault();
-
-            if (linterDescriptor != null)
-            {
-                SetActiveLinter(linterDescriptor);
-            }
         }
 
         #region Private methods
@@ -114,8 +98,6 @@ namespace Dynamo.Linting
             if (AvailableLinters.Contains(extensionDescriptor)) return;
 
             AvailableLinters.Add(extensionDescriptor);
-
-            RaisePropertyChanged(nameof(AvailableLinters));
         }
 
         private void OnRuleEvaluated(IRuleEvaluationResult result)
@@ -124,7 +106,7 @@ namespace Dynamo.Linting
 
             if (result.Status == RuleEvaluationStatusEnum.Passed)
             {
-                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Remove(result); });
+                RuleEvaluationResults.Remove(result);
             }
 
             else
@@ -143,18 +125,14 @@ namespace Dynamo.Linting
                         if (storingResult.NodeIds != gRuleResult.NodeIds) 
                         {
                             // remove original result and replace with new one
-                            DynamoModel.OnRequestDispatcherInvoke(() =>
-                            {
-                                RuleEvaluationResults.Remove(storingResult);
-                                RuleEvaluationResults.Add(result);
-                            });
+                            RuleEvaluationResults.Remove(storingResult);
+                            RuleEvaluationResults.Add(result);
                         }
                     }
                     
                     return;
                 }
-
-                DynamoModel.OnRequestDispatcherInvoke(() => { RuleEvaluationResults.Add(result); });
+                RuleEvaluationResults.Add(result);
             }
         }
 

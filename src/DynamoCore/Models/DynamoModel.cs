@@ -772,11 +772,6 @@ namespace Dynamo.Models
                             {
                                 if (loadedExtension is IExtension)
                                 {
-                                    if (loadedExtension is LinterExtensionBase loadedLinter)
-                                    {
-                                        loadedLinter.InitializeBase(this.LinterManager);
-                                    }
-                                    
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
@@ -2507,8 +2502,6 @@ namespace Dynamo.Models
             CurrentWorkspace.FileName = "";
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
-
-            this.LinterManager?.SetDefaultLinter();
 
             OnWorkspaceCleared(CurrentWorkspace);
         }

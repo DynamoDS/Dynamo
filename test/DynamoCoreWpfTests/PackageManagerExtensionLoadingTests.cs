@@ -69,8 +69,7 @@ namespace DynamoCoreWpfTests
                         "Sample View Extension",
                         "PackageManagerViewExtension", 
                         "Python Migration",
-                        GraphMetadataViewExtension.extensionName,
-                        "Graph Status"
+                        GraphMetadataViewExtension.extensionName
                     })
                 )
             );
