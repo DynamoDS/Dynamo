@@ -185,8 +185,8 @@ namespace Dynamo.ViewModels
 
             if (DebugModes.IsEnabled("DynamoPackageStates"))
             {
-                RaisePropertyChanged("PackageLoadStateTooltip");
-                RaisePropertyChanged("PackageLoadStateText");
+                RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+                RaisePropertyChanged(nameof(PackageLoadStateText));
             }
             else
             {
@@ -226,8 +226,8 @@ namespace Dynamo.ViewModels
 
                 if (DebugModes.IsEnabled("DynamoPackageStates"))
                 {
-                    RaisePropertyChanged("PackageLoadStateTooltip");
-                    RaisePropertyChanged("PackageLoadStateText");
+                    RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+                    RaisePropertyChanged(nameof(PackageLoadStateText));
                 } else
                 {
                     RaisePropertyChanged("EnableOldMarkedForUnistallState");
