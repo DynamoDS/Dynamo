@@ -130,6 +130,7 @@
                             <Style TargetType="TextBlock">
                                 <Setter Property="VerticalAlignment" Value="Center" />
                                 <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
