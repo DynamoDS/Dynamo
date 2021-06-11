@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
 using Dynamo.Core;
 using Dynamo.Graph.Connectors;
@@ -370,7 +372,9 @@ namespace Dynamo.Configuration
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
                 {
                     var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    selectedPackagePathForInstall = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"), "2.12");
+                    var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+                    selectedPackagePathForInstall = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                        $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
                 }
 
                 return selectedPackagePathForInstall;

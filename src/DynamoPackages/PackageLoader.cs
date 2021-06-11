@@ -85,6 +85,11 @@ namespace Dynamo.PackageManager
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
         }
 
+        internal void SetPackagesDownloadDirectory(string downloadDirectory)
+        {
+            defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(downloadDirectory);
+        }
+
         private int defaultPackagesDirectoryIndex = -1;
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
