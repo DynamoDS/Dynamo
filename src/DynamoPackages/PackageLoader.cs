@@ -80,17 +80,7 @@ namespace Dynamo.PackageManager
         /// The first entry is the standard library.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
-        public string DefaultPackagesDirectory
-        {
-            get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
-        }
-
-        internal void SetPackagesDownloadDirectory(string downloadDirectory)
-        {
-            defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(downloadDirectory);
-        }
-
-        private int defaultPackagesDirectoryIndex = -1;
+        public string DefaultPackagesDirectory { get; set; }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
@@ -173,17 +163,6 @@ namespace Dynamo.PackageManager
             {
                 // Replace token with runtime library location
                 this.packagesDirectories[standardLibraryIndex] = stdLibDirectory;
-            }
-
-            // Setup Default Package Directory
-            if (standardLibraryIndex == -1)
-            {
-                defaultPackagesDirectoryIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-            }
-            else
-            {
-                var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-                defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
             }
 
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
