@@ -102,11 +102,6 @@ namespace Dynamo.ViewModels
             {
                 return preferencesViewModel;
             }
-            set
-            {
-                preferencesViewModel = value;
-                RaisePropertyChanged(nameof(PreferencesViewModel));
-            }
         }
 
         public Point TransformOrigin

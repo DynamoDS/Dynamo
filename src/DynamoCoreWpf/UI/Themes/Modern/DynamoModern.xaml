@@ -2266,6 +2266,8 @@
     
     <SolidColorBrush x:Key="PreferencesWindowBackgroundColor" 
                              Color="#535353" />
+    <SolidColorBrush x:Key="PreferencesWindowItemDarkerBackgroundColor"
+                     Color="#353535"/>
     <SolidColorBrush x:Key="PreferencesWindowFontColor" 
                              Color="#E5E5E5" />
     <SolidColorBrush x:Key="PreferencesWindowButtonColor" 

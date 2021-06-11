@@ -10,6 +10,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -599,6 +600,8 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
+        public PackagePathViewModel PackagePaths { get; set; }
+
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
@@ -672,6 +675,21 @@ namespace Dynamo.ViewModels
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
             preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+
+            //create a packagePathsViewModel we'll use to interact with the package search paths list.
+            var loadPackagesParams = new LoadPackageParams
+            {
+                Preferences = preferenceSettings,
+                PathManager = dynamoViewModel.Model.PathManager,
+            };
+            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
+            var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+            
+            PackagePaths = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+
+
             this.PropertyChanged += Model_PropertyChanged;
         }
 
