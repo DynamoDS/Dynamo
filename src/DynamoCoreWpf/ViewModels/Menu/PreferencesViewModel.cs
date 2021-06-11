@@ -251,8 +251,12 @@ namespace Dynamo.ViewModels
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     packagePathsForInstall = new ObservableCollection<string>();
+                    var programDataPath = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
+                                                 + "\\");
+                    
                     var customPaths = preferenceSettings.CustomPackageFolders.Where(
-                        x => x != DynamoModel.StandardLibraryToken);
+                        x => x != DynamoModel.StandardLibraryToken && !programDataPath.IsBaseOf(new Uri(x)));
+                    
 
                     foreach (var path in customPaths)
                     {
