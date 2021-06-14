@@ -600,7 +600,10 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
-        public PackagePathViewModel PackagePaths { get; set; }
+        /// <summary>
+        /// Package Search Paths view model.
+        /// </summary>
+        public PackagePathViewModel PackagePathsViewModel { get; set; }
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -687,7 +690,7 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
             var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
             
-            PackagePaths = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+            PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
 
             this.PropertyChanged += Model_PropertyChanged;

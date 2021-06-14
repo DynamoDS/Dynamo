@@ -3188,9 +3188,11 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    
 
     <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
-    <Style x:Key="RemoveStyleButtonStyle" 
+    <Style x:Key="FlatIconButtonStyle" 
            TargetType="{x:Type Button}">
         <Setter Property="Background" 
                 Value="Transparent"/>

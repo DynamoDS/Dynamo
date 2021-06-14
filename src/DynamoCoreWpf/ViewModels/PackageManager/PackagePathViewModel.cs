@@ -100,7 +100,7 @@ namespace Dynamo.ViewModels
             InitializeRootLocations();
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int) p), CanDelete);
+            DeletePathCommand = new DelegateCommand(p => RemovePath(p), CanDelete);
             MovePathUpCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) - 1), CanMoveUp);
             MovePathDownCommand = new DelegateCommand(p => SwapPath((int) p, ((int) p) + 1), CanMoveDown);
             UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int) p), CanUpdate);
@@ -118,7 +118,7 @@ namespace Dynamo.ViewModels
             InitializeRootLocations();
 
             AddPathCommand = new DelegateCommand(p => InsertPath());
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt((int)p), CanDelete);
+            DeletePathCommand = new DelegateCommand(p => RemovePath(p), CanDelete);
             MovePathUpCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) - 1), CanMoveUp);
             MovePathDownCommand = new DelegateCommand(p => SwapPath((int)p, ((int)p) + 1), CanMoveDown);
             UpdatePathCommand = new DelegateCommand(p => UpdatePathAt((int)p), CanUpdate);
@@ -139,10 +139,23 @@ namespace Dynamo.ViewModels
 
         private bool CanDelete(object param)
         {
-            if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == SelectedIndex)
+            switch (param)
             {
-                return false;
+                case int paramAsInt:
+                    if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == paramAsInt)
+                    {
+                        return false;
+                    }
+                    break;
+
+                case string paramsAsString:
+                    if (string.CompareOrdinal(Resources.PackagePathViewModel_Standard_Library, paramsAsString) == 0)
+                    {
+                        return false;
+                    }
+                    break;
             }
+          
             return RootLocations.Count > 1;
         }
 
@@ -211,13 +224,18 @@ namespace Dynamo.ViewModels
             RootLocations[index] = args.Path;
         }
 
-        private void RemovePathAt(int index)
+        private void RemovePath(object path)
         {
-            RootLocations.RemoveAt(index);
+            switch (path)
+            {
+                case int t1:
+                    RootLocations.RemoveAt(t1);
+                    break;
 
-            if (index <= SelectedIndex && SelectedIndex > 0)
-                SelectedIndex--;
-
+                case string t2:
+                    RootLocations.Remove(t2);
+                    break;
+            }
             RaiseCanExecuteChanged();
         }
 

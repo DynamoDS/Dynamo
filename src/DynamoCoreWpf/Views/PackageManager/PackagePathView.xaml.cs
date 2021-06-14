@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -14,7 +15,7 @@ namespace Dynamo.Wpf.Views.PackageManager
     /// <summary>
     /// Interaction logic for PackagePathView.xaml
     /// </summary>
-    public partial class PackagePathView : Window
+    public partial class PackagePathView : System.Windows.Controls.UserControl
     {
         #region Class Properties
 
@@ -30,7 +31,10 @@ namespace Dynamo.Wpf.Views.PackageManager
         public PackagePathView()
         {
             InitializeComponent();
+            DataContextChanged += PackagePathView_DataContextChanged;
         }
+
+       
 
         internal PackagePathView(PackagePathViewModel viewModel)
         {
@@ -48,7 +52,13 @@ namespace Dynamo.Wpf.Views.PackageManager
         #endregion
 
         #region Private Helper Methods and Event Handlers
-
+        private void PackagePathView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            }
+        }
         void OnPathSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count <= 0)
@@ -74,18 +84,19 @@ namespace Dynamo.Wpf.Views.PackageManager
                 ViewModel.UpdatePathCommand.Execute(selectedIndex);
         }
 
+
         private void OnOkButtonClicked(object sender, RoutedEventArgs e)
         {
             if (ViewModel.SaveSettingCommand.CanExecute(null))
             {
                 ViewModel.SaveSettingCommand.Execute(null);
-                this.Close(); // Close the dialog after saving.
+        //        this.Close(); // Close the dialog after saving.
             }
         }
 
         private void OnCancelButtonClicked(object sender, RoutedEventArgs e)
         {
-            this.Close(); // Close the dialog without saving.
+         //   this.Close(); // Close the dialog without saving.
         }
 
         private void OnRequestShowFileDialog(object sender, EventArgs e)
@@ -102,8 +113,9 @@ namespace Dynamo.Wpf.Views.PackageManager
                 {
                     // Navigate to initial folder.
                     SelectedPath = args.Path,
-                    Owner = this
-                };
+                    //TODO anything better? we want to get prefs window
+                    Owner = System.Windows.Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)
+            };
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -122,8 +134,8 @@ namespace Dynamo.Wpf.Views.PackageManager
         private void UpdateVisualToReflectSelectionState()
         {
             var newIndex = ViewModel.SelectedIndex;
-            if (PathListBox.SelectedIndex != newIndex)
-                PathListBox.SelectedIndex = newIndex;
+           // if (PathListBox.SelectedIndex != newIndex)
+         //       PathListBox.SelectedIndex = newIndex;
         }
 
         #endregion
@@ -132,13 +144,13 @@ namespace Dynamo.Wpf.Views.PackageManager
         {
             if (e.Key == Key.Escape)
             {
-                Close();
+       //        Close();
             }
             else if (e.Key == Key.Return)
             {
                 ViewModel.SaveSettingCommand.Execute(null);
                 e.Handled = true;
-                Close();
+          //      Close();
             }
         }
     }

@@ -35,39 +35,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
 
 
-            <DataTemplate x:Key="packageSearchPathItemTemplate">
-                <Grid ToolTip="{Binding}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="250"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        <ColumnDefinition Width="Auto"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="{Binding}"
-                               Grid.Column="0"
-                                           Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
-                                           Margin="6,7,0,8"
-                                           VerticalAlignment="Center"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                    <Label
-                         Grid.Column="1"
-                        Background="{StaticResource PreferencesWindowBackgroundColor}">
-                        <fa:ImageAwesome Icon="FolderOutline"
-                                                 Width="15"
-                                                 Height="25"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                    </Label>
-                    <Label
-                         Grid.Column="2"
-                        Background="{StaticResource PreferencesWindowBackgroundColor}">
-                        <fa:ImageAwesome Icon="Times"
-                                                 Width="15"
-                                                 Height="25"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                    </Label>
-                </Grid>
-            </DataTemplate>
+
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
@@ -111,7 +79,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Click="RemoveStyle_Click"
-                                    Style="{StaticResource RemoveStyleButtonStyle}"
+                                    Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
                                     Height="30">
                                 <fa:ImageAwesome Icon="Trash"          
@@ -753,34 +721,8 @@
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <!--TODO add scroll viewer for this entire expander.-->
-                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <!--TODO should probably use a grid.-->
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label  Content="Package/Library Search Paths" 
-                                            Padding="5,5,5,5"
-                                            VerticalAlignment="Center"
-                                            FontSize="13"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
 
-                                        <!--TODO find better solution than margin.-->
-                                        <Button x:Name="AddPaths"
-                                                Style="{StaticResource FlatButtonStyle}" 
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                Width="100"
-                                                Height="25"
-                                                Margin="10,10,0,10"
-                                                Content="Add Paths"
-                                                ToolTip="SOME TOOLTIP">
-                                        </Button>
-                                    </StackPanel>
-                                    <ItemsControl
-                                         Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
-                                         ItemsSource="{Binding PackagePaths.RootLocations}"
-                                         ItemTemplate="{StaticResource packageSearchPathItemTemplate}">
-                                    </ItemsControl>
-                                    
-                                </StackPanel>
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->

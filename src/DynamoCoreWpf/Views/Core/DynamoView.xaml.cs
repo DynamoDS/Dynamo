@@ -1175,8 +1175,8 @@ namespace Dynamo.Controls
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
             var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
-            var view = new PackagePathView(viewModel) { Owner = this };
-            view.ShowDialog();
+            //var view = new PackagePathView(viewModel) { Owner = this };
+            //view.ShowDialog();
         }
 
         private InstalledPackagesView _installedPkgsView;
