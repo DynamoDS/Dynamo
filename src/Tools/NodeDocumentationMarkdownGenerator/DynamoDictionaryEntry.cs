@@ -4,6 +4,9 @@ using Newtonsoft.Json;
 
 namespace NodeDocumentationMarkdownGenerator
 {
+    /// <summary>
+    /// Class used to serialize an entry in the Dynamo Dictionary
+    /// </summary>
     internal class DynamoDictionaryEntry
     {
         [JsonProperty("Name")]
@@ -29,14 +32,6 @@ namespace NodeDocumentationMarkdownGenerator
             DynFile = dynFile;
             FolderPath = folderPath;
             InDepth = inDepth;
-        }
-
-        internal string EntryLog()
-        {
-            var containsImage = ImageFile.Any();
-            var containsDyn = DynFile.Any();
-            var containsInDepthDescription = !string.IsNullOrEmpty(InDepth);
-            return $"{containsImage},{containsDyn},{containsInDepthDescription}";
         }
     }
 }

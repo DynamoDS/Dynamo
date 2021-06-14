@@ -208,7 +208,7 @@ namespace Dynamo.Models
         }
 
         /// <summary>
-        /// Similar to IsNodeSubType this will Determine if a Type is a node.
+        /// Similar to IsNodeSubType this will determine if a Type is a node.
         /// This implementation is meant to be used when scanning types in ReflectionContext.
         /// </summary>
         /// <param name="t">Type to check</param>

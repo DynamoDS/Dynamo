@@ -9,8 +9,8 @@ using Dynamo.Interfaces;
 using Dynamo.Library;
 using ProtoCore;
 using ProtoCore.DSASM;
-using ProtoCore.Reflection;
 using ProtoCore.Utils;
+using ProtoFFI.Reflection;
 
 namespace Dynamo.Engine
 {
@@ -570,11 +570,23 @@ namespace Dynamo.Engine
         }
     }
 
+    /// <summary>
+    /// Describe a DesignScript function in a imported library which is ReflectionOnly loaded.
+    /// This difference from FunctionDescriptor by only using Type methods that are safe to use
+    /// in ReflectionOnly context.
+    /// </summary>
     internal class ReflectionFunctionDescriptor : FunctionDescriptor
     {
         private readonly LibraryCustomization libraryCustomization;
         private readonly Assembly reflectionAsm;
 
+        /// <summary>
+        /// Gets the category from this function.
+        /// This implementation varies from the base implementation because it uses reflection
+        /// to get custom attributes from the function. The base implementation uses Type.GetCustomAttribute(),
+        /// this is not allowed when the type is loaded in reflection only, hence the need to overwrite this getter
+        /// and instead use the custom GetAttributesFromReflectionContext() method.
+        /// </summary>
         public new string Category
         {
             get
@@ -588,42 +600,34 @@ namespace Dynamo.Engine
 
                     if (reflectionAsm != null && reflectionAsm.GetType(ClassName) is System.Type type)
                     {
-                        try
+                        var nodeCat = string.Empty;
+                        foreach (var t in type.GetMembers())
                         {
-                            var nodeCat = string.Empty;
-                            foreach (var t in type.GetMembers())
+                            if (t.Name != FunctionName)
                             {
-                                if (t.Name != FunctionName)
-                                {
-                                    continue;
-                                }
-
-                                var attrs = t.GetAttributesFromReflectionContext();
-                                foreach (var a in attrs)
-                                {
-                                    if (a != null && a is NodeCategoryAttribute catAttr)
-                                    {
-                                        nodeCat = catAttr.ElementCategory;
-                                    }
-                                }
-
+                                continue;
                             }
 
-                            //if attribute is found compose node category string with last part from attribute
-                            if (!string.IsNullOrEmpty(nodeCat) && (
-                                nodeCat == LibraryServices.Categories.Constructors || 
-                                nodeCat == LibraryServices.Categories.Properties || 
-                                nodeCat == LibraryServices.Categories.MemberFunctions))
+                            var attrs = t.GetAttributesFromReflectionContext();
+                            foreach (var a in attrs)
                             {
-                                categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
-                                return categoryBuf.ToString();
+                                if (a != null && a is NodeCategoryAttribute catAttr)
+                                {
+                                    nodeCat = catAttr.ElementCategory;
+                                }
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            var t = e;
+
                         }
 
+                        //if attribute is found compose node category string with last part from attribute
+                        if (!string.IsNullOrEmpty(nodeCat) && (
+                            nodeCat == LibraryServices.Categories.Constructors || 
+                            nodeCat == LibraryServices.Categories.Properties || 
+                            nodeCat == LibraryServices.Categories.MemberFunctions))
+                        {
+                            categoryBuf.Append($".{UnqualifedClassName}.{nodeCat}");
+                            return categoryBuf.ToString();
+                        }                     
                     }
                 }
 
@@ -631,19 +635,19 @@ namespace Dynamo.Engine
                 {
                     case FunctionType.Constructor:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Constructors);
+                            $".{UnqualifedClassName}.{LibraryServices.Categories.Constructors}");
                         break;
 
                     case FunctionType.StaticMethod:
                     case FunctionType.InstanceMethod:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
+                            $".{UnqualifedClassName}.{LibraryServices.Categories.MemberFunctions}");
                         break;
 
                     case FunctionType.StaticProperty:
                     case FunctionType.InstanceProperty:
                         categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
+                            $".{UnqualifedClassName}.{LibraryServices.Categories.Properties}");
                         break;
                 }
 
@@ -668,14 +672,14 @@ namespace Dynamo.Engine
 
             if (libraryCustomization != null)
             {
-                string f = libraryCustomization.GetNamespaceCategory(Namespace);
-                if (!String.IsNullOrEmpty(f))
-                    return f;
+                var namespaceCategory = libraryCustomization.GetNamespaceCategory(Namespace);
+                if (!String.IsNullOrEmpty(namespaceCategory))
+                    return namespaceCategory;
             }
 
             string filename = Path.GetFileNameWithoutExtension(Assembly);
 
-            return string.IsNullOrEmpty(Namespace) ? filename : filename + "." + Namespace;
+            return string.IsNullOrEmpty(Namespace) ? filename : $"{filename}.{Namespace}";
         }
     }
 }

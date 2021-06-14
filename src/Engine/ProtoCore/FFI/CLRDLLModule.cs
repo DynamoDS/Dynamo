@@ -7,7 +7,7 @@ using Autodesk.DesignScript.Interfaces;
 using Autodesk.DesignScript.Runtime;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
-using ProtoCore.Reflection;
+using ProtoFFI.Reflection;
 using ProtoCore.Utils;
 
 namespace ProtoFFI
@@ -252,7 +252,12 @@ namespace ProtoFFI
         }
 
         /// <summary>
-        /// If true reflection methods will be used to get module types
+        /// If true reflection methods will be used to get module types. 
+        /// Getting module types using reflection can be used when the use case inst
+        /// to load the types into Dynamo but simply scan types and extract nodes.
+        /// Currently this is used in the NodeDocumentationGenerator which is a separate
+        /// tool to create documentation markdown files, in this scenario we don't need the types
+        /// loaded as we only care about metadata from the types.
         /// </summary>
         internal static bool IsReflectionContext { get; set; }
 
@@ -313,7 +318,9 @@ namespace ProtoFFI
                 {
                     func.IsStatic = true;
                     if (!IsReflectionContext)
+                    {
                         RegisterFunctionPointer(func.Name, f, null, func.ReturnType);
+                    }
                     classnode.Procedures.Add(func);
                 }
             }
@@ -379,7 +386,7 @@ namespace ProtoFFI
 
                         if (!IsReflectionContext)
                         {
-                            List<ProtoCore.Type> argTypes = GetArgumentTypes(node);
+                            var argTypes = GetArgumentTypes(node);
                             RegisterFunctionPointer(node.Name, c, argTypes, node.ReturnType);
                         }
                     }
@@ -569,8 +576,10 @@ namespace ProtoFFI
                 ParameterInfo[] ps = m.GetParameters();
                 return (ps == null || ps.Length == 0) && m.Name == "Dispose";
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
                 return false;
             }
 
@@ -596,7 +605,7 @@ namespace ProtoFFI
                 p.GetAttributesFromReflectionContext() : 
                 p.GetCustomAttributes(false).Cast<Attribute>().ToArray();
 
-            mGetterAttributes.Add(m, attribs);
+            mGetterAttributes.Add(m, attribs.ToArray());
 
             if (null == p || SupressesImport(p))
                 return null;
@@ -608,8 +617,12 @@ namespace ProtoFFI
                 if (null != indexParams && indexParams.Length > 0)
                     return null;
             }
-            catch
+            catch(Exception e)
             {
+                // Exceptions can happen here if a reference is missing,
+                // this can happen when scanning the module in reflection only context.
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
 
 
@@ -627,19 +640,13 @@ namespace ProtoFFI
                 }
             }
 
-            try
+            ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = ParseArgumentDeclaration(p.Name, p.PropertyType);
+            if (null != varDeclNode)
             {
-                ProtoCore.AST.AssociativeAST.VarDeclNode varDeclNode = ParseArgumentDeclaration(p.Name, p.PropertyType);
-                if (null != varDeclNode)
-                    varDeclNode.IsStatic = m.IsStatic;
-                return varDeclNode;
-            }
-            catch (Exception)
-            {
-                return null;
+                varDeclNode.IsStatic = m.IsStatic;
             }
 
-            
+            return varDeclNode;
         }
 
         public static bool SupressesImport(MemberInfo member)
@@ -655,7 +662,9 @@ namespace ProtoFFI
             object[] atts = null;
             if (IsReflectionContext)
             {
-                atts = member.GetAttributesFromReflectionContext();
+                atts = member
+                    .GetAttributesFromReflectionContext()
+                    .ToArray();
             }
             else
             {
@@ -676,8 +685,12 @@ namespace ProtoFFI
                             return true;
                     }
                 }
-                catch
+                catch(Exception e)
                 {
+                    // Exceptions can happen here if a reference is missing,
+                    // this can happen when scanning the module in reflection only context.
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
 
                 // If method is a getter accessor belonging to a property
@@ -725,13 +738,16 @@ namespace ProtoFFI
             }
             else
             {
-                // If f.FieldType is an unloaded type we cant ParseArgumentDeclaration
                 try
                 {
                     varDeclNode = ParseArgumentDeclaration(f.Name, f.FieldType);
                 }
                 catch (Exception)
                 {
+                    // If f.FieldType is an unloaded type we can't ParseArgumentDeclaration,
+                    // instead we pass a object type. This can happen when we are in reflection only context
+                    // and a type reference is missing.
+                    // In this scenario we still return a varDeclNode with the correct name but the wrong type
                     varDeclNode = ParseArgumentDeclaration(f.Name, typeof(object));
                 }
             }
@@ -756,14 +772,18 @@ namespace ProtoFFI
             }
             else
             {
-                // if the FieldType is an unloaded type we cant created the ProtoCore Type,
-                // for now just continue with the empty one
+                // if the FieldType is an unloaded type we can't create the ProtoCore Type,
+                // for now just continue with the empty one, this might require more testing
+                // but for the NodeDocumentionGenerator which is where this might happen
+                // this is okay, as the return type isn't necessary for generating the doc files
                 try
                 {
                     returnType = CLRModuleType.GetProtoCoreType(f.FieldType, Module);
                 }
-                catch
+                catch(Exception e)
                 {
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
             }
 
@@ -792,7 +812,8 @@ namespace ProtoFFI
 
             // GetProtoCoreType and isPropertyAccessor might break in ReflectionMode.
             // Generally we are trying to get return types a few places here, we cannot guarantee that these types are available in reflection.
-            // If it breaks we continue with an empty ProtoCore Type.
+            // If it breaks we continue with an empty ProtoCore Type as we aren't interested in the return type for the NodeDocumentationGenerator
+            // where this is used currently.
             try
             {
                 retype = CLRModuleType.GetProtoCoreType(method.ReturnType, Module);
@@ -823,9 +844,11 @@ namespace ProtoFFI
             }
             catch (Exception e)
             {
-                // If not in reflection context we need to handle this exception some way..
                 if (!IsReflectionContext)
                     throw;
+
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
 
             string prefix = isOperator ? Constants.kInternalNamePrefix : string.Empty;       
@@ -962,8 +985,6 @@ namespace ProtoFFI
                 argumentSignature.AddArgument(paramNode);
             }
 
-            var t = parameters.Any();
-
             argumentSignature.IsVarArg = parameters.Any() && 
                 (IsReflectionContext ? 
                     parameters.Last().GetAttributesFromReflectionContext().OfType<ParamArrayAttribute>().Any() : 
@@ -989,8 +1010,10 @@ namespace ProtoFFI
             //Lets emit native DS type object
             //This will fail in reflection mode if the type is not loaded
             ProtoCore.Type argtype = new ProtoCore.Type();
-            if(!IsReflectionContext)
+            if (!IsReflectionContext)
+            {
                 argtype = CLRModuleType.GetProtoCoreType(parameterType, Module);
+            }
 
             varDeclNode.NameNode = identifierNode;
             varDeclNode.ArgumentType = argtype;
@@ -1118,7 +1141,7 @@ namespace ProtoFFI
         /// Creates CLRModuleTypes for all types in this module.
         /// </summary>
         /// <param name="isReflectionContext">When true the behavior for creating AST Nodes for the module types is using specific ReflectionOnly methods</param>
-        public override void ScanModule(bool isReflectionContext)
+        internal void ScanModule(bool isReflectionContext)
         {
             CLRModuleType.IsReflectionContext = isReflectionContext;
 
@@ -1139,11 +1162,9 @@ namespace ProtoFFI
                 }
                 catch(Exception e)
                 {
-                    var strBuilder = new StringBuilder();
-                    strBuilder.AppendLine($"While scanning {type.Name}, the following exception was encountered - {e.GetType()} :");
-                    strBuilder.AppendLine($"{e.Message}");
-                    strBuilder.AppendLine($"{e.StackTrace}");
-                    Console.WriteLine(strBuilder.ToString());
+                    Console.WriteLine($"While scanning {type.Name}, the following exception was encountered - {e.GetType()} :");
+                    Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                     continue;
                 }                
             }
@@ -1409,7 +1430,7 @@ namespace ProtoFFI
             if (type.IsInterface) HiddenInLibrary = true;
 
             attributes = isReflectionContext ?
-                type.GetAttributesFromReflectionContext() :
+                type.GetAttributesFromReflectionContext().ToArray() :
                 type.GetCustomAttributes(false).Cast<Attribute>().ToArray();
 
             foreach (var attr in attributes)
@@ -1505,7 +1526,7 @@ namespace ProtoFFI
             }
         }
 
-        public FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes, bool isReflectionContext)
+        internal FFIMethodAttributes(MethodInfo method, Dictionary<MethodInfo, Attribute[]> getterAttributes, bool isReflectionContext)
         {
             if (method == null)
                 throw new ArgumentNullException("method");
@@ -1532,7 +1553,9 @@ namespace ProtoFFI
             {
                 if (isReflectionContext)
                 {
-                    attributes = method.GetAttributesFromReflectionContext();
+                    attributes = method
+                        .GetAttributesFromReflectionContext()
+                        .ToArray();
                 }
                 else
                 {
@@ -1633,9 +1656,12 @@ namespace ProtoFFI
         {
         }
 
-        public FFIParamAttributes(ParameterInfo parameter, bool reflectionOnly)
+        internal FFIParamAttributes(ParameterInfo parameter, bool reflectionOnly)
         {
-            var attributes = reflectionOnly ? parameter.GetAttributesFromReflectionContext() : parameter.GetCustomAttributes(false);
+            var attributes = reflectionOnly ? 
+                parameter.GetAttributesFromReflectionContext().ToArray() : 
+                parameter.GetCustomAttributes(false);
+
             foreach (var attr in attributes)
             {
                 if (attr is DefaultArgumentAttribute)

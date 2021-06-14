@@ -15,12 +15,11 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         {
             var package = PackageFromRoot(opts.InputFolderPath);
 
-            var nodeLibraryFileNames = ScanNodeLibraries(package, opts.ReferencePaths);
-            var customNodeFileNames = ScanCustomNodes(package);
+            var nodeLibraryFileInfos = ScanNodeLibraries(package, opts.ReferencePaths);
+            var customNodeFileInfos = ScanCustomNodes(package);
 
-            var fileInfos = new List<MdFileInfo>();
-            fileInfos.AddRange(nodeLibraryFileNames);
-            fileInfos.AddRange(customNodeFileNames);
+            var fileInfos = nodeLibraryFileInfos
+                .Union(customNodeFileInfos);
 
             var outdir = package.NodeDocumentaionDirectory;
             if (!Directory.Exists(outdir))

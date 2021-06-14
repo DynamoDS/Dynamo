@@ -16,7 +16,7 @@ namespace NodeDocumentationMarkdownGenerator.Commands
         {
             var searchOption = opts.RecursiveScan ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
             var fileInfos = new List<MdFileInfo>();
-            fileInfos.AddRange(ScanAssembliesFromOpts(opts.InputFolderPath, opts.Filter, opts.ReferencePaths, searchOption));
+            fileInfos.AddRange(ScanFolderForAssemblies(opts.InputFolderPath, opts.Filter, opts.ReferencePaths, searchOption));
             if (opts.IncludeCustomNodes)
             {
                 fileInfos.AddRange(ScanFolderForCustomNodes(opts.InputFolderPath, searchOption));
@@ -39,43 +39,53 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             return fileInfos;
         }
 
-        private static List<MdFileInfo> ScanAssembliesFromOpts(string inputFolderPath, IEnumerable<string> filter, IEnumerable<string> references, SearchOption searchOption)
+        private static List<MdFileInfo> ScanFolderForAssemblies(string inputFolderPath, IEnumerable<string> filter, IEnumerable<string> referencePaths, SearchOption searchOption)
         {
-            var allDlls = Directory.GetFiles(inputFolderPath, "*.dll", searchOption).Select(x => new FileInfo(x)).ToList();
+            var allAssembliesFromInputFolder = Directory.GetFiles(inputFolderPath, "*.*", searchOption)
+                .Where(x => x.EndsWith(".dll") || x.EndsWith(".ds"))
+                .Select(x => new FileInfo(x))
+                .GroupBy(x=>x.Name)
+                .Select(x=>x.FirstOrDefault())
+                .ToList();
 
-            var referencesDllPaths = references
+            var referenceDllPaths = referencePaths
                 .SelectMany(p => new DirectoryInfo(p)
                     .EnumerateFiles("*.dll", SearchOption.AllDirectories)
                     .Select(d => d.FullName)
+                    .Distinct()
                     .ToList());
 
             if (filter.Count() != 0)
             {
-                var dllPaths = allDlls
+                // Filters the assemblies specified in the filter from allAssembliesFromInputFolder,
+                // the assembly paths left after this filter is the ones that will be scanned.
+                var assemblyPathsToScan = allAssembliesFromInputFolder
                     .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
                     .Select(x => x.FullName)
                     .ToList();
 
-                var addtionalPathsToLoad = allDlls.Select(x => x.FullName).Except(dllPaths).ToList();
-                if (referencesDllPaths.Count() > 0)
+                // We still need all assemblies in the inputFolderPath for the PathAssemblyResolver
+                // so here we separate the assemblyPathsToScan from allAssembliesFromInputFolder
+                // which gives us the additional assemblies that need to be added to the PathAssemblyResolver
+                var addtionalPathsToLoad = allAssembliesFromInputFolder
+                    .Select(x => x.FullName)
+                    .Except(assemblyPathsToScan)
+                    .ToList();
+
+                // If there are any paths specified in the referencePaths we need to add them
+                // to addtionalPathsToLoad as the PathAssemblyResolver will need them to resolve types
+                if (referenceDllPaths.Count() > 0)
                 {
-                    addtionalPathsToLoad.AddRange(referencesDllPaths);
+                    addtionalPathsToLoad.AddRange(referenceDllPaths);
                 }
 
-                if (filter.Any(x=>x.EndsWith(".ds")))
-                {
-                    var dsFiles = Directory.GetFiles(inputFolderPath, "*.ds").Select(x => new FileInfo(x)).ToList();
-                    dllPaths.AddRange(dsFiles
-                        .Where(x => filter.Contains(x.Name) || filter.Contains(x.FullName))
-                        .Select(x => x.FullName)
-                        .ToList());
-                }
-
-                return AssemblyHandler.ScanAssemblies(dllPaths, addtionalPathsToLoad);
+                return AssemblyHandler.ScanAssemblies(assemblyPathsToScan, addtionalPathsToLoad);
             }
 
+            // If there are no filter specified we want to scan all assemblies in the inputFolderPath
+            // and still add any referencePaths to the PathAssemblyResolver
             return AssemblyHandler.
-                ScanAssemblies(allDlls.Select(x => x.FullName), referencesDllPaths);
+                ScanAssemblies(allAssembliesFromInputFolder.Select(x => x.FullName), referenceDllPaths);
         }
     }
 }

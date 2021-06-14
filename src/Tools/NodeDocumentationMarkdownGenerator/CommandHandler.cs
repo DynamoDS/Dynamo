@@ -46,6 +46,9 @@ namespace NodeDocumentationMarkdownGenerator
         }
     }
 
+    /// <summary>
+    /// A logger implementation to be used as a parameter to construct Dynamo core model types
+    /// </summary>
     internal class DummyConsoleLogger : ILogger
     {
         public void Log(string message)

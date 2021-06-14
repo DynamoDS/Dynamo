@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
 using Dynamo.Utilities;
-using ProtoCore.Reflection;
 
 namespace Dynamo.Graph.Nodes
 {
@@ -100,12 +99,14 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         /// Creates a TypeLoadData from a type and a list of attributes.
-        /// This is used when the type is Reflection only loaded as that 
-        /// requires different ways of getting type Attributes
+        /// This is specifically useful when dealing with types which are ReflectionOnly loaded,
+        /// as attributes are provided as an argument on the constructor and therefor they can be obtained
+        /// using reflection methods by the caller of this method.
+        /// The other TypeLoadData constructor uses Type.GetCustomAttributes which is not allowed on ReflectionOnly types.
         /// </summary>
         /// <param name="typeIn"></param>
         /// <param name="attributes"></param>
-        public TypeLoadData (Type typeIn, ICollection<Attribute> attributes)
+        internal TypeLoadData (Type typeIn, ICollection<Attribute> attributes)
         {
             Type = typeIn;
 

@@ -16,4 +16,3 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPackagesUI")]
 [assembly: InternalsVisibleTo("LibraryViewExtension")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
-[assembly: InternalsVisibleTo("NodeDocumentationMarkdownGenerator")]

@@ -30,7 +30,6 @@ namespace ProtoFFI
     {
         public abstract List<FFIFunctionPointer> GetFunctionPointers(string className, string name);
         public abstract FFIFunctionPointer GetFunctionPointer(string className, string name, List<ProtoCore.Type> argTypes, ProtoCore.Type returnType);
-        public virtual void ScanModule(bool isReflectionContext) { }
         public virtual CodeBlockNode ImportCodeBlock(string typeName, string alias, CodeBlockNode refnode) { return null; } //All modules don't support import
         public virtual FFIObjectMarshaler GetMarshaler(ProtoCore.RuntimeCore runtimeCore) { return null; }
         public virtual Type GetExtensionAppType() { return null; }
@@ -175,24 +174,6 @@ namespace ProtoFFI
 
             DLLModule dllModule = Modules[moduleFileName];
             return dllModule;
-        }
-
-        public static CLRDLLModule GetModuleForInspection(Assembly assembly)
-        {
-            CLRDLLModule module;
-            var moduleName = assembly.GetName().Name;
-            Module testDll = assembly.GetModule(moduleName);
-            if (testDll == null)
-            {
-                module = new CLRDLLModule(moduleName, assembly);
-            }
-            else
-            {
-                module = new CLRDLLModule(moduleName, testDll);
-            }
-
-            Modules.Add($"{moduleName}.dll", module);
-            return module;
         }
     }
 

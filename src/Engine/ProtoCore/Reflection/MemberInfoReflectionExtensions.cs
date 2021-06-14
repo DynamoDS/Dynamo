@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.DesignScript.Runtime;
 
-namespace ProtoCore.Reflection
+namespace ProtoFFI.Reflection
 {
     internal static class MemberInfoReflectionExtensions
     {
@@ -39,33 +39,61 @@ namespace ProtoCore.Reflection
 
                 return baseTypeMethod;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
                 return null;
             }
 
         }
 
-
-        internal static Attribute[] GetAttributesFromReflectionContext(this MemberInfo member)
+        /// <summary>
+        /// Gets all custom attributes of this MemberInfo.
+        /// Compared to CustomAttributeData.GetCustomAttributes() which is usually used to get attributes 
+        /// from reflection only loaded members, this will recreate the actual Attribute object so the correct values can easily be extracted from them
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        internal static IEnumerable<Attribute> GetAttributesFromReflectionContext(this MemberInfo member)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(member);
             return GetReflectionAttributes(customAttributes);
         }
 
-        internal static Attribute[] GetAttributesFromReflectionContext(this ParameterInfo parameter)
+        /// <summary>
+        /// Gets all custom attributes of this ParameterInfo.
+        /// Compared to CustomAttributeData.GetCustomAttributes() which is usually used to get attributes 
+        /// from reflection only loaded members, this will recreate the actual Attribute object so the correct values can easily be extracted from them
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        internal static IEnumerable<Attribute> GetAttributesFromReflectionContext(this ParameterInfo parameter)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(parameter);
             return GetReflectionAttributes(customAttributes);
         }
 
-        internal static Attribute[] GetAttributesFromReflectionContext(this System.Type type)
+        /// <summary>
+        /// Gets all custom attributes of this ParameterInfo.
+        /// Compared to CustomAttributeData.GetCustomAttributes() which is usually used to get attributes 
+        /// from reflection only loaded members, this will recreate the actual Attribute object so the correct values can easily be extracted from them
+        /// </summary>
+        /// <param name="member"></param>
+        /// <returns></returns>
+        internal static IEnumerable<Attribute> GetAttributesFromReflectionContext(this System.Type type)
         {
             var customAttributes = CustomAttributeData.GetCustomAttributes(type);
             return GetReflectionAttributes(customAttributes);
         }
 
-        private static Attribute[] GetReflectionAttributes(IList<CustomAttributeData> customAttributes)
+        /// <summary>
+        /// Recreates the actual attribute object from a CustomAttributeData. This is used to easily qurey attributes
+        /// when they are coming from reflection only types, where it is only possible to retrieve CustomAttributeData from
+        /// </summary>
+        /// <param name="customAttributes"></param>
+        /// <returns></returns>
+        private static IEnumerable<Attribute> GetReflectionAttributes(IList<CustomAttributeData> customAttributes)
         {
             var attributes = new List<Attribute>();
 
@@ -75,7 +103,7 @@ namespace ProtoCore.Reflection
                 {
                     var type = ca.AttributeType;
 
-                    var paramValues = new List<dynamic>();
+                    var paramValues = new List<object>();
                     for (int i = 0; i < ca.ConstructorArguments.Count; i++)
                     {
                         var item = ca.ConstructorArguments[i];
@@ -117,7 +145,7 @@ namespace ProtoCore.Reflection
                     }
 
 
-                    dynamic ctorParam = null;
+                    object ctorParam = null;
                     if (paramValues.Count > 1)
                     {
                         var array = paramValues.ToArray<object>();
@@ -141,10 +169,14 @@ namespace ProtoCore.Reflection
 
                     attributes.Add(a);
                 }
-                catch {}
+                catch(Exception e)
+                {
+                    Console.WriteLine($"Could not create instance of {ca.AttributeType.Name} attribute: {e.InnerException.Message}");
+                    Console.WriteLine(e.StackTrace);
+                }
             }
 
-            return attributes.ToArray();
+            return attributes;
         }
 
         private static Attribute CreateInstance(System.Type type, object args)
@@ -152,11 +184,12 @@ namespace ProtoCore.Reflection
             var loadedAssembly = Assembly.LoadFrom(type.Assembly.Location);
             var loadedType = loadedAssembly.GetType(type.FullName);
 
-            if (!loadedType.GetConstructors().Any())
-                return null;
+            if (!loadedType.GetConstructors().Any()) return null;
 
             if (args is null)
+            {
                 return (Attribute)Activator.CreateInstance(loadedType);
+            }
 
             var attr = args is ICollection ?
                 (Attribute)Activator.CreateInstance(loadedType, (object[])args) :
@@ -168,14 +201,17 @@ namespace ProtoCore.Reflection
         private static object CreateInstanceFromObject(this object obj, System.Type type)
         {
             if (type.IsPrimitive || type.Name == typeof(string).Name)
+            {
                 return obj;
+            }
 
             if (type.IsEnum)
+            {
                 return InstanceFromEnum(type, (int)obj);
+            }
 
             var typedObj = CreateInstance(type, obj);
-            if (typedObj is null)
-                return obj;
+            if (typedObj is null) return obj;
 
             return typedObj;
         }

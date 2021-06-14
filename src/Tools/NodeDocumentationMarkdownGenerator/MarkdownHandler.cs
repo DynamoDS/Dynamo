@@ -24,14 +24,14 @@ namespace NodeDocumentationMarkdownGenerator
         /// <param name="compressImages">if true images matched from dictionary will be compressed (if possible)</param>
         /// <param name="dictionaryPath">path to dictionary json file</param>
         /// <param name="layoutSpec">path to layout spec json</param>
-        internal static void CreateMdFilesFromFileNames(List<MdFileInfo> fileInfos, string outputDir, bool overWrite, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
+        internal static void CreateMdFilesFromFileNames(IEnumerable<MdFileInfo> fileInfos, string outputDir, bool overWrite, bool compressImages = false, string dictionaryPath = null, string layoutSpec = null)
         {
             ImageOptimizer optimizer = null;
             LayoutSpecification spec = null;
             List<DynamoDictionaryEntry> dictEntrys = null;
             string examplesDirectory = "";
 
-            Console.WriteLine($"Starting generation of {fileInfos.Count} markdown files...");
+            Console.WriteLine($"Starting generation of {fileInfos.Count()} markdown files...");
 
             if (!string.IsNullOrEmpty(dictionaryPath) &&
                     File.Exists(dictionaryPath))
@@ -200,7 +200,7 @@ namespace NodeDocumentationMarkdownGenerator
                     x.Name == info.NodeName)
                 .FirstOrDefault();
 
-            if (matchingEntry is null)
+            if (matchingEntry is null && spec != null)
             {
                 if (TryGetMatchingEntryFromLayoutSpec(spec.sections.Cast<LayoutElement>().ToList(), dictEntrys, info, string.Empty, out matchingEntry))
                 {
