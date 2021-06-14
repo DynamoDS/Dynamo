@@ -12,7 +12,8 @@
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:uiControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -728,8 +729,9 @@
                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
                                           Grid.Row="1"
                                           Header="{x:Static p:Resources.InstalledPackageViewTitle}">
-                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                                <StackPanel
+                                    Orientation="Vertical" Margin="0,6,0,0">
+                                    <uiControls:InstalledPackagesControl/>
                                 </StackPanel>
                             </Expander>
                         </Grid>

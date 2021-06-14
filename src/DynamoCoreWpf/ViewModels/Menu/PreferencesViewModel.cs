@@ -59,6 +59,8 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScale = null;
+
+        private InstalledPackagesViewModel installedPackagesViewModel;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -126,6 +128,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(SavedChangesTooltip));
 
             }
+        }
+
+        public ObservableCollection<PackageViewModel> LocalPackages {
+            get { return installedPackagesViewModel.LocalPackages; }
         }
 
         //This includes all the properties that can be set on the General tab
@@ -609,6 +615,8 @@ namespace Dynamo.ViewModels
             this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
             this.homeSpace = dynamoViewModel.HomeSpace;
             this.dynamoViewModel = dynamoViewModel;
+            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
+                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
