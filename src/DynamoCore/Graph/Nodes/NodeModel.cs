@@ -1594,7 +1594,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// Adds recursively all nodes upstream to this node
         /// </summary>
-        public void SelectDownStreamNeighbours()
+        public void SelectDownstreamNeighbours()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
 
@@ -1602,14 +1602,14 @@ namespace Dynamo.Graph.Nodes
             {
                 var downstreamNeighbour = c.End.Owner;
                 DynamoSelection.Instance.Selection.Add(downstreamNeighbour);
-                downstreamNeighbour.SelectDownStreamNeighbours();
+                downstreamNeighbour.SelectDownstreamNeighbours();
             }
         }
 
         /// <summary>
         /// Adds recursively all nodes upstream to this node. 
         /// </summary>
-        public void SelectUpStreamNeighbours()
+        public void SelectUpstreamNeighbours()
         {
             IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
 
@@ -1617,7 +1617,7 @@ namespace Dynamo.Graph.Nodes
             {
                 var upstreamNeighboar = c.Start.Owner;
                 DynamoSelection.Instance.Selection.Add(upstreamNeighboar);
-                upstreamNeighboar.SelectUpStreamNeighbours();
+                upstreamNeighboar.SelectUpstreamNeighbours();
             }
         }
 

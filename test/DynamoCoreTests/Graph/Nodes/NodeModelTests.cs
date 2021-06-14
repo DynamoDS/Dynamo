@@ -95,7 +95,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, countBefore);
 
             //Run the method and assert whether more nodes were selected
-            node.SelectUpStreamNeighbours();
+            node.SelectUpstreamNeighbours();
 
             var countAfter = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(6, countAfter);
@@ -119,7 +119,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(0, countBefore);
 
             //Run the method and assert whether more nodes were selected
-            node.SelectDownStreamNeighbours();
+            node.SelectDownstreamNeighbours();
 
             var countAfter = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(3, countAfter);

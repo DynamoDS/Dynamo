@@ -208,7 +208,7 @@ namespace Dynamo.ViewModels
             {
                 if (selectConnectedUpstreamCommand == null)
                 {
-                    selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstream);
+                    selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstreamNeighbours);
                 }
 
                 return selectConnectedUpstreamCommand;
@@ -222,7 +222,7 @@ namespace Dynamo.ViewModels
             {
                 if (selectConnectedDownstreamCommand == null)
                 {
-                    selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstream);
+                    selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstreamNeighbours);
                 }
 
                 return selectConnectedDownstreamCommand;
@@ -236,7 +236,7 @@ namespace Dynamo.ViewModels
             {
                 if (selectConnectedDownAndUpstreamCommand == null)
                 {
-                    selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownAndUpstream);
+                    selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownstreamAndUpstreamNeighbours);
                 }
 
                 return selectConnectedDownAndUpstreamCommand;

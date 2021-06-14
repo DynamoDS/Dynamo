@@ -1303,20 +1303,20 @@ namespace Dynamo.ViewModels
             return false;
         }
 
-        private void SelectUpstream(object parameters)
+        private void SelectUpstreamNeighbours(object parameters)
         {
-            NodeModel.SelectUpStreamNeighbours();
+            NodeModel.SelectUpstreamNeighbours();
         }
 
-        private void SelectDownstream(object parameters)
+        private void SelectDownstreamNeighbours(object parameters)
         {
-            NodeModel.SelectDownStreamNeighbours();
+            NodeModel.SelectDownstreamNeighbours();
         }
 
-        private void SelectDownAndUpstream(object parameters)
+        private void SelectDownstreamAndUpstreamNeighbours(object parameters)
         {
-            NodeModel.SelectUpStreamNeighbours();
-            NodeModel.SelectDownStreamNeighbours();
+            NodeModel.SelectUpstreamNeighbours();
+            NodeModel.SelectDownstreamNeighbours();
         }
 
 
