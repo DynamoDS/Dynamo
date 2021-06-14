@@ -20,9 +20,9 @@ namespace Dynamo.ViewModels
         private DelegateCommand _ungroupCommand;
         private DelegateCommand _addToGroupCommand;
         private DelegateCommand _computeRunStateOfTheNodeCommand;
-        private DelegateCommand _selectConnectedUpstreamCommand;
-        private DelegateCommand _selectConnectedDownstreamCommand;
-        private DelegateCommand _selectConnectedDownAndUpstreamCommand;
+        private DelegateCommand selectConnectedUpstreamCommand;
+        private DelegateCommand selectConnectedDownstreamCommand;
+        private DelegateCommand selectConnectedDownAndUpstreamCommand;
 
         [JsonIgnore]
         public DelegateCommand RenameCommand
@@ -206,12 +206,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_selectConnectedUpstreamCommand == null)
+                if (selectConnectedUpstreamCommand == null)
                 {
-                    _selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstream, CanSelectUpstream);
+                    selectConnectedUpstreamCommand = new DelegateCommand(SelectUpstream, CanSelectUpstream);
                 }
 
-                return _selectConnectedUpstreamCommand;
+                return selectConnectedUpstreamCommand;
             }
         }
 
@@ -220,12 +220,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_selectConnectedDownstreamCommand == null)
+                if (selectConnectedDownstreamCommand == null)
                 {
-                    _selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstream, CanSelectDownstream);
+                    selectConnectedDownstreamCommand = new DelegateCommand(SelectDownstream, CanSelectDownstream);
                 }
 
-                return _selectConnectedDownstreamCommand;
+                return selectConnectedDownstreamCommand;
             }
         }
 
@@ -234,12 +234,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (_selectConnectedDownAndUpstreamCommand == null)
+                if (selectConnectedDownAndUpstreamCommand == null)
                 {
-                    _selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownAndUpstream, CanSelectDownAndUpstream);
+                    selectConnectedDownAndUpstreamCommand = new DelegateCommand(SelectDownAndUpstream, CanSelectDownAndUpstream);
                 }
 
-                return _selectConnectedDownAndUpstreamCommand;
+                return selectConnectedDownAndUpstreamCommand;
             }
         }
     }
