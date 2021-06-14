@@ -925,7 +925,7 @@ namespace WpfVisualizationTests
             var totalExecutionTime = (endTime - startTime).TotalSeconds;
             Assert.LessOrEqual(totalExecutionTime, 20);
         }
-       
+/*       
         [Test]
         public void Display_BySurfaceColors_HasColoredMesh()
         {
@@ -944,7 +944,8 @@ namespace WpfVisualizationTests
             var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
             Assert.AreEqual(52, width);
         }
-
+*/
+/*
         [Test]
         public void Display_MultipleTextureMaps_HasUniqueMeshsAndCorrectPerSurface()
         {
@@ -978,7 +979,7 @@ namespace WpfVisualizationTests
             
             Assert.IsTrue(((PhongMaterial)mesh3.Material).DiffuseMap == null);
         }
-
+*/
         [Test]
         public void Display_HasOneGeometryEntityInBackgroundPreviewPerNode()
         {
