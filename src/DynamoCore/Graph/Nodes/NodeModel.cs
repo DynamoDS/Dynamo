@@ -1591,6 +1591,9 @@ namespace Dynamo.Graph.Nodes
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
+        /// <summary>
+        /// Adds recursively all nodes upstream to this node
+        /// </summary>
         public void SelectDownStreamNeighbours()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
@@ -1603,6 +1606,9 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Adds recursively all nodes upstream to this node. 
+        /// </summary>
         public void SelectUpStreamNeighbours()
         {
             IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
