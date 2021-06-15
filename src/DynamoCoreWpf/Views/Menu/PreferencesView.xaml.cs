@@ -207,6 +207,7 @@ namespace Dynamo.Wpf.Views
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
                     viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.UpdateSavedChangesLabel();
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Switch,
                         Categories.Preferences,
@@ -215,7 +216,6 @@ namespace Dynamo.Wpf.Views
 
                 var allNodes = dynViewModel.HomeSpace.Nodes;
                 dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-                viewModel.UpdateSavedChangesLabel();
             }
         }
 
