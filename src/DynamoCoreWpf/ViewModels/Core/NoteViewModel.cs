@@ -37,8 +37,8 @@ namespace Dynamo.ViewModels
         public NoteModel Model
         {
             get { return _model; }
-            set 
-            { 
+            set
+            {
                 _model = value;
                 RaisePropertyChanged("Model");
             }
@@ -77,7 +77,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public int ZIndex
-         {
+        {
 
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
@@ -96,6 +96,14 @@ namespace Dynamo.ViewModels
             get { return _model.IsSelected; }
         }
 
+        private bool isOnEditMode;
+        [JsonIgnore]
+        public bool IsOnEditMode
+        {
+            get { return isOnEditMode; }
+            set { isOnEditMode = value; RaisePropertyChanged("IsOnEditMode"); }
+        }
+
         #endregion
 
         public NoteViewModel(WorkspaceViewModel workspaceViewModel, NoteModel model)
@@ -105,6 +113,7 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
+            IsOnEditMode = false;
         }
 
         public override void Dispose()

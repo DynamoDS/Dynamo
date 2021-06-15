@@ -15,6 +15,7 @@ namespace Dynamo.Nodes
 {
     public partial class NoteView : IViewModelView<NoteViewModel>
     {
+        private const double MINIMUM_ZOOM_DIRECT_NODE_EDIT = 0.5;
         public NoteViewModel ViewModel { get; private set; }
 
         public NoteView()
@@ -84,8 +85,18 @@ namespace Dynamo.Nodes
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
+
+            var currentZoom = ViewModel.WorkspaceViewModel.Zoom;
+            if (currentZoom > MINIMUM_ZOOM_DIRECT_NODE_EDIT)
+            {
+                Panel.SetZIndex(noteTextBox, 1);
+                ViewModel.IsOnEditMode = true;
+                noteTextBox.CaretIndex = noteTextBox.Text.Length;
+                return;
+            }
+
             // Setup a binding with the edit window's text field
-            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            DynamoViewModel dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
             var editWindow = new EditWindow(dynamoViewModel, true)
             {
                 Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
@@ -152,5 +163,10 @@ namespace Dynamo.Nodes
                 child.ViewModel.ZIndex = Configurations.NodeStartZIndex;
             }
         }
-   }
+
+        private void noteTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            Panel.SetZIndex(noteTextBox, 0);
+        }
+    }
 }
