@@ -637,7 +637,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Downstream.
+        ///   Looks up a localized string similar to Downstream.
         /// </summary>
         public static string ContextSelectConnectedDownstream {
             get {
@@ -655,7 +655,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Upstream.
+        ///   Looks up a localized string similar to Upstream.
         /// </summary>
         public static string ContextSelectConnectedUpstream {
             get {
@@ -664,7 +664,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select Upstream and Downstream.
+        ///   Looks up a localized string similar to Both.
         /// </summary>
         public static string ContextSelectConnectedUpstreamDownstream {
             get {

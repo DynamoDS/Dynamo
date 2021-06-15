@@ -2391,15 +2391,15 @@ Uninstall the following packages: {0}?</value>
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
   <data name="ContextSelectConnectedDownstream" xml:space="preserve">
-    <value>Select Downstream</value>
+    <value>Downstream</value>
   </data>
   <data name="ContextSelectConnectedHeader" xml:space="preserve">
     <value>Select Connected</value>
   </data>
   <data name="ContextSelectConnectedUpstream" xml:space="preserve">
-    <value>Select Upstream</value>
+    <value>Upstream</value>
   </data>
   <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
-    <value>Select Upstream and Downstream</value>
+    <value>Both</value>
   </data>
 </root>
