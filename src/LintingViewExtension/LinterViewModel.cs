@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Linting;
 using Dynamo.Linting.Rules;
 using Dynamo.LintingViewExtension.Controls;
@@ -88,6 +89,7 @@ namespace Dynamo.LintingViewExtension
             GraphIssues = new ObservableCollection<IRuleIssue>();
             this.linterManager.RuleEvaluationResults.CollectionChanged += RuleEvaluationResultsCollectionChanged;
             this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
+            viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
         }
 
         #region Private methods
@@ -257,7 +259,12 @@ namespace Dynamo.LintingViewExtension
             }
         }
 
-        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e )
+        private void OnCurrentWorkspaceChanged(IWorkspaceModel obj)
+        {
+            RaisePropertyChanged(nameof(CanChangeLinter));
+        }
+
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(linterManager.ActiveLinter))
             {
@@ -284,6 +291,11 @@ namespace Dynamo.LintingViewExtension
         {
             this.linterManager.RuleEvaluationResults.CollectionChanged -= RuleEvaluationResultsCollectionChanged;
             this.linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+        }
+
+        public bool CanChangeLinter { 
+            get => viewLoadedParams.CurrentWorkspaceModel is HomeWorkspaceModel ? true : false; 
         }
         #endregion
     }
