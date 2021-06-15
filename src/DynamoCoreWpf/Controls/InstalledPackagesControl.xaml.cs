@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dynamo.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +30,12 @@ namespace Dynamo.Wpf.Controls
             var button = (Button)sender;
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
+        }
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            Expander exp = (Expander)sender;
+            PackageViewModel pm = (PackageViewModel)exp.DataContext;
+            pm.ToggleTypesVisibleInManagerCommand.Execute();
         }
     }
 }

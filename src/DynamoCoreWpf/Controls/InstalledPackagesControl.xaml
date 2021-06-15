@@ -69,7 +69,9 @@
                             <Border BorderBrush="#444"
                                 BorderThickness="0,1,0,0">
 
-                                <Expander Name="PackageHeader" Style="{StaticResource InstalledPackagesExpanderStyle}">
+                                <Expander Name="PackageHeader"
+                                          IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
+                                          Style="{StaticResource InstalledPackagesExpanderStyle}">
                                     <Expander.Header>
                                         <Grid x:Name="PackageGrid">
                                             <DockPanel HorizontalAlignment="Stretch" Width="{Binding Path=ActualWidth, ElementName=PackageGrid}"
