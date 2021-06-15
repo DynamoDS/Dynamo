@@ -170,7 +170,7 @@ namespace Dynamo.ViewModels
         /// when doing unit tests.
         /// </summary>
         internal event SaveWarningOnUnresolvedIssuesShows SaveWarningOnUnresolvedIssuesShows;
-        internal virtual void OnSaveWarningOnUnresolvedIssues(Object sender, SaveWarningOnUnresolvedIssuesArgs e)
+        internal void OnSaveWarningOnUnresolvedIssuesShows(SaveWarningOnUnresolvedIssuesArgs e)
         {
             SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
         }

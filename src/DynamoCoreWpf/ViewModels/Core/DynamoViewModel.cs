@@ -1945,7 +1945,7 @@ namespace Dynamo.ViewModels
                 if (dialog.IsActive)
                 {
                     var saveWarningArgs = new SaveWarningOnUnresolvedIssuesArgs(dialog);
-                    SaveWarningOnUnresolvedIssuesShows(saveWarningArgs);
+                    OnSaveWarningOnUnresolvedIssuesShows(saveWarningArgs);
                 }
                 return false;
             }
