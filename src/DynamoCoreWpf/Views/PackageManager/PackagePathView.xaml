@@ -30,6 +30,9 @@
                     <Button
                          Grid.Column="0"
                         Margin="20,7,1,7"
+                              Command="{Binding Path=DataContext.MovePathUpCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
                         <fa:ImageAwesome Icon="LongArrowUp"
@@ -41,6 +44,9 @@
                     <Button
                          Grid.Column="1"
                          Margin="1,7,20,7"
+                              Command="{Binding Path=DataContext.MovePathDownCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
                         <fa:ImageAwesome Icon="LongArrowDown"
@@ -60,6 +66,9 @@
                     <Button
                          Grid.Column="3"
                          Margin="10,7,10,7"
+                        Command="{Binding Path=DataContext.UpdatePathCommand,
+          RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                         CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
                         <fa:ImageAwesome Icon="FolderOutlinepenOutline"
@@ -71,7 +80,6 @@
                     <Button
                         Grid.Column="4"
                         Margin="10,7,10,7"
-                        
                         Command="{Binding Path=DataContext.DeletePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
