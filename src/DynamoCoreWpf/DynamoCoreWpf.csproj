@@ -125,6 +125,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\Converters\LinterIssueCountToVisibilityConverter.cs" />
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
     </Compile>
@@ -1308,6 +1309,7 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\alert.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
