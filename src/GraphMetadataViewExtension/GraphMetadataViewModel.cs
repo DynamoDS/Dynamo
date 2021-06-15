@@ -198,7 +198,7 @@ namespace Dynamo.GraphMetadata
             AddCustomProperty(propName, string.Empty);
         }
 
-        internal void AddCustomProperty(string propertyName, string propertyValue)
+        internal void AddCustomProperty(string propertyName, string propertyValue, bool markChange = true)
         {
             var control = new CustomPropertyControl
             {
@@ -207,8 +207,17 @@ namespace Dynamo.GraphMetadata
             };
 
             control.RequestDelete += HandleDeleteRequest;
+            control.PropertyChanged += HandlePropertyChanged;
             CustomProperties.Add(control);
 
+            if (markChange && this.currentWorkspace != null)
+            {
+                this.currentWorkspace.HasUnsavedChanges = true;
+            }
+        }
+
+        private void HandlePropertyChanged(object sender, EventArgs e)
+        {
             if (this.currentWorkspace != null)
             {
                 this.currentWorkspace.HasUnsavedChanges = true;
@@ -220,6 +229,7 @@ namespace Dynamo.GraphMetadata
             if (sender is CustomPropertyControl customProperty)
             {
                 customProperty.RequestDelete -= HandleDeleteRequest;
+                customProperty.PropertyChanged -= HandlePropertyChanged;
                 CustomProperties.Remove(customProperty);
                 if (this.currentWorkspace != null)
                 {
@@ -235,6 +245,7 @@ namespace Dynamo.GraphMetadata
             foreach (var cp in CustomProperties)
             {
                 cp.RequestDelete -= HandleDeleteRequest;
+                cp.PropertyChanged -= HandlePropertyChanged;
             }
        }
     }
