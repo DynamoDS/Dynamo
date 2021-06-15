@@ -18,11 +18,4 @@ namespace Dynamo.ViewModels
     public delegate void RequestBitmapSourceHandler(IconRequestEventArgs e);
 
     public delegate void RequestOpenDocumentationLinkHandler(OpenDocumentationLinkEventArgs e);
-
-    /// <summary>
-    /// Eventhandler for verifying that the correct dialog is being showed when saving a graph with unresolved linter issues.
-    /// This is only meant to be used for unit testing purposes.
-    /// </summary>
-    /// <param name="e"></param>
-    internal delegate void SaveWarningOnUnresolvedIssuesShows(SaveWarningOnUnresolvedIssuesArgs e);
 }

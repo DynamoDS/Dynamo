@@ -1542,8 +1542,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void Save(object parameter)
         {
-            if (!ShowSaveWarningDialog() || 
-                !String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
+            if (!ShowSaveWarningDialog()) return;
+
+            if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 // For read-only file, re-direct save to save-as
                 if (this.CurrentSpace.IsReadOnly)

@@ -169,7 +169,7 @@ namespace Dynamo.ViewModels
         /// As the GenericTaskDialog is not owned by the DynamoWindow we need another way to verify that it shows up
         /// when doing unit tests.
         /// </summary>
-        internal event SaveWarningOnUnresolvedIssuesShows SaveWarningOnUnresolvedIssuesShows;
+        internal event Action<SaveWarningOnUnresolvedIssuesArgs> SaveWarningOnUnresolvedIssuesShows;
         internal void OnSaveWarningOnUnresolvedIssuesShows(SaveWarningOnUnresolvedIssuesArgs e)
         {
             SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
