@@ -1,0 +1,139 @@
+{
+  "Uuid": "c86e19d5-b838-416d-a889-6492301e00b0",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "cpython_reloaded_class_instances",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nsys.path.append(r'..\\..\\..\\test\\core\\python\\module_reload')\r\nimport reloaded_class\r\n\r\n\r\nOUT = reloaded_class.reloaded_class()",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "2687166778f948d69a8f601a58eab05a",
+      "Inputs": [
+        {
+          "Id": "be892b4726b84a98a59f63200b541d50",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "619064b017684d73b7d16840471279d9",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Load the Python Standard and DesignScript Libraries\r\nimport sys\r\nimport clr\r\nsys.path.append(r'..\\..\\..\\test\\core\\python\\module_reload')\r\nimport reloaded_class\r\n\r\n\r\nOUT = [IN[0].get_data(),reloaded_class.reloaded_class().get_data()]",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Id": "27af4862d5e7446babea7ff42f5bc80c",
+      "Inputs": [
+        {
+          "Id": "38bf9477ea7e453ab3cd7c323e35c714",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8f0a9ae0171a456d919feb5663f4fcf9",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "619064b017684d73b7d16840471279d9",
+      "End": "38bf9477ea7e453ab3cd7c323e35c714",
+      "Id": "172f0b9f17d74d648b3b38df481554e9"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [],
+  "Author": "None provided",
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5174",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "2687166778f948d69a8f601a58eab05a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 153.5,
+        "Y": 172.0
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "27af4862d5e7446babea7ff42f5bc80c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 359.0,
+        "Y": 133.0
+      }
+    ],
+    "Annotations": [],
+    "X": 317.75,
+    "Y": 53.25,
+    "Zoom": 1.0
+  }
+}

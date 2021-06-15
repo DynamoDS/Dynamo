@@ -133,6 +133,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Style.
+        /// </summary>
+        public static string AddStyleButton {
+            get {
+                return ResourceManager.GetString("AddStyleButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
         public static string AddToLibraryButton {
@@ -3882,6 +3891,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Node and Package Paths.
+        /// </summary>
+        public static string PackagePathsExpanderName {
+            get {
+                return ResourceManager.GetString("PackagePathsExpanderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept Changes.
         /// </summary>
         public static string PackagePathViewAccept {
@@ -4364,6 +4382,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PortViewContextMenuUserDefaultValue {
             get {
                 return ResourceManager.GetString("PortViewContextMenuUserDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Manager.
+        /// </summary>
+        public static string PreferencesPackageManagerSettingsTab {
+            get {
+                return ResourceManager.GetString("PreferencesPackageManagerSettingsTab", resourceCulture);
             }
         }
         
@@ -5043,6 +5070,24 @@ namespace Dynamo.Wpf.Properties {
         public static string RerunButtonToolTip {
             get {
                 return ResourceManager.GetString("RerunButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset CPython.
+        /// </summary>
+        public static string ResetCPythonButtonText {
+            get {
+                return ResourceManager.GetString("ResetCPythonButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resets CPython environment by reloading modules..
+        /// </summary>
+        public static string ResetCPythonButtonToolTip {
+            get {
+                return ResourceManager.GetString("ResetCPythonButtonToolTip", resourceCulture);
             }
         }
         

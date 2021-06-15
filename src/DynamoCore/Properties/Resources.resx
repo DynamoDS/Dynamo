@@ -750,7 +750,10 @@ Parameter name: {0}</value>
   <data name="Autocomplete" xml:space="preserve">
     <value>Autocomplete</value>
   </data>
-    <data name="PackageStatePendingUnload" xml:space="preserve">
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
     <value>Scheduled to be unloaded</value>
   </data>
     <data name="PackageStateError" xml:space="preserve">
