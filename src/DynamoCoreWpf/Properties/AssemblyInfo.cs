@@ -42,3 +42,4 @@ using System.Windows;
 [assembly: InternalsVisibleTo("SystemTestServices")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 [assembly: InternalsVisibleTo("PythonNodeModelsWpf")]
+[assembly: InternalsVisibleTo("LintingViewExtension")]

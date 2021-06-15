@@ -162,5 +162,17 @@ namespace Dynamo.ViewModels
             if (RequestReturnFocusToView != null)
                 RequestReturnFocusToView();
         }
+
+        /// <summary>
+        /// Event used to verify that the correct dialog is being showed when saving a graph with unresolved linter issues.
+        /// This is only meant to be used for unit testing purposes.
+        /// As the GenericTaskDialog is not owned by the DynamoWindow we need another way to verify that it shows up
+        /// when doing unit tests.
+        /// </summary>
+        internal event Action<SaveWarningOnUnresolvedIssuesArgs> SaveWarningOnUnresolvedIssuesShows;
+        internal void OnSaveWarningOnUnresolvedIssuesShows(SaveWarningOnUnresolvedIssuesArgs e)
+        {
+            SaveWarningOnUnresolvedIssuesShows?.Invoke(e);
+        }
     }
 }

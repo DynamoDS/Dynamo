@@ -772,6 +772,11 @@ namespace Dynamo.Models
                             {
                                 if (loadedExtension is IExtension)
                                 {
+                                    if (loadedExtension is LinterExtensionBase loadedLinter)
+                                    {
+                                        loadedLinter.InitializeBase(this.LinterManager);
+                                    }
+                                    
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
@@ -2503,6 +2508,8 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
+            this.LinterManager?.SetDefaultLinter();
+
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
@@ -2662,7 +2669,7 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
-        enum ButtonId
+        internal enum ButtonId
         {
             Ok = 43420,
             Cancel,
