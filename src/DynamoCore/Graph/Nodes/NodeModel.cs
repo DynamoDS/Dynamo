@@ -1592,7 +1592,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Adds recursively all nodes upstream to this node
+        /// Recursively selects all nodes downstream to this node
         /// </summary>
         public void SelectDownstreamNeighbours()
         {
@@ -1607,7 +1607,7 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
-        /// Adds recursively all nodes upstream to this node. 
+        /// Recursively selects all nodes upstream to this node
         /// </summary>
         public void SelectUpstreamNeighbours()
         {
