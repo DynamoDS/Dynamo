@@ -932,9 +932,9 @@ namespace DynamoCoreWpfTests
             var failureNode = new DummyNode();
             Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(failureNode, 0, 0, false, false));
 
-            Model.LinterManager.ActiveLinter = Model.LinterManager.AvailableLinters
+            Model.LinterManager.SetActiveLinter(Model.LinterManager.AvailableLinters
                 .Where(x => x.Id == mockLinter.Object.UniqueId)
-                .FirstOrDefault();
+                .FirstOrDefault());
 
             // Act
             failureNode.Name = "NewNodeName";
@@ -949,7 +949,8 @@ namespace DynamoCoreWpfTests
 
         private void SetupMockLinter(Mock<LinterExtensionBase> mockLinter)
         {
-            const string MOCK_GUID = "358321af-2633-4697-b475-81632582eba0";
+            const string MOCK_LINTER_GUID = "358321af-2633-4697-b475-81632582eba0";
+            const string MOCK_LINTER_NAME = "MockLinter";
             const string MOCK_RULE_ID = "1";
 
             Mock<NodeLinterRule> mockRule = new Mock<NodeLinterRule> { CallBase = true };
@@ -958,7 +959,8 @@ namespace DynamoCoreWpfTests
             mockRule.Setup(r => r.Id).Returns(MOCK_RULE_ID);
 
             // Setup mock LinterExtension
-            mockLinter.Setup(e => e.UniqueId).Returns(MOCK_GUID);
+            mockLinter.Setup(e => e.UniqueId).Returns(MOCK_LINTER_GUID);
+            mockLinter.Setup(e => e.Name).Returns(MOCK_LINTER_NAME);
 
             mockRule.Setup(x => x.EvaluationTriggerEvents).
                 Returns(new List<string> { nameof(NodeModel.Name) });
