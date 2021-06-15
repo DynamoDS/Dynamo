@@ -16,10 +16,12 @@
         xmlns:uiControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        ResizeMode="NoResize"
         mc:Ignorable="d" 
         Height="474" 
-        Width="530" >
+        Width="530"
+        MinHeight="400"
+        MinWidth="500"
+        ResizeMode="CanResizeWithGrip">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -726,12 +728,12 @@
                             <!--This Grid row contains the Installed Packages section-->
                             <Expander x:Name="InstalledPackagesExpander" 
                                           Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                          IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
                                           Grid.Row="1"
                                           Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel
                                     Orientation="Vertical" Margin="0,6,0,0">
-                                    <uiControls:InstalledPackagesControl/>
+                                    <uiControls:InstalledPackagesControl Height="Auto"/>
                                 </StackPanel>
                             </Expander>
                         </Grid>

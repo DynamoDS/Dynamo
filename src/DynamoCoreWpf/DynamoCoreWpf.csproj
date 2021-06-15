@@ -1306,6 +1306,10 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\caret_down.png" />
+    <Resource Include="UI\Images\caret_up.png" />
+    <Resource Include="UI\Images\close-thick.png" />
+    <Resource Include="UI\Images\More.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
