@@ -916,8 +916,6 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitValueOutput : NodeModel
     {
-        private string displayValue;
-
         public double Value { get; set; }
 
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
@@ -930,6 +928,7 @@ namespace UnitsUI
 
         public bool Decimal { get; set; }
 
+        private string displayValue;
         public string DisplayValue
         {
             get => displayValue;
@@ -956,7 +955,7 @@ namespace UnitsUI
             Precision = Convert.ToInt32(inputs[3]);
             Decimal = Convert.ToBoolean(inputs[4]);
 
-            DisplayValue = ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
+            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
         }
 
         public override void Dispose()
@@ -1001,16 +1000,6 @@ namespace UnitsUI
 
         }
 
-        private string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
-        {
-            string outputString = string.Empty;
-            if (decimalFormat)
-                outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-            else
-                outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
-            return outputString;
-        }
-
         private Unit CastToUnit(object value)
         {
             try
@@ -1043,43 +1032,6 @@ namespace UnitsUI
             {
                 throw;
             }
-        }
-    }
-
-    class UnitValueOutputViewCustomization : INodeViewCustomization<UnitValueOutput>
-    {
-        private NodeModel nodeModel;
-        private NodeViewModel nodeViewModel;
-        private UnitValueOutput model;
-
-        public void CustomizeView(UnitValueOutput model, NodeView nodeView)
-        {
-
-            //add a text box to the input grid of the control
-            var tb = new StringTextBox
-            {
-                TextWrapping = TextWrapping.Wrap,
-                MinHeight = Configurations.PortHeightInPixels,
-                MaxWidth = 200,
-                VerticalAlignment = VerticalAlignment.Stretch
-
-            };
-            
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            tb.IsReadOnly = true;
-            tb.DataContext = model;
-            tb.BindToProperty(new Binding(nameof(UnitValueOutput.DisplayValue))
-            {
-                Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
-
-            nodeView.inputGrid.Children.Add(tb);
-        }
-
-        public void Dispose()
-        {
-
         }
     }
 }

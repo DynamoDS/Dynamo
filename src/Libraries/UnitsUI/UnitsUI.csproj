@@ -38,7 +38,6 @@
   <ItemGroup>
     <Reference Include="ForgeUnitsCLR">
       <HintPath>..\..\..\..\..\..\..\Desktop\UnitNodeStuff\UnitNodeStuff\UnitNodesSrc\packages\ForgeUnits-csharp_win_release_intel64_v142.3.2.1\lib\net48\ForgeUnitsCLR.dll</HintPath>
-      <HintPath>..\..\..\..\..\..\Desktop\UnitNodeStuff\UnitNodesSrc\packages\ForgeUnits-csharp_win_release_intel64_v142.3.1.0\lib\net48\ForgeUnitsCLR.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
