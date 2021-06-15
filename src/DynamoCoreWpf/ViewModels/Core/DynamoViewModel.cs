@@ -1542,7 +1542,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void Save(object parameter)
         {
-            if (!ShowSaveWarningDialog()) return;
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues()) return;
 
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
@@ -1893,7 +1893,7 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveDialogAndSaveResult(object parameter)
         {
-            if (!ShowSaveWarningDialog())
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues())
             {
                 return;
             }
@@ -1921,7 +1921,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private bool ShowSaveWarningDialog()
+        private bool ShowWarningDialogOnSaveWithUnresolvedIssues()
         {
             if (Model.LinterManager.RuleEvaluationResults.Count <= 0)
             {
