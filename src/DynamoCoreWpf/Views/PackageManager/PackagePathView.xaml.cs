@@ -34,8 +34,6 @@ namespace Dynamo.Wpf.Views.PackageManager
             DataContextChanged += PackagePathView_DataContextChanged;
         }
 
-       
-
         internal PackagePathView(PackagePathViewModel viewModel)
         {
             if (viewModel == null)
@@ -44,9 +42,6 @@ namespace Dynamo.Wpf.Views.PackageManager
             InitializeComponent();
             this.DataContext = viewModel;
             viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
-            viewModel.PropertyChanged += OnPropertyChanged;
-            UpdateVisualToReflectSelectionState();
-            PreviewKeyDown += OnPackagePathDialogKeyDown;
         }
 
         #endregion
@@ -59,46 +54,7 @@ namespace Dynamo.Wpf.Views.PackageManager
                 ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
             }
         }
-        void OnPathSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count <= 0)
-                return; // Nothing selected.
-
-            var selected = e.AddedItems[0] as string;
-            ViewModel.SelectedIndex = ViewModel.RootLocations.IndexOf(selected);
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName.Equals("SelectedIndex"))
-            {
-                // Repositioning the selection should retain its visual state.
-                UpdateVisualToReflectSelectionState();
-            }
-        }
-
-        private void OnEllipsisClicked(object sender, MouseButtonEventArgs e)
-        {
-            var selectedIndex = ViewModel.SelectedIndex;
-            if (ViewModel.UpdatePathCommand.CanExecute(selectedIndex))
-                ViewModel.UpdatePathCommand.Execute(selectedIndex);
-        }
-
-
-        private void OnOkButtonClicked(object sender, RoutedEventArgs e)
-        {
-            if (ViewModel.SaveSettingCommand.CanExecute(null))
-            {
-                ViewModel.SaveSettingCommand.Execute(null);
-        //        this.Close(); // Close the dialog after saving.
-            }
-        }
-
-        private void OnCancelButtonClicked(object sender, RoutedEventArgs e)
-        {
-         //   this.Close(); // Close the dialog without saving.
-        }
-
+       
         private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             var args = e as PackagePathEventArgs;
@@ -113,8 +69,7 @@ namespace Dynamo.Wpf.Views.PackageManager
                 {
                     // Navigate to initial folder.
                     SelectedPath = args.Path,
-                    //TODO anything better? we want to get prefs window
-                    Owner = System.Windows.Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive)
+                    Owner = System.Windows.Application.Current.Windows.OfType<PreferencesView>().SingleOrDefault(x => x.IsActive)
             };
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -130,28 +85,6 @@ namespace Dynamo.Wpf.Views.PackageManager
                 System.Windows.Forms.MessageBox.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void UpdateVisualToReflectSelectionState()
-        {
-            var newIndex = ViewModel.SelectedIndex;
-           // if (PathListBox.SelectedIndex != newIndex)
-         //       PathListBox.SelectedIndex = newIndex;
-        }
-
         #endregion
-
-        private void OnPackagePathDialogKeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-       //        Close();
-            }
-            else if (e.Key == Key.Return)
-            {
-                ViewModel.SaveSettingCommand.Execute(null);
-                e.Handled = true;
-          //      Close();
-            }
-        }
     }
 }
