@@ -83,13 +83,13 @@ namespace Dynamo.Tests
         public void SelectUpstreamNeighborsTest()
         {
             //Open and run the workspace
-            string listTestFolder = Path.Combine(TestDirectory, "core");
-            string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+            var listTestFolder = Path.Combine(TestDirectory, "core");
+            var testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
 
             RunModel(testFilePath);
 
             //Select the node with  upstream neighbors
-            NodeModel node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
 
             var countBefore = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(0, countBefore);
@@ -107,13 +107,13 @@ namespace Dynamo.Tests
         public void SelectDownstreamNeighborsTest()
         {
             //Open and run the workspace
-            string listTestFolder = Path.Combine(TestDirectory, "core");
-            string testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+            var listTestFolder = Path.Combine(TestDirectory, "core");
+            var testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
 
             RunModel(testFilePath);
 
             //Select the node with downstream neighbors
-            NodeModel node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
 
             var countBefore = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(0, countBefore);
