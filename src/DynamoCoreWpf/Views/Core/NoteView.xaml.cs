@@ -91,7 +91,8 @@ namespace Dynamo.Nodes
             {
                 Panel.SetZIndex(noteTextBox, 1);
                 ViewModel.IsOnEditMode = true;
-                noteTextBox.CaretIndex = noteTextBox.Text.Length;
+                noteTextBox.Focus();
+                noteTextBox.SelectAll();
                 return;
             }
 
