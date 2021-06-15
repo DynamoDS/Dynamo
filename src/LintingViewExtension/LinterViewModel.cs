@@ -294,6 +294,9 @@ namespace Dynamo.LintingViewExtension
             viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
         }
 
+        /// <summary>
+        /// Check to see if we can set an active linter for the current workspace
+        /// </summary>
         public bool CanChangeLinter { 
             get => viewLoadedParams.CurrentWorkspaceModel is HomeWorkspaceModel ? true : false; 
         }
