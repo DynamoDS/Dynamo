@@ -804,7 +804,10 @@
                   "path": "Core.Units.Units"
                 },
                 {
-                  "path": "Core.Units.Symbols"
+                    "path": "Core.Units.Symbols"
+                },
+                {
+                    "path": "Core.Units.Unit Value Output"
                 },
                 {
                   "path": "DynamoUnits.DynamoUnits.Utilities.ConvertByUnits"

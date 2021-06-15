@@ -715,6 +715,26 @@ namespace UnitsUI
 
     
 
+    internal class ForgeUnitSymbolConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(DynamoUnits.UnitSymbol);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
+            return DynamoUnits.UnitSymbol.ByTypeID(typedId);
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            var unitSymbol = (DynamoUnits.UnitSymbol)value;
+            writer.WriteValue(unitSymbol.TypeId);
+        }
+    }
+
     [NodeName("Units")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [OutPortTypes("Unit")]
@@ -896,33 +916,27 @@ namespace UnitsUI
     [IsDesignScriptCompatible]
     public class UnitValueOutput : NodeModel
     {
-        //public event Action<object> EvaluationComplete;
+        private string displayValue;
 
-        //[JsonIgnore]
-        //public new object CachedValue;
-
-        ///// <summary>
-        /////     Has the Watch node been run once?  If not, the CachedValue
-        /////     is technically not accurate.
-        ///// </summary>
-        //[JsonIgnore]
-        //public bool HasRunOnce { get; private set; }
-        [JsonIgnore]
-        private string formattedString;
-    
         public double Value { get; set; }
-        public Unit Unit { get; set; }
+
+        [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
+        public Unit SelectedUnit { get; set; }
+
+        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
         public UnitSymbol Symbol { get; set; }
+
         public int Precision { get; set; }
 
         public bool Decimal { get; set; }
-        public string FormattedString
+
+        public string DisplayValue
         {
-            get => formattedString;
+            get => displayValue;
             set
             {
-                formattedString = value;
-                RaisePropertyChanged(nameof(FormattedString));
+                displayValue = value;
+                RaisePropertyChanged(nameof(DisplayValue));
             }
         }
 
@@ -934,23 +948,15 @@ namespace UnitsUI
 
         private void DataBridgeCallback(object data)
         {
-           // this.CachedValue = data;
-           // this.HasRunOnce = true;
+            ArrayList inputs = data as ArrayList;
 
-           //// if (EvaluationComplete != null)
-           // {
-           //     EvaluationComplete(data);
+            Value = Convert.ToDouble(inputs[0]);
+            SelectedUnit = CastToUnit(inputs[1]);
+            Symbol = CastToUnitSymbol(inputs[2]);
+            Precision = Convert.ToInt32(inputs[3]);
+            Decimal = Convert.ToBoolean(inputs[4]);
 
-
-                ArrayList inputs = data as ArrayList;
-                Value = Convert.ToDouble(inputs[0]);
-                Unit = inputs[1] as Unit;
-                Symbol = inputs[2] as UnitSymbol;
-                Precision = Convert.ToInt32(inputs[3]);
-                Decimal = Convert.ToBoolean(inputs[4]);
-
-                FormattedString = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Decimal);
-            //}
+            DisplayValue = ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
         }
 
         public override void Dispose()
@@ -967,12 +973,13 @@ namespace UnitsUI
         public UnitValueOutput()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Value), "Tooltip")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Unit), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(SelectedUnit), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Symbol), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Precision), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Decimal), "Tooltip")));
 
             RegisterAllPorts();
+            ArgumentLacing = LacingStrategy.Disabled;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -986,46 +993,57 @@ namespace UnitsUI
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
 
-            //if (IsPartiallyApplied)
-            //{
-            //    return new[]
-            //    {
-            //        AstFactory.BuildAssignment(
-            //            GetAstIdentifierForOutputIndex(0),
-            //            AstFactory.BuildFunctionObject(
-            //                new ProtoCore.AST.AssociativeAST.IdentifierListNode
-            //                {
-            //                    LeftNode = AstFactory.BuildIdentifier("DataBridge"),
-            //                    RightNode = AstFactory.BuildIdentifier("BridgeData")
-            //                },
-            //                2,
-            //                new[] { 0 },
-            //                new List<AssociativeNode>
-            //                {
-            //                    AstFactory.BuildStringNode(GUID.ToString()),
-            //                    AstFactory.BuildNullNode()
-            //                }))
-            //    };
-            //}
-
             return new[]{ 
                 AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
-                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))),
-                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
+                    AstFactory.BuildIdentifier(AstIdentifierBase),
+                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
             };
 
         }
 
-        //private string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
-        //{
-        //    string outputString = string.Empty;
-        //    if (decimalFormat)
-        //        outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-        //    else
-        //        outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
-        //    return outputString;
-        //}
+        private string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
+        {
+            string outputString = string.Empty;
+            if (decimalFormat)
+                outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+            else
+                outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+            return outputString;
+        }
+
+        private Unit CastToUnit(object value)
+        {
+            try
+            {
+                var unit = value as Unit;
+                if (unit is null)
+                {
+                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
+                }
+                return unit;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        private UnitSymbol CastToUnitSymbol(object value)
+        {
+            try
+            {
+                var symbol = value as UnitSymbol;
+                if (symbol is null)
+                {
+                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
+                }
+                return symbol;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 
     class UnitValueOutputViewCustomization : INodeViewCustomization<UnitValueOutput>
@@ -1046,11 +1064,11 @@ namespace UnitsUI
                 VerticalAlignment = VerticalAlignment.Stretch
 
             };
+            
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.IsReadOnly = true;
-
             tb.DataContext = model;
-            tb.BindToProperty(new Binding(nameof(UnitValueOutput.FormattedString))
+            tb.BindToProperty(new Binding(nameof(UnitValueOutput.DisplayValue))
             {
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
