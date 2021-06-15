@@ -69,7 +69,7 @@ namespace Dynamo.GraphMetadata
 
                 var valueModified = kv.Value == null ? string.Empty : kv.Value;
 
-                this.viewModel.AddCustomProperty(kv.Key, valueModified);
+                this.viewModel.AddCustomProperty(kv.Key, valueModified, false);
             }
         }
 
