@@ -35,190 +35,12 @@ using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
 using Dynamo.Utilities;
 using Dynamo.Engine.CodeGeneration;
+using System.Collections;
+using VMDataBridge;
+using UnitsUI.Converters;
 
 namespace UnitsUI
 {
-    public abstract class MeasurementInputBaseNodeViewCustomization : INodeViewCustomization<MeasurementInputBase>
-    {
-        private MeasurementInputBase mesBaseModel;
-        private DynamoViewModel dynamoViewModel;
-        private DynamoTextBox tb;
-
-        public void CustomizeView(MeasurementInputBase model, NodeView nodeView)
-        {
-            this.mesBaseModel = model;
-            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            //add an edit window option to the 
-            //main context window
-            var editWindowItem = new MenuItem()
-            {
-                Header = Properties.Resources.EditHeader,
-                IsCheckable = false,
-                Tag = nodeView.ViewModel.DynamoViewModel
-            };
-
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
-
-            editWindowItem.Click += editWindowItem_Click;
-
-            //add a text box to the input grid of the control
-            this.tb = new DynamoTextBox();
-            tb.HorizontalAlignment = HorizontalAlignment.Stretch;
-            tb.VerticalAlignment = VerticalAlignment.Center;
-            nodeView.inputGrid.Children.Add(tb);
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-
-            tb.DataContext = model;
-            tb.BindToProperty(new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = model.Measure,
-                NotifyOnValidationError = false,
-                Source = model,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            tb.OnChangeCommitted += TextChangehandler; 
-
-            (nodeView.ViewModel.DynamoViewModel.Model.PreferenceSettings).PropertyChanged += PreferenceSettings_PropertyChanged;
-        }
-
-        private void TextChangehandler()
-        {
-            mesBaseModel.OnNodeModified();
-        }
-
-        void PreferenceSettings_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "AreaUnit" ||
-                e.PropertyName == "VolumeUnit" ||
-                e.PropertyName == "LengthUnit" ||
-                e.PropertyName == "NumberFormat")
-            {
-                this.mesBaseModel.ForceValueRaisePropertyChanged();
-
-                this.mesBaseModel.OnNodeModified();
-            }
-        }
-
-        private void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            var viewModel = this.dynamoViewModel;
-            var editWindow = new EditWindow(viewModel) { DataContext = this.mesBaseModel };
-            editWindow.BindToProperty(null, new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new MeasureConverter(),
-                ConverterParameter = this.mesBaseModel.Measure,
-                NotifyOnValidationError = false,
-                Source = this.mesBaseModel,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            editWindow.ShowDialog();
-        }
-
-        public void Dispose()
-        {
-            tb.OnChangeCommitted -= TextChangehandler;
-        }
-    }
-
-    public abstract class MeasurementInputBase : NodeModel
-    {
-        [JsonIgnore]
-        public SIUnit Measure { get; protected set; }
-
-        public double Value
-        {
-            get
-            {
-                return Measure.Value;
-            }
-            set
-            {
-                Measure.Value = value;
-                RaisePropertyChanged("Value");
-            }
-        }
-
-        public MeasurementInputBase(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts):base(inPorts, outPorts) { }
-
-        public MeasurementInputBase() : base() { }
-
-        internal void ForceValueRaisePropertyChanged()
-        {
-            RaisePropertyChanged("Value");
-        }
-
-        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            base.SerializeCore(nodeElement, context);
-            XmlElement outEl = nodeElement.OwnerDocument.CreateElement(typeof(double).FullName);
-            outEl.SetAttribute("value", Value.ToString(CultureInfo.InvariantCulture));
-            nodeElement.AppendChild(outEl);
-        }
-
-        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
-        {
-            base.DeserializeCore(nodeElement, context);
-            foreach (XmlNode subNode in nodeElement.ChildNodes)
-            {
-                // this node now stores a double, having previously stored a measure type
-                // by checking for the measure type as well we allow for loading of older files.
-                if (subNode.Name.Equals(typeof(double).FullName) || subNode.Name.Equals("Dynamo.Measure.Foot"))
-                {
-                    Value = DeserializeValue(subNode.Attributes[0].Value);
-                }
-            }
-        }
-
-        public override string PrintExpression()
-        {
-            return Value.ToString();
-        }
-
-        protected double DeserializeValue(string val)
-        {
-            try
-            {
-                return Convert.ToDouble(val, CultureInfo.InvariantCulture);
-            }
-            catch
-            {
-                return 0;
-            }
-        }
-
-        protected override bool UpdateValueCore(UpdateValueParams updateValueParams)
-        {
-            string name = updateValueParams.PropertyName;
-            string value = updateValueParams.PropertyValue;
-
-            if (name == "Value")
-            {
-                var converter = new MeasureConverter();
-                this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));
-                return true; // UpdateValueCore handled.
-            }
-
-            return base.UpdateValueCore(updateValueParams);
-        }
-
-    }
-
-    public class LengthFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                         INodeViewCustomization<LengthFromString>
-    {
-        public void CustomizeView(LengthFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
 
     [NodeName("Number From Feet and Inches")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
@@ -278,14 +100,7 @@ namespace UnitsUI
         }
     }
 
-    public class AreaFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                     INodeViewCustomization<AreaFromString>
-    {
-        public void CustomizeView(AreaFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
+
 
     [NodeName("Area From String")]
     [NodeCategory("Units.Area.Create")]
@@ -318,14 +133,7 @@ namespace UnitsUI
         }
     }
 
-    public class VolumeFromStringNodeViewCustomization : MeasurementInputBaseNodeViewCustomization,
-                                                 INodeViewCustomization<VolumeFromString>
-    {
-        public void CustomizeView(VolumeFromString model, NodeView nodeView)
-        {
-            base.CustomizeView(model, nodeView);
-        }
-    }
+  
 
     [NodeName("Volume From String")]
     [NodeCategory("Units.Volume.Create")]
@@ -522,126 +330,7 @@ namespace UnitsUI
         }
     }
 
-    public class StringInputNodeViewCustomization : INodeViewCustomization<UnitInput>
-    {
-        private DynamoViewModel dynamoViewModel;
-        private UnitInput nodeModel;
-        private MenuItem editWindowItem;
-
-        public void CustomizeView(UnitInput stringInput, NodeView nodeView)
-        {
-            this.nodeModel = stringInput;
-            this.dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            this.editWindowItem = new MenuItem
-            {
-                Header = Dynamo.Wpf.Properties.Resources.StringInputNodeEditMenu,
-                IsCheckable = false
-            };
-            nodeView.MainContextMenu.Items.Add(editWindowItem);
-
-            editWindowItem.Click += editWindowItem_Click;
-
-            var grid = new Grid()
-            {
-                Height = Double.NaN,
-                Width = Double.NaN
-            };
-
-            RowDefinition rowDef1 = new RowDefinition();
-            RowDefinition rowDef2 = new RowDefinition();
-
-            grid.RowDefinitions.Add(rowDef1);
-            grid.RowDefinitions.Add(rowDef2);
-            
-            
-            //add a text box to the input grid of the control
-            var tb = new StringTextBox
-            {
-                TextWrapping = TextWrapping.Wrap,
-                MinHeight = Configurations.PortHeightInPixels,
-                MaxWidth = 200,
-                VerticalAlignment = VerticalAlignment.Stretch
-                
-            };
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
-            
-            grid.Children.Add(tb);
-            
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-
-            tb.DataContext = stringInput;
-            tb.BindToProperty(new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                Converter = new StringDisplay(),
-                Source = stringInput,
-                UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-            });
-
-            //add a drop down list to the window
-            var combo = new ComboBox
-            {
-                Width = System.Double.NaN,
-                MinWidth = 100,
-                Height = Configurations.PortHeightInPixels,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            grid.Children.Add(combo);
-            Grid.SetColumn(combo, 0);
-            Grid.SetRow(combo, 1);
-
-            //combo.DropDownOpened += combo_DropDownOpened;
-            combo.SelectionChanged += delegate
-            {
-                if (combo.SelectedIndex != -1)
-                    nodeModel.OnNodeModified();
-            };
-
-            combo.DataContext = nodeModel;
-
-            // bind this combo box to the selected item hash
-            var bindingVal = new System.Windows.Data.Binding("Items")
-            {
-                Source = nodeModel
-            };
-            combo.SetBinding(ItemsControl.ItemsSourceProperty, bindingVal);
-
-            // bind the selected index to the model property SelectedIndex
-            var indexBinding = new Binding("SelectedUnit")
-            {
-                Mode = BindingMode.TwoWay,
-                Source = nodeModel
-            };
-            combo.SetBinding(Selector.SelectedItemProperty, indexBinding);
-
-            nodeView.inputGrid.Children.Add(grid);
-        }
-
-        public void editWindowItem_Click(object sender, RoutedEventArgs e)
-        {
-            var editWindow = new EditWindow(this.dynamoViewModel) { DataContext = this.nodeModel };
-            editWindow.BindToProperty(
-                null,
-                new Binding("Value")
-                {
-                    Mode = BindingMode.TwoWay,
-                    Converter = new StringDisplay(),
-                    NotifyOnValidationError = false,
-                    Source = this.nodeModel,
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                });
-
-            editWindow.ShowDialog();
-        }
-
-        public void Dispose()
-        {
-            editWindowItem.Click -= editWindowItem_Click;
-        }
-    }
+   
 
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Units")]
@@ -1022,103 +711,9 @@ namespace UnitsUI
         }
     }
 
-    class ConverterNodeViewCustomization : INodeViewCustomization<ForgeDynamoConvert>
-    {
-        private NodeModel nodeModel;
-        private ForgeDynamoConverterControl converterControl;
-        private NodeViewModel nodeViewModel;
-        private ForgeDynamoConvert convertModel;
-        private ForgeConverterViewModel converterViewModel;
+   
 
-        public void CustomizeView(ForgeDynamoConvert model, NodeView nodeView)
-        {
-            nodeModel = nodeView.ViewModel.NodeModel;
-            nodeViewModel = nodeView.ViewModel;
-            convertModel = model;
-            converterControl = new ForgeDynamoConverterControl(model, nodeView)
-            {
-                DataContext = new ForgeConverterViewModel(model, nodeView),
-            };
-            converterViewModel = converterControl.DataContext as ForgeConverterViewModel;
-            nodeView.inputGrid.Children.Add(converterControl);
-            converterControl.Loaded += converterControl_Loaded;
-            converterControl.SelectConversionQuantity.PreviewMouseUp += SelectConversionQuantity_PreviewMouseUp;
-            converterControl.SelectConversionFrom.PreviewMouseUp += SelectConversionFrom_PreviewMouseUp;
-            converterControl.SelectConversionTo.PreviewMouseUp += SelectConversionTo_MouseLeftButtonDown;
-        }
-
-        private void SelectConversionQuantity_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
-        }
-
-        private void SelectConversionFrom_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
-        }
-
-        private void SelectConversionTo_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
-        }
-
-        private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-        }
-
-        public void Dispose()
-        {
-            converterControl.SelectConversionQuantity.PreviewMouseUp -= SelectConversionQuantity_PreviewMouseUp;
-            converterControl.SelectConversionFrom.PreviewMouseUp -= SelectConversionFrom_PreviewMouseUp;
-            converterControl.SelectConversionTo.PreviewMouseUp -= SelectConversionTo_MouseLeftButtonDown;
-        }
-    }
-
-    internal class ForgeQuantityConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(DynamoUnits.Quantity);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.Quantity.ByTypeID(typedId);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var quantity = (DynamoUnits.Quantity)value;
-            writer.WriteValue(quantity.TypeId);
-        }
-    }
-
-    internal class ForgeUnitConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(DynamoUnits.Unit);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            string typedId = System.Convert.ToString(reader.Value, CultureInfo.InvariantCulture);
-            return DynamoUnits.Unit.ByTypeID(typedId);
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var unit = (DynamoUnits.Unit)value;
-            writer.WriteValue(unit.TypeId);
-        }
-    }
+    
 
     [NodeName("Units")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
@@ -1291,6 +886,182 @@ namespace UnitsUI
             var symbolTxt = symbol.getPrefixOrSuffix() != null ? symbol.getPrefixOrSuffix().getText() : "";
 
             return symbolStr + symbolTxt;
+        }
+    }
+
+    [NodeName("Unit Value Output")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("UnitValueOutputDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitValueOutputSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [IsDesignScriptCompatible]
+    public class UnitValueOutput : NodeModel
+    {
+        //public event Action<object> EvaluationComplete;
+
+        //[JsonIgnore]
+        //public new object CachedValue;
+
+        ///// <summary>
+        /////     Has the Watch node been run once?  If not, the CachedValue
+        /////     is technically not accurate.
+        ///// </summary>
+        //[JsonIgnore]
+        //public bool HasRunOnce { get; private set; }
+        [JsonIgnore]
+        private string formattedString;
+    
+        public double Value { get; set; }
+        public Unit Unit { get; set; }
+        public UnitSymbol Symbol { get; set; }
+        public int Precision { get; set; }
+
+        public bool Decimal { get; set; }
+        public string FormattedString
+        {
+            get => formattedString;
+            set
+            {
+                formattedString = value;
+                RaisePropertyChanged(nameof(FormattedString));
+            }
+        }
+
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
+        }
+
+        private void DataBridgeCallback(object data)
+        {
+           // this.CachedValue = data;
+           // this.HasRunOnce = true;
+
+           //// if (EvaluationComplete != null)
+           // {
+           //     EvaluationComplete(data);
+
+
+                ArrayList inputs = data as ArrayList;
+                Value = Convert.ToDouble(inputs[0]);
+                Unit = inputs[1] as Unit;
+                Symbol = inputs[2] as UnitSymbol;
+                Precision = Convert.ToInt32(inputs[3]);
+                Decimal = Convert.ToBoolean(inputs[4]);
+
+                FormattedString = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Decimal);
+            //}
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        [JsonConstructor]
+        private UnitValueOutput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
+        public UnitValueOutput()
+        {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Value), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Unit), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Symbol), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Precision), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Decimal), "Tooltip")));
+
+            RegisterAllPorts();
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (!InPorts[0].IsConnected || 
+                !InPorts[1].IsConnected ||
+                !InPorts[2].IsConnected ||
+                !InPorts[3].IsConnected ||
+                !InPorts[4].IsConnected)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
+            //if (IsPartiallyApplied)
+            //{
+            //    return new[]
+            //    {
+            //        AstFactory.BuildAssignment(
+            //            GetAstIdentifierForOutputIndex(0),
+            //            AstFactory.BuildFunctionObject(
+            //                new ProtoCore.AST.AssociativeAST.IdentifierListNode
+            //                {
+            //                    LeftNode = AstFactory.BuildIdentifier("DataBridge"),
+            //                    RightNode = AstFactory.BuildIdentifier("BridgeData")
+            //                },
+            //                2,
+            //                new[] { 0 },
+            //                new List<AssociativeNode>
+            //                {
+            //                    AstFactory.BuildStringNode(GUID.ToString()),
+            //                    AstFactory.BuildNullNode()
+            //                }))
+            //    };
+            //}
+
+            return new[]{ 
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(AstIdentifierBase + "_dummy"),
+                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))),
+                 AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode())
+            };
+
+        }
+
+        //private string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
+        //{
+        //    string outputString = string.Empty;
+        //    if (decimalFormat)
+        //        outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+        //    else
+        //        outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+        //    return outputString;
+        //}
+    }
+
+    class UnitValueOutputViewCustomization : INodeViewCustomization<UnitValueOutput>
+    {
+        private NodeModel nodeModel;
+        private NodeViewModel nodeViewModel;
+        private UnitValueOutput model;
+
+        public void CustomizeView(UnitValueOutput model, NodeView nodeView)
+        {
+
+            //add a text box to the input grid of the control
+            var tb = new StringTextBox
+            {
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = Configurations.PortHeightInPixels,
+                MaxWidth = 200,
+                VerticalAlignment = VerticalAlignment.Stretch
+
+            };
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.IsReadOnly = true;
+
+            tb.DataContext = model;
+            tb.BindToProperty(new Binding(nameof(UnitValueOutput.FormattedString))
+            {
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            nodeView.inputGrid.Children.Add(tb);
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

@@ -817,6 +817,9 @@
                 },
                 {
                   "path": "DynamoUnits.DynamoUnits.Utilities.ParseExpression"
+                },
+                {
+                  "path":  "Core.Units.Unit Value Output"
                 }
               ],
               "childElements": []

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using Autodesk.DesignScript.Runtime;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Utilities;
@@ -18,6 +19,8 @@ namespace CoreNodeModels
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.DynamoConvert")]
+    [IsVisibleInDynamoLibrary(false)]
+    [NodeDeprecated]
     public class DynamoConvert : NodeModel
     {
         private ConversionUnit selectedFromConversion;

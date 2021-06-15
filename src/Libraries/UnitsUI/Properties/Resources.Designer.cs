@@ -142,6 +142,33 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A custom formatted display of a unit value..
+        /// </summary>
+        internal static string UnitValueOutputDescription {
+            get {
+                return ResourceManager.GetString("UnitValueOutputDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output;Formatted.
+        /// </summary>
+        internal static string UnitValueOutputSearchTags {
+            get {
+                return ResourceManager.GetString("UnitValueOutputSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wire up the formatting parameters to obstain the desired format..
+        /// </summary>
+        internal static string UnitValueOutputTooltip {
+            get {
+                return ResourceManager.GetString("UnitValueOutputTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter a volume..
         /// </summary>
         internal static string VolumeFromStringDescription {
