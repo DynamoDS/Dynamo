@@ -1699,15 +1699,14 @@
         </Grid>
 
         <!--Bottom Panel including RunMode etc-->
-        <WrapPanel Orientation="Horizontal"
-                   Grid.Row="5"
-                   Grid.Column="0"
-                   Grid.RowSpan="1"
-                   HorizontalAlignment="Stretch"
-                   VerticalAlignment="Stretch"
-                   Grid.ColumnSpan="5">
-
-            <WrapPanel.Background>
+        <Grid 
+                Grid.Row="5"
+                Grid.Column="0"
+                Grid.RowSpan="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Grid.ColumnSpan="5">
+            <Grid.Background>
                 <LinearGradientBrush  StartPoint="0.5,0"
                                       EndPoint="0.5,1">
                     <GradientStop Color="#222"
@@ -1715,7 +1714,7 @@
                     <GradientStop Color="#111"
                                   Offset="1.0" />
                 </LinearGradientBrush>
-            </WrapPanel.Background>
+            </Grid.Background>
 
             <Grid Name="bottomBarGrid"
                   Grid.Row="4"
@@ -1725,7 +1724,7 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
@@ -1733,22 +1732,19 @@
                            Grid.Row="0"
                            Grid.Column="0"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch" 
+                           VerticalAlignment="Stretch"
                            Visibility="{Binding IsAbleToGoHome, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
-                        <controls1:RunSettingsControl x:Name="RunSettingsControl"
-                                                    Margin="2.5,5,5,5" 
-                                                     VerticalAlignment="Stretch"
-                                                     DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}"/>
+                    <controls1:RunSettingsControl x:Name="RunSettingsControl"
+                                                  Margin="2.5,5,5,5"
+                                                  VerticalAlignment="Stretch"
+                                                  DataContext="{Binding Path=HomeSpaceViewModel.RunSettingsViewModel}" />
                 </WrapPanel>
-                
+
                 <!--NotificationControl for showing run-time notifications-->
-                <controls1:NotificationsControl Grid.Column="1"/>
-                
+                <controls1:NotificationsControl Grid.Column="1" />
             </Grid>
-
-        </WrapPanel>
-
+        </Grid>
 
         <!--Split Between Console and Canvas-->
         <GridSplitter ResizeDirection="Rows"

@@ -149,6 +149,15 @@ namespace Dynamo.ViewModels
             get { return model.CurrentWorkspace; }
         }
 
+        /// <summary>
+        /// Count of unresolved issues on the linter manager.
+        /// This is used for binding in the NotificationsControl
+        /// </summary>
+        public int LinterIssuesCount
+        {
+            get => Model.LinterManager.RuleEvaluationResults.Count;
+        }
+
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
 
@@ -660,6 +669,7 @@ namespace Dynamo.ViewModels
            
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
+            model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
              
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
@@ -1283,6 +1293,11 @@ namespace Dynamo.ViewModels
                 }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
+        }
+
+        private void OnRuleEvaluationResultsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(LinterIssuesCount));
         }
 
         internal void AddToRecentFiles(string path)

@@ -2405,4 +2405,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
   </data>
+  <data name="PersistenceVisualStatusOfLineterIssues" xml:space="preserve">
+    <value>Issues found</value>
+  </data>
 </root>
