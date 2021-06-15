@@ -201,6 +201,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to select connected upstream nodes of the selected nodeModel
+        /// </summary>
         [JsonIgnore]
         public DelegateCommand SelectConnectedUpstreamCommand
         {
@@ -215,6 +218,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to select connected downstream nodes of the selected nodeModel
+        /// </summary>
         [JsonIgnore]
         public DelegateCommand SelectConnectedDownstreamCommand
         {
@@ -229,6 +235,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Command to select connected upstream and downstream nodes of the selected nodeModel
+        /// </summary>
         [JsonIgnore]
         public DelegateCommand SelectConnectedUpAndDownstreamCommand
         {
