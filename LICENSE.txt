@@ -75,6 +75,11 @@ https://github.com/dotnet/ILMerge
 https://github.com/dotnet/ILMerge/blob/master/LICENSE
   (MIT License)
 
+### IPython (autoreload.py)
+https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+https://github.com/ipython/ipython/blob/master/LICENSE
+  (BSD-3-Clause License)
+
 ### libiconv
 https://www.gnu.org/software/libiconv/
 https://www.gnu.org/software/gettext/manual/html_node/GNU-LGPL.html#GNU-LGPL

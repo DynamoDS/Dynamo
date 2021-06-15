@@ -81,8 +81,7 @@ namespace DSCPython
             }
             catch (Exception e)
             {
-                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
-                System.Diagnostics.Debug.WriteLine($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
+                CPythonEvaluator.DynamoLogger?.Log($"error getting string rep of pyobj {this.PythonObjectID} {e.Message}");
                 return this.PythonObjectID.ToString();
             }
             finally
@@ -122,8 +121,7 @@ namespace DSCPython
             }
             catch (Exception e)
             {
-                //TODO(DYN-2941) implement Ilogsource or pass logger to python eval so can log to Dynamo console here. 
-                System.Diagnostics.Debug.WriteLine($"error removing python object from global scope {e.Message}");
+                CPythonEvaluator.DynamoLogger?.Log($"error removing python object from global scope {e.Message}");
             }
             finally
             {
@@ -151,10 +149,82 @@ namespace DSCPython
         private const string NodeName = "__dynamonodename__";
         static PyScope globalScope;
         internal static readonly string globalScopeName = "global";
+        private static DynamoLogger dynamoLogger;
+        internal static DynamoLogger DynamoLogger {
+            get
+            { // Session is null when running unit tests.
+                if (ExecutionEvents.ActiveSession != null)
+                {
+                    dynamoLogger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                    return dynamoLogger;
+                }
+                return dynamoLogger;
+            }
+        }
 
         static CPythonEvaluator()
         {
             InitializeEncoders();
+            Dynamo.Models.DynamoModel.RequestPythonReset += RequestPythonResetHandler;
+           
+        }
+
+        internal static void RequestPythonResetHandler(string pythonEngine)
+        {
+            //check if python engine request is for this engine, and engine is currently started
+            if (PythonEngine.IsInitialized && pythonEngine == "CPython3")
+            {
+                DynamoLogger?.Log("attempting reload of cpython3 modules", LogLevel.Console);
+                using (Py.GIL())
+                {
+                //the following is inspired by:
+                //https://github.com/ipython/ipython/blob/master/IPython/extensions/autoreload.py
+                    var global = PyScopeManager.Global.Get(CPythonEvaluator.globalScopeName);
+                    global?.Exec(@"import sys
+import importlib
+import importlib.util
+import os
+## Reloading sys, __main__, builtins and other key modules is not recommended.
+## don't reload modules without file attributes
+def should_reload(module):
+    if not hasattr(module, '__file__') or module.__file__ is None:
+        return None
+## don't reload modules that are currently running ie __main__, __mp_main__ is renamed by multiprocessing module.
+    if getattr(module, '__name__', None) in [None, '__mp_main__', '__main__']:
+        # we cannot reload(__main__) or reload(__mp_main__)
+        return None
+
+    filename = module.__file__
+    path, ext = os.path.splitext(filename)
+## only reload .py files.
+    if ext.lower() == '.py':
+        py_filename = filename
+    else:
+        try:
+            py_filename = importlib.util.source_from_cache(filename)
+        except ValueError:
+            return None
+    return py_filename
+
+## copy sys.modules so it's not modified during reload.
+for modname,mod in sys.modules.copy().items():
+    print('considering', modname)
+    file = should_reload(mod)
+    if file is None:
+        continue
+    print('reloading', modname)
+    try:
+        importlib.reload(mod)
+    except Exception as inst:
+        print('failed to reload', modname, inst)
+
+");
+                }
+                Analytics.TrackEvent(
+                   Dynamo.Logging.Actions.Start,
+                   Dynamo.Logging.Categories.PythonOperations,
+                   "CPythonReset");
+            }
         }
 
         /// <summary>
@@ -178,16 +248,12 @@ namespace DSCPython
             }
 
             InstallPython();
-
             if (!PythonEngine.IsInitialized)
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
+                
             }
-
-            IntPtr gs = PythonEngine.AcquireLock();
-            try
-            {
                 using (Py.GIL())
                 {
                     if (globalScope == null)
@@ -238,11 +304,6 @@ namespace DSCPython
                         }
                     }
                 }
-            }
-            finally
-            {
-                PythonEngine.ReleaseLock(gs);
-            }
         }
 
         private static bool isPythonInstalled = false;
@@ -302,7 +363,7 @@ clr.setPreload(True)
             // Session is null when running unit tests.
             if (ExecutionEvents.ActiveSession != null)
             {
-                dynamic logger = ExecutionEvents.ActiveSession.GetParameterValue(ParameterKeys.Logger);
+                var logger = DynamoLogger;
                 Action<string> logFunction = msg => logger.Log($"{nodeName}: {msg}", LogLevel.ConsoleOnly);
                 scope.Set(DynamoPrintFuncName, logFunction.ToPython());
                 scope.Exec(RedirectPrint());

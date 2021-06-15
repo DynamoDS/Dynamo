@@ -750,6 +750,9 @@ Parameter name: {0}</value>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
     <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
   </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>None</value>
+  </data>
   <data name="PackageStatePendingUnload" xml:space="preserve">
     <value>Scheduled to be unloaded</value>
   </data>
