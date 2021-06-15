@@ -1615,9 +1615,9 @@ namespace Dynamo.Graph.Nodes
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
             {
-                var upstreamNeighboar = c.Start.Owner;
-                DynamoSelection.Instance.Selection.Add(upstreamNeighboar);
-                upstreamNeighboar.SelectUpstreamNeighbours();
+                var upstreamNeighbour = c.Start.Owner;
+                DynamoSelection.Instance.Selection.Add(upstreamNeighbour);
+                upstreamNeighbour.SelectUpstreamNeighbours();
             }
         }
 
