@@ -70,7 +70,7 @@ namespace Dynamo.LintingViewExtension.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Graph Status.
+        ///   Looks up a localized string similar to Show Graph Status.
         /// </summary>
         public static string MenuItemText {
             get {
