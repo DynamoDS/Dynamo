@@ -638,6 +638,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior..
+        /// </summary>
+        public static string IFNodeWarningMessage {
+            get {
+                return ResourceManager.GetString("IFNodeWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A slider that produces integer values..
         /// </summary>
         public static string IntegerSliderDescription {

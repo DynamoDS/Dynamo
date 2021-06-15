@@ -2429,4 +2429,10 @@ Uninstall the following packages: {0}?</value>
   <data name="GraphIssuesOnSave_Title1" xml:space="preserve">
     <value>Graph Type Issues found</value>
   </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>Node and Package Paths</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
 </root>

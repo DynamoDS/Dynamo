@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Dynamo.GraphMetadata.Controls.CustomPropertyControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.GraphMetadata.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="200">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:CustomPropertyControl}}}"
+          HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="propertyNameText"
+                     Grid.Column="0"
+                     Background="Transparent"
+                     BorderBrush="Transparent"
+                     Foreground="{StaticResource NodeNameForeground}"
+                     Text="{Binding PropertyName, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                     IsEnabled="False"
+                     BorderThickness="1"
+                     Padding="-3,0"
+                     Margin="0"
+                     CaretBrush="White">
+            </TextBox>
+            <Button Grid.Column="1"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding EditPropertyNameCmd}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <fa:ImageAwesome Icon="Pencil"
+                                            Height="16px"
+                                            Grid.Column="1"
+                                            Foreground="{StaticResource FilterIconColor}" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Button Grid.Column="2"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Command="{Binding DeletePropertyNameCmd}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Width="16px"
+                                Source="/GraphMetadataViewExtension;component/Resources/close-thick-grey-16px.png" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+        <TextBox Grid.Row="1" BorderBrush="{StaticResource BorderBrushWhite}"
+                 Background="{StaticResource SearchBoxBackgroundColor}"
+                 Foreground="{StaticResource NestedMemberTextColor}"
+                 Margin="0,5"
+                 Padding="0,5"
+                 Text="{Binding PropertyValue, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+    </Grid>
+</UserControl>

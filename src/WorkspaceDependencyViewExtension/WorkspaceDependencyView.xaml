@@ -7,6 +7,7 @@
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:w="clr-namespace:Dynamo.WorkspaceDependency.Properties"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
              VerticalAlignment="Top"
              HorizontalAlignment="Stretch">
@@ -16,6 +17,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <!-- DataGrid style -->
             <Style x:Key="DataGridStyle1" TargetType="{x:Type DataGrid}">
@@ -79,102 +81,121 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <DataGrid 
-            Name="PackageDependencyTable" 
-            AutoGenerateColumns="False"
-            Style="{StaticResource DataGridStyle1}"
-            CanUserAddRows="False"
-            GridLinesVisibility ="None"
-            Background="#353535"
-            FontSize="13"
-            VerticalAlignment="Center"
-            SelectionUnit="FullRow"
-            SelectionMode="Extended"
-            ScrollViewer.CanContentScroll="False" 
-            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            CanUserResizeColumns="False" 
-            CanUserResizeRows="False"
-            CanUserSortColumns="False"
-            HeadersVisibility="Column"
-            Grid.Row="0">
-            <DataGrid.Columns>
-                <!-- State Icon -->
-                <DataGridTemplateColumn 
-                    IsReadOnly="True"
-                    Width="38">
-                    <DataGridTemplateColumn.Header>
-                        <fa:ImageAwesome Name="Refresh" 
-                                         Icon="Refresh" 
-                                         ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
-                                         MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
-                    </DataGridTemplateColumn.Header>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <!-- Package Name -->
-                <DataGridTextColumn 
-                    Header="{x:Static w:Resources.PackageHeaderText}" 
-                    Binding="{Binding Name}" 
-                    Foreground="#aaaaaa" 
-                    IsReadOnly="True" 
-                    Width="*">
+        <Expander x:Name="Packages"
+                  Grid.Row="0"  
+                  Style="{StaticResource WorkspaceReferencesExpanderStyle}"
+                  Header="{x:Static w:Resources.PackageHeaderText}">
+            <DataGrid 
+                Name="PackageDependencyTable" 
+                AutoGenerateColumns="False"
+                Style="{StaticResource DataGridStyle1}"
+                CanUserAddRows="False"
+                GridLinesVisibility ="None"
+                Background="#353535"
+                FontSize="13"
+                VerticalAlignment="Center"
+                SelectionUnit="FullRow"
+                SelectionMode="Extended"
+                ScrollViewer.CanContentScroll="False" 
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                CanUserResizeColumns="False" 
+                CanUserResizeRows="False"
+                CanUserSortColumns="False"
+                HeadersVisibility="Column">
+                <DataGrid.Columns>
+                    <!-- State Icon -->
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True"
+                        Width="38">
+                        <DataGridTemplateColumn.Header>
+                            <fa:ImageAwesome Name="Refresh" 
+                                             Icon="Refresh" 
+                                             ToolTip="{x:Static w:Resources.RefreshButtonTooltipText}" 
+                                             MouseLeftButtonDown="Refresh_MouseLeftButtonDown"/>
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Icon}" Width="18" Height="18" Margin="0,8,0,8"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- Package Name -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PackageHeaderName}" 
+                        Binding="{Binding Name}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Name}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- Package Path -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.PackagePathText}" 
+                        Binding="{Binding Path}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True" 
+                        Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="Margin" Value="10,0,10,0"/>
+                                <Setter Property="ToolTip" Value="{Binding Path}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!-- Package Version -->
+                    <DataGridTextColumn 
+                        Header="{x:Static w:Resources.VersionHeaderText}" 
+                        Binding="{Binding Version}" 
+                        Foreground="#aaaaaa" 
+                        IsReadOnly="True"
+                        >
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Margin" Value="10,0,10,0"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <!-- Package Version -->
-                <DataGridTextColumn 
-                    Header="{x:Static w:Resources.VersionHeaderText}" 
-                    Binding="{Binding Version}" 
-                    Foreground="#aaaaaa" 
-                    IsReadOnly="True"
-                    >
-                <DataGridTextColumn.ElementStyle>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="VerticalAlignment" Value="Center" />
-                        <Setter Property="Margin" Value="10,0,10,0"/>
-                    </Style>
-                </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-            </DataGrid.Columns>
-            <!-- Expanded Details -->
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <StackPanel Background="#252525">
-                        <TextBlock
-                            Text="{Binding DetailsMessage}"
-                            TextWrapping="Wrap"
-                            TextAlignment="Center"
-                            Foreground="{DynamicResource MemberButtonText}"
-                            Margin="10"
-                            FontSize="11">
-                        </TextBlock>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Style="{StaticResource SmallTextButton}"
-                                Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
-                                Name="DownloadPackageButton"
-                                Click="DownloadPackage"
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+                <!-- Expanded Details -->
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="#252525">
+                            <TextBlock
+                                Text="{Binding DetailsMessage}"
+                                TextWrapping="Wrap"
+                                TextAlignment="Center"
+                                Foreground="{DynamicResource MemberButtonText}"
                                 Margin="10"
-                                Content="{x:Static w:Resources.InstallButtonText}"/>
-                            <Button Style="{StaticResource SmallTextButton}"
-                                Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
-                                Name="KeepLocalPackageButton"
-                                Click="KeepLocalPackage"
-                                Margin="10"
-                                Content="{x:Static w:Resources.KeepLocalButtonText}">
-                            </Button>
+                                FontSize="11">
+                            </TextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Style="{StaticResource SmallTextButton}"
+                                    Visibility="{Binding Path=ShowDownloadButton, Converter={StaticResource BoolToVis}}"
+                                    Name="DownloadPackageButton"
+                                    Click="DownloadPackage"
+                                    Margin="10"
+                                    Content="{x:Static w:Resources.InstallButtonText}"/>
+                                <Button Style="{StaticResource SmallTextButton}"
+                                    Visibility="{Binding Path=ShowKeepLocalButton, Converter={StaticResource BoolToVis}}"
+                                    Name="KeepLocalPackageButton"
+                                    Click="KeepLocalPackage"
+                                    Margin="10"
+                                    Content="{x:Static w:Resources.KeepLocalButtonText}">
+                                </Button>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-        </DataGrid>
-
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </Expander>
         <!-- Fill Space -->
         <Grid x:Name="container"
             Background="Transparent"
