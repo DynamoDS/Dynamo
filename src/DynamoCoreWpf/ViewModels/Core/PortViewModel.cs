@@ -411,6 +411,8 @@ namespace Dynamo.ViewModels
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
             // Bail out from connect state
             wsViewModel.CancelActiveState();
+            // Fill in suggestion based on the current target PortViewModel
+            wsViewModel.NodeAutoCompleteSearchViewModel.PopulateAutoCompleteCandidates();
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 

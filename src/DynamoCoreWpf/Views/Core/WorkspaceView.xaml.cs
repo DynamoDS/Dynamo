@@ -186,10 +186,11 @@ namespace Dynamo.Views
 
         private void ShowHidePopup(ShowHideFlags flag, Popup popup)
         {
+            // Reset popup display state
+            popup.IsOpen = false;
             switch (flag)
             {
                 case ShowHideFlags.Hide:
-                    popup.IsOpen = false;
                     break;
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
