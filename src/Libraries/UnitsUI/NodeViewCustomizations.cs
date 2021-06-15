@@ -315,6 +315,48 @@ namespace UnitsUI
         }
     }
 
+    class UnitValueOutputDropdownViewCustomization : INodeViewCustomization<UnitValueOutputDropdown>
+    {
+        private NodeModel nodeModel;
+        private NodeViewModel nodeViewModel;
+        private UnitValueOutputDropdown model;
+
+        public void CustomizeView(UnitValueOutput model, NodeView nodeView)
+        {
+
+            //add a text box to the input grid of the control
+            var tb = new StringTextBox
+            {
+                TextWrapping = TextWrapping.Wrap,
+                MinHeight = Configurations.PortHeightInPixels,
+                MaxWidth = 200,
+                VerticalAlignment = VerticalAlignment.Stretch
+
+            };
+
+            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.IsReadOnly = true;
+            tb.DataContext = model;
+            tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdown.DisplayValue))
+            {
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            nodeView.inputGrid.Children.Add(tb);
+        }
+
+        public void CustomizeView(UnitValueOutputDropdown model, NodeView nodeView)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Dispose()
+        {
+
+        }
+    }
+
     class UnitValueOutputViewCustomization : INodeViewCustomization<UnitValueOutput>
     {
         private NodeModel nodeModel;

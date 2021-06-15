@@ -91,7 +91,42 @@ namespace DynamoUnits
                 outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
 
             return outputString;
+        }
 
+        [IsVisibleInDynamoLibrary(false)]
+        public static UnitSymbol CastToUnitSymbol(object value)
+        {
+            try
+            {
+                var symbol = value as UnitSymbol;
+                if (symbol is null)
+                {
+                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
+                }
+                return symbol;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [IsVisibleInDynamoLibrary(false)]
+        public static Unit CastToUnit(object value)
+        {
+            try
+            {
+                var unit = value as Unit;
+                if (unit is null)
+                {
+                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
+                }
+                return unit;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private static ForgeUnitsCLR.UnitsEngine unitsEngine;

@@ -909,6 +909,81 @@ namespace UnitsUI
         }
     }
 
+    public class UnitValueOutputDropdown: NodeModel
+    {
+        public double Value { get; set; }
+        [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
+        public Unit SelectedUnit { get; set; }
+        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
+        public UnitSymbol Symbol { get; set; }
+
+        public int Precision { get; set; }
+
+        public bool Decimal { get; set; }
+
+        private string displayValue;
+        public string DisplayValue
+        {
+            get => displayValue;
+            set
+            {
+                displayValue = value;
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
+        }
+        protected override void OnBuilt()
+        {
+            base.OnBuilt();
+            VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
+        }
+
+        private void DataBridgeCallback(object data)
+        {
+            ArrayList inputs = data as ArrayList;
+
+            Value = Convert.ToDouble(inputs[0]);
+            SelectedUnit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
+            Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
+            Precision = Convert.ToInt32(inputs[3]);
+            Decimal = Convert.ToBoolean(inputs[4]);
+
+            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+        }
+
+        [JsonConstructor]
+        private UnitValueOutputDropdown(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+        }
+
+        public UnitValueOutputDropdown()
+        {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Value), "Tooltip")));
+
+            RegisterAllPorts();
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
+        {
+            if (!InPorts[0].IsConnected)
+            {
+                return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
+            }
+
+            return new[]{
+                AstFactory.BuildAssignment(
+                    AstFactory.BuildIdentifier(AstIdentifierBase),
+                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
+            };
+        }
+    }
+
     [NodeName("Unit Value Output")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeDescription("UnitValueOutputDescription", typeof(UnitsUI.Properties.Resources))]
@@ -950,8 +1025,8 @@ namespace UnitsUI
             ArrayList inputs = data as ArrayList;
 
             Value = Convert.ToDouble(inputs[0]);
-            SelectedUnit = CastToUnit(inputs[1]);
-            Symbol = CastToUnitSymbol(inputs[2]);
+            SelectedUnit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
+            Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
             Precision = Convert.ToInt32(inputs[3]);
             Decimal = Convert.ToBoolean(inputs[4]);
 
@@ -997,41 +1072,6 @@ namespace UnitsUI
                     AstFactory.BuildIdentifier(AstIdentifierBase),
                     VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
             };
-
-        }
-
-        private Unit CastToUnit(object value)
-        {
-            try
-            {
-                var unit = value as Unit;
-                if (unit is null)
-                {
-                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
-                }
-                return unit;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private UnitSymbol CastToUnitSymbol(object value)
-        {
-            try
-            {
-                var symbol = value as UnitSymbol;
-                if (symbol is null)
-                {
-                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
-                }
-                return symbol;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
     }
 }
