@@ -47,6 +47,14 @@ namespace Dynamo.Linting.Rules
         private protected abstract List<IRuleEvaluationResult> InitializeRule(WorkspaceModel workspaceModel);
 
         /// <summary>
+        /// Uses the cleanup function to allow a rule to get rid of any transient data 
+        /// it might have stored before the workspace model is disposed
+        /// </summary>
+        /// <param name="muribundWorkspaceModel"></param>
+        /// <returns></returns>
+        internal protected void CleanupRule(WorkspaceModel muribundWorkspaceModel) { }
+
+        /// <summary>
         /// Initializes this rule using the <see cref="InitFunction(WorkspaceModel)"/>
         /// </summary>
         /// <param name="workspaceModel"></param>
