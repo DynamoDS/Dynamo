@@ -89,28 +89,43 @@ namespace Dynamo.Graph.Notes
 
         #region BulletSupport
 
+        /// <summary>
+        /// Method used to change the text property of the note to support bullet points.
+        /// It first personalizes the TAB spacing by converting it to space indentation. (The default spacing is too wide)
+        /// It then converts dashes to bullet characters depending on their existing indentation.
+        /// It then corrects bullet characters if their indentation has changed 
+        /// </summary>
+        /// <param name="text"> Input text with no bullet support </param>
+        /// <returns> Bullet supported text </returns>
         private string AddBulletPointSupport(string text)
         {
             if (text.Length == 0)
                 return text;
 
+            // Definition of spacing used in indentation
             string firstTabIndent = LEFT_INDENT + TAB_INDENT;
             string secondTabIndent = LEFT_INDENT + TAB_INDENT + TAB_INDENT;
+            
+            // Characters and indentation used for the 3 bullet types
             string leftIndentedBullet = LEFT_INDENT + ROUND_FILLED_BULLET + RIGHT_INDENT;
             string firstTabIndentedBullet = firstTabIndent + ROUND_EMPTY_BULLET + RIGHT_INDENT;
             string secondTabIndentedBullet = secondTabIndent + SQUARE_FILLED_BULLET + RIGHT_INDENT;
 
+            // Convert TAB input to the appropiate bullet and indentation
             text = TurnTabsToSpaces(
                 text,
                 leftIndentedBullet,
                 firstTabIndent, firstTabIndentedBullet,
                 secondTabIndentedBullet);
 
+            // Convert dashes to bullets
             text = ConvertDashToBullet(
                 text,
                 leftIndentedBullet,
                 firstTabIndent, firstTabIndentedBullet,
                 secondTabIndent, secondTabIndentedBullet);
+
+            // Corrects bullet characters if their indentation has changed
             text = ConvertIndentedBullets(
                 text,
                 firstTabIndent, firstTabIndentedBullet,
@@ -119,6 +134,16 @@ namespace Dynamo.Graph.Notes
             return text;
         }
 
+        /// <summary>
+        /// Convert TAB input to the appropiate bullet and indentation.
+        /// Supports both pressing tab before the bullet of after, similar to WORD
+        /// </summary>
+        /// <param name="text"> Text to transform </param>
+        /// <param name="leftIndentedBullet"> Characters and indentation for normal bullet </param>
+        /// <param name="firstTabIndent"> Spacing when user presses TAB 1 time </param>
+        /// <param name="firstTabIndentedBullet"> Characters and indentation when user presses TAB 1 time </param>
+        /// <param name="secondTabIndentedBullet"> Characters and indentation when user presses TAB 2 time </param>
+        /// <returns> transformed text </returns>
         private string TurnTabsToSpaces(
             string text,
             string leftIndentedBullet,
@@ -134,6 +159,16 @@ namespace Dynamo.Graph.Notes
             return text;
         }
 
+        /// <summary>
+        /// Convert dashes to bullets according to their existing indentation
+        /// </summary>
+        /// <param name="text"> text to transform </param>
+        /// <param name="leftIndentedBullet"> Characters and indentation for normal bullet </param>
+        /// <param name="firstTabIndent"> Spacing when user presses TAB 1 time </param>
+        /// <param name="firstTabIndentedBullet"> Characters and indentation when user presses TAB 1 time </param>
+        /// <param name="secondTabIndent">  Spacing when user presses TAB 2 time </param>
+        /// <param name="secondTabIndentedBullet">  Characters and indentation when user presses TAB 2 times </param>
+        /// <returns></returns>
         private string ConvertDashToBullet(
             string text,
             string leftIndentedBullet,
@@ -150,6 +185,15 @@ namespace Dynamo.Graph.Notes
             return text;
         }
 
+        /// <summary>
+        /// Corrects bullet characters if their indentation has changed
+        /// </summary>
+        /// <param name="text"> text to transform </param>
+        /// <param name="firstTabIndent"> Spacing when user presses TAB 1 time </param>
+        /// <param name="firstTabIndentedBullet"> Characters and indentation when user presses TAB 1 time </param>
+        /// <param name="secondTabIndent"> Spacing when user presses TAB 2 time </param>
+        /// <param name="secondTabIndentedBullet"> Characters and indentation when user presses TAB 2 times </param>
+        /// <returns></returns>
         private string ConvertIndentedBullets(
             string text,
             string firstTabIndent,
@@ -163,30 +207,15 @@ namespace Dynamo.Graph.Notes
             return text;
         }
 
-        private string AddNextBullet(
-            string text,
-            string leftIndentedBullet,
-            string firstTabIndentedBullet,
-            string secondTabIndentedBullet)
-        {
-
-            if (!text.EndsWith("\n"))
-                return text;
-            var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var previousLine = lines[lines.Length - 2];
-
-            if (previousLine.StartsWith(leftIndentedBullet))
-                text = text + leftIndentedBullet;
-
-            if (previousLine.StartsWith(firstTabIndentedBullet))
-                text = text + firstTabIndentedBullet;
-
-            if (previousLine.StartsWith(secondTabIndentedBullet))
-                text = text + secondTabIndentedBullet;
-
-            return text;
-        }
-
+        /// <summary>
+        /// Replaces text that is located at the beggining of a line.
+        /// Used in bullet point support as bullet replacement 
+        /// should only happen at beggining of line. 
+        /// </summary>
+        /// <param name="text"> text to transform </param>
+        /// <param name="oldChars"> characters at begging of line to transform </param>
+        /// <param name="newChars"> characters to replace it with </param>
+        /// <returns></returns>
         private string ReplaceEachLineStart(string text, string oldChars, string newChars)
         {
             if (text.StartsWith(oldChars))
