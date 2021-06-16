@@ -48,7 +48,7 @@
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down.png" Width="8" Height="16"></Image>
                     </Button>
                     <TextBlock Text="{Binding}"
-                               Grid.Column="2"
+                                Grid.Column="2"
                                 Margin="7,4,7,4"
                                 Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
                                 MinHeight="25"
@@ -86,11 +86,12 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-        <StackPanel Orientation="Horizontal">
+        <DockPanel>
             <Label  Content="Package/Library Search Paths" 
                                             Padding="5,5,5,5"
                                             VerticalAlignment="Center"
-                                            FontSize="13"
+                                            HorizontalAlignment="Left"
+                                            FontSize="14"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
 
             <Button x:Name="AddPaths"
@@ -99,12 +100,12 @@
                                                 VerticalAlignment="Center"
                                                 Width="100"
                                                 Height="25"
-                                                Margin="44,0,7,0"
+                                                Margin="0,0,0,0"
                                                 Content="Add Paths"
                                                 Command="{Binding Path=AddPathCommand}" 
                                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
             </Button>
-        </StackPanel>
+        </DockPanel>
         <ItemsControl
                                          Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
                                          ItemsSource="{Binding RootLocations}"

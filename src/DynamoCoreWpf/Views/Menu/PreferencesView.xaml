@@ -718,9 +718,15 @@
                             <Expander x:Name="PackagePathsExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
-                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
-                                        Header="{x:Static p:Resources.PackagePathsExpanderName}">
-                                <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
+                                        IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}">
+                                <Expander.Header>
+                                    <TextBlock
+                                        FontSize="14"
+                                        FontWeight="Medium"
+                                        Text="{x:Static p:Resources.PackagePathsExpanderName}">
+                                    </TextBlock>
+                                </Expander.Header>
+                                <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
                                     <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
                                 </ScrollViewer>
 
