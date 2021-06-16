@@ -29,7 +29,7 @@
                     </Grid.ColumnDefinitions>
                     <Button
                          Grid.Column="0"
-                        Margin="20,7,1,7"
+                        Margin="7,7,1,7"
                               Command="{Binding Path=DataContext.MovePathUpCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -43,7 +43,7 @@
                     </Button>
                     <Button
                          Grid.Column="1"
-                         Margin="1,7,20,7"
+                         Margin="0,7,7,7"
                               Command="{Binding Path=DataContext.MovePathDownCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -57,15 +57,15 @@
                     </Button>
                     <TextBlock Text="{Binding}"
                                Grid.Column="2"
-                                Margin="10,7,10,7"
+                                Margin="7,4,7,4"
                                 Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
                                 MinHeight="25"
-                                Padding="5,0,0,0"
+                                Padding="5,5,5,5"
                                 TextTrimming="CharacterEllipsis"
                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     <Button
                          Grid.Column="3"
-                         Margin="10,7,10,7"
+                         Margin="7,7,7,7"
                         Command="{Binding Path=DataContext.UpdatePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -79,7 +79,7 @@
                     </Button>
                     <Button
                         Grid.Column="4"
-                        Margin="10,7,10,7"
+                        Margin="7,7,7,7"
                         Command="{Binding Path=DataContext.DeletePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -106,14 +106,13 @@
                                             FontSize="13"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
 
-            <!--TODO find better solution than margin.-->
             <Button x:Name="AddPaths"
                                                 Style="{StaticResource FlatButtonStyle}" 
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Center"
                                                 Width="100"
                                                 Height="25"
-                                                Margin="10,10,0,10"
+                                                Margin="44,0,7,0"
                                                 Content="Add Paths"
                                                 Command="{Binding Path=AddPathCommand}" 
                                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
