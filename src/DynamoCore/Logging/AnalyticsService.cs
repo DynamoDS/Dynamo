@@ -10,6 +10,8 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
+        private static ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -36,21 +38,6 @@ namespace Dynamo.Logging
                 Analytics.TrackScreenView("Workspace");
         }
 
-        private static bool isAdpOptedIn
-        {
-            get
-            {
-                ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
-                return adpAnalyticsUI.IsOptedIn();
-            }
-
-            set
-            {
-                ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
-                adpAnalyticsUI.SetOptedIn(value);
-            }
-        }
-
         /// <summary>
         /// Indicates whether the user has opted-in to ADP analytics.
         /// </summary>
@@ -62,17 +49,16 @@ namespace Dynamo.Logging
                 {
                     return false;
                 }
-
-                return isAdpOptedIn;
+                return adpAnalyticsUI.IsOptedIn();
             }
+
             set
             {
                 if (AnalyticsUtils.DisableAnalyticsForProcessLifetime)
                 {
                     return;
                 }
-
-                isAdpOptedIn = value;
+                adpAnalyticsUI.SetOptedIn(value);
             }
         }
 
