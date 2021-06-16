@@ -10,8 +10,6 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
-        private static ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
-
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
@@ -38,6 +36,21 @@ namespace Dynamo.Logging
                 Analytics.TrackScreenView("Workspace");
         }
 
+        private static bool isAdpOptedIn
+        {
+            get
+            {
+                ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+                return adpAnalyticsUI.IsOptedIn();
+            }
+
+            set
+            {
+                ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+                adpAnalyticsUI.SetOptedIn(value);
+            }
+        }
+
         /// <summary>
         /// Indicates whether the user has opted-in to ADP analytics.
         /// </summary>
@@ -45,40 +58,36 @@ namespace Dynamo.Logging
         {
             get
             {
-                return adpAnalyticsUI.IsOptedIn();
+                if (AnalyticsUtils.DisableAnalyticsForProcessLifetime)
+                {
+                    return false;
+                }
+
+                return isAdpOptedIn;
             }
             set
             {
-                adpAnalyticsUI.SetOptedIn(value);
+                if (AnalyticsUtils.DisableAnalyticsForProcessLifetime)
+                {
+                    return;
+                }
+
+                isAdpOptedIn = value;
             }
         }
-
-        internal static bool DisableADPForProcessLifetime()
-        {
-            return adpAnalyticsUI.DisableADPForProcessLifetime();
-        }
-
-        internal static bool IsADPDisabledForProcessLifetime()
-        {
-            return adpAnalyticsUI.IsADPDisabledForProcessLifetime();
-        }
-
-        private static bool disableAnalytics;
 
         /// <summary>
         /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
         /// </summary>
-        public static bool DisableAnalytics
+        internal static bool DisableAnalytics
         {
             get
             {
-                return disableAnalytics;
+                return AnalyticsUtils.DisableAnalyticsForProcessLifetime;
             }
             set
             {
-                disableAnalytics = value;
-                // Can fail in edge conditions but not mandatory to happen.
-                DisableADPForProcessLifetime();
+                AnalyticsUtils.DisableAnalyticsForProcessLifetime = value;
             }
         }
 
