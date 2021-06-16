@@ -120,11 +120,6 @@
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}" />
                                                                 <Separator></Separator>
-                                                                <MenuItem Name="UninstallButton"
-                                                                  Command="{Binding Path=UninstallCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}" />
                                                                 <MenuItem Name="UnmarkUninstallButton"
                                                                   Command="{Binding Path=UnmarkForUninstallationCommand}"
                                                                   Margin="3"
@@ -158,6 +153,7 @@
 
                                                     </Button>
                                                     <Button Name="UninstallPackageButton"
+                                                        ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
                                                         HorizontalAlignment="Right"
                                                         FontWeight="Bold"
                                                         Width="20"
