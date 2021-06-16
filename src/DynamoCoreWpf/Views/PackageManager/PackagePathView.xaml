@@ -29,7 +29,7 @@
                     </Grid.ColumnDefinitions>
                     <Button
                          Grid.Column="0"
-                        Margin="7,7,1,7"
+                        Margin="7,7,3,7"
                               Command="{Binding Path=DataContext.MovePathUpCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -39,7 +39,7 @@
                     </Button>
                     <Button
                          Grid.Column="1"
-                         Margin="0,7,7,7"
+                         Margin="3,7,7,7"
                               Command="{Binding Path=DataContext.MovePathDownCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -51,9 +51,10 @@
                                 Grid.Column="2"
                                 Margin="7,4,7,4"
                                 Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
-                                MinHeight="25"
+                                MinHeight="24"
                                 Padding="5,5,5,5"
                                 TextTrimming="CharacterEllipsis"
+                                FontSize="12"
                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     <Button
                          Grid.Column="3"
