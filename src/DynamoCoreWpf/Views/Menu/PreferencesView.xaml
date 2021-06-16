@@ -720,8 +720,10 @@
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
-                                <!--TODO add scroll viewer for this entire expander.-->
-                                <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                <ScrollViewer Height="150" VerticalScrollBarVisibility="Auto">
+                                    <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                </ScrollViewer>
+
 
                             </Expander>
 

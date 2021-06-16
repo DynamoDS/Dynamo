@@ -35,11 +35,7 @@
                          CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
-                        <fa:ImageAwesome Icon="LongArrowUp"
-                                                 Width="15"
-                                                 Height="20"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up.png" Width="8" Height="16"></Image>
                     </Button>
                     <Button
                          Grid.Column="1"
@@ -49,11 +45,7 @@
                          CommandParameter="{Binding}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
-                        <fa:ImageAwesome Icon="LongArrowDown"
-                                                 Width="15"
-                                                 Height="20"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down.png" Width="8" Height="16"></Image>
                     </Button>
                     <TextBlock Text="{Binding}"
                                Grid.Column="2"
@@ -87,12 +79,7 @@
                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
-                        
-                        <fa:ImageAwesome Icon="Times"
-                                                 Width="15"
-                                                 Height="25"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/close-thin-16.png" Width="15" Height="15"></Image>
                     </Button>
                 </Grid>
             </DataTemplate>
