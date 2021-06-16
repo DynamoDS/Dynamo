@@ -371,12 +371,8 @@ namespace Dynamo.Configuration
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
                 {
-                    var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-                    selectedPackagePathForInstall = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                        $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+                    selectedPackagePathForInstall = PathManager.GetAppDataFolder();
                 }
-
                 return selectedPackagePathForInstall;
             }
             set

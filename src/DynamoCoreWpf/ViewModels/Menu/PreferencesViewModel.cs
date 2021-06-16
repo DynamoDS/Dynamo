@@ -251,8 +251,7 @@ namespace Dynamo.ViewModels
             {
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
-                    var programDataPath = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)
-                                                 + "\\");
+                    var programDataPath = new Uri(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\");
                     // Filter Std lib and ProgramData paths from list of paths for download
                     var customPaths = preferenceSettings.CustomPackageFolders.Where(
                         x => x != DynamoModel.StandardLibraryToken && !programDataPath.IsBaseOf(new Uri(x)));
@@ -291,7 +290,7 @@ namespace Dynamo.ViewModels
                 {
                     selectedPackagePathForInstall = value;
                     preferenceSettings.SelectedPackagePathForInstall = value;
-                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.DefaultPackagesDirectory = value;
+                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(value);
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
                 }
             }

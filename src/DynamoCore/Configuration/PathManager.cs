@@ -517,12 +517,22 @@ namespace Dynamo.Core
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
 
+        internal static string GetAppDataFolder()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+
+            return appDataFolder;
+        }
+
         // This method is used to get the locations of packages folder or custom
         // nodes folder given the root path. This is necessary because the packages
         // may be in the root folder or in a packages subfolder of the root folder.
-        private string TransformPath(string root, string extension)
+        internal static string TransformPath(string root, string extension)
         {
-            if (root.StartsWith(GetUserDataFolder()))
+            if (root.StartsWith(GetAppDataFolder()))
                 return Path.Combine(root, extension);
             try
             {
