@@ -86,8 +86,7 @@ namespace Dynamo.Nodes
         private void OnEditItemClick(object sender, RoutedEventArgs e)
         {
 
-            var currentZoom = ViewModel.WorkspaceViewModel.Zoom;
-            if (currentZoom > MINIMUM_ZOOM_DIRECT_NODE_EDIT)
+            if (ViewModel.WorkspaceViewModel.Zoom > MINIMUM_ZOOM_DIRECT_NODE_EDIT)
             {
                 Panel.SetZIndex(noteTextBox, 1);
                 ViewModel.IsOnEditMode = true;
@@ -97,7 +96,7 @@ namespace Dynamo.Nodes
             }
 
             // Setup a binding with the edit window's text field
-            DynamoViewModel dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
+            var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
             var editWindow = new EditWindow(dynamoViewModel, true)
             {
                 Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
