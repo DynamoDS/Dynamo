@@ -73,6 +73,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoGeometry, Version=2.12.0.5056, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5056\lib\net48\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+	</Reference>
     <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
         <Private>False</Private>
@@ -1254,6 +1258,11 @@
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
+      <Name>PythonNodeModels</Name>
+	  <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
