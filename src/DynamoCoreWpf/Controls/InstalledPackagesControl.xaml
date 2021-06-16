@@ -73,8 +73,8 @@
                                           IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                           Style="{StaticResource InstalledPackagesExpanderStyle}">
                                     <Expander.Header>
-                                        <Grid x:Name="PackageGrid">
-                                            <DockPanel HorizontalAlignment="Stretch" Width="{Binding Path=ActualWidth, ElementName=PackageGrid}"
+                                        <Grid x:Name="PackageGrid"  Width="400">
+                                            <DockPanel HorizontalAlignment="Stretch"
                                                    >
                                                 <StackPanel HorizontalAlignment="Left"
                                                         Orientation="Horizontal"
@@ -90,93 +90,87 @@
                                                            MinWidth="50"
                                                            FontSize="11"
                                                            Foreground="#CCC"></TextBlock>
-                                                    <Grid
-                                                    Height="18"
-                                                    MaxWidth="150"
-                                                    >
-                                                        <Border Background="DimGray"
-                                                            HorizontalAlignment="Stretch"
-                                                            CornerRadius="5"
-                                                            ToolTip="{Binding Path=Model.PackageStateTooltip}"
-                                                            Margin="5,0,0,0"
-                                                            Padding="5,0,5,0">
-                                                            <TextBlock Text="{Binding Path=Model.PackageStateText}"
-                                                                TextTrimming="CharacterEllipsis"
-                                                                FontSize="11"
-                                                                FontStyle="Italic"
-                                                                HorizontalAlignment="Center"
-                                                                Foreground="WhiteSmoke"/>
-                                                        </Border>
-                                                    </Grid>
                                                 </StackPanel>
-
-                                                <Button Name="MoreButton"
-                                                    HorizontalAlignment="Right"
+                                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
+                                                    <Button Name="MoreButton"
+                                                        HorizontalAlignment="Right"
                                                     FontWeight="Bold"
                                                     Width="20"
                                                     MinWidth="20"
                                                     FontSize="17"
                                                     Click="MoreButton_OnClick"
-                                                    Margin="0,0,28,0"
                                                     Style="{StaticResource RemoveStyleButtonStyle}">
-                                                    <Image 
+                                                        <Image 
                                                     Source="/DynamoCoreWpf;component/UI/Images/More.png" 
                                                     Width="20" Height="20"
                                                     IsHitTestVisible="False"/>
-                                                    <Button.ContextMenu>
-                                                        <ContextMenu>
+                                                        <Button.ContextMenu>
+                                                            <ContextMenu>
 
-                                                            <MenuItem Name="ContentsButton"
+                                                                <MenuItem Name="ContentsButton"
                                                                   Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
                                                                   Margin="3"
                                                                   IsCheckable="True"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowContentTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowContent}" />
-                                                            <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="" Header="{x:Static p:Resources.InstalledPackageViewContextMenuGetLatest}" />-->
-                                                            <MenuItem Name="GoToRoot"
+                                                                <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="" Header="{x:Static p:Resources.InstalledPackageViewContextMenuGetLatest}" />-->
+                                                                <MenuItem Name="GoToRoot"
                                                                   Command="{Binding Path=GoToRootDirectoryCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}" />
-                                                            <Separator></Separator>
-                                                            <MenuItem Name="UninstallButton"
+                                                                <Separator></Separator>
+                                                                <MenuItem Name="UninstallButton"
                                                                   Command="{Binding Path=UninstallCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}" />
-                                                            <MenuItem Name="UnmarkUninstallButton"
+                                                                <MenuItem Name="UnmarkUninstallButton"
                                                                   Command="{Binding Path=UnmarkForUninstallationCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}" />
-                                                            <Separator></Separator>
-                                                            <MenuItem Name="MakePackageButton"
+                                                                <Separator></Separator>
+                                                                <MenuItem Name="MakePackageButton"
                                                                   Command="{Binding Path=PublishNewPackageCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}" />
-                                                            <MenuItem Name="MakeNewVersionButton"
+                                                                <MenuItem Name="MakeNewVersionButton"
                                                                   Command="{Binding Path=PublishNewPackageVersionCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}" />
-                                                            <Separator></Separator>
-                                                            <MenuItem Name="DeprecateButton"
+                                                                <Separator></Separator>
+                                                                <MenuItem Name="DeprecateButton"
                                                                   Command="{Binding Path=DeprecateCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}" />
-                                                            <MenuItem Name="UndeprecateButton"
+                                                                <MenuItem Name="UndeprecateButton"
                                                                   Command="{Binding Path=UndeprecateCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}" />
-                                                        </ContextMenu>
+                                                            </ContextMenu>
 
-                                                    </Button.ContextMenu>
+                                                        </Button.ContextMenu>
 
-                                                </Button>
-
+                                                    </Button>
+                                                    <Button Name="UninstallPackageButton"
+                                                        HorizontalAlignment="Right"
+                                                        FontWeight="Bold"
+                                                        Width="20"
+                                                        MinWidth="20"
+                                                        FontSize="17"
+                                                        Click="UninstallPackage_OnClick"
+                                                        Style="{StaticResource RemoveStyleButtonStyle}">
+                                                        <Image 
+                                                        Source="/DynamoCoreWpf;component/UI/Images/close-thick.png" 
+                                                        Width="20" Height="20"
+                                                        IsHitTestVisible="False"/>
+                                                    </Button>
+                                                </StackPanel>
                                             </DockPanel>
                                         </Grid>
                                     </Expander.Header>

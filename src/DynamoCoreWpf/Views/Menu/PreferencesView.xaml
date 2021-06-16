@@ -18,10 +18,8 @@
         WindowStyle="None"
         mc:Ignorable="d" 
         Height="474" 
-        Width="530"
-        MinHeight="400"
-        MinWidth="500"
-        ResizeMode="CanResizeWithGrip">
+        Width="650"
+        ResizeMode="NoResize">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>

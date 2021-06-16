@@ -31,6 +31,14 @@ namespace Dynamo.Wpf.Controls
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
         }
+
+        private void UninstallPackage_OnClick(object sender, RoutedEventArgs e)
+        {
+            Button but = (Button)sender;
+            PackageViewModel pm = (PackageViewModel)but.DataContext;
+            pm.UninstallCommand.Execute();
+        }
+
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
             Expander exp = (Expander)sender;
