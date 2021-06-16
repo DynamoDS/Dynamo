@@ -138,6 +138,7 @@ namespace Dynamo.UI.Controls
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox.Focus();
+                ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
         }
 
