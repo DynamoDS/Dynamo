@@ -56,7 +56,19 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="30,0"
+                    MouseDown="StackPanel_MouseDown"
                     Visibility="{Binding LinterIssuesCount, Converter={StaticResource LinterIssueCountToVisibilityConverter}}">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Cursor"
+                                    Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
             <Image Width="20"
                    Source="/DynamoCoreWpf;component/UI/Images/alert.png" />
             <TextBlock Margin="10,0"
