@@ -5,7 +5,9 @@ using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.Linting;
 using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
@@ -99,6 +101,8 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
+        public LinterExtensionDescriptor CurrentLinter => (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).Model.LinterManager.ActiveLinter;
+
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams, GraphMetadataViewExtension extension)
         {
             this.viewLoadedParams = viewLoadedParams;
@@ -111,6 +115,7 @@ namespace Dynamo.GraphMetadata
             // This means that properties defined in the previous opened workspace will still be showed in the extension.
             // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
+            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).Model.LinterManager.PropertyChanged += OnLinterManagerPropertyChange;
 
             CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
@@ -142,6 +147,14 @@ namespace Dynamo.GraphMetadata
             }
 
             CustomProperties.Clear();
+        }
+
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LinterManager.ActiveLinter))
+            {
+                RaisePropertyChanged(nameof(CurrentLinter));
+            }
         }
 
         private static BitmapImage ImageFromBase64(string b64string)

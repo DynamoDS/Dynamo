@@ -22,6 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <convertes:UriToStringConverter x:Key="UriToStringConverter" />
+            <convertes:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
             <ControlTemplate x:Key="textboxErrorTemplate">
@@ -133,6 +134,7 @@
     <Grid Margin="10px, 10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical"
@@ -193,11 +195,31 @@
                     </TextBox.Style>
                 </TextBox>
             </HeaderedContentControl>
-            
-            <Separator Background="{StaticResource FilterIconColor}" Margin="0,20,0,20"/>
+
+            <Separator Background="{StaticResource FilterIconColor}"
+                       Margin="0,20,0,20" />
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Visibility="{Binding CurrentLinter, Converter={StaticResource LinterExtensionDescriptorToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <HeaderedContentControl Grid.Row="0" Grid.Column="0" Header="Graph Type">
+                <TextBlock Text="{Binding CurrentLinter.Name, Mode=OneWay, FallbackValue='Current Linter'}" />
+            </HeaderedContentControl>
+
+            <Separator Grid.Row="1" Grid.ColumnSpan="2" 
+                       Background="{StaticResource FilterIconColor}"
+                       Margin="0,20,0,20" />
+        </Grid>
+
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
