@@ -97,6 +97,12 @@ namespace Dynamo.ViewModels
         }
 
         private bool isOnEditMode;
+
+        /// <summary>
+        /// Property determines if note is being edited, 
+        /// is set to true when double clicking the note
+        /// is set to false when note's textbox looses focus
+        /// </summary>
         [JsonIgnore]
         public bool IsOnEditMode
         {
@@ -113,7 +119,6 @@ namespace Dynamo.ViewModels
             model.PropertyChanged += note_PropertyChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex; // places the note on top of all nodes/notes
-            IsOnEditMode = false;
         }
 
         public override void Dispose()
