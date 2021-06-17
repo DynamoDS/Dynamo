@@ -37,7 +37,7 @@
                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up.png" Width="8" Height="16"></Image>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the down arrow button-->
                     <Button
@@ -49,7 +49,7 @@
                          ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down.png" Width="8" Height="16"></Image>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the path text-->
                     <TextBlock x:Name="PathTextBlock" Text="{Binding}"
@@ -71,11 +71,7 @@
                        
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
-                        <fa:ImageAwesome Icon="FolderOutlinepenOutline"
-                                                 Width="15"
-                                                 Height="25"
-                                                 IsHitTestVisible="False"
-                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/folder_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the delete path button-->
                     <Button
@@ -88,7 +84,7 @@
                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
-                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/close-thin-16.png" Width="15" Height="15"></Image>
+                        <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/close_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                 </Grid>
                 <!--this trigger fades out paths when they are disabled-->

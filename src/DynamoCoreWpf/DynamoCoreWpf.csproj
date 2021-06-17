@@ -1299,9 +1299,10 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="UI\Images\PackageManager\down.png" />
-    <Resource Include="UI\Images\PackageManager\up.png" />
-    <Resource Include="UI\Images\PackageManager\close-thin-16.png" />
+    <Resource Include="UI\Images\PackageManager\close_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\down_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
+    <Resource Include="UI\Images\PackageManager\up_16_16.png" />
     <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
