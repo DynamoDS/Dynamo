@@ -4539,6 +4539,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editable only when the current workspace is in Manual run mode..
+        /// </summary>
+        public static string PreferencesViewShowRunPreviewTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowRunPreviewTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Whitespace in Python Editor.
         /// </summary>
         public static string PreferencesViewShowWhitespaceInPythonEditor {

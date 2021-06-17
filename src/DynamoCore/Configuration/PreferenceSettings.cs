@@ -387,6 +387,11 @@ namespace Dynamo.Configuration
         /// Defines the default run type when opening a workspace
         /// </summary>
         public RunType DefaultRunType { get; set; }
+
+        /// <summary>
+        /// Show Run Preview flag.
+        /// </summary>
+        public bool ShowRunPreview { get; set; }
         #endregion
 
         /// <summary>

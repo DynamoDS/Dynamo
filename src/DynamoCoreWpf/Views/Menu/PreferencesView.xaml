@@ -229,7 +229,7 @@
                                 <!--This Grid contains controls for selecting Run Preview options-->
                                 <Grid Grid.Row="2"
                                   Margin="4,0,0,20">
-                                    <Grid>
+                                    <Grid ToolTip="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -243,7 +243,7 @@
                                                   IsChecked="{Binding Path=RunPreviewIsChecked}"
                                                   Style="{StaticResource EllipseToggleButton1}"/>
                                         <Label Grid.Column="1"
-                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}" 
+                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     </Grid>
                                 </Grid>
