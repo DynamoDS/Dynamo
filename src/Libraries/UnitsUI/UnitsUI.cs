@@ -861,19 +861,19 @@ namespace UnitsUI
         protected override void OnBuilt()
         {
             base.OnBuilt();
-            //RaisePropertyChanged(nameof(DisplayValue));
-            VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
-        }
-
-
-
-        private void DataBridgeCallback(object data)
-        {
-            ArrayList inputs = data as ArrayList;
-
-            Value = Convert.ToDouble(inputs[0]);
             RaisePropertyChanged(nameof(DisplayValue));
+           // VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
+
+
+
+        //private void DataBridgeCallback(object data)
+        //{
+        //    ArrayList inputs = data as ArrayList;
+
+        //    Value = Convert.ToDouble(inputs[0]);
+        //    RaisePropertyChanged(nameof(DisplayValue));
+        //}
 
         public override void Dispose()
         {

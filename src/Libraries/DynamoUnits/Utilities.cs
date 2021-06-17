@@ -3,27 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using Dynamo.Configuration;
-using Dynamo.Controls;
-using Dynamo.Core;
-using Dynamo.Graph;
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Migration;
-using Dynamo.Nodes;
-using Dynamo.UI.Commands;
-using Dynamo.UI.Prompts;
-using Dynamo.ViewModels;
-using Dynamo.Wpf;
-
 using DynamoUnits;
 using ProtoCore.AST.AssociativeAST;
 using Newtonsoft.Json;
 using ProtoCore.AST.ImperativeAST;
 using AstFactory = ProtoCore.AST.AssociativeAST.AstFactory;
 using DoubleNode = ProtoCore.AST.AssociativeAST.DoubleNode;
-using Dynamo.Utilities;
-using Dynamo.Engine.CodeGeneration;
 using System.Collections;
 using DynamoUnits.Properties;
 using Autodesk.DesignScript.Runtime;
@@ -34,22 +19,11 @@ namespace DynamoUnits
 {
     public static class Utilities
     {
-        [NodeName("Convert By Units")]
-        [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-        [NodeDescription("Utilities.ConvertByUnitsDescription", typeof(DynamoUnits.Properties.Resources))]
-        [NodeSearchTags("Utilities.ConvertByUnitsSearchTags", typeof(DynamoUnits.Properties.Resources))]
-        [IsDesignScriptCompatible]
         public static double ConvertByUnits(double value, Unit fromUnit, Unit toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit.TypeId, toUnit.TypeId);
         }
 
-
-        [NodeName("Convert By Unit Ids")]
-        [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-        [NodeDescription("Utilities.ConvertByUnitIdsDescription", typeof(DynamoUnits.Properties.Resources))]
-        [NodeSearchTags("Utilities.ConvertByUnitIdsSearchTags", typeof(DynamoUnits.Properties.Resources))]
-        [IsDesignScriptCompatible]
         public static double ConvertByUnitIds(double value, string fromUnit, string toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit, toUnit);
