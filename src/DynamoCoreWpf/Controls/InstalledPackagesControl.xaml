@@ -102,7 +102,7 @@
                                                     Style="{StaticResource RemoveStyleButtonStyle}">
                                                         <Image 
                                                     Source="/DynamoCoreWpf;component/UI/Images/More.png" 
-                                                    Width="20" Height="20"
+                                                    Width="16" Height="16"
                                                     IsHitTestVisible="False"/>
                                                         <Button.ContextMenu>
                                                             <ContextMenu>
@@ -163,7 +163,7 @@
                                                         Style="{StaticResource RemoveStyleButtonStyle}">
                                                         <Image 
                                                         Source="/DynamoCoreWpf;component/UI/Images/close-thick.png" 
-                                                        Width="20" Height="20"
+                                                        Width="16" Height="16"
                                                         IsHitTestVisible="False"/>
                                                     </Button>
                                                 </StackPanel>
