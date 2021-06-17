@@ -51,14 +51,14 @@
       <Private>True</Private>
       <HintPath>..\packages\Greg.2.0.7759.28389\lib\net48\Greg.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit, Version=2.15.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.2.15.0\lib\netstandard1.1\HelixToolkit.dll</HintPath>
+    <Reference Include="HelixToolkit, Version=2.16.1.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2.16.1\lib\netstandard1.1\HelixToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf, Version=2.15.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.2.15.0\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf, Version=2.16.1.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2.16.1\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.15.0.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
-      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.15.0\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
+    <Reference Include="HelixToolkit.Wpf.SharpDX, Version=2.16.1.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.SharpDX.2.16.1\lib\net45\HelixToolkit.Wpf.SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit, Version=4.3.1.9429, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.4.3.1.9430\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -73,6 +73,10 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="ProtoGeometry, Version=2.12.0.5056, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5056\lib\net48\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
+	</Reference>
     <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
@@ -1261,6 +1265,11 @@
     <ProjectReference Include="..\Libraries\DynamoUnits\Units.csproj">
       <Project>{6e0a079e-85f1-45a1-ad5b-9855e4344809}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
+      <Name>PythonNodeModels</Name>
+	  <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>

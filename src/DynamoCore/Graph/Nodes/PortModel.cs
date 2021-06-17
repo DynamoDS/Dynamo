@@ -477,6 +477,14 @@ namespace Dynamo.Graph.Nodes
                 return type;
             }
 
+            if (Owner is CustomNodes.Function cusNode)
+            {
+                var cd = cusNode.Controller.Definition;
+                string type = cd.Returns.ElementAt(Index).Item1;
+
+                return type;
+            }
+
             if (Owner is NodeModel nmNode)
             {
                 var classType = nmNode.GetType();
@@ -492,6 +500,7 @@ namespace Dynamo.Graph.Nodes
                    Log(e.Message);
                 }
             }
+
             return null;
         }
     }
