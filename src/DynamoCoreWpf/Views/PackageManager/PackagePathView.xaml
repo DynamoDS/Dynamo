@@ -125,7 +125,7 @@
                                                 Width="100"
                                                 Height="25"
                                                 Margin="0,0,0,0"
-                                                Content="{x:Static p:Resources.PackagePathAddPathButtonName}}"
+                                                Content="{x:Static p:Resources.PackagePathAddPathButtonName}"
                                                 Command="{Binding Path=AddPathCommand}" 
                                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
             </Button>
