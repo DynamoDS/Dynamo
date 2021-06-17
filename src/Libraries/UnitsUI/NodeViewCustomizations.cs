@@ -332,6 +332,7 @@ namespace UnitsUI
 
             var grid = new Grid();
             grid.VerticalAlignment = VerticalAlignment.Stretch;
+            grid.Background = null;
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
@@ -344,8 +345,8 @@ namespace UnitsUI
             };
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.IsReadOnly = true;
-            tb.DataContext = nodeModel;
-            tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdown.DisplayValue))
+            tb.DataContext = unitValueDropdownViewModel;
+            tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdownViewModel.DisplayValue))
             {
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
@@ -359,9 +360,11 @@ namespace UnitsUI
                 FlowDirection = FlowDirection.RightToLeft,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 IsHitTestVisible = true,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
+                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+                // Background = null
             };
-            ex.Background.Opacity = 0.0;
+            ex.Background.Opacity = 1.0;
 
             grid.Children.Add(ex);
 
@@ -373,6 +376,7 @@ namespace UnitsUI
             ///Unit Controls
             var dockPanelUnit = new DockPanel();
             dockPanelUnit.FlowDirection = FlowDirection.LeftToRight;
+            dockPanelUnit.Background = null;
             double labelMinWidth = 80;
             double comboMinMidth = 80;
             double comboMaxWidth = 100;
@@ -390,7 +394,7 @@ namespace UnitsUI
                 MinWidth = comboMinMidth,
                 MaxWidth = comboMaxWidth,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                ToolTip = unitValueDropdownViewModel.SelectedUnit
+                ToolTip = unitValueDropdownViewModel.SelectedUnit,
             };
 
             unitCB.SelectionChanged += delegate
@@ -425,6 +429,7 @@ namespace UnitsUI
             ///Symbol Controls
             var dockPanelSymbol = new DockPanel();
             dockPanelSymbol.FlowDirection = FlowDirection.LeftToRight;
+            dockPanelSymbol.Background = null;
             var symbolLabel = new Label
             {
                 Content = "Symbol",
@@ -471,6 +476,7 @@ namespace UnitsUI
 
             var dockPanelPrecision = new DockPanel();
             dockPanelPrecision.FlowDirection = FlowDirection.LeftToRight;
+            dockPanelPrecision.Background = null;
             var precisionLabel = new Label
             {
                 Content = "Precision",
@@ -515,6 +521,7 @@ namespace UnitsUI
             lb.Items.Add(dockPanelPrecision);
 
             var dockPanelFormat = new DockPanel();
+            dockPanelFormat.Background = null;
             dockPanelFormat.FlowDirection = FlowDirection.LeftToRight;
             var formatLabel = new Label
             {

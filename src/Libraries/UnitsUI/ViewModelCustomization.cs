@@ -158,6 +158,11 @@ namespace UnitsUI
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
 
+        public string DisplayValue
+        {
+            get { return unitValueDropdownModel.DisplayValue; }
+        }
+
         public DynamoUnits.Unit SelectedUnit
         {
             get { return unitValueDropdownModel.SelectedUnit; }
@@ -251,6 +256,12 @@ namespace UnitsUI
                     break;
                 case nameof(UnitValueOutputDropdown.SelectedFormat):
                     RaisePropertyChanged(nameof(SelectedFormat));
+                    break;
+                case nameof(UnitValueOutputDropdown.DisplayValue):
+                    RaisePropertyChanged(nameof(DisplayValue));
+                    break;
+                case "CachedValue":
+                    unitValueDropdownModel.DisplayValue = unitValueDropdownModel.CachedValue.StringData;
                     break;
                 default:
                     break;

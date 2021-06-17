@@ -787,7 +787,6 @@ namespace UnitsUI
         private List<bool> allFormats;
         private string displayValue;
 
-
         public double Value { get; set; }
        
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
@@ -840,8 +839,6 @@ namespace UnitsUI
             }
         }
 
-       
-
         [JsonIgnore]
         public List<DynamoUnits.Unit> AllUnits { get; set; }
        
@@ -856,38 +853,24 @@ namespace UnitsUI
         
         public string DisplayValue
         {
-            get => DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit.TypeId, SelectedSymbol.TypeId, SelectedPrecision, SelectedFormat);
-        }
-        protected override void OnBuilt()
-        {
-            base.OnBuilt();
-            RaisePropertyChanged(nameof(DisplayValue));
-           // VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
-        }
-
-
-
-        //private void DataBridgeCallback(object data)
-        //{
-        //    ArrayList inputs = data as ArrayList;
-
-        //    Value = Convert.ToDouble(inputs[0]);
-        //    RaisePropertyChanged(nameof(DisplayValue));
-        //}
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            DataBridge.Instance.UnregisterCallback(GUID.ToString());
+            get
+            {
+                return displayValue;
+            }
+            set
+            {
+                displayValue = value;
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
         }
 
         [JsonConstructor]
         private UnitValueOutputDropdown(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             AllUnits = DynamoUnits.Utilities.ConvertUnitsDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = AllUnits[0];
+            SelectedUnit = AllUnits[1];
             AllSymbols = DynamoUnits.Utilities.ConvertSymbolDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
-            SelectedSymbol = AllSymbols[0];
+            SelectedSymbol = AllSymbols[3];
             AllPrecisions = new List<int>()
             {
                 0, 1, 2, 3, 4, 5
@@ -905,9 +888,9 @@ namespace UnitsUI
 
             RegisterAllPorts();
             AllUnits = DynamoUnits.Utilities.ConvertUnitsDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = AllUnits[0];
+            SelectedUnit = AllUnits[1];
             AllSymbols = DynamoUnits.Utilities.ConvertSymbolDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
-            SelectedSymbol = AllSymbols[0];
+            SelectedSymbol = AllSymbols[3];
             AllPrecisions = new List<int>()
             {
                 0, 1, 2, 3, 4, 5
@@ -929,18 +912,10 @@ namespace UnitsUI
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
 
-            //return new[]{
-            //    AstFactory.BuildAssignment(
-            //        AstFactory.BuildIdentifier(AstIdentifierBase),
-            //        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
-            //};
-            // RaisePropertyChanged(nameof(DisplayValue));
-            //return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildStringNode(DisplayValue)) };
-            //Value = AstFactory.BuildIdentifier(AstIdentifierBase, inputAstNodes);
+
             var functionNode = AstFactory.BuildFunctionCall(new Func<double, string, string, int, bool, string>(DynamoUnits.Utilities.ReturnFormattedString), 
                 new List<AssociativeNode> { inputAstNodes[0], AstFactory.BuildStringNode(SelectedUnit.TypeId),
                 AstFactory.BuildStringNode(SelectedSymbol.TypeId), AstFactory.BuildIntNode(SelectedPrecision), AstFactory.BuildBooleanNode(SelectedFormat)});
-           // return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionNode) };
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionNode) };
         }
     }
