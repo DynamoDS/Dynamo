@@ -34,6 +34,7 @@
                               Command="{Binding Path=DataContext.MovePathUpCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
+                        ToolTip="{x:Static p:Resources.PackagePathViewToolTipUp}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                         Style="{StaticResource FlatIconButtonStyle}">
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/up.png" Width="8" Height="16"></Image>
@@ -45,6 +46,7 @@
                               Command="{Binding Path=DataContext.MovePathDownCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
+                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipDown}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down.png" Width="8" Height="16"></Image>
@@ -66,6 +68,7 @@
                         Command="{Binding Path=DataContext.UpdatePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
+                       
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
                         <fa:ImageAwesome Icon="FolderOutlinepenOutline"
