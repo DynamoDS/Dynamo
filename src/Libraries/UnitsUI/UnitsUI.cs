@@ -856,24 +856,16 @@ namespace UnitsUI
         
         public string DisplayValue
         {
-            get => DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
-            //set
-            //{
-            //    displayValue = value;
-            //    RaisePropertyChanged(nameof(DisplayValue));
-            //}
-
-            //set
-            //{
-            //    displayValue = value;
-            //    RaisePropertyChanged(nameof(DisplayValue));
-            //}
+            get => DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit.TypeId, SelectedSymbol.TypeId, SelectedPrecision, SelectedFormat);
         }
         protected override void OnBuilt()
         {
             base.OnBuilt();
+            //RaisePropertyChanged(nameof(DisplayValue));
             VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
+
+
 
         private void DataBridgeCallback(object data)
         {
@@ -881,8 +873,6 @@ namespace UnitsUI
 
             Value = Convert.ToDouble(inputs[0]);
             RaisePropertyChanged(nameof(DisplayValue));
-           // DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
-            //DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
         }
 
         public override void Dispose()
@@ -939,11 +929,19 @@ namespace UnitsUI
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
 
-            return new[]{
-                AstFactory.BuildAssignment(
-                    AstFactory.BuildIdentifier(AstIdentifierBase),
-                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
-            };
+            //return new[]{
+            //    AstFactory.BuildAssignment(
+            //        AstFactory.BuildIdentifier(AstIdentifierBase),
+            //        VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
+            //};
+            // RaisePropertyChanged(nameof(DisplayValue));
+            //return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildStringNode(DisplayValue)) };
+            //Value = AstFactory.BuildIdentifier(AstIdentifierBase, inputAstNodes);
+            var functionNode = AstFactory.BuildFunctionCall(new Func<double, string, string, int, bool, string>(DynamoUnits.Utilities.ReturnFormattedString), 
+                new List<AssociativeNode> { inputAstNodes[0], AstFactory.BuildStringNode(SelectedUnit.TypeId),
+                AstFactory.BuildStringNode(SelectedSymbol.TypeId), AstFactory.BuildIntNode(SelectedPrecision), AstFactory.BuildBooleanNode(SelectedFormat)});
+           // return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionNode) };
+            return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionNode) };
         }
     }
 

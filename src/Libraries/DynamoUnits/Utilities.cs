@@ -72,6 +72,31 @@ namespace DynamoUnits
         }
 
         /// <summary>
+        /// Returns a formatted unit value string using unitType and unitSymbol type ids.
+        /// </summary>
+        /// <param name="numValue"></param>
+        /// <param name="unitTypeId"></param>
+        /// <param name="unitSymbolId"></param>
+        /// <param name="precision"></param>
+        /// <param name="decimalFormat"></param>
+        /// <returns></returns>
+        [IsVisibleInDynamoLibrary(false)]
+        public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, bool decimalFormat)
+        {
+            string outputString = string.Empty;
+
+            Unit unit = Unit.ByTypeID(unitTypeId);
+            UnitSymbol unitSymbol = UnitSymbol.ByTypeID(unitSymbolId);
+
+            if (decimalFormat)
+                outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+            else
+                outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+
+            return outputString;
+        }
+
+        /// <summary>
         /// Returns a formatted unit value string.
         /// </summary>
         /// <param name="numValue"></param>
@@ -92,6 +117,7 @@ namespace DynamoUnits
 
             return outputString;
         }
+
 
         [IsVisibleInDynamoLibrary(false)]
         public static UnitSymbol CastToUnitSymbol(object value)

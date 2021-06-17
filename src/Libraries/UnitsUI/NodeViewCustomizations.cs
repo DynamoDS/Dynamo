@@ -329,37 +329,16 @@ namespace UnitsUI
         {
             unitValueDropdownViewModel = new UnitValueOutputDropdownViewModel(model, nodeView);
             nodeModel = model;
-            //this.editWindowItem = new MenuItem
-            //{
-            //    Header = Dynamo.Wpf.Properties.Resources.StringInputNodeEditMenu,
-            //    IsCheckable = false
-            //};
-            //nodeView.MainContextMenu.Items.Add(editWindowItem);
-
-            //editWindowItem.Click += editWindowItem_Click;
 
             var grid = new Grid();
-
-            RowDefinition rowDef1 = new RowDefinition();
-            rowDef1.MaxHeight = Configurations.PortHeightInPixels;
-            RowDefinition rowDef2 = new RowDefinition();
-
-            ColumnDefinition colDef1 = new ColumnDefinition();
-            ColumnDefinition colDef2 = new ColumnDefinition();
-
-            grid.RowDefinitions.Add(rowDef1);
-            grid.RowDefinitions.Add(rowDef2);
-            grid.ColumnDefinitions.Add(colDef1);
-            grid.ColumnDefinitions.Add(colDef2);
-
+            grid.VerticalAlignment = VerticalAlignment.Stretch;
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
             {
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = Configurations.PortHeightInPixels,
-                MaxWidth = 200,
-                MinWidth = 80,
+                Width=200,
                 VerticalAlignment = VerticalAlignment.Stretch
 
             };
@@ -374,22 +353,17 @@ namespace UnitsUI
 
             grid.Children.Add(tb);
 
-            Grid.SetColumn(tb, 0);
-            Grid.SetRow(tb, 0);
-            Grid.SetRowSpan(tb, 1);
-
             Expander ex = new Expander
             {
                 ExpandDirection = ExpandDirection.Down,
                 FlowDirection = FlowDirection.RightToLeft,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                IsHitTestVisible = true,
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
             };
+            ex.Background.Opacity = 0.0;
 
             grid.Children.Add(ex);
-
-            Grid.SetColumn(ex, 1);
-            Grid.SetRow(ex, 0);
-            Grid.SetRowSpan(ex, 2);
 
             var lb = new ListBox
             {
@@ -398,6 +372,7 @@ namespace UnitsUI
 
             ///Unit Controls
             var dockPanelUnit = new DockPanel();
+            dockPanelUnit.FlowDirection = FlowDirection.LeftToRight;
             double labelMinWidth = 80;
             double comboMinMidth = 80;
             double comboMaxWidth = 100;
@@ -449,6 +424,7 @@ namespace UnitsUI
 
             ///Symbol Controls
             var dockPanelSymbol = new DockPanel();
+            dockPanelSymbol.FlowDirection = FlowDirection.LeftToRight;
             var symbolLabel = new Label
             {
                 Content = "Symbol",
@@ -494,6 +470,7 @@ namespace UnitsUI
             lb.Items.Add(dockPanelSymbol);
 
             var dockPanelPrecision = new DockPanel();
+            dockPanelPrecision.FlowDirection = FlowDirection.LeftToRight;
             var precisionLabel = new Label
             {
                 Content = "Precision",
@@ -538,6 +515,7 @@ namespace UnitsUI
             lb.Items.Add(dockPanelPrecision);
 
             var dockPanelFormat = new DockPanel();
+            dockPanelFormat.FlowDirection = FlowDirection.LeftToRight;
             var formatLabel = new Label
             {
                 Content = "Format",
