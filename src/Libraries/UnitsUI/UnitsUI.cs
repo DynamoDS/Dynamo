@@ -38,6 +38,7 @@ using Dynamo.Engine.CodeGeneration;
 using System.Collections;
 using VMDataBridge;
 using UnitsUI.Converters;
+using System.Collections.ObjectModel;
 
 namespace UnitsUI
 {
@@ -215,7 +216,7 @@ namespace UnitsUI
             }
         }
         
-        private DynamoUnits.Unit selectedUnit;
+        
         private List<DynamoUnits.Unit> items;
 
         [JsonIgnore]
@@ -228,7 +229,8 @@ namespace UnitsUI
                 RaisePropertyChanged("Items");
             }
         }
-        
+
+        private DynamoUnits.Unit selectedUnit;
         [JsonProperty("UnitType"), JsonConverter(typeof(ForgeUnitConverter))]
         public DynamoUnits.Unit SelectedUnit
         {
@@ -570,147 +572,6 @@ namespace UnitsUI
         #endregion
     }
 
-    public class ForgeConverterViewModel : NotificationObject
-    {
-        private readonly ForgeDynamoConvert dynamoConvertModel;
-        public DelegateCommand ToggleButtonClick { get; set; }
-        private readonly NodeViewModel nodeViewModel;
-        private readonly NodeModel nodeModel;
-
-        public DynamoUnits.Quantity SelectedQuantityConversion
-        {
-            get { return dynamoConvertModel.SelectedQuantityConversion; }
-            set
-            {
-                dynamoConvertModel.SelectedQuantityConversion = value;
-            }
-        }
-
-        public DynamoUnits.Unit SelectedFromConversion
-        {
-            get { return dynamoConvertModel.SelectedFromConversion; }
-            set
-            {
-                if (value == null)
-                    return;
-                
-                dynamoConvertModel.SelectedFromConversion = value;
-            }
-        }
-
-        public DynamoUnits.Unit SelectedToConversion
-        {
-            get { return dynamoConvertModel.SelectedToConversion; }
-            set
-            {
-                if (value == null)
-                    return;
-                
-                dynamoConvertModel.SelectedToConversion = value;
-            }
-        }
-
-        public List<DynamoUnits.Quantity> QuantityConversionSource
-        {
-            get { return dynamoConvertModel.QuantityConversionSource; }
-        }
-
-        public List<DynamoUnits.Unit> SelectedFromConversionSource
-        {
-            get { return dynamoConvertModel.SelectedFromConversionSource; }
-            set
-            {
-                dynamoConvertModel.SelectedFromConversionSource = value;
-            }
-        }
-
-        public List<DynamoUnits.Unit> SelectedToConversionSource
-        {
-            get { return dynamoConvertModel.SelectedToConversionSource; }
-            set
-            {
-                dynamoConvertModel.SelectedToConversionSource = value;
-            }
-        }
-
-        public bool IsSelectionFromBoxEnabled
-        {
-            get { return dynamoConvertModel.IsSelectionFromBoxEnabled; }
-            set
-            {
-                dynamoConvertModel.IsSelectionFromBoxEnabled = value;
-            }
-        }
-
-        public string SelectionFromBoxToolTip
-        {
-            get { return dynamoConvertModel.SelectionFromBoxToolTip; }
-            set
-            {
-                dynamoConvertModel.SelectionFromBoxToolTip = value;
-            }
-        }
-
-        public ForgeConverterViewModel(ForgeDynamoConvert model, NodeView nodeView)
-        {
-            dynamoConvertModel = model;
-            nodeViewModel = nodeView.ViewModel;
-            nodeModel = nodeView.ViewModel.NodeModel;
-            model.PropertyChanged += model_PropertyChanged;
-            ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
-        }
-
-        private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case "SelectedQuantityConversionSource":
-                    RaisePropertyChanged("SelectedQuantityConversionSource");
-                    break;
-                case "SelectedQuantityConversion":
-                    RaisePropertyChanged("SelectedQuantityConversion");
-                    break;
-                case "SelectedFromConversionSource":
-                    RaisePropertyChanged("SelectedFromConversionSource");
-                    break;
-                case "SelectedToConversionSource":
-                    RaisePropertyChanged("SelectedToConversionSource");
-                    break;
-                case "SelectedFromConversion":
-                    RaisePropertyChanged("SelectedFromConversion");
-                    break;
-                case "SelectedToConversion":
-                    RaisePropertyChanged("SelectedToConversion");
-                    break;
-                case "IsSelectionFromBoxEnabled":
-                    RaisePropertyChanged("IsSelectionFromBoxEnabled");
-                    break;
-                case "SelectionFromBoxToolTip":
-                    RaisePropertyChanged("SelectionFromBoxToolTip");
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Called when Toggle button is clicked.
-        /// Switches the combo box values
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        private void OnToggleButtonClick(object obj)
-        {
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
-            dynamoConvertModel.ToggleDropdownValues();
-            nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-        }
-
-        private bool CanToggleButton(object obj)
-        {
-            return true;
-        }
-    }
-
    
 
     
@@ -909,27 +770,104 @@ namespace UnitsUI
         }
     }
 
+    [NodeName("Unit Value Output Dropdown")]
+    [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("UnitValueOutputDropdownDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitValueOutputDropdownSearchTags", typeof(UnitsUI.Properties.Resources))]
+    [IsDesignScriptCompatible]
     public class UnitValueOutputDropdown: NodeModel
     {
-        public double Value { get; set; }
-        [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
-        public Unit SelectedUnit { get; set; }
-        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
-        public UnitSymbol Symbol { get; set; }
-
-        public int Precision { get; set; }
-
-        public bool Decimal { get; set; }
-
+        private DynamoUnits.Unit selectedUnit;
+        private DynamoUnits.UnitSymbol selectedSymbol;
+        private int selectedPrecision;
+        private bool selectedFormat;
+        private List<DynamoUnits.Unit> allUnits;
+        private List<DynamoUnits.UnitSymbol> allSymbols;
+        private List<int> allPrecisions;
+        private List<bool> allFormats;
         private string displayValue;
-        public string DisplayValue
+
+
+        public double Value { get; set; }
+       
+        [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
+        public DynamoUnits.Unit SelectedUnit
         {
-            get => displayValue;
+            get { return selectedUnit; }
             set
             {
-                displayValue = value;
+                selectedUnit = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedUnit));
                 RaisePropertyChanged(nameof(DisplayValue));
             }
+        }
+       
+        [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
+        public UnitSymbol SelectedSymbol 
+        {
+            get { return selectedSymbol; }
+            set
+            {
+                selectedSymbol = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedSymbol));
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
+        }
+
+        public int SelectedPrecision
+        {
+            get { return selectedPrecision; }
+            set
+            {
+                selectedPrecision = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedPrecision));
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
+        } 
+
+        public bool SelectedFormat
+        {
+            get { return selectedFormat; }
+            set
+            {
+                selectedFormat = value;
+                this.OnNodeModified();
+                RaisePropertyChanged(nameof(SelectedFormat));
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
+        }
+
+       
+
+        [JsonIgnore]
+        public List<DynamoUnits.Unit> AllUnits { get; set; }
+       
+        [JsonIgnore]
+        public List<DynamoUnits.UnitSymbol> AllSymbols { get; set; }
+        
+        [JsonIgnore]
+        public List<int> AllPrecisions { get; set; }
+        
+        [JsonIgnore]
+        public List<bool> AllFormats { get; set; }
+        
+        public string DisplayValue
+        {
+            get => DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
+            //set
+            //{
+            //    displayValue = value;
+            //    RaisePropertyChanged(nameof(DisplayValue));
+            //}
+
+            //set
+            //{
+            //    displayValue = value;
+            //    RaisePropertyChanged(nameof(DisplayValue));
+            //}
         }
         protected override void OnBuilt()
         {
@@ -942,12 +880,9 @@ namespace UnitsUI
             ArrayList inputs = data as ArrayList;
 
             Value = Convert.ToDouble(inputs[0]);
-            SelectedUnit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
-            Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
-            Precision = Convert.ToInt32(inputs[3]);
-            Decimal = Convert.ToBoolean(inputs[4]);
-
-            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
+            RaisePropertyChanged(nameof(DisplayValue));
+           // DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
+            //DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, SelectedSymbol, SelectedPrecision, SelectedFormat);
         }
 
         public override void Dispose()
@@ -959,6 +894,19 @@ namespace UnitsUI
         [JsonConstructor]
         private UnitValueOutputDropdown(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            AllUnits = DynamoUnits.Utilities.ConvertUnitsDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+            SelectedUnit = AllUnits[0];
+            AllSymbols = DynamoUnits.Utilities.ConvertSymbolDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
+            SelectedSymbol = AllSymbols[0];
+            AllPrecisions = new List<int>()
+            {
+                0, 1, 2, 3, 4, 5
+            };
+            SelectedPrecision = AllPrecisions[0];
+            AllFormats = new List<bool> { true, false };
+            SelectedFormat = AllFormats[0];
+            RaisePropertyChanged(nameof(DisplayValue));
+
         }
 
         public UnitValueOutputDropdown()
@@ -966,7 +914,22 @@ namespace UnitsUI
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Value), "Tooltip")));
 
             RegisterAllPorts();
+            AllUnits = DynamoUnits.Utilities.ConvertUnitsDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
+            SelectedUnit = AllUnits[0];
+            AllSymbols = DynamoUnits.Utilities.ConvertSymbolDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
+            SelectedSymbol = AllSymbols[0];
+            AllPrecisions = new List<int>()
+            {
+                0, 1, 2, 3, 4, 5
+            };
+            SelectedPrecision = AllPrecisions[0];
+            AllFormats = new List<bool> { true, false };
+            SelectedFormat = AllFormats[0];
+            RaisePropertyChanged(nameof(DisplayValue));
+
             ArgumentLacing = LacingStrategy.Disabled;
+
+           
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)

@@ -1,5 +1,6 @@
 ﻿using Dynamo.Configuration;
 using Dynamo.Controls;
+using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
 using Dynamo.UI.Prompts;
@@ -16,6 +17,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
 using UnitsUI.Controls;
+using UnitsUI.Converters;
 
 namespace UnitsUI
 {
@@ -315,14 +317,41 @@ namespace UnitsUI
         }
     }
 
-    class UnitValueOutputDropdownViewCustomization : INodeViewCustomization<UnitValueOutputDropdown>
+    class UnitValueOutputDropdownViewCustomization : NotificationObject, INodeViewCustomization<UnitValueOutputDropdown>
     {
         private NodeModel nodeModel;
         private NodeViewModel nodeViewModel;
-        private UnitValueOutputDropdown model;
+        private UnitValueOutputDropdown unitValueDropdownModel;
+        private UnitValueOutputDropdownViewModel unitValueDropdownViewModel;
+        private MenuItem editWindowItem;
 
-        public void CustomizeView(UnitValueOutput model, NodeView nodeView)
+        public void CustomizeView(UnitValueOutputDropdown model, NodeView nodeView)
         {
+            unitValueDropdownViewModel = new UnitValueOutputDropdownViewModel(model, nodeView);
+            nodeModel = model;
+            //this.editWindowItem = new MenuItem
+            //{
+            //    Header = Dynamo.Wpf.Properties.Resources.StringInputNodeEditMenu,
+            //    IsCheckable = false
+            //};
+            //nodeView.MainContextMenu.Items.Add(editWindowItem);
+
+            //editWindowItem.Click += editWindowItem_Click;
+
+            var grid = new Grid();
+
+            RowDefinition rowDef1 = new RowDefinition();
+            rowDef1.MaxHeight = Configurations.PortHeightInPixels;
+            RowDefinition rowDef2 = new RowDefinition();
+
+            ColumnDefinition colDef1 = new ColumnDefinition();
+            ColumnDefinition colDef2 = new ColumnDefinition();
+
+            grid.RowDefinitions.Add(rowDef1);
+            grid.RowDefinitions.Add(rowDef2);
+            grid.ColumnDefinitions.Add(colDef1);
+            grid.ColumnDefinitions.Add(colDef2);
+
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
@@ -330,26 +359,237 @@ namespace UnitsUI
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = Configurations.PortHeightInPixels,
                 MaxWidth = 200,
+                MinWidth = 80,
                 VerticalAlignment = VerticalAlignment.Stretch
 
             };
-
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.IsReadOnly = true;
-            tb.DataContext = model;
+            tb.DataContext = nodeModel;
             tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdown.DisplayValue))
             {
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
-            nodeView.inputGrid.Children.Add(tb);
+            grid.Children.Add(tb);
+
+            Grid.SetColumn(tb, 0);
+            Grid.SetRow(tb, 0);
+            Grid.SetRowSpan(tb, 1);
+
+            Expander ex = new Expander
+            {
+                ExpandDirection = ExpandDirection.Down,
+                FlowDirection = FlowDirection.RightToLeft,
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
+            };
+
+            grid.Children.Add(ex);
+
+            Grid.SetColumn(ex, 1);
+            Grid.SetRow(ex, 0);
+            Grid.SetRowSpan(ex, 2);
+
+            var lb = new ListBox
+            {
+                HorizontalContentAlignment = HorizontalAlignment.Stretch
+            };
+
+            ///Unit Controls
+            var dockPanelUnit = new DockPanel();
+            double labelMinWidth = 80;
+            double comboMinMidth = 80;
+            double comboMaxWidth = 100;
+            var unitLabel = new Label
+            {
+                Content = "Unit",
+                MinWidth = labelMinWidth
+            };
+
+            var unitCB = new ComboBox
+            {
+                DataContext = unitValueDropdownViewModel,
+                FlowDirection = FlowDirection.LeftToRight,
+                ItemsSource = unitValueDropdownViewModel.AllUnits,
+                MinWidth = comboMinMidth,
+                MaxWidth = comboMaxWidth,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ToolTip = unitValueDropdownViewModel.SelectedUnit
+            };
+
+            unitCB.SelectionChanged += delegate
+            {
+                if (unitCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
+                }
+                    
+            };
+
+
+            // bind this combo box to the selected item hash
+            var bindingValAllUnits = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllUnits))
+            {
+                Source = unitValueDropdownViewModel
+            };
+            unitCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllUnits);
+
+            // bind the selected index to the model property SelectedIndex
+            var indexBindingSelectedUnit = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedUnit))
+            {
+                Mode = BindingMode.TwoWay,
+                Source = unitValueDropdownViewModel
+            };
+            unitCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedUnit);
+
+            dockPanelUnit.Children.Add(unitLabel);
+            dockPanelUnit.Children.Add(unitCB);
+            lb.Items.Add(dockPanelUnit);
+
+            ///Symbol Controls
+            var dockPanelSymbol = new DockPanel();
+            var symbolLabel = new Label
+            {
+                Content = "Symbol",
+                MinWidth = labelMinWidth
+            };
+            var symbolCB = new ComboBox
+            {
+                DataContext = unitValueDropdownViewModel,
+                FlowDirection = FlowDirection.LeftToRight,
+                ItemsSource = unitValueDropdownViewModel.AllSymbols,
+                MinWidth = comboMinMidth,
+                MaxWidth = comboMaxWidth,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ToolTip = unitValueDropdownViewModel.SelectedSymbol
+            };
+
+            symbolCB.SelectionChanged += delegate
+            {
+                if (symbolCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
+                }
+                   
+            };
+
+            // bind this combo box to the selected item hash
+            var bindingValAllSymbols = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllSymbols))
+            {
+                Source = unitValueDropdownViewModel
+            };
+            symbolCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllSymbols);
+
+            // bind the selected index to the model property SelectedIndex
+            var indexBindingSelectedSymbol = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol))
+            {
+                Mode = BindingMode.TwoWay,
+                Source = unitValueDropdownViewModel
+            };
+            symbolCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedSymbol);
+
+            dockPanelSymbol.Children.Add(symbolLabel);
+            dockPanelSymbol.Children.Add(symbolCB);
+            lb.Items.Add(dockPanelSymbol);
+
+            var dockPanelPrecision = new DockPanel();
+            var precisionLabel = new Label
+            {
+                Content = "Precision",
+                MinWidth = labelMinWidth
+            };
+            var precisionCB = new ComboBox
+            {
+                DataContext = unitValueDropdownViewModel,
+                FlowDirection = FlowDirection.LeftToRight,
+                ItemsSource = unitValueDropdownViewModel.AllPrecisions,
+                MinWidth = comboMinMidth,
+                MaxWidth = comboMaxWidth,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ToolTip = unitValueDropdownViewModel.SelectedPrecision
+            };
+
+            precisionCB.SelectionChanged += delegate
+            {
+                if (precisionCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
+                }
+            };
+
+            // bind this combo box to the selected item hash
+            var bindingValAllPrecisions = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllPrecisions))
+            {
+                Source = unitValueDropdownViewModel
+            };
+            precisionCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllPrecisions);
+
+            // bind the selected index to the model property SelectedIndex
+            var indexBindingSelectedPrecision = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision))
+            {
+                Mode = BindingMode.TwoWay,
+                Source = unitValueDropdownViewModel,
+                Converter = new PrecisionToStringRepresentationConverter(),
+                ConverterParameter = unitValueDropdownViewModel.SelectedPrecision
+            };
+            precisionCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedPrecision);
+
+            dockPanelPrecision.Children.Add(precisionLabel);
+            dockPanelPrecision.Children.Add(precisionCB);
+            lb.Items.Add(dockPanelPrecision);
+
+            var dockPanelFormat = new DockPanel();
+            var formatLabel = new Label
+            {
+                Content = "Format",
+                MinWidth = labelMinWidth
+            };
+
+            ComboBox comboBox = new ComboBox
+            {
+                DataContext = unitValueDropdownViewModel,
+                FlowDirection = FlowDirection.LeftToRight,
+                ItemsSource = unitValueDropdownViewModel.AllFormats,
+                MinWidth = comboMinMidth,
+                MaxWidth = comboMaxWidth,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                ToolTip = unitValueDropdownViewModel.SelectedFormat
+            };
+            var formatCB = comboBox;
+
+            formatCB.SelectionChanged += delegate
+            {
+                if (formatCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
+                }
+            };
+
+
+            // bind this combo box to the selected item hash
+            var bindingValAllFormats = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllFormats))
+            {
+                Source = unitValueDropdownViewModel
+            };
+            formatCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllFormats);
+
+            // bind the selected index to the model property SelectedIndex
+            var indexBindingSelectedFormat = new Binding(nameof(unitValueDropdownViewModel.SelectedFormat))
+            {
+                Mode = BindingMode.TwoWay,
+                Source = unitValueDropdownViewModel
+            };
+            formatCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedFormat);
+            dockPanelFormat.Children.Add(formatLabel);
+            dockPanelFormat.Children.Add(formatCB);
+            lb.Items.Add(dockPanelFormat);
+
+            ex.Content = lb;
+            nodeView.inputGrid.Children.Add(grid);
         }
 
-        public void CustomizeView(UnitValueOutputDropdown model, NodeView nodeView)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public void Dispose()
         {

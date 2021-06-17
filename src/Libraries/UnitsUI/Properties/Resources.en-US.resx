@@ -154,6 +154,15 @@
     <value>A custom formatted display of a unit value.</value>
     <comment>Temporary description fro 'unit value output node'</comment>
   </data>
+  <data name="UnitValueOutputDropdownDescription" xml:space="preserve">
+    <value>A custom formatted display of a unit value.</value>
+  </data>
+  <data name="UnitValueOutputDropdownSearchTags" xml:space="preserve">
+    <value>Output;Formatted</value>
+  </data>
+  <data name="UnitValueOutputDropdownTooltip" xml:space="preserve">
+    <value>Specify formatting from dropdown options.</value>
+  </data>
   <data name="UnitValueOutputSearchTags" xml:space="preserve">
     <value>Output;Formatted</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>

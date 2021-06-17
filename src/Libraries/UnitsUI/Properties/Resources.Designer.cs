@@ -151,6 +151,33 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A custom formatted display of a unit value..
+        /// </summary>
+        internal static string UnitValueOutputDropdownDescription {
+            get {
+                return ResourceManager.GetString("UnitValueOutputDropdownDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Output;Formatted.
+        /// </summary>
+        internal static string UnitValueOutputDropdownSearchTags {
+            get {
+                return ResourceManager.GetString("UnitValueOutputDropdownSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify formatting from dropdown options..
+        /// </summary>
+        internal static string UnitValueOutputDropdownTooltip {
+            get {
+                return ResourceManager.GetString("UnitValueOutputDropdownTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Output;Formatted.
         /// </summary>
         internal static string UnitValueOutputSearchTags {
