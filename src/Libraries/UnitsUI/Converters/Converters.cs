@@ -48,31 +48,4 @@ namespace UnitsUI.Converters
         }
 
     }
-
-    public class PrecisionToStringRepresentationConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            string formattedString = "";
-
-            var intRep = (int)value;
-
-            if (intRep == 0) {
-                formattedString += "0";
-                return formattedString;
-            }
-
-            for (int i = 0; i < intRep; i++)
-            {
-                formattedString += "0";
-            }
-
-            return formattedString;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
-        }
-    }
 }

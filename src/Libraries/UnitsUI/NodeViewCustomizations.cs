@@ -529,9 +529,7 @@ namespace UnitsUI
             var indexBindingSelectedPrecision = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision))
             {
                 Mode = BindingMode.TwoWay,
-                Source = unitValueDropdownViewModel,
-                Converter = new PrecisionToStringRepresentationConverter(),
-                ConverterParameter = unitValueDropdownViewModel.SelectedPrecision
+                Source = unitValueDropdownViewModel
             };
             precisionCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedPrecision);
 
