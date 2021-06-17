@@ -111,7 +111,7 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,6,0,0">
         <DockPanel>
-            <Label  Content="Package/Library Search Paths" 
+            <Label  Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
                                             Padding="5,5,5,5"
                                             VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
@@ -125,7 +125,7 @@
                                                 Width="100"
                                                 Height="25"
                                                 Margin="0,0,0,0"
-                                                Content="Add Paths"
+                                                Content="{x:Static p:Resources.PackagePathAddPathButtonName}}"
                                                 Command="{Binding Path=AddPathCommand}" 
                                                 ToolTip="{x:Static p:Resources.PackagePathViewToolTipPlus}">
             </Button>

@@ -2405,4 +2405,10 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
   </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Package/Library Search Paths</value>
+  </data>
 </root>
