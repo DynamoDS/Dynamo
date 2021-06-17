@@ -141,6 +141,51 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
         }
 
+        [Test]
+        public void PathEnabledConverterCustomPaths()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            path = @"C:\";
+            vm.AddPathCommand.Execute(null);
+            var x = new PathEnabledConverter();
+            Assert.False((bool)x.Convert(new object[] { vm, path },null,null,null ));
+
+            setting.DisableCustomPackageLocations = true;
+
+            Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
+        }
+
+        [Test]
+        public void PathEnabledConverterStdLibPath()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            path = "Standard Library";
+            vm.AddPathCommand.Execute(null);
+            var x = new PathEnabledConverter();
+            Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
+
+            setting.DisableStandardLibrary = true;
+
+            Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
+            Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
+        }
+
         #endregion
         #region Setup methods
         private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)

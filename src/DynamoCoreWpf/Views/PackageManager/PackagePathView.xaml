@@ -92,8 +92,15 @@
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
                             <MultiBinding Converter="{StaticResource PathEnabledConverter}">
+                                <!--data for the converter-->
                                 <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
-                                <Binding />
+                                <Binding/>
+                                <!--we don't care about this binding's data, but we need to trigger this trigger when new items are added to rootlocations list-->
+                                <Binding Path="DataContext.RootLocations" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <!-- TODO when implementing toggles - one approach is to create these two properties on PackagePathViewModel and uncomment this.
+                                <Binding Path="DataContext.StdLibPathDisabled" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <Binding Path="DataContext.CustomPathsDisabled" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                -->
                             </MultiBinding>
                         </DataTrigger.Binding>
                         <Setter TargetName="PathTextBlock" Property="Opacity" Value=".5" />

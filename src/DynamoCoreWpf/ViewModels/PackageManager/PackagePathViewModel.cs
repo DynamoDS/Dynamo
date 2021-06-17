@@ -15,20 +15,6 @@ namespace Dynamo.ViewModels
 {
     public sealed class PathEnabledConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (value != null && parameter != null)
-            {
-                var disableStandardLibrary = (bool)parameter;
-                if (disableStandardLibrary)
-                {
-                    var path = value as string;
-                    return String.CompareOrdinal(path, Resources.PackagePathViewModel_Standard_Library) != 0;
-                }
-            }
-            return true;
-        }
-
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var vm = values[0] as PackagePathViewModel;
@@ -251,8 +237,13 @@ namespace Dynamo.ViewModels
         {
             if(setting is IDisablePackageLoadingPreferences disablePrefs)
             {
+                //disabled if stdlib disabled and path is stdlib
                 if ((disablePrefs.DisableStandardLibrary && path == Resources.PackagePathViewModel_Standard_Library)
-                    || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path)))
+                    //or if custompaths disabled and path is custom path
+                    || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path))
+                    //or if custompaths disabled and path is known path that is not std.lib - needed because new paths that are not commited
+                    //will not be added to customPackagePaths yet.
+                    || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_Standard_Library)) 
                 {
                     return true;
                 }

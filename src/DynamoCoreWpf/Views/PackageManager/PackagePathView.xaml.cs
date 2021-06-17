@@ -54,7 +54,7 @@ namespace Dynamo.Wpf.Views.PackageManager
                 ViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
             }
         }
-       
+
         private void OnRequestShowFileDialog(object sender, EventArgs e)
         {
             var args = e as PackagePathEventArgs;
