@@ -9,10 +9,11 @@ using Dynamo.Wpf.Properties;
 using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using Dynamo.Models;
 using System.Windows.Data;
+using System.Globalization;
 
 namespace Dynamo.ViewModels
 {
-    public sealed class PathEnabledConverter : IValueConverter
+    public sealed class PathEnabledConverter : IMultiValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
@@ -28,9 +29,16 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException();
+            var vm = values[0] as PackagePathViewModel;
+            var path = values[1] as string;
+            return vm.IsPathCurrentlyDisabled(path);
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -76,8 +84,6 @@ namespace Dynamo.ViewModels
         public DelegateCommand MovePathDownCommand { get; private set; }
         public DelegateCommand UpdatePathCommand { get; private set; }
         public DelegateCommand SaveSettingCommand { get; private set; }
-
-        public static bool DisableStandardLibrary = false;
 
         public PackagePathViewModel(PackageLoader loader, LoadPackageParams loadParams, CustomNodeManager customNodeManager)
         {
@@ -225,11 +231,6 @@ namespace Dynamo.ViewModels
             if (index != -1)
             {
                 RootLocations[index] = Resources.PackagePathViewModel_Standard_Library;
-
-                if (setting is IDisablePackageLoadingPreferences disablePrefs)
-                {
-                    DisableStandardLibrary = disablePrefs.DisableStandardLibrary;
-                }
             }
         }
 
@@ -245,5 +246,21 @@ namespace Dynamo.ViewModels
 
             return rootLocations;
         }
+
+        internal bool IsPathCurrentlyDisabled(string path)
+        {
+            if(setting is IDisablePackageLoadingPreferences disablePrefs)
+            {
+                if ((disablePrefs.DisableStandardLibrary && path == Resources.PackagePathViewModel_Standard_Library)
+                    || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
     }
 }

@@ -76,7 +76,8 @@ namespace Dynamo.Wpf.Views
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.Preferences);
-            this.Close();
+            viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            Close();
         }
 
         /// <summary>
