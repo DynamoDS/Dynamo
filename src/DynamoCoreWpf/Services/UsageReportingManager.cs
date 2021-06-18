@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Dynamo.Core;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
 using Dynamo.UI.Prompts;
@@ -47,6 +48,7 @@ namespace Dynamo.Services
         {
             get {
                 return !DynamoModel.IsTestMode
+                    && !AnalyticsService.DisableAnalytics
                     && (dynamoViewModel != null
                         && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
@@ -92,6 +94,11 @@ namespace Dynamo.Services
             {
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
+
+                if (AnalyticsService.DisableAnalytics)
+                {
+                    return false;
+                }
 
                 if (dynamoViewModel.Model != null)
                     return dynamoViewModel.Model.PreferenceSettings.IsAnalyticsReportingApproved;
@@ -148,6 +155,7 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
+                && !AnalyticsService.DisableAnalytics
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting

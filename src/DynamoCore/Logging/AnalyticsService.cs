@@ -10,45 +10,29 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
-        private static ADPAnalyticsUI adpAnalyticsUI = new ADPAnalyticsUI();
+        // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
+        private static IAnalyticsUI adpAnalyticsUI;
 
         /// <summary>
         /// Starts the client when DynamoModel is created. This method initializes
         /// the Analytics service and application life cycle start is tracked.
         /// </summary>
         /// <param name="model">DynamoModel</param>
-        /// <param name="disableADP">Pass true to disable ADP for the lifetime of the Dynamo or host process</param>
         /// <param name="isHeadless">Analytics won't be started if IsHeadless, but ADP may be loaded to be disabled.</param>
         /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
-        internal static void Start(DynamoModel model, bool disableADP, bool isHeadless, bool isTestMode)
+        internal static void Start(DynamoModel model, bool isHeadless, bool isTestMode)
         {
-            if (isTestMode)
-            {
-                if (disableADP)
-                {
-                    model.Logger.Log("Incompatible configuration: [IsTestMode] and [ADP disabled] ");
-                }
-                return;
-            }
-            if (disableADP)
-            {
-                //if this returns false something has gone wrong.
-                //the client requested ADP be disabled, but we cannot disable it.
-                if (!adpAnalyticsUI.DisableADPForProcessLifetime())
-                {
-                    model.Logger.LogNotification("Dynamo",
-                        "Dynamo Startup Error",
-                        "Analytics could not be disabled",
-                        "Dynamo was started with configuration requesting ADP be disabled - but ADP could not be disabled.");
-                }
-            }
-
             if (isHeadless)
             {
                 return;
             }
-            var client = new DynamoAnalyticsClient(model);
-            Analytics.Start(client);
+
+            // Initialize the concrete class only when we initialize the Service.
+            // This will also load the Analytics.Net.ADP assembly
+            // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
+            adpAnalyticsUI = new ADPAnalyticsUI();
+
+            Analytics.Start(new DynamoAnalyticsClient(model));
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
 
@@ -67,11 +51,34 @@ namespace Dynamo.Logging
         {
             get
             {
+                if (DisableAnalytics ||
+                    adpAnalyticsUI == null)
+                {
+                    return false;
+                }
+
                 return adpAnalyticsUI.IsOptedIn();
             }
             set
             {
+                if (DisableAnalytics ||
+                    adpAnalyticsUI == null)
+                {
+                    return;
+                }
+
                 adpAnalyticsUI.SetOptedIn(value);
+            }
+        }
+
+        /// <summary>
+        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// </summary>
+        internal static bool DisableAnalytics
+        {
+            get
+            {
+                return AnalyticsUtils.DisableAnalyticsForProcessLifetime;
             }
         }
 
