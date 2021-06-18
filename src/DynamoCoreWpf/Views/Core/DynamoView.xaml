@@ -711,10 +711,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
                                   IsCheckable="False" />
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
-                                  Command="{Binding ManagePackagePathsCommand}"
-                                  Name="managePackagePaths" />
                     </MenuItem>
                 </Menu>
 
