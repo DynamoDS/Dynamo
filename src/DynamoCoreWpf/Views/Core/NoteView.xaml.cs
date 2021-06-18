@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -101,6 +103,9 @@ namespace Dynamo.Nodes
             {
                 Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
             };
+
+            editWindow.EditTextBoxPreviewKeyDown += noteTextBox_PreviewKeyDown;
+
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
                 Mode = BindingMode.TwoWay,
@@ -168,5 +173,190 @@ namespace Dynamo.Nodes
         {
             Panel.SetZIndex(noteTextBox, 0);
         }
+
+        private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
+            if (!specialKeys.Contains(e.Key))
+                return;
+
+            e.Handled = true;
+            var textBox = sender as TextBox;
+            var text = textBox.Text;
+            var caretIndex = textBox.CaretIndex;
+
+            if (e.Key == Key.OemMinus)
+                textBox.Text = BulletDashHandler(text, caretIndex);
+            
+            if (e.Key == Key.Tab)
+                textBox.Text = BulletTabHandler(text, caretIndex);
+
+            if (e.Key == Key.Enter)
+                textBox.Text = BulletEnterHandler(text, caretIndex);
+
+            textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
+        }
+
+        #region Bullet point support
+
+        /// <summary>
+        /// List of bullets characters to use in sequence of indentation
+        /// </summary>
+        private static readonly char[] BULLETS_CHARS = { '\u2022', '\u25E6', '\u2023' };
+
+        /// <summary>
+        /// Handles text when user types Key.OemMinus (DASH)
+        /// </summary>
+        /// <param name="text"> text before typing DASH </param>
+        /// <param name="caretIndex"> caret index where user typed DASH </param>
+        /// <returns></returns>
+        private string BulletDashHandler( string text, int caretIndex)
+        {
+            // Get the line where DASH was typed 
+            var lineNumber = GetLineNumberAtCaretsIndex(text, caretIndex);
+            var line = GetLineTextAtCaretsIndex(text, caretIndex);
+            var caretAtLine = GetCaretIndexRelativeToLine(text, caretIndex);
+
+            // If there is text before caret dont convert it to bullet
+            var textBeforeCaret = line.Substring(0, caretAtLine);
+            if (!StringIsEmptyOrTab(textBeforeCaret))
+            {
+                line = line.Insert(caretAtLine, "-");
+                return ReplaceLineOfText(text, lineNumber, line);
+            }
+
+            var tabsBeforeCaret = textBeforeCaret.Count(t => t == '\t');
+            var bulletIndex = tabsBeforeCaret % BULLETS_CHARS.Length;
+            line = line.Insert(caretAtLine, BULLETS_CHARS[bulletIndex]+" ");
+
+            return ReplaceLineOfText(text, lineNumber, line);
+        }
+
+        /// <summary>
+        /// Handles text when user types Key.Tab (TAB)
+        /// </summary>
+        /// <param name="text">  text before typing TAB </param>
+        /// <param name="caretIndex"> caret index where user typed TAB </param>
+        /// <returns></returns>
+        private string BulletTabHandler(string text, int caretIndex)
+        {
+            // Get the line where TAB was typed 
+            var lineNumber = GetLineNumberAtCaretsIndex(text, caretIndex);
+            var line =  GetLineTextAtCaretsIndex(text,caretIndex);
+            var caretAtLine = GetCaretIndexRelativeToLine(text, caretIndex);
+
+            // If TAB was pressed just after a bullet insert it before the bullet
+            // so that you can easily indent
+            var caretIsRightAfterBullet = IsCaretRightAfterBullet(line, caretAtLine);
+            if (caretIsRightAfterBullet)
+                line = line.Insert(caretAtLine - 2, "\t");
+            else
+            {
+                line = line.Insert(caretAtLine, "\t");
+                caretAtLine++;
+            }
+
+            if (IsCaretBeforeABullet(line, caretAtLine) || caretIsRightAfterBullet)
+                line = UpdateBulletAccordingToIndentation(line);
+            
+            return ReplaceLineOfText(text, lineNumber, line);
+        }
+
+        /// <summary>
+        /// Handles text when user types Key.Enter (ENTER)
+        /// </summary>
+        /// <param name="text">  text before typing ENTER </param>
+        /// <param name="caretIndex"> caret index where user typed ENTER </param>
+        /// <returns></returns>
+        private string BulletEnterHandler(string text, int caretIndex)
+        {
+            var lineNumber = GetLineNumberAtCaretsIndex(text, caretIndex);
+            var line = GetLineTextAtCaretsIndex(text, caretIndex);
+            var caretAtLine = GetCaretIndexRelativeToLine(text, caretIndex);
+
+            // Check if line has any bullets, and copy it to next line
+            var bulletsInLine = BULLETS_CHARS.Where(b => line.Contains(b));
+            if (bulletsInLine.Count() == 0)
+                return text = text.Insert(caretIndex, "\n");
+
+            text = text.Insert(caretIndex, "\n");
+            caretIndex++;
+
+            var tabsBeforeBullet = line.Split(BULLETS_CHARS)[0].Count(c => c=='\t');
+            for (int i = 0; i < tabsBeforeBullet; i++)
+            {
+                text = text.Insert(caretIndex, "\t");
+                caretIndex++;
+            }
+            return text.Insert(caretIndex, bulletsInLine.First()+" ");
+        }
+
+        private bool StringIsEmptyOrTab(string text)
+        {
+            return !text.Any(c => !(c == ' ' || c == '\t'));
+        }
+
+        private bool IsCaretRightAfterBullet(string text, int caretIndex)
+        {
+            if (caretIndex == 0 )
+                return false;
+            return BULLETS_CHARS.Contains(text[caretIndex - 2]);
+        }
+
+        private bool IsCaretBeforeABullet(string text, int caretIndex)
+        {
+           var charactersBeforeBullet = text.Split(BULLETS_CHARS)[0];
+           return caretIndex <= charactersBeforeBullet.Length;
+        }
+
+        private int GetCaretIndexRelativeToLine(string text, int caretIndex)
+        {
+            // Get the text before the caret, split it into lines
+            // The caret index relative to line will be the last line's length
+            var textBeforeCaret = text.Substring(0, caretIndex);
+            var textInLines = Regex.Split(textBeforeCaret, "\r\n|\r|\n");
+            var caretRelativeToLine = textInLines.Last().Length;
+            return caretRelativeToLine;
+        }
+        
+        private int GetLineNumberAtCaretsIndex(string text, int caretIndex)
+        {
+            var textBeforeCaret = text.Substring(0, caretIndex);
+            var textInLines = Regex.Split(textBeforeCaret, "\r\n|\r|\n");
+
+            return textInLines.Length-1;
+        }
+        private string GetLineTextAtCaretsIndex(string text, int caretIndex)
+        {
+            var textInLines = Regex.Split(text, "\r\n|\r|\n");
+            var caretsLineIndex = GetLineNumberAtCaretsIndex(text, caretIndex);
+            return textInLines[caretsLineIndex];
+        }
+
+        private string ReplaceLineOfText(string text, int lineNumber, string newLine)
+        {
+            var textInLines = Regex.Split(text, "\r\n|\r|\n");
+            textInLines[lineNumber] = newLine;
+            return String.Join("\n", textInLines);
+        }
+
+        private string UpdateBulletAccordingToIndentation(string text, bool reverse = false)
+        {
+            for (int i = 0; i < BULLETS_CHARS.Length; i++)
+            {
+                int nextBulletIndex = (i + 1) % BULLETS_CHARS.Length;
+                if (reverse)
+                    nextBulletIndex = (i + BULLETS_CHARS.Length - 1) % BULLETS_CHARS.Length;
+
+                var newText = text.Replace(BULLETS_CHARS[i], BULLETS_CHARS[nextBulletIndex]);
+                if (!String.Equals(text, newText))
+                {
+                    text = newText;
+                    break;
+                }
+            }
+            return text;
+        }
+        #endregion
     }
 }

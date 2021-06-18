@@ -44,6 +44,7 @@
             Background="#EEE"
             Padding="10" TextWrapping="Wrap"
             LostFocus="noteTextBox_LostFocus"
+            PreviewKeyDown="noteTextBox_PreviewKeyDown"
             IsEnabled="{Binding Path=IsOnEditMode, Mode=OneWay}"
             >
             <TextBox.Style>

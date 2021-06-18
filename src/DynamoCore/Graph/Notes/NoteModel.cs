@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using Dynamo.Utilities;
 
@@ -26,7 +27,7 @@ namespace Dynamo.Graph.Notes
             get { return text; }
             set
             {
-                text = AddBulletPointSupport(value);
+                text = value;
                 RaisePropertyChanged("Text");
             }
         }
