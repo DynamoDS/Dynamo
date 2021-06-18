@@ -2390,6 +2390,22 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
+  <data name="AddStyleButton" xml:space="preserve">
+    <value>Add Style</value>
+  </data>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Reset CPython</value>
+  </data>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Resets CPython environment by reloading modules.</value>
+  </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>Node and Package Paths</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  
   <data name="ContextSelectConnectedDownstream" xml:space="preserve">
     <value>Downstream</value>
   </data>
@@ -2402,4 +2418,5 @@ Uninstall the following packages: {0}?</value>
   <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
     <value>Both</value>
   </data>
+  
 </root>

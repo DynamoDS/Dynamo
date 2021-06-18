@@ -29,9 +29,9 @@ namespace DynamoCoreWpfTests
             link = vectorNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
             Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Geometry/Vector/Create/ByCoordinates(x_double-y_double-z_double-normalized_bool)", link);
 
-            var cuboidNode = ws.NodeFromWorkspace("d24c6e0e-4d4d-4c9f-885f-f95244b03931"); // Cuboid.ByLengths(cs, width, length, height)
+            var cuboidNode = ws.NodeFromWorkspace("d24c6e0e-4d4d-4c9f-885f-f95244b03931"); // Cuboid.ByLengths(coordinateSystem, width, length, height)
             link = cuboidNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
-            Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Geometry/Cuboid/Create/ByLengths(cs_CoordinateSystem-width_double-length_double-height_double)", link);
+            Assert.AreEqual("http://dictionary.dynamobim.com/2/#/Geometry/Cuboid/Create/ByLengths(coordinateSystem_CoordinateSystem-width_double-length_double-height_double)", link);
             
             var hueNode = ws.NodeFromWorkspace("b2d4cff2-1a19-4da7-b22e-34756fe51a5f"); // Color.Hue
             link = hueNode.ConstructDictionaryLinkFromLibrary(ViewModel.Model.LibraryServices);
