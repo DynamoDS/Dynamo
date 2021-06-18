@@ -90,7 +90,7 @@ namespace NodeDocumentationMarkdownGenerator
             return new MdFileInfo(nodeName, nodeNamspace, fullCategory, header.Category, nodeNamspace);
         }
 
-        internal static bool TryGetFromSearchEntry(NodeSearchElement entry, out MdFileInfo info)
+        internal static bool TryGetMdFileInfoFromSearchEntry(NodeSearchElement entry, out MdFileInfo info)
         {
             try
             {

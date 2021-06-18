@@ -415,7 +415,7 @@ namespace NodeDocumentationMarkdownGenerator
 
             foreach (var entry in nodeSearchModel.SearchEntries)
             {
-                if (MdFileInfo.TryGetFromSearchEntry(entry,  out MdFileInfo info))
+                if (MdFileInfo.TryGetMdFileInfoFromSearchEntry(entry,  out MdFileInfo info))
                 {
                     fileInfos.Add(info);
                 }              
