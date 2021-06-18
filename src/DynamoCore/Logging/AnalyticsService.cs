@@ -10,7 +10,7 @@ namespace Dynamo.Logging
     /// </summary>
     class AnalyticsService
     {
-        // Use the interface so that we do not have to load the ADP assembly at this time.
+        // Use the Analytics.Core interface so that we do not have to load the ADP assembly at this time.
         private static IAnalyticsUI adpAnalyticsUI;
 
         /// <summary>
