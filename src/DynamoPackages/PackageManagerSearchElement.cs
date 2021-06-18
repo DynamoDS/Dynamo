@@ -61,10 +61,10 @@ namespace Dynamo.PackageManager
                 {
                     foreach (var host in Header.versions.Last().host_dependencies)
                     {
-                        hostsString += host + "  ";
+                        hostsString += host + Environment.NewLine;
                     }
                 }
-                return hostsString;
+                return hostsString.TrimEnd('\r', '\n');
             }
         }
 

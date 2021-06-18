@@ -221,6 +221,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
+            }
+        }
+
+        /// <summary>
         /// LanguagesList property containt the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
         /// </summary>
         public ObservableCollection<string> LanguagesList
