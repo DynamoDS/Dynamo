@@ -566,7 +566,7 @@ namespace Dynamo.Models
             /// <summary>
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
-            [Obsolete("This method will be removed in Dynamo 3.0 - please use ...")]
+            [Obsolete("This method will be removed in Dynamo 3.0 - please use Autodesk.Analytics.Core.AnalyticsUtils.DisableAnalyticsForProcessLifetime instead.")]
             public bool DisableADP { get; set; }
         }
 
