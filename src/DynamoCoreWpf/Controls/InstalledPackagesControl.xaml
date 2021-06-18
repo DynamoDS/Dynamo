@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:InstalledPackagesViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -24,10 +24,9 @@
     <Grid Background="Black">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <ListBox Name="SearchResultsListBox"
                  Grid.Row="0"
                  ItemsSource="{Binding Path=LocalPackages}"
@@ -36,6 +35,8 @@
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                  VirtualizingPanel.ScrollUnit="Pixel"
+                 MaxHeight="295"
+                 BorderThickness="0"
                  Padding="0">
 
             <ListBox.ItemContainerStyle>
@@ -81,15 +82,15 @@
                                                         Margin="5,5,5,7">
                                                     <TextBlock Text="{Binding Path=Model.Name}"
                                                            ToolTip="{Binding Path=Model.Name}"
-                                                           FontSize="15"
+                                                           FontSize="11"
                                                            Width="200"
                                                            TextTrimming="CharacterEllipsis"
                                                            Margin="10,0,10,0"
                                                            Foreground="WhiteSmoke"></TextBlock>
                                                     <TextBlock Text="{Binding Path=Model.VersionName}"
                                                            MinWidth="50"
-                                                           FontSize="11"
-                                                           Foreground="#CCC"></TextBlock>
+                                                           FontSize="10"
+                                                           Foreground="WhiteSmoke"></TextBlock>
                                                 </StackPanel>
                                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                     <Button Name="MoreButton"
@@ -181,8 +182,8 @@
                                                 <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
-                                                       FontWeight="Bold"
-                                                       Foreground="Gray"></Label>
+                                                       FontSize="10"
+                                                       Foreground="WhiteSmoke"/>
                                                     <ItemsControl Name="LoadedCustomNodes"
                                                               ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
                                                               BorderThickness="0"
@@ -193,7 +194,8 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding Path=Name}"
-                                                                       Foreground="White"
+                                                                       Foreground="WhiteSmoke"
+                                                                       FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
@@ -205,20 +207,21 @@
                                                 <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
-                                                       FontWeight="Bold"
-                                                       Foreground="Gray"></Label>
+                                                       Foreground="WhiteSmoke"
+                                                       FontSize="10"></Label> 
                                                     <ItemsControl Name="NodeLibraries"
-                                                              ItemsSource="{Binding Path=Model.LoadedAssemblies}"
-                                                              BorderThickness="0"
-                                                              Padding="0"
-                                                              Margin="10,0,0,0"
-                                                              Background="Transparent">
+                                                                  ItemsSource="{Binding Path=Model.LoadedAssemblies}"
+                                                                  BorderThickness="0"
+                                                                  Padding="0"
+                                                                  Margin="10,0,0,0"
+                                                                  Background="Transparent">
 
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
-                                                                       Foreground="White"
+                                                                       Foreground="WhiteSmoke"
+                                                                       FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
                                                                 <DataTemplate.Triggers>
@@ -238,8 +241,8 @@
                                                 <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
-                                                       FontWeight="Bold"
-                                                       Foreground="Gray"></Label>
+                                                       FontSize="10"
+                                                       Foreground="WhiteSmoke"></Label>
                                                     <ItemsControl Name="AddAssemblies"
                                                               ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                               BorderThickness="0"
@@ -251,7 +254,8 @@
                                                             <DataTemplate>
                                                                 <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
-                                                                       Foreground="White"
+                                                                       Foreground="WhiteSmoke"
+                                                                       FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
                                                                 <DataTemplate.Triggers>
@@ -272,8 +276,8 @@
                                                 <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
-                                                       FontWeight="Bold"
-                                                       Foreground="Gray"></Label>
+                                                       FontSize="10"
+                                                       Foreground="WhiteSmoke"></Label>
                                                     <ItemsControl Name="AdditionalFiles"
                                                               ItemsSource="{Binding Path=Model.AdditionalFiles}"
                                                               BorderThickness="0"
@@ -284,7 +288,8 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding Path=RelativePath}"
-                                                                       Foreground="White"
+                                                                       Foreground="WhiteSmoke"
+                                                                       FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             </DataTemplate>
                                                         </ItemsControl.ItemTemplate>
