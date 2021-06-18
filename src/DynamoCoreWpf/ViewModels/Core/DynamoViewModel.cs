@@ -1690,21 +1690,6 @@ namespace Dynamo.ViewModels
             return true;
         }
 
-        private void ShowInstalledPackages(object parameters)
-        {
-            OnRequestManagePackagesDialog(this, EventArgs.Empty);
-        }
-
-        private bool CanShowInstalledPackages(object parameters)
-        {
-            return true;
-        }
-
-        private void ManagePackagePaths(object parameters)
-        {
-            OnRequestPackagePathsDialog(this, EventArgs.Empty);
-        }
-
         /// <summary>
         ///     Change the currently visible workspace to a custom node's workspace
         /// </summary>

@@ -6,7 +6,9 @@ namespace Dynamo.ViewModels
 {
     partial class DynamoViewModel
     {
+        [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestManagePackagesDialog;
+        [Obsolete("This method will be removed do not use. It does nothing.")]
         public virtual void OnRequestManagePackagesDialog(Object sender, EventArgs e)
         {
             if (RequestManagePackagesDialog != null)
@@ -30,8 +32,9 @@ namespace Dynamo.ViewModels
                 RequestPackageManagerSearchDialog(this, e);
             }
         }
-
+        [Obsolete("This event will be removed, do not use. It does nothing.")]
         public event EventHandler RequestPackagePathsDialog;
+        [Obsolete("This method will be removed do not use. It does nothing.")]
         public virtual void OnRequestPackagePathsDialog(object sender, EventArgs e)
         {
             var handler = RequestPackagePathsDialog;
