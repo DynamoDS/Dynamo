@@ -27,12 +27,13 @@ namespace Dynamo.Logging
                 return;
             }
 
-            var client = new DynamoAnalyticsClient(model);
-            Analytics.Start(client);
-
             // Initialize the concrete class only when we initialize the Service.
             // This will also load the Analytics.Net.ADP assembly
+            // We must initialize the ADPAnalyticsUI instance before the Analytics.Start call.
             adpAnalyticsUI = new ADPAnalyticsUI();
+
+            var client = new DynamoAnalyticsClient(model);
+            Analytics.Start(client);
 
             model.WorkspaceAdded += OnWorkspaceAdded;
         }
@@ -67,6 +68,7 @@ namespace Dynamo.Logging
                 {
                     return;
                 }
+
                 adpAnalyticsUI.SetOptedIn(value);
             }
         }
