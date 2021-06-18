@@ -82,10 +82,6 @@ namespace Dynamo.Logging
             {
                 return AnalyticsUtils.DisableAnalyticsForProcessLifetime;
             }
-            set
-            {
-                AnalyticsUtils.DisableAnalyticsForProcessLifetime = value;
-            }
         }
 
         /// <summary>
