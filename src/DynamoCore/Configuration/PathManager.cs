@@ -150,7 +150,14 @@ namespace Dynamo.Core
 
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
+            get
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, PackagesDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), PackagesDirectoryName);
+            }
         }
 
         public IEnumerable<string> PackagesDirectories

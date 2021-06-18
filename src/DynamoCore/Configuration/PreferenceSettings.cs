@@ -366,7 +366,7 @@ namespace Dynamo.Configuration
         /// Currently selected package path where all packages downloaded from the Package Manager
         /// will be installed.
         /// </summary>
-        public string SelectedPackagePathForInstall {
+        internal string SelectedPackagePathForInstall {
             get
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
