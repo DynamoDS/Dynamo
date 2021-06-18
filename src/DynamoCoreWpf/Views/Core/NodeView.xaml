@@ -109,9 +109,6 @@
                           IsChecked="{Binding Path=IsSetAsOutput,Mode=TwoWay}"
                           Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                           IsCheckable="True" />
-                <MenuItem Name="help_cm"
-                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
-                          Command="{Binding Path=ShowHelpCommand}" />
                 <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedHeader}">
                     <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstream}"
                               Command="{Binding Path=SelectConnectedUpstreamCommand}"
@@ -123,6 +120,10 @@
                               Command="{Binding Path=SelectConnectedUpAndDownstreamCommand}"
                               />
                 </MenuItem>
+                <MenuItem Name="help_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
+                          Command="{Binding Path=ShowHelpCommand}" />
+
             </ContextMenu>
         </Grid.ContextMenu>
 
