@@ -22,6 +22,15 @@ namespace Dynamo.Logging
         /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
         internal static void Start(DynamoModel model, bool isHeadless, bool isTestMode)
         {
+            if (isTestMode)
+            {
+                if (DisableAnalytics)
+                {
+                    model.Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
+                }
+                return;
+            }
+
             if (isHeadless)
             {
                 return;
