@@ -362,6 +362,7 @@ namespace Dynamo.Configuration
         private static string defaultPythonEngine;
 
         private string selectedPackagePathForInstall;
+        // TODO: Add this to IPreferences in Dynamo 3.0
         /// <summary>
         /// Currently selected package path where all packages downloaded from the Package Manager
         /// will be installed.
