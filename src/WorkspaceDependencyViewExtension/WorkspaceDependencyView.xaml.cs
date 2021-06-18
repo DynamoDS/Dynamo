@@ -9,6 +9,7 @@ using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
+using Dynamo.PackageManager;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
@@ -148,6 +149,19 @@ namespace Dynamo.WorkspaceDependency
                 this.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
             }
 
+            var pmExtension = dependencyViewExtension.pmExtension;
+            if (pmExtension != null)
+            {
+                foreach (PackageDependencyInfo packageDependencyInfo in packageDependencies)
+                {
+                    var targetInfo = pmExtension.PackageLoader.LocalPackages.Where(x => x.Name == packageDependencyInfo.Name).FirstOrDefault();
+                    if (targetInfo != null)
+                    {
+                        packageDependencyInfo.Path = targetInfo.RootDirectory;
+                    }
+                }
+            }
+
             dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
             PackageDependencyTable.ItemsSource = dataRows;
         }
@@ -251,6 +265,7 @@ namespace Dynamo.WorkspaceDependency
                 {
                     info.Version = new Version(targetInfo.VersionName);
                     info.State = PackageDependencyState.Loaded;
+                    info.Path = targetInfo.RootDirectory;
                     // Mark the current workspace dirty for save
                     currentWorkspace.HasUnsavedChanges = true;
                     DependencyRegen(currentWorkspace);
@@ -294,6 +309,11 @@ namespace Dynamo.WorkspaceDependency
         /// Name of this package dependency
         /// </summary>
         public string Name => DependencyInfo.Name;
+
+        /// <summary>
+        /// {ackage dependency path
+        /// </summary>
+        public string Path => DependencyInfo.Path;
 
         /// <summary>
         /// Version of this package dependency

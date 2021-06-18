@@ -132,6 +132,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the state of the Preferences Window Debug Mode
+        /// </summary>
+        public bool PreferencesDebugMode
+        {
+            get
+            {
+                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
+            }
+        }
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -225,7 +236,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// LanguagesList property contains the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
+        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
+            }
+        }
+
+        /// <summary>
+        /// LanguagesList property containt the list of all the languages listed in: https://wiki.autodesk.com/display/LOCGD/Dynamo+Languages
         /// </summary>
         public ObservableCollection<string> LanguagesList
         {
