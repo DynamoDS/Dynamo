@@ -366,12 +366,15 @@ namespace Dynamo.Configuration
         /// Currently selected package path where all packages downloaded from the Package Manager
         /// will be installed.
         /// </summary>
-        internal string SelectedPackagePathForInstall {
+        public string SelectedPackagePathForInstall {
             get
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
                 {
-                    selectedPackagePathForInstall = PathManager.GetAppDataFolder();
+                    var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+                    selectedPackagePathForInstall = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                        $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
                 }
                 return selectedPackagePathForInstall;
             }
