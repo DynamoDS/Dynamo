@@ -24,7 +24,7 @@ namespace Dynamo.Logging
         {
             if (isTestMode)
             {
-                if (DisableAnalytics)
+                if (Analytics.DisableAnalytics)
                 {
                     model.Logger.Log("Incompatible configuration: [IsTestMode] and [Analytics disabled] ");
                 }
@@ -60,7 +60,7 @@ namespace Dynamo.Logging
         {
             get
             {
-                if (DisableAnalytics ||
+                if (Analytics.DisableAnalytics ||
                     adpAnalyticsUI == null)
                 {
                     return false;
@@ -70,24 +70,13 @@ namespace Dynamo.Logging
             }
             set
             {
-                if (DisableAnalytics ||
+                if (Analytics.DisableAnalytics ||
                     adpAnalyticsUI == null)
                 {
                     return;
                 }
 
                 adpAnalyticsUI.SetOptedIn(value);
-            }
-        }
-
-        /// <summary>
-        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
-        /// </summary>
-        internal static bool DisableAnalytics
-        {
-            get
-            {
-                return AnalyticsUtils.DisableAnalyticsForProcessLifetime;
             }
         }
 

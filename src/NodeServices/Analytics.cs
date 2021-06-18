@@ -8,6 +8,11 @@ namespace Dynamo.Logging
     public static class Analytics
     {
         /// <summary>
+        /// Disables all analytics collection (Google, ADP, etc.) for the lifetime of the process.
+        /// </summary>
+        public static bool DisableAnalytics;
+
+        /// <summary>
         /// A dummy IDisposable class
         /// </summary>
         class Dummy : IDisposable

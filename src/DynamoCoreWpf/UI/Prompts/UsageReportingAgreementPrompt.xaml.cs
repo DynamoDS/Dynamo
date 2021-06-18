@@ -47,7 +47,7 @@ namespace Dynamo.UI.Prompts
 
             AcceptGoogleAnalyticsCheck.IsChecked = UsageReportingManager.Instance.IsAnalyticsReportingApproved;
 
-            if (AnalyticsService.DisableAnalytics)
+            if (Analytics.DisableAnalytics)
             {
                 AcceptADPAnalyticsCheck.IsChecked = false;
                 AcceptADPAnalyticsTextBlock.IsEnabled = false;

@@ -131,7 +131,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
-                    && !AnalyticsUtils.DisableAnalyticsForProcessLifetime
+                    && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
             }
         }
@@ -145,7 +145,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
-                    && !AnalyticsUtils.DisableAnalyticsForProcessLifetime
+                    && !Analytics.DisableAnalytics
                     && preferences.IsADPAnalyticsReportingApproved; 
             }
         }
@@ -157,7 +157,7 @@ namespace Dynamo.Logging
         {
             get { return preferences != null
                     && Service.IsInitialized
-                    && !AnalyticsUtils.DisableAnalyticsForProcessLifetime
+                    && !Analytics.DisableAnalytics
                     && preferences.IsUsageReportingApproved; }
         }
 

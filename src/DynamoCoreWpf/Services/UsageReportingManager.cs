@@ -48,7 +48,7 @@ namespace Dynamo.Services
         {
             get {
                 return !DynamoModel.IsTestMode
-                    && !AnalyticsService.DisableAnalytics
+                    && !Analytics.DisableAnalytics
                     && (dynamoViewModel != null
                         && dynamoViewModel.Model.PreferenceSettings.IsUsageReportingApproved);
             }
@@ -95,7 +95,7 @@ namespace Dynamo.Services
                 if (DynamoModel.IsTestMode) // Do not want logging in unit tests.
                     return false;
 
-                if (AnalyticsService.DisableAnalytics)
+                if (Analytics.DisableAnalytics)
                 {
                     return false;
                 }
@@ -155,7 +155,7 @@ namespace Dynamo.Services
             // First run of Dynamo
             if (dynamoViewModel.Model.PreferenceSettings.IsFirstRun
                 && !dynamoViewModel.HideReportOptions
-                && !AnalyticsService.DisableAnalytics
+                && !Analytics.DisableAnalytics
                 && !DynamoModel.IsTestMode)
             {
                 //Prompt user for detailed reporting

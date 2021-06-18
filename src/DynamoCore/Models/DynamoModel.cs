@@ -38,7 +38,6 @@ using Dynamo.Utilities;
 using DynamoServices;
 using DynamoUnits;
 using Greg;
-using Autodesk.Analytics.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ProtoCore;
@@ -677,7 +676,7 @@ namespace Dynamo.Models
             }
 
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            if (!areAnalyticsDisabledFromConfig && !AnalyticsUtils.DisableAnalyticsForProcessLifetime)
+            if (!areAnalyticsDisabledFromConfig && !Dynamo.Logging.Analytics.DisableAnalytics)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
             }
