@@ -22,15 +22,16 @@ namespace Dynamo.Logging
         /// <param name="isTestMode">Analytics won't be started if isTestMode, ADP will not be loaded.</param>
         internal static void Start(DynamoModel model, bool isHeadless, bool isTestMode)
         {
-            if (isHeadless || AnalyticsUtils.DisableAnalyticsForProcessLifetime)
+            if (isHeadless)
             {
                 return;
             }
+
             var client = new DynamoAnalyticsClient(model);
             Analytics.Start(client);
 
             // Initialize the concrete class only when we initialize the Service.
-            // This will also load the Analytics.ADP assembly
+            // This will also load the Analytics.Net.ADP assembly
             adpAnalyticsUI = new ADPAnalyticsUI();
 
             model.WorkspaceAdded += OnWorkspaceAdded;

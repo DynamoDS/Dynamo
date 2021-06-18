@@ -602,8 +602,6 @@ namespace Dynamo.Models
         /// <param name="config">Start configuration</param>
         protected DynamoModel(IStartConfiguration config)
         {
-            AnalyticsUtils.DisableAnalyticsForProcessLifetime = true;
-
             if (config is DefaultStartConfiguration defaultStartConfig)
             {
                 // This is not exposed in IStartConfiguration to avoid a breaking change.
@@ -687,16 +685,8 @@ namespace Dynamo.Models
                 // Do nothing for now
             }
 
-            // these configuration options are incompatible, one requires loading ADP binaries
-            // the other depends on not loading those same binaries.
-
-            if (areAnalyticsDisabledFromConfig && AnalyticsUtils.DisableAnalyticsForProcessLifetime)
-            {
-                throw new ConfigurationErrorsException("Incompatible configuration: could not start Dynamo with both configuration file and disableAnalytics options enabled");
-            }
-
             // If user skipped analytics from assembly config, do not try to launch the analytics client
-            if (!areAnalyticsDisabledFromConfig)
+            if (!areAnalyticsDisabledFromConfig && !AnalyticsUtils.DisableAnalyticsForProcessLifetime)
             {
                 AnalyticsService.Start(this, IsHeadless, IsTestMode);
             }
