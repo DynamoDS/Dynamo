@@ -517,7 +517,8 @@
                                       Grid.Row="0"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
-                                      Style="{StaticResource MenuExpanderStyle}">
+                                      Style="{StaticResource MenuExpanderStyle}"
+                                      Visibility="{Binding PreferencesDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                               Height="220">
                                     <Grid Margin="8,0,0,0">

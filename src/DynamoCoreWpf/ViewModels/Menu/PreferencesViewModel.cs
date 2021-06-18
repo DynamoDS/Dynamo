@@ -128,6 +128,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the state of the Preferences Window Debug Mode
+        /// </summary>
+        public bool PreferencesDebugMode
+        {
+            get
+            {
+                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
+            }
+        }
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
