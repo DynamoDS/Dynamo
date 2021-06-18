@@ -313,6 +313,10 @@ namespace NodeDocumentationMarkdownGenerator
                         var matchingEntries = dictEntrys
                             .Where(x =>
                                 x.FolderPath.StartsWith(path) &&
+                                // below regex compares the two string without considering whitespace.
+                                // we need this as the Dictionary specify overloaded nodes with args like this:
+                                // Max (int1, int2) - adding unnecessary white space between node name and args.
+                                // the MdFileInfo will specify the same like this : Max(int1, int2).
                                 (Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(info.NodeName, @"\s+", "") ||
                                 Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(nodeNameWithoutPrefix, @"\s+", "")));
 
