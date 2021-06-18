@@ -45,7 +45,6 @@ namespace Dynamo.ViewModels
         private string selectedFontSize;
         private string selectedNumberFormat;
         private string selectedPythonEngine;
-        private string selectedPackagePathForInstall;
         private bool runPreviewEnabled;
         private bool runPreviewIsChecked;
         private bool hideIronPAlerts;
@@ -282,13 +281,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return selectedPackagePathForInstall;
+                return preferenceSettings.SelectedPackagePathForInstall;
             }
             set
             {
-                if (selectedPackagePathForInstall != value)
+                if (preferenceSettings.SelectedPackagePathForInstall != value)
                 {
-                    selectedPackagePathForInstall = value;
                     preferenceSettings.SelectedPackagePathForInstall = value;
                     dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(value);
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
