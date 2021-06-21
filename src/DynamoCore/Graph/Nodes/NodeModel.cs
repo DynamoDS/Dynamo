@@ -1621,6 +1621,15 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Recursively selects all nodes upstream and downstream to this node
+        /// </summary>
+        public void SelectUpstreamAndDownstreamNeighbours()
+        {
+            SelectUpstreamNeighbours();
+            SelectDownstreamNeighbours();
+        }
+
         #region Node State
 
         /// <summary>

@@ -1315,8 +1315,7 @@ namespace Dynamo.ViewModels
 
         private void SelectDownstreamAndUpstreamNeighbours(object parameters)
         {
-            NodeModel.SelectUpstreamNeighbours();
-            NodeModel.SelectDownstreamNeighbours();
+            NodeModel.SelectUpstreamAndDownstreamNeighbours();
         }
 
 
