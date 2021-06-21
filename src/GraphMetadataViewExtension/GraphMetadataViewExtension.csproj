@@ -120,6 +120,9 @@
     <Resource Include="Resources\add-thick-grey-16px.png" />
     <Resource Include="Resources\close-thick-grey-16px.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\link_48px.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="AfterBuild">
     <ItemGroup>

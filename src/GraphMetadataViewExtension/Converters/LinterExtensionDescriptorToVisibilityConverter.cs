@@ -13,7 +13,7 @@ namespace Dynamo.GraphMetadata.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (!(value is LinterExtensionDescriptor extensionDescriptor) || extensionDescriptor == LinterExtensionDescriptor.DefaultDescriptor)
+            if (!(value is LinterExtensionDescriptor extensionDescriptor) || extensionDescriptor.Id == LinterExtensionDescriptor.DefaultDescriptor.Id)
             {
                 return Visibility.Collapsed;
             }

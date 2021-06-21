@@ -201,10 +201,11 @@
         </StackPanel>
 
         <Grid Grid.Row="1"
+              Margin="0, 0px"
               Visibility="{Binding CurrentLinter, Converter={StaticResource LinterExtensionDescriptorToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -213,6 +214,18 @@
             <HeaderedContentControl Grid.Row="0" Grid.Column="0" Header="Graph Type">
                 <TextBlock Text="{Binding CurrentLinter.Name, Mode=OneWay, FallbackValue='Current Linter'}" />
             </HeaderedContentControl>
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    BorderThickness="0"
+                    Command="{Binding OpenGraphStatusCommand}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Width="16px"
+                               Height="16px"
+                               Source="/GraphMetadataViewExtension;component/Resources/link_48px.png" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
             <Separator Grid.Row="1" Grid.ColumnSpan="2" 
                        Background="{StaticResource FilterIconColor}"

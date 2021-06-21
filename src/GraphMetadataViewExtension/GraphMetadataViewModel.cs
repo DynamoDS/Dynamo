@@ -23,6 +23,8 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public DelegateCommand AddCustomPropertyCommand { get; set; }
 
+        public DelegateCommand OpenGraphStatusCommand { get; set; }
+
         /// <summary>
         /// Description of the current workspace
         /// </summary>
@@ -199,6 +201,12 @@ namespace Dynamo.GraphMetadata
         private void InitializeCommands()
         {
             this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExecute);
+            this.OpenGraphStatusCommand = new DelegateCommand(OpenGraphStatusExecute);
+        }
+
+        private void OpenGraphStatusExecute(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void AddCustomPropertyExecute(object obj)
