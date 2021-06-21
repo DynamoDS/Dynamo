@@ -52,14 +52,13 @@
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/down_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the path text-->
-                    <TextBlock x:Name="PathTextBlock" Text="{Binding}"
+                    <TextBlock x:Name="PathTextBlock" Style="{StaticResource DarkTextBlock}" 
+                                Text="{Binding}"
                                 Grid.Column="2"
                                 Margin="7,4,7,4"
                                 Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
                                 MinHeight="24"
                                 Padding="5,5,5,5"
-                                TextTrimming="CharacterEllipsis"
-                                FontSize="12"
                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
                     <!--the the edit path button-->
                     <Button
@@ -111,12 +110,12 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical" Margin="0,6,0,0">
         <DockPanel>
-            <Label  Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
+            <Label  Style="{StaticResource PreferenceTitleLabelStyle}"  
+                    Content="{x:Static p:Resources.PackagePathPreferencesTitle}" 
                                             Padding="5,5,5,5"
                                             VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"
-                                            FontSize="14"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            HorizontalAlignment="Left">
+            </Label>
 
             <Button x:Name="AddPaths"
                                                 Style="{StaticResource FlatButtonStyle}" 

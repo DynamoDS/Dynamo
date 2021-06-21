@@ -547,6 +547,8 @@
         </Setter>
     </Style>
 
+
+
     <Style x:Key="SDarkTextBox"
            BasedOn="{StaticResource {x:Type TextBox}}"
            TargetType="{x:Type TextBox}">
@@ -2301,6 +2303,25 @@
     <!--White Window Color for borders-->
     <Color x:Key="PreferencesToogleBorderColor" R="255" G="255" B="255" A="255"/>
 
+    <Style x:Key="DarkTextBlock"
+           TargetType="TextBlock">
+        <Setter Property="FontSize"
+                Value="12">
+        </Setter>
+        <Setter Property="TextTrimming"
+            Value="CharacterEllipsis">
+        </Setter>
+    </Style>
+
+    <Style x:Key="PreferenceTitleLabelStyle"
+            TargetType="{x:Type Label}">
+        <Setter Property="Foreground"
+                Value="{StaticResource PreferencesWindowFontColor}">
+        </Setter>
+        <Setter Property="FontSize"
+                Value="14">
+        </Setter>
+    </Style>
 
     <Style x:Key="CaptionButtonStyleClose" 
                    TargetType="Button">
