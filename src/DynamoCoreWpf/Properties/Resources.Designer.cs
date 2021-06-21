@@ -2631,7 +2631,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel pending uninstall....
+        ///   Looks up a localized string similar to Cancel scheduled unload....
         /// </summary>
         public static string InstalledPackageViewContextMenuCancelUninstall {
             get {
@@ -2640,7 +2640,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove the pending uninstall status.
+        ///   Looks up a localized string similar to Remove the scheduled unload status.
         /// </summary>
         public static string InstalledPackageViewContextMenuCancelUninstallTooltip {
             get {
@@ -2775,7 +2775,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall....
+        ///   Looks up a localized string similar to Unload....
         /// </summary>
         public static string InstalledPackageViewContextMenuUninstall {
             get {
@@ -2784,7 +2784,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uninstall this package, only allowed if none of the types are currently in use.
+        ///   Looks up a localized string similar to Unloading this package is only allowed if none of the types are currently in use.
         /// </summary>
         public static string InstalledPackageViewContextMenuUninstallTooltip {
             get {
@@ -4269,11 +4269,88 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string PackageStateError {
+            get {
+                return ResourceManager.GetString("PackageStateError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        ///This package has not been loaded due to the following error:
+        ///{0}..
+        /// </summary>
+        public static string PackageStateErrorTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateErrorTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        /// </summary>
+        public static string PackageStateLoaded {
+            get {
+                return ResourceManager.GetString("PackageStateLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loaded.
+        ///This package is loaded and ready to be used..
+        /// </summary>
+        public static string PackageStateLoadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateLoadedTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        /// </summary>
+        public static string PackageStatePendingUnload {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scheduled to be unloaded.
+        ///This package will be unloaded after the next Dynamo restart..
+        /// </summary>
+        public static string PackageStatePendingUnloadTooltip {
+            get {
+                return ResourceManager.GetString("PackageStatePendingUnloadTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string PackageStateUnknown {
             get {
                 return ResourceManager.GetString("PackageStateUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        /// </summary>
+        public static string PackageStateUnloaded {
+            get {
+                return ResourceManager.GetString("PackageStateUnloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unloaded.
+        ///This package has not been loaded because another conflicting package was loaded before it..
+        /// </summary>
+        public static string PackageStateUnloadedTooltip {
+            get {
+                return ResourceManager.GetString("PackageStateUnloadedTooltip", resourceCulture);
             }
         }
         

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
@@ -28,6 +29,70 @@ namespace Dynamo.ViewModels
         public bool HasAdditionalAssemblies
         {
             get { return Model.LoadedAssemblies.Any(x => !x.IsNodeLibrary); }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public bool EnableOldMarkedForUnistallState
+        {
+            get { return !DebugModes.IsEnabled("DynamoPackageStates") && Model.MarkedForUninstall; }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public bool EnablePackageStates
+        {
+            get { return DebugModes.IsEnabled("DynamoPackageStates"); }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageLoadStateText
+        {
+            get
+            {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                if (Model.MarkedForUninstall)
+                {
+                    return Resources.PackageStatePendingUnload;
+                }
+
+                switch (Model.LoadState.Type)
+                {
+                    case PackageLoadState.Types.Unloaded: return Resources.PackageStateUnloaded;
+                    case PackageLoadState.Types.Loaded: return Resources.PackageStateLoaded;
+                    case PackageLoadState.Types.Error: return Resources.PackageStateError;
+                    default:
+                        return "Unkonwn package state";
+                }
+            }
+        }
+
+        [Obsolete("This is a temporary property. Please do not use it")]
+        public string PackageLoadStateTooltip
+        {
+            get
+            {
+                if (!DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    return "DO NOT USE THIS";
+                }
+
+                if (Model.MarkedForUninstall)
+                {
+                    return Resources.PackageStatePendingUnloadTooltip;
+                }
+
+                switch (Model.LoadState.Type)
+                {
+                    case PackageLoadState.Types.Unloaded: return Resources.PackageStateUnloadedTooltip;
+                    case PackageLoadState.Types.Loaded: return Resources.PackageStateLoadedTooltip;
+                    case PackageLoadState.Types.Error: return string.Format(Resources.PackageStateErrorTooltip, Model.LoadState.ErrorMessage);
+                    default:
+                        return "Unkonwn package state";
+                }
+            }
         }
 
         public bool HasNodeLibraries
@@ -117,6 +182,16 @@ namespace Dynamo.ViewModels
         private void UnmarkForUninstallation()
         {
             Model.UnmarkForUninstall( dynamoViewModel.Model.PreferenceSettings );
+
+            if (DebugModes.IsEnabled("DynamoPackageStates"))
+            {
+                RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+                RaisePropertyChanged(nameof(PackageLoadStateText));
+            }
+            else
+            {
+                RaisePropertyChanged("EnableOldMarkedForUnistallState");
+            }
         }
 
         private bool CanUnmarkForUninstallation()
@@ -148,6 +223,15 @@ namespace Dynamo.ViewModels
                 var dynModel = dynamoViewModel.Model;
                 var pmExtension = dynModel.GetPackageManagerExtension();
                 Model.UninstallCore(dynModel.CustomNodeManager, pmExtension.PackageLoader, dynModel.PreferenceSettings);
+
+                if (DebugModes.IsEnabled("DynamoPackageStates"))
+                {
+                    RaisePropertyChanged(nameof(PackageLoadStateTooltip));
+                    RaisePropertyChanged(nameof(PackageLoadStateText));
+                } else
+                {
+                    RaisePropertyChanged("EnableOldMarkedForUnistallState");
+                }
             }
             catch (Exception)
             {
@@ -161,7 +245,7 @@ namespace Dynamo.ViewModels
         private bool CanUninstall()
         {
             return (!Model.InUse(dynamoViewModel.Model) || Model.LoadedAssemblies.Any()) 
-                && !Model.MarkedForUninstall;
+                && !Model.MarkedForUninstall && (Model.LoadState.Type != PackageLoadState.Types.Unloaded);
         }
 
         private void GoToRootDirectory()

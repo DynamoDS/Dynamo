@@ -785,7 +785,7 @@ namespace Dynamo.ViewModels
                 {
                     // Temporary location for setting the package state.
                     // Should be moved somewhere with more visibility into possible errors.
-                    dynPkg.PackageState = Package.PackageStates.Loaded;
+                    dynPkg.LoadState.Type = PackageLoadState.Types.Loaded;
                 }
             }
             else

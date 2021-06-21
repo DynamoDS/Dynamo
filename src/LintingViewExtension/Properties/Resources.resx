@@ -123,7 +123,4 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Show Graph Status</value>
   </data>
-  <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
-  </data>
 </root>
