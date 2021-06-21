@@ -26,6 +26,7 @@ using Dynamo.Scheduler;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
+using Dynamo.UI.Prompts;
 using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.Visualization;
@@ -751,6 +752,12 @@ namespace Dynamo.ViewModels
             {
                 this.NodeViewReady(nodeView, new EventArgs());
             }
+        }
+
+        internal event EventHandler RequestOpenLinterView;
+        internal void OnRequestOpenLinterView()
+        {
+            RequestOpenLinterView?.Invoke(this, EventArgs.Empty);
         }
 
         #region Event handler destroy/create
@@ -1530,6 +1537,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void Save(object parameter)
         {
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues()) return;
+
             if (!String.IsNullOrEmpty(Model.CurrentWorkspace.FileName))
             {
                 // For read-only file, re-direct save to save-as
@@ -1844,12 +1853,16 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(vm.Model.CurrentWorkspace.FileName))
             {
                 if (CanShowSaveDialogAndSaveResult(parameter))
+                {
                     ShowSaveDialogAndSaveResult(parameter);
+                }
             }
             else
             {
                 if (CanSave(parameter))
+                {
                     Save(parameter);
+                }
             }
         }
 
@@ -1860,6 +1873,11 @@ namespace Dynamo.ViewModels
 
         public void ShowSaveDialogAndSaveResult(object parameter)
         {
+            if (!ShowWarningDialogOnSaveWithUnresolvedIssues())
+            {
+                return;
+            }
+
             var vm = this;
 
             FileDialog _fileDialog = vm.GetSaveDialog(vm.Model.CurrentWorkspace);
@@ -1881,6 +1899,51 @@ namespace Dynamo.ViewModels
             {
                 SaveAs(_fileDialog.FileName);
             }
+        }
+
+        private bool ShowWarningDialogOnSaveWithUnresolvedIssues()
+        {
+            if (Model.LinterManager is null || 
+                Model.LinterManager.RuleEvaluationResults.Count <= 0)
+            {
+                return true;
+            }
+
+            string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
+            var args = new TaskDialogEventArgs(
+                new Uri(imageUri, UriKind.Relative), 
+                WpfResources.GraphIssuesOnSave_Title,
+                WpfResources.GraphIssuesOnSave_Summary, 
+                WpfResources.GraphIssuesOnSave_Description);
+
+            args.AddRightAlignedButton((int)DynamoModel.ButtonId.Proceed, WpfResources.GraphIssuesOnSave_ProceedBtn);
+            args.AddRightAlignedButton((int)DynamoModel.ButtonId.Cancel, WpfResources.GraphIssuesOnSave_CancelBtn);
+
+            var dialog = new GenericTaskDialog(args);
+
+            if (DynamoModel.IsTestMode)
+            {
+                dialog.Show();
+                if (dialog.IsActive)
+                {
+                    var saveWarningArgs = new SaveWarningOnUnresolvedIssuesArgs(dialog);
+                    OnSaveWarningOnUnresolvedIssuesShows(saveWarningArgs);
+                }
+                return false;
+            }
+
+            dialog.ShowDialog();
+
+            // If cancel ('x' in top right corner) is pressed the ClickedButtonId on the 
+            // GenericTaskDialog is 0
+            if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
+                args.ClickedButtonId == 0)
+            {
+                OnRequestOpenLinterView();
+                return false;
+            }
+
+            return true;
         }
 
         internal bool CanShowSaveDialogAndSaveResult(object parameter)
