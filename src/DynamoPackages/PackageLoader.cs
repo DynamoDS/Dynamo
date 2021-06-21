@@ -86,10 +86,27 @@ namespace Dynamo.PackageManager
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
         }
 
-        internal void SetPackagesDownloadDirectory(string downloadDirectory)
+        private static string TransformPath(string root, string userDataFolder, string extension)
+        {
+            if (root.StartsWith(userDataFolder))
+                return Path.Combine(root, extension);
+            try
+            {
+                var subFolder = Path.Combine(root, extension);
+                if (Directory.Exists(subFolder))
+                    return subFolder;
+            }
+            catch (IOException) { }
+            catch (ArgumentException) { }
+            catch (UnauthorizedAccessException) { }
+
+            return root;
+        }
+
+        internal void SetPackagesDownloadDirectory(string downloadDirectory, string userDataFolder)
         {
             defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(
-                PathManager.TransformPath(downloadDirectory, PathManager.PackagesDirectoryName));
+                TransformPath(downloadDirectory, userDataFolder, PathManager.PackagesDirectoryName));
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();

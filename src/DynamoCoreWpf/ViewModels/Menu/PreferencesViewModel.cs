@@ -310,7 +310,8 @@ namespace Dynamo.ViewModels
                 if (preferenceSettings.SelectedPackagePathForInstall != value)
                 {
                     preferenceSettings.SelectedPackagePathForInstall = value;
-                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(value);
+                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(
+                        value, dynamoViewModel.Model.PathManager.UserDataDirectory);
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
                 }
             }

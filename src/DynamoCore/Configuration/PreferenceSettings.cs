@@ -361,6 +361,12 @@ namespace Dynamo.Configuration
         /// </summary>
         private static string defaultPythonEngine;
 
+        internal event Func<string> RequestUserDataFolder;
+        internal string OnRequestUserDataFolder()
+        {
+            return RequestUserDataFolder?.Invoke();
+        }
+
         private string selectedPackagePathForInstall;
         // TODO: Add this to IPreferences in Dynamo 3.0
         /// <summary>
@@ -372,7 +378,7 @@ namespace Dynamo.Configuration
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
                 {
-                    selectedPackagePathForInstall = PathManager.GetAppDataFolder();
+                    selectedPackagePathForInstall = OnRequestUserDataFolder();
                 }
                 return selectedPackagePathForInstall;
             }
