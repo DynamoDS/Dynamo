@@ -162,6 +162,8 @@ namespace Dynamo.PackageManager
             PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
+            // Align the package install directory with the package download directory - 
+            // either the one selected by the user or the default directory.
             string packageInstallDirectory;
             if (startupParams.Preferences is PreferenceSettings preferences)
             {

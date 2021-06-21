@@ -371,7 +371,8 @@ namespace Dynamo.Configuration
         // TODO: Add this to IPreferences in Dynamo 3.0
         /// <summary>
         /// Currently selected package path where all packages downloaded from the Package Manager
-        /// will be installed.
+        /// will be installed. The default package path for install is the user data directory
+        /// currently used by the Dynamo environment.
         /// </summary>
         public string SelectedPackagePathForInstall {
             get

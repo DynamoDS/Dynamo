@@ -149,6 +149,11 @@ namespace Dynamo.Core
             get { return logDirectory; }
         }
 
+        /// <summary>
+        /// Default directory where new packages are downloaded to.
+        /// This directory path is user configurable and if set to something other than the default,
+        /// the currently selected path can be obtained from preference settings.
+        /// </summary>
         public string DefaultPackagesDirectory
         {
             get
@@ -524,21 +529,11 @@ namespace Dynamo.Core
             return Path.Combine(folder,
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
-
-        internal static string GetAppDataFolder()
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
-
-            return appDataFolder;
-        }
-
+        
         // This method is used to get the locations of packages folder or custom
         // nodes folder given the root path. This is necessary because the packages
         // may be in the root folder or in a packages subfolder of the root folder.
-        internal string TransformPath(string root, string extension)
+        private string TransformPath(string root, string extension)
         {
             if (root.StartsWith(GetUserDataFolder()))
                 return Path.Combine(root, extension);
