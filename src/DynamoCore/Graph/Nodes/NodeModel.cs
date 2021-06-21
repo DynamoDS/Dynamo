@@ -1596,14 +1596,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void SelectDownstreamNeighbours()
         {
-            var outConnectors = outPorts.SelectMany(x => x.Connectors);
-
-            foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
-            {
-                var downstreamNeighbour = c.End.Owner;
-                DynamoSelection.Instance.Selection.Add(downstreamNeighbour);
-                downstreamNeighbour.SelectDownstreamNeighbours();
-            }
+            var downstream = this.AllDownstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(downstream);
         }
 
         /// <summary>
@@ -1611,14 +1605,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public void SelectUpstreamNeighbours()
         {
-            var inConnectors = inPorts.SelectMany(x => x.Connectors);
-
-            foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
-            {
-                var upstreamNeighbour = c.Start.Owner;
-                DynamoSelection.Instance.Selection.Add(upstreamNeighbour);
-                upstreamNeighbour.SelectUpstreamNeighbours();
-            }
+            var upstream = this.AllUpstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(upstream);
         }
 
         /// <summary>
