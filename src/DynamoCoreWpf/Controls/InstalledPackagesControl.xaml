@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:local="clr-namespace:Dynamo.Wpf.Controls" 
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels" 
              d:DataContext="{d:DesignInstance Type=viewmodels:InstalledPackagesViewModel}"
              mc:Ignorable="d" 
@@ -21,8 +20,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="Black">
-
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -30,7 +28,7 @@
         <ListBox Name="SearchResultsListBox"
                  Grid.Row="0"
                  ItemsSource="{Binding Path=LocalPackages}"
-                 Background="Black"
+                 Background="#4d4d4d"
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -64,7 +62,7 @@
                     ItemsPresenter can't be wider then visible part of the window.-->
                         <Border BorderBrush="#222"
                             BorderThickness="0,0,0,1"
-                            Background="#333"
+                            Background="#3c3c3c"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
                                                                         AncestorType={x:Type ItemsPresenter}}}">
                             <Border BorderBrush="#444"
@@ -86,11 +84,11 @@
                                                            Width="200"
                                                            TextTrimming="CharacterEllipsis"
                                                            Margin="10,0,10,0"
-                                                           Foreground="WhiteSmoke"></TextBlock>
+                                                           Foreground="#E5E5E5"></TextBlock>
                                                     <TextBlock Text="{Binding Path=Model.VersionName}"
                                                            MinWidth="50"
                                                            FontSize="10"
-                                                           Foreground="WhiteSmoke"></TextBlock>
+                                                           Foreground="#E5E5E5"></TextBlock>
                                                 </StackPanel>
                                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                     <Button Name="MoreButton"
@@ -121,11 +119,16 @@
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}" />
                                                                 <Separator></Separator>
+                                                                <MenuItem Name="UninstallButton"
+                                                                          Command="{Binding Path=UninstallCommand}"
+                                                                          Margin="3"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}" />
                                                                 <MenuItem Name="UnmarkUninstallButton"
-                                                                  Command="{Binding Path=UnmarkForUninstallationCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}" />
+                                                                          Command="{Binding Path=UnmarkForUninstallationCommand}"
+                                                                          Margin="3"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}" />
                                                                 <Separator></Separator>
                                                                 <MenuItem Name="MakePackageButton"
                                                                   Command="{Binding Path=PublishNewPackageCommand}"
@@ -151,21 +154,6 @@
                                                             </ContextMenu>
 
                                                         </Button.ContextMenu>
-
-                                                    </Button>
-                                                    <Button Name="UninstallPackageButton"
-                                                        ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                        HorizontalAlignment="Right"
-                                                        FontWeight="Bold"
-                                                        Width="20"
-                                                        MinWidth="20"
-                                                        FontSize="17"
-                                                        Click="UninstallPackage_OnClick"
-                                                        Style="{StaticResource RemoveStyleButtonStyle}">
-                                                        <Image 
-                                                        Source="/DynamoCoreWpf;component/UI/Images/close-thick.png" 
-                                                        Width="16" Height="16"
-                                                        IsHitTestVisible="False"/>
                                                     </Button>
                                                 </StackPanel>
                                             </DockPanel>
@@ -174,7 +162,7 @@
                                     <Grid>
                                         <Border BorderThickness="0,1,0,0"
                                             BorderBrush="#111"
-                                            Background="#2c2c2c"
+                                            Background="#3c3c3c"
                                             >
 
                                             <StackPanel Margin="10,5,5,10">
@@ -183,7 +171,7 @@
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
                                                        FontSize="10"
-                                                       Foreground="WhiteSmoke"/>
+                                                       Foreground="#E5E5E5"/>
                                                     <ItemsControl Name="LoadedCustomNodes"
                                                               ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
                                                               BorderThickness="0"
@@ -194,7 +182,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding Path=Name}"
-                                                                       Foreground="WhiteSmoke"
+                                                                       Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             </DataTemplate>
@@ -207,7 +195,7 @@
                                                 <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
-                                                       Foreground="WhiteSmoke"
+                                                       Foreground="#E5E5E5"
                                                        FontSize="10"></Label> 
                                                     <ItemsControl Name="NodeLibraries"
                                                                   ItemsSource="{Binding Path=Model.LoadedAssemblies}"
@@ -220,7 +208,7 @@
                                                             <DataTemplate>
                                                                 <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
-                                                                       Foreground="WhiteSmoke"
+                                                                       Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
@@ -242,7 +230,7 @@
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
                                                        FontSize="10"
-                                                       Foreground="WhiteSmoke"></Label>
+                                                       Foreground="#E5E5E5"></Label>
                                                     <ItemsControl Name="AddAssemblies"
                                                               ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                               BorderThickness="0"
@@ -254,7 +242,7 @@
                                                             <DataTemplate>
                                                                 <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
-                                                                       Foreground="WhiteSmoke"
+                                                                       Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
@@ -277,7 +265,7 @@
 
                                                     <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
                                                        FontSize="10"
-                                                       Foreground="WhiteSmoke"></Label>
+                                                       Foreground="#E5E5E5"></Label>
                                                     <ItemsControl Name="AdditionalFiles"
                                                               ItemsSource="{Binding Path=Model.AdditionalFiles}"
                                                               BorderThickness="0"
@@ -288,7 +276,7 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <TextBlock Text="{Binding Path=RelativePath}"
-                                                                       Foreground="WhiteSmoke"
+                                                                       Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
                                                             </DataTemplate>
@@ -312,7 +300,7 @@
         <StackPanel Orientation="Horizontal"
                     FlowDirection="RightToLeft"
                     Grid.Row="1"
-                    Background="#333">
+                    Background="#535353">
         </StackPanel>
 
     </Grid>
