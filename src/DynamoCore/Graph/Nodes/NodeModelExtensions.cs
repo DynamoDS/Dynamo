@@ -63,6 +63,12 @@ namespace Dynamo.Graph.Nodes
             return gathered;
         }
 
+        /// <summary>
+        /// Get all downstream nodes of a node model
+        /// </summary>
+        /// <param name="node"> Node model to get downstream nodes of </param>
+        /// <param name="gathered"> List to recursively gather downstream nodes, set to an empty list to start </param>
+        /// <returns></returns>
         internal static IEnumerable<NodeModel> AllDownstreamNodes(this NodeModel node, List<NodeModel> gathered)
         {
             if (node == null)
