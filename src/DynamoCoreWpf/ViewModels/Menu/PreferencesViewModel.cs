@@ -11,8 +11,6 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
-using Dynamo.PackageManager;
-using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
