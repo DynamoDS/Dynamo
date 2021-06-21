@@ -1923,7 +1923,8 @@ namespace Dynamo.ViewModels
 
         private bool ShowWarningDialogOnSaveWithUnresolvedIssues()
         {
-            if (Model.LinterManager.RuleEvaluationResults.Count <= 0)
+            if (Model.LinterManager is null || 
+                Model.LinterManager.RuleEvaluationResults.Count <= 0)
             {
                 return true;
             }
@@ -1953,7 +1954,10 @@ namespace Dynamo.ViewModels
 
             dialog.ShowDialog();
 
-            if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel)
+            // If cancel ('x' in top right corner) is pressed the ClickedButtonId on the 
+            // GenericTaskDialog is 0
+            if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
+                args.ClickedButtonId == 0)
             {
                 OnRequestOpenLinterView();
                 return false;
