@@ -2406,6 +2406,6 @@ Uninstall the following packages: {0}?</value>
     <value>Package Manager</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
-    <value>Editable only when the current workspace is in Manual run mode.</value>
+    <value>Switchable only when the current workspace is in Manual run mode.</value>
   </data>
 </root>
