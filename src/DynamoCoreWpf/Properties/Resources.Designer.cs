@@ -2451,6 +2451,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel and Show Issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_CancelBtn {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_CancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are unresolved issues with the graph type. If this graph is designed to be used outside of Dynamo, resolve all issues and save the graph again..
+        /// </summary>
+        public static string GraphIssuesOnSave_Description {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save with Issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_ProceedBtn {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_ProceedBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are trying to save a graph with unresolved issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_Summary {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Type Issues found.
+        /// </summary>
+        public static string GraphIssuesOnSave_Title {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
