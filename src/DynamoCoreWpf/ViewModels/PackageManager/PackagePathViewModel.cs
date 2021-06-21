@@ -13,13 +13,23 @@ using System.Globalization;
 
 namespace Dynamo.ViewModels
 {
+    /// <summary>
+    /// A converter that returns true if a path is currently disabled as specified in the 
+    /// PreferenceSettings. Value[0] should be the PackgagePathViewModel.
+    /// Value[1] should be the path to check as a string.
+    /// Returns false by default.
+    /// </summary>
     public sealed class PathEnabledConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
-        {
-            var vm = values[0] as PackagePathViewModel;
-            var path = values[1] as string;
-            return vm.IsPathCurrentlyDisabled(path);
+        {   if(values != null && values.Length > 1)
+            {
+                if(values[0] is PackagePathViewModel vm && values[1] is string stringPath)
+                {
+                    vm?.IsPathCurrentlyDisabled(stringPath);
+                }
+            }
+            return false;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -76,9 +86,12 @@ namespace Dynamo.ViewModels
             this.packageLoader = loader;
             this.loadPackageParams = loadParams;
             this.customNodeManager = customNodeManager;
-            
             InitializeRootLocations();
+            InitializeComands();
+        }
 
+        private void InitializeComands()
+        {
             AddPathCommand = new DelegateCommand(p => InsertPath());
             DeletePathCommand = new DelegateCommand(p => RemovePathAt(ConvertPathToIndex(p)), p => CanDelete(ConvertPathToIndex(p)));
             MovePathUpCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p) - 1), p => CanMoveUp(ConvertPathToIndex(p)));
@@ -86,21 +99,15 @@ namespace Dynamo.ViewModels
             UpdatePathCommand = new DelegateCommand(p => UpdatePathAt(ConvertPathToIndex(p)), p => CanUpdate(ConvertPathToIndex(p)));
             SaveSettingCommand = new DelegateCommand(CommitChanges);
         }
+
         /// <summary>
         /// This constructor overload has been added for backwards comptability.
         /// </summary>
         /// <param name="setting"></param>
         public PackagePathViewModel(IPreferences setting)
         {
-
             InitializeRootLocations();
-
-            AddPathCommand = new DelegateCommand(p => InsertPath());
-            DeletePathCommand = new DelegateCommand(p => RemovePathAt(ConvertPathToIndex(p)), p=>CanDelete(ConvertPathToIndex(p)));
-            MovePathUpCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p)-1), p=> CanMoveUp(ConvertPathToIndex(p)));
-            MovePathDownCommand = new DelegateCommand(p => SwapPath(ConvertPathToIndex(p), ConvertPathToIndex(p) + 1), p => CanMoveDown(ConvertPathToIndex(p)));
-            UpdatePathCommand = new DelegateCommand(p => UpdatePathAt(ConvertPathToIndex(p)), p=>CanUpdate(ConvertPathToIndex(p)));
-            SaveSettingCommand = new DelegateCommand(CommitChanges);
+            InitializeComands();
         }
 
         private int ConvertPathToIndex(object path)
