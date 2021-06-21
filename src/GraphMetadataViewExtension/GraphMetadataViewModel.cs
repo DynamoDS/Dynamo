@@ -206,7 +206,7 @@ namespace Dynamo.GraphMetadata
 
         private void OpenGraphStatusExecute(object obj)
         {
-            throw new NotImplementedException();
+            ((DynamoViewModel)(this.viewLoadedParams.DynamoWindow.DataContext)).OnRequestOpenLinterView()
         }
 
         private void AddCustomPropertyExecute(object obj)
