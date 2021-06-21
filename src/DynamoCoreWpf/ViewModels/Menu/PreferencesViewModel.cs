@@ -222,10 +222,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.ShowRunPreview;
+                return preferenceSettings.ShowRunPreview;
             }
             set
             {
+                preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
@@ -662,6 +663,7 @@ namespace Dynamo.ViewModels
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
