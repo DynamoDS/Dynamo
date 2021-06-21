@@ -186,10 +186,11 @@ namespace Dynamo.Views
 
         private void ShowHidePopup(ShowHideFlags flag, Popup popup)
         {
+            // Reset popup display state
+            popup.IsOpen = false;
             switch (flag)
             {
                 case ShowHideFlags.Hide:
-                    popup.IsOpen = false;
                     break;
                 case ShowHideFlags.Show:
                     // Show InCanvas search just in case, when mouse is over workspace.
@@ -197,9 +198,14 @@ namespace Dynamo.Views
                     if (displayPopup && popup == NodeAutoCompleteSearchBar)
                     {
                         if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-
+                        // Force the Child visibility to change here because
+                        // 1. Popup isOpen change does not necessarily update the child control before it take effect
+                        // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
+                        // 3. This should not be set to in canvas search control
+                        popup.Child.Visibility = Visibility.Collapsed;
                         ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
                     }
+                    popup.Child.Visibility = Visibility.Visible;
                     popup.IsOpen = displayPopup;
                     popup.CustomPopupPlacementCallback = null;
 

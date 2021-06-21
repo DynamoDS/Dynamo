@@ -17,6 +17,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using Greg.Requests;
 using Microsoft.Practices.Prism.Commands;
+using PythonNodeModels;
 using Double = System.Double;
 using NotificationObject = Microsoft.Practices.Prism.ViewModel.NotificationObject;
 using String = System.String;
@@ -839,24 +840,49 @@ namespace Dynamo.PackageManager
             return AllDependentFuncDefs().Union(CustomNodeDefinitions).Distinct();
         }
 
-        private IEnumerable<string> GetAllUnqualifiedFiles()
+        private enum GetFunctionDefinition
         {
-            // get all function defs
-            var allFuncs = AllFuncDefs();
-
-            // all workspaces
+            AllDependentFuncDefs,
+            AllFuncDefs
+        }
+        private List<CustomNodeWorkspaceModel> GetFunctionDefinitionWS(GetFunctionDefinition gfd)
+        {
             var workspaces = new List<CustomNodeWorkspaceModel>();
-            foreach (var def in allFuncs)
+            if (gfd == GetFunctionDefinition.AllDependentFuncDefs)
             {
-                CustomNodeWorkspaceModel ws;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
-                    def.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws))
+                foreach (var def in AllDependentFuncDefs())
                 {
-                    workspaces.Add(ws);
+                    CustomNodeWorkspaceModel ws;
+                    if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                        def.FunctionId,
+                        DynamoModel.IsTestMode,
+                        out ws))
+                    {
+                        workspaces.Add(ws);
+                    }
                 }
             }
+            else if (gfd == GetFunctionDefinition.AllFuncDefs)
+            {
+                foreach (var def in AllFuncDefs())
+                {
+                    CustomNodeWorkspaceModel ws;
+                    if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
+                        def.FunctionId,
+                        DynamoModel.IsTestMode,
+                        out ws))
+                    {
+                        workspaces.Add(ws);
+                    }
+                }
+            }
+            return workspaces;
+        }
+
+        private IEnumerable<string> GetAllUnqualifiedFiles()
+        {
+            // all workspaces
+            var workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllFuncDefs);
 
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
 
@@ -876,23 +902,9 @@ namespace Dynamo.PackageManager
 
         internal IEnumerable<string> GetAllFiles()
         {
-            // get all function defs
-            var allFuncs = AllFuncDefs().ToList();
-
             // all workspaces
-            var workspaces = new List<CustomNodeWorkspaceModel>();
-            foreach (var def in allFuncs)
-            {
-                CustomNodeWorkspaceModel ws;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
-                    def.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws))
-                {
-                    workspaces.Add(ws);
-                }
-            }
-            
+            var workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllFuncDefs);
+
             // make sure workspaces are saved
             var unsavedWorkspaceNames =
                 workspaces.Where(ws => ws.HasUnsavedChanges || ws.FileName == null).Select(ws => ws.Name).ToList();
@@ -932,18 +944,7 @@ namespace Dynamo.PackageManager
             var pkgLoader = pmExtension.PackageLoader;
 
             // all workspaces
-            var workspaces = new List<CustomNodeWorkspaceModel>();
-            foreach (var def in AllDependentFuncDefs())
-            {
-                CustomNodeWorkspaceModel ws;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
-                    def.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws))
-                {
-                    workspaces.Add(ws);
-                }
-            }
+            var workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllDependentFuncDefs);
 
             // get all of dependencies from custom nodes and additional files
             var allFilePackages =
@@ -957,18 +958,7 @@ namespace Dynamo.PackageManager
                     .Distinct()
                     .Select(x => new PackageDependency(x.Name, x.VersionName));
 
-            workspaces = new List<CustomNodeWorkspaceModel>();
-            foreach (var def in AllFuncDefs())
-            {
-                CustomNodeWorkspaceModel ws;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
-                    def.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws))
-                {
-                    workspaces.Add(ws);
-                }
-            }
+            workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllFuncDefs);
 
             // get all of the dependencies from types
             var allTypePackages = workspaces
@@ -996,23 +986,46 @@ namespace Dynamo.PackageManager
 
         }
 
+        private List<string> GetPythonDependency()
+        {
+            var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            var pkgLoader = pmExtension.PackageLoader;
+
+            var workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllDependentFuncDefs);
+
+            // get python engine from custom nodes and their dependent packages
+            var allDepPackagesPythonEngine =
+                workspaces
+                    .Select(x => x.FileName)
+                    .Union(AdditionalFiles)
+                    .Where(pkgLoader.IsUnderPackageControl)
+                    .Select(pkgLoader.GetOwnerPackage)
+                    .Where(x => x != null)
+                    .Where(x => (x.Name != Name)).Distinct()
+                    .Select(x => x.HostDependencies)
+                    .SelectMany(x => x)
+                    .Distinct();
+
+            workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllFuncDefs);
+
+            // get python engine from custom nodes that include python scripts
+            var pythonEngineDirectDep = workspaces
+                .SelectMany(x => x.Nodes)
+                .Where(x => x is PythonNode)
+                .Select(x => ((PythonNode)x).Engine)
+                .Distinct()
+                .Select(x => x.ToString());
+
+            return pythonEngineDirectDep.Union(allDepPackagesPythonEngine).ToList();
+
+        }
+
         private IEnumerable<Tuple<string, string>> GetAllNodeNameDescriptionPairs()
         {
             var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
             var pkgLoader = pmExtension.PackageLoader;
 
-            var workspaces = new List<CustomNodeWorkspaceModel>();
-            foreach (var def in AllFuncDefs())
-            {
-                CustomNodeWorkspaceModel ws;
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetFunctionWorkspace(
-                    def.FunctionId,
-                    DynamoModel.IsTestMode,
-                    out ws))
-                {
-                    workspaces.Add(ws);
-                }
-            }
+            var workspaces = GetFunctionDefinitionWS(GetFunctionDefinition.AllFuncDefs);
 
             // collect the name-description pairs for every custom node
             return
@@ -1349,13 +1362,22 @@ namespace Dynamo.PackageManager
                 Package.Keywords = KeywordList;
                 Package.License = License;
                 Package.SiteUrl = SiteUrl;
-                Package.RepositoryUrl = RepositoryUrl;
-                Package.HostDependencies = SelectedHosts;
+                Package.RepositoryUrl = RepositoryUrl;                
 
                 AppendPackageContents();
 
                 Package.Dependencies.Clear();
                 GetAllDependencies().ToList().ForEach(Package.Dependencies.Add);
+
+                Package.HostDependencies = Enumerable.Empty<string>();
+                Package.HostDependencies = SelectedHosts;
+                foreach (var py in GetPythonDependency()) 
+                {
+                    if (!Package.HostDependencies.Contains(py)) 
+                    {
+                        Package.HostDependencies = Package.HostDependencies.Concat(new[] { py });
+                    }
+                }                                
 
                 var files = GetAllFiles().ToList();
                 var pmExtension = dynamoViewModel.Model.GetPackageManagerExtension();
