@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
@@ -28,6 +30,16 @@ namespace Dynamo.PackageManager.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
+        }
+
+        private static string GetAppDataFolder()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+
+            return appDataFolder;
         }
 
         [Test]
@@ -890,6 +902,31 @@ namespace Dynamo.PackageManager.Tests
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
             Assert.AreEqual(2, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+        }
+
+        [Test]
+        public void PathManagerDefaultPackagesDirectory()
+        {
+            var pathManager = CurrentDynamoModel.PathManager;
+            var settings = CurrentDynamoModel.PreferenceSettings;
+
+            Assert.NotNull(settings);
+            Assert.NotNull(pathManager);
+
+            // The default selected package path for install in preference settings is AppData
+            // if not set from the UI.
+            var selectedPackagePathInstallDir = settings.SelectedPackagePathForInstall;
+            var appDataFolder = GetAppDataFolder();
+            Assert.AreEqual(appDataFolder, selectedPackagePathInstallDir);
+
+            var fullPath = Path.Combine(appDataFolder, PathManager.PackagesDirectoryName);
+            Assert.AreEqual(fullPath, pathManager.DefaultPackagesDirectory);
+
+            // The preference setting SelectedPackagePathForInstall property affects
+            // the DefaultPackagesDirectory property of the PathManager as this is how the 
+            // the package download path is actually set in the package manager client.
+            settings.SelectedPackagePathForInstall = Path.GetTempPath();
+            Assert.AreEqual(Path.GetTempPath(), pathManager.DefaultPackagesDirectory);
         }
 
         [Test]
