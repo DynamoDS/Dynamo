@@ -56,12 +56,6 @@ namespace Dynamo.LintingViewExtension
             linterMenuItem.IsChecked = true;
         }
 
-        private void OnRequestOpenLinterView(object sender, System.EventArgs e)
-        {
-            if (linterMenuItem.IsChecked) return;
-            linterMenuItem.IsChecked = true;
-        }
-
         public override void Shutdown()
         {
             // Do nothing for now 
