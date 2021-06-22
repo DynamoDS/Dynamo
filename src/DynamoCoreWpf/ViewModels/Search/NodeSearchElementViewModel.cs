@@ -25,6 +25,8 @@ namespace Dynamo.Wpf.ViewModels
         private bool isSelected;
         private SearchViewModel searchViewModel;
         private IDisposable undoRecorderGroup;
+        private int spacingBetweenNodes = 50;
+        private int spacingforHigherWidthNodes = 450;
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -275,7 +277,7 @@ namespace Dynamo.Wpf.ViewModels
             if (createAsDownStreamNode)
             {
                 // Placing the new node to the right of initial node
-                adjustedX += initialNode.Width + 50;
+                adjustedX += initialNode.Width + spacingBetweenNodes;
 
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
@@ -284,12 +286,12 @@ namespace Dynamo.Wpf.ViewModels
             else
             {
                 // Placing the new node to the left of initial node
-                adjustedX -= initialNode.Width + 50;
+                adjustedX -= initialNode.Width + spacingBetweenNodes;
 
                 // If the new node is a slider input node, adjust the position on X-axis to compensate for higher width of the slider node.
                 if (Model.CreationName.Contains("Slider")) 
                 {
-                    adjustedX -= 450;
+                    adjustedX -= spacingforHigherWidthNodes;
                 }
 
                 // Create a new node based on node creation name and connection ports
