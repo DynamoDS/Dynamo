@@ -92,17 +92,9 @@
                                                 </StackPanel>
                                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                     <Button Name="MoreButton"
-                                                        HorizontalAlignment="Right"
-                                                    FontWeight="Bold"
-                                                    Width="20"
-                                                    MinWidth="20"
-                                                    FontSize="17"
-                                                    Click="MoreButton_OnClick"
-                                                    Style="{StaticResource FlatButtonStyle}">
-                                                        <Image 
-                                                    Source="/DynamoCoreWpf;component/UI/Images/More.png" 
-                                                    Width="16" Height="16"
-                                                    IsHitTestVisible="False"/>
+                                                            Click="MoreButton_OnClick"
+                                                            Style="{StaticResource FlatButtonStyle}">
+                                                        <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
                                                         <Button.ContextMenu>
                                                             <ContextMenu Foreground="#f5f5f5" FontSize="10" Background="#3c3c3c">
                                                                 <MenuItem Name="ContentsButton"

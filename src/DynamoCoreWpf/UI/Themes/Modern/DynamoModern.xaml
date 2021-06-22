@@ -2525,7 +2525,7 @@
 
     <Style TargetType="Expander" x:Key="InstalledPackagesExpanderStyle">
         <Setter Property="Background" Value="{StaticResource PreferencesWindowBackgroundColor}"/>
-        <Setter Property="Foreground" Value="white"/>
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <!-- Control template for expander -->
