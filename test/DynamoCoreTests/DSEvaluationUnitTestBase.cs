@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 
@@ -22,6 +25,16 @@ namespace Dynamo.Tests
             // is designed to contain no test cases, so it does not need any 
             // preloaded library, all of which should only be specified in the
             // derived class.
+        }
+
+        protected static string GetAppDataFolder()
+        {
+            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
+                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
+
+            return appDataFolder;
         }
 
         protected virtual string GetUserUserDataRootFolder()

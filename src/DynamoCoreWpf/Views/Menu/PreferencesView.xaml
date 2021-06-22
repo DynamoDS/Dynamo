@@ -706,7 +706,7 @@
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
-                        <!--This Grid contains the package mangager settings tab-->
+                        <!--This Grid contains the package manager settings tab-->
                         <Grid x:Name="PackageManagerTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
@@ -715,19 +715,29 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <!--This Grid row contains the Package Paths section-->
+                            <!--This Grid row contains the Node and Package Paths section-->
                             <Expander x:Name="PackagePathsExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
-                                
-                                        Header ="{x:Static p:Resources.PackagePathsExpanderName}">
-                             
-                                <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
-                                    <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
-                                </ScrollViewer>
-
-
+                                        Header="{x:Static p:Resources.PackagePathsExpanderName}">
+                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                            Padding="0,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Grid.Row="1" 
+                                              Width="Auto"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                    </ComboBox>
+                                    <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
+                                        <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                    </ScrollViewer>
+                                </StackPanel>
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->
