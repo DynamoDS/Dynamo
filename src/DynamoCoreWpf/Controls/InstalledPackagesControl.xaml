@@ -28,7 +28,7 @@
         <ListBox Name="SearchResultsListBox"
                  Grid.Row="0"
                  ItemsSource="{Binding Path=LocalPackages}"
-                 Background="#4d4d4d"
+                 Background="#535353"
                  HorizontalContentAlignment="Stretch"
                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                  ScrollViewer.HorizontalScrollBarVisibility="Hidden"
@@ -60,12 +60,12 @@
                     That's why bind its' width to ItemsPresenter's width. 
                     ItemsPresenter is UI container for ListBox items.
                     ItemsPresenter can't be wider then visible part of the window.-->
-                        <Border BorderBrush="#222"
+                        <Border BorderBrush="#535353"
                             BorderThickness="0,0,0,1"
-                            Background="#3c3c3c"
+                            Background="#535353"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
                                                                         AncestorType={x:Type ItemsPresenter}}}">
-                            <Border BorderBrush="#444"
+                            <Border BorderBrush="#535353"
                                 BorderThickness="0,1,0,0">
 
                                 <Expander Name="PackageHeader"
@@ -104,21 +104,19 @@
                                                     Width="16" Height="16"
                                                     IsHitTestVisible="False"/>
                                                         <Button.ContextMenu>
-                                                            <ContextMenu>
-
+                                                            <ContextMenu Foreground="#f5f5f5" FontSize="10" Background="#3c3c3c">
                                                                 <MenuItem Name="ContentsButton"
-                                                                  Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
-                                                                  Margin="3"
-                                                                  IsCheckable="True"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowContentTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowContent}" />
+                                                                          Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
+                                                                          Margin="3"
+                                                                          IsCheckable="True"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowContentTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowContent}" />
                                                                 <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="" Header="{x:Static p:Resources.InstalledPackageViewContextMenuGetLatest}" />-->
                                                                 <MenuItem Name="GoToRoot"
                                                                   Command="{Binding Path=GoToRootDirectoryCommand}"
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}" />
-                                                                <Separator></Separator>
                                                                 <MenuItem Name="UninstallButton"
                                                                           Command="{Binding Path=UninstallCommand}"
                                                                           Margin="3"
@@ -129,7 +127,6 @@
                                                                           Margin="3"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}" />
-                                                                <Separator></Separator>
                                                                 <MenuItem Name="MakePackageButton"
                                                                   Command="{Binding Path=PublishNewPackageCommand}"
                                                                   Margin="3"
@@ -140,7 +137,6 @@
                                                                   Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}" />
-                                                                <Separator></Separator>
                                                                 <MenuItem Name="DeprecateButton"
                                                                   Command="{Binding Path=DeprecateCommand}"
                                                                   Margin="3"
