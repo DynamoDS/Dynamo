@@ -128,6 +128,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the state of the Preferences Window Debug Mode
+        /// </summary>
+        public bool PreferencesDebugMode
+        {
+            get
+            {
+                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
+            }
+        }
+
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -211,12 +222,24 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.ShowRunPreview;
+                return preferenceSettings.ShowRunPreview;
             }
             set
             {
+                preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
             }
         }
 
@@ -640,6 +663,7 @@ namespace Dynamo.ViewModels
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
