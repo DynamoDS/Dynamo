@@ -307,6 +307,10 @@ namespace UnitsUI
 
         private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            var control = sender as ForgeDynamoConverterControl;
+            control.SelectConversionFrom.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedFromConversion.Name, control.SelectConversionFrom.Items);
+            control.SelectConversionTo.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedToConversion.Name, control.SelectConversionTo.Items);
+            control.SelectConversionQuantity.SelectedIndex = RetrieveSelectedItemIndex(convertModel.SelectedQuantityConversion.Name, control.SelectConversionQuantity.Items);
         }
 
         public void Dispose()
@@ -314,6 +318,23 @@ namespace UnitsUI
             converterControl.SelectConversionQuantity.PreviewMouseUp -= SelectConversionQuantity_PreviewMouseUp;
             converterControl.SelectConversionFrom.PreviewMouseUp -= SelectConversionFrom_PreviewMouseUp;
             converterControl.SelectConversionTo.PreviewMouseUp -= SelectConversionTo_MouseLeftButtonDown;
+        }
+
+        int RetrieveSelectedItemIndex(string name, ItemCollection items)
+        {
+            int selectedIndex = -1;
+            int index = 0;
+
+            foreach (var item in items)
+            {
+                if (item.ToString().Contains(name))
+                {
+                    selectedIndex = index;
+                    return selectedIndex;
+                }
+                index++;
+            }
+            return selectedIndex;
         }
     }
 
@@ -397,15 +418,6 @@ namespace UnitsUI
                 ToolTip = unitValueDropdownViewModel.SelectedUnit,
             };
 
-            unitCB.SelectionChanged += delegate
-            {
-                if (unitCB.SelectedIndex != -1)
-                {
-                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
-                }
-                    
-            };
-
 
             // bind this combo box to the selected item hash
             var bindingValAllUnits = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllUnits))
@@ -421,6 +433,20 @@ namespace UnitsUI
                 Source = unitValueDropdownViewModel
             };
             unitCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedUnit);
+            unitCB.SelectionChanged += delegate
+            {
+                if (unitCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
+                }
+
+            };
+
+            if (unitCB.SelectedItem == null)
+            {
+                unitCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedUnit.Name, unitCB.Items);
+            }
+                
 
             dockPanelUnit.Children.Add(unitLabel);
             dockPanelUnit.Children.Add(unitCB);
@@ -446,15 +472,6 @@ namespace UnitsUI
                 ToolTip = unitValueDropdownViewModel.SelectedSymbol
             };
 
-            symbolCB.SelectionChanged += delegate
-            {
-                if (symbolCB.SelectedIndex != -1)
-                {
-                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
-                }
-                   
-            };
-
             // bind this combo box to the selected item hash
             var bindingValAllSymbols = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllSymbols))
             {
@@ -469,6 +486,18 @@ namespace UnitsUI
                 Source = unitValueDropdownViewModel
             };
             symbolCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedSymbol);
+            symbolCB.SelectionChanged += delegate
+            {
+                if (symbolCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
+                }
+            };
+
+            if (symbolCB.SelectedItem == null)
+            {
+                symbolCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedSymbol.Text, symbolCB.Items);
+            }
 
             dockPanelSymbol.Children.Add(symbolLabel);
             dockPanelSymbol.Children.Add(symbolCB);
@@ -490,21 +519,14 @@ namespace UnitsUI
                 MinWidth = comboMinMidth,
                 MaxWidth = comboMaxWidth,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                ToolTip = unitValueDropdownViewModel.SelectedPrecision
-            };
-
-            precisionCB.SelectionChanged += delegate
-            {
-                if (precisionCB.SelectedIndex != -1)
-                {
-                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
-                }
+                ToolTip = unitValueDropdownViewModel.SelectedPrecision,
+                SelectedIndex = 0
             };
 
             // bind this combo box to the selected item hash
             var bindingValAllPrecisions = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllPrecisions))
             {
-                Source = unitValueDropdownViewModel
+                Source = unitValueDropdownViewModel,
             };
             precisionCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllPrecisions);
 
@@ -515,6 +537,18 @@ namespace UnitsUI
                 Source = unitValueDropdownViewModel
             };
             precisionCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedPrecision);
+            precisionCB.SelectionChanged += delegate
+            {
+                if (precisionCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
+                }
+            };
+
+            if (precisionCB.SelectedItem == null)
+            {
+                precisionCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedPrecision.ToString(), precisionCB.Items);
+            }
 
             dockPanelPrecision.Children.Add(precisionLabel);
             dockPanelPrecision.Children.Add(precisionCB);
@@ -529,7 +563,7 @@ namespace UnitsUI
                 MinWidth = labelMinWidth
             };
 
-            ComboBox comboBox = new ComboBox
+            ComboBox formatCB = new ComboBox
             {
                 DataContext = unitValueDropdownViewModel,
                 FlowDirection = FlowDirection.LeftToRight,
@@ -537,18 +571,9 @@ namespace UnitsUI
                 MinWidth = comboMinMidth,
                 MaxWidth = comboMaxWidth,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                ToolTip = unitValueDropdownViewModel.SelectedFormat
+                ToolTip = unitValueDropdownViewModel.SelectedFormat,
+                SelectedItem = unitValueDropdownViewModel.SelectedFormat
             };
-            var formatCB = comboBox;
-
-            formatCB.SelectionChanged += delegate
-            {
-                if (formatCB.SelectedIndex != -1)
-                {
-                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
-                }
-            };
-
 
             // bind this combo box to the selected item hash
             var bindingValAllFormats = new System.Windows.Data.Binding(nameof(UnitValueOutputDropdownViewModel.AllFormats))
@@ -564,12 +589,44 @@ namespace UnitsUI
                 Source = unitValueDropdownViewModel
             };
             formatCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedFormat);
+            formatCB.SelectionChanged += delegate
+            {
+                if (formatCB.SelectedIndex != -1)
+                {
+                    RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
+                }
+            };
+
+            if (formatCB.SelectedItem == null)
+            {
+                formatCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedFormat.ToString(), formatCB.Items);
+            }
+
             dockPanelFormat.Children.Add(formatLabel);
             dockPanelFormat.Children.Add(formatCB);
             lb.Items.Add(dockPanelFormat);
 
+          
+
             ex.Content = lb;
             nodeView.inputGrid.Children.Add(grid);
+        }
+
+        int RetrieveSelectedItemIndex(string name, ItemCollection items)
+        {
+            int selectedIndex = -1;
+            int index = 0;
+
+            foreach (var item in items)
+            {
+                if (item.ToString().Contains(name))
+                {
+                    selectedIndex = index;
+                    return selectedIndex;
+                }
+                index++;
+            }
+            return selectedIndex;
         }
 
 

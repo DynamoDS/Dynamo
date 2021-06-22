@@ -868,18 +868,12 @@ namespace UnitsUI
         private UnitValueOutputDropdown(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
             AllUnits = DynamoUnits.Utilities.ConvertUnitsDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllUnits());
-            SelectedUnit = AllUnits[1];
             AllSymbols = DynamoUnits.Utilities.ConvertSymbolDictionaryToList(DynamoUnits.Utilities.ForgeUnitsEngine.getAllSymbols());
-            SelectedSymbol = AllSymbols[3];
             AllPrecisions = new List<int>()
             {
                 0, 1, 2, 3, 4, 5
             };
-            SelectedPrecision = AllPrecisions[0];
             AllFormats = new List<bool> { true, false };
-            SelectedFormat = AllFormats[0];
-            RaisePropertyChanged(nameof(DisplayValue));
-
         }
 
         public UnitValueOutputDropdown()

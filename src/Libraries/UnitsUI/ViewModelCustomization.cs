@@ -24,6 +24,7 @@ namespace UnitsUI
             set
             {
                 dynamoConvertModel.SelectedQuantityConversion = value;
+                RaisePropertyChanged(nameof(SelectedQuantityConversion));
             }
         }
 
@@ -36,6 +37,7 @@ namespace UnitsUI
                     return;
 
                 dynamoConvertModel.SelectedFromConversion = value;
+                RaisePropertyChanged(nameof(SelectedFromConversion));
             }
         }
 
@@ -48,6 +50,7 @@ namespace UnitsUI
                     return;
 
                 dynamoConvertModel.SelectedToConversion = value;
+                RaisePropertyChanged(nameof(SelectedToConversion));
             }
         }
 
@@ -62,6 +65,7 @@ namespace UnitsUI
             set
             {
                 dynamoConvertModel.SelectedFromConversionSource = value;
+                RaisePropertyChanged(nameof(SelectedFromConversionSource));
             }
         }
 
@@ -71,6 +75,8 @@ namespace UnitsUI
             set
             {
                 dynamoConvertModel.SelectedToConversionSource = value;
+                RaisePropertyChanged(nameof(SelectedToConversionSource));
+
             }
         }
 
@@ -80,6 +86,7 @@ namespace UnitsUI
             set
             {
                 dynamoConvertModel.IsSelectionFromBoxEnabled = value;
+                RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
             }
         }
 
@@ -89,6 +96,7 @@ namespace UnitsUI
             set
             {
                 dynamoConvertModel.SelectionFromBoxToolTip = value;
+                RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
             }
         }
 
@@ -158,9 +166,14 @@ namespace UnitsUI
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
 
+       
         public string DisplayValue
         {
             get { return unitValueDropdownModel.DisplayValue; }
+            set
+            {
+                RaisePropertyChanged(nameof(DisplayValue));
+            }
         }
 
         public DynamoUnits.Unit SelectedUnit
@@ -169,6 +182,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.SelectedUnit = value;
+                RaisePropertyChanged(nameof(SelectedUnit));
             }
         }
 
@@ -178,6 +192,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.SelectedSymbol = value;
+                RaisePropertyChanged(nameof(SelectedSymbol));
             }
         }
 
@@ -187,6 +202,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.SelectedPrecision = value;
+                RaisePropertyChanged(nameof(SelectedPrecision));
             }
         }
 
@@ -196,6 +212,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.SelectedFormat = value;
+                RaisePropertyChanged(nameof(SelectedFormat));
             }
         }
 
@@ -205,6 +222,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.AllUnits = value;
+                RaisePropertyChanged(nameof(AllUnits));
             }
         }
         public List<DynamoUnits.UnitSymbol> AllSymbols
@@ -213,6 +231,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.AllSymbols = value;
+                RaisePropertyChanged(nameof(AllSymbols));
             }
         }
 
@@ -222,6 +241,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.AllPrecisions = value;
+                RaisePropertyChanged(nameof(AllPrecisions));
             }
         }
         public List<bool> AllFormats
@@ -230,6 +250,7 @@ namespace UnitsUI
             set
             {
                 unitValueDropdownModel.AllFormats = value;
+                RaisePropertyChanged(nameof(AllFormats));
             }
         }
         public UnitValueOutputDropdownViewModel(UnitValueOutputDropdown model, NodeView nodeView)
@@ -261,6 +282,8 @@ namespace UnitsUI
                     RaisePropertyChanged(nameof(DisplayValue));
                     break;
                 case "CachedValue":
+                    //if the cached data is empty, we simply return, no need to update the display value
+                    if (unitValueDropdownModel.CachedValue.StringData == "{}") return;
                     unitValueDropdownModel.DisplayValue = unitValueDropdownModel.CachedValue.StringData;
                     break;
                 default:
