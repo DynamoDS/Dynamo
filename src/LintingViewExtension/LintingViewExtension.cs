@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Graph;
 using Dynamo.Linting;
@@ -21,6 +22,7 @@ namespace Dynamo.LintingViewExtension
         private MenuItem linterMenuItem;
         private LinterViewModel linterViewModel;
         private LinterView linterView;
+        private DynamoView dynamoView;
 
 
         public override string UniqueId { get { return EXTENSION_GUID; } }
@@ -38,6 +40,7 @@ namespace Dynamo.LintingViewExtension
             this.viewLoadedParamsReference = viewLoadedParams;
             this.linterViewModel = new LinterViewModel(linterManager, viewLoadedParamsReference);
             this.linterView = new LinterView() { DataContext = linterViewModel };
+            this.dynamoView = viewLoadedParamsReference.DynamoWindow as DynamoView;
 
             (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).RequestOpenLinterView += OnRequestOpenLinterView;
 
@@ -52,7 +55,21 @@ namespace Dynamo.LintingViewExtension
 
         private void OnRequestOpenLinterView(object sender, System.EventArgs e)
         {
-            if (linterMenuItem.IsChecked) return;
+            if (linterMenuItem.IsChecked)
+            {
+                if (linterView != null && 
+                    (dynamoView.tabDynamic.SelectedItem as TabItem).Header.ToString() != EXTENSION_NAME)
+                {
+                    dynamoView.tabDynamic.SelectedItem = dynamoView
+                        .ExtensionTabItems
+                        .Where(x => x.Header.ToString() == EXTENSION_NAME)
+                        .FirstOrDefault();
+
+                    linterView.Focus();
+                }
+                return;
+            }
+                
             linterMenuItem.IsChecked = true;
         }
 
