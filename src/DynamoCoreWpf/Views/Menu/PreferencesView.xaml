@@ -13,6 +13,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
+        xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         mc:Ignorable="d" 
@@ -738,7 +739,7 @@
                                           Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel
                                     Orientation="Vertical" Margin="0,6,0,0">
-                                    <uiControls:InstalledPackagesControl Height="Auto"/>
+                                    <wpfControls:InstalledPackagesControl Height="Auto"/>
                                 </StackPanel>
                             </Expander>
                         </Grid>

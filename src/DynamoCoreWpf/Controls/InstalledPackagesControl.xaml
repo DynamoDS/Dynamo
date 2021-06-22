@@ -98,7 +98,7 @@
                                                     MinWidth="20"
                                                     FontSize="17"
                                                     Click="MoreButton_OnClick"
-                                                    Style="{StaticResource RemoveStyleButtonStyle}">
+                                                    Style="{StaticResource FlatButtonStyle}">
                                                         <Image 
                                                     Source="/DynamoCoreWpf;component/UI/Images/More.png" 
                                                     Width="16" Height="16"
