@@ -86,10 +86,21 @@ namespace Dynamo.PackageManager
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
         }
 
+        /// <summary>
+        /// Checks if the given (root) path is a subpath of the user data folder,
+        /// and then combines the extension path with root. If not, it simply combines the paths
+        /// and checks if the path is valid. If not, the root path is returned unchanged.
+        /// </summary>
+        /// <param name="root">root path to transform</param>
+        /// <param name="userDataFolder"></param>
+        /// <param name="extension">subdirectory or subpath</param>
+        /// <returns>combined root and extension path</returns>
         private static string TransformPath(string root, string userDataFolder, string extension)
         {
             if (root.StartsWith(userDataFolder))
+            {
                 return Path.Combine(root, extension);
+            }
             try
             {
                 var subFolder = Path.Combine(root, extension);

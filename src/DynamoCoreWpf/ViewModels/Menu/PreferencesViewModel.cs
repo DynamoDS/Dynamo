@@ -283,7 +283,9 @@ namespace Dynamo.ViewModels
 
                         // Add only directory paths
                         if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                        {
                             packagePathsForInstall.Add(path);
+                        }
                     }
                 }
                 return packagePathsForInstall;
