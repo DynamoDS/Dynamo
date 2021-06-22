@@ -780,7 +780,7 @@ namespace UnitsUI
         private DynamoUnits.Unit selectedUnit;
         private DynamoUnits.UnitSymbol selectedSymbol;
         private int selectedPrecision;
-        private bool selectedFormat;
+        private NumberFormat selectedFormat;
         private List<DynamoUnits.Unit> allUnits;
         private List<DynamoUnits.UnitSymbol> allSymbols;
         private List<int> allPrecisions;
@@ -827,7 +827,7 @@ namespace UnitsUI
             }
         } 
 
-        public bool SelectedFormat
+        public NumberFormat SelectedFormat
         {
             get { return selectedFormat; }
             set
@@ -849,7 +849,7 @@ namespace UnitsUI
         public List<int> AllPrecisions { get; set; }
         
         [JsonIgnore]
-        public List<bool> AllFormats { get; set; }
+        public List<NumberFormat> AllFormats { get; set; }
         
         public string DisplayValue
         {
@@ -873,7 +873,7 @@ namespace UnitsUI
             {
                 0, 1, 2, 3, 4, 5
             };
-            AllFormats = new List<bool> { true, false };
+            AllFormats = new List<NumberFormat> { NumberFormat.Decimal, NumberFormat.Fraction };
         }
 
         public UnitValueOutputDropdown()
@@ -890,7 +890,7 @@ namespace UnitsUI
                 0, 1, 2, 3, 4, 5
             };
             SelectedPrecision = AllPrecisions[0];
-            AllFormats = new List<bool> { true, false };
+            AllFormats = new List<NumberFormat> { NumberFormat.Decimal, NumberFormat.Fraction };
             SelectedFormat = AllFormats[0];
             RaisePropertyChanged(nameof(DisplayValue));
 
@@ -907,9 +907,9 @@ namespace UnitsUI
             }
 
 
-            var functionNode = AstFactory.BuildFunctionCall(new Func<double, string, string, int, bool, string>(DynamoUnits.Utilities.ReturnFormattedString), 
+            var functionNode = AstFactory.BuildFunctionCall(new Func<double, string, string, int, string, string>(DynamoUnits.Utilities.ReturnFormattedString), 
                 new List<AssociativeNode> { inputAstNodes[0], AstFactory.BuildStringNode(SelectedUnit.TypeId),
-                AstFactory.BuildStringNode(SelectedSymbol.TypeId), AstFactory.BuildIntNode(SelectedPrecision), AstFactory.BuildBooleanNode(SelectedFormat)});
+                AstFactory.BuildStringNode(SelectedSymbol.TypeId), AstFactory.BuildIntNode(SelectedPrecision), AstFactory.BuildStringNode(SelectedFormat.ToString())});
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), functionNode) };
         }
     }
@@ -924,7 +924,7 @@ namespace UnitsUI
         public double Value { get; set; }
 
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
-        public Unit SelectedUnit { get; set; }
+        public Unit Unit { get; set; }
 
         [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
         public UnitSymbol Symbol { get; set; }
@@ -955,12 +955,12 @@ namespace UnitsUI
             ArrayList inputs = data as ArrayList;
 
             Value = Convert.ToDouble(inputs[0]);
-            SelectedUnit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
+            Unit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
             Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
             Precision = Convert.ToInt32(inputs[3]);
             Decimal = Convert.ToBoolean(inputs[4]);
 
-            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, SelectedUnit, Symbol, Precision, Decimal);
+            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Decimal);
         }
 
         public override void Dispose()
@@ -977,7 +977,7 @@ namespace UnitsUI
         public UnitValueOutput()
         {
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Value), "Tooltip")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(SelectedUnit), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Unit), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Symbol), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Precision), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Decimal), "Tooltip")));

@@ -3,6 +3,7 @@ using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.UI.Commands;
 using Dynamo.ViewModels;
+using DynamoUnits;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -206,7 +207,7 @@ namespace UnitsUI
             }
         }
 
-        public bool SelectedFormat
+        public NumberFormat SelectedFormat
         {
             get { return unitValueDropdownModel.SelectedFormat; }
             set
@@ -244,7 +245,7 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(AllPrecisions));
             }
         }
-        public List<bool> AllFormats
+        public List<NumberFormat> AllFormats
         {
             get { return unitValueDropdownModel.AllFormats; }
             set

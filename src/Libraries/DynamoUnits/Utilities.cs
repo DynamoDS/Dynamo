@@ -17,6 +17,13 @@ using System.IO;
 
 namespace DynamoUnits
 {
+
+    public enum NumberFormat
+    {
+        None = 0,
+        Decimal = 1,
+        Fraction = 2
+    }
     public static class Utilities
     {
         public static double ConvertByUnits(double value, Unit fromUnit, Unit toUnit)
@@ -55,18 +62,25 @@ namespace DynamoUnits
         /// <param name="decimalFormat"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, bool decimalFormat)
+        public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, string numberFormat)
         {
             string outputString = string.Empty;
+
+            NumberFormat actualNumberFormat = numberFormat.ToString().Contains("Decimal") ? NumberFormat.Decimal : NumberFormat.Fraction;
 
             Unit unit = Unit.ByTypeID(unitTypeId);
             UnitSymbol unitSymbol = UnitSymbol.ByTypeID(unitSymbolId);
 
-            if (decimalFormat)
-                outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-            else
-                outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
-
+            switch (actualNumberFormat)
+            {
+                case NumberFormat.Decimal:
+                    outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+                    return outputString;
+                case NumberFormat.Fraction:
+                    outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                    return outputString;
+            }
+           
             return outputString;
         }
 

@@ -46,6 +46,35 @@ namespace UnitsUI.Converters
         {
             return value;
         }
-
     }
+
+    //public class BoolToDecimalFormatConverter : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        bool inputBoolean = (bool)value;
+    //        return inputBoolean == true ? "Decimal" : "Fraction";
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        string inputString = value as string;
+    //        return inputString == "Decimal"? true: false;
+    //    }
+    //}
+
+    //public class StringToNumberFormat : IValueConverter
+    //{
+    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        bool inputBoolean = (bool)value;
+    //        return inputBoolean == true ? "Decimal" : "Fraction";
+    //    }
+
+    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    //    {
+    //        string inputString = value as string;
+    //        return inputString == "Decimal" ? true : false;
+    //    }
+    //}
 }

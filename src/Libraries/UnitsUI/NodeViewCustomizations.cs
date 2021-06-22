@@ -352,25 +352,28 @@ namespace UnitsUI
             nodeModel = model;
 
             var grid = new Grid();
+            grid.Width = 220;
             grid.VerticalAlignment = VerticalAlignment.Stretch;
-            grid.Background = null;
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            grid.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190));
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
             {
                 TextWrapping = TextWrapping.Wrap,
                 MinHeight = Configurations.PortHeightInPixels,
-                Width=200,
-                VerticalAlignment = VerticalAlignment.Stretch
-
+                Width = 175,
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalAlignment = HorizontalAlignment.Left
             };
+
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
             tb.IsReadOnly = true;
             tb.DataContext = unitValueDropdownViewModel;
             tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdownViewModel.DisplayValue))
             {
                 Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
             });
 
             grid.Children.Add(tb);
@@ -379,19 +382,21 @@ namespace UnitsUI
             {
                 ExpandDirection = ExpandDirection.Down,
                 FlowDirection = FlowDirection.RightToLeft,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                IsHitTestVisible = true,
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF)),
-                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))
-                // Background = null
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(10, 2, 10, 2),
+                IsHitTestVisible = true
             };
-            ex.Background.Opacity = 1.0;
 
             grid.Children.Add(ex);
 
             var lb = new ListBox
             {
-                HorizontalContentAlignment = HorizontalAlignment.Stretch
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(0, 5, 0, 0),
+                Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190)),
+                BorderThickness = new System.Windows.Thickness(0),
+                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190))
             };
 
             ///Unit Controls
@@ -436,17 +441,14 @@ namespace UnitsUI
             unitCB.SelectionChanged += delegate
             {
                 if (unitCB.SelectedIndex != -1)
-                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
-                }
-
             };
 
             if (unitCB.SelectedItem == null)
             {
                 unitCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedUnit.Name, unitCB.Items);
             }
-                
+
 
             dockPanelUnit.Children.Add(unitLabel);
             dockPanelUnit.Children.Add(unitCB);
@@ -489,9 +491,7 @@ namespace UnitsUI
             symbolCB.SelectionChanged += delegate
             {
                 if (symbolCB.SelectedIndex != -1)
-                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
-                }
             };
 
             if (symbolCB.SelectedItem == null)
@@ -519,8 +519,7 @@ namespace UnitsUI
                 MinWidth = comboMinMidth,
                 MaxWidth = comboMaxWidth,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                ToolTip = unitValueDropdownViewModel.SelectedPrecision,
-                SelectedIndex = 0
+                ToolTip = unitValueDropdownViewModel.SelectedPrecision
             };
 
             // bind this combo box to the selected item hash
@@ -540,9 +539,7 @@ namespace UnitsUI
             precisionCB.SelectionChanged += delegate
             {
                 if (precisionCB.SelectedIndex != -1)
-                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
-                }
             };
 
             if (precisionCB.SelectedItem == null)
@@ -571,8 +568,7 @@ namespace UnitsUI
                 MinWidth = comboMinMidth,
                 MaxWidth = comboMaxWidth,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                ToolTip = unitValueDropdownViewModel.SelectedFormat,
-                SelectedItem = unitValueDropdownViewModel.SelectedFormat
+                ToolTip = unitValueDropdownViewModel.SelectedFormat
             };
 
             // bind this combo box to the selected item hash
@@ -592,9 +588,7 @@ namespace UnitsUI
             formatCB.SelectionChanged += delegate
             {
                 if (formatCB.SelectedIndex != -1)
-                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
-                }
             };
 
             if (formatCB.SelectedItem == null)
@@ -606,7 +600,7 @@ namespace UnitsUI
             dockPanelFormat.Children.Add(formatCB);
             lb.Items.Add(dockPanelFormat);
 
-          
+
 
             ex.Content = lb;
             nodeView.inputGrid.Children.Add(grid);
