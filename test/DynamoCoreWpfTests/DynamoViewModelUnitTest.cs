@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,16 +34,6 @@ namespace Dynamo.Tests
         protected override DynamoModel GetModel()
         {
             return ViewModel.Model;
-        }
-
-        protected static string GetAppDataFolder()
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
-
-            return appDataFolder;
         }
 
         [SetUp]

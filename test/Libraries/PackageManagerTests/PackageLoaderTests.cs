@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -30,16 +29,6 @@ namespace Dynamo.PackageManager.Tests
             libraries.Add("DesignScriptBuiltin.dll");
             libraries.Add("DSCoreNodes.dll");
             base.GetLibrariesToPreload(libraries);
-        }
-
-        private static string GetAppDataFolder()
-        {
-            var folder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var dynamoVersion = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            var appDataFolder = Path.Combine(Path.Combine(folder, "Dynamo", "Dynamo Core"),
-                $"{dynamoVersion.FileMajorPart}.{dynamoVersion.FileMinorPart}");
-
-            return appDataFolder;
         }
 
         [Test]
