@@ -131,6 +131,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsAnalyticsReportingApproved;
             }
         }
@@ -144,6 +145,7 @@ namespace Dynamo.Logging
             {
                 return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsADPAnalyticsReportingApproved; 
             }
         }
@@ -155,6 +157,7 @@ namespace Dynamo.Logging
         {
             get { return preferences != null
                     && Service.IsInitialized
+                    && !Analytics.DisableAnalytics
                     && preferences.IsUsageReportingApproved; }
         }
 
@@ -193,9 +196,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(GATrackerFactory.Name) == null)
+            {
                 service.Register(new GATrackerFactory(ANALYTICS_PROPERTY));
-
-            Service.Instance.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+                service.AddTrackerFactoryFilter(GATrackerFactory.Name, () => ReportingGoogleAnalytics);
+            }
         }
 
         private void RegisterADPTracker(Service service)
@@ -203,9 +207,10 @@ namespace Dynamo.Logging
             //Some clients such as Revit may allow start/close Dynamo multiple times
             //in the same session so register only if the factory is not registered.
             if (service.GetTrackerFactory(ADPTrackerFactory.Name) == null)
+            {
                 service.Register(new ADPTrackerFactory());
-
-            Service.Instance.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+                service.AddTrackerFactoryFilter(ADPTrackerFactory.Name, () => ReportingADPAnalytics);
+            }
         }
 
         /// <summary>
