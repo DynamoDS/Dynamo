@@ -2420,6 +2420,12 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
   </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Package/Library Search Paths</value>
+  </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
   </data>
