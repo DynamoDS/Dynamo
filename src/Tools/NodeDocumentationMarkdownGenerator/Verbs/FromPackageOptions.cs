@@ -10,7 +10,7 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
         [Option('i', "input", HelpText = "Package folder path")]
         public string InputFolderPath { get; set; }
 
-        [Option('r', "references", HelpText = "Folder paths to dlls that are used as references in the nodes", Required = false)]
+        [Option('r', "references", HelpText = "Folder paths to directories containing binaries that are used as references in the nodes", Required = false)]
         public IEnumerable<string> ReferencePaths { get; set; }
 
         [Option('w', "overwrite", HelpText = "Overwrite ....", Required = false)]

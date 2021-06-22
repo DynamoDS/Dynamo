@@ -8,13 +8,13 @@ namespace NodeDocumentationMarkdownGenerator.Verbs
     internal class FromDirectoryOptions
     {
 
-        [Option('i', "input", HelpText = "Directory folder path", Required = true)]
+        [Option('i', "input", HelpText = "Directory folder path containing assemblies to scan for nodes and create documentation files for", Required = true)]
         public string InputFolderPath { get; set; }
 
         [Option('o', "output", HelpText = "Folder path to save generated documents in", Required = true)]
         public string OutputFolderPath { get; set; }
 
-        [Option('r', "references", HelpText = "Folder paths to dlls that are used as references in the nodes", Required = false)]
+        [Option('r', "references", HelpText = "Folder paths to directories containing binaries that are used as references in the nodes", Required = false)]
         public IEnumerable<string> ReferencePaths { get; set; }
 
         [Option('f', "filter", HelpText = "Specifies which binary files documentation should be generated for", Required = false)]
