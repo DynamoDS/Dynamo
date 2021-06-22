@@ -10,6 +10,7 @@ using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -130,6 +131,17 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns the state of the Preferences Window Debug Mode
+        /// </summary>
+        public bool PreferencesDebugMode
+        {
+            get
+            {
+                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
+            }
+        }
+
         public ObservableCollection<PackageViewModel> LocalPackages {
             get { return installedPackagesViewModel.LocalPackages; }
         }
@@ -217,10 +229,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.ShowRunPreview;
+                return preferenceSettings.ShowRunPreview;
             }
             set
             {
+                preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
             }
@@ -617,6 +630,11 @@ namespace Dynamo.ViewModels
         #endregion
 
         /// <summary>
+        /// Package Search Paths view model.
+        /// </summary>
+        public PackagePathViewModel PackagePathsViewModel { get; set; }
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
@@ -659,6 +677,7 @@ namespace Dynamo.ViewModels
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
@@ -691,6 +710,18 @@ namespace Dynamo.ViewModels
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
             preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+
+            //create a packagePathsViewModel we'll use to interact with the package search paths list.
+            var loadPackagesParams = new LoadPackageParams
+            {
+                Preferences = preferenceSettings,
+                PathManager = dynamoViewModel.Model.PathManager,
+            };
+            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
+            PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+
             this.PropertyChanged += Model_PropertyChanged;
         }
 

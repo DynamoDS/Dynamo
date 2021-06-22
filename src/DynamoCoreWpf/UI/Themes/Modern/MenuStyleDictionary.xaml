@@ -147,7 +147,7 @@
                         Height="25">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"
                                               MinWidth="100" />
                             <ColumnDefinition Width="Auto"
@@ -252,7 +252,7 @@
                         Height="25" Background="Transparent">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="15"/>
                             <ColumnDefinition Width="*"
                                               MinWidth="100" />
                             <ColumnDefinition Width="Auto"
