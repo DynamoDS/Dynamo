@@ -286,7 +286,7 @@ namespace Dynamo.Wpf.ViewModels
                 // Placing the new node to the left of initial node
                 adjustedX -= initialNode.Width + 50;
 
-                // If the new node is a input slider node, adjust the position on X-axis to compensate for higher width of the slider node.
+                // If the new node is a slider input node, adjust the position on X-axis to compensate for higher width of the slider node.
                 if (Model.CreationName.Contains("Slider")) 
                 {
                     adjustedX -= 450;
