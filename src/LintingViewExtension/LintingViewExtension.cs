@@ -23,6 +23,7 @@ namespace Dynamo.LintingViewExtension
         private LinterViewModel linterViewModel;
         private LinterView linterView;
         private DynamoView dynamoView;
+        private DynamoViewModel dynamoViewModel;
 
 
         public override string UniqueId { get { return EXTENSION_GUID; } }
@@ -41,10 +42,9 @@ namespace Dynamo.LintingViewExtension
             this.linterViewModel = new LinterViewModel(linterManager, viewLoadedParamsReference);
             this.linterView = new LinterView() { DataContext = linterViewModel };
             this.dynamoView = viewLoadedParamsReference.DynamoWindow as DynamoView;
+            this.dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
 
-            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).RequestOpenLinterView += OnRequestOpenLinterView;
-
-            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).RequestOpenLinterView += OnRequestOpenLinterView;
+            dynamoViewModel.RequestOpenLinterView += OnRequestOpenLinterView;
 
             // Add a button to Dynamo View menu to manually show the window
             this.linterMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -85,6 +85,7 @@ namespace Dynamo.LintingViewExtension
             this.linterMenuItem.Checked -= MenuItemCheckHandler;
             this.linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
             if (linterManager != null) linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            dynamoViewModel.RequestOpenLinterView -= OnRequestOpenLinterView;
         }
 
         public override void Closed()
