@@ -26,7 +26,7 @@ namespace Dynamo.ViewModels
             {
                 if(values[0] is PackagePathViewModel vm && values[1] is string stringPath)
                 {
-                    vm?.IsPathCurrentlyDisabled(stringPath);
+                    return vm?.IsPathCurrentlyDisabled(stringPath);
                 }
             }
             return false;
