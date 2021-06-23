@@ -110,9 +110,7 @@
                                                                             <Setter.Value>
                                                                                 <ControlTemplate TargetType="{x:Type ContextMenu}">
                                                                                     <Border x:Name="Border" Background="#3c3c3c" BorderThickness="1">
-                                                                                        <ScrollViewer x:Name="ScrollViewer">
-                                                                                            <ItemsPresenter />
-                                                                                        </ScrollViewer>
+                                                                                        <ItemsPresenter />
                                                                                     </Border>
                                                                                 </ControlTemplate>
                                                                             </Setter.Value>
