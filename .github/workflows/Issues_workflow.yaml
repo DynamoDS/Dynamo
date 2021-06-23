@@ -23,6 +23,7 @@ jobs:
           pattern: "\""
           string: ${{ github.event.issue.title }}
           replace-with: '-'
+          flags: g    
       - name: Check Information
         id: check-info
         run: |
@@ -34,7 +35,7 @@ jobs:
           curl -v -u admin:${{ secrets.DYNAMOBOTTOKEN }} -d '{"labels": ["${{env.content_analysis_response}}"]}' ${{ github.event.issue.url }}/labels
   
   #This job will scan the issue content to determing if more information is needed and act acordingly
-  #Will only run if the "redirectIssue" job output a 'Valid' result
+  #Will only run if the "redirectIssue" job outputted a 'Valid' result
   checkIssueInformation:
     if: needs.redirectIssue.outputs.result == 'Valid'
     name: Check for missing information
@@ -90,6 +91,7 @@ jobs:
           pattern: "\""
           string: ${{ github.event.issue.body }}
           replace-with: '-'
+          flags: g
 
       #Checks for missing information inside the issue content
       - name: Check Information
@@ -106,14 +108,14 @@ jobs:
       
       #Adds the "needs more info" label if needed
       - name: Label and comment issue
-        if: ((env.analysis_response != 'Valid') && (env.analysis_response != 'Empty'))
+        if: ((env.analysis_response != 'Valid') && (env.analysis_response != 'Empty') && (github.event.action == 'opened'))
         run: |
           curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -d '{"labels": ["${{env.issue_label}}"]}' ${{ github.event.issue.url }}/labels
           curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -d '{"body": "${{env.comment_intro}} ${{env.needs_more_info_comment}} ${{env.specific_info}} ${{env.analysis_response}}.\n\n${{env.info_needed}}"}' ${{ github.event.issue.url }}/comments
       
       #Removes the "needs more info" label if the issue has the missing information
       - name: Unlabel updated issue
-        if: env.analysis_response == 'Valid'
+        if: env.analysis_response == 'Valid' && github.event.action == 'edited'
         run: |
           echo urldecode ${{env.issue_label}}
           curl -v -u admin:${{ secrets.GITHUB_TOKEN }} -X DELETE ${{ github.event.issue.url }}/labels/$(echo -ne "${{env.issue_label}}" | xxd -plain | tr -d '\n' | sed 's/\(..\)/%\1/g')

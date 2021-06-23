@@ -272,7 +272,6 @@ namespace DynamoCoreWpfTests
         public void VerifyDynamoLoadingOnOpeningWorkspaceWithMissingCustomNodes()
         {
             List<string> dependenciesList = new List<string>() { "MeshToolkit", "Clockwork for Dynamo 1.x", "Clockwork for Dynamo 2.x", "Dynamo Samples" };
-            DebugModes.LoadDebugModesStatusFromConfig(Path.Combine(GetTestDirectory(ExecutingDirectory), "DynamoCoreWpfTests", "python2ObsoleteMode.config"));
             DynamoModel.IsTestMode = false;
 
             var examplePath = Path.Combine(@"core\packageDependencyTests\PackageDependencyStates.dyn");

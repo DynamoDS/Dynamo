@@ -7,11 +7,13 @@ using System.Runtime.Serialization;
 using System.Xml;
 using Dynamo.Core;
 using Dynamo.Engine;
+using Dynamo.Extensions;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.NodeLoaders;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Presets;
+using Dynamo.Linting;
 using Dynamo.Models;
 using Dynamo.Scheduler;
 using Newtonsoft.Json;
@@ -27,9 +29,11 @@ namespace Dynamo.Graph.Workspaces
     {
         #region Class Data Members and Properties
 
-        private readonly DynamoScheduler scheduler;
+        private string thumbnail;
+        private Uri graphDocumentationURL;
+        private DynamoScheduler scheduler;
         private PulseMaker pulseMaker;
-        private readonly bool verboseLogging;
+        private bool verboseLogging;
         private bool graphExecuted;
 
         // Event to handle closing of the workspace references extension when the workspace is closed. 
@@ -88,6 +92,54 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         [JsonIgnore]
         public long EvaluationCount { get; private set; }
+
+        /// <summary>
+        /// Link to documentation page for this workspace
+        /// </summary>
+        public Uri GraphDocumentationURL
+        {
+            get { return graphDocumentationURL; }
+            set
+            {
+                if (graphDocumentationURL == value)
+                    return;
+
+                graphDocumentationURL = value;
+                RaisePropertyChanged(nameof(GraphDocumentationURL));
+            }
+        }
+
+
+        /// <summary>
+        /// Workspace thumbnail as Base64 string.
+        /// Returns null if provide value is not Base64 encoded.
+        /// </summary>
+        public string Thumbnail
+        {
+            get { return thumbnail; }
+            set
+            {
+                try
+                {
+                    // if value is not a valid Base64 string this will throw, and we return null.
+                    byte[] data = Convert.FromBase64String(value);
+                    thumbnail = value;
+                    RaisePropertyChanged(nameof(Thumbnail));
+                }
+                catch
+                {
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// List of user defined data from extensions and view extensions stored in the graph
+        /// </summary>
+        internal ICollection<ExtensionData> ExtensionData
+        {
+            get; set;
+        }
 
         /// <summary>
         /// In near future, the file loading mechanism will be completely moved 
@@ -196,6 +248,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
         /// <param name="isTestMode">Indicates if current code is running in tests</param>
         /// <param name="fileName">Name of file where the workspace is saved</param>
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
             NodeFactory factory, bool verboseLogging, bool isTestMode, string fileName = "")
             : this(engine,
@@ -211,6 +264,35 @@ namespace Dynamo.Graph.Workspaces
                 verboseLogging,
                 isTestMode) { }
 
+        /// <summary>
+        /// Initializes a new empty instance of the <see cref="HomeWorkspaceModel"/> class
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="linterManager">The linter manager from the DynamoModel that owns this workspace</param>
+        /// <param name="fileName">Name of file where the workspace is saved</param>
+        public HomeWorkspaceModel(EngineController engine, DynamoScheduler scheduler,
+            NodeFactory factory, bool verboseLogging, bool isTestMode, LinterManager linterManager, string fileName = "")
+            : this(engine,
+                scheduler,
+                factory,
+                Enumerable.Empty<KeyValuePair<Guid, List<CallSite.RawTraceData>>>(),
+                Enumerable.Empty<NodeModel>(),
+                Enumerable.Empty<NoteModel>(),
+                Enumerable.Empty<AnnotationModel>(),
+                Enumerable.Empty<PresetModel>(),
+                new ElementResolver(),
+                new WorkspaceInfo() { FileName = fileName, Name = "Home" },
+                verboseLogging,
+                isTestMode,
+                linterManager)
+        { }
+
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(Guid guid, EngineController engine,
             DynamoScheduler scheduler,
             NodeFactory factory,
@@ -224,6 +306,22 @@ namespace Dynamo.Graph.Workspaces
             bool verboseLogging,
             bool isTestMode):this(engine, scheduler, factory, traceData, nodes, notes, 
                 annotations, presets, resolver, info, verboseLogging, isTestMode)
+        { Guid = guid; }
+
+        public HomeWorkspaceModel(Guid guid, EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode,
+            LinterManager linterManager) : this(engine, scheduler, factory, traceData, nodes, notes,
+                annotations, presets, resolver, info, verboseLogging, isTestMode, linterManager)
         { Guid = guid; }
 
         /// <summary>
@@ -244,6 +342,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="info">Information for creating custom node workspace</param>
         /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
         /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        [Obsolete("please use the version with linterManager parameter.")]
         public HomeWorkspaceModel(EngineController engine, 
             DynamoScheduler scheduler, 
             NodeFactory factory,
@@ -257,6 +356,54 @@ namespace Dynamo.Graph.Workspaces
             bool verboseLogging,
             bool isTestMode)
             : base(nodes, notes,annotations, info, factory,presets, resolver)
+        {
+            InitializeHomeWorkspace(engine, traceData, scheduler, info, verboseLogging, isTestMode);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HomeWorkspaceModel"/> class
+        /// by given information about it and specified item collections
+        /// </summary>
+        /// <param name="engine"><see cref="EngineController"/> object assosiated with this home workspace
+        /// to coordinate the interactions between some DesignScript sub components.</param>
+        /// <param name="scheduler"><see cref="DynamoScheduler"/> object to add tasks in queue to execute</param>
+        /// <param name="factory">Node factory to create nodes</param>
+        /// <param name="traceData">Preloaded trace data</param>
+        /// <param name="nodes">Node collection of the workspace</param>
+        /// <param name="notes">Note collection of the workspace</param>
+        /// <param name="annotations">Group collection of the workspace</param>
+        /// <param name="presets">Preset collection of the workspace</param>
+        /// <param name="elementResolver">ElementResolver responsible for resolving 
+        /// a partial class name to its fully resolved name</param>
+        /// <param name="info">Information for creating custom node workspace</param>
+        /// <param name="verboseLogging">Indicates if detailed descriptions should be logged</param>
+        /// <param name="isTestMode">Indicates if current code is running in tests</param>
+        /// <param name="linterManager">The linter manager from the DynamoModel that owns this workspace</param>
+        public HomeWorkspaceModel(EngineController engine,
+            DynamoScheduler scheduler,
+            NodeFactory factory,
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData,
+            IEnumerable<NodeModel> nodes,
+            IEnumerable<NoteModel> notes,
+            IEnumerable<AnnotationModel> annotations,
+            IEnumerable<PresetModel> presets,
+            ElementResolver resolver,
+            WorkspaceInfo info,
+            bool verboseLogging,
+            bool isTestMode,
+            LinterManager linterManager)
+            : base(nodes, notes, annotations, info, factory, presets, resolver, linterManager)
+        {
+            InitializeHomeWorkspace(engine, traceData, scheduler, info, verboseLogging, isTestMode);
+        }
+
+        private void InitializeHomeWorkspace
+            (EngineController engine, 
+            IEnumerable<KeyValuePair<Guid, List<CallSite.RawTraceData>>> traceData, 
+            DynamoScheduler scheduler,
+            WorkspaceInfo info, 
+            bool verboseLogging, 
+            bool isTestMode)
         {
             Debug.WriteLine("Creating a home workspace...");
 
@@ -278,6 +425,7 @@ namespace Dynamo.Graph.Workspaces
             this.verboseLogging = verboseLogging;
             IsTestMode = isTestMode;
             EngineController = engine;
+            this.ExtensionData = new List<ExtensionData>();
 
             // The first time the preloaded trace data is set, we cache
             // the data as historical. This will be used after the initial
@@ -346,10 +494,10 @@ namespace Dynamo.Graph.Workspaces
                 // We will be needing a separate variable(boolean flag) to check whether run can be enabled from external applications
                 // and not confuse it with the internal flag RunEnabled which is associated with the Run button in Dynamo. 
                 // Make this RunSettings.RunEnabled private, introduce the new flag and remove the "executingTask" variable. 
-                if (RunSettings.RunEnabled || executingTask)
+                if ((RunSettings.RunEnabled || executingTask) && !DelayGraphExecution)
                 {
                     Run();
-                }   
+                }
             }
         }
 
@@ -665,7 +813,7 @@ namespace Dynamo.Graph.Workspaces
             // are compiled first before the home workspace gets evaluated.
             // 
             EngineController.ProcessPendingCustomNodeSyncData(scheduler);
-
+            
             var task = new UpdateGraphAsyncTask(scheduler, verboseLogging);
             if (task.Initialize(EngineController, this))
             {
@@ -769,6 +917,40 @@ namespace Dynamo.Graph.Workspaces
             historicalTraceData = null;
 
             return orphans;
-        } 
+        }
+
+        internal bool TryGetMatchingWorkspaceData(string uniqueId, out Dictionary<string, string> data)
+        {
+            data = new Dictionary<string, string>();
+            if (!ExtensionData.Any())
+                return false;
+
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return false;
+
+            data = extensionData.Data;
+            return true;
+        }
+
+        internal void UpdateExtensionData(string uniqueId, Dictionary<string, string> data)
+        {
+            var extensionData = ExtensionData.Where(x => x.ExtensionGuid == uniqueId)
+                .FirstOrDefault();
+
+            if (extensionData is null)
+                return;
+
+            extensionData.Data = data;
+        }
+
+        internal void CreateNewExtensionData(string uniqueId, string name, string version, Dictionary<string, string> data)
+        {
+            // TODO: Figure out how to add extension version when creating new ExtensionData 
+            var extensionData = new ExtensionData(uniqueId, name, version, data);
+            ExtensionData.Add(extensionData);
+        }
     }
 }

@@ -347,7 +347,14 @@ namespace PythonNodeModels
 
             if (engineNode != null)
             {
-                this.Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion),engineNode.InnerText);
+                var oldEngine = Engine;
+                Engine = (PythonEngineVersion)Enum.Parse(typeof(PythonEngineVersion), engineNode.InnerText);
+                if (context == SaveContext.Undo && oldEngine != this.Engine)
+                {
+                    // For Python nodes, changing the Engine property does not set the node Modified flag.
+                    // This is done externally in all event handlers, so for Undo we do it here.
+                    OnNodeModified();
+                }
             }
         }
 

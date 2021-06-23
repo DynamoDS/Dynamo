@@ -40,9 +40,8 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Greg, Version=2.0.7507.22529, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Greg.2.0.7507.22529\lib\net48\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=2.0.7759.28389, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Greg.2.0.7759.28389\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Prism">
       <HintPath>..\..\extern\prism\Microsoft.Practices.Prism.dll</HintPath>

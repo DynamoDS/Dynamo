@@ -1,7 +1,7 @@
 ### Dynamo Shaders:
 
 This folder contains the following:
-* some common structure definitions in hlsl taken from Helix 2.9
+* some common structure definitions in hlsl taken from Helix 2.15
 * some custom shaders for Dynamo meshes (1 vertex shader and 1 pixel(or fragment) shader) - these are used to draw Dynamo meshes.
 * a bat script which compiles these shaders into binary blobs that further get compiled into DynamoCoreWPF.dll
 

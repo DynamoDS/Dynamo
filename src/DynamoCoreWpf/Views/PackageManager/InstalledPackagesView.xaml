@@ -89,12 +89,30 @@
                                                    FontSize="11"
                                                    Foreground="#CCC"></TextBlock>
                                         <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
-                                                   Visibility="{Binding Path=Model.MarkedForUninstall, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                   Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                    FontSize="11"
                                                    FontStyle="Italic"
                                                    Foreground="Red"></TextBlock>
+                                        <Grid
+                                            Visibility="{Binding Path=Model.EnablePackageStates, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                            Height="18"
+                                            MaxWidth="150"
+                                            >
+                                            <Border Background="DimGray"
+                                                    HorizontalAlignment="Stretch"
+                                                    CornerRadius="5"
+                                                    ToolTip="{Binding Path=Model.PackageStateTooltip}"
+                                                    Margin="5,0,0,0"
+                                                    Padding="5,0,5,0">
+                                                <TextBlock Text="{Binding Path=Model.PackageStateText}"
+                                                        TextTrimming="CharacterEllipsis"
+                                                        FontSize="11"
+                                                        FontStyle="Italic"
+                                                        HorizontalAlignment="Center"
+                                                        Foreground="WhiteSmoke"/>
+                                            </Border>
+                                        </Grid>
                                     </StackPanel>
-
                                     <Button Name="MoreButton"
                                             HorizontalAlignment="Right"
                                             Content="⋮"

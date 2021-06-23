@@ -2,6 +2,11 @@
 <GalleryContents xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<GalleryUiContents>
 	<GalleryContent>
+		<Header>New Feature - Dynamo NodeAutocomplete</Header>
+		<Body>By pressing Alt + left mouse click on port, use NodeAutocomplete to simplify your workflow to place nodes.NodeAutocomplete will be enabled by default and can be disabled under Preferences... -> Features setting.&#10;[1] Search for node suggestions.&#10;[2] NodeAutocomplete suggestions for you.</Body>
+		<ImagePath>12-NodeAutoComplete.png</ImagePath>
+	</GalleryContent>
+	<GalleryContent>
 		<Header>Getting Started with Dynamo</Header>
 		<Body>Dynamo is a visual scripting program that will help you compose custom algorithms to process data and generate geometry. With Dynamo, you can generate code without having to know how to code. Learn about the basics of Dynamo on the next few pages.&#10;&#10;Find this guide in the application menu under "Help > Getting Started"</Body>
 		<ImagePath>01-Welcome.png</ImagePath>

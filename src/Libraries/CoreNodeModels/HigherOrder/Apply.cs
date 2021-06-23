@@ -73,6 +73,7 @@ namespace CoreNodeModels.HigherOrder
     [NodeName("Function Compose")]
     [NodeCategory(BuiltinNodeCategories.CORE_EVALUATE)]
     [NodeDescription("FunctionComposeDescription", typeof(Resources))]
+    [OutPortTypes("Function")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("DSCoreNodesUI.HigherOrder.ComposeFunctions", "Function.Compose")]
     public class ComposeFunctions : VariableInputNode

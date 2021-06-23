@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dynamo.Extensions;
 using Dynamo.Logging;
 
 namespace Dynamo.Wpf.Extensions
@@ -29,6 +30,7 @@ namespace Dynamo.Wpf.Extensions
     internal class ViewExtensionManager : IViewExtensionManager, ILogSource
     {
         private readonly List<IViewExtension> viewExtensions = new List<IViewExtension>();
+        private readonly List<IExtensionStorageAccess> storageAccessViewExtensions = new List<IExtensionStorageAccess>();
         private readonly ViewExtensionLoader viewExtensionLoader = new ViewExtensionLoader();
 
         public ViewExtensionManager()
@@ -50,7 +52,7 @@ namespace Dynamo.Wpf.Extensions
         {
             if (viewExtension is IViewExtension)
             {
-                this.Add(viewExtension as IViewExtension);
+                this.Add(viewExtension);
             }
         }
         private IViewExtension RequestLoadViewExtensionHandler(string extensionPath)
@@ -94,10 +96,22 @@ namespace Dynamo.Wpf.Extensions
             {
                 viewExtensions.Add(extension);
                 Log(fullName + " view extension is added");
+                // Inform view extension author and consumer that the view extension does not come 
+                // with a consistent UniqueId. This may result in unexpected Dynamo behavior.
+                if (extension.UniqueId != extension.UniqueId)
+                {
+                    Log("Inconsistent UniqueId for " + extension.Name + " view extension. This may result in unexpected Dynamo behavior.");
+                }
 
                 if (ExtensionAdded != null)
                 {
                     ExtensionAdded(extension);
+                }
+
+                if (extension is IExtensionStorageAccess storageAccess &&
+                    storageAccessViewExtensions.Find(x=> (x as IViewExtension).UniqueId == extension.UniqueId) is null)
+                {
+                    storageAccessViewExtensions.Add(storageAccess);
                 }
             }
             else
@@ -125,6 +139,12 @@ namespace Dynamo.Wpf.Extensions
                 Log(fullName + " extension cannot be disposed properly: " + ex.Message);
             }
 
+            if (extension is IExtensionStorageAccess storageAccess &&
+                storageAccessViewExtensions.Contains(storageAccess))
+            {
+                storageAccessViewExtensions.Remove(storageAccess);
+            }
+
             Log(fullName + " extension is removed");
             if (ExtensionRemoved != null)
             {
@@ -135,6 +155,14 @@ namespace Dynamo.Wpf.Extensions
         public IEnumerable<IViewExtension> ViewExtensions
         {
             get { return viewExtensions; }
+        }
+
+        /// <summary>
+        /// Returns the collection of registered extensions implementing IExtensionStorageAccess
+        /// </summary>
+        public IEnumerable<IExtensionStorageAccess> StorageAccessViewExtensions
+        {
+            get { return storageAccessViewExtensions; }
         }
 
         public event Action<IViewExtension> ExtensionAdded;
@@ -156,6 +184,7 @@ namespace Dynamo.Wpf.Extensions
                 }
             }
             viewExtensions.Clear();
+            storageAccessViewExtensions.Clear();
             viewExtensionLoader.MessageLogged -= Log;
         }
 

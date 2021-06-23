@@ -184,6 +184,11 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private double nearPlaneDistanceFactor = 0.001;
         internal const double DefaultNearClipDistance = 0.1f;
         internal const double DefaultFarClipDistance = 100000;
+
+        //see https://docs.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage-depth-bias
+        private const int DepthBiasVertexColors = 10;
+        private const int DepthBiasNormalMesh = 100;
+        private const int DepthBiasSelectedMesh = 0;
         internal static BoundingBox DefaultBounds = new BoundingBox(new Vector3(-25f, -25f, -25f), new Vector3(25f,25f,25f));
 
         private ObservableElement3DCollection sceneItems;
@@ -743,20 +748,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // labels are still displayed in the preview, but the highlighting has been switched off.
                     // In order to prevent this unintuitive UX behavior, the nodes will first be checked if they are in the 
                     // nodesSelected dictionary - if they are, they will not be switched off.
-                    var geometryModels = new Dictionary<string, Element3D>();
+                    var geometryModels = new List<Element3D>();
                     foreach (var model in Element3DDictionary)
                     {
                         var nodePath = model.Key.Contains(':') ? model.Key.Remove(model.Key.IndexOf(':')) : model.Key;
                         if (model.Value is GeometryModel3D && !nodesSelected.ContainsKey(nodePath))
                         {
-                            geometryModels.Add(model.Key, model.Value);
+                            geometryModels.Add(model.Value);
                         }
                     }
 
-                    foreach (var geometryModel in geometryModels)
-                    {
-                        AttachedProperties.SetShowSelected(geometryModel.Value, false);
-                    }
+                    SetSelection(geometryModels, false);
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
@@ -1068,7 +1070,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         private void OnSceneItemsChanged()
         {
             UpdateSceneItems();
-            RaisePropertyChanged("SceneItems");
+            RaisePropertyChanged(nameof(SceneItems));
             OnRequestViewRefresh();
         }
    
@@ -1119,26 +1121,64 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
+        private void SetSelection(IEnumerable<Element3D> items, bool isSelected)
+        {
+         
+            foreach (var element in items)
+            {
+                AttachedProperties.SetShowSelected(element, isSelected);
+            }
+            SetDepthBiasBasedOnSelection(isSelected, items);
+        }
+
         private void SetSelection(IEnumerable items, bool isSelected)
         {
             foreach (var item in items)
             {
-                var node = item as NodeModel;
-                if (node == null)
+                if (item is NodeModel node)
                 {
-                    continue;
+
+                    var element3ds = FindAllGeometryModel3DsForNode(node);
+
+                    if (!element3ds.Any())
+                    {
+                        continue;
+                    }
+
+                    var geometryModels = element3ds.Where(x => x.Value is GeometryModel3D).Select(x=>x.Value);
+                    foreach (var model in geometryModels)
+                    {
+                        AttachedProperties.SetShowSelected(model, isSelected);
+                    }
+
+                    SetDepthBiasBasedOnSelection(isSelected, geometryModels);
                 }
+            }
+        }
 
-                var geometryModels = FindAllGeometryModel3DsForNode(node);
-
-                if (!geometryModels.Any())
+        private static void SetDepthBiasBasedOnSelection(bool isSelected, IEnumerable<Element3D> element3Ds)
+        {
+            //selected should be lowest depth
+            var newDepth = DepthBiasSelectedMesh;
+            foreach (var element in element3Ds)
+            {
+                if (element is DynamoGeometryModel3D geom)
                 {
-                    continue;
-                }
+                    
+                    if (!isSelected)
+                    {
+                        //reset depth to default
+                        if (geom.RequiresPerVertexColoration)
+                        {
+                            newDepth = DepthBiasVertexColors;
+                        }
+                        else
+                        {
+                            newDepth = DepthBiasNormalMesh;
+                        }
+                    }
 
-                foreach (var model in geometryModels)
-                {
-                    AttachedProperties.SetShowSelected(model.Value, isSelected);
+                    geom.DepthBias = newDepth;
                 }
             }
         }
@@ -1637,13 +1677,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     // with `points`, `lines`, or `mesh`. For each RenderPackage, we check whether the geometry dictionary
                     // has entries for the points, lines, or mesh already. If so, we add the RenderPackage's geometry
                     // to those geometry objects.
-
+                    
                     var baseId = rp.Description;
                     if (baseId.IndexOf(":", StringComparison.Ordinal) > 0)
                     {
                         baseId = baseId.Split(':')[0];
                     }
-                    
+
                     //If this render package belongs to special render package, then create
                     //and update the corresponding GeometryModel. Special renderpackage are
                     //defined based on its description containing one of the constants from
@@ -1653,12 +1693,16 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
                     var drawDead = InCustomNode() && !customNodeIdents.Contains(baseId);
 
+                    if (rp.LabelData.Any())
+                    {
+                        AddLabelPlace(baseId, rp.LabelPlaces, rp);
+                    }
+
                     string id;
                     var p = rp.Points;
                     if (p.Positions.Any())
                     {
-                        //if we require a custom transform then we need to create a new Geometry3d object.
-                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + PointsKey;
+                        id = baseId + PointsKey;
 
                         PointGeometryModel3D pointGeometry3D;
 
@@ -1694,7 +1738,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         //(ie updating colors from this method).
                         colorCache[id] = points.Colors;
                       
-                        AddLabelPlace(baseId, p.Positions[0], rp);
                         if (pointGeometry3D.Geometry == null)
                         {
                             pointGeometry3D.Geometry = points;
@@ -1710,8 +1753,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var l = rp.Lines;
                     if (l.Positions.Any())
                     {
-                        //if we require a custom transform then we need to create a new Geometry3d object.
-                        id = ((rp.RequiresCustomTransform) ? rp.Description : baseId) + LinesKey;
+                        id = baseId + LinesKey;
 
                         LineGeometryModel3D lineGeometry3D;
 
@@ -1751,7 +1793,6 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                             ? l.Indices.Select(i => i + startIdx)
                             : Enumerable.Range(startIdx, startIdx + l.Positions.Count));
 
-                        AddLabelPlace(baseId, lineSet.Positions[startIdx], rp);
                         if(lineGeometry3D.Geometry == null)
                         {
                             lineGeometry3D.Geometry = lineSet;
@@ -1765,58 +1806,134 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                     var m = rp.Mesh;
                     if (!m.Positions.Any()) continue;
 
-                    //if we require a custom transform or vertex coloration then we need to create a new Geometry3d object.
-                    id = ((rp.RequiresPerVertexColoration || rp.Colors != null || rp.RequiresCustomTransform) ? rp.Description : baseId) + MeshKey;
+                    //If we are using the legacy colors array for texture map we need to create a new Geometry3d object with a unique key.
+                    id = (rp.Colors != null ? rp.Description : baseId) + MeshKey;
 
-                    Element3D element3D;
-                    DynamoGeometryModel3D meshGeometry3D;
-                    if (Element3DDictionary.TryGetValue(id, out element3D))
+                    //If we are using IRenderPackageSupplement texture map data then we need to create a unique Geometry3D object for each texture map and associated mesh geometry.  
+                    //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
+                    if (rp.MeshVerticesRangesAssociatedWithTextureMaps.Any())
                     {
-                        meshGeometry3D = element3D as DynamoGeometryModel3D;
-                    }
-                    else
-                    {
-                        meshGeometry3D = CreateDynamoGeometryModel3D(rp);
-                        Element3DDictionary.Add(id, meshGeometry3D);
-                    }
+                        //For each range of mesh vertices add the mesh data and texture map to the scene
+                        var meshVertexCountTotal = 0;
+                        for (var j = 0; j < rp.MeshVerticesRangesAssociatedWithTextureMaps.Count; j++)
+                        {
+                            var range = rp.MeshVerticesRangesAssociatedWithTextureMaps[j];
+                            var index = range.Item1; //Start mesh vertex index
+                            var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
+                            var uniqueId = baseId + ":" + j + MeshKey;
+                            
+                            AddMeshData(uniqueId, rp,index,count, drawDead, baseId, rp.TextureMapsList[j], rp.TextureMapsStrideList[j]);
 
-                    var mesh = meshGeometry3D.Geometry == null ? HelixRenderPackage.InitMeshGeometry() 
-                        : meshGeometry3D.Geometry as MeshGeometry3D;
-                    var idxCount = mesh.Positions.Count;
+                            //Track cumulative total of mesh vertices added.
+                            meshVertexCountTotal+= count;
+                        }
 
-                    mesh.Positions.AddRange(m.Positions);
+                        //If all the mesh regions had texture map data then we are done with mesh data.
+                        if (meshVertexCountTotal == m.Positions.Count)
+                        { continue;}
 
-  
-                    // If we are in a custom node, and the current
-                    // package's id is NOT one of the output ids of custom nodes
-                    // in the graph, then draw the geometry with transparency.
-                    if (drawDead)
-                    {
-                        meshGeometry3D.RequiresPerVertexColoration = true;
-                        mesh.Colors.AddRange(m.Colors.Select(c=>new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
-                    }
-                    else
-                    {
-                        mesh.Colors.AddRange(m.Colors);
+                        //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
+                        //First sort the range data
+                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
+                        sortedVerticesRange.Sort();
+                        sortedVerticesRange.Reverse();
                         
+                        //Remove already generated mesh geometry from render package
+                        foreach (var range in sortedVerticesRange)
+                        {
+                            var i = range.Item1;
+                            var c = range.Item2 - range.Item1 + 1;
+                            m.Positions.RemoveRange(i,c);
+                            m.Colors.RemoveRange(i, c);
+                            m.Normals.RemoveRange(i, c);
+                            m.TextureCoordinates.RemoveRange(i, c);
+                        }
+
+                        //Regenerate Indices data
+                        var sequence = Enumerable.Range(0, m.Positions.Count);
+                        var newIndices = new IntCollection();
+                        newIndices.AddRange(sequence);
+                        m.Indices = newIndices;
                     }
 
-                    mesh.Normals.AddRange(m.Normals);
-                    mesh.TextureCoordinates.AddRange(m.TextureCoordinates);
-                    mesh.Indices.AddRange(m.Indices.Select(i => i + idxCount));
-
-                    if (mesh.Colors.Any(c => c.Alpha < 1.0))
-                    {
-                        AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
-                    }
-
-                    AddLabelPlace(baseId, mesh.Positions[idxCount], rp);
-                    meshGeometry3D.Geometry = mesh;
-                    meshGeometry3D.Name = baseId;
-
+                    AddMeshData(id, rp, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride);
                 }
-
             }
+        }
+
+        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
+        {
+            FastList<Vector3> mPositions;
+            FastList<Color4> mColors;
+            FastList<Vector3> mNormals;
+            FastList<Vector2> mTextureCoordinates;
+            FastList<int> mIndices;
+
+            var m = rp.Mesh;
+            if (index == 0 && count == rp.Mesh.Positions.Count)
+            {
+                mPositions = m.Positions;
+                mColors = m.Colors;
+                mNormals = m.Normals;
+                mTextureCoordinates = m.TextureCoordinates;
+                mIndices = m.TriangleIndices;
+            }
+            else
+            {
+                mPositions = m.Positions.GetRange(index, count);
+                mColors = m.Colors.GetRange(index, count);
+                mNormals = m.Normals.GetRange(index, count);
+                mTextureCoordinates = m.TextureCoordinates.GetRange(index, count);
+                mIndices = m.TriangleIndices.GetRange(index, count);
+            }
+            
+            Element3D element3D;
+            DynamoGeometryModel3D meshGeometry3D;
+            if (Element3DDictionary.TryGetValue(id, out element3D))
+            {
+                meshGeometry3D = element3D as DynamoGeometryModel3D;
+            }
+            else
+            {
+                meshGeometry3D = CreateDynamoGeometryModel3D(rp, true, colors, stride);
+                Element3DDictionary.Add(id, meshGeometry3D);
+            }
+
+            var mesh = meshGeometry3D.Geometry == null
+                ? HelixRenderPackage.InitMeshGeometry()
+                : meshGeometry3D.Geometry as MeshGeometry3D;
+            var previousPositionCount = mesh.Positions.Count;
+
+            mesh.Positions.AddRange(mPositions);
+
+
+            // If we are in a custom node, and the current
+            // package's id is NOT one of the output ids of custom nodes
+            // in the graph, then draw the geometry with transparency.
+            if (drawDead)
+            {
+                meshGeometry3D.RequiresPerVertexColoration = true;
+                mesh.Colors.AddRange(mColors.Select(c => new Color4(c.Red, c.Green, c.Blue, c.Alpha * defaultDeadAlphaScale)));
+            }
+            else
+            {
+                mesh.Colors.AddRange(mColors);
+            }
+
+            mesh.Normals.AddRange(mNormals);
+            mesh.TextureCoordinates.AddRange(mTextureCoordinates);
+
+            var adjustment = previousPositionCount - mIndices[0];
+            
+            mesh.Indices.AddRange(mIndices.Select(i => i + adjustment));
+
+            if (mesh.Colors.Any(c => c.Alpha < 1.0))
+            {
+                AttachedProperties.SetHasTransparencyProperty(meshGeometry3D, true);
+            }
+
+            meshGeometry3D.Geometry = mesh;
+            meshGeometry3D.Name = baseId;
         }
 
         /// <summary>
@@ -1842,7 +1959,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return result;
         }
 
-        private void AddLabelPlace(string nodeId, Vector3 pos, IRenderPackage rp)
+        private void AddLabelPlace(string nodeId, List<Tuple<string, Vector3>> labelData, IRenderPackage rp)
         {
             if (!labelPlaces.ContainsKey(nodeId))
             {
@@ -1850,20 +1967,27 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             //if the renderPackage also implements ITransformable then 
-            // use the transform property to transform the text labels
-           
-            SharpDX.Vector3 transformedPos = pos;
-            if (rp is HelixRenderPackage && rp is Autodesk.DesignScript.Interfaces.ITransformable)
+            // use the transform property to transform the text label positions
+            if (rp is HelixRenderPackage hrp && rp is Autodesk.DesignScript.Interfaces.ITransformable)
             {
-                transformedPos = (rp as Autodesk.DesignScript.Interfaces.ITransformable)
-                   .Transform.ToMatrix3D().Transform((pos).ToPoint3D()).ToVector3();
+                var transformedLabelData = new List<Tuple<string, Vector3>>();
+                foreach (var labelInstance in labelData)
+                {
+                    var transformedPos = hrp.Transform.ToMatrix3D().Transform(labelInstance.Item2.ToPoint3D()).ToVector3();
+                    transformedLabelData.Add(new Tuple<string, Vector3>(labelInstance.Item1, transformedPos));
+                }
+
+                labelPlaces[nodeId].AddRange(transformedLabelData);
+            }
+            else
+            {
+                labelPlaces[nodeId].AddRange(labelData);
             }
             
 
-            labelPlaces[nodeId].Add(new Tuple<string, Vector3>(rp.Description, transformedPos));
             if (rp.DisplayLabels)
             {
-                CreateOrUpdateText(nodeId, transformedPos, rp);
+                CreateOrUpdateDisplayLabels(nodeId);
             }
         }
 
@@ -2007,9 +2131,12 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
         }
 
-        private void CreateOrUpdateText(string baseId, Vector3 pt, IRenderPackage rp)
+        private void CreateOrUpdateDisplayLabels(string nodeId)
         {
-            var textId = baseId + TextKey;
+            if(!labelPlaces.TryGetValue(nodeId, out var nodeLabelData))
+            { return;}            
+            
+            var textId = nodeId + TextKey;
             BillboardTextModel3D bbText;
             if (Element3DDictionary.ContainsKey(textId))
             {
@@ -2024,12 +2151,20 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Element3DDictionary.Add(textId, bbText);
             }
             var geom = bbText.Geometry as BillboardText3D;
-           
-            geom.TextInfo.Add(new TextInfo(HelixRenderPackage.CleanTag(rp.Description),
-               pt + defaultLabelOffset));
+
+            foreach (var labelData  in nodeLabelData)
+            {
+                string labelText = labelData.Item1;
+                if (labelData.Item1.Split(':')[0] == nodeId)
+                {
+                    labelText = HelixRenderPackage.CleanTag(labelData.Item1);
+                }
+                
+                geom.TextInfo.Add(new TextInfo(labelText, labelData.Item2 + defaultLabelOffset));
+            }
         }
 
-        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true)
+        private DynamoGeometryModel3D CreateDynamoGeometryModel3D(HelixRenderPackage rp, bool isHitTestVisible = true, IEnumerable<byte> colors = null, int colorStride = 0)
         {
           
             var meshGeometry3D = new DynamoGeometryModel3D()
@@ -2038,16 +2173,17 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                 Material = WhiteMaterial,
                 IsHitTestVisible = isHitTestVisible,
                 RequiresPerVertexColoration = rp.RequiresPerVertexColoration,
+                DepthBias = rp.RequiresPerVertexColoration ? DepthBiasVertexColors : DepthBiasNormalMesh
             };
 
-            if (rp.Colors != null)
+            if (colors != null)
             {
                 var pf = PixelFormats.Bgra32;
-                var stride = (rp.ColorsStride / 4 * pf.BitsPerPixel + 7) / 8;
+                var stride = (colorStride / 4 * pf.BitsPerPixel + 7) / 8;
                 try
                 {
-                    var diffMap = BitmapSource.Create(rp.ColorsStride / 4, rp.Colors.Count() / rp.ColorsStride, 96.0, 96.0, pf, null,
-                        rp.Colors.ToArray(), stride);
+                    var diffMap = BitmapSource.Create(colorStride / 4, colors.Count() / colorStride, 96.0, 96.0, pf, null,
+                        colors.ToArray(), stride);
                     var diffMat = new PhongMaterial
                     {
                         Name = "White",

@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using Dynamo.Engine;
+using System.Reflection;
+using System.Threading;
+using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Search.SearchElements;
+using Dynamo.Models;
 using Moq;
 using NUnit.Framework;
 
@@ -17,6 +22,7 @@ namespace Dynamo.PackageManager.Tests
     {
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
         public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
+        internal string StandardLibraryTestDirectory { get { return Path.Combine(TestDirectory, "standard lib testdir", "Packages"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -149,8 +155,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Verify that interdependent packages are resolved successfully
             // TODO: Review these assertions. Lambdas are not using x, so they are basically just checking that test files exist.
@@ -181,8 +187,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             // Simulate loading new package from PM
             string packageDirectory = Path.Combine(TestDirectory, @"core\packageDependencyTests\ZTTestPackage");
@@ -274,8 +280,8 @@ namespace Dynamo.PackageManager.Tests
                 PathManager = CurrentDynamoModel.PathManager
             });
 
-            // There are 17 packages in "Dynamo\test\pkgs"
-            Assert.AreEqual(17, loader.LocalPackages.Count());
+            // There are 18 packages in "Dynamo\test\pkgs"
+            Assert.AreEqual(18, loader.LocalPackages.Count());
 
             var entries = CurrentDynamoModel.SearchModel.SearchEntries.OfType<CustomNodeSearchElement>();
 
@@ -601,7 +607,6 @@ namespace Dynamo.PackageManager.Tests
             // Assert that ScanPackageDirectory returns no packages
             Assert.IsNull(pkg);
         }
-
         [Test]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillLoadPackageWithValidCertificate()
         {
@@ -628,19 +633,333 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(entries.Any(x => x.FullName == "SignedPackage.SignedPackage.SignedPackage.Hello"));
         }
 
-        //FYI this is the code for the SingedPackage zero-touch node used in the previous test
-        //The built and signed dll lives in the test\pkgs_signed\Signed Package\bin directory
-        //This is for furture reference if we need to recreate the package in the future
-        //namespace SignedPackage
-        //{
-        //    public class SignedPackage
-        //    {
-        //        public string Hello()
-        //        {
-        //            return nameof(Hello);
-        //        }
-        //    }
-        //}
+        //signedpackage generated from internal repo at SignedDynamoTestingPackages
+
+        [Test]
+        public void HasValidStandardLibraryAndDefaultPackagesPath()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
+        }
+        [Test]
+        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { DynamoModel.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
+        }
+        [Test]
+        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
+        {
+            // Arrange
+            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.StandardLibraryToken }, new[] { PackagesDirectorySigned });
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+                @"Standard Library", @"Packages");
+
+            // Act
+            var standardDirectory = loader.StandardLibraryDirectory;
+            var defaultDirectory = loader.DefaultPackagesDirectory;
+
+            // Assert
+            Assert.IsNotNullOrEmpty(standardDirectory);
+            Assert.AreEqual(standardDirectory, directory);
+            Assert.AreNotEqual(defaultDirectory, directory);
+        }
+        [Test]
+        public void PackageInStandardLibLocationIsLoaded()
+        {
+           //setup clean loader
+            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var settings = new PreferenceSettings();
+            settings.DisableStandardLibrary = false;
+
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in std lib was loaded.
+            Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
+        }
+
+        [Test]
+        public void DisablingStandardLibraryCorrectlyDisablesLoading()
+        {
+
+            //setup clean loader
+            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var settings = new PreferenceSettings();
+            settings.DisableStandardLibrary = true;
+
+            var loaderParams = new LoadPackageParams()
+            { PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings };
+            //then invoke load
+
+            loader.LoadAll(loaderParams);
+
+            //assert the package in std lib was not loaded.
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.Name.Contains("SignedPackage2")));
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+            
+        }
+        //signedpackge2 generated from internal repo at SignedDynamoTestingPackages
+
+        [Test]
+        public void PackageInCustomPackagePathIsLoaded()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //just to be certain this is false.
+            settings.DisableCustomPackageLocations = false;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was loaded
+            Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(1, loader.LocalPackages.Count());
+            
+        }
+        [Test]
+        public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
+        {
+            //setup clean loader where std lib is a custom package path
+            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var settings = new PreferenceSettings();
+            //disable custom package paths
+            settings.DisableCustomPackageLocations = true;
+            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            var loaderParams = new LoadPackageParams()
+            {
+                PathManager = CurrentDynamoModel.PathManager,
+                Preferences = settings
+            };
+            //invoke the load
+            loader.LoadAll(loaderParams);
+
+            //assert the package in the custom package path was not loaded
+            Assert.IsFalse(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
+            Assert.AreEqual(0, loader.LocalPackages.Count());
+           
+        }
+
+        [Test]
+        public void PackageLoaderLoadPackageWithBadVersion()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+
+            // Assert
+            Assert.IsNull(badPackage);
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadMultiplePackagesWithBadVersion()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var goodPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithGoodVersion");
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var goodPackage = loader.ScanPackageDirectory(goodPackageLocation);
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(goodPackage);
+            Assert.IsNull(badPackage);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Good package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadMultiplePackagesWithBadVersionReversed()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var goodPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithGoodVersion");
+            var badPackageLocation = Path.Combine(PackagesDirectory, @"BadVersion\PackageWithBadVersion");
+
+            // Act
+            var badPackage = loader.ScanPackageDirectory(badPackageLocation);
+            var goodPackage = loader.ScanPackageDirectory(goodPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(goodPackage);
+            Assert.IsNull(badPackage);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Good package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Bad package"));
+        }
+
+
+        [Test]
+        public void PackageLoaderLoadNewPackage()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
+            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
+
+            // Act
+            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
+            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
+
+            // Assert
+            Assert.IsNotNull(oldPackage);
+            Assert.IsNull(newPackage);
+            Assert.AreEqual("Package", oldPackage.Name);
+            Assert.AreEqual("1.0.0", oldPackage.VersionName);
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+        }
+
+        [Test]
+        public void PackageLoaderLoadOldPackage()
+        {
+            // Arrange
+            var loader = GetPackageLoader();
+            var oldPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithOldVersion");
+            var newPackageLocation = Path.Combine(PackagesDirectory, @"Version\PackageWithNewVersion");
+
+            // Act
+            var newPackage = loader.ScanPackageDirectory(newPackageLocation);
+            var oldPackage = loader.ScanPackageDirectory(oldPackageLocation);
+
+            // Assert
+            Assert.IsNull(oldPackage);
+            Assert.IsNotNull(newPackage);
+            Assert.AreEqual("Package", newPackage.Name);
+            Assert.AreEqual("2.0.0", newPackage.VersionName);
+            Assert.IsNotNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"New package"));
+            Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
+        }
+
+        [Test]
+        public void StandardLibraryIsNotExposedInPathManager()
+        {
+            // Arrange
+            var pathManager = CurrentDynamoModel.PathManager;
+
+            // Act
+            var defaultPackageDirectory = pathManager.DefaultPackagesDirectory;
+            var packageDirectories = pathManager.PackagesDirectories;
+            var defaultUserDefinitions = pathManager.DefaultUserDefinitions;
+            var userDefinitions = pathManager.DefinitionDirectories;
+
+            // Assert
+            Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
+            Assert.AreEqual(2, packageDirectories.Count());
+            Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
+            Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
+            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+        }
+
+        [Test]
+        public void PathManagerDefaultPackagesDirectory()
+        {
+            var pathManager = CurrentDynamoModel.PathManager;
+            var settings = CurrentDynamoModel.PreferenceSettings;
+
+            Assert.NotNull(settings);
+            Assert.NotNull(pathManager);
+
+            // The default selected package path for install in preference settings is AppData
+            // if not set from the UI.
+            var selectedPackagePathInstallDir = settings.SelectedPackagePathForInstall;
+            var appDataFolder = GetAppDataFolder();
+            Assert.AreEqual(appDataFolder, selectedPackagePathInstallDir);
+
+            var fullPath = Path.Combine(appDataFolder, PathManager.PackagesDirectoryName);
+            Assert.AreEqual(fullPath, pathManager.DefaultPackagesDirectory);
+
+            // The preference setting SelectedPackagePathForInstall property affects
+            // the DefaultPackagesDirectory property of the PathManager as this is how the 
+            // the package download path is actually set in the package manager client.
+            settings.SelectedPackagePathForInstall = Path.GetTempPath();
+            Assert.AreEqual(Path.GetTempPath(), pathManager.DefaultPackagesDirectory);
+        }
+
+        [Test]
+        public void LocalizedPackageLocalizedCorrectly()
+        {
+            var esculture = CultureInfo.CreateSpecificCulture("es-ES");
+
+            // Save current culture - usually "en-US"
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            var currentUICulture = Thread.CurrentThread.CurrentUICulture;
+
+            // Set "es-ES"
+            Thread.CurrentThread.CurrentCulture = esculture;
+            Thread.CurrentThread.CurrentUICulture = esculture;
+
+            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] {string.Empty});
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadNodeLibrary;
+
+            var pkgDir = Path.Combine(PackagesDirectory, "Dynamo Samples");
+            var pkg = loader.ScanPackageDirectory(pkgDir, false);
+
+            // Assert that ScanPackageDirectory returns a package
+            Assert.IsNotNull(pkg);
+            loader.LoadPackages(new List<Package> { pkg });       
+
+            // Verify that the package are imported successfully
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            var nse = entries.Where(x => x.FullName == "SampleLibraryUI.Examples.LocalizedNode").FirstOrDefault();
+            Assert.IsNotNull(nse);
+
+            //verify that the node has the correctly localized description
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+                , nse.Description);
+            var node = nse.CreateNode();
+            Assert.AreEqual("Un nodo de interfaz de usuario de muestra que muestra una interfaz de usuario personalizada."
+               , nse.Description);
+
+            // Restore "en-US"
+            Thread.CurrentThread.CurrentCulture = currentCulture;
+            Thread.CurrentThread.CurrentUICulture = currentUICulture;
+        }
 
         [Test]
         public void IsUnderPackageControlIsCorrectForValidFunctionDefinition()

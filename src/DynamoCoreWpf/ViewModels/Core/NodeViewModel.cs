@@ -566,6 +566,16 @@ namespace Dynamo.ViewModels
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
+        /// <summary>
+        /// Node description defined by the user.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string UserDescription
+        {
+            get { return NodeModel.UserDescription; }
+            set { NodeModel.UserDescription = value; }
+        }
+
         #endregion
 
         #region events

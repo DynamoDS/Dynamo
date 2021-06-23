@@ -20,6 +20,8 @@ namespace Dynamo.Search.SearchElements
         private string assembly;
         private bool isVisibleInSearch = true;
 
+        internal AutoCompletionNodeElementInfo AutoCompletionNodeElementInfo { get; set; } = new AutoCompletionNodeElementInfo();
+
         /// <summary>
         /// Event is fired when a node visibility in library search was changed.
         /// </summary>
@@ -281,6 +283,14 @@ namespace Dynamo.Search.SearchElements
             inputParameters.Add(Tuple.Create(String.Empty, Properties.Resources.NoneString));
             return inputParameters;
         }
+    }
+
+    /// <summary>
+    ///      This class will contain the information related to the node elements of Auto-completion feature.
+    /// </summary>
+    internal class AutoCompletionNodeElementInfo
+    {
+        internal int PortToConnect { get; set; }
     }
 
     /// <summary>

@@ -129,12 +129,12 @@
       "keywords": "DSCore.Logic.Or, DSCoreNodesUI.Logic.Or, Or"
     },
     {
-      "fullyQualifiedName": "Core.Logic.If",
-      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.If.Small?path=nodes\\CoreNodeModels.dll",
+      "fullyQualifiedName": "Core.Logic.RefactoredIf",
+      "iconUrl": "http://localhost/icons/CoreNodeModels.Logic.RefactoredIf.Small?path=nodes\\CoreNodeModels.dll",
       "contextData": "If",
       "parameters": null,
       "itemType": "action",
-      "keywords": "DSCoreNodesUI.Logic.If, If"
+      "keywords": "DSCoreNodesUI.Logic.RefactoredIf, RefactoredIf"
     },
     {
       "fullyQualifiedName": "Core.Logic.ScopeIf",
@@ -5652,6 +5652,22 @@
       "fullyQualifiedName": "DSOffice.Data.ExportToExcel",
       "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
       "contextData": "DSOffice.Data.ExportToExcel@string,string,int,int,var[][],bool,bool",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLImportExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ImportExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.OpenXMLImportExcel@string,string,int,int,bool",
+      "parameters": null,
+      "itemType": "action",
+      "keywords": ""
+    },
+    {
+      "fullyQualifiedName": "DSOffice.Data.OpenXMLExportExcel",
+      "iconUrl": "http://localhost/icons/DSOffice.Data.ExportToExcel.Small?path=DSOffice.dll",
+      "contextData": "DSOffice.Data.OpenXMLExportExcel@string,string,var[][],int,int,bool,bool",
       "parameters": null,
       "itemType": "action",
       "keywords": ""

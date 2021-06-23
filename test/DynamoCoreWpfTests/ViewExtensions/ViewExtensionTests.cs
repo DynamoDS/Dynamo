@@ -227,6 +227,23 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void ExtensionDockAndUndockWithRandomGUID()
+        {
+            RaiseLoadedEvent(this.View);
+
+            // Add extension, default state is docked immediately
+            View.viewExtensionManager.Add(extensionsSideBarViewExtension);
+
+            // Extension bar is shown
+            Assert.AreEqual(1, View.ExtensionTabItems.Count);
+            Assert.IsFalse(View.ExtensionsCollapsed);
+
+            // Undock extension which return a new UniqueId, this should not crash Dynamo
+            extensionsSideBarViewExtension.UniqueId = "NewRandomGuid1";
+            Assert.DoesNotThrow(() => View.UndockExtension(extensionsSideBarViewExtension.Name));
+        }
+
+        [Test]
         public void ExtensionCannotBeAddedAsBothWindowAndTab()
         {
             RaiseLoadedEvent(this.View);

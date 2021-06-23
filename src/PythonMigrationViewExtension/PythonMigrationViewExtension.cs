@@ -148,8 +148,7 @@ namespace Dynamo.PythonMigration
 
         private void OnNodeAdded(Graph.Nodes.NodeModel obj)
         {
-            if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
-                && !NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
+            if (!NotificationTracker.ContainsKey(CurrentWorkspace.Guid)
                 && GraphPythonDependencies.IsIronPythonNode(obj))
             {
                 LogIronPythonNotification();
@@ -196,8 +195,7 @@ namespace Dynamo.PythonMigration
                 NotificationTracker.Remove(CurrentWorkspace.Guid);
                 GraphPythonDependencies.CustomNodePythonDependencyMap.Clear();
 
-                if (Configuration.DebugModes.IsEnabled("Python2ObsoleteMode")
-                    && !Models.DynamoModel.IsTestMode
+                if (!Models.DynamoModel.IsTestMode
                     && PythonDependencies.CurrentWorkspaceHasIronPythonDependency())
                 {
                     LogIronPythonNotification();

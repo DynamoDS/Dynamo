@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<migrations>
+  <priorNameHint>
+    <oldName>SampleLibraryZeroTouchMigrationTesting.Examples.BasicExample.Create</oldName>
+    <newName>SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Create</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>SampleLibraryZeroTouchMigrationTesting.Examples.BasicExample.Create@double,double,double</oldName>
+    <newName>SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.Create@double,double,double</newName>
+  </priorNameHint>
+  <priorNameHint>
+    <oldName>SampleLibraryZeroTouchMigrationTesting.Examples.BasicExample.MultiReturnExample</oldName>
+    <newName>SampleLibraryZeroTouchMigrationTesting.Examples.NEWBasicExample.MultiReturnExample</newName>
+  </priorNameHint>
+</migrations>

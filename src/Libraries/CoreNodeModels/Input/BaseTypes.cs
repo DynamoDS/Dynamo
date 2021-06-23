@@ -117,6 +117,7 @@ namespace CoreNodeModels.Input
     [NodeName("Number")]
     [NodeCategory(BuiltinNodeCategories.CORE_INPUT)]
     [NodeDescription("DoubleInputNodeDescription", typeof(Resources))]
+    [OutPortTypes("double")]
     [IsDesignScriptCompatible]
     [AlsoKnownAs("Dynamo.Nodes.DoubleInput", "Dynamo.Nodes.dynDoubleInput", "DSCoreNodesUI.Input.DoubleInput")]
     public class DoubleInput : NodeModel

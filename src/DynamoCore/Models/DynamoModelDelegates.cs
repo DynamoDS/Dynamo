@@ -1,4 +1,5 @@
 ﻿using System;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 
@@ -20,6 +21,13 @@ namespace Dynamo.Models
     /// </summary>
     /// <param name="workspace">The <see cref="WorkspaceModel"/> which was saved.</param>
     public delegate void WorkspaceHandler(WorkspaceModel workspace);
+
+    /// <summary>
+    /// Represents the method that will handle workspace save related events.
+    /// </summary>
+    /// <param name="workspace"></param>
+    /// <param name="saveContext"></param>
+    public delegate void WorkspaceSaveHandler(WorkspaceModel workspace, SaveContext saveContext);
 
     /// <summary>
     /// This delegate is used to manage Dynamo's request dispatcher invoke.
