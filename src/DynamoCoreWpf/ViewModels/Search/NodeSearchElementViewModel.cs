@@ -25,6 +25,8 @@ namespace Dynamo.Wpf.ViewModels
         private bool isSelected;
         private SearchViewModel searchViewModel;
         private IDisposable undoRecorderGroup;
+        private int spacingBetweenNodes = 50;
+        private int spacingforHigherWidthNodes = 450;
 
         public event RequestBitmapSourceHandler RequestBitmapSource;
         public void OnRequestBitmapSource(IconRequestEventArgs e)
@@ -268,26 +270,33 @@ namespace Dynamo.Wpf.ViewModels
             var id = Guid.NewGuid();
 
             var adjustedX = initialNodeVm.X;
+            var adjustedY = initialNodeVm.Y;
 
             var createAsDownStreamNode = portModel.PortType == PortType.Output;
             // Placing the new node based on which port it is connecting to.
             if (createAsDownStreamNode)
             {
                 // Placing the new node to the right of initial node
-                adjustedX += initialNode.Width + 50;
+                adjustedX += initialNode.Width + spacingBetweenNodes;
 
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
-                    Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, 0, createAsDownStreamNode, false, true));
+                    Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
             }
             else
             {
                 // Placing the new node to the left of initial node
-                adjustedX -= initialNode.Width + 50;
+                adjustedX -= initialNode.Width + spacingBetweenNodes;
+
+                // If the new node is a slider input node, adjust the position on X-axis to compensate for higher width of the slider node.
+                if (Model.CreationName.Contains("Slider")) 
+                {
+                    adjustedX -= spacingforHigherWidthNodes;
+                }
 
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
-                      Model.CreationName, 0, portModel.Index, adjustedX, 0, createAsDownStreamNode, false, true));
+                      Model.CreationName, 0, portModel.Index, adjustedX, adjustedY, createAsDownStreamNode, false, true));
             }
 
             var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
