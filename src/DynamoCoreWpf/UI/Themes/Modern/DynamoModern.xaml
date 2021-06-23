@@ -2437,14 +2437,14 @@
                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png"
                       Width="16"
                       Height="16"
-                      Margin="5,10,15,10"
+                      Margin="5,10,0,10"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
                       >
                 </Image>
                 <ContentPresenter x:Name="HeaderContent" 
                                     Grid.Column="0" 
-                                    Margin="15,0,0,0" 
+                                    Margin="0,0,0,0" 
                                     RecognizesAccessKey="True" 
                                     VerticalAlignment="Center"
                                     Width="{Binding

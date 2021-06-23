@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ListBox Name="SearchResultsListBox"
+        <ItemsControl Name="SearchResultsListBox"
                  Grid.Row="0"
                  ItemsSource="{Binding Path=LocalPackages}"
                  Background="#535353"
@@ -37,21 +37,7 @@
                  BorderThickness="0"
                  Padding="0">
 
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                                         Color="#000" />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}"
-                                         Color="#000" />
-                    </Style.Resources>
-                    <Setter Property="Padding"
-                            Value="0,0,0,0" />
-                </Style>
-
-            </ListBox.ItemContainerStyle>
-
-            <ListBox.ItemTemplate>
+            <ItemsControl.ItemTemplate>
 
                 <DataTemplate>
                     <!--This border shouldn't be wider then installed packages window.
@@ -72,7 +58,7 @@
                                                    >
                                         <StackPanel HorizontalAlignment="Left"
                                                         Orientation="Horizontal"
-                                                        Margin="5,5,5,7">
+                                                        Margin="0,5,5,7">
                                             <TextBlock Text="{Binding Path=Model.Name}"
                                                            ToolTip="{Binding Path=Model.Name}"
                                                            FontSize="11"
@@ -93,6 +79,8 @@
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                             <Button Name="MoreButton"
                                                             Click="MoreButton_OnClick"
+                                                            Width="16"
+                                                            Height="16"
                                                             Style="{StaticResource FlatButtonStyle}">
                                                 <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
                                                 <Button.ContextMenu>
@@ -299,9 +287,9 @@
                     </Border>
                 </DataTemplate>
 
-            </ListBox.ItemTemplate>
+            </ItemsControl.ItemTemplate>
 
-        </ListBox>
+        </ItemsControl>
 
         <StackPanel Orientation="Horizontal"
                     FlowDirection="RightToLeft"
