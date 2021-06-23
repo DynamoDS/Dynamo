@@ -123,6 +123,7 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Open(@"core\CustompropertyTest.dyn");
 
             // Assert
+            Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
             Assert.IsTrue(customPropertiesBeforeOpen == 0);
             Assert.That(propertiesExt.viewModel.CustomProperties.Count == 3);
             Assert.That(propertiesExt.viewModel.CustomProperties[0].PropertyName == expectedCP1Key);
@@ -131,6 +132,30 @@ namespace DynamoCoreWpfTests.ViewExtensions
             Assert.That(propertiesExt.viewModel.CustomProperties[1].PropertyValue == expectedCP2Value);
             Assert.That(propertiesExt.viewModel.CustomProperties[2].PropertyName == expectedCP3Key);
             Assert.That(propertiesExt.viewModel.CustomProperties[2].PropertyValue == expectedCP3Value);
+        }
+
+        [Test]
+        public void ExistingGraphOpenModifiedAndClosedWillSetAndClearModifiedFlag()
+        {
+            var extensionManager = View.viewExtensionManager;
+            var propertiesExt = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                as GraphMetadataViewExtension;
+
+            var customPropertiesBeforeOpen = propertiesExt.viewModel.CustomProperties.Count;
+            Open(@"core\CustompropertyTest.dyn");
+
+            Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
+
+            propertiesExt.viewModel.AddCustomProperty("TestPropertyName-X", "TestPropertyValue-X");
+
+            Assert.IsTrue(ViewModel.HomeSpace.HasUnsavedChanges);
+
+            ViewModel.HomeSpace.HasUnsavedChanges = false;
+            ViewModel.CloseHomeWorkspaceCommand.Execute(null);
+            ViewModel.MakeNewHomeWorkspace(null);
+
+            Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
         }
     }
 }

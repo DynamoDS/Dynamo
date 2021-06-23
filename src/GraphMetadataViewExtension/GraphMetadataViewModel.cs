@@ -29,13 +29,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.Description; }
             set
             {
-                if (this.currentWorkspace != null && GraphDescription != value)
+                if (currentWorkspace != null && GraphDescription != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Description = value;
+                    RaisePropertyChanged(nameof(GraphDescription));
                 }
-
-                currentWorkspace.Description = value;
-                RaisePropertyChanged(nameof(GraphDescription));
             }
         }
 
@@ -47,13 +46,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.Author; }
             set 
             {
-                if (this.currentWorkspace != null && GraphAuthor != value)
+                if (currentWorkspace != null && GraphAuthor != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Author = value;
+                    RaisePropertyChanged(nameof(GraphAuthor));
                 }
-                currentWorkspace.Author = value; 
-                RaisePropertyChanged(nameof(GraphAuthor));
-
             }
         }
 
@@ -65,13 +63,12 @@ namespace Dynamo.GraphMetadata
             get { return currentWorkspace.GraphDocumentationURL; }
             set 
             {
-                if (this.currentWorkspace != null && HelpLink != value)
+                if (currentWorkspace != null && HelpLink != value)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.GraphDocumentationURL = value;
+                    RaisePropertyChanged(nameof(HelpLink));
                 }
-
-                currentWorkspace.GraphDocumentationURL = value; 
-                RaisePropertyChanged(nameof(HelpLink)); 
             }
         }
 
@@ -88,13 +85,12 @@ namespace Dynamo.GraphMetadata
             set
             {
                 var base64 = value is null ? string.Empty : Base64FromImage(value);
-                if (this.currentWorkspace != null && base64 != currentWorkspace.Thumbnail)
+                if (currentWorkspace != null && base64 != currentWorkspace.Thumbnail)
                 {
-                    this.currentWorkspace.HasUnsavedChanges = true;
+                    MarkCurrentWorkspaceModified();
+                    currentWorkspace.Thumbnail = base64;
+                    RaisePropertyChanged(nameof(Thumbnail));
                 }
-
-                currentWorkspace.Thumbnail = base64;
-                RaisePropertyChanged(nameof(Thumbnail));
             }
         }
 
@@ -210,18 +206,15 @@ namespace Dynamo.GraphMetadata
             control.PropertyChanged += HandlePropertyChanged;
             CustomProperties.Add(control);
 
-            if (markChange && this.currentWorkspace != null)
+            if (markChange)
             {
-                this.currentWorkspace.HasUnsavedChanges = true;
+                MarkCurrentWorkspaceModified();
             }
         }
 
         private void HandlePropertyChanged(object sender, EventArgs e)
         {
-            if (this.currentWorkspace != null)
-            {
-                this.currentWorkspace.HasUnsavedChanges = true;
-            }
+            MarkCurrentWorkspaceModified();
         }
 
         private void HandleDeleteRequest(object sender, EventArgs e)
@@ -231,15 +224,20 @@ namespace Dynamo.GraphMetadata
                 customProperty.RequestDelete -= HandleDeleteRequest;
                 customProperty.PropertyChanged -= HandlePropertyChanged;
                 CustomProperties.Remove(customProperty);
-                if (this.currentWorkspace != null)
-                {
-                    this.currentWorkspace.HasUnsavedChanges = true;
-                }
+                MarkCurrentWorkspaceModified();
             }
         }
 
-       public void Dispose()
-       {
+        private void MarkCurrentWorkspaceModified()
+        { 
+            if (currentWorkspace != null && !string.IsNullOrEmpty(currentWorkspace.FileName))
+            {
+                currentWorkspace.HasUnsavedChanges = true;
+            }
+        }
+
+        public void Dispose()
+        {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
 
             foreach (var cp in CustomProperties)
@@ -247,6 +245,6 @@ namespace Dynamo.GraphMetadata
                 cp.RequestDelete -= HandleDeleteRequest;
                 cp.PropertyChanged -= HandlePropertyChanged;
             }
-       }
+        }
     }
 }

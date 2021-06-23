@@ -39,31 +39,23 @@ namespace DynamoCoreWpfTests
 
             var vm = CreatePackagePathViewModel(setting);
 
-            Assert.AreEqual(0, vm.SelectedIndex);
-            Assert.IsTrue(vm.MovePathDownCommand.CanExecute(null));
-            Assert.IsFalse(vm.MovePathUpCommand.CanExecute(null));
+            Assert.IsTrue(vm.MovePathDownCommand.CanExecute(0));
+            Assert.IsFalse(vm.MovePathUpCommand.CanExecute(0));
 
-            vm.SelectedIndex = 2;
-            Assert.AreEqual(2, vm.SelectedIndex);
-            Assert.IsTrue(vm.MovePathUpCommand.CanExecute(null));
-            Assert.IsFalse(vm.MovePathDownCommand.CanExecute(null));
+            Assert.IsTrue(vm.MovePathUpCommand.CanExecute(2));
+            Assert.IsFalse(vm.MovePathDownCommand.CanExecute(2));
 
-            vm.SelectedIndex = 1;
-            Assert.AreEqual(1, vm.SelectedIndex);
-            Assert.IsTrue(vm.MovePathUpCommand.CanExecute(null));
-            Assert.IsTrue(vm.MovePathDownCommand.CanExecute(null));
+            Assert.IsTrue(vm.MovePathUpCommand.CanExecute(1));
+            Assert.IsTrue(vm.MovePathDownCommand.CanExecute(1));
 
-            vm.MovePathUpCommand.Execute(vm.SelectedIndex);
+            vm.MovePathUpCommand.Execute(1);
 
-            Assert.AreEqual(0, vm.SelectedIndex);
             Assert.AreEqual(@"D:\", vm.RootLocations[0]);
             Assert.AreEqual(@"C:\", vm.RootLocations[1]);
             Assert.AreEqual(@"E:\", vm.RootLocations[2]);
 
-            vm.SelectedIndex = 1;
-            vm.MovePathDownCommand.Execute(vm.SelectedIndex);
+            vm.MovePathDownCommand.Execute(1);
 
-            Assert.AreEqual(2, vm.SelectedIndex);
             Assert.AreEqual(@"D:\", vm.RootLocations[0]);
             Assert.AreEqual(@"E:\", vm.RootLocations[1]);
             Assert.AreEqual(@"C:\", vm.RootLocations[2]);
@@ -81,7 +73,8 @@ namespace DynamoCoreWpfTests
             var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(2, vm.RootLocations.Count);
-            Assert.IsFalse(vm.DeletePathCommand.CanExecute(null));
+            Assert.IsFalse(vm.DeletePathCommand.CanExecute(0));
+            Assert.IsTrue(vm.DeletePathCommand.CanExecute(1));
         }
 
         [Test]
@@ -96,7 +89,8 @@ namespace DynamoCoreWpfTests
             var vm = CreatePackagePathViewModel(setting);
 
             Assert.AreEqual(2, vm.RootLocations.Count);
-            Assert.IsFalse(vm.UpdatePathCommand.CanExecute(null));
+            Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
+            Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
         }
 
         [Test]
@@ -117,14 +111,11 @@ namespace DynamoCoreWpfTests
             path = @"D:\";
             vm.AddPathCommand.Execute(null);
 
-            Assert.AreEqual(0, vm.SelectedIndex);
             Assert.AreEqual(@"C:\", vm.RootLocations[1]);
             Assert.AreEqual(@"D:\", vm.RootLocations[2]);
 
-            vm.SelectedIndex = 2;
             vm.DeletePathCommand.Execute(0);
 
-            Assert.AreEqual(1, vm.SelectedIndex);
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
         }
@@ -148,6 +139,51 @@ namespace DynamoCoreWpfTests
             vm.SaveSettingCommand.Execute(null);
             Model.ExecuteCommand(new DynamoModel.OpenFileCommand(dynFilePath));
             Assert.AreEqual(1,GetPreviewValue("07d62dd8-b2f3-40a8-a761-013d93300444"));
+        }
+
+        [Test]
+        public void PathEnabledConverterCustomPaths()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            path = @"C:\";
+            vm.AddPathCommand.Execute(null);
+            var x = new PathEnabledConverter();
+            Assert.False((bool)x.Convert(new object[] { vm, path },null,null,null ));
+
+            setting.DisableCustomPackageLocations = true;
+
+            Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
+        }
+
+        [Test]
+        public void PathEnabledConverterStdLibPath()
+        {
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = { @"Z:\" }
+            };
+
+            var vm = CreatePackagePathViewModel(setting);
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+
+            path = "Standard Library";
+            vm.AddPathCommand.Execute(null);
+            var x = new PathEnabledConverter();
+            Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
+
+            setting.DisableStandardLibrary = true;
+
+            Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
+            Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
         }
 
         #endregion

@@ -941,9 +941,10 @@ namespace WpfVisualizationTests
             var numberOfColors = dynGeometry.Geometry.Colors.Count;
             Assert.AreEqual(6, numberOfColors);
             //decompress the texture to get the width
-            var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.CompressedStream).Width;
+            var width = new Bitmap(((PhongMaterial)dynGeometry.Material).DiffuseMap.Load().Texture).Width;
             Assert.AreEqual(52, width);
         }
+
 
         [Test]
         public void Display_MultipleTextureMaps_HasUniqueMeshsAndCorrectPerSurface()
@@ -962,7 +963,7 @@ namespace WpfVisualizationTests
             // Expecting 6 color definitions for vertices in the DynamoGeometry
             Assert.AreEqual(6, mesh1.Geometry.Colors.Count);
             //decompress the texture to get the width
-            var width1 = new Bitmap(((PhongMaterial)mesh1.Material).DiffuseMap.CompressedStream).Width;
+            var width1 = new Bitmap(((PhongMaterial)mesh1.Material).DiffuseMap.Load().Texture).Width;
             Assert.AreEqual(5, width1);
 
             var mesh2 = meshes[1];
@@ -970,7 +971,7 @@ namespace WpfVisualizationTests
             // Expecting 6 color definitions for vertices in the DynamoGeometry
             Assert.AreEqual(6, mesh2.Geometry.Colors.Count);
             //decompress the texture to get the width
-            var width2 = new Bitmap(((PhongMaterial)mesh2.Material).DiffuseMap.CompressedStream).Width;
+            var width2 = new Bitmap(((PhongMaterial)mesh2.Material).DiffuseMap.Load().Texture).Width;
             Assert.AreEqual(9, width2);
 
             //Mesh 3 is has no texture map

@@ -8,11 +8,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"   
-        xmlns:views="clr-namespace:Dynamo.Wpf.Views"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         ResizeMode="NoResize"
@@ -33,6 +33,9 @@
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+
+
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
@@ -76,7 +79,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Click="RemoveStyle_Click"
-                                    Style="{StaticResource RemoveStyleButtonStyle}"
+                                    Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
                                     Height="30">
                                 <fa:ImageAwesome Icon="Trash"          
@@ -229,7 +232,7 @@
                                 <!--This Grid contains controls for selecting Run Preview options-->
                                 <Grid Grid.Row="2"
                                   Margin="4,0,0,20">
-                                    <Grid>
+                                    <Grid ToolTip="{x:Static p:Resources.PreferencesViewShowRunPreviewTooltip}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
@@ -243,7 +246,7 @@
                                                   IsChecked="{Binding Path=RunPreviewIsChecked}"
                                                   Style="{StaticResource EllipseToggleButton1}"/>
                                         <Label Grid.Column="1"
-                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}" 
+                                           Content="{x:Static p:Resources.DynamoViewSettingShowRunPreview}"
                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     </Grid>
                                 </Grid>
@@ -517,7 +520,8 @@
                                       Grid.Row="0"
                                       IsExpanded="{Binding PreferencesTabs[VisualSettings].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=Styles}"
                                       Header="{x:Static p:Resources.PreferencesViewVisualSettingsGroupStyles}"
-                                      Style="{StaticResource MenuExpanderStyle}">
+                                      Style="{StaticResource MenuExpanderStyle}"
+                                      Visibility="{Binding PreferencesDebugMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                                               Height="220">
                                     <Grid Margin="8,0,0,0">
@@ -702,7 +706,7 @@
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
-                        <!--This Grid contains the package mangager settings tab-->
+                        <!--This Grid contains the package manager settings tab-->
                         <Grid x:Name="PackageManagerTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
@@ -711,14 +715,28 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <!--This Grid row contains the Package Paths section-->
+                            <!--This Grid row contains the Node and Package Paths section-->
                             <Expander x:Name="PackagePathsExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                            Padding="0,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Grid.Row="1" 
+                                              Width="Auto"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                    </ComboBox>
+                                    <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
+                                        <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                    </ScrollViewer>
                                 </StackPanel>
                             </Expander>
 
