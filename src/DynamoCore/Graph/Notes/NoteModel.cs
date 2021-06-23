@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Xml;
 using Dynamo.Utilities;
 
@@ -10,7 +9,6 @@ namespace Dynamo.Graph.Notes
     /// </summary>
     public class NoteModel : ModelBase
     {
-
         private string text;
       
         /// <summary>

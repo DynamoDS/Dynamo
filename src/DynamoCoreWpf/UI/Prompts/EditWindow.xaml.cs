@@ -16,6 +16,11 @@ namespace Dynamo.UI.Prompts
     /// </summary>
     public partial class EditWindow
     {
+        /// <summary>
+        /// Event analyses when a key has been typed on the edit window, 
+        /// used to alter the behaviour of certain keys, 
+        /// for example for adding bullet point support.         
+        /// </summary>
         internal event EventHandler<KeyEventArgs> EditTextBoxPreviewKeyDown;
         private readonly DynamoViewModel dynamoViewModel;
         private bool CommitChangesOnReturn { get; set; }

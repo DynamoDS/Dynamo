@@ -178,21 +178,27 @@ namespace Dynamo.Nodes
         {
             Key[] specialKeys = { Key.OemMinus, Key.Tab, Key.Enter };
             if (!specialKeys.Contains(e.Key))
+            {
                 return;
-
+            }
+                
             e.Handled = true;
             var textBox = sender as TextBox;
             var text = textBox.Text;
             var caretIndex = textBox.CaretIndex;
 
-            if (e.Key == Key.OemMinus)
-                textBox.Text = BulletDashHandler(text, caretIndex);
-            
-            if (e.Key == Key.Tab)
-                textBox.Text = BulletTabHandler(text, caretIndex);
-
-            if (e.Key == Key.Enter)
-                textBox.Text = BulletEnterHandler(text, caretIndex);
+            switch (e.Key)
+            {
+                case Key.OemMinus:
+                    textBox.Text = BulletDashHandler(text, caretIndex);
+                    break;
+                case Key.Tab:
+                    textBox.Text = BulletTabHandler(text, caretIndex);
+                    break;
+                case Key.Enter:
+                    textBox.Text = BulletEnterHandler(text, caretIndex);
+                    break;
+            }
 
             textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
         }
@@ -305,16 +311,19 @@ namespace Dynamo.Nodes
 
         private bool IsCaretBeforeABullet(string text, int caretIndex)
         {
-           var charactersBeforeBullet = text.Split(BULLETS_CHARS)[0];
+           var charactersBeforeBullet = text.Split(BULLETS_CHARS).FirstOrDefault();
            return caretIndex <= charactersBeforeBullet.Length;
         }
 
         private int GetCaretIndexRelativeToLine(string text, int caretIndex)
         {
-            // Get the text before the caret, split it into lines
-            // The caret index relative to line will be the last line's length
-            var textBeforeCaret = text.Substring(0, caretIndex);
-            var textInLines = Regex.Split(textBeforeCaret, "\r\n|\r|\n");
+            // In order to get the caretIndex relative to the caret line:
+            // Get the text untill the caretIndex
+            // Split the text into lines
+            // The caret index relative to the caret line will be equal to
+            // the last line's length
+            var textUntillCaretIndex = text.Substring(0, caretIndex);
+            var textInLines = BreakTextIntoLines(textUntillCaretIndex);
             var caretRelativeToLine = textInLines.Last().Length;
             return caretRelativeToLine;
         }
@@ -322,20 +331,19 @@ namespace Dynamo.Nodes
         private int GetLineNumberAtCaretsIndex(string text, int caretIndex)
         {
             var textBeforeCaret = text.Substring(0, caretIndex);
-            var textInLines = Regex.Split(textBeforeCaret, "\r\n|\r|\n");
-
+            var textInLines = BreakTextIntoLines(textBeforeCaret);
             return textInLines.Length-1;
         }
         private string GetLineTextAtCaretsIndex(string text, int caretIndex)
         {
-            var textInLines = Regex.Split(text, "\r\n|\r|\n");
+            var textInLines = BreakTextIntoLines(text);
             var caretsLineIndex = GetLineNumberAtCaretsIndex(text, caretIndex);
             return textInLines[caretsLineIndex];
         }
 
         private string ReplaceLineOfText(string text, int lineNumber, string newLine)
         {
-            var textInLines = Regex.Split(text, "\r\n|\r|\n");
+            var textInLines = BreakTextIntoLines(text);
             textInLines[lineNumber] = newLine;
             return String.Join("\n", textInLines);
         }
@@ -346,7 +354,9 @@ namespace Dynamo.Nodes
             {
                 int nextBulletIndex = (i + 1) % BULLETS_CHARS.Length;
                 if (reverse)
+                {
                     nextBulletIndex = (i + BULLETS_CHARS.Length - 1) % BULLETS_CHARS.Length;
+                }
 
                 var newText = text.Replace(BULLETS_CHARS[i], BULLETS_CHARS[nextBulletIndex]);
                 if (!String.Equals(text, newText))
@@ -356,6 +366,19 @@ namespace Dynamo.Nodes
                 }
             }
             return text;
+        }
+
+        /// <summary>
+        /// Following suggestions from stackoverflow,
+        /// A reliable method for breaking text into lines
+        /// using Regex is used.
+        /// https://stackoverflow.com/questions/1508203/best-way-to-split-string-into-lines
+        /// </summary>
+        /// <param name="text"> text to break into lines</param>
+        /// <returns> text lines </returns>
+        private string[] BreakTextIntoLines(string text)
+        {
+            return Regex.Split(text, "\r\n|\r|\n");
         }
         #endregion
     }
