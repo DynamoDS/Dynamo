@@ -96,7 +96,29 @@
                                                             Style="{StaticResource FlatButtonStyle}">
                                                         <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
                                                         <Button.ContextMenu>
-                                                            <ContextMenu Foreground="#f5f5f5" FontSize="10" Background="#3c3c3c">
+                                                            <ContextMenu>
+                                                                <ContextMenu.Style>
+                                                                    <Style TargetType="{x:Type ContextMenu}">
+                                                                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                                        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+                                                                        <Setter Property="HasDropShadow" Value="True" />
+                                                                        <Setter Property="Foreground" Value="#f5f5f5"/>
+                                                                        <Setter Property="Background" Value="#3c3c3c"/>
+                                                                        <Setter Property="FontSize" Value="10"/>
+                                                                        <Setter Property="Template">
+                                                                            <Setter.Value>
+                                                                                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                                                                                    <Border x:Name="Border" Background="#3c3c3c" BorderThickness="1">
+                                                                                        <ScrollViewer x:Name="ScrollViewer">
+                                                                                            <ItemsPresenter />
+                                                                                        </ScrollViewer>
+                                                                                    </Border>
+                                                                                </ControlTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
+                                                                    </Style>
+                                                                </ContextMenu.Style>
                                                                 <MenuItem Name="ContentsButton"
                                                                           Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
                                                                           Margin="3"
