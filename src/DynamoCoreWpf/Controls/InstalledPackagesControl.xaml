@@ -117,50 +117,50 @@
                                                                                 </ControlTemplate>
                                                                             </Setter.Value>
                                                                         </Setter>
+                                                                        <Setter Property="ItemsPanel">
+                                                                            <Setter.Value>
+                                                                                <ItemsPanelTemplate>
+                                                                                    <StackPanel Margin="-25,0,0,0"/>
+                                                                                </ItemsPanelTemplate>
+                                                                            </Setter.Value>
+                                                                        </Setter>
                                                                     </Style>
                                                                 </ContextMenu.Style>
-                                                                <MenuItem Name="ContentsButton"
-                                                                          Command="{Binding Path=ToggleTypesVisibleInManagerCommand}"
-                                                                          Margin="3"
-                                                                          IsCheckable="True"
-                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowContentTooltip}"
-                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowContent}" />
-                                                                <!--<MenuItem Name="GetLatestVersionButton"  Command="{Binding Path=GetLatestVersionCommand}" Margin="3" ToolTip="" Header="{x:Static p:Resources.InstalledPackageViewContextMenuGetLatest}" />-->
                                                                 <MenuItem Name="GoToRoot"
                                                                   Command="{Binding Path=GoToRootDirectoryCommand}"
-                                                                  Margin="3"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}" />
+                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="UninstallButton"
                                                                           Command="{Binding Path=UninstallCommand}"
-                                                                          Margin="3"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
-                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}" />
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="UnmarkUninstallButton"
                                                                           Command="{Binding Path=UnmarkForUninstallationCommand}"
-                                                                          Margin="3"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
-                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}" />
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="MakePackageButton"
-                                                                  Command="{Binding Path=PublishNewPackageCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}" />
+                                                                          Command="{Binding Path=PublishNewPackageCommand}"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="MakeNewVersionButton"
-                                                                  Command="{Binding Path=PublishNewPackageVersionCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}" />
+                                                                          Command="{Binding Path=PublishNewPackageVersionCommand}"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="DeprecateButton"
-                                                                  Command="{Binding Path=DeprecateCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}" />
+                                                                          Command="{Binding Path=DeprecateCommand}"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}">
+                                                                </MenuItem>
                                                                 <MenuItem Name="UndeprecateButton"
-                                                                  Command="{Binding Path=UndeprecateCommand}"
-                                                                  Margin="3"
-                                                                  ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
-                                                                  Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}" />
+                                                                          Command="{Binding Path=UndeprecateCommand}"
+                                                                          ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
+                                                                          Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}">
+                                                                </MenuItem>
                                                             </ContextMenu>
 
                                                         </Button.ContextMenu>
