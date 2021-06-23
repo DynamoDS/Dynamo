@@ -2421,7 +2421,7 @@
         </Setter>
     </Style>
 
-    <ControlTemplate x:Key="ExpanderArrowsToggleButton" TargetType="{x:Type ToggleButton}">
+    <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
                 Background="#4D4D4D"
@@ -2534,7 +2534,7 @@
                             <RowDefinition Name="ContentRow" Height="0"/>
                         </Grid.RowDefinitions>
                         <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
-                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderArrowsToggleButton}">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderCaretToggleButton}">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" OverridesDefaultStyle="True" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
