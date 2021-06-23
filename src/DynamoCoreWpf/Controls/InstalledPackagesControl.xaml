@@ -68,12 +68,14 @@
                                                            Foreground="#E5E5E5"></TextBlock>
                                             <TextBlock Text="{Binding Path=Model.VersionName}"
                                                            MinWidth="50"
-                                                           FontSize="10"
+                                                           FontSize="11"
                                                            Foreground="#E5E5E5"></TextBlock>
                                             <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
                                                            Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                            FontSize="11"
                                                            FontStyle="Italic"
+                                                           MinWidth="160"
+                                                           TextAlignment="Center"
                                                            Foreground="Red"></TextBlock>
                                         </StackPanel>
                                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
