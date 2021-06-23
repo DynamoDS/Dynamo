@@ -81,14 +81,19 @@
                                                     <TextBlock Text="{Binding Path=Model.Name}"
                                                            ToolTip="{Binding Path=Model.Name}"
                                                            FontSize="11"
-                                                           Width="200"
+                                                           Width="150"
                                                            TextTrimming="CharacterEllipsis"
-                                                           Margin="10,0,10,0"
+                                                           Margin="0,0,10,0"
                                                            Foreground="#E5E5E5"></TextBlock>
                                                     <TextBlock Text="{Binding Path=Model.VersionName}"
                                                            MinWidth="50"
                                                            FontSize="10"
                                                            Foreground="#E5E5E5"></TextBlock>
+                                                    <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
+                                                           Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                           FontSize="11"
+                                                           FontStyle="Italic"
+                                                           Foreground="Red"></TextBlock>
                                                 </StackPanel>
                                                 <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
                                                     <Button Name="MoreButton"
