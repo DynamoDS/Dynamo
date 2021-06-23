@@ -47,9 +47,8 @@
       <Private>True</Private>
       <HintPath>..\..\src\packages\Cyotek.Drawing.BitmapFont.2.0.0\lib\net48\Cyotek.Drawing.BitmapFont.dll</HintPath>
     </Reference>
-    <Reference Include="Greg, Version=2.0.7759.28389, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\src\packages\Greg.2.0.7759.28389\lib\net48\Greg.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Greg, Version=2.0.7843.19074, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\src\packages\Greg.2.0.7843.19074\lib\net48\Greg.dll</HintPath>
     </Reference>
     <Reference Include="HelixToolkit, Version=2.16.1.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
       <HintPath>..\..\src\packages\HelixToolkit.2.16.1\lib\netstandard1.1\HelixToolkit.dll</HintPath>
