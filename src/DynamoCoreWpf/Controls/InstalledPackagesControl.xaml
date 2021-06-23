@@ -54,256 +54,249 @@
             <ListBox.ItemTemplate>
 
                 <DataTemplate>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"  HorizontalScrollBarVisibility="Auto"
-                                              Height="Auto">
-                        <!--This border shouldn't be wider then installed packages window.
+                    <!--This border shouldn't be wider then installed packages window.
                     That's why bind its' width to ItemsPresenter's width. 
                     ItemsPresenter is UI container for ListBox items.
                     ItemsPresenter can't be wider then visible part of the window.-->
-                        <Border BorderBrush="#535353"
+                    <Border BorderBrush="#535353"
                             BorderThickness="0,0,0,1"
                             Background="#535353"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
                                                                         AncestorType={x:Type ItemsPresenter}}}">
-                            <Border BorderBrush="#535353"
-                                BorderThickness="0,1,0,0">
-
-                                <Expander Name="PackageHeader"
+                        <Expander Name="PackageHeader"
                                           IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                           Style="{StaticResource InstalledPackagesExpanderStyle}">
-                                    <Expander.Header>
-                                        <Grid x:Name="PackageGrid"  Width="400">
-                                            <DockPanel HorizontalAlignment="Stretch"
+                            <Expander.Header>
+                                <Grid x:Name="PackageGrid"  Width="400">
+                                    <DockPanel HorizontalAlignment="Stretch"
                                                    >
-                                                <StackPanel HorizontalAlignment="Left"
+                                        <StackPanel HorizontalAlignment="Left"
                                                         Orientation="Horizontal"
                                                         Margin="5,5,5,7">
-                                                    <TextBlock Text="{Binding Path=Model.Name}"
+                                            <TextBlock Text="{Binding Path=Model.Name}"
                                                            ToolTip="{Binding Path=Model.Name}"
                                                            FontSize="11"
                                                            Width="150"
                                                            TextTrimming="CharacterEllipsis"
                                                            Margin="0,0,10,0"
                                                            Foreground="#E5E5E5"></TextBlock>
-                                                    <TextBlock Text="{Binding Path=Model.VersionName}"
+                                            <TextBlock Text="{Binding Path=Model.VersionName}"
                                                            MinWidth="50"
                                                            FontSize="10"
                                                            Foreground="#E5E5E5"></TextBlock>
-                                                    <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
+                                            <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
                                                            Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                            FontSize="11"
                                                            FontStyle="Italic"
                                                            Foreground="Red"></TextBlock>
-                                                </StackPanel>
-                                                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
-                                                    <Button Name="MoreButton"
+                                        </StackPanel>
+                                        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Width="Auto">
+                                            <Button Name="MoreButton"
                                                             Click="MoreButton_OnClick"
                                                             Style="{StaticResource FlatButtonStyle}">
-                                                        <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
-                                                        <Button.ContextMenu>
-                                                            <ContextMenu>
-                                                                <ContextMenu.Style>
-                                                                    <Style TargetType="{x:Type ContextMenu}">
-                                                                        <Setter Property="SnapsToDevicePixels" Value="True" />
-                                                                        <Setter Property="OverridesDefaultStyle" Value="True" />
-                                                                        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
-                                                                        <Setter Property="HasDropShadow" Value="True" />
-                                                                        <Setter Property="Foreground" Value="#f5f5f5"/>
-                                                                        <Setter Property="Background" Value="#3c3c3c"/>
-                                                                        <Setter Property="FontSize" Value="10"/>
-                                                                        <Setter Property="Template">
-                                                                            <Setter.Value>
-                                                                                <ControlTemplate TargetType="{x:Type ContextMenu}">
-                                                                                    <Border x:Name="Border" Background="#3c3c3c" BorderThickness="1">
-                                                                                        <ItemsPresenter />
-                                                                                    </Border>
-                                                                                </ControlTemplate>
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                        <Setter Property="ItemsPanel">
-                                                                            <Setter.Value>
-                                                                                <ItemsPanelTemplate>
-                                                                                    <StackPanel Margin="-25,0,0,0"/>
-                                                                                </ItemsPanelTemplate>
-                                                                            </Setter.Value>
-                                                                        </Setter>
-                                                                    </Style>
-                                                                </ContextMenu.Style>
-                                                                <MenuItem Name="GoToRoot"
+                                                <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
+                                                <Button.ContextMenu>
+                                                    <ContextMenu>
+                                                        <ContextMenu.Style>
+                                                            <Style TargetType="{x:Type ContextMenu}">
+                                                                <Setter Property="SnapsToDevicePixels" Value="True" />
+                                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                                <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+                                                                <Setter Property="HasDropShadow" Value="True" />
+                                                                <Setter Property="Foreground" Value="#f5f5f5"/>
+                                                                <Setter Property="Background" Value="#3c3c3c"/>
+                                                                <Setter Property="FontSize" Value="10"/>
+                                                                <Setter Property="Template">
+                                                                    <Setter.Value>
+                                                                        <ControlTemplate TargetType="{x:Type ContextMenu}">
+                                                                            <Border x:Name="Border" Background="#3c3c3c" BorderThickness="1">
+                                                                                <ItemsPresenter />
+                                                                            </Border>
+                                                                        </ControlTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                                <Setter Property="ItemsPanel">
+                                                                    <Setter.Value>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Margin="-25,0,0,0"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </Style>
+                                                        </ContextMenu.Style>
+                                                        <MenuItem Name="GoToRoot"
                                                                   Command="{Binding Path=GoToRootDirectoryCommand}"
                                                                   ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
                                                                   Header="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDir}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="UninstallButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="UninstallButton"
                                                                           Command="{Binding Path=UninstallCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuUninstallTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuUninstall}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="UnmarkUninstallButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="UnmarkUninstallButton"
                                                                           Command="{Binding Path=UnmarkForUninstallationCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstallTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuCancelUninstall}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="MakePackageButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="MakePackageButton"
                                                                           Command="{Binding Path=PublishNewPackageCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublish}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="MakeNewVersionButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="MakeNewVersionButton"
                                                                           Command="{Binding Path=PublishNewPackageVersionCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersionTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuPublishVersion}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="DeprecateButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="DeprecateButton"
                                                                           Command="{Binding Path=DeprecateCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecateTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuDeprecate}">
-                                                                </MenuItem>
-                                                                <MenuItem Name="UndeprecateButton"
+                                                        </MenuItem>
+                                                        <MenuItem Name="UndeprecateButton"
                                                                           Command="{Binding Path=UndeprecateCommand}"
                                                                           ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecationTooltip}"
                                                                           Header="{x:Static p:Resources.InstalledPackageViewContextMenuRemoveDeprecation}">
-                                                                </MenuItem>
-                                                            </ContextMenu>
+                                                        </MenuItem>
+                                                    </ContextMenu>
 
-                                                        </Button.ContextMenu>
-                                                    </Button>
-                                                </StackPanel>
-                                            </DockPanel>
-                                        </Grid>
-                                    </Expander.Header>
-                                    <Grid>
-                                        <Border BorderThickness="0,1,0,0"
+                                                </Button.ContextMenu>
+                                            </Button>
+                                        </StackPanel>
+                                    </DockPanel>
+                                </Grid>
+                            </Expander.Header>
+                            <Grid>
+                                <Border BorderThickness="0,1,0,0"
                                             BorderBrush="#111"
                                             Background="#3c3c3c"
                                             >
 
-                                            <StackPanel Margin="10,5,5,10">
+                                    <StackPanel Margin="10,5,5,10">
 
-                                                <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                                                    <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
+                                            <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
                                                        FontSize="10"
                                                        Foreground="#E5E5E5"/>
-                                                    <ItemsControl Name="LoadedCustomNodes"
+                                            <ItemsControl Name="LoadedCustomNodes"
                                                               ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
                                                               BorderThickness="0"
                                                               Padding="0"
                                                               Margin="10,0,0,0"
                                                               Background="Transparent">
 
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock Text="{Binding Path=Name}"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Path=Name}"
                                                                        Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                                    </ItemsControl>
+                                            </ItemsControl>
 
-                                                </StackPanel>
+                                        </StackPanel>
 
-                                                <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                                                    <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
+                                            <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
                                                        Foreground="#E5E5E5"
-                                                       FontSize="10"></Label> 
-                                                    <ItemsControl Name="NodeLibraries"
+                                                       FontSize="10"></Label>
+                                            <ItemsControl Name="NodeLibraries"
                                                                   ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                                   BorderThickness="0"
                                                                   Padding="0"
                                                                   Margin="10,0,0,0"
                                                                   Background="Transparent">
 
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock Name="Label"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
                                                                        Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
-                                                                <DataTemplate.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
                                                                              Value="false">
-                                                                        <Setter TargetName="Label"
+                                                                <Setter TargetName="Label"
                                                                             Property="Visibility"
                                                                             Value="Collapsed"></Setter>
-                                                                    </DataTrigger>
-                                                                </DataTemplate.Triggers>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                                    </ItemsControl>
-                                                </StackPanel>
+                                            </ItemsControl>
+                                        </StackPanel>
 
-                                                <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                                                    <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
+                                            <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
                                                        FontSize="10"
                                                        Foreground="#E5E5E5"></Label>
-                                                    <ItemsControl Name="AddAssemblies"
+                                            <ItemsControl Name="AddAssemblies"
                                                               ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                               BorderThickness="0"
                                                               Padding="0"
                                                               Margin="10,0,0,0"
                                                               Background="Transparent">
 
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock Name="Label"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Name="Label"
                                                                        Text="{Binding Path=Name}"
                                                                        Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
 
-                                                                <DataTemplate.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
+                                                        <DataTemplate.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=IsNodeLibrary}"
                                                                              Value="true">
-                                                                        <Setter TargetName="Label"
+                                                                <Setter TargetName="Label"
                                                                             Property="Visibility"
                                                                             Value="Collapsed"></Setter>
-                                                                    </DataTrigger>
-                                                                </DataTemplate.Triggers>
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
+                                                            </DataTrigger>
+                                                        </DataTemplate.Triggers>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                                    </ItemsControl>
+                                            </ItemsControl>
 
-                                                </StackPanel>
+                                        </StackPanel>
 
-                                                <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                        <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                                                    <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
+                                            <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
                                                        FontSize="10"
                                                        Foreground="#E5E5E5"></Label>
-                                                    <ItemsControl Name="AdditionalFiles"
+                                            <ItemsControl Name="AdditionalFiles"
                                                               ItemsSource="{Binding Path=Model.AdditionalFiles}"
                                                               BorderThickness="0"
                                                               Padding="0"
                                                               Margin="10,0,0,0"
                                                               Background="Transparent">
 
-                                                        <ItemsControl.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <TextBlock Text="{Binding Path=RelativePath}"
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding Path=RelativePath}"
                                                                        Foreground="#E5E5E5"
                                                                        FontSize="9"
                                                                        TextTrimming="CharacterEllipsis" />
-                                                            </DataTemplate>
-                                                        </ItemsControl.ItemTemplate>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
 
-                                                    </ItemsControl>
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Border>
-                                    </Grid>
-                                </Expander>
-                            </Border>
-                        </Border>
-                    </ScrollViewer>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Expander>
+                    </Border>
                 </DataTemplate>
 
             </ListBox.ItemTemplate>
