@@ -87,6 +87,7 @@ namespace Dynamo.Core
         private readonly HashSet<string> preloadedLibraries;
         private readonly HashSet<string> extensionsDirectories;
         private readonly HashSet<string> viewExtensionsDirectories;
+        private readonly IPathResolver pathResolver;
 
         #endregion
 
@@ -148,9 +149,21 @@ namespace Dynamo.Core
             get { return logDirectory; }
         }
 
+        /// <summary>
+        /// Default directory where new packages are downloaded to.
+        /// This directory path is user configurable and if set to something other than the default,
+        /// the currently selected path can be obtained from preference settings.
+        /// </summary>
         public string DefaultPackagesDirectory
         {
-            get { return TransformPath(RootDirectories.First(), PackagesDirectoryName); }
+            get
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, PackagesDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), PackagesDirectoryName);
+            }
         }
 
         public IEnumerable<string> PackagesDirectories
@@ -295,7 +308,7 @@ namespace Dynamo.Core
         internal PathManager(PathManagerParams pathManagerParams)
         {
             var corePath = pathManagerParams.CorePath;
-            var pathResolver = pathManagerParams.PathResolver;
+            pathResolver = pathManagerParams.PathResolver;
 
             if (string.IsNullOrEmpty(corePath) || !Directory.Exists(corePath))
             {
@@ -339,7 +352,7 @@ namespace Dynamo.Core
             }
 
             // Current user specific directories.
-            userDataDir = GetUserDataFolder(pathResolver);
+            userDataDir = GetUserDataFolder();
 
             // When running as a headless process, put the logs directory in a consistent
             // location that doesn't change every time the version number changes.
@@ -352,7 +365,7 @@ namespace Dynamo.Core
             backupDirectory = Path.Combine(userDataDirNoVersion, BackupDirectoryName);
 
             // Common directories.
-            commonDataDir = GetCommonDataFolder(pathResolver);
+            commonDataDir = GetCommonDataFolder();
 
             commonDefinitions = Path.Combine(commonDataDir, DefinitionsDirectoryName);
             commonPackages = Path.Combine(commonDataDir, PackagesDirectoryName);
@@ -369,7 +382,7 @@ namespace Dynamo.Core
 
             preloadedLibraries = new HashSet<string>();
             additionalResolutionPaths = new HashSet<string>();
-            LoadPathsFromResolver(pathResolver);
+            LoadPathsFromResolver();
         }
 
         /// <summary>
@@ -460,7 +473,7 @@ namespace Dynamo.Core
 
         #region Private Class Helper Methods
 
-        private void LoadPathsFromResolver(IPathResolver pathResolver)
+        private void LoadPathsFromResolver()
         {
             if (pathResolver == null) // No optional path resolver is specified...
                 return;
@@ -490,7 +503,7 @@ namespace Dynamo.Core
             }
         }
 
-        internal string GetUserDataFolder(IPathResolver pathResolver = null)
+        internal string GetUserDataFolder()
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.UserDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.UserDataRootFolder);
@@ -502,7 +515,7 @@ namespace Dynamo.Core
             return GetDynamoDataFolder(Path.Combine(folder, "Dynamo", "Dynamo Core"));
         }
 
-        private string GetCommonDataFolder(IPathResolver pathResolver)
+        private string GetCommonDataFolder()
         {
             if (pathResolver != null && !string.IsNullOrEmpty(pathResolver.CommonDataRootFolder))
                 return GetDynamoDataFolder(pathResolver.CommonDataRootFolder);
@@ -516,7 +529,7 @@ namespace Dynamo.Core
             return Path.Combine(folder,
                 String.Format("{0}.{1}", majorFileVersion, minorFileVersion));
         }
-
+        
         // This method is used to get the locations of packages folder or custom
         // nodes folder given the root path. This is necessary because the packages
         // may be in the root folder or in a packages subfolder of the root folder.
