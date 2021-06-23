@@ -61,6 +61,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
+      <Link>Properties\AssemblySharedInfo.cs</Link>
+    </Compile>
     <Compile Include="PackageManagerExtensionTests.cs" />
     <Compile Include="PackageDirectoryBuilderTests.cs" />
     <Compile Include="PackageLoaderCustomTest.cs" />

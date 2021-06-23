@@ -675,6 +675,7 @@ namespace Dynamo.Models
             }
 
             pathManager.Preferences = PreferenceSettings;
+            PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -1114,6 +1115,7 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+                PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
@@ -2669,7 +2671,7 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
-        enum ButtonId
+        internal enum ButtonId
         {
             Ok = 43420,
             Cancel,

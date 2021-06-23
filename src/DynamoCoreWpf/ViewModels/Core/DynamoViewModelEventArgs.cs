@@ -10,6 +10,7 @@ using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.PackageManager;
+using Dynamo.UI.Prompts;
 
 namespace Dynamo.ViewModels
 {
@@ -335,6 +336,20 @@ namespace Dynamo.ViewModels
         {
             var inputNames = node.InPorts.Select(x => x.Name).ToArray();
             return string.Join(",", inputNames);
+        }
+    }
+
+    /// <summary>
+    /// Provides information about the task dialog used when saving a graph while there are unresolved linter issues in the graph.
+    /// This is meant to be used only for unit tests to verify that the dialog has been showed.
+    /// </summary>
+    internal class SaveWarningOnUnresolvedIssuesArgs : EventArgs
+    {
+        internal GenericTaskDialog TaskDialog;
+
+        internal SaveWarningOnUnresolvedIssuesArgs(GenericTaskDialog taskDialog)
+        {
+            TaskDialog = taskDialog;
         }
     }
 }

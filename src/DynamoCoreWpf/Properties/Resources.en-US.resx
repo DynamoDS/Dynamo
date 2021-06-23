@@ -817,6 +817,10 @@ You will get a chance to save your work.</value>
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Selected package path for download</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2256,6 +2260,10 @@ Uninstall the following packages: {0}?</value>
     <value>Default Python Engine</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>New Package Download Directory</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
@@ -2399,14 +2407,36 @@ Uninstall the following packages: {0}?</value>
   <data name="ResetCPythonButtonToolTip" xml:space="preserve">
     <value>Resets CPython environment by reloading modules.</value>
   </data>
+  <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
+    <value>Cancel and Show Issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Description" xml:space="preserve">
+    <value>There are unresolved issues with the graph type. If this graph is designed to be used outside of Dynamo, resolve all issues and save the graph again.</value>
+  </data>
+  <data name="GraphIssuesOnSave_ProceedBtn" xml:space="preserve">
+    <value>Save with Issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Summary" xml:space="preserve">
+    <value>You are trying to save a graph with unresolved issues</value>
+  </data>
+  <data name="GraphIssuesOnSave_Title" xml:space="preserve">
+    <value>Graph Type Issues found</value>
+  </data>
   <data name="PackagePathsExpanderName" xml:space="preserve">
     <value>Node and Package Paths</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
   </data>
-
-
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Package/Library Search Paths</value>
+  </data>
+  <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
+    <value>Switchable only when the current workspace is in Manual run mode.</value>
+  </data>
   <data name="ContextSelectConnectedDownstream" xml:space="preserve">
     <value>Downstream</value>
   </data>
