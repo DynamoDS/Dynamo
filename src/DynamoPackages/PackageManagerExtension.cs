@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Reflection;
+using Dynamo.Configuration;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -161,9 +162,21 @@ namespace Dynamo.PackageManager
             PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
+            // Align the package install directory with the package download directory - 
+            // either the one selected by the user or the default directory.
+            string packageInstallDirectory;
+            if (startupParams.Preferences is PreferenceSettings preferences)
+            {
+                packageInstallDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
+                    PackageLoader.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
+            }
+            else
+            {
+                packageInstallDirectory = PackageLoader.DefaultPackagesDirectory;
+            }
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, PackageLoader.DefaultPackagesDirectory);
+                uploadBuilder, packageInstallDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }

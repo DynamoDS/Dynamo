@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
@@ -32,11 +33,12 @@ namespace Dynamo.ViewModels
         private string savedChangesLabel;
         private string savedChangesTooltip;
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
         private ObservableCollection<StyleItem> styleItemsList;
         private StyleItem addStyleControl;
-        private ObservableCollection<string> _pythonEngineList;
+        private ObservableCollection<string> pythonEngineList;
 
         private string selectedLanguage;
         private string selectedFontSize;
@@ -267,6 +269,63 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// PackagePathsForInstall contains the list of all package paths where
+        /// packages can be installed.
+        /// </summary>
+        public ObservableCollection<string> PackagePathsForInstall
+        {
+            get
+            {
+                if (packagePathsForInstall == null || !packagePathsForInstall.Any())
+                {
+                    var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    // Filter Std lib and ProgramData paths from list of paths for download
+                    var customPaths = preferenceSettings.CustomPackageFolders.Where(
+                        x => x != DynamoModel.StandardLibraryToken && !x.StartsWith(programDataPath));
+
+                    packagePathsForInstall = new ObservableCollection<string>();
+                    foreach (var path in customPaths)
+                    {
+                        var attr = File.GetAttributes(path);
+
+                        // Add only directory paths
+                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                        {
+                            packagePathsForInstall.Add(path);
+                        }
+                    }
+                }
+                return packagePathsForInstall;
+            }
+            set
+            {
+                packagePathsForInstall = value;
+                RaisePropertyChanged(nameof(PackagePathsForInstall));
+            }
+        }
+
+        /// <summary>
+        /// Currently selected package path where new packages will be downloaded.
+        /// </summary>
+        public string SelectedPackagePathForInstall
+        {
+            get
+            {
+                return preferenceSettings.SelectedPackagePathForInstall;
+            }
+            set
+            {
+                if (preferenceSettings.SelectedPackagePathForInstall != value)
+                {
+                    preferenceSettings.SelectedPackagePathForInstall = value;
+                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(
+                        value, dynamoViewModel.Model.PathManager.UserDataDirectory);
+                    RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                }
+            }
+        }
+
+        /// <summary>
         /// FontSizesList contains the list of sizes for fonts defined (the ones defined are Small, Medium, Large, Extra Large)
         /// </summary>
         public ObservableCollection<string> FontSizeList
@@ -447,11 +506,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _pythonEngineList;
+                return pythonEngineList;
             }
             set
             {
-                _pythonEngineList = value;
+                pythonEngineList = value;
                 RaisePropertyChanged(nameof(PythonEnginesList));
             }
         }
@@ -657,6 +716,8 @@ namespace Dynamo.ViewModels
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -742,6 +803,9 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(SelectedNumberFormat):
                     description = Res.DynamoViewSettingMenuNumberFormat;
+                    goto default;
+                case nameof(SelectedPackagePathForInstall):
+                    description = Res.PreferencesViewSelectedPackagePathForDownload;
                     goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
