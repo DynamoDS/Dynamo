@@ -308,7 +308,6 @@
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuPreferences}"
                                   Focusable="False"
                                   Click="OnPreferencesWindowClick"
-                                  Visibility="Collapsed"
                                   Name="preferencesOption"/>
                         <MenuItem Header="{x:Static p:Resources.DynamoViewDynamoMenuExit}"
                                   Command="{Binding ExitCommand}"
@@ -711,10 +710,6 @@
                                   Header="{x:Static p:Resources.DynamoViewDebugMenuDebugModes}"
                                   Click="OnDebugModesClick"
                                   IsCheckable="False" />
-                        <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewSettingMenuManagePackagePath}"
-                                  Command="{Binding ManagePackagePathsCommand}"
-                                  Name="managePackagePaths" />
                     </MenuItem>
                 </Menu>
 

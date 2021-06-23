@@ -27,9 +27,7 @@ namespace Dynamo.Wpf.Views
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
         public PreferencesView(DynamoViewModel dynamoViewModel)
         {
-            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
-            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
-            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            SetupPreferencesViewModel(dynamoViewModel);
 
             DataContext = dynamoViewModel.PreferencesViewModel;
             dynViewModel = dynamoViewModel;
@@ -49,6 +47,18 @@ namespace Dynamo.Wpf.Views
             }
             
             InitRadioButtonsDescription();
+        }
+
+
+        /// <summary>
+        ///Given that the PreferencesViewModel persists through the Dynamo session, 
+        ///this method will setup all the necesary properties for when the Preferences window is opened.
+        /// </summary>
+        private void SetupPreferencesViewModel(DynamoViewModel dynamoViewModel)
+        {
+            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
+            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
+            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
         }
 
         /// <summary>
@@ -76,7 +86,8 @@ namespace Dynamo.Wpf.Views
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.Preferences);
-            this.Close();
+            viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            Close();
         }
 
         /// <summary>
@@ -207,6 +218,7 @@ namespace Dynamo.Wpf.Views
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
                     viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.UpdateSavedChangesLabel();
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Switch,
                         Categories.Preferences,
@@ -215,7 +227,6 @@ namespace Dynamo.Wpf.Views
 
                 var allNodes = dynViewModel.HomeSpace.Nodes;
                 dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-                viewModel.UpdateSavedChangesLabel();
             }
         }
 

@@ -191,17 +191,6 @@ namespace Dynamo.Controls
                 }
             }
 
-            // Sets the visibility of the preferences option in the Dynamo menu depending on the debug mode being enabled
-            // This will be deleted once the option goes into production
-            if (Dynamo.Configuration.DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode"))
-            {
-                preferencesOption.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                preferencesOption.Visibility = Visibility.Collapsed;
-            }
-
             // when an extension is added if dynamoView is loaded, call loaded on
             // that extension (this alerts late loaded extensions).
             this.viewExtensionManager.ExtensionAdded += (extension) =>
@@ -942,7 +931,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog += DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog += DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog += DynamoViewModelRequestShowPackageManagerSearch;
-            dynamoViewModel.RequestPackagePathsDialog += DynamoViewModelRequestPackagePaths;
 
             #endregion
 
@@ -1163,20 +1151,6 @@ namespace Dynamo.Controls
 
             _searchPkgsView.Focus();
             _pkgSearchVM.RefreshAndSearchAsync();
-        }
-
-        private void DynamoViewModelRequestPackagePaths(object sender, EventArgs e)
-        {
-            var loadPackagesParams = new LoadPackageParams
-            {
-                Preferences = dynamoViewModel.PreferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
-            };
-            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension().PackageLoader;
-            var viewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
-            var view = new PackagePathView(viewModel) { Owner = this };
-            view.ShowDialog();
         }
 
         private InstalledPackagesView _installedPkgsView;
@@ -1559,7 +1533,6 @@ namespace Dynamo.Controls
             dynamoViewModel.RequestPackagePublishDialog -= DynamoViewModelRequestRequestPackageManagerPublish;
             dynamoViewModel.RequestManagePackagesDialog -= DynamoViewModelRequestShowInstalledPackages;
             dynamoViewModel.RequestPackageManagerSearchDialog -= DynamoViewModelRequestShowPackageManagerSearch;
-            dynamoViewModel.RequestPackagePathsDialog -= DynamoViewModelRequestPackagePaths;
 
             //FUNCTION NAME PROMPT
             dynamoViewModel.Model.RequestsFunctionNamePrompt -= DynamoViewModelRequestsFunctionNamePrompt;
