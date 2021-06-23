@@ -675,6 +675,7 @@ namespace Dynamo.Models
             }
 
             pathManager.Preferences = PreferenceSettings;
+            PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -1114,6 +1115,7 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+                PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;

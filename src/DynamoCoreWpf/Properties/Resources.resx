@@ -552,6 +552,10 @@
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Selected package path for download</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2263,6 +2267,10 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
     <value>Default Python Engine</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
+  </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>New Package Download Directory</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
