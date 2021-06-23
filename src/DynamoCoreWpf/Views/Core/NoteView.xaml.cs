@@ -212,6 +212,9 @@ namespace Dynamo.Nodes
 
         /// <summary>
         /// Handles text when user types Key.OemMinus (DASH)
+        /// It converts the DASH into its appropriate BULLET Character
+        /// by counting the amount of TAB spaces before the bullet.  
+        /// Conversion only happens when dash is at the beginning of a line.
         /// </summary>
         /// <param name="text"> text before typing DASH </param>
         /// <param name="caretIndex"> caret index where user typed DASH </param>
@@ -240,6 +243,8 @@ namespace Dynamo.Nodes
 
         /// <summary>
         /// Handles text when user types Key.Tab (TAB)
+        /// If TAB is pressed before a bullet or right after the bullet
+        /// it also updates the bullet to its appropriate bullet character
         /// </summary>
         /// <param name="text">  text before typing TAB </param>
         /// <param name="caretIndex"> caret index where user typed TAB </param>
@@ -255,21 +260,28 @@ namespace Dynamo.Nodes
             // so that you can easily indent
             var caretIsRightAfterBullet = IsCaretRightAfterBullet(line, caretAtLine);
             if (caretIsRightAfterBullet)
+            {
                 line = line.Insert(caretAtLine - 2, "\t");
+            }
+                
             else
             {
                 line = line.Insert(caretAtLine, "\t");
                 caretAtLine++;
             }
 
+            // Also update the bullet character if CaretIndex is right after bullet or before bullet
             if (IsCaretBeforeABullet(line, caretAtLine) || caretIsRightAfterBullet)
+            {
                 line = UpdateBulletAccordingToIndentation(line);
-            
+            }
+                
             return ReplaceLineOfText(text, lineNumber, line);
         }
 
         /// <summary>
         /// Handles text when user types Key.Enter (ENTER)
+        /// When ENTER is pressed, if previous line had a bullet copy it to next line
         /// </summary>
         /// <param name="text">  text before typing ENTER </param>
         /// <param name="caretIndex"> caret index where user typed ENTER </param>
@@ -283,8 +295,10 @@ namespace Dynamo.Nodes
             // Check if line has any bullets, and copy it to next line
             var bulletsInLine = BULLETS_CHARS.Where(b => line.Contains(b));
             if (bulletsInLine.Count() == 0)
+            {
                 return text = text.Insert(caretIndex, "\n");
-
+            }
+            
             text = text.Insert(caretIndex, "\n");
             caretIndex++;
 
@@ -304,8 +318,12 @@ namespace Dynamo.Nodes
 
         private bool IsCaretRightAfterBullet(string text, int caretIndex)
         {
-            if (caretIndex == 0 )
+            if (caretIndex == 0 || caretIndex ==1 )
+            {
                 return false;
+            }
+            // We need to get the character 2 indices before the caretIndex 
+            // because when we place the bullet we add a space as well for indentation
             return BULLETS_CHARS.Contains(text[caretIndex - 2]);
         }
 
