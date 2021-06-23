@@ -2424,7 +2424,7 @@
     <ControlTemplate x:Key="ExpanderArrowsToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
-                Background="{StaticResource SecondaryGray}" 
+                Background="#4D4D4D"
                 BorderThickness="1" 
                 CornerRadius="1" >
             <Grid>
@@ -2444,7 +2444,7 @@
                 </Image>
                 <ContentPresenter x:Name="HeaderContent" 
                                     Grid.Column="0" 
-                                    Margin="15,0,0,0"  
+                                    Margin="15,0,0,0" 
                                     RecognizesAccessKey="True" 
                                     VerticalAlignment="Center"
                                     Width="{Binding
@@ -2457,11 +2457,11 @@
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="true">
                 <!--Sets the sign on the expander to a minus (-)-->
+                <Setter Property="Background" TargetName="Border" Value="#3C3C3C"/>
                 <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
             </Trigger>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" TargetName="Border" Value="{x:Null}"/>
-                <Setter Property="BorderBrush" TargetName="Border" Value="{x:Null}"/>
+            <Trigger Property="IsChecked" Value="false">
+                <Setter Property="Background" TargetName="Border" Value="#4D4D4D"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -2524,8 +2524,6 @@
     
 
     <Style TargetType="Expander" x:Key="InstalledPackagesExpanderStyle">
-        <Setter Property="Background" Value="{StaticResource PreferencesWindowBackgroundColor}"/>
-        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <!-- Control template for expander -->
@@ -2536,17 +2534,17 @@
                             <RowDefinition Name="ContentRow" Height="0"/>
                         </Grid.RowDefinitions>
                         <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
-                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderArrowsToggleButton}" Background="#FF4682B4">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderArrowsToggleButton}">
                                 <ToggleButton.Content>
-                                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
+                                    <ContentPresenter ContentSource="Header" OverridesDefaultStyle="True" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
                             </ToggleButton>
                         </Border>
                         <Border x:Name="Content" 
-                                Grid.Row="1" 
+                                Grid.Row="1"
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4" >
-                            <ContentPresenter Margin="12,0,0,15" />
+                            <ContentPresenter Margin="1,0,0,0" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
