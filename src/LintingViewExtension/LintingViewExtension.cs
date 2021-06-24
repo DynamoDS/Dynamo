@@ -41,10 +41,7 @@ namespace Dynamo.LintingViewExtension
             this.viewLoadedParamsReference = viewLoadedParams;
             this.linterViewModel = new LinterViewModel(linterManager, viewLoadedParamsReference);
             this.linterView = new LinterView() { DataContext = linterViewModel };
-            this.dynamoView = viewLoadedParamsReference.DynamoWindow as DynamoView;
-            this.dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
-
-            dynamoViewModel.RequestOpenLinterView += OnRequestOpenLinterView;
+            viewLoadedParams.ViewExtensionOpenRequest += OnViewExtensionOpenRequest;
 
             // Add a button to Dynamo View menu to manually show the window
             this.linterMenuItem = new MenuItem { Header = Resources.MenuItemText, IsCheckable = true };
@@ -55,20 +52,16 @@ namespace Dynamo.LintingViewExtension
             this.linterManager.PropertyChanged += OnLinterManagerPropertyChange;
         }
 
-        private void OnRequestOpenLinterView(object sender, System.EventArgs e)
+        private void OnViewExtensionOpenRequest(string extensionName)
         {
+            if (extensionName != Name)
+            {
+                return;
+            }
+            
             if (linterMenuItem.IsChecked)
             {
-                if (linterView != null && 
-                    (dynamoView.tabDynamic.SelectedItem as TabItem).Header.ToString() != EXTENSION_NAME)
-                {
-                    dynamoView.tabDynamic.SelectedItem = dynamoView
-                        .ExtensionTabItems
-                        .Where(x => x.Header.ToString() == EXTENSION_NAME)
-                        .FirstOrDefault();
-
-                    linterView.Focus();
-                }
+                this.viewLoadedParamsReference?.AddToExtensionsSideBar(this, this.linterView);
                 return;
             }
                 
@@ -85,7 +78,7 @@ namespace Dynamo.LintingViewExtension
             this.linterMenuItem.Checked -= MenuItemCheckHandler;
             this.linterMenuItem.Unchecked -= MenuItemUnCheckedHandler;
             if (linterManager != null) linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
-            dynamoViewModel.RequestOpenLinterView -= OnRequestOpenLinterView;
+            viewLoadedParamsReference.ViewExtensionOpenRequest += OnViewExtensionOpenRequest;
         }
 
         public override void Closed()

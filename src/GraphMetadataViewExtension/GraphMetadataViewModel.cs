@@ -103,7 +103,7 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
-        public LinterExtensionDescriptor CurrentLinter => (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).Model.LinterManager.ActiveLinter;
+        public LinterExtensionDescriptor CurrentLinter => viewLoadedParams.LinterManager.ActiveLinter;
 
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams, GraphMetadataViewExtension extension)
         {
@@ -117,7 +117,8 @@ namespace Dynamo.GraphMetadata
             // This means that properties defined in the previous opened workspace will still be showed in the extension.
             // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
-            (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel).Model.LinterManager.PropertyChanged += OnLinterManagerPropertyChange;
+            if (viewLoadedParams.LinterManager != null)
+                viewLoadedParams.LinterManager.PropertyChanged += OnLinterManagerPropertyChange;
 
             CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
@@ -206,7 +207,7 @@ namespace Dynamo.GraphMetadata
 
         private void OpenGraphStatusExecute(object obj)
         {
-            ((DynamoViewModel)(this.viewLoadedParams.DynamoWindow.DataContext)).OnRequestOpenLinterView();
+            viewLoadedParams.OpenViewExtension("Graph Status");
         }
 
         private void AddCustomPropertyExecute(object obj)
@@ -260,6 +261,8 @@ namespace Dynamo.GraphMetadata
         public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            if (viewLoadedParams.LinterManager != null)
+                viewLoadedParams.LinterManager.PropertyChanged -= OnLinterManagerPropertyChange;
 
             foreach (var cp in CustomProperties)
             {

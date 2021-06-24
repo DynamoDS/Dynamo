@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Linting;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
@@ -76,6 +77,17 @@ namespace Dynamo.Extensions
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
 
+        /// <summary>
+        /// Returns Sessions Linter Manager
+        /// </summary>
+        public LinterManager LinterManager
+        {
+            get
+            {
+                return dynamoModel.LinterManager;
+            }
+        }
+        
         /// <summary>
         /// Event that is raised when the Dynamo Logger logs a notification.
         /// This event passes the notificationMessage to any subscribers
