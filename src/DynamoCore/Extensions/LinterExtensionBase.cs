@@ -19,6 +19,7 @@ namespace Dynamo.Extensions
     {
         private const string NODE_ADDED_PROPERTY = "NodeAdded";
         private const string NODE_REMOVED_PROPERTY = "NodeRemoved";
+        private const string NODE_MODIFIED_PROPERTY = "Modified";
 
         #region Private/Internal properties
         private HashSet<LinterRule> linterRules = new HashSet<LinterRule>();
@@ -308,6 +309,7 @@ namespace Dynamo.Extensions
             foreach (var node in currentWorkspace.Nodes)
             {
                 node.PropertyChanged += OnNodePropertyChanged;
+                node.Modified += OnNodeModified;
             }
         }
 
@@ -323,6 +325,7 @@ namespace Dynamo.Extensions
         private void UnsubscribeNodeEvents(NodeModel node)
         {
             node.PropertyChanged -= OnNodePropertyChanged;
+            node.Modified -= OnNodeModified;
         }
 
         private void OnNodeAdded(NodeModel node)
@@ -330,13 +333,19 @@ namespace Dynamo.Extensions
             EvaluateGraphRules(node, NODE_ADDED_PROPERTY);
             EvaluateNodeRules(node, NODE_ADDED_PROPERTY);
             node.PropertyChanged += OnNodePropertyChanged;
+            node.Modified += OnNodeModified;
+        }
+
+        private void OnNodeModified(NodeModel node)
+        {
+            EvaluateGraphRules(node, NODE_MODIFIED_PROPERTY);
+            EvaluateNodeRules(node, NODE_MODIFIED_PROPERTY);
         }
 
         private void OnNodePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             EvaluateNodeRules(sender as NodeModel, e.PropertyName);
             EvaluateGraphRules(sender as NodeModel, e.PropertyName);
-
         }
 
         private void OnNodeRemoved(Graph.Nodes.NodeModel node)
