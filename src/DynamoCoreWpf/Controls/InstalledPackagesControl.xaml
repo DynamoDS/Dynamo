@@ -84,7 +84,7 @@
                                                                 Height="16"
                                                                 Margin="0,0,10,0"
                                                                 Style="{StaticResource FlatButtonStyle}">
-                                                    <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
+                                                    <Image Source="/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
                                                     <Button.ContextMenu>
                                                         <ContextMenu>
                                                             <ContextMenu.Style>

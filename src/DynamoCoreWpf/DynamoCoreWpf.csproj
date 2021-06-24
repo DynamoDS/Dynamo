@@ -76,7 +76,7 @@
     <Reference Include="ProtoGeometry, Version=2.12.0.5056, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5056\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
-	</Reference>
+    </Reference>
     <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
@@ -1269,7 +1269,7 @@
     <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
       <Name>PythonNodeModels</Name>
-	  <Private>False</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
@@ -1315,9 +1315,9 @@
     <Resource Include="UI\Images\profile_normal.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\caret_up.png" />
-    <Resource Include="UI\Images\More.png" />
     <Resource Include="UI\Images\PackageManager\close_16_16.png" />
     <Resource Include="UI\Images\PackageManager\down_16_16.png" />
     <Resource Include="UI\Images\PackageManager\folder_16_16.png" />
