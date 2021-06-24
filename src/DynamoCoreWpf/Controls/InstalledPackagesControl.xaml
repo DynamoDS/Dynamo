@@ -52,18 +52,18 @@
                                               IsExpanded="{Binding Path=Model.TypesVisibleInManager}"
                                               Style="{StaticResource InstalledPackagesExpanderStyle}">
                                 <Expander.Header>
-                                    <Grid x:Name="PackageGrid"  Width="400">
+                                    <Grid x:Name="PackageGrid"  >
                                         <DockPanel HorizontalAlignment="Stretch"
                                                        >
                                             <StackPanel HorizontalAlignment="Left"
                                                             Orientation="Horizontal"
-                                                            Margin="0,5,5,7">
+                                                            Margin="10,5,5,7">
                                                 <TextBlock Text="{Binding Path=Model.Name}"
                                                                ToolTip="{Binding Path=Model.Name}"
                                                                FontSize="11"
                                                                Width="150"
                                                                TextTrimming="CharacterEllipsis"
-                                                               Margin="0,0,10,0"
+                                                               Margin="15,0,10,0"
                                                                Foreground="#E5E5E5"></TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
                                                                MinWidth="50"
@@ -82,6 +82,7 @@
                                                                 Click="MoreButton_OnClick"
                                                                 Width="16"
                                                                 Height="16"
+                                                                Margin="0,0,10,0"
                                                                 Style="{StaticResource FlatButtonStyle}">
                                                     <Image Source="/DynamoCoreWpf;component/UI/Images/More.png"/>
                                                     <Button.ContextMenu>
@@ -162,18 +163,16 @@
                                                 Background="#3c3c3c"
                                                 >
 
-                                        <StackPanel Margin="10,5,5,10">
+                                        <StackPanel Margin="25,5,5,10">
 
                                             <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
                                                            FontSize="10"
+                                                       Padding="0,5,5,5"
                                                            Foreground="#E5E5E5"/>
                                                 <ItemsControl Name="LoadedCustomNodes"
                                                                   ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
-                                                                  BorderThickness="0"
-                                                                  Padding="0"
-                                                                  Margin="10,0,0,0"
                                                                   Background="Transparent">
 
                                                     <ItemsControl.ItemTemplate>
@@ -191,14 +190,11 @@
 
                                             <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
-                                                <Label Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
+                                                <Label Padding="0,5,5,5" Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
                                                            Foreground="#E5E5E5"
                                                            FontSize="10"></Label>
                                                 <ItemsControl Name="NodeLibraries"
                                                                       ItemsSource="{Binding Path=Model.LoadedAssemblies}"
-                                                                      BorderThickness="0"
-                                                                      Padding="0"
-                                                                      Margin="10,0,0,0"
                                                                       Background="Transparent">
 
                                                     <ItemsControl.ItemTemplate>
@@ -227,12 +223,10 @@
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
                                                            FontSize="10"
+                                                           Padding="0,5,5,5"
                                                            Foreground="#E5E5E5"></Label>
                                                 <ItemsControl Name="AddAssemblies"
                                                                   ItemsSource="{Binding Path=Model.LoadedAssemblies}"
-                                                                  BorderThickness="0"
-                                                                  Padding="0"
-                                                                  Margin="10,0,0,0"
                                                                   Background="Transparent">
 
                                                     <ItemsControl.ItemTemplate>
@@ -262,12 +256,10 @@
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
                                                            FontSize="10"
+                                                       Padding="0,5,5,5"
                                                            Foreground="#E5E5E5"></Label>
                                                 <ItemsControl Name="AdditionalFiles"
                                                                   ItemsSource="{Binding Path=Model.AdditionalFiles}"
-                                                                  BorderThickness="0"
-                                                                  Padding="0"
-                                                                  Margin="10,0,0,0"
                                                                   Background="Transparent">
 
                                                     <ItemsControl.ItemTemplate>
