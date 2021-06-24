@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Dynamo.GraphMetadata"
              xmlns:controls="clr-namespace:Dynamo.GraphMetadata.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+             xmlns:converters="clr-namespace:Dynamo.GraphMetadata.Converters"
              xmlns:vr="clr-namespace:Dynamo.GraphMetadata.ValidationRules"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
@@ -21,8 +21,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-            <convertes:UriToStringConverter x:Key="UriToStringConverter" />
-            <convertes:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
+            <converters:UriToStringConverter x:Key="UriToStringConverter" />
+            <converters:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
             <ControlTemplate x:Key="textboxErrorTemplate">
@@ -172,7 +172,7 @@
                                 <vr:UriValidationRule ValidatesOnTargetUpdated="True" />
                             </Binding.ValidationRules>
                             <Binding.Converter>
-                                <convertes:UriToStringConverter />
+                                <converters:UriToStringConverter />
                             </Binding.Converter>
                         </Binding>
                     </TextBox.Text>
