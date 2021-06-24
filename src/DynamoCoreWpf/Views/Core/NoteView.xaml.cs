@@ -184,8 +184,9 @@ namespace Dynamo.Nodes
                 
             e.Handled = true;
             var textBox = sender as TextBox;
-            var text = textBox.Text;
-            var caretIndex = textBox.CaretIndex;
+            
+            var text = SpaceToTabConversion(textBox.Text);
+            var caretIndex = textBox.CaretIndex + (text.Length - textBox.Text.Length);
 
             switch (e.Key)
             {
@@ -200,6 +201,8 @@ namespace Dynamo.Nodes
                     break;
             }
 
+            textBox.Text = TabToSpaceConversion(textBox.Text);
+
             textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
         }
 
@@ -209,6 +212,11 @@ namespace Dynamo.Nodes
         /// List of bullets characters to use in sequence of indentation
         /// </summary>
         private static readonly char[] BULLETS_CHARS = { '\u2022', '\u25E6', '\u2023' };
+
+        /// <summary>
+        /// Amount of spaces that represent a tab
+        /// </summary>
+        private static int TAB_SPACING_SIZE = 4;
 
         /// <summary>
         /// Handles text when user types Key.OemMinus (DASH)
@@ -397,6 +405,16 @@ namespace Dynamo.Nodes
         private string[] BreakTextIntoLines(string text)
         {
             return Regex.Split(text, "\r\n|\r|\n");
+        }
+
+        private string TabToSpaceConversion(string text)
+        {
+            return text.Replace("\t", new String(' ', TAB_SPACING_SIZE));
+        }
+
+        private string SpaceToTabConversion(string text)
+        {
+            return text.Replace(new String(' ', TAB_SPACING_SIZE), "\t");
         }
         #endregion
     }
