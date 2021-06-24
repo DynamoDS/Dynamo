@@ -604,10 +604,6 @@
                                   Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="showPMSearch" />
                         <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuManagePackage}"
-                                  Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Name="showPMInstalled" />
-                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewPackageMenuPublishPackage}"
                                   Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishNewPackage" />

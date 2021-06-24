@@ -123,36 +123,7 @@ namespace DynamoCoreWpfTests
         }
         #endregion
 
-        #region InstalledPackagesView
-
-        [Test]
-        public void CanOpenManagePackagesDialogAndWindowIsOwned()
-        {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
-
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-        }
-
-        //[Test, Ignore]
-        //public void CannotCreateDuplicateManagePackagesDialogs()
-        //{
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        Vm.OnRequestManagePackagesDialog(null, null);
-        //    }
-
-        //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-        //}
-
-        [Test]
-        public void ManagePackagesDialogClosesWithDynamo()
-        {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
-
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-            AssertWindowClosedWithDynamoView<InstalledPackagesView>();
-
-        }
+        #region InstalledPackagesControl
 
         [Test]
         [Description("User tries to download pacakges that might conflict with existing packages in std lib")]
@@ -416,8 +387,9 @@ namespace DynamoCoreWpfTests
             var packageFound = loader.LocalPackages.Any(x => x.Name == "Autodesk Steel Connections 2020");
             Assert.IsFalse(packageFound);
 
-            ViewModel.OnRequestManagePackagesDialog(null, null);
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            // TODO fix using new UI
+//            ViewModel.OnRequestManagePackagesDialog(null, null);
+//            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
         }
 
         #endregion

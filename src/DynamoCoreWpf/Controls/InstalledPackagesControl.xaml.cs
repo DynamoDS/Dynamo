@@ -38,12 +38,5 @@ namespace Dynamo.Wpf.Controls
             PackageViewModel pm = (PackageViewModel)but.DataContext;
             pm.UninstallCommand.Execute();
         }
-
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander exp = (Expander)sender;
-            PackageViewModel pm = (PackageViewModel)exp.DataContext;
-            pm.ToggleTypesVisibleInManagerCommand.Execute();
-        }
     }
 }

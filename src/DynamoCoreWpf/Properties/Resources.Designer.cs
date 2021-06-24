@@ -2784,24 +2784,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Contents.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContent {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See the types loaded by this package.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContentTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContentTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Root Directory.
         /// </summary>
         public static string InstalledPackageViewContextMenuShowRootDir {
@@ -3869,15 +3851,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageHostDependencyTooltip {
             get {
                 return ResourceManager.GetString("PackageHostDependencyTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Package Manager Website.
-        /// </summary>
-        public static string PackageManagerWebSiteButton {
-            get {
-                return ResourceManager.GetString("PackageManagerWebSiteButton", resourceCulture);
             }
         }
         
