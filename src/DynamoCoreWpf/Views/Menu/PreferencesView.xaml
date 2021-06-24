@@ -723,18 +723,19 @@
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
                                     <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
-                                            Padding="0,5,5,5"
+                                            Padding="5,5,5,5"
                                             FontSize="13"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                     <ComboBox Grid.Row="1" 
                                               Width="Auto"
+                                              Margin="0,5,0,5"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=PackagePathsForInstall}"
                                               SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
                                               ToolTip="{Binding Path=SelectedPackagePathForInstall}">
                                     </ComboBox>
-                                    <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
+                                    <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
                                         <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
                                     </ScrollViewer>
                                 </StackPanel>
