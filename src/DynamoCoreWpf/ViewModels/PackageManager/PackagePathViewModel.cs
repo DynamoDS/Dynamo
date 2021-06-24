@@ -10,6 +10,7 @@ using DelegateCommand = Dynamo.UI.Commands.DelegateCommand;
 using Dynamo.Models;
 using System.Windows.Data;
 using System.Globalization;
+using System.Linq;
 
 namespace Dynamo.ViewModels
 {
@@ -130,7 +131,9 @@ namespace Dynamo.ViewModels
 
         private bool CanDelete(int param)
         {
-            if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == param)
+            var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+            if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == param ||
+                    programDataPackagePathIndex == param)
             {
                 return false;
             }
@@ -150,7 +153,19 @@ namespace Dynamo.ViewModels
 
         private bool CanUpdate(int param)
         {
-            return RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) != param;
+            var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+
+            //editing builtin packages or programData package paths is not allowed.
+            return RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) != param &&
+                programDataPackagePathIndex != param;
+        }
+
+        private int GetIndexOfProgramDataPackagePath()
+        {
+            var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+            var programDataPackagePath = RootLocations.Where(x => x.StartsWith(programDataPath)).FirstOrDefault();
+            var programDataPackagePathIndex = RootLocations.IndexOf(programDataPackagePath);
+            return programDataPackagePathIndex;
         }
 
         // The position of the selected entry must always be the first parameter.

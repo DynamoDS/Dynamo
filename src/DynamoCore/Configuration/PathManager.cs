@@ -162,6 +162,7 @@ namespace Dynamo.Core
                 {
                     return TransformPath(preferences.SelectedPackagePathForInstall, PackagesDirectoryName);
                 }
+                //TODO just in case - check that these are not programdata or builtins
                 return TransformPath(RootDirectories.First(), PackagesDirectoryName);
             }
         }

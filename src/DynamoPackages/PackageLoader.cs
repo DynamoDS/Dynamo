@@ -81,6 +81,7 @@ namespace Dynamo.PackageManager
         /// The first entry is the standard library.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
+        [Obsolete("This property is redudant,please use the PathManager.DefaultPackagesDirectory property.")]
         public string DefaultPackagesDirectory
         {
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }

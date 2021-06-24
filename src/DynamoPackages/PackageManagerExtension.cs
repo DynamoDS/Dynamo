@@ -162,21 +162,23 @@ namespace Dynamo.PackageManager
             PackageUploadBuilder.SetEngineVersion(startupParams.DynamoVersion);
             var uploadBuilder = new PackageUploadBuilder(dirBuilder, new MutatingFileCompressor());
 
-            // Align the package install directory with the package download directory - 
+            // Align the package upload directory with the package download directory - 
             // either the one selected by the user or the default directory.
-            string packageInstallDirectory;
+            string packageUploadDirectory;
             if (startupParams.Preferences is PreferenceSettings preferences)
             {
-                packageInstallDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
+                //TODO remove use of packageLoader here and use PathManager instead!
+                
+                packageUploadDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
                     PackageLoader.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
             }
             else
             {
-                packageInstallDirectory = PackageLoader.DefaultPackagesDirectory;
+                packageUploadDirectory = PackageLoader.DefaultPackagesDirectory;
             }
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageInstallDirectory);
+                uploadBuilder, packageUploadDirectory);
 
             LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
