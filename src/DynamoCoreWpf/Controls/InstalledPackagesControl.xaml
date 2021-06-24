@@ -157,7 +157,7 @@
                                     </Grid>
                                 </Expander.Header>
                                 <Grid>
-                                    <Border BorderThickness="0,1,0,0"
+                                    <Border BorderThickness="0,0,0,0"
                                                 BorderBrush="#111"
                                                 Background="#3c3c3c"
                                                 >

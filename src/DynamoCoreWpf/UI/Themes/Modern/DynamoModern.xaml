@@ -2544,7 +2544,8 @@
                                 Grid.Row="1"
                                 BorderThickness="1,0,1,1"
                                 CornerRadius="0,0,4,4" >
-                            <ContentPresenter Margin="1,0,0,0" />
+                            <!--The Margin is necesary so that the Content is perfectly aligned with the Header-->
+                            <ContentPresenter Margin="1,-2,1,0" />
                         </Border>
                     </Grid>
                     <ControlTemplate.Triggers>
