@@ -84,6 +84,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            PackagePathView.Dispose();
             Close();
         }
 

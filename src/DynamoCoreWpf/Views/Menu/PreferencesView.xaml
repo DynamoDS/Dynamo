@@ -737,7 +737,7 @@
                                               ToolTip="{Binding Path=SelectedPackagePathForInstall}">
                                     </ComboBox>
                                     <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
-                                        <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                        <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
                                     </ScrollViewer>
                                 </StackPanel>
                             </Expander>
