@@ -86,34 +86,7 @@
                                                                 Style="{StaticResource FlatButtonStyle}">
                                                     <Image Source="/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
                                                     <Button.ContextMenu>
-                                                        <ContextMenu>
-                                                            <ContextMenu.Style>
-                                                                <Style TargetType="{x:Type ContextMenu}">
-                                                                    <Setter Property="SnapsToDevicePixels" Value="True" />
-                                                                    <Setter Property="OverridesDefaultStyle" Value="True" />
-                                                                    <Setter Property="Grid.IsSharedSizeScope" Value="true" />
-                                                                    <Setter Property="HasDropShadow" Value="True" />
-                                                                    <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
-                                                                    <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
-                                                                    <Setter Property="FontSize" Value="10"/>
-                                                                    <Setter Property="Template">
-                                                                        <Setter.Value>
-                                                                            <ControlTemplate TargetType="{x:Type ContextMenu}">
-                                                                                <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
-                                                                                    <ItemsPresenter />
-                                                                                </Border>
-                                                                            </ControlTemplate>
-                                                                        </Setter.Value>
-                                                                    </Setter>
-                                                                    <Setter Property="ItemsPanel">
-                                                                        <Setter.Value>
-                                                                            <ItemsPanelTemplate>
-                                                                                <StackPanel Margin="-25,0,0,0"/>
-                                                                            </ItemsPanelTemplate>
-                                                                        </Setter.Value>
-                                                                    </Setter>
-                                                                </Style>
-                                                            </ContextMenu.Style>
+                                                        <ContextMenu Style="{StaticResource ContextMenuNoLeftColumnStyle}">
                                                             <MenuItem Name="GoToRoot"
                                                                       Command="{Binding Path=GoToRootDirectoryCommand}"
                                                                       ToolTip="{x:Static p:Resources.InstalledPackageViewContextMenuShowRootDirTooltip}"
