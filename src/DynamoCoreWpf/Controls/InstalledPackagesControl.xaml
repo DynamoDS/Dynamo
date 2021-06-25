@@ -83,7 +83,7 @@
                                                                 Width="16"
                                                                 Height="16"
                                                                 Margin="0,0,10,0"
-                                                                Style="{StaticResource FlatButtonStyle}">
+                                                                Style="{StaticResource FlatIconButtonStyle}">
                                                     <Image Source="/DynamoCoreWpf;component/UI/Images/menu_16_16.png"/>
                                                     <Button.ContextMenu>
                                                         <ContextMenu Style="{StaticResource ContextMenuNoLeftColumnStyle}">
