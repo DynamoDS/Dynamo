@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
@@ -69,8 +70,8 @@ namespace Dynamo.Wpf.Views.PackageManager
                 {
                     // Navigate to initial folder.
                     SelectedPath = args.Path,
-                    Owner = System.Windows.Application.Current.Windows.OfType<PreferencesView>().SingleOrDefault(x => x.IsActive)
-            };
+                    Owner = Window.GetWindow(this)
+                };
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
