@@ -25,6 +25,7 @@ namespace Dynamo.Wpf.Controls
         {
             InitializeComponent();
         }
+
         private void MoreButton_OnClick(object sender, RoutedEventArgs e)
         {
             var button = (Button)sender;
@@ -32,18 +33,13 @@ namespace Dynamo.Wpf.Controls
             button.ContextMenu.IsOpen = true;
         }
 
-        private void UninstallPackage_OnClick(object sender, RoutedEventArgs e)
-        {
-            Button but = (Button)sender;
-            PackageViewModel pm = (PackageViewModel)but.DataContext;
-            pm.UninstallCommand.Execute();
-        }
-
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
             Expander exp = (Expander)sender;
-            PackageViewModel pm = (PackageViewModel)exp.DataContext;
-            pm.ToggleTypesVisibleInManagerCommand.Execute();
+            if (exp.DataContext is PackageViewModel pm)
+            {
+                pm.ToggleTypesVisibleInManagerCommand.Execute();
+            }
         }
     }
 }
