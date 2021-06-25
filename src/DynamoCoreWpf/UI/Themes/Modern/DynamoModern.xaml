@@ -2293,7 +2293,6 @@
     <SolidColorBrush x:Key="SemiTransparent" 
                              Color="#80000000" />
 
-
     <!--Usual button color for the Preferences Window-->
     <Color x:Key="PreferencesToogleCheckedColor" R="6" G="150" B="215" A="255"/>
     
@@ -2421,10 +2420,13 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d"/>
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c"/>
+
     <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
-                Background="#4D4D4D"
+                Background="{StaticResource ExpanderCaretToggleButtonBackground}"
                 BorderThickness="1" 
                 CornerRadius="1" >
             <Grid>
@@ -2457,11 +2459,11 @@
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="true">
                 <!--Sets the sign on the expander to a minus (-)-->
-                <Setter Property="Background" TargetName="Border" Value="#3C3C3C"/>
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"/>
                 <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
             </Trigger>
             <Trigger Property="IsChecked" Value="false">
-                <Setter Property="Background" TargetName="Border" Value="#4D4D4D"/>
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonBackground}"/>
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
@@ -2557,7 +2559,33 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <Style TargetType="{x:Type ContextMenu}" x:Key="ContextMenuNoLeftColumnStyle">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="-25,0,0,0"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="Expander" x:Key="MenuExpanderStyle">
         <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
