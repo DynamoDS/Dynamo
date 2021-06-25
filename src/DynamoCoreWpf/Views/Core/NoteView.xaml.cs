@@ -185,6 +185,9 @@ namespace Dynamo.Nodes
             e.Handled = true;
             var textBox = sender as TextBox;
             
+            // Remove selected text
+            textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
+            
             var text = SpaceToTabConversion(textBox.Text);
             var caretIndex = textBox.CaretIndex + (text.Length - textBox.Text.Length);
 
@@ -239,9 +242,12 @@ namespace Dynamo.Nodes
             var line = GetLineTextAtCaretsIndex(text, caretIndex);
             var caretAtLine = GetCaretIndexRelativeToLine(text, caretIndex);
 
-            // If there is text before caret dont convert it to bullet
+            // If there is text before caret
+            // or another bullet in line
+            // dont convert it to bullet
+            bool lineContainsBullet = BULLETS_CHARS.Where(b => line.Contains(b)).Any();
             var textBeforeCaret = line.Substring(0, caretAtLine);
-            if (!StringIsEmptyOrTab(textBeforeCaret))
+            if (!StringIsEmptyOrTab(textBeforeCaret)&& !lineContainsBullet)
             {
                 line = line.Insert(caretAtLine, "-");
                 return ReplaceLineOfText(text, lineNumber, line);
