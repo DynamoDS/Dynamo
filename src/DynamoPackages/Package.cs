@@ -491,7 +491,7 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                RaisePropertyChanged("EnableOldMarkedForUnistallState");
+                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
             }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
@@ -511,7 +511,7 @@ namespace Dynamo.PackageManager
             }
             else
             {
-                RaisePropertyChanged("EnableOldMarkedForUnistallState");
+                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
             }
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
