@@ -1,15 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
