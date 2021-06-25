@@ -34,8 +34,4 @@ namespace Dynamo.Wpf.Controls
         }
     }
 }
-            PackageViewModel pm = (PackageViewModel)exp.DataContext;
-            pm.ToggleTypesVisibleInManagerCommand.Execute();
-        }
-    }
-}
+
