@@ -27,7 +27,7 @@
         </Grid.RowDefinitions>
         <ScrollViewer  
             VerticalScrollBarVisibility="Auto" 
-            Background="#535353" 
+            Background="{StaticResource PreferencesWindowBackgroundColor}" 
             MaxHeight="290">
             <ItemsControl Name="SearchResultsListBox"
                               ItemsSource="{Binding Path=LocalPackages}"
@@ -43,9 +43,9 @@
                         That's why bind its' width to ItemsPresenter's width. 
                         ItemsPresenter is UI container for ListBox items.
                         ItemsPresenter can't be wider then visible part of the window.-->
-                        <Border BorderBrush="#535353"
+                        <Border BorderBrush="{StaticResource PreferencesWindowBackgroundColor}"
                                 BorderThickness="0,0,0,1"
-                                Background="#535353"
+                                Background="{StaticResource PreferencesWindowBackgroundColor}"
                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, 
                                                                             AncestorType={x:Type ItemsPresenter}}}">
                             <Expander Name="PackageHeader"
@@ -64,11 +64,11 @@
                                                                Width="150"
                                                                TextTrimming="CharacterEllipsis"
                                                                Margin="15,0,10,0"
-                                                               Foreground="#E5E5E5"></TextBlock>
+                                                               Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
                                                 <TextBlock Text="{Binding Path=Model.VersionName}"
                                                                MinWidth="50"
                                                                FontSize="11"
-                                                               Foreground="#E5E5E5"></TextBlock>
+                                                               Foreground="{StaticResource PreferencesWindowFontColor}"></TextBlock>
                                                 <TextBlock Text="{x:Static p:Resources.InstalledPackageViewPendingInstallButton}"
                                                                Visibility="{Binding Path=Model.EnableOldMarkedForUnistallState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                                                                FontSize="11"
@@ -93,13 +93,13 @@
                                                                     <Setter Property="OverridesDefaultStyle" Value="True" />
                                                                     <Setter Property="Grid.IsSharedSizeScope" Value="true" />
                                                                     <Setter Property="HasDropShadow" Value="True" />
-                                                                    <Setter Property="Foreground" Value="#f5f5f5"/>
-                                                                    <Setter Property="Background" Value="#3c3c3c"/>
+                                                                    <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+                                                                    <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
                                                                     <Setter Property="FontSize" Value="10"/>
                                                                     <Setter Property="Template">
                                                                         <Setter.Value>
                                                                             <ControlTemplate TargetType="{x:Type ContextMenu}">
-                                                                                <Border x:Name="Border" Background="#3c3c3c" BorderThickness="1">
+                                                                                <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
                                                                                     <ItemsPresenter />
                                                                                 </Border>
                                                                             </ControlTemplate>
@@ -159,8 +159,8 @@
                                 </Expander.Header>
                                 <Grid>
                                     <Border BorderThickness="0,0,0,0"
-                                                BorderBrush="#111"
-                                                Background="#3c3c3c"
+                                                BorderBrush="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"
+                                                Background="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"
                                                 >
 
                                         <StackPanel Margin="25,5,5,10">
@@ -170,7 +170,7 @@
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
                                                            FontSize="10"
                                                        Padding="0,5,5,5"
-                                                           Foreground="#E5E5E5"/>
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                 <ItemsControl Name="LoadedCustomNodes"
                                                                   ItemsSource="{Binding Path=Model.LoadedCustomNodes}"
                                                                   Background="Transparent">
@@ -178,7 +178,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=Name}"
-                                                                           Foreground="#E5E5E5"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
                                                                            FontSize="9"
                                                                            TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
@@ -191,7 +191,7 @@
                                             <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
 
                                                 <Label Padding="0,5,5,5" Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
-                                                           Foreground="#E5E5E5"
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
                                                            FontSize="10"></Label>
                                                 <ItemsControl Name="NodeLibraries"
                                                                       ItemsSource="{Binding Path=Model.LoadedAssemblies}"
@@ -201,7 +201,7 @@
                                                         <DataTemplate>
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
-                                                                           Foreground="#E5E5E5"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
                                                                            FontSize="9"
                                                                            TextTrimming="CharacterEllipsis" />
 
@@ -224,7 +224,7 @@
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
                                                            FontSize="10"
                                                            Padding="0,5,5,5"
-                                                           Foreground="#E5E5E5"></Label>
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AddAssemblies"
                                                                   ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                                   Background="Transparent">
@@ -233,7 +233,7 @@
                                                         <DataTemplate>
                                                             <TextBlock Name="Label"
                                                                            Text="{Binding Path=Name}"
-                                                                           Foreground="#E5E5E5"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
                                                                            FontSize="9"
                                                                            TextTrimming="CharacterEllipsis" />
 
@@ -257,7 +257,7 @@
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
                                                            FontSize="10"
                                                        Padding="0,5,5,5"
-                                                           Foreground="#E5E5E5"></Label>
+                                                           Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AdditionalFiles"
                                                                   ItemsSource="{Binding Path=Model.AdditionalFiles}"
                                                                   Background="Transparent">
@@ -265,7 +265,7 @@
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate>
                                                             <TextBlock Text="{Binding Path=RelativePath}"
-                                                                           Foreground="#E5E5E5"
+                                                                           Foreground="{StaticResource PreferencesWindowFontColor}"
                                                                            FontSize="9"
                                                                            TextTrimming="CharacterEllipsis" />
                                                         </DataTemplate>
@@ -284,12 +284,6 @@
 
             </ItemsControl>
         </ScrollViewer>
-        <StackPanel Orientation="Horizontal"
-                    FlowDirection="RightToLeft"
-                    Grid.Row="1"
-                    Background="#535353">
-        </StackPanel>
-
     </Grid>
 
 </UserControl>
