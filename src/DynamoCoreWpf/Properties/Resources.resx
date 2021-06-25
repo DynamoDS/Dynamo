@@ -552,6 +552,10 @@
     <value>Number Format</value>
     <comment>Setting menu | Number format</comment>
   </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Selected package path for download</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory | Selected package path for download</comment>
+  </data>
   <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
     <value>Square Centimeter</value>
     <comment>Setting menu | Square centimeter</comment>
@@ -2264,6 +2268,10 @@ Uninstall the following packages: {0}?</value>
     <value>Default Python Engine</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>New Package Download Directory</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
@@ -2419,6 +2427,12 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
+  </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Add Paths</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Package/Library Search Paths</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>

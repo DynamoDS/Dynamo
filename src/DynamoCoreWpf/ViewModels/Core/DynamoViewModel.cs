@@ -103,11 +103,6 @@ namespace Dynamo.ViewModels
             {
                 return preferencesViewModel;
             }
-            set
-            {
-                preferencesViewModel = value;
-                RaisePropertyChanged(nameof(PreferencesViewModel));
-            }
         }
 
         public Point TransformOrigin
@@ -1725,21 +1720,6 @@ namespace Dynamo.ViewModels
         internal bool CanShowPackageManagerSearch(object parameters)
         {
             return true;
-        }
-
-        private void ShowInstalledPackages(object parameters)
-        {
-            OnRequestManagePackagesDialog(this, EventArgs.Empty);
-        }
-
-        private bool CanShowInstalledPackages(object parameters)
-        {
-            return true;
-        }
-
-        private void ManagePackagePaths(object parameters)
-        {
-            OnRequestPackagePathsDialog(this, EventArgs.Empty);
         }
 
         /// <summary>
