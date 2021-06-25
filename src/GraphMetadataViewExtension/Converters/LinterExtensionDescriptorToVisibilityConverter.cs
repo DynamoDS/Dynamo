@@ -9,7 +9,7 @@ namespace Dynamo.GraphMetadata.Converters
     /// <summary>
     /// Converter to control visibility based on a LinterExtensionDescriptor
     /// </summary>
-    public class LinterExtensionDescriptorToVisibilityConverter : IValueConverter
+    internal class LinterExtensionDescriptorToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
