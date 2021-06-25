@@ -234,22 +234,22 @@
                         Orientation="Horizontal">
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
-                        MinWidth="120"
-                        Margin="10,5"
+                        MinWidth="130"
+                        Margin="15,5,3,5"
                         HorizontalAlignment="Right"
                         Command="{Binding Path=PublishLocallyCommand}"
                         Content="{x:Static p:Resources.PublishPackageLocally}"></Button>
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
-                        MinWidth="117"
-                        Margin="10,5"
+                        MinWidth="130"
+                        Margin="5,5"
                         HorizontalAlignment="Right"
                         Command="{Binding Path=SubmitCommand}"
                         Content="{x:Static p:Resources.PublishPackage}"></Button>
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
-                        MinWidth="115"
-                        Margin="10,5"
+                        MinWidth="130"
+                        Margin="3,5"
                         HorizontalAlignment="Right"
                         Click="OnMoreInfoClicked"
                         Content="Info"></Button>
