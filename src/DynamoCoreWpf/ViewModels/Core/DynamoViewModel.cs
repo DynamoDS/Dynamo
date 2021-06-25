@@ -156,7 +156,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public int LinterIssuesCount
         {
-            get => Model.LinterManager.RuleEvaluationResults.Count;
+            get => Model.LinterManager?.RuleEvaluationResults.Count ?? 0;
         }
 
         public double WorkspaceActualHeight { get; set; }
@@ -670,7 +670,10 @@ namespace Dynamo.ViewModels
            
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
-            model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+            }
              
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
@@ -789,6 +792,11 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+            }
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
