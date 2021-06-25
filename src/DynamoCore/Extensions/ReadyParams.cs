@@ -31,7 +31,7 @@ namespace Dynamo.Extensions
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
-                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
+                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings, dynamoModel.LinterManager);
         }
 
         /// <summary>
@@ -75,17 +75,6 @@ namespace Dynamo.Extensions
         public virtual ICommandExecutive CommandExecutive
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
-        }
-
-        /// <summary>
-        /// Returns Sessions Linter Manager
-        /// </summary>
-        public LinterManager LinterManager
-        {
-            get
-            {
-                return dynamoModel.LinterManager;
-            }
         }
         
         /// <summary>

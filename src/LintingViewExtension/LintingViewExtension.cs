@@ -22,9 +22,6 @@ namespace Dynamo.LintingViewExtension
         private MenuItem linterMenuItem;
         private LinterViewModel linterViewModel;
         private LinterView linterView;
-        private DynamoView dynamoView;
-        private DynamoViewModel dynamoViewModel;
-
 
         public override string UniqueId { get { return EXTENSION_GUID; } }
 
