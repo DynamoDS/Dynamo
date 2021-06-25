@@ -38,10 +38,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Open,
                 Categories.Preferences);
 
-            //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
-            this.Owner = Application.Current.MainWindow;
-            var viewModelTemp = DataContext as PreferencesViewModel;
-            if (viewModelTemp != null)
+            if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 viewModel = viewModelTemp;
             }
