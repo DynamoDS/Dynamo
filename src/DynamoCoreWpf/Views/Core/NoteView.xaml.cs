@@ -219,6 +219,11 @@ namespace Dynamo.Nodes
         private static int TAB_SPACING_SIZE = 4;
 
         /// <summary>
+        /// Amount of spaces inserted after bullet
+        /// </summary>
+        private static int SPACING_AFTER_BULLET = 2;
+
+        /// <summary>
         /// Handles text when user types Key.OemMinus (DASH)
         /// It converts the DASH into its appropriate BULLET Character
         /// by counting the amount of TAB spaces before the bullet.  
@@ -244,7 +249,8 @@ namespace Dynamo.Nodes
 
             var tabsBeforeCaret = textBeforeCaret.Count(t => t == '\t');
             var bulletIndex = tabsBeforeCaret % BULLETS_CHARS.Length;
-            line = line.Insert(caretAtLine, BULLETS_CHARS[bulletIndex]+" ");
+            var bulletCharAndRightSpacing = BULLETS_CHARS[bulletIndex] + new String(' ', SPACING_AFTER_BULLET);
+            line = line.Insert(caretAtLine, bulletCharAndRightSpacing);
 
             return ReplaceLineOfText(text, lineNumber, line);
         }
@@ -266,10 +272,11 @@ namespace Dynamo.Nodes
 
             // If TAB was pressed just after a bullet insert it before the bullet
             // so that you can easily indent
-            var caretIsRightAfterBullet = IsCaretRightAfterBullet(line, caretAtLine);
+            var distanceFromBulletToCaret = SPACING_AFTER_BULLET + 1;
+            var caretIsRightAfterBullet = IsCaretRightAfterBullet(line, caretAtLine, distanceFromBulletToCaret);
             if (caretIsRightAfterBullet)
             {
-                line = line.Insert(caretAtLine - 2, "\t");
+                line = line.Insert(caretAtLine - distanceFromBulletToCaret, "\t");
             }
                 
             else
@@ -316,7 +323,7 @@ namespace Dynamo.Nodes
                 text = text.Insert(caretIndex, "\t");
                 caretIndex++;
             }
-            return text.Insert(caretIndex, bulletsInLine.First()+" ");
+            return text.Insert(caretIndex, bulletsInLine.First()+ new String(' ', SPACING_AFTER_BULLET));
         }
 
         private bool StringIsEmptyOrTab(string text)
@@ -324,15 +331,16 @@ namespace Dynamo.Nodes
             return !text.Any(c => !(c == ' ' || c == '\t'));
         }
 
-        private bool IsCaretRightAfterBullet(string text, int caretIndex)
+        private bool IsCaretRightAfterBullet(string text, int caretIndex, int distanceFromBulletToCaret)
         {
-            if (caretIndex == 0 || caretIndex ==1 )
+           
+            if (caretIndex < distanceFromBulletToCaret)
             {
                 return false;
             }
             // We need to get the character 2 indices before the caretIndex 
             // because when we place the bullet we add a space as well for indentation
-            return BULLETS_CHARS.Contains(text[caretIndex - 2]);
+            return BULLETS_CHARS.Contains(text[caretIndex - distanceFromBulletToCaret]);
         }
 
         private bool IsCaretBeforeABullet(string text, int caretIndex)
