@@ -26,6 +26,10 @@ https://opensource.org/licenses/lgpl-2.1.php
 ### CEFSharp
 https://github.com/cefsharp/CefSharp/blob/master/LICENSE
 
+### Command Line Parser
+https://github.com/commandlineparser/commandline
+  (MIT license)
+
 ### CSharpAnalytics
 https://github.com/AttackPattern/CSharpAnalytics
 http://www.apache.org/licenses/LICENSE-2.0
