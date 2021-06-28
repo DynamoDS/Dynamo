@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
              xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
-             xmlns:converters="clr-namespace:Dynamo.UI.Controls.Converters"
+             xmlns:converters="clr-namespace:Dynamo.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              d:DataContext="{d:DesignInstance Type=viewmodels:DynamoViewModel}"
              mc:Ignorable="d" 
