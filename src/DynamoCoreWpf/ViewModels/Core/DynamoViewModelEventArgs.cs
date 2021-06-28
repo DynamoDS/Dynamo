@@ -187,7 +187,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Name of the package this node belongs to
         /// </summary>
-        public string PackageName => Category.Split('.').FirstOrDefault();
+        //public string PackageName => Category.Split('.').FirstOrDefault();
+        public string PackageName { get; private set; }
 
         /// <summary>
         /// Collection of the nodes input names.
@@ -216,6 +217,8 @@ namespace Dynamo.ViewModels
         {
             if (model == null) throw new ArgumentNullException(nameof(model));
 
+            var packageInfo = dynamoViewModel.Model.CurrentWorkspace.GetNodePackage(model);
+            PackageName = packageInfo?.Name ?? string.Empty;
             MinimumQualifiedName = GetMinimumQualifiedName(model, dynamoViewModel);
             Type = model.Name;
             Description = model.Description;
@@ -288,12 +291,10 @@ namespace Dynamo.ViewModels
                     var type = node.GetType();
                     if (NodeModelHasCollisions(node.Name, viewModel))
                     {
-                        return $"{type.FullName}.{node.Name}({GetInputNames(nodeModel)})";
+                        return $"{type.FullName}({GetInputNames(nodeModel)})";
                     }
                     
-                    return $"{type.FullName}.{node.Name}";
-
-
+                    return type.FullName;
 
                 default:
                     return string.Empty;

@@ -114,8 +114,10 @@ namespace NodeDocumentationMarkdownGenerator
                 }
                 else
                 {
-                    nodeNamespace = entry.CreationName;
-                    fileName = $"{nodeNamespace}.{nodeName}";
+                    nodeNamespace = entry.CreationName
+                        .Remove(entry.CreationName.LastIndexOf(nodeName) - 1, nodeName.Length + 1);
+
+                    fileName = entry.CreationName;
                 }
 
                 info = new MdFileInfo(nodeName, nodeNamespace, category, entry.Assembly, fileName);

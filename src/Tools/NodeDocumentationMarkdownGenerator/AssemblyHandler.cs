@@ -258,6 +258,7 @@ namespace NodeDocumentationMarkdownGenerator
             {
                 typesInAsm = asm.GetTypes();
             }
+            // see https://docs.microsoft.com/en-us/dotnet/api/system.reflection.assembly.gettypes?view=netframework-4.8#remarks
             catch (ReflectionTypeLoadException ex)
             {
                 typesInAsm = ex.Types;

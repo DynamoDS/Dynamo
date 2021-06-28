@@ -1797,7 +1797,12 @@ namespace Dynamo.Graph.Workspaces
             nodePackageDictionary.Remove(nodeID);
         }
 
-        private PackageInfo GetNodePackage(NodeModel node)
+        /// <summary>
+        /// Gets the PackageInfo from a node in the current WorkspaceModel
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        internal PackageInfo GetNodePackage(NodeModel node)
         {
             // Collect package dependencies for custom node
             if (node is Function)
