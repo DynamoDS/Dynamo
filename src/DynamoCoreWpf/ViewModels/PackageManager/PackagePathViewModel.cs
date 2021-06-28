@@ -177,6 +177,8 @@ namespace Dynamo.ViewModels
             var tempPath = RootLocations[x];
             RootLocations[x] = RootLocations[y];
             RootLocations[y] = tempPath;
+
+            RaiseCanExecuteChanged();
         }
 
         private void InsertPath()

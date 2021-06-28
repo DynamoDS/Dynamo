@@ -29,14 +29,9 @@ namespace Dynamo.Wpf.Views.PackageManager
             DataContextChanged += PackagePathView_DataContextChanged;
         }
 
-        internal PackagePathView(PackagePathViewModel viewModel)
+        internal void Dispose()
         {
-            if (viewModel == null)
-                throw new ArgumentNullException("viewModel");
-
-            InitializeComponent();
-            this.DataContext = viewModel;
-            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
 
         #endregion

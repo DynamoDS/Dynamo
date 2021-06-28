@@ -7,7 +7,7 @@ using System.Windows.Data;
 namespace Dynamo.GraphMetadata.Converters
 {
     [ValueConversion(typeof(Boolean), typeof(Visibility))]
-    public class BooleansToVisibilityConverter : IMultiValueConverter
+    internal class BooleansToVisibilityConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

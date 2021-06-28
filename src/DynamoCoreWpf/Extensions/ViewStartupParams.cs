@@ -24,7 +24,8 @@ namespace Dynamo.Wpf.Extensions
                 new ExtensionLibraryLoader(dynamoVM.Model), 
 				dynamoVM.Model.CustomNodeManager,
                 dynamoVM.Model.GetType().Assembly.GetName().Version,
-                dynamoVM.Model.PreferenceSettings)
+                dynamoVM.Model.PreferenceSettings,
+                dynamoVM.Model.LinterManager)
         {
             dynamoViewModel = dynamoVM;
         }
