@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:Dynamo.GraphMetadata"
              xmlns:controls="clr-namespace:Dynamo.GraphMetadata.Controls"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
-             xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+             xmlns:converters="clr-namespace:Dynamo.GraphMetadata.Converters"
              xmlns:vr="clr-namespace:Dynamo.GraphMetadata.ValidationRules"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              mc:Ignorable="d" 
@@ -21,7 +21,8 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
 
-            <convertes:UriToStringConverter x:Key="UriToStringConverter" />
+            <converters:UriToStringConverter x:Key="UriToStringConverter" />
+            <converters:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
             <ControlTemplate x:Key="textboxErrorTemplate">
@@ -133,6 +134,7 @@
     <Grid Margin="10px, 10px">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical"
@@ -170,7 +172,7 @@
                                 <vr:UriValidationRule ValidatesOnTargetUpdated="True" />
                             </Binding.ValidationRules>
                             <Binding.Converter>
-                                <convertes:UriToStringConverter />
+                                <converters:UriToStringConverter />
                             </Binding.Converter>
                         </Binding>
                     </TextBox.Text>
@@ -193,11 +195,44 @@
                     </TextBox.Style>
                 </TextBox>
             </HeaderedContentControl>
-            
-            <Separator Background="{StaticResource FilterIconColor}" Margin="0,20,0,20"/>
+
+            <Separator Background="{StaticResource FilterIconColor}"
+                       Margin="0,20,0,20" />
         </StackPanel>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1"
+              Margin="0, 0px"
+              Visibility="{Binding CurrentLinter, Converter={StaticResource LinterExtensionDescriptorToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <HeaderedContentControl Grid.Row="0" Grid.Column="0" Header="Graph Type">
+                <TextBlock Text="{Binding CurrentLinter.Name, Mode=OneWay, FallbackValue='Current Linter'}" />
+            </HeaderedContentControl>
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    BorderThickness="0"
+                    Command="{Binding OpenGraphStatusCommand}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Width="16px"
+                               Height="16px"
+                               Source="/GraphMetadataViewExtension;component/Resources/link_48px.png" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <Separator Grid.Row="1" Grid.ColumnSpan="2" 
+                       Background="{StaticResource FilterIconColor}"
+                       Margin="0,20,0,20" />
+        </Grid>
+
+        <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
