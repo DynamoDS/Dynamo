@@ -2458,7 +2458,7 @@
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="true">
-                <!--Sets the sign on the expander to a minus (-)-->
+                <!--Sets the icon on the expander to caret up (-)-->
                 <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"/>
                 <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
             </Trigger>
