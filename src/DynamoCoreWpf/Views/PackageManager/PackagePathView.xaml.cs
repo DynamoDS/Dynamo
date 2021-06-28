@@ -1,14 +1,9 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Dynamo.UI;
 using Dynamo.ViewModels;
 using DynamoUtilities;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Dynamo.Wpf.Views.PackageManager
 {
@@ -34,14 +29,9 @@ namespace Dynamo.Wpf.Views.PackageManager
             DataContextChanged += PackagePathView_DataContextChanged;
         }
 
-        internal PackagePathView(PackagePathViewModel viewModel)
+        internal void Dispose()
         {
-            if (viewModel == null)
-                throw new ArgumentNullException("viewModel");
-
-            InitializeComponent();
-            this.DataContext = viewModel;
-            viewModel.RequestShowFileDialog += OnRequestShowFileDialog;
+            ViewModel.RequestShowFileDialog -= OnRequestShowFileDialog;
         }
 
         #endregion
@@ -69,8 +59,8 @@ namespace Dynamo.Wpf.Views.PackageManager
                 {
                     // Navigate to initial folder.
                     SelectedPath = args.Path,
-                    Owner = System.Windows.Application.Current.Windows.OfType<PreferencesView>().SingleOrDefault(x => x.IsActive)
-            };
+                    Owner = Window.GetWindow(this)
+                };
 
                 if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
