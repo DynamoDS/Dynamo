@@ -4442,9 +4442,9 @@ namespace Dynamo.Wpf.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Issues found.
         /// </summary>
-        public static string PersistenceVisualStatusOfLineterIssues {
+        public static string PersistentVisualStatusOfLinterIssues {
             get {
-                return ResourceManager.GetString("PersistenceVisualStatusOfLineterIssues", resourceCulture);
+                return ResourceManager.GetString("PersistentVisualStatusOfLinterIssues", resourceCulture);
             }
         }
         

@@ -789,7 +789,7 @@ namespace Dynamo.ViewModels
             model.WorkspaceRemoved -= WorkspaceRemoved;
             if (model.LinterManager != null)
             {
-                model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+                model.LinterManager.RuleEvaluationResults.CollectionChanged -= OnRuleEvaluationResultsCollectionChanged;
             }
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;

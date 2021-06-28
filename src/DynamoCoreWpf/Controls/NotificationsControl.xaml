@@ -74,7 +74,7 @@
             <TextBlock Margin="10,0"
                        Foreground="White">
                 <Run Text="{Binding LinterIssuesCount, Mode=OneWay}" />
-                <Run Text="{x:Static p:Resources.PersistenceVisualStatusOfLineterIssues}" />
+                <Run Text="{x:Static p:Resources.PersistentVisualStatusOfLinterIssues}" />
             </TextBlock>
         </StackPanel>
 

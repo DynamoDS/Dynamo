@@ -13,7 +13,7 @@ namespace Dynamo.UI.Controls.Converters
     /// Converts an integer (linter issues count) to a visibility state
     /// </summary>
     [ValueConversion(typeof(int), typeof(Visibility))]
-    public class LinterIssueCountToVisibilityConverter : IValueConverter
+    internal class LinterIssueCountToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
