@@ -16,6 +16,7 @@ using Greg.Responses;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
+using Dynamo.Wpf.Views;
 
 
 namespace DynamoCoreWpfTests
@@ -124,9 +125,36 @@ namespace DynamoCoreWpfTests
         #endregion
 
         #region InstalledPackagesControl
+        
+        [Test]
+        public void CanOpenManagePackagesDialogAndWindowIsOwned()
+        {
+            var preferencesWindow = new PreferencesView(View)
+            {
+               WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
+        }
 
         [Test]
-        [Description("User tries to download pacakges that might conflict with existing packages in std lib")]
+        public void ManagePackagesDialogClosesWithDynamo()
+        {
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
+            AssertWindowClosedWithDynamoView<PreferencesView>();
+        }
+
+        [Test]
+        [Description("User tries to download packages that might conflict with existing packages in std lib")]
         public void PackageManagerConflictsWithStdLib()
         {
             var pkgLoader = GetPackageLoader();
@@ -387,9 +415,13 @@ namespace DynamoCoreWpfTests
             var packageFound = loader.LocalPackages.Any(x => x.Name == "Autodesk Steel Connections 2020");
             Assert.IsFalse(packageFound);
 
-            // TODO fix using new UI
-//            ViewModel.OnRequestManagePackagesDialog(null, null);
-//            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
         }
 
         #endregion
