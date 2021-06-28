@@ -250,5 +250,15 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Model.OnRequestPythonReset("CPython3");
         }
 
+        private IDisposable cmd;
+        private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
+        {
+            cmd = Analytics.TrackCommandEvent("ManagePackage");
+        }
+
+        private void InstalledPackagesExpander_OnCollapsed(object sender, RoutedEventArgs e)
+        {
+            cmd.Dispose();
+        }
     }
 }

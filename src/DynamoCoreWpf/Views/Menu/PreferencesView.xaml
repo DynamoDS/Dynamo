@@ -744,11 +744,13 @@
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->
-                            <Expander x:Name="InstalledPackagesExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                          IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
-                                          Grid.Row="1"
-                                          Header="{x:Static p:Resources.InstalledPackageViewTitle}">
+                            <Expander x:Name="InstalledPackagesExpander"
+                                      Expanded="InstalledPackagesExpander_OnExpanded"
+                                      Collapsed="InstalledPackagesExpander_OnCollapsed"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel
                                     Orientation="Vertical" Margin="0,6,0,0">
                                     <wpfControls:InstalledPackagesControl Height="Auto"/>
