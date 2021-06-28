@@ -31,6 +31,7 @@
                     <Button
                          Grid.Column="0"
                         Margin="7,7,3,7"
+                         x:Name="MovePathUpButton"
                               Command="{Binding Path=DataContext.MovePathUpCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -43,6 +44,7 @@
                     <Button
                          Grid.Column="1"
                          Margin="3,7,7,7"
+                         x:Name="MovePathDownButton"
                               Command="{Binding Path=DataContext.MovePathDownCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -64,6 +66,7 @@
                     <Button
                          Grid.Column="3"
                          Margin="7,7,7,7"
+                         x:Name="UpdatePathButton"
                         Command="{Binding Path=DataContext.UpdatePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
@@ -73,7 +76,7 @@
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/folder_16_16.png" Width="15" Height="15"></Image>
                     </Button>
                     <!--the delete path button-->
-                    <Button
+                    <Button x:Name="DeletePathButton"
                         Grid.Column="4"
                         Margin="7,7,7,7"
                         Command="{Binding Path=DataContext.DeletePathCommand,
