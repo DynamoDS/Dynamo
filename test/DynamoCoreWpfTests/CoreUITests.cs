@@ -921,7 +921,7 @@ namespace DynamoCoreWpfTests
 
             var startupParams = new StartupParams(Model.AuthenticationManager.AuthProvider,
                 Model.PathManager, new ExtensionLibraryLoader(Model), Model.CustomNodeManager,
-                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings);
+                Model.GetType().Assembly.GetName().Version, Model.PreferenceSettings, Model.LinterManager);
 
             mockLinter.Object.InitializeBase(Model.LinterManager);
             mockLinter.Object.Startup(startupParams);

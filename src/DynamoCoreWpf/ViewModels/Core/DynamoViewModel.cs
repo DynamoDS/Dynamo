@@ -754,12 +754,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal event EventHandler RequestOpenLinterView;
-        internal void OnRequestOpenLinterView()
-        {
-            RequestOpenLinterView?.Invoke(this, EventArgs.Empty);
-        }
-
         #region Event handler destroy/create
 
         protected virtual void UnsubscribeAllEvents()
@@ -1939,7 +1933,7 @@ namespace Dynamo.ViewModels
             if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
                 args.ClickedButtonId == 0)
             {
-                OnRequestOpenLinterView();
+                OnViewExtensionOpenRequest("Graph Status");
                 return false;
             }
 
