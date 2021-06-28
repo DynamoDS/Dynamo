@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -25,12 +26,12 @@ namespace Dynamo.Wpf.Views
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
-        public PreferencesView(DynamoViewModel dynamoViewModel)
+        public PreferencesView(DynamoView dynamoView)
         {
-            SetupPreferencesViewModel(dynamoViewModel);
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;
+            SetupPreferencesViewModel(dynViewModel);
 
-            DataContext = dynamoViewModel.PreferencesViewModel;
-            dynViewModel = dynamoViewModel;
+            DataContext = dynViewModel.PreferencesViewModel;
 
             
             InitializeComponent();
@@ -38,6 +39,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Open,
                 Categories.Preferences);
 
+            Owner = dynamoView;
             if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 viewModel = viewModelTemp;
@@ -84,6 +86,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            PackagePathView.Dispose();
             Close();
         }
 

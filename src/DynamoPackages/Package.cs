@@ -489,6 +489,10 @@ namespace Dynamo.PackageManager
             {
                 PackageState = PackageStates.PendingUnload;
             }
+            else
+            {
+                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
+            }
 
             if (!prefs.PackageDirectoriesToUninstall.Contains(RootDirectory))
             {
@@ -504,6 +508,10 @@ namespace Dynamo.PackageManager
                 // Should this be a "Loaded state" or something else ?
                 // Or maybe state should only be set when trying to Load the package...not here.
                 PackageState = PackageStates.Loaded;
+            }
+            else
+            {
+                RaisePropertyChanged(nameof(EnableOldMarkedForUnistallState));
             }
             prefs.PackageDirectoriesToUninstall.RemoveAll(x => x.Equals(RootDirectory));
         }
