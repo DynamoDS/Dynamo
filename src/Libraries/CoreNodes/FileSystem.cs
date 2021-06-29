@@ -105,7 +105,7 @@ namespace DSCore.IO
         {
             try
             {
-                if (FileExists(destinationPath) || DirectoryExists(destinationPath))
+                if (Path.GetDirectoryName(destinationPath) != string.Empty && FileExtension(destinationPath) != string.Empty) 
                 {
                     file.CopyTo(destinationPath, overwrite);
                 }
