@@ -12,6 +12,7 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using DynCmd = Dynamo.Models.DynamoModel;
+using ProtoCore.Utils;
 
 namespace Dynamo.Nodes
 {
@@ -203,7 +204,7 @@ namespace Dynamo.Nodes
             // Remove selected text
             textBox.Text = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength);
             
-            var text = SpaceToTabConversion(textBox.Text);
+            var text = StringUtils.SpaceToTabConversion(textBox.Text, TAB_SPACING_SIZE);
             var caretIndex = textBox.CaretIndex + (text.Length - textBox.Text.Length);
 
             switch (e.Key)
@@ -219,7 +220,7 @@ namespace Dynamo.Nodes
                     break;
             }
 
-            textBox.Text = TabToSpaceConversion(textBox.Text);
+            textBox.Text = StringUtils.TabToSpaceConversion(textBox.Text, TAB_SPACING_SIZE);
 
             textBox.CaretIndex = caretIndex + (textBox.Text.Length - text.Length);
         }
@@ -262,10 +263,10 @@ namespace Dynamo.Nodes
             // dont convert it to bullet
             bool lineContainsBullet = BULLETS_CHARS.Where(b => line.Contains(b)).Any();
             var textBeforeCaret = line.Substring(0, caretAtLine);
-            if (!IsStringSpaceswithTabs(textBeforeCaret)&& !lineContainsBullet)
+            if (!StringUtils.IsStringSpacesWithTabs(textBeforeCaret)&& !lineContainsBullet)
             {
                 line = line.Insert(caretAtLine, "-");
-                return ReplaceLineOfText(text, lineNumber, line);
+                return StringUtils.ReplaceLineOfText(text, lineNumber, line);
             }
 
             var tabsBeforeCaret = textBeforeCaret.Count(t => t == '\t');
@@ -273,7 +274,7 @@ namespace Dynamo.Nodes
             var bulletCharAndRightSpacing = BULLETS_CHARS[bulletIndex] + new String(' ', SPACING_AFTER_BULLET);
             line = line.Insert(caretAtLine, bulletCharAndRightSpacing);
 
-            return ReplaceLineOfText(text, lineNumber, line);
+            return StringUtils.ReplaceLineOfText(text, lineNumber, line);
         }
 
         /// <summary>
@@ -312,7 +313,7 @@ namespace Dynamo.Nodes
                 line = UpdateBulletAccordingToIndentation(line);
             }
                 
-            return ReplaceLineOfText(text, lineNumber, line);
+            return StringUtils.ReplaceLineOfText(text, lineNumber, line);
         }
 
         /// <summary>
@@ -347,11 +348,6 @@ namespace Dynamo.Nodes
             return text.Insert(caretIndex, bulletsInLine.First()+ new String(' ', SPACING_AFTER_BULLET));
         }
 
-        private bool IsStringSpaceswithTabs(string text)
-        {
-            return String.IsNullOrWhiteSpace(text) || text.All(c => c == ' ' || c == '\t');
-        }
-
         private bool IsCaretRightAfterBullet(string text, int caretIndex, int distanceFromBulletToCaret)
         {
            
@@ -378,7 +374,7 @@ namespace Dynamo.Nodes
             // The caret index relative to the caret line will be equal to
             // the last line's length
             var textUntillCaretIndex = text.Substring(0, caretIndex);
-            var textInLines = BreakTextIntoLines(textUntillCaretIndex);
+            var textInLines = StringUtils.BreakTextIntoLines(textUntillCaretIndex);
             var caretRelativeToLine = textInLines.Last().Length;
             return caretRelativeToLine;
         }
@@ -386,23 +382,15 @@ namespace Dynamo.Nodes
         private int GetLineNumberAtCaretsIndex(string text, int caretIndex)
         {
             var textBeforeCaret = text.Substring(0, caretIndex);
-            var textInLines = BreakTextIntoLines(textBeforeCaret);
+            var textInLines = StringUtils.BreakTextIntoLines(textBeforeCaret);
             return textInLines.Length-1;
         }
         private string GetLineTextAtCaretsIndex(string text, int caretIndex)
         {
-            var textInLines = BreakTextIntoLines(text);
+            var textInLines = StringUtils.BreakTextIntoLines(text);
             var caretsLineIndex = GetLineNumberAtCaretsIndex(text, caretIndex);
             return textInLines[caretsLineIndex];
         }
-
-        private string ReplaceLineOfText(string text, int lineNumber, string newLine)
-        {
-            var textInLines = BreakTextIntoLines(text);
-            textInLines[lineNumber] = newLine;
-            return String.Join("\n", textInLines);
-        }
-
         private string UpdateBulletAccordingToIndentation(string text, bool reverse = false)
         {
             for (int i = 0; i < BULLETS_CHARS.Length; i++)
@@ -423,28 +411,6 @@ namespace Dynamo.Nodes
             return text;
         }
 
-        /// <summary>
-        /// Following suggestions from stackoverflow,
-        /// A reliable method for breaking text into lines
-        /// using Regex is used.
-        /// https://stackoverflow.com/questions/1508203/best-way-to-split-string-into-lines
-        /// </summary>
-        /// <param name="text"> text to break into lines</param>
-        /// <returns> text lines </returns>
-        private string[] BreakTextIntoLines(string text)
-        {
-            return Regex.Split(text, "\r\n|\r|\n");
-        }
-
-        private string TabToSpaceConversion(string text)
-        {
-            return text.Replace("\t", new String(' ', TAB_SPACING_SIZE));
-        }
-
-        private string SpaceToTabConversion(string text)
-        {
-            return text.Replace(new String(' ', TAB_SPACING_SIZE), "\t");
-        }
         #endregion
     }
 }
