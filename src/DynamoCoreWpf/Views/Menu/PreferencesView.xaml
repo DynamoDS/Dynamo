@@ -19,7 +19,8 @@
         mc:Ignorable="d" 
         Height="474" 
         Width="650"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Closed="PreferencesView_OnClosed">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>

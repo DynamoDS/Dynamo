@@ -258,7 +258,12 @@ namespace Dynamo.Wpf.Views
 
         private void InstalledPackagesExpander_OnCollapsed(object sender, RoutedEventArgs e)
         {
-            cmd.Dispose();
+            cmd?.Dispose();
+        }
+
+        private void PreferencesView_OnClosed(object sender, EventArgs e)
+        {
+            cmd?.Dispose();
         }
     }
 }
