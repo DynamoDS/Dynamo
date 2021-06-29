@@ -8,6 +8,7 @@ using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -338,7 +339,7 @@ namespace UnitsUI
         }
     }
 
-    class UnitValueOutputDropdownViewCustomization : NotificationObject, INodeViewCustomization<UnitValueOutputDropdown>
+    public class UnitValueOutputDropdownViewCustomization : NotificationObject, INodeViewCustomization<UnitValueOutputDropdown>
     {
         private NodeModel nodeModel;
         private NodeViewModel nodeViewModel;
@@ -352,6 +353,7 @@ namespace UnitsUI
             nodeModel = model;
 
             var grid = new Grid();
+            grid.IsHitTestVisible = true;
             grid.Width = 220;
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -390,14 +392,18 @@ namespace UnitsUI
 
             grid.Children.Add(ex);
 
-            var lb = new ListBox
+           
+           // ObservableCollection<DockPanel> obsCollection = new ObservableCollection<DockPanel>();
+
+            var listView = new ListView
             {
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 Padding = new Thickness(0, 5, 0, 0),
                 Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190)),
                 BorderThickness = new System.Windows.Thickness(0),
-                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190))
+                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190)),
             };
+
 
             ///Unit Controls
             var dockPanelUnit = new DockPanel();
@@ -441,7 +447,10 @@ namespace UnitsUI
             unitCB.SelectionChanged += delegate
             {
                 if (unitCB.SelectedIndex != -1)
+                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
+                    unitCB.ToolTip = unitValueDropdownViewModel.SelectedUnit;
+                }
             };
 
             if (unitCB.SelectedItem == null)
@@ -449,10 +458,9 @@ namespace UnitsUI
                 unitCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedUnit.Name, unitCB.Items);
             }
 
-
             dockPanelUnit.Children.Add(unitLabel);
             dockPanelUnit.Children.Add(unitCB);
-            lb.Items.Add(dockPanelUnit);
+            listView.Items.Add(dockPanelUnit);
 
             ///Symbol Controls
             var dockPanelSymbol = new DockPanel();
@@ -491,7 +499,11 @@ namespace UnitsUI
             symbolCB.SelectionChanged += delegate
             {
                 if (symbolCB.SelectedIndex != -1)
+                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
+                    symbolCB.ToolTip = unitValueDropdownViewModel.SelectedSymbol;
+                }
+                  
             };
 
             if (symbolCB.SelectedItem == null)
@@ -501,7 +513,7 @@ namespace UnitsUI
 
             dockPanelSymbol.Children.Add(symbolLabel);
             dockPanelSymbol.Children.Add(symbolCB);
-            lb.Items.Add(dockPanelSymbol);
+            listView.Items.Add(dockPanelSymbol);
 
             var dockPanelPrecision = new DockPanel();
             dockPanelPrecision.FlowDirection = FlowDirection.LeftToRight;
@@ -539,7 +551,10 @@ namespace UnitsUI
             precisionCB.SelectionChanged += delegate
             {
                 if (precisionCB.SelectedIndex != -1)
+                { 
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
+                    precisionCB.ToolTip = unitValueDropdownViewModel.SelectedPrecision;
+                }
             };
 
             if (precisionCB.SelectedItem == null)
@@ -549,7 +564,8 @@ namespace UnitsUI
 
             dockPanelPrecision.Children.Add(precisionLabel);
             dockPanelPrecision.Children.Add(precisionCB);
-            lb.Items.Add(dockPanelPrecision);
+            listView.Items.Add(dockPanelPrecision);
+            //obsCollection.Add(dockPanelPrecision);
 
             var dockPanelFormat = new DockPanel();
             dockPanelFormat.Background = null;
@@ -588,7 +604,10 @@ namespace UnitsUI
             formatCB.SelectionChanged += delegate
             {
                 if (formatCB.SelectedIndex != -1)
+                {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
+                    formatCB.ToolTip = unitValueDropdownViewModel.SelectedFormat;
+                }
             };
 
             if (formatCB.SelectedItem == null)
@@ -598,11 +617,9 @@ namespace UnitsUI
 
             dockPanelFormat.Children.Add(formatLabel);
             dockPanelFormat.Children.Add(formatCB);
-            lb.Items.Add(dockPanelFormat);
+            listView.Items.Add(dockPanelFormat);
 
-
-
-            ex.Content = lb;
+            ex.Content = listView;
             nodeView.inputGrid.Children.Add(grid);
         }
 
@@ -622,9 +639,6 @@ namespace UnitsUI
             }
             return selectedIndex;
         }
-
-
-
         public void Dispose()
         {
 

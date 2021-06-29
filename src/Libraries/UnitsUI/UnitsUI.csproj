@@ -65,6 +65,9 @@
     </Compile>
     <Compile Include="Converters\Converters.cs" />
     <Compile Include="Converters\JSONConverters.cs" />
+    <Compile Include="Controls\ListViewCustom.xaml.cs">
+      <DependentUpon>ListViewCustom.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NodeModels.cs" />
     <Compile Include="NodeViewCustomizations.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -139,6 +142,10 @@
     <Page Include="Controls\ForgeDynamoConverterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ListViewCustom.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

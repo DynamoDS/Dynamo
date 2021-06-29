@@ -874,6 +874,7 @@ namespace UnitsUI
                 0, 1, 2, 3, 4, 5
             };
             AllFormats = new List<NumberFormat> { NumberFormat.Decimal, NumberFormat.Fraction };
+            ShouldDisplayPreviewCore = false;
         }
 
         public UnitValueOutputDropdown()
@@ -895,8 +896,7 @@ namespace UnitsUI
             RaisePropertyChanged(nameof(DisplayValue));
 
             ArgumentLacing = LacingStrategy.Disabled;
-
-           
+            ShouldDisplayPreviewCore = false;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -972,6 +972,7 @@ namespace UnitsUI
         [JsonConstructor]
         private UnitValueOutput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+          //  ShouldDisplayPreviewCore = false;
         }
 
         public UnitValueOutput()
@@ -984,6 +985,7 @@ namespace UnitsUI
 
             RegisterAllPorts();
             ArgumentLacing = LacingStrategy.Disabled;
+            ShouldDisplayPreviewCore = false;
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
@@ -997,11 +999,10 @@ namespace UnitsUI
                 return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()) };
             }
 
-            return new[]{ 
+            return new[]{
                 AstFactory.BuildAssignment(
                     AstFactory.BuildIdentifier(AstIdentifierBase),
-                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))
-            };
+                    VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes)))};
         }
     }
 }

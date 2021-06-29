@@ -112,6 +112,8 @@ namespace DynamoUnits
         {
             try
             {
+                if (value is null) return null;
+
                 var symbol = value as UnitSymbol;
                 if (symbol is null)
                 {
@@ -130,6 +132,8 @@ namespace DynamoUnits
         {
             try
             {
+                if (value is null) return null;
+
                 var unit = value as Unit;
                 if (unit is null)
                 {
