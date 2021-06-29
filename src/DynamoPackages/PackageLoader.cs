@@ -73,8 +73,9 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-
+        //TODO remove.
         private int defaultPackagesDirectoryIndex = -1;
+        //TODO this should get DefaultPackagesDirectoryFrom PathManager directly.
         /// <summary>
         /// Returns the default package directory where new packages will be installed
         /// This is the first non standard library directory
@@ -215,14 +216,6 @@ namespace Dynamo.PackageManager
                 var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
                 defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
             }
-
-            //TODO after refactor this path will come from PathManager.
-            //Today PathManager also creates this path if it does not exist, so one option is just remove this.
-            
-            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-
-            if (error != null)
-                Log(error);
 
             packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
         }
