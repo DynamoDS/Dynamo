@@ -98,12 +98,28 @@ namespace DSCore.IO
         ///     Copies a file.
         /// </summary>
         /// <param name="file">File object to copy</param>
-        /// <param name="destinationPath">String representation of destination path</param>
+        /// <param name="destinationPath">String representation of destination file path</param>
         /// <param name="overwrite">Toggle to overwrite existing files</param>
-        /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
-        public static void CopyFile(FileInfo file, string destinationPath, bool overwrite = false)
+        /// <returns name="bool">Node performs a task, return true of copy action succeed.</returns>
+        public static bool CopyFile(FileInfo file, string destinationPath, bool overwrite = false)
         {
-            file.CopyTo(destinationPath, overwrite);
+            try
+            {
+                if (Path.GetDirectoryName(destinationPath) != string.Empty && FileExtension(destinationPath) != string.Empty) 
+                {
+                    file.CopyTo(destinationPath, overwrite);
+                }
+                else
+                {
+                    throw new FileNotFoundException(Properties.Resources.InvalidDestinationPathErrorMessage, destinationPath);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+            return true;
+            
         }
 
         /// <summary>
