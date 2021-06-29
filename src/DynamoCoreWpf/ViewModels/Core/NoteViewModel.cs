@@ -107,7 +107,7 @@ namespace Dynamo.ViewModels
         public bool IsOnEditMode
         {
             get { return isOnEditMode; }
-            set { isOnEditMode = value; RaisePropertyChanged("IsOnEditMode"); }
+            set { isOnEditMode = value; RaisePropertyChanged(nameof(IsOnEditMode)); }
         }
 
         #endregion

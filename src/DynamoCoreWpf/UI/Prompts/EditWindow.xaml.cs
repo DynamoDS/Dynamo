@@ -48,6 +48,7 @@ namespace Dynamo.UI.Prompts
                 };
             }
             this.editText.PreviewKeyDown += EditText_PreviewKeyDown;
+            this.Closed += EditWindow_Closed;
         }
 
         private void EditText_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -122,6 +123,12 @@ namespace Dynamo.UI.Prompts
             else if (null != noteModel)
                 return noteModel;
             return annotationModel;
+        }
+
+        private void EditWindow_Closed(object sender, EventArgs e)
+        {
+            this.editText.PreviewKeyDown -= EditText_PreviewKeyDown;
+            this.Closed -= EditWindow_Closed;
         }
     }
 }

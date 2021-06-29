@@ -17,7 +17,14 @@ namespace Dynamo.Nodes
 {
     public partial class NoteView : IViewModelView<NoteViewModel>
     {
+        /// <summary>
+        /// Minimum workspace zoom to edit the note as a textbox,
+        /// If zoom is less than this value the note will be edited
+        /// through the EditWindow 
+        /// </summary>
         private const double MINIMUM_ZOOM_DIRECT_NODE_EDIT = 0.5;
+
+        private EditWindow editWindow;
         public NoteViewModel ViewModel { get; private set; }
 
         public NoteView()
@@ -99,12 +106,13 @@ namespace Dynamo.Nodes
 
             // Setup a binding with the edit window's text field
             var dynamoViewModel = ViewModel.WorkspaceViewModel.DynamoViewModel;
-            var editWindow = new EditWindow(dynamoViewModel, true)
+            editWindow = new EditWindow(dynamoViewModel, true)
             {
                 Title = Dynamo.Wpf.Properties.Resources.EditNoteWindowTitle
             };
 
             editWindow.EditTextBoxPreviewKeyDown += noteTextBox_PreviewKeyDown;
+            editWindow.Closed += EditWindow_Closed;
 
             editWindow.BindToProperty(DataContext, new Binding("Text")
             {
@@ -114,6 +122,13 @@ namespace Dynamo.Nodes
             });
 
             editWindow.ShowDialog();
+
+        }
+       
+        private void EditWindow_Closed(object sender, EventArgs e)
+        {
+            editWindow.EditTextBoxPreviewKeyDown -= noteTextBox_PreviewKeyDown;
+            editWindow.Closed -= EditWindow_Closed;
         }
 
         private void OnDeleteItemClick(object sender, RoutedEventArgs e)
@@ -247,7 +262,7 @@ namespace Dynamo.Nodes
             // dont convert it to bullet
             bool lineContainsBullet = BULLETS_CHARS.Where(b => line.Contains(b)).Any();
             var textBeforeCaret = line.Substring(0, caretAtLine);
-            if (!StringIsEmptyOrTab(textBeforeCaret)&& !lineContainsBullet)
+            if (!IsStringSpaceswithTabs(textBeforeCaret)&& !lineContainsBullet)
             {
                 line = line.Insert(caretAtLine, "-");
                 return ReplaceLineOfText(text, lineNumber, line);
@@ -332,9 +347,9 @@ namespace Dynamo.Nodes
             return text.Insert(caretIndex, bulletsInLine.First()+ new String(' ', SPACING_AFTER_BULLET));
         }
 
-        private bool StringIsEmptyOrTab(string text)
+        private bool IsStringSpaceswithTabs(string text)
         {
-            return !text.Any(c => !(c == ' ' || c == '\t'));
+            return String.IsNullOrWhiteSpace(text) || text.All(c => c == ' ' || c == '\t');
         }
 
         private bool IsCaretRightAfterBullet(string text, int caretIndex, int distanceFromBulletToCaret)
