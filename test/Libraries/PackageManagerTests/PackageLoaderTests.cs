@@ -646,6 +646,7 @@ namespace Dynamo.PackageManager.Tests
             // Act
             var standardDirectory = loader.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
+            Assert.AreEqual(loader.DefaultPackagesDirectory, CurrentDynamoModel.PathManager.DefaultPackagesDirectory);
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
@@ -663,6 +664,7 @@ namespace Dynamo.PackageManager.Tests
             // Act
             var standardDirectory = loader.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
+            Assert.AreEqual(loader.DefaultPackagesDirectory, CurrentDynamoModel.PathManager.DefaultPackagesDirectory);
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
@@ -680,6 +682,7 @@ namespace Dynamo.PackageManager.Tests
             // Act
             var standardDirectory = loader.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
+            Assert.AreEqual(loader.DefaultPackagesDirectory, CurrentDynamoModel.PathManager.DefaultPackagesDirectory);
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);

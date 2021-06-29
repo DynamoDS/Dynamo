@@ -81,7 +81,7 @@ namespace Dynamo.PackageManager
         /// The first entry is the standard library.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
-        [Obsolete("This property is redudant,please use the PathManager.DefaultPackagesDirectory property.")]
+        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
         public string DefaultPackagesDirectory
         {
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
@@ -115,6 +115,7 @@ namespace Dynamo.PackageManager
             return root;
         }
 
+        //TODO remove when removing DefaultPackagesDirectory and DefaultPackagesDirectoryIndex
         internal void SetPackagesDownloadDirectory(string downloadDirectory, string userDataFolder)
         {
             defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(
@@ -215,6 +216,9 @@ namespace Dynamo.PackageManager
                 defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
             }
 
+            //TODO after refactor this path will come from PathManager.
+            //Today PathManager also creates this path if it does not exist, so one option is just remove this.
+            
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
 
             if (error != null)

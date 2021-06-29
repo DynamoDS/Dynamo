@@ -319,6 +319,7 @@ namespace Dynamo.ViewModels
                 if (preferenceSettings.SelectedPackagePathForInstall != value)
                 {
                     preferenceSettings.SelectedPackagePathForInstall = value;
+                    //TODO remove along with PackageLoader.DefaultPackagesDirectory and PackageLoader.DefaultPackagesDirectoryIndex
                     dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(
                         value, dynamoViewModel.Model.PathManager.UserDataDirectory);
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));

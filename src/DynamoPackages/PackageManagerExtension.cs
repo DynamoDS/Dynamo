@@ -167,14 +167,12 @@ namespace Dynamo.PackageManager
             string packageUploadDirectory;
             if (startupParams.Preferences is PreferenceSettings preferences)
             {
-                //TODO remove use of packageLoader here and use PathManager instead!
-                
                 packageUploadDirectory = string.IsNullOrEmpty(preferences.SelectedPackagePathForInstall) ? 
-                    PackageLoader.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
+                    startupParams.PathManager.DefaultPackagesDirectory : preferences.SelectedPackagePathForInstall;
             }
             else
             {
-                packageUploadDirectory = PackageLoader.DefaultPackagesDirectory;
+                packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
             }
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
