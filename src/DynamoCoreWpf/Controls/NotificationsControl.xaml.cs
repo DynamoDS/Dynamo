@@ -48,7 +48,7 @@ namespace Dynamo.Wpf.Controls
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             var viewModel = this.DataContext as DynamoViewModel;
-            viewModel.OnViewExtensionOpenRequest("Graph Status");
+            viewModel?.OnViewExtensionOpenRequest("Graph Status");
         }
     }
 }
