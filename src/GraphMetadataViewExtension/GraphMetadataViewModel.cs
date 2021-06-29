@@ -5,7 +5,9 @@ using System.Windows.Media.Imaging;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.GraphMetadata.Controls;
+using Dynamo.Linting;
 using Dynamo.UI.Commands;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.GraphMetadata
@@ -15,11 +17,14 @@ namespace Dynamo.GraphMetadata
         private readonly ViewLoadedParams viewLoadedParams;
         private readonly GraphMetadataViewExtension extension;
         private HomeWorkspaceModel currentWorkspace;
+        private LinterManager linterManager;
 
         /// <summary>
         /// Command used to add new custom properties to the CustomProperty collection
         /// </summary>
         public DelegateCommand AddCustomPropertyCommand { get; set; }
+
+        public DelegateCommand OpenGraphStatusCommand { get; set; }
 
         /// <summary>
         /// Description of the current workspace
@@ -99,11 +104,14 @@ namespace Dynamo.GraphMetadata
         /// </summary>
         public ObservableCollection<CustomPropertyControl> CustomProperties { get; set; }
 
+        public LinterExtensionDescriptor CurrentLinter => linterManager.ActiveLinter;
+
         public GraphMetadataViewModel(ViewLoadedParams viewLoadedParams, GraphMetadataViewExtension extension)
         {
             this.viewLoadedParams = viewLoadedParams;
             this.extension = extension;
             this.currentWorkspace = viewLoadedParams.CurrentWorkspaceModel as HomeWorkspaceModel;
+            this.linterManager = viewLoadedParams.StartupParams.LinterManager;
 
             this.viewLoadedParams.CurrentWorkspaceChanged += OnCurrentWorkspaceChanged;
             // using this as CurrentWorkspaceChanged wont trigger if you:
@@ -111,6 +119,10 @@ namespace Dynamo.GraphMetadata
             // This means that properties defined in the previous opened workspace will still be showed in the extension.
             // CurrentWorkspaceCleared will trigger everytime a graph is closed which allows us to reset the properties. 
             this.viewLoadedParams.CurrentWorkspaceCleared += OnCurrentWorkspaceChanged;
+            if (linterManager != null)
+            {
+                linterManager.PropertyChanged += OnLinterManagerPropertyChange;
+            }
 
             CustomProperties = new ObservableCollection<CustomPropertyControl>();
             InitializeCommands();
@@ -142,6 +154,14 @@ namespace Dynamo.GraphMetadata
             }
 
             CustomProperties.Clear();
+        }
+
+        private void OnLinterManagerPropertyChange(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LinterManager.ActiveLinter))
+            {
+                RaisePropertyChanged(nameof(CurrentLinter));
+            }
         }
 
         private static BitmapImage ImageFromBase64(string b64string)
@@ -186,6 +206,12 @@ namespace Dynamo.GraphMetadata
         private void InitializeCommands()
         {
             this.AddCustomPropertyCommand = new DelegateCommand(AddCustomPropertyExecute);
+            this.OpenGraphStatusCommand = new DelegateCommand(OpenGraphStatusExecute);
+        }
+
+        private void OpenGraphStatusExecute(object obj)
+        {
+            viewLoadedParams.OpenViewExtension("Graph Status");
         }
 
         private void AddCustomPropertyExecute(object obj)
@@ -239,6 +265,10 @@ namespace Dynamo.GraphMetadata
         public void Dispose()
         {
             this.viewLoadedParams.CurrentWorkspaceChanged -= OnCurrentWorkspaceChanged;
+            if (linterManager != null)
+            {
+                linterManager.PropertyChanged -= OnLinterManagerPropertyChange;
+            }
 
             foreach (var cp in CustomProperties)
             {

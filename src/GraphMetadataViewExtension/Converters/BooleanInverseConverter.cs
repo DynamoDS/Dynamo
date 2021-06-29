@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace Dynamo.GraphMetadata.Converters
 {
     [ValueConversion(typeof(Boolean), typeof(bool))]
-    public class BooleanInverseConverter : IValueConverter
+    internal class BooleanInverseConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
