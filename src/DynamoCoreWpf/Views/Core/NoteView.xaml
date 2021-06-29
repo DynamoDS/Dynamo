@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
@@ -12,6 +13,14 @@
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     
     <Grid Name="BaseGrid">
         <Grid.ContextMenu>
@@ -35,20 +44,15 @@
         <TextBox
             Name ="noteTextBox"
             Grid.Column="0" Grid.Row="0"
-            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-            FontFamily="Trebuchet" 
-            FontSize="12"
-            Foreground="#222"
+            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             AcceptsReturn="True"
             AcceptsTab="True"
-            Background="#EEE"
-            Padding="10" TextWrapping="Wrap"
             LostFocus="noteTextBox_LostFocus"
             PreviewKeyDown="noteTextBox_PreviewKeyDown"
             IsEnabled="{Binding Path=IsOnEditMode, Mode=OneWay}"
             >
             <TextBox.Style>
-                <Style TargetType="TextBox">
+                <Style TargetType="TextBox" BasedOn="{StaticResource NoteTextBoxStyle}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="True">
                             <Setter Property="BorderThickness" Value="1"/>
@@ -65,14 +69,9 @@
             Name="noteText"
             Grid.Column="0" Grid.Row="0"
             Text="{Binding Path=Text, Mode=OneWay}" 
-            FontFamily="Trebuchet" 
-            FontSize="12" 
-            Foreground="#222"
-            Padding="10" TextWrapping="Wrap" 
             >
             <TextBlock.Style>
-                <Style TargetType="TextBlock">
-                    
+                <Style TargetType="TextBlock" BasedOn="{StaticResource NoteTextBlockStyle}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
                             <Setter Property="Background" Value="LightBlue"/>
@@ -81,17 +80,8 @@
                             <Setter Property="Background" Value="#EEE"/>
                         </DataTrigger>
                     </Style.Triggers>
-                    
                 </Style>
             </TextBlock.Style>
-
-            <TextBlock.Effect>
-                <DropShadowEffect
-                ShadowDepth="0"
-                Color="#222"
-                Opacity="0.25"
-                BlurRadius="9.0" />
-            </TextBlock.Effect>
         </TextBlock>
     </Grid>
 </UserControl>
