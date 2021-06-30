@@ -3360,6 +3360,9 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="PopupWhiteColor" 
+                             Color="#FFFFFF" />
+
     <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="5"/>
@@ -3368,7 +3371,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="CaretButtonBorder"
-                                Background="White"
+                                Background="{StaticResource PopupWhiteColor}"
                                 BorderThickness="0"
                                 BorderBrush="Transparent">
                         <Canvas Width="5" Height="10">
@@ -3410,19 +3413,19 @@
                                      Value="True">
                             <Setter Property="Stroke" 
                                         TargetName="line1" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                             <Setter Property="Stroke" 
                                         TargetName="line2" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" 
                                      Value="True">
                             <Setter Property="Stroke" 
                                         TargetName="line1" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                             <Setter Property="Stroke" 
                                         TargetName="line2" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                             <Setter Property="Cursor" 
                                         Value="Hand"/>
                         </Trigger>
@@ -3459,10 +3462,10 @@
                                      Value="True">
                             <Setter Property="Stroke" 
                                         TargetName="line1" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                             <Setter Property="Stroke" 
                                         TargetName="line2" 
-                                        Value="#0696D7"/>
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
                             <Setter Property="Cursor" 
                                         Value="Hand"/>
                         </Trigger>

@@ -33,7 +33,7 @@
                  Stroke="Black" 
                  Fill="White" />
 
-        <Path Fill="White" 
+        <Path Fill="{StaticResource PopupWhiteColor}" 
               Stroke="Black">
             <Path.Data>
                 <RectangleGeometry x:Name="BackgroundRectangle">
@@ -81,7 +81,6 @@
                                 Height="15"  
                                 Width="15"
                                 Grid.Column="1"
-                                ToolTip="Click me to close the Popup."  
                                 Style="{StaticResource PopupCloseButtonStyle}"
                                 Click="CloseButton_Click">
                         </Button>
@@ -94,7 +93,7 @@
                                             FontSize="14"
                                             FontFamily="Artifakt Element" 
                                             IsReadOnly="True" 
-                                            Background="White"
+                                            Background="{StaticResource PopupWhiteColor}"
                                             BorderThickness="0"
                                             Grid.Row="1"
                                             Margin="20,14,20,5"
@@ -141,8 +140,8 @@
                         MinWidth="80"  
                         MaxHeight="36"
                         BorderThickness="0"
-                        Foreground="White" 
-                        Background="#0696D7" 
+                        Foreground="{StaticResource PopupWhiteColor}" 
+                        Background="{StaticResource PreferencesWindowButtonColor}" 
                         HorizontalAlignment="Center"
                         Click="StartTourButton_Click" >
                     Start Tour
