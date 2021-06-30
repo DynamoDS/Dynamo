@@ -1,10 +1,13 @@
 ﻿
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Core;
+using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.Scheduler;
 using Dynamo.ViewModels;
 using NUnit.Framework;
 using SystemTestServices;
@@ -83,6 +86,37 @@ namespace DynamoCoreWpfTests
             var setting = new PreferenceSettings
             {
                 CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+            };
+
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            Assert.AreEqual(2, vm.RootLocations.Count);
+            Assert.IsFalse(vm.UpdatePathCommand.CanExecute(0));
+            Assert.IsTrue(vm.UpdatePathCommand.CanExecute(1));
+        }
+        [Test]
+        public void CannotDeleteProgramDataPath()
+        {
+            var setting = new PreferenceSettings
+            {
+                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory,"Packages"), @"C:\" }
+            };
+
+
+            var vm = CreatePackagePathViewModel(setting);
+
+            Assert.AreEqual(2, vm.RootLocations.Count);
+            Assert.IsFalse(vm.DeletePathCommand.CanExecute(0));
+            Assert.IsTrue(vm.DeletePathCommand.CanExecute(1));
+        }
+
+        [Test]
+        public void CannotUpdateProgramDataPath()
+        {
+            var setting = new PreferenceSettings
+            {
+                CustomPackageFolders = { Path.Combine(ViewModel.Model.PathManager.CommonDataDirectory, "Packages"), @"C:\" }
             };
 
 
@@ -186,6 +220,8 @@ namespace DynamoCoreWpfTests
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
         }
 
+       
+
         #endregion
         #region Setup methods
         private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
@@ -199,7 +235,46 @@ namespace DynamoCoreWpfTests
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);
         }
-
         #endregion
+    }
+
+    class PackagePathTests_CustomPrefs : DynamoTestUIBase
+    {
+        /// <summary>
+        /// Derived test classes can override this method to provide different configurations.
+        /// </summary>
+        /// <param name="pathResolver">A path resolver to pass to the DynamoModel. </param>
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPathResolver pathResolver)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                ProcessMode = TaskProcessMode.Synchronous,
+                Preferences = new PreferenceSettings()
+                {
+                    //program data first
+                    CustomPackageFolders = { Path.Combine(GetCommonDataDirectory(),PathManager.PackagesDirectoryName),  @"C:\", GetAppDataFolder(), }
+                }
+            };
+        }
+
+        [Test]
+        [Category("TechDebt")]
+        public void IfProgramDataPathIsFirstDefaultPackagePathIsStillAppData()
+        {
+            var setting = Model.PreferenceSettings;
+            var loader = Model.GetPackageManagerExtension().PackageLoader;
+
+            var appDataFolder = Path.Combine(GetAppDataFolder());
+            Assert.AreEqual(3, ViewModel.Model.PathManager.PackagesDirectories.Count());
+            Assert.AreEqual(4, setting.CustomPackageFolders.Count);
+            Assert.AreEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), ViewModel.Model.PathManager.DefaultPackagesDirectory);
+            Assert.AreEqual(appDataFolder, setting.SelectedPackagePathForInstall);
+            //TODO this is incorrect, but this property has been obsoleted and will be made correct after refactoring pathmanager and packageloader.
+            //this should be changed to Assert.AreEqual after refactor.
+            Assert.AreNotEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), loader.DefaultPackagesDirectory);
+        }
     }
 }
