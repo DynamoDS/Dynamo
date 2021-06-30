@@ -4440,6 +4440,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Issues found.
+        /// </summary>
+        public static string PersistentVisualStatusOfLinterIssues {
+            get {
+                return ResourceManager.GetString("PersistentVisualStatusOfLinterIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {
