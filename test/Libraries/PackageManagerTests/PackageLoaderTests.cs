@@ -644,7 +644,7 @@ namespace Dynamo.PackageManager.Tests
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var standardDirectory = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
@@ -656,12 +656,12 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { DynamoModel.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var loader = new PackageLoader(new[] { DynamoModel.BuiltInPackagesToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var standardDirectory = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
@@ -673,12 +673,12 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.StandardLibraryToken }, new[] { PackagesDirectorySigned });
+            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.BuiltInPackagesToken }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var standardDirectory = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
@@ -692,7 +692,7 @@ namespace Dynamo.PackageManager.Tests
            //setup clean loader
             var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
             var settings = new PreferenceSettings();
-            settings.DisableStandardLibrary = false;
+            settings.DisableBuiltinPackages = false;
 
             var loaderParams = new LoadPackageParams()
             {
@@ -715,7 +715,7 @@ namespace Dynamo.PackageManager.Tests
             //setup clean loader
             var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
             var settings = new PreferenceSettings();
-            settings.DisableStandardLibrary = true;
+            settings.DisableBuiltinPackages = true;
 
             var loaderParams = new LoadPackageParams()
             { PathManager = CurrentDynamoModel.PathManager,

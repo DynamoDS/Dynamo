@@ -159,7 +159,7 @@ namespace DynamoCoreWpfTests
         public void PackageManagerConflictsWithStdLib()
         {
             var pkgLoader = GetPackageLoader();
-            pkgLoader.StandardLibraryDirectory = StandardLibraryTestDirectory;
+            pkgLoader.BuiltinPackagesDirectory = StandardLibraryTestDirectory;
 
             // Load a std lib package
             var stdPackageLocation = Path.Combine(StandardLibraryTestDirectory, "SignedPackage2");

@@ -43,7 +43,7 @@
                 <Setter Property="FontSize"
                         Value="14px" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource DynamoStandardLableTextBrush}" />
+                        Value="{StaticResource DynamoStandardLabelTextBrush}" />
             </Style>
             <Style x:Key="ImageAwesomeIcons"
                    TargetType="{x:Type fa:ImageAwesome}">

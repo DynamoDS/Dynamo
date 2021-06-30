@@ -406,7 +406,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// If enabled Dynamo Standard Library packages will not be loaded.
         /// </summary>
-        public bool DisableStandardLibrary { get; set; }
+        public bool DisableBuiltinPackages { get; set; }
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>

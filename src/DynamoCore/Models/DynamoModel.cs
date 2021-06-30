@@ -474,7 +474,7 @@ namespace Dynamo.Models
         }
 
         // Token representing the standard library directory
-        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
+        internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
 
         /// <summary>
         /// Default constructor for DynamoModel
@@ -614,11 +614,11 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { StandardLibraryToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
 
-            if (!PreferenceSettings.CustomPackageFolders.Contains(StandardLibraryToken))
+            if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
-                PreferenceSettings.CustomPackageFolders.Insert(0, StandardLibraryToken);
+                PreferenceSettings.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
             }
 
             // Make sure that the default package folder is added in the list if custom packages folder.

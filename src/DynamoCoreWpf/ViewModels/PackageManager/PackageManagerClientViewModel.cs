@@ -536,7 +536,7 @@ namespace Dynamo.ViewModels
                 {
                     if (localPkg == null) continue;
 
-                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
+                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.BuiltinPackagesDirectory))
                     {
                         stdLibPackages.Add(localPkg);
                         continue;
@@ -564,17 +564,17 @@ namespace Dynamo.ViewModels
                         duplicateLocalPackages.First().Name == name)
                     {
                         message = duplicateLocalPackages.First().VersionName == package.version ?
-                                    String.Format(Resources.MessageSamePackageInStdLib,
+                                    String.Format(Resources.MessageSamePackageInBuiltinPackages,
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
                                     JoinPackageNames(stdLibPackages))
                                     :
-                                    String.Format(Resources.MessageSamePackageDiffVersInStdLib,
+                                    String.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
                                     JoinPackageNames(stdLibPackages));
                     } 
                     else 
                     {
-                        message = String.Format(Resources.MessagePackageDepsInStdLib,
+                        message = String.Format(Resources.MessagePackageDepsInBuiltinPackages,
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                                 name + " " + package.version,
                                                 JoinPackageNames(stdLibPackages));

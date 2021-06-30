@@ -95,7 +95,7 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != DynamoModel.StandardLibraryToken) : rootDirectories; }
+            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != DynamoModel.BuiltInPackagesToken) : rootDirectories; }
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface

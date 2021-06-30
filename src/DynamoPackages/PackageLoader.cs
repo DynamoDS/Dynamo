@@ -55,7 +55,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Action<Package> PackageRemoved;
 
-        private const string stdLibName = @"Standard Library";
+        private const string builtinPackagesDirName = @"Built-In Packages";
         private readonly List<IExtension> requestedExtensions = new List<IExtension>();
         /// <summary>
         /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
@@ -125,15 +125,15 @@ namespace Dynamo.PackageManager
         private string stdLibDirectory = null;
 
         /// <summary>
-        /// The standard library directory is located in the same directory as the DynamoPackages.dll
+        /// The BuiltinPackages directory is located in the same directory as the DynamoPackages.dll
         /// Property should only be set during testing.
         /// </summary>
-        internal string StandardLibraryDirectory
+        internal string BuiltinPackagesDirectory
         {
             get
             {
                 return stdLibDirectory == null ?
-                    Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
+                    Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),builtinPackagesDirName, @"Packages")
                     : stdLibDirectory;
             }
             set
@@ -160,12 +160,12 @@ namespace Dynamo.PackageManager
             InitPackageLoader(packagesDirectories, stdLibDirectory);
 
             //override the property.
-            this.StandardLibraryDirectory = stdLibDirectory;
+            this.BuiltinPackagesDirectory = stdLibDirectory;
         }
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories, BuiltinPackagesDirectory);
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Dynamo.PackageManager
             this.packagesDirectories.AddRange(packagesDirectories);
 
             // Setup standard library
-            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.StandardLibraryToken);
+            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.BuiltInPackagesToken);
             if (standardLibraryIndex == -1)
             {
                 // No standard library in list
@@ -448,7 +448,7 @@ namespace Dynamo.PackageManager
                     &&
                     //if this directory is the standard library location
                     //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableStandardLibrary && packagesDirectory == StandardLibraryDirectory)
+                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == BuiltinPackagesDirectory)
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.
                     || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
                 {

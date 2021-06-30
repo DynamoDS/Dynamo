@@ -180,7 +180,7 @@ namespace DynamoCoreWpfTests
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
 
-            setting.DisableStandardLibrary = true;
+            setting.DisableBuiltinPackages = true;
 
             Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
