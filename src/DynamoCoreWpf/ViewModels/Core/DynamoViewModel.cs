@@ -145,6 +145,15 @@ namespace Dynamo.ViewModels
             get { return model.CurrentWorkspace; }
         }
 
+        /// <summary>
+        /// Count of unresolved issues on the linter manager.
+        /// This is used for binding in the NotificationsControl
+        /// </summary>
+        public int LinterIssuesCount
+        {
+            get => Model.LinterManager?.RuleEvaluationResults.Count ?? 0;
+        }
+
         public double WorkspaceActualHeight { get; set; }
         public double WorkspaceActualWidth { get; set; }
 
@@ -656,6 +665,10 @@ namespace Dynamo.ViewModels
            
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
+            }
              
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
@@ -754,12 +767,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal event EventHandler RequestOpenLinterView;
-        internal void OnRequestOpenLinterView()
-        {
-            RequestOpenLinterView?.Invoke(this, EventArgs.Empty);
-        }
-
         #region Event handler destroy/create
 
         protected virtual void UnsubscribeAllEvents()
@@ -774,6 +781,11 @@ namespace Dynamo.ViewModels
 
             model.WorkspaceAdded -= WorkspaceAdded;
             model.WorkspaceRemoved -= WorkspaceRemoved;
+            if (model.LinterManager != null)
+            {
+                model.LinterManager.RuleEvaluationResults.CollectionChanged -= OnRuleEvaluationResultsCollectionChanged;
+            }
+
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
         }
@@ -1285,6 +1297,11 @@ namespace Dynamo.ViewModels
                 }
                 currentWorkspaceViewModel = null;
             workspaces.Remove(viewModel);
+        }
+
+        private void OnRuleEvaluationResultsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(LinterIssuesCount));
         }
 
         internal void AddToRecentFiles(string path)
@@ -1939,7 +1956,7 @@ namespace Dynamo.ViewModels
             if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
                 args.ClickedButtonId == 0)
             {
-                OnRequestOpenLinterView();
+                OnViewExtensionOpenRequest("Graph Status");
                 return false;
             }
 

@@ -4,15 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:core="clr-namespace:Dynamo.Wpf.ViewModels.Core"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
+             xmlns:converters="clr-namespace:Dynamo.Controls"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
+             d:DataContext="{d:DesignInstance Type=viewmodels:DynamoViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
         <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
+        <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
     </UserControl.Resources>
-    
-    <Grid>
-            <TextBlock
+
+    <Grid HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock
                 Text="{Binding Path=HomeSpaceViewModel.CurrentNotificationMessage}"
                 FontStyle="Italic"
                 FontSize="12"
@@ -42,5 +51,32 @@
                 </EventTrigger>
             </TextBlock.Triggers>
         </TextBlock>
+        <StackPanel Orientation="Horizontal"
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="30,0"
+                    MouseDown="StackPanel_MouseDown"
+                    Visibility="{Binding LinterIssuesCount, Converter={StaticResource LinterIssueCountToVisibilityConverter}}">
+            <StackPanel.Style>
+                <Style TargetType="{x:Type StackPanel}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Cursor"
+                                    Value="Hand" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <Image Width="20"
+                   Source="/DynamoCoreWpf;component/UI/Images/alert.png" />
+            <TextBlock Margin="10,0"
+                       Foreground="White">
+                <Run Text="{Binding LinterIssuesCount, Mode=OneWay}" />
+                <Run Text="{x:Static p:Resources.PersistentVisualStatusOfLinterIssues}" />
+            </TextBlock>
+        </StackPanel>
+
     </Grid>
 </UserControl>

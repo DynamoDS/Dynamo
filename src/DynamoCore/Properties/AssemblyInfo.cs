@@ -39,3 +39,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("GenerativeDesign.Dynamo.ViewExtension")]
 [assembly: InternalsVisibleTo("DSCPython")]
 [assembly: InternalsVisibleTo("DynamoPythonTests")]
+[assembly: InternalsVisibleTo("GraphMetadataViewExtension")]

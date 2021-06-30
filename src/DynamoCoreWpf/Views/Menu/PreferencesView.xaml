@@ -13,12 +13,13 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
+        xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        ResizeMode="NoResize"
         mc:Ignorable="d" 
         Height="474" 
-        Width="530" >
+        Width="650"
+        ResizeMode="NoResize">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -723,19 +724,21 @@
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
                                     <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
-                                            Padding="0,5,5,5"
+                                            Padding="5,5,5,5"
                                             FontSize="13"
                                             Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                    <ComboBox Grid.Row="1" 
+                                    <ComboBox Grid.Row="1"
+                                              x:Name="PackageDownloadDirectoryComboBox"
                                               Width="Auto"
+                                              Margin="0,5,0,5"
                                               HorizontalAlignment="Left"
                                               ItemsSource="{Binding Path=PackagePathsForInstall}"
                                               SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
                                               Style="{StaticResource NoBordersComboBoxStyle}"
                                               ToolTip="{Binding Path=SelectedPackagePathForInstall}">
                                     </ComboBox>
-                                    <ScrollViewer Height="250" VerticalScrollBarVisibility="Auto">
-                                        <packagemanager:PackagePathView DataContext="{Binding PackagePathsViewModel}"/>
+                                    <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                                        <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
                                     </ScrollViewer>
                                 </StackPanel>
                             </Expander>
@@ -743,11 +746,12 @@
                             <!--This Grid row contains the Installed Packages section-->
                             <Expander x:Name="InstalledPackagesExpander" 
                                           Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                          IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
                                           Grid.Row="1"
                                           Header="{x:Static p:Resources.InstalledPackageViewTitle}">
-                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                                <StackPanel
+                                    Orientation="Vertical" Margin="0,6,0,0">
+                                    <wpfControls:InstalledPackagesControl Height="Auto"/>
                                 </StackPanel>
                             </Expander>
                         </Grid>
