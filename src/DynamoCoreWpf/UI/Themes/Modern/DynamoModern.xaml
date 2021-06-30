@@ -3360,5 +3360,117 @@
         </Setter>
     </Style>
 
+    <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CaretButtonBorder"
+                                Background="White"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Width="5" Height="10">
+                            <Line x:Name="line1" 
+                                      Stroke="Black" 
+                                      X1="5" 
+                                      Y1="0" 
+                                      X2="0" 
+                                      Y2="5"/>
+                            <Line x:Name="line2" 
+                                      Stroke="Black" 
+                                      X1="0" 
+                                      Y1="5" 
+                                      X2="5" 
+                                      Y2="10"/>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" 
+                                     Value="Invert">
+                            <Setter TargetName="line1" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="line2" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="#0696D7"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="#0696D7"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="#0696D7"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="#0696D7"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CloseButtonBorder"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Margin="0,0,0,0">
+                            <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#808080" StrokeThickness="1"></Line>
+                            <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#808080" StrokeThickness="1"></Line>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="Red"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="#0696D7"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="#0696D7"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>

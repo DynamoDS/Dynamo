@@ -76,7 +76,7 @@
     <Reference Include="ProtoGeometry, Version=2.12.0.5056, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5056\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
-	</Reference>
+    </Reference>
     <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
       <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
@@ -175,6 +175,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
+    <Compile Include="UI\GuidedTour\HostInfo.cs" />
+    <Compile Include="UI\GuidedTour\Step.cs" />
+    <Compile Include="UI\GuidedTour\Survey.cs" />
+    <Compile Include="UI\GuidedTour\Tooltip.cs" />
+    <Compile Include="UI\GuidedTour\ExitTour.cs" />
+    <Compile Include="UI\GuidedTour\Welcome.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
     <Compile Include="Rendering\HelixRenderPackage.cs" />
@@ -291,6 +298,7 @@
     <Compile Include="ViewModels\Core\GalleryViewModel.cs" />
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
+    <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
@@ -327,6 +335,9 @@
     </Compile>
     <Compile Include="Views\CodeCompletion\CodeCompletionEditor.xaml.cs">
       <DependentUpon>CodeCompletionEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
+      <DependentUpon>PopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -438,6 +449,10 @@
     <Page Include="Controls\GraphUpdateNotificationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\GuidedTour\PopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Menu\PreferencesView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1262,7 +1277,7 @@
     <ProjectReference Include="..\Libraries\PythonNodeModels\PythonNodeModels.csproj">
       <Project>{8872CA17-C10D-43B9-8393-5C5A57065EB0}</Project>
       <Name>PythonNodeModels</Name>
-	  <Private>False</Private>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Libraries\VMDataBridge\VMDataBridge.csproj">
       <Project>{ccb6e56b-2da1-4eba-a1f9-e8510e129d12}</Project>
