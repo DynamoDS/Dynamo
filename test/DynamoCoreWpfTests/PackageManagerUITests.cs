@@ -16,6 +16,7 @@ using Greg.Responses;
 using Moq;
 using NUnit.Framework;
 using SystemTestServices;
+using Dynamo.Wpf.Views;
 
 
 namespace DynamoCoreWpfTests
@@ -123,35 +124,33 @@ namespace DynamoCoreWpfTests
         }
         #endregion
 
-        #region InstalledPackagesView
-
+        #region InstalledPackagesControl
+        
         [Test]
         public void CanOpenManagePackagesDialogAndWindowIsOwned()
         {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
+            var preferencesWindow = new PreferencesView(View)
+            {
+               WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
 
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
         }
-
-        //[Test, Ignore]
-        //public void CannotCreateDuplicateManagePackagesDialogs()
-        //{
-        //    for (var i = 0; i < 10; i++)
-        //    {
-        //        Vm.OnRequestManagePackagesDialog(null, null);
-        //    }
-
-        //    AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-        //}
 
         [Test]
         public void ManagePackagesDialogClosesWithDynamo()
         {
-            ViewModel.OnRequestManagePackagesDialog(null, null);
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
 
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
-            AssertWindowClosedWithDynamoView<InstalledPackagesView>();
+            preferencesWindow.Show();
 
+            AssertWindowOwnedByDynamoView<PreferencesView>();
+            AssertWindowClosedWithDynamoView<PreferencesView>();
         }
 
         [Test]
@@ -416,8 +415,13 @@ namespace DynamoCoreWpfTests
             var packageFound = loader.LocalPackages.Any(x => x.Name == "Autodesk Steel Connections 2020");
             Assert.IsFalse(packageFound);
 
-            ViewModel.OnRequestManagePackagesDialog(null, null);
-            AssertWindowOwnedByDynamoView<InstalledPackagesView>();
+            var preferencesWindow = new PreferencesView(View)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            preferencesWindow.Show();
+
+            AssertWindowOwnedByDynamoView<PreferencesView>();
         }
 
         #endregion
