@@ -159,6 +159,9 @@
   <data name="IntegerOverflow" xml:space="preserve">
     <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
   </data>
+  <data name="InvalidDestinationPathErrorMessage" xml:space="preserve">
+    <value>Invalid destination file path used as copy path.</value>
+  </data>
   <data name="InvalidKeysErrorMessage" xml:space="preserve">
     <value>One or more input types are not matching. Lists as keys are not supported.</value>
   </data>

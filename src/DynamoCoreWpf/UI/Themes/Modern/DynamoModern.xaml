@@ -2293,7 +2293,6 @@
     <SolidColorBrush x:Key="SemiTransparent" 
                              Color="#80000000" />
 
-
     <!--Usual button color for the Preferences Window-->
     <Color x:Key="PreferencesToogleCheckedColor" R="6" G="150" B="215" A="255"/>
     
@@ -2421,7 +2420,55 @@
         </Setter>
     </Style>
 
-    <ControlTemplate x:Key="ExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonBackground" Color="#4d4d4d"/>
+    <SolidColorBrush x:Key="ExpanderCaretToggleButtonSelectedBackground" Color="#3c3c3c"/>
+
+    <ControlTemplate x:Key="ExpanderCaretToggleButton" TargetType="{x:Type ToggleButton}">
+        <Border Name="Border" 
+                Grid.Row="0" 
+                Background="{StaticResource ExpanderCaretToggleButtonBackground}"
+                BorderThickness="1" 
+                CornerRadius="1" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Image x:Name="Caret"
+                      Grid.Column="0"
+                      Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Down.png"
+                      Width="16"
+                      Height="16"
+                      Margin="5,10,0,10"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      >
+                </Image>
+                <ContentPresenter x:Name="HeaderContent" 
+                                    Grid.Column="0" 
+                                    Margin="0,0,0,0" 
+                                    RecognizesAccessKey="True" 
+                                    VerticalAlignment="Center"
+                                    Width="{Binding
+                                        RelativeSource={RelativeSource
+                                        Mode=FindAncestor,
+                                        AncestorType={x:Type Expander}},
+                                        Path=ActualWidth}"/>
+            </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsChecked" Value="true">
+                <!--Sets the icon on the expander to caret up (-)-->
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}"/>
+                <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
+            </Trigger>
+            <Trigger Property="IsChecked" Value="false">
+                <Setter Property="Background" TargetName="Border" Value="{StaticResource ExpanderCaretToggleButtonBackground}"/>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ExpanderPlusToggleButton" TargetType="{x:Type ToggleButton}">
         <Border Name="Border" 
                 Grid.Row="0" 
                 Background="{StaticResource SecondaryGray}" 
@@ -2477,6 +2524,68 @@
         </TextBlock>
     </DataTemplate>
     
+
+    <Style TargetType="Expander" x:Key="InstalledPackagesExpanderStyle">
+        <Setter Property="Template">
+            <Setter.Value>
+                <!-- Control template for expander -->
+                <ControlTemplate TargetType="Expander" x:Name="exp">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Name="ContentRow" Height="0"/>
+                        </Grid.RowDefinitions>
+                        <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" Template="{StaticResource ExpanderCaretToggleButton}">
+                                <ToggleButton.Content>
+                                    <ContentPresenter ContentSource="Header" OverridesDefaultStyle="True" RecognizesAccessKey="True" />
+                                </ToggleButton.Content>
+                            </ToggleButton>
+                        </Border>
+                        <Border x:Name="Content" 
+                                Grid.Row="1"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="0,0,4,4" >
+                            <!--The Margin is necesary so that the Content is perfectly aligned with the Header-->
+                            <ContentPresenter Margin="1,-3,1,0" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter TargetName="ContentRow" Property="Height" Value="{Binding ElementName=Content,Path=Height}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type ContextMenu}" x:Key="ContextMenuNoLeftColumnStyle">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Grid.IsSharedSizeScope" Value="true" />
+        <Setter Property="HasDropShadow" Value="True" />
+        <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"/>
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}" BorderThickness="1">
+                        <ItemsPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Margin="-25,0,0,0"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="Expander" x:Key="MenuExpanderStyle">
         <Setter Property="Background" Value="{StaticResource SecondaryGray}"/>
         <Setter Property="Foreground" Value="{StaticResource PreferencesWindowFontColor}"/>
@@ -2491,7 +2600,7 @@
                             <RowDefinition Name="ContentRow" Height="0"/>
                         </Grid.RowDefinitions>
                         <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
-                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderToggleButton}" Background="#FF4682B4">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>
@@ -2532,7 +2641,7 @@
                             <RowDefinition Name="ContentRow" Height="0"/>
                         </Grid.RowDefinitions>
                         <Border Name="Border" Grid.Row="0" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="1" CornerRadius="0,0,0,0">
-                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderToggleButton}" Background="#FF4682B4">
+                            <ToggleButton IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" OverridesDefaultStyle="True" Template="{StaticResource ExpanderPlusToggleButton}" Background="#FF4682B4">
                                 <ToggleButton.Content>
                                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" />
                                 </ToggleButton.Content>

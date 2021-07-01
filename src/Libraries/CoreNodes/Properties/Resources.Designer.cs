@@ -187,6 +187,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid destination file path used as copy path..
+        /// </summary>
+        internal static string InvalidDestinationPathErrorMessage {
+            get {
+                return ResourceManager.GetString("InvalidDestinationPathErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to One or more input types are not matching. Lists as keys are not supported..
         /// </summary>
         internal static string InvalidKeysErrorMessage {

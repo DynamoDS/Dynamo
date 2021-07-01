@@ -2784,24 +2784,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Contents.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContent {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See the types loaded by this package.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContentTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContentTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show Root Directory.
         /// </summary>
         public static string InstalledPackageViewContextMenuShowRootDir {
@@ -3873,15 +3855,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Manager Website.
-        /// </summary>
-        public static string PackageManagerWebSiteButton {
-            get {
-                return ResourceManager.GetString("PackageManagerWebSiteButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The name of the package cannot contain /,\, or *..
         /// </summary>
         public static string PackageNameCannotContainTheseCharacters {
@@ -4436,6 +4409,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Periodic {
             get {
                 return ResourceManager.GetString("Periodic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Issues found.
+        /// </summary>
+        public static string PersistentVisualStatusOfLinterIssues {
+            get {
+                return ResourceManager.GetString("PersistentVisualStatusOfLinterIssues", resourceCulture);
             }
         }
         

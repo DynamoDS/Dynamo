@@ -1153,12 +1153,6 @@ You will get a chance to save your work.</value>
   <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
     <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
   </data>
-  <data name="InstalledPackageViewContextMenuShowContent" xml:space="preserve">
-    <value>Show Contents</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuShowContentTooltip" xml:space="preserve">
-    <value>See the types loaded by this package</value>
-  </data>
   <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
     <value>Show Root Directory</value>
   </data>
@@ -1236,9 +1230,6 @@ You will get a chance to save your work.</value>
   </data>
   <data name="PackageDownloadStateStarting" xml:space="preserve">
     <value>Starting</value>
-  </data>
-  <data name="PackageManagerWebSiteButton" xml:space="preserve">
-    <value>Package Manager Website</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -2436,5 +2427,8 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
+  </data>
+  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+    <value>Issues found</value>
   </data>
 </root>

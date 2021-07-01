@@ -273,6 +273,13 @@ namespace Dynamo.Wpf.ViewModels
             var adjustedY = initialNodeVm.Y;
 
             var createAsDownStreamNode = portModel.PortType == PortType.Output;
+
+            // Clear current selections.
+            DynamoSelection.Instance.ClearSelection();
+
+            //Add initial node in the selection in order to be considered while auto layout
+            DynamoSelection.Instance.Selection.Add(initialNode);
+
             // Placing the new node based on which port it is connecting to.
             if (createAsDownStreamNode)
             {
@@ -282,6 +289,10 @@ namespace Dynamo.Wpf.ViewModels
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                     Model.CreationName, 0, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
+
+                //Select all output nodes as we need to perform Auto layout on only the output nodes
+                var outputNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));
+                DynamoSelection.Instance.Selection.AddRange(outputNodes);
             }
             else
             {
@@ -297,14 +308,11 @@ namespace Dynamo.Wpf.ViewModels
                 // Create a new node based on node creation name and connection ports
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                       Model.CreationName, 0, portModel.Index, adjustedX, adjustedY, createAsDownStreamNode, false, true));
-            }
 
-            var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-
-            // Clear current selections and select all input nodes as we need to perform Auto layout on only the input nodes.
-            DynamoSelection.Instance.ClearSelection();
-            DynamoSelection.Instance.Selection.AddRange(inputNodes);
-            DynamoSelection.Instance.Selection.Add(initialNode);
+                //Select all input nodes as we need to perform Auto layout on only the input nodes
+                var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+                DynamoSelection.Instance.Selection.AddRange(inputNodes);
+            }            
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
