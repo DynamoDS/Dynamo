@@ -644,7 +644,8 @@ namespace Dynamo.PackageManager.Tests
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
+            var standardDirectory = pathManager.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
@@ -661,7 +662,8 @@ namespace Dynamo.PackageManager.Tests
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
+            var standardDirectory = pathManager.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
@@ -678,7 +680,8 @@ namespace Dynamo.PackageManager.Tests
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
+            var standardDirectory = pathManager.StandardLibraryDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert

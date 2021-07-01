@@ -125,29 +125,32 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
-        private string stdLibDirectory = null;
+        private readonly IPathManager pathManager;
+
+        //private string stdLibDirectory = null;
 
         /// <summary>
         /// The standard library directory is located in the same directory as the DynamoPackages.dll
         /// Property should only be set during testing.
         /// </summary>
-        internal string StandardLibraryDirectory
-        {
-            get
-            {
-                return stdLibDirectory == null ?
-                    Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
-                    : stdLibDirectory;
-            }
-            set
-            {
-                if (stdLibDirectory != value)
-                {
-                    stdLibDirectory = value;
-                }
-            }
-        }
+        //internal string StandardLibraryDirectory
+        //{
+        //    get
+        //    {
+        //        return stdLibDirectory == null ?
+        //            Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
+        //            : stdLibDirectory;
+        //    }
+        //    set
+        //    {
+        //        if (stdLibDirectory != value)
+        //        {
+        //            stdLibDirectory = value;
+        //        }
+        //    }
+        //}
 
+        [Obsolete]
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
@@ -161,16 +164,25 @@ namespace Dynamo.PackageManager
         internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
         {
             InitPackageLoader(packagesDirectories, stdLibDirectory);
-
-            //override the property.
-            this.StandardLibraryDirectory = stdLibDirectory;
         }
-
+        [Obsolete]
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories, null);
         }
 
+        internal PackageLoader(IPathManager pathManager)
+        {
+            this.pathManager = pathManager;
+            InitPackageLoader(pathManager.PackagesDirectories, (pathManager as PathManager)?.StandardLibraryDirectory);
+
+            if (!string.IsNullOrEmpty(pathManager.CommonDataDirectory))
+            {
+                packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
+            }
+        }
+
+        [Obsolete]
         /// <summary>
         /// Initialize a new instance of PackageLoader class
         /// </summary>
@@ -446,7 +458,7 @@ namespace Dynamo.PackageManager
                     &&
                     //if this directory is the standard library location
                     //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableStandardLibrary && packagesDirectory == StandardLibraryDirectory)
+                    ((disablePrefs.DisableStandardLibrary && packagesDirectory == (pathManager as PathManager)?.StandardLibraryDirectory)
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.
                     || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
                 {
@@ -490,14 +502,14 @@ namespace Dynamo.PackageManager
                     // verify if the package directory requires certificate verifications
                     // This is done by default for the package directory defined in PathManager common directory location.
                     var checkCertificates = false;
-                    foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
-                    {
-                        if (root.Contains(pathToVerifyCert))
-                        {
-                            checkCertificates = true;
-                            break;
-                        }
-                    }
+                    //foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
+                    //{
+                    //    if (root.Contains(pathToVerifyCert))
+                    //    {
+                    //        checkCertificates = true;
+                    //        break;
+                    //    }
+                    //}
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
                     if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
