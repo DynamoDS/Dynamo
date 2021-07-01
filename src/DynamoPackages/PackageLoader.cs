@@ -182,7 +182,7 @@ namespace Dynamo.PackageManager
             this.packagesDirectories.AddRange(packagesDirectories);
 
             // Setup standard library
-            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.StandardLibraryToken);
+            var standardLibraryIndex = this.packagesDirectories.IndexOf(stdLibDirectory);
             if (standardLibraryIndex == -1)
             {
                 // No standard library in list
