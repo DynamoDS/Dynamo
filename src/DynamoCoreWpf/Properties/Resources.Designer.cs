@@ -3627,6 +3627,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Renamed.
+        /// </summary>
+        public static string NodeRenamedLabel {
+            get {
+                return ResourceManager.GetString("NodeRenamedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Freeze.
         /// </summary>
         public static string NodesRunStatus {
