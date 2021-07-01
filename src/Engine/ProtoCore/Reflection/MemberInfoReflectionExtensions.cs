@@ -171,8 +171,7 @@ namespace ProtoFFI.Reflection
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine($"Could not create instance of {ca.AttributeType.Name} attribute: {e.InnerException.Message}");
-                    Console.WriteLine(e.StackTrace);
+                    Console.WriteLine($"Could not create instance of {ca.AttributeType.Name} attribute: {e.InnerException?.Message ?? string.Empty}");
                 }
             }
 

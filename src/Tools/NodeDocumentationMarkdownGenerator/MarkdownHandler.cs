@@ -152,7 +152,7 @@ namespace NodeDocumentationMarkdownGenerator
   
             if (entry.InDepth == string.Empty) missingFields.Add("In Depth description");
 
-            if (!missingFields.Any())
+            if (missingFields.Count > 0)
             {
                 Console.WriteLine($"{fileInfo.Name} missing {string.Join(", ", missingFields)}");
             }

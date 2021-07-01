@@ -14,7 +14,8 @@ namespace NodeDocumentationMarkdownGenerator
         public string NodeName { get; }
 
         /// <summary>
-        /// Nodes namespace, this is used to generate the md file name
+        /// Nodes namespace, this is used to lookup dictionary content
+        /// for this node
         /// </summary>
         public string NodeNamespace { get; }
 
@@ -104,20 +105,26 @@ namespace NodeDocumentationMarkdownGenerator
                 string fileName = "";
                 if (entry is ZeroTouchSearchElement reflectionSearch)
                 {
+                    // the ZeroTouchSearchElements FulleName includes the node name at the end
+                    // we need the namespace to not contain the nodename therefor we remove it here.
                     nodeNamespace = entry.FullName
                         .Remove(entry.FullName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);
 
-                    var qualifiedNameWithOutNodeName = reflectionSearch.Descriptor.QualifiedName
-                        .Remove(reflectionSearch.Descriptor.QualifiedName.LastIndexOf(entry.Name) - 1, entry.Name.Length + 1);
-
-                    fileName = $"{qualifiedNameWithOutNodeName}.{nodeName}";
+                    // Create the filename from the nodes className + nodeName
+                    // We need the filename to be structured like this as this is
+                    // how Dynamo matches the file with the correct node.
+                    fileName = $"{reflectionSearch.Descriptor.ClassName}.{nodeName}";
                 }
                 else
                 {
-                    nodeNamespace = entry.CreationName
-                        .Remove(entry.CreationName.LastIndexOf(nodeName) - 1, nodeName.Length + 1);
+                    // For NodeModelSearchElements the IconName
+                    // is equal to Type.FullName which is essentially what we want here
+                    // this is currently the only consistent way of getting the namespace
+                    // for NodeModelSearchElements.
+                    nodeNamespace = entry.IconName
+                            .Remove(entry.IconName.LastIndexOf('.'));
 
-                    fileName = entry.CreationName;
+                    fileName = entry.IconName;
                 }
 
                 info = new MdFileInfo(nodeName, nodeNamespace, category, entry.Assembly, fileName);
