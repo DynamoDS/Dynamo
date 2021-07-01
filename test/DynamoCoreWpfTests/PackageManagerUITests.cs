@@ -155,18 +155,18 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Description("User tries to download pacakges that might conflict with existing packages in std lib")]
-        public void PackageManagerConflictsWithStdLib()
+        [Description("User tries to download pacakges that might conflict with existing packages in builtIn")]
+        public void PackageManagerConflictsWithbltinpackages()
         {
             var pkgLoader = GetPackageLoader();
             pkgLoader.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
-            // Load a std lib package
-            var stdPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
-            pkgLoader.ScanPackageDirectory(stdPackageLocation);
+            // Load a builtIn package
+            var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
+            pkgLoader.ScanPackageDirectory(builtInPackageLocation);
 
-            var stdLibPkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
-            Assert.IsNotNull(stdLibPkg);
+            var bltInPackage = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
+            Assert.IsNotNull(bltInPackage);
 
             // Simulate the user downloading the same package from PM
             var mockGreg = new Mock<IGregClient>();
@@ -181,21 +181,21 @@ namespace DynamoCoreWpfTests
             MessageBoxService.OverrideMessageBoxDuringTests(dlgMock.Object);
 
             //
-            // 1. User downloads the exact version of a std lib package
+            // 1. User downloads the exact version of a builtIn package
             //
             {
                 var id = "test-123";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = stdLibPkg.Name } };
-                var depVers = new List<string>() { stdLibPkg.VersionName };
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var depVers = new List<string>() { bltInPackage.VersionName };
 
                 mockGreg.Setup(m => m.ExecuteAndDeserializeWithContent<PackageVersion>(It.IsAny<Request>()))
                 .Returns(new ResponseWithContentBody<PackageVersion>()
                 {
                     content = new PackageVersion()
                     {
-                        version = stdLibPkg.VersionName,
-                        engine_version = stdLibPkg.EngineVersion,
-                        name = stdLibPkg.Name,
+                        version = bltInPackage.VersionName,
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
                         id = id,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
@@ -203,7 +203,7 @@ namespace DynamoCoreWpfTests
                     success = true
                 });
 
-                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(stdLibPkg.Name, VersionUtilities.PartialParse(stdLibPkg.VersionName));
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, VersionUtilities.PartialParse(bltInPackage.VersionName));
                 pmVm.DownloadAndInstallPackage(pkgInfo);
 
                 // Users should get 2 warnings :
@@ -215,13 +215,13 @@ namespace DynamoCoreWpfTests
             }
 
             //
-            // 2. User downloads a different version of a std lib package
+            // 2. User downloads a different version of a builtIn package
             //
             {
                 var id = "test-234";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = stdLibPkg.Name } };
-                var stdLibPkgVers = VersionUtilities.PartialParse(stdLibPkg.VersionName);
-                var newPkgVers = new Version(stdLibPkgVers.Major + 1, stdLibPkgVers.Minor, stdLibPkgVers.Build);
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = bltInPackage.Name } };
+                var bltinpackagesPkgVers = VersionUtilities.PartialParse(bltInPackage.VersionName);
+                var newPkgVers = new Version(bltinpackagesPkgVers.Major + 1, bltinpackagesPkgVers.Minor, bltinpackagesPkgVers.Build);
 
                 var depVers = new List<string>() { newPkgVers.ToString() };
 
@@ -231,8 +231,8 @@ namespace DynamoCoreWpfTests
                     content = new PackageVersion()
                     {
                         version = newPkgVers.ToString(),
-                        engine_version = stdLibPkg.EngineVersion,
-                        name = stdLibPkg.Name,
+                        engine_version = bltInPackage.EngineVersion,
+                        name = bltInPackage.Name,
                         id = id,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
@@ -240,7 +240,7 @@ namespace DynamoCoreWpfTests
                     success = true
                 });
                 
-                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(stdLibPkg.Name, newPkgVers);
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo(bltInPackage.Name, newPkgVers);
                 pmVm.DownloadAndInstallPackage(pkgInfo);
 
                 // Users should get 2 warnings :
@@ -252,11 +252,11 @@ namespace DynamoCoreWpfTests
             }
 
             //
-            // 3. User downloads a package that is not part of a std lib package
+            // 3. User downloads a package that is not part of a builtin pkgs.
             //
             {
                 var id = "test-345";
-                var deps = new List<Dependency>() { new Dependency() { _id = id, name = "non-std-libg" } };
+                var deps = new List<Dependency>() { new Dependency() { _id = id, name = "non-builtin-libg" } };
                 var pkgVersion = new Version(1, 0 ,0);
                 var depVers = new List<string>() { pkgVersion.ToString() };
 
@@ -266,8 +266,8 @@ namespace DynamoCoreWpfTests
                     content = new PackageVersion()
                     {
                         version = pkgVersion.ToString(),
-                        engine_version = stdLibPkg.EngineVersion,
-                        name = "non-std-libg",
+                        engine_version = bltInPackage.EngineVersion,
+                        name = "non-builtin-libg",
                         id = id,
                         full_dependency_ids = deps,
                         full_dependency_versions = depVers
@@ -275,7 +275,7 @@ namespace DynamoCoreWpfTests
                     success = true
                 });
 
-                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo("Non-stdlib-package", new Version(1, 0, 0));
+                var pkgInfo = new Dynamo.Graph.Workspaces.PackageInfo("Non-builtin-package", new Version(1, 0, 0));
                 pmVm.DownloadAndInstallPackage(pkgInfo);
 
                 // Users should get 1 warning :

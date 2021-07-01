@@ -164,7 +164,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PathEnabledConverterStdLibPath()
+        public void PathEnabledConverterBltinpackagesPath()
         {
             var setting = new PreferenceSettings()
             {

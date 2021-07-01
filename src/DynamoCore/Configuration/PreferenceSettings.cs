@@ -404,7 +404,7 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
         /// <summary>
-        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
         public bool DisableBuiltinPackages { get; set; }
         /// <summary>

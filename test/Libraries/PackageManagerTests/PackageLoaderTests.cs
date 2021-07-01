@@ -704,7 +704,7 @@ namespace Dynamo.PackageManager.Tests
             //invoke the load
             loader.LoadAll(loaderParams);
 
-            //assert the package in std lib was loaded.
+            //assert the package in builtIn packages was loaded.
             Assert.IsTrue(loader.LocalPackages.Any(x => x.BinaryDirectory.Contains("SignedPackage2")));
             Assert.AreEqual(1, loader.LocalPackages.Count());
             
@@ -726,7 +726,7 @@ namespace Dynamo.PackageManager.Tests
 
             loader.LoadAll(loaderParams);
 
-            //assert the package in std lib was not loaded.
+            //assert the package in builtIn packages was not loaded.
             Assert.IsFalse(loader.LocalPackages.Any(x => x.Name.Contains("SignedPackage2")));
             Assert.AreEqual(0, loader.LocalPackages.Count());
             
@@ -736,7 +736,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void PackageInCustomPackagePathIsLoaded()
         {
-            //setup clean loader where std lib is a custom package path
+            //setup clean loader where builtIn packages is a custom package path
             var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
             var settings = new PreferenceSettings();
             //just to be certain this is false.
@@ -758,7 +758,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
         {
-            //setup clean loader where std lib is a custom package path
+            //setup clean loader where builtIn packages is a custom package path
             var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
             var settings = new PreferenceSettings();
             //disable custom package paths
