@@ -1160,12 +1160,6 @@ Failed to publish file(s):
   <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
     <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
   </data>
-  <data name="InstalledPackageViewContextMenuShowContent" xml:space="preserve">
-    <value>Show Contents</value>
-  </data>
-  <data name="InstalledPackageViewContextMenuShowContentTooltip" xml:space="preserve">
-    <value>See the types loaded by this package</value>
-  </data>
   <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
     <value>Show Root Directory</value>
   </data>
@@ -1526,9 +1520,6 @@ Next assemblies were loaded several times:
   <data name="PackageFolderNotAccessible" xml:space="preserve">
     <value>A problem occurred when trying to install the package. Dynamo is unable to obtain read/write access to
 {0}</value>
-  </data>
-  <data name="PackageManagerWebSiteButton" xml:space="preserve">
-    <value>Package Manager Website</value>
   </data>
   <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
     <value>The name of the package cannot contain /,\, or *.</value>
