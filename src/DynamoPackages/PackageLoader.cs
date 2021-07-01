@@ -127,7 +127,11 @@ namespace Dynamo.PackageManager
 
         private readonly IPathManager pathManager;
 
-        [Obsolete]
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
+        /// <summary>
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
+        /// </summary>
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
@@ -142,7 +146,12 @@ namespace Dynamo.PackageManager
         {
             InitPackageLoader(packagesDirectories, stdLibDirectory);
         }
-        [Obsolete]
+
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
+        /// <summary>
+        /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
+        /// which should be updated to use another constructor when this is obsoleted.
+        /// </summary>
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
             InitPackageLoader(packagesDirectories, null);
@@ -159,9 +168,11 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete]
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
         /// <summary>
-        /// Initialize a new instance of PackageLoader class
+        /// Initialize a new instance of PackageLoader class.
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
         /// </summary>
         /// <param name="packagesDirectories">Default package directories</param>
         /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
