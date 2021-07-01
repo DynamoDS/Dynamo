@@ -62,11 +62,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void CannotDeleteStandardLibraryPath()
+        public void CannotDeleteBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
             {
-                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
             };
 
 
@@ -78,11 +78,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void CannotUpdateStandardLibraryPath()
+        public void CannotUpdateBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
             {
-                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
             };
 
 
@@ -175,7 +175,7 @@ namespace DynamoCoreWpfTests
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
 
-            path = "Standard Library";
+            path = @"Built-In Packages";
             vm.AddPathCommand.Execute(null);
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));

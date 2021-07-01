@@ -20,9 +20,11 @@ namespace Dynamo.PackageManager.Tests
 {
     class PackageLoaderTests : DynamoModelTestBase
     {
+        private const string builtinPackRootDirName = @"Built-In Packages";
+
         public string PackagesDirectory { get { return Path.Combine(TestDirectory, "pkgs"); } }
         public string PackagesDirectorySigned { get { return Path.Combine(TestDirectory, "pkgs_signed"); } }
-        internal string StandardLibraryTestDirectory { get { return Path.Combine(TestDirectory, "standard lib testdir", "Packages"); } }
+        internal string BuiltInPackagesTestDir { get { return Path.Combine(TestDirectory, "builtinpackages testdir", "Packages"); } }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -636,61 +638,61 @@ namespace Dynamo.PackageManager.Tests
         //signedpackage generated from internal repo at SignedDynamoTestingPackages
 
         [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPath()
+        public void HasValidBuiltinPackagesAndDefaultPackagesPath()
         {
             // Arrange
             var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
+                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
-            var standardDirectory = loader.BuiltinPackagesDirectory;
+            var builtinpackageLocation = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
+            Assert.IsNotNullOrEmpty(builtinpackageLocation);
+            Assert.AreEqual(builtinpackageLocation, directory);
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
+        public void HasValidBuiltinPackageAndDefaultPackagesPathWhenBuiltinPackageTokenIsAddedFirst()
         {
             // Arrange
             var loader = new PackageLoader(new[] { DynamoModel.BuiltInPackagesToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
+                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
-            var standardDirectory = loader.BuiltinPackagesDirectory;
+            var builtinpackageLocation = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
+            Assert.IsNotNullOrEmpty(builtinpackageLocation);
+            Assert.AreEqual(builtinpackageLocation, directory);
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
+        public void HasValidBuiltinPackageAndDefaultPackagesPathWhenBuiltInPackageTokenIsAddedLast()
         {
             // Arrange
             var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.BuiltInPackagesToken }, new[] { PackagesDirectorySigned });
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
+                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
-            var standardDirectory = loader.BuiltinPackagesDirectory;
+            var builtinpackageLocation = loader.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
             // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
+            Assert.IsNotNullOrEmpty(builtinpackageLocation);
+            Assert.AreEqual(builtinpackageLocation, directory);
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
-        public void PackageInStandardLibLocationIsLoaded()
+        public void PackageInBuiltinPackageLocationIsLoaded()
         {
            //setup clean loader
-            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var loader = new PackageLoader(new string[0], BuiltInPackagesTestDir);
             var settings = new PreferenceSettings();
             settings.DisableBuiltinPackages = false;
 
@@ -709,11 +711,11 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
-        public void DisablingStandardLibraryCorrectlyDisablesLoading()
+        public void DisablingBuiltinPackagesCorrectlyDisablesLoading()
         {
 
             //setup clean loader
-            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            var loader = new PackageLoader(new string[0], BuiltInPackagesTestDir);
             var settings = new PreferenceSettings();
             settings.DisableBuiltinPackages = true;
 
@@ -735,11 +737,11 @@ namespace Dynamo.PackageManager.Tests
         public void PackageInCustomPackagePathIsLoaded()
         {
             //setup clean loader where std lib is a custom package path
-            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
             var settings = new PreferenceSettings();
             //just to be certain this is false.
             settings.DisableCustomPackageLocations = false;
-            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            settings.CustomPackageFolders = new List<string>() { BuiltInPackagesTestDir };
             var loaderParams = new LoadPackageParams()
             {
                 PathManager = CurrentDynamoModel.PathManager,
@@ -757,11 +759,11 @@ namespace Dynamo.PackageManager.Tests
         public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
         {
             //setup clean loader where std lib is a custom package path
-            var loader = new PackageLoader(new[] { StandardLibraryTestDirectory }, string.Empty);
+            var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
             var settings = new PreferenceSettings();
             //disable custom package paths
             settings.DisableCustomPackageLocations = true;
-            settings.CustomPackageFolders = new List<string>() { StandardLibraryTestDirectory };
+            settings.CustomPackageFolders = new List<string>() { BuiltInPackagesTestDir };
             var loaderParams = new LoadPackageParams()
             {
                 PathManager = CurrentDynamoModel.PathManager,
@@ -872,8 +874,9 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsNull(loader.LocalPackages.FirstOrDefault(package => package.Description == @"Old package"));
         }
 
+        //TODO this test should probably be removed after refactor that Aparajit is doing.
         [Test]
-        public void StandardLibraryIsNotExposedInPathManager()
+        public void BuiltInPackagesIsNotExposedInPathManager()
         {
             // Arrange
             var pathManager = CurrentDynamoModel.PathManager;
@@ -885,12 +888,13 @@ namespace Dynamo.PackageManager.Tests
             var userDefinitions = pathManager.DefinitionDirectories;
 
             // Assert
-            Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
+            const string Expected = @"%BuiltInPackages%";
+            Assert.AreNotEqual(Expected, defaultPackageDirectory);
             Assert.AreEqual(2, packageDirectories.Count());
-            Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
-            Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
+            Assert.IsFalse(packageDirectories.Contains(Expected));
+            Assert.AreNotEqual(Expected, defaultUserDefinitions);
             Assert.AreEqual(2, userDefinitions.Count());
-            Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+            Assert.IsFalse(userDefinitions.Contains(Expected));
         }
 
         [Test]

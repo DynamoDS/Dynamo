@@ -25,7 +25,7 @@ namespace DynamoCoreWpfTests
     {
         public string PackagesDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs"); } }
         public string PackagesDirectorySigned { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "pkgs_signed"); } }
-        internal string StandardLibraryTestDirectory { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "standard lib testdir", "Packages"); } }
+        internal string BuiltinPackagesTestDir { get { return Path.Combine(GetTestDirectory(ExecutingDirectory), "builtinpackages testdir", "Packages"); } }
 
         #region Utility functions
 
@@ -159,10 +159,10 @@ namespace DynamoCoreWpfTests
         public void PackageManagerConflictsWithStdLib()
         {
             var pkgLoader = GetPackageLoader();
-            pkgLoader.BuiltinPackagesDirectory = StandardLibraryTestDirectory;
+            pkgLoader.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
             // Load a std lib package
-            var stdPackageLocation = Path.Combine(StandardLibraryTestDirectory, "SignedPackage2");
+            var stdPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
             pkgLoader.ScanPackageDirectory(stdPackageLocation);
 
             var stdLibPkg = pkgLoader.LocalPackages.Where(x => x.Name == "SignedPackage").FirstOrDefault();
@@ -208,7 +208,7 @@ namespace DynamoCoreWpfTests
 
                 // Users should get 2 warnings :
                 // 1. To confirm that they want to download the specified package.
-                // 2. That a package with the same name and version already exists as part of the Standard Library.
+                // 2. That a package with the same name and version already exists as part of the BuiltinPackages.
                 dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
                 dlgMock.ResetCalls();
@@ -245,7 +245,7 @@ namespace DynamoCoreWpfTests
 
                 // Users should get 2 warnings :
                 // 1. To confirm that they want to download the specified package.
-                // 2. That a package with a different version already exists as part of the Standard Library.
+                // 2. That a package with a different version already exists as part of the BuiltinPackages.
                 dlgMock.Verify(x => x.Show(It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<MessageBoxButton>(), It.IsAny<MessageBoxImage>()), Times.Exactly(2));
                 dlgMock.ResetCalls();

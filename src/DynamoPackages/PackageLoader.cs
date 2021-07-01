@@ -77,8 +77,8 @@ namespace Dynamo.PackageManager
         private int defaultPackagesDirectoryIndex = -1;
         /// <summary>
         /// Returns the default package directory where new packages will be installed
-        /// This is the first non standard library directory
-        /// The first entry is the standard library.
+        /// This is the first non builtin packages directory
+        /// The first entry is the builtin packages.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
         public string DefaultPackagesDirectory
@@ -122,7 +122,7 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
-        private string stdLibDirectory = null;
+        private string builtinPackagesDirectory = null;
 
         /// <summary>
         /// The BuiltinPackages directory is located in the same directory as the DynamoPackages.dll
@@ -132,15 +132,15 @@ namespace Dynamo.PackageManager
         {
             get
             {
-                return stdLibDirectory == null ?
+                return builtinPackagesDirectory == null ?
                     Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),builtinPackagesDirName, @"Packages")
-                    : stdLibDirectory;
+                    : builtinPackagesDirectory;
             }
             set
             {
-                if (stdLibDirectory != value)
+                if (builtinPackagesDirectory != value)
                 {
-                    stdLibDirectory = value;
+                    builtinPackagesDirectory = value;
                 }
             }
         }
@@ -151,16 +151,16 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// This constructor is only intended for testing of stdLib using a non standard directory.
+        /// This constructor is only intended for testing of builtinPackages using a non standard directory.
         /// </summary>
         /// <param name="packagesDirectories"></param>
-        /// <param name="stdLibDirectory"></param>
-        internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        /// <param name="builtinPackageDirectory"></param>
+        internal PackageLoader(IEnumerable<string> packagesDirectories, string builtinPackageDirectory)
         {
-            InitPackageLoader(packagesDirectories, stdLibDirectory);
+            InitPackageLoader(packagesDirectories, builtinPackageDirectory);
 
             //override the property.
-            this.BuiltinPackagesDirectory = stdLibDirectory;
+            this.BuiltinPackagesDirectory = builtinPackageDirectory;
         }
 
         public PackageLoader(IEnumerable<string> packagesDirectories)
@@ -182,36 +182,36 @@ namespace Dynamo.PackageManager
             packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
-        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
         {
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);
 
-            // Setup standard library
-            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.BuiltInPackagesToken);
-            if (standardLibraryIndex == -1)
+            // Setup builtin packages
+            var builtinPackagesIndex = this.packagesDirectories.IndexOf(DynamoModel.BuiltInPackagesToken);
+            if (builtinPackagesIndex == -1)
             {
-                // No standard library in list
-                // Add standard library first
-                this.packagesDirectories.Insert(0, stdLibDirectory);
+                // No builtin packages in list
+                // Add builtin packages first
+                this.packagesDirectories.Insert(0, builtinPackagesDir);
             }
             else
             {
                 // Replace token with runtime library location
-                this.packagesDirectories[standardLibraryIndex] = stdLibDirectory;
+                this.packagesDirectories[builtinPackagesIndex] = builtinPackagesDir;
             }
 
             // Setup Default Package Directory
-            if (standardLibraryIndex == -1)
+            if (builtinPackagesIndex == -1)
             {
                 defaultPackagesDirectoryIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
             }
             else
             {
                 var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-                defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
+                defaultPackagesDirectoryIndex = builtinPackagesIndex == 1 ? 0 : safeIndex;
             }
 
             var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
@@ -219,7 +219,7 @@ namespace Dynamo.PackageManager
             if (error != null)
                 Log(error);
 
-            packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
+            packagesDirectoriesToVerifyCertificates.Add(builtinPackagesDir);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -446,7 +446,7 @@ namespace Dynamo.PackageManager
 
                 if (preferences is IDisablePackageLoadingPreferences disablePrefs
                     &&
-                    //if this directory is the standard library location
+                    //if this directory is the builtin packages location
                     //and loading from there is disabled, don't scan the directory.
                     ((disablePrefs.DisableBuiltinPackages && packagesDirectory == BuiltinPackagesDirectory)
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.

@@ -527,7 +527,7 @@ namespace Dynamo.ViewModels
                 var uninstallsRequiringRestart = new List<Package>();
                 var uninstallRequiringUserModifications = new List<Package>();
                 var immediateUninstalls = new List<Package>();
-                var stdLibPackages = new List<Package>();
+                var builtinPackages = new List<Package>();
 
                 // if a package is already installed we need to uninstall it, allowing
                 // the user to cancel if they do not want to uninstall the package
@@ -538,7 +538,7 @@ namespace Dynamo.ViewModels
 
                     if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.BuiltinPackagesDirectory))
                     {
-                        stdLibPackages.Add(localPkg);
+                        builtinPackages.Add(localPkg);
                         continue;
                     }
 
@@ -557,8 +557,8 @@ namespace Dynamo.ViewModels
                     immediateUninstalls.Add(localPkg);
                 }
 
-                if (stdLibPackages.Any())
-                {// Conflicts with standard library packages
+                if (builtinPackages.Any())
+                {// Conflicts with builtin packages
                     string message = "";
                     if (duplicateLocalPackages.Count() == 1 &&
                         duplicateLocalPackages.First().Name == name)
@@ -566,18 +566,18 @@ namespace Dynamo.ViewModels
                         message = duplicateLocalPackages.First().VersionName == package.version ?
                                     String.Format(Resources.MessageSamePackageInBuiltinPackages,
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    JoinPackageNames(stdLibPackages))
+                                    JoinPackageNames(builtinPackages))
                                     :
                                     String.Format(Resources.MessageSamePackageDiffVersInBuiltinPackages,
                                     DynamoViewModel.BrandingResourceProvider.ProductName,
-                                    JoinPackageNames(stdLibPackages));
+                                    JoinPackageNames(builtinPackages));
                     } 
                     else 
                     {
                         message = String.Format(Resources.MessagePackageDepsInBuiltinPackages,
                                                 DynamoViewModel.BrandingResourceProvider.ProductName,
                                                 name + " " + package.version,
-                                                JoinPackageNames(stdLibPackages));
+                                                JoinPackageNames(builtinPackages));
                     }
 
                     MessageBoxService.Show(message,
