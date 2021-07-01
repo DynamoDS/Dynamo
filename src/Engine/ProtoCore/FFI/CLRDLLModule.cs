@@ -430,6 +430,17 @@ namespace ProtoFFI
                 if (classnode.IsStatic && baseDefinition.DeclaringType == baseType && baseType == typeof(object))
                     continue;
 
+                // If we are in ReflectionContext we cannot compare m.DeclaringType to typeof(object)
+                // this is because typeof gets checked at compile time so it dosent use the reflection only
+                // types https://stackoverflow.com/questions/58912559/how-to-ensure-typeof-and-cast-operators-operate-on-a-different-load-context-not
+                // Instead we check if the AssemblyQualifiedName is the same on the DeclaringType and typeof(object)
+                if (CLRModuleType.IsReflectionContext &&
+                    m.DeclaringType.AssemblyQualifiedName == typeof(object).AssemblyQualifiedName &&
+                    m == baseDefinition)
+                {
+                    continue;
+                }
+
                 // Mono issue: m == m.GetBaseDefinition() for methods from Object class returns True instead of False
                 if (m.DeclaringType == typeof(object) && m == baseDefinition)
                     continue;
