@@ -542,6 +542,7 @@ namespace Dynamo.Configuration
             catch (Exception) { }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
 
             return settings;
         }
@@ -573,6 +574,19 @@ namespace Dynamo.Configuration
                     "ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline"
                 );
                 NamespacesToExcludeFromLibrarySpecified = true;
+            }
+        }
+
+        //migrate old path token to new path token
+        private static void MigrateStdLibTokenToBuiltInToken(PreferenceSettings settings)
+        {
+            for(var i = 0; i< settings.CustomPackageFolders.Count;i++)
+            {
+                var path = settings.CustomPackageFolders[i];
+                if (path == DynamoModel.StandardLibraryToken)
+                {
+                    settings.CustomPackageFolders[i] = DynamoModel.BuiltInPackagesToken;
+                }
             }
         }
     }

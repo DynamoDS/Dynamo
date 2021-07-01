@@ -473,8 +473,11 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
-        // Token representing the standard library directory
+        // Token representing the Built-InPackages directory
         internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
+        [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
+        // Token representing the standard library directory
+        internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
         /// <summary>
         /// Default constructor for DynamoModel
