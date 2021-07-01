@@ -372,7 +372,8 @@ namespace Dynamo.Configuration
         /// will be installed. The default package path for install is the user data directory
         /// currently used by the Dynamo environment.
         /// </summary>
-        public string SelectedPackagePathForInstall {
+        public string SelectedPackagePathForInstall 
+        {
             get
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))

@@ -716,7 +716,8 @@ namespace Dynamo.PackageManager.Tests
         {
 
             //setup clean loader
-            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            (CurrentDynamoModel.PathManager as PathManager).StandardLibraryDirectory = StandardLibraryTestDirectory;
+            var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             settings.DisableStandardLibrary = true;
 
@@ -889,8 +890,9 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
-            Assert.AreEqual(2, packageDirectories.Count());
+            Assert.AreEqual(3, packageDirectories.Count());
             Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
+            Assert.IsTrue(packageDirectories.Contains((pathManager as PathManager).StandardLibraryDirectory));
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
             Assert.AreEqual(2, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));

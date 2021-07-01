@@ -163,7 +163,14 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
+            get 
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+            }
         }
 
         public IEnumerable<string> DefinitionDirectories
