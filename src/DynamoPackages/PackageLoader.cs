@@ -127,29 +127,6 @@ namespace Dynamo.PackageManager
 
         private readonly IPathManager pathManager;
 
-        //private string stdLibDirectory = null;
-
-        /// <summary>
-        /// The standard library directory is located in the same directory as the DynamoPackages.dll
-        /// Property should only be set during testing.
-        /// </summary>
-        //internal string StandardLibraryDirectory
-        //{
-        //    get
-        //    {
-        //        return stdLibDirectory == null ?
-        //            Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
-        //            : stdLibDirectory;
-        //    }
-        //    set
-        //    {
-        //        if (stdLibDirectory != value)
-        //        {
-        //            stdLibDirectory = value;
-        //        }
-        //    }
-        //}
-
         [Obsolete]
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
@@ -502,14 +479,14 @@ namespace Dynamo.PackageManager
                     // verify if the package directory requires certificate verifications
                     // This is done by default for the package directory defined in PathManager common directory location.
                     var checkCertificates = false;
-                    //foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
-                    //{
-                    //    if (root.Contains(pathToVerifyCert))
-                    //    {
-                    //        checkCertificates = true;
-                    //        break;
-                    //    }
-                    //}
+                    foreach (var pathToVerifyCert in packagesDirectoriesToVerifyCertificates)
+                    {
+                        if (root.Contains(pathToVerifyCert))
+                        {
+                            checkCertificates = true;
+                            break;
+                        }
+                    }
 
                     var pkg = ScanPackageDirectory(dir, checkCertificates);
                     if (pkg != null && preferences.PackageDirectoriesToUninstall.Contains(dir))
