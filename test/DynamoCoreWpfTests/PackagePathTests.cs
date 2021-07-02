@@ -267,14 +267,15 @@ namespace DynamoCoreWpfTests
             var setting = Model.PreferenceSettings;
             var loader = Model.GetPackageManagerExtension().PackageLoader;
 
-            var appDataFolder = Path.Combine(GetAppDataFolder());
-            Assert.AreEqual(3, ViewModel.Model.PathManager.PackagesDirectories.Count());
+            var appDataFolder = GetAppDataFolder();
+            Assert.AreEqual(4, ViewModel.Model.PathManager.PackagesDirectories.Count());
             Assert.AreEqual(4, setting.CustomPackageFolders.Count);
-            Assert.AreEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), ViewModel.Model.PathManager.DefaultPackagesDirectory);
+            var appDataPackagesDir = Path.Combine(appDataFolder, PathManager.PackagesDirectoryName);
+            Assert.AreEqual(appDataPackagesDir, ViewModel.Model.PathManager.DefaultPackagesDirectory);
             Assert.AreEqual(appDataFolder, setting.SelectedPackagePathForInstall);
             //TODO this is incorrect, but this property has been obsoleted and will be made correct after refactoring pathmanager and packageloader.
             //this should be changed to Assert.AreEqual after refactor.
-            Assert.AreNotEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), loader.DefaultPackagesDirectory);
+            Assert.AreNotEqual(appDataPackagesDir, loader.DefaultPackagesDirectory);
         }
     }
 }
