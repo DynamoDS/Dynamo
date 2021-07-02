@@ -157,8 +157,10 @@ namespace DynamoCoreWpfTests
         [Description("User tries to download pacakges that might conflict with existing packages in builtIn")]
         public void PackageManagerConflictsWithbltinpackages()
         {
+            var pathMgr = ViewModel.Model.PathManager;
             var pkgLoader = GetPackageLoader();
-            pkgLoader.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
+            if(pathMgr is Dynamo.Core.PathManager pm)
+                pm.BuiltinPackagesDirectory = BuiltinPackagesTestDir;
 
             // Load a builtIn package
             var builtInPackageLocation = Path.Combine(BuiltinPackagesTestDir, "SignedPackage2");
