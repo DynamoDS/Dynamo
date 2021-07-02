@@ -639,56 +639,20 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPath()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(pathManager.GetType()).Location),
                 @"Standard Library", @"Packages");
 
             // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
             var standardDirectory = pathManager.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
+            var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
             Assert.AreEqual(standardDirectory, directory);
             Assert.AreNotEqual(defaultDirectory, directory);
         }
-        [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { DynamoModel.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
 
-            // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
-            var standardDirectory = pathManager.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
-        [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.StandardLibraryToken }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
-
-            // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
-            var standardDirectory = pathManager.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
         [Test]
         public void PackageInStandardLibLocationIsLoaded()
         {
