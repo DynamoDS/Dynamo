@@ -894,8 +894,9 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
             Assert.IsTrue(packageDirectories.Contains((pathManager as PathManager).StandardLibraryDirectory));
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
-            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.AreEqual(3, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+            Assert.IsTrue(userDefinitions.Contains((pathManager as PathManager).StandardLibraryDirectory));
         }
 
         [Test]
