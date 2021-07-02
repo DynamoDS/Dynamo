@@ -23,8 +23,6 @@ namespace DynamoUnits
         }
 
         public string TypeId => forgeQuantity.getTypeId();
-
-
         public string Name => forgeQuantity.getName();
 
 
