@@ -73,9 +73,6 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-        //TODO remove.
-        private int defaultPackagesDirectoryIndex = -1;
-        //TODO this should get DefaultPackagesDirectoryFrom PathManager directly.
         /// <summary>
         /// Returns the default package directory where new packages will be installed
         /// This is the first non standard library directory
@@ -85,7 +82,7 @@ namespace Dynamo.PackageManager
         [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
         public string DefaultPackagesDirectory
         {
-            get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
+            get { return pathManager.DefaultPackagesDirectory; }
         }
 
         /// <summary>
@@ -114,13 +111,6 @@ namespace Dynamo.PackageManager
             catch (UnauthorizedAccessException) { }
 
             return root;
-        }
-
-        //TODO remove when removing DefaultPackagesDirectory and DefaultPackagesDirectoryIndex
-        internal void SetPackagesDownloadDirectory(string downloadDirectory, string userDataFolder)
-        {
-            defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(
-                TransformPath(downloadDirectory, userDataFolder, PathManager.PackagesDirectoryName));
         }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
@@ -207,18 +197,6 @@ namespace Dynamo.PackageManager
                 // Replace token with runtime library location
                 this.packagesDirectories[standardLibraryIndex] = stdLibDirectory;
             }
-
-            // Setup Default Package Directory
-            if (standardLibraryIndex == -1)
-            {
-                defaultPackagesDirectoryIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-            }
-            else
-            {
-                var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-                defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
-            }
-
             packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
         }
 
