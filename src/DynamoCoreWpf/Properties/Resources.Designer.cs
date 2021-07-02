@@ -3954,7 +3954,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Built-In Packages.
+        ///   Looks up a localized string similar to Dynamo Built-In Packages.
         /// </summary>
         public static string PackagePathViewModel_BuiltInPackages {
             get {

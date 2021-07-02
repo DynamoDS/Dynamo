@@ -651,7 +651,7 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.IsNotNullOrEmpty(builtinpackageLocation);
-            Assert.AreEqual(builtinpackageLocation, directory);
+            Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
@@ -668,7 +668,7 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.IsNotNullOrEmpty(builtinpackageLocation);
-            Assert.AreEqual(builtinpackageLocation, directory);
+            Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]
@@ -685,7 +685,7 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.IsNotNullOrEmpty(builtinpackageLocation);
-            Assert.AreEqual(builtinpackageLocation, directory);
+            Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }
         [Test]

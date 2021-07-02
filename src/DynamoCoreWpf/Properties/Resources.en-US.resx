@@ -2367,7 +2367,7 @@ Uninstall the following packages: {0}?</value>
     <comment>Toogle Button Content</comment>
   </data>
   <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
-    <value>Built-In Packages</value>
+    <value>Dynamo Built-In Packages</value>
   </data>
   <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
     <value>All changes saved automatically</value>
