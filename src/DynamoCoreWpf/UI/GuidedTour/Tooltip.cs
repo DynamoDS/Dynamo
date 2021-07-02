@@ -22,7 +22,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="width">Tooltip width</param>
         /// <param name="height">Tooltip height</param>
         /// <param name="direction">The pointer direction of the tooltip</param>
-        public Tooltip(HostInfo host, double width, double height, PointerDirection direction)
+        public Tooltip(HostControlInfo host, double width, double height, PointerDirection direction)
             :base(host, width, height)
         {
             SetPointerDirection(direction);

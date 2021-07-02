@@ -10,10 +10,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// </summary>
     public class ExitTour : Step
     {
-        public ExitTour(HostInfo host, double width, double height)
+        public ExitTour(HostControlInfo host, double width, double height)
             : base(host, width, height)
         {
-
+            //In the ExitTour constructor we call the base constructor passing the host information and the popup width and height
         }
 
         protected override void CreatePopup()

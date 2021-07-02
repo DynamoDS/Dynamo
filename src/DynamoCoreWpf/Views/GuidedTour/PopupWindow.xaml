@@ -20,7 +20,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-       </ResourceDictionary>
+        </ResourceDictionary>
                 
     </Popup.Resources>
 
@@ -30,11 +30,10 @@
         <Polygon x:Name="TooltipPointer"
                  Visibility="{Binding ShowPopupPointer, Converter={StaticResource BooleanToVisibilityConverter}}"
                  Points="{Binding TooltipPointerPoints}" 
-                 Stroke="Black" 
-                 Fill="White" />
+                 Style="{StaticResource PoupPolygonPointerStyle}" />
 
-        <Path Fill="{StaticResource PopupWhiteColor}" 
-              Stroke="Black">
+        <Path x:Name="PopupPathRectangle" 
+              Style="{StaticResource PoupPathRectangleStyle}">
             <Path.Data>
                 <RectangleGeometry x:Name="BackgroundRectangle">
                 </RectangleGeometry>
@@ -56,13 +55,14 @@
                     <RowDefinition Height="Auto" 
                                    MinHeight="50"/>
                 </Grid.RowDefinitions>
+                
                 <!--This is the header/title section of the Popup-->
                 <Border Grid.Row="0" 
                         BorderThickness="0,0,0,1"               
                         Margin="20,0,0,0">
                     <Border.BorderBrush>
-                        <SolidColorBrush Color="#808080" 
-                                     Opacity="0.3"/>
+                        <SolidColorBrush Color="{StaticResource PopupTitleBorderColor}" 
+                                         Opacity="0.3"/>
                     </Border.BorderBrush>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -72,11 +72,9 @@
                         <Label x:Name="TitleLabel"
                                Grid.Column="0"
                                Content="{Binding StepContent.Title}"
-                               FontFamily="Artifakt Element" 
-                               FontSize="20" 
-                               MinHeight="50"
                                VerticalContentAlignment="Center"  
-                               Foreground="#535353" />
+                               Style="{StaticResource PoupTitleLabelStyle}"
+                               />
                         <Button Name="CloseButton"
                                 Height="15"  
                                 Width="15"
@@ -89,15 +87,11 @@
 
                 <!--This is the content (text/media) section of the Popup-->
                 <localui:CustomRichTextBox x:Name="ContentRichTextBox" 
-                                            IsDocumentEnabled="True"
-                                            FontSize="14"
-                                            FontFamily="Artifakt Element" 
-                                            IsReadOnly="True" 
-                                            Background="{StaticResource PopupWhiteColor}"
-                                            BorderThickness="0"
-                                            Grid.Row="1"
-                                            Margin="20,14,20,5"
-                                            CustomText="{Binding StepContent.FormattedText}">
+                                           IsDocumentEnabled="True"                                       
+                                           Grid.Row="1"
+                                           Margin="20,14,20,5"
+                                           CustomText="{Binding StepContent.FormattedText}"
+                                           Style="{StaticResource CustomRichTextBoxStyle}">
                 </localui:CustomRichTextBox>
             </Grid>
             
@@ -135,14 +129,9 @@
                 </StackPanel>
                 <Button Name="StartTourButton" 
                         Visibility="{Binding ShowPopupButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        Style="{StaticResource PoupButtonStyle}"
                         Grid.Column="3"                      
-                        Margin="0,0,10,0"
-                        MinWidth="80"  
-                        MaxHeight="36"
-                        BorderThickness="0"
-                        Foreground="{StaticResource PopupWhiteColor}" 
-                        Background="{StaticResource PreferencesWindowButtonColor}" 
-                        HorizontalAlignment="Center"
+                        Margin="0,0,10,0"                      
                         Click="StartTourButton_Click" >
                     Start Tour
                 </Button>

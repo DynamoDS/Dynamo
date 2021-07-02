@@ -12,7 +12,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
     {
         private PopupWindowViewModel popupViewModel;
 
-        public PopupWindow(PopupWindowViewModel viewModel, HostInfo hInfo)
+        public PopupWindow(PopupWindowViewModel viewModel, HostControlInfo hInfo)
         {
             InitializeComponent();
             

@@ -6,12 +6,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
     /// <summary>
     /// This class will contain info related to the popup location and the host control in which the popup will appear over
     /// </summary>
-    public class HostInfo
+    public class HostControlInfo
     {
         private string name;
         private string hostClass;
         private UIElement hostUIElement;
-        public PlacementMode popupPlacement;
         private double verticalPopupOffSet;
         private double horizontalPopupOffSet;
 
@@ -63,17 +62,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This property will hold the placement location of the popup, for now we are just using Right, Left, Top and Bottom
         /// </summary>
-        public PlacementMode PopupPlacement
-        {
-            get
-            {
-                return popupPlacement;
-            }
-            set
-            {
-                popupPlacement = value;
-            }
-        }
+        public PlacementMode PopupPlacement { get; set; }
 
         /// <summary>
         /// Once the popup host control and placecement is set we can use this property for moving the popup location Vertically (by specifying an offset) 

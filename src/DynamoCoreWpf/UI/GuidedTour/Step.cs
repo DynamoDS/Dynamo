@@ -43,14 +43,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// This property contains the Host information like the host popup element or the popup position
         /// </summary>
-        public HostInfo HostPopupInfo { get; set; }
-        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };
-
-        /// <summary>
-        /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
-        /// By default the tooltip pointer will be pointing to the left and will be located at the top
-        /// </summary>
-        protected PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
+        public HostControlInfo HostPopupInfo { get; set; }
+        public enum PointerDirection { TOP_RIGHT, TOP_LEFT, BOTTOM_RIGHT, BOTTOM_LEFT };     
 
         /// <summary>
         /// This will contains the 3 points needed for drawing the Tooltip pointer direction
@@ -61,6 +55,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
         #region Protected Properties
         protected Popup stepUIPopup;
         protected Func<bool, bool> validator;
+        /// <summary>
+        /// This property describe which will be the pointing direction of the tooltip (if is a Welcome or Survey popup then is not used)
+        /// By default the tooltip pointer will be pointing to the left and will be located at the top
+        /// </summary>
+        protected PointerDirection TooltipPointerDirection { get; set; } = PointerDirection.TOP_LEFT;
         #endregion
 
         #region Public Methods
@@ -71,7 +70,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <param name="host">The host and popup information in which the popup will be shown</param>
         /// <param name="width">Popup Width</param>
         /// <param name="height">Popup Height</param>
-        public Step(HostInfo host, double width, double height)
+        public Step(HostControlInfo host, double width, double height)
         {
             HostPopupInfo = host;
             Width = width;

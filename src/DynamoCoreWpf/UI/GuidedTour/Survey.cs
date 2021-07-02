@@ -10,10 +10,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
 {
     public class Survey : Step
     {
-        public Survey(HostInfo host, double width, double height)
+        public Survey(HostControlInfo host, double width, double height)
             :base(host, width, height)
         {
-
+            //In the Survey constructor we call the base constructor passing the host information and the popup width and height
         }
 
         protected override void CreatePopup()

@@ -3472,6 +3472,12 @@
     <SolidColorBrush x:Key="PopupWhiteColor" 
                              Color="#FFFFFF" />
 
+    <Color x:Key="PopupTitleBorderColor" 
+                   A="255"
+                   R="128"
+                   G="128"
+                   B="128"/>
+
     <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="5"/>
@@ -3584,5 +3590,51 @@
         </Setter>
     </Style>
 
+    <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="MaxHeight" Value="36"/>
+        <Setter Property="BorderThickness" Value="36"/>
+        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                                    BorderThickness="1"
+                                    CornerRadius="4" 
+                                    Background="{StaticResource PreferencesWindowButtonColor}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#535353" />
+    </Style>
+
+    <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Stroke" Value="Black"/>
+    </Style>
+
+    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+    </Style>
+
+    <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
 
 </ResourceDictionary>

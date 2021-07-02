@@ -47,12 +47,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         #endregion
 
-
-        public CustomRichTextBox()
-        {
-
-        }
-
         /// <summary>
         /// This is the main method of the CustomRichTextBox and is parsing the text provided in order to show hyperlinks, images, bullet points, words in bold
         /// </summary>
