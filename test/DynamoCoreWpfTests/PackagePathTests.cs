@@ -209,7 +209,7 @@ namespace DynamoCoreWpfTests
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
 
-            path = @"Built-In Packages";
+            path = @"Dynamo Built-In Packages";
             vm.AddPathCommand.Execute(null);
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
