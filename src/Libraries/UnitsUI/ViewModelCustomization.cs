@@ -160,10 +160,11 @@ namespace UnitsUI
             return true;
         }
     }
+
+
     public class UnitValueOutputDropdownViewModel : NotificationObject
     {
         private readonly UnitValueOutputDropdown unitValueDropdownModel;
-       // public DelegateCommand ToggleButtonClick { get; set; }
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
 
@@ -260,7 +261,6 @@ namespace UnitsUI
             nodeViewModel = nodeView.ViewModel;
             nodeModel = nodeView.ViewModel.NodeModel;
             unitValueDropdownModel.PropertyChanged += model_PropertyChanged;
-            //ToggleButtonClick = new DelegateCommand(OnToggleButtonClick, CanToggleButton);
         }
 
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -282,7 +282,7 @@ namespace UnitsUI
                 case nameof(UnitValueOutputDropdown.DisplayValue):
                     RaisePropertyChanged(nameof(DisplayValue));
                     break;
-                case "CachedValue":
+                case nameof(UnitValueOutputDropdown.CachedValue):
                     //if the cached data is empty, we simply return, no need to update the display value
                     if (unitValueDropdownModel.CachedValue.StringData == "{}") return;
                     unitValueDropdownModel.DisplayValue = unitValueDropdownModel.CachedValue.StringData;
@@ -291,24 +291,5 @@ namespace UnitsUI
                     break;
             }
         }
-
-        /// <summary>
-        /// Called when Toggle button is clicked.
-        /// Switches the combo box values
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
-        //private void OnToggleButtonClick(object obj)
-        //{
-        //    //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-        //    //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
-        //    unitValueDropdownModel.ToggleDropdownValues();
-        //    nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-        //}
-
-        //private bool CanToggleButton(object obj)
-        //{
-        //    return true;
-        //}
     }
 }
