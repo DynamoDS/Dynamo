@@ -31,6 +31,13 @@ namespace DynamoUnits
             return ForgeUnitsEngine.convert(value, fromUnit.TypeId, toUnit.TypeId);
         }
 
+        /// <summary>
+        /// Wrapper function that converts between a double value between one unit and another.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="fromUnit"></param>
+        /// <param name="toUnit"></param>
+        /// <returns></returns>
         public static double ConvertByUnitIds(double value, string fromUnit, string toUnit)
         {
             return ForgeUnitsEngine.convert(value, fromUnit, toUnit);
@@ -40,7 +47,12 @@ namespace DynamoUnits
         {
             return ForgeUnitsEngine.parse(targetUnit.TypeId, expression);
         }
-
+        /// <summary>
+        /// Parses a string to a unit value.
+        /// </summary>
+        /// <param name="targetUnit"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static double ParseExpressionByUnitId(string targetUnit, string expression)
         {
@@ -106,7 +118,11 @@ namespace DynamoUnits
             return outputString;
         }
 
-
+        /// <summary>
+        /// Helper function to cast an object to a type UnitSymbol.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static UnitSymbol CastToUnitSymbol(object value)
         {
@@ -126,7 +142,11 @@ namespace DynamoUnits
                 throw;
             }
         }
-
+        /// <summary>
+        /// Helper function to cast an object to a type Unit.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
         public static Unit CastToUnit(object value)
         {

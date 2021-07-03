@@ -161,7 +161,9 @@ namespace UnitsUI
         }
     }
 
-
+    /// <summary>
+    ///  This viewmodel allows for better communication between the nodemodel and the nodeviewcustomization.
+    /// </summary>
     public class UnitValueOutputDropdownViewModel : NotificationObject
     {
         private readonly UnitValueOutputDropdown unitValueDropdownModel;
@@ -255,6 +257,8 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(AllFormats));
             }
         }
+
+
         public UnitValueOutputDropdownViewModel(UnitValueOutputDropdown model, NodeView nodeView)
         {
             unitValueDropdownModel = model;

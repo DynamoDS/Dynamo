@@ -25,7 +25,9 @@ namespace DynamoUnits
         public string TypeId => forgeQuantity.getTypeId();
         public string Name => forgeQuantity.getName();
 
-
+        /// <summary>
+        /// Returns a list of all available Units.
+        /// </summary>
         public List<Unit> Units
         {
             get
@@ -40,7 +42,11 @@ namespace DynamoUnits
                 return dynUnits;
             }
         }
-
+        /// <summary>
+        /// Returns an object of type Quantity from its typeId string.
+        /// </summary>
+        /// <param name="typeId"></param>
+        /// <returns></returns>
         public static Quantity ByTypeID(string typeId)
         {
             return new Quantity(Utilities.ForgeUnitsEngine.getQuantity(typeId));

@@ -787,6 +787,9 @@ namespace UnitsUI
         private List<bool> allFormats;
         private string displayValue;
 
+        /// <summary>
+        /// The only normal 'input' of type double. All others are dropdown comboboxes.
+        /// </summary>
         public double Value { get; set; }
        
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
@@ -851,6 +854,10 @@ namespace UnitsUI
         [JsonIgnore]
         public List<NumberFormat> AllFormats { get; set; }
         
+        /// <summary>
+        /// The string output that gets calculated when the dropdown outputs change.
+        /// This gets computed and when the cached value gets updated, the viewmodel updates the output textbox.
+        /// </summary>
         public string DisplayValue
         {
             get
