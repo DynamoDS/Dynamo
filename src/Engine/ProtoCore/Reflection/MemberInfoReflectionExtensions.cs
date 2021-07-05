@@ -23,16 +23,51 @@ namespace ProtoFFI.Reflection
                 }
 
                 // This will fail if there are overloads of the method
-                var baseTypeMethod = baseType.GetMethod(methodInfo.Name);
+                var baseTypeMethods = baseType.GetMethods()
+                    .Where(x => x.Name == methodInfo.Name);
 
-                if (baseTypeMethod is null)
+                if (!baseTypeMethods.Any())
                 {
                     return methodInfo;
                 }
 
+                MethodInfo baseTypeMethod = null;
+
+                // If there are more methods in the Base type with the same name,
+                // we need to find the one where the parameter types matches.
+                if (baseTypeMethods.Count() > 1)
+                {
+                    Type[] inputMethodArgs;
+
+                    inputMethodArgs = methodInfo
+                        .GetParameters()
+                        .Select(x => x.ParameterType)
+                        .ToArray();
+
+                    foreach (var method in baseTypeMethods)
+                    {
+                        var methodArgs = method
+                            .GetParameters()
+                            .Select(x => x.ParameterType)
+                            .ToArray();
+
+                        if (methodArgs.SequenceEqual(inputMethodArgs))
+                        {
+                            baseTypeMethod = method;
+                        }
+                    }
+                }
+
+                else
+                {
+                    baseTypeMethod = baseTypeMethods.FirstOrDefault();
+                }
+
                 // Need to return the original methodInfo if the method is hiding the inherited member using the new keyword
                 // This is probably not a supported way of doing this... but getting desperate
-                if (baseTypeMethod.IsVirtual != true && baseTypeMethod.GetMethodBody() != null)
+                if (baseTypeMethod is null || 
+                    baseTypeMethod.IsVirtual != true && 
+                    baseTypeMethod.GetMethodBody() != null)
                 {
                     return methodInfo;
                 }
