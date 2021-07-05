@@ -175,7 +175,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="UI\GuidedTour\CustomRichTextBox.cs" />
-    <Compile Include="UI\GuidedTour\HostInfo.cs" />
+    <Compile Include="UI\GuidedTour\HostControlInfo.cs" />
     <Compile Include="UI\GuidedTour\Step.cs" />
     <Compile Include="UI\GuidedTour\Survey.cs" />
     <Compile Include="UI\GuidedTour\Tooltip.cs" />
