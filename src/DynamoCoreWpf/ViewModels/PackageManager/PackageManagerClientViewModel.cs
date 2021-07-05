@@ -686,7 +686,7 @@ namespace Dynamo.ViewModels
 
                 // form header version pairs and download and install all packages
                 dependencyVersionHeaders
-                    .Select((dep, i) => {
+                    .Select((dep) => {
                         return new PackageDownloadHandle()
                         {
                             Id = dep.id,

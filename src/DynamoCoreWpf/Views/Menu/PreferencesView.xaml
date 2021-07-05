@@ -8,17 +8,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:Dynamo.Controls"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"   
-        xmlns:views="clr-namespace:Dynamo.Wpf.Views"
         xmlns:ui="clr-namespace:Dynamo.UI"
         xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
+        xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
-        ResizeMode="NoResize"
         mc:Ignorable="d" 
         Height="474" 
-        Width="530" >
+        Width="665"
+        ResizeMode="NoResize">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
     <Window.Resources>
@@ -33,6 +34,9 @@
             <controls:BinaryRadioButtonCheckedConverter x:Key="BinaryRadioButtonCheckedConverter"/>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
+
+
 
             <!--This Template will be used for the controls generated in the Styles list when a new Style is saved-->
             <DataTemplate x:Key="styleViewItemTemplate">
@@ -76,7 +80,7 @@
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Top"
                                     Click="RemoveStyle_Click"
-                                    Style="{StaticResource RemoveStyleButtonStyle}"
+                                    Style="{StaticResource FlatIconButtonStyle}"
                                     Width="20"
                                     Height="30">
                                 <fa:ImageAwesome Icon="Trash"          
@@ -430,8 +434,8 @@
                                     <Button x:Name="ReloadCPython"
                                                 Style="{StaticResource FlatButtonStyle}" 
                                                 HorizontalAlignment="Left"                                             
-                                                Width="100"
                                                 Height="25"
+                                                MinWidth="100"
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="ReloadCPython_Click"
@@ -703,7 +707,7 @@
                     <!--Package Manager Settings Tab-->
                     <TabItem Header="{x:Static p:Resources.PreferencesPackageManagerSettingsTab}"
                              Style="{StaticResource LeftTab}">
-                        <!--This Grid contains the package mangager settings tab-->
+                        <!--This Grid contains the package manager settings tab-->
                         <Grid x:Name="PackageManagerTab" 
                               Margin="1"
                               HorizontalAlignment="Stretch">
@@ -712,25 +716,44 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
 
-                            <!--This Grid row contains the Package Paths section-->
+                            <!--This Grid row contains the Node and Package Paths section-->
                             <Expander x:Name="PackagePathsExpander"
                                         Grid.Row="0"
                                         Style="{StaticResource MenuExpanderStyle}" 
                                         IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=PackagePathsExpander}"
                                         Header="{x:Static p:Resources.PackagePathsExpanderName}">
                                 <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                                    <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
+                                            Padding="5,5,5,5"
+                                            FontSize="13"
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                    <ComboBox Grid.Row="1"
+                                              x:Name="PackageDownloadDirectoryComboBox"
+                                              Width="Auto"
+                                              Margin="0,5,0,5"
+                                              HorizontalAlignment="Left"
+                                              ItemsSource="{Binding Path=PackagePathsForInstall}"
+                                              SelectedItem="{Binding Path=SelectedPackagePathForInstall}"
+                                              Style="{StaticResource NoBordersComboBoxStyle}"
+                                              ToolTip="{Binding Path=SelectedPackagePathForInstall}">
+                                    </ComboBox>
+                                    <ScrollViewer Height="200" VerticalScrollBarVisibility="Auto">
+                                        <packagemanager:PackagePathView x:Name="PackagePathView" DataContext="{Binding PackagePathsViewModel}"/>
+                                    </ScrollViewer>
                                 </StackPanel>
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->
-                            <Expander x:Name="InstalledPackagesExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                       IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
-                                          Grid.Row="1"
-                                          Header="{x:Static p:Resources.InstalledPackageViewTitle}">
-                                <StackPanel Orientation="Vertical" Margin="0,6,0,0">
-                                    <Label>SOME CONTENT</Label>
+                            <Expander x:Name="InstalledPackagesExpander"
+                                      Expanded="InstalledPackagesExpander_OnExpanded"
+                                      Collapsed="InstalledPackagesExpander_OnCollapsed"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.InstalledPackageViewTitle}">
+                                <StackPanel
+                                    Orientation="Vertical" Margin="0,6,0,0">
+                                    <wpfControls:InstalledPackagesControl Height="Auto"/>
                                 </StackPanel>
                             </Expander>
                         </Grid>

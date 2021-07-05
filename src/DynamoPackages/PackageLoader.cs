@@ -73,19 +73,55 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-
+        //TODO remove.
+        private int defaultPackagesDirectoryIndex = -1;
+        //TODO this should get DefaultPackagesDirectoryFrom PathManager directly.
         /// <summary>
         /// Returns the default package directory where new packages will be installed
         /// This is the first non standard library directory
         /// The first entry is the standard library.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
+        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
         public string DefaultPackagesDirectory
         {
             get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
         }
 
-        private int defaultPackagesDirectoryIndex = -1;
+        /// <summary>
+        /// Checks if the given (root) path is a subpath of the user data folder,
+        /// and then combines the extension path with root. If not, it simply combines the paths
+        /// and checks if the path is valid. If not, the root path is returned unchanged.
+        /// </summary>
+        /// <param name="root">root path to transform</param>
+        /// <param name="userDataFolder"></param>
+        /// <param name="extension">subdirectory or subpath</param>
+        /// <returns>combined root and extension path</returns>
+        private static string TransformPath(string root, string userDataFolder, string extension)
+        {
+            if (root.StartsWith(userDataFolder))
+            {
+                return Path.Combine(root, extension);
+            }
+            try
+            {
+                var subFolder = Path.Combine(root, extension);
+                if (Directory.Exists(subFolder))
+                    return subFolder;
+            }
+            catch (IOException) { }
+            catch (ArgumentException) { }
+            catch (UnauthorizedAccessException) { }
+
+            return root;
+        }
+
+        //TODO remove when removing DefaultPackagesDirectory and DefaultPackagesDirectoryIndex
+        internal void SetPackagesDownloadDirectory(string downloadDirectory, string userDataFolder)
+        {
+            defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(
+                TransformPath(downloadDirectory, userDataFolder, PathManager.PackagesDirectoryName));
+        }
 
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
@@ -180,11 +216,6 @@ namespace Dynamo.PackageManager
                 var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
                 defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
             }
-
-            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-
-            if (error != null)
-                Log(error);
 
             packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
         }

@@ -2451,6 +2451,51 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel and Show Issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_CancelBtn {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_CancelBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are unresolved issues with the graph type. If this graph is designed to be used outside of Dynamo, resolve all issues and save the graph again..
+        /// </summary>
+        public static string GraphIssuesOnSave_Description {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save with Issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_ProceedBtn {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_ProceedBtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are trying to save a graph with unresolved issues.
+        /// </summary>
+        public static string GraphIssuesOnSave_Summary {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Summary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Graph Type Issues found.
+        /// </summary>
+        public static string GraphIssuesOnSave_Title {
+            get {
+                return ResourceManager.GetString("GraphIssuesOnSave_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Background.
         /// </summary>
         public static string GroupContextMenuBackground {
@@ -2735,24 +2780,6 @@ namespace Dynamo.Wpf.Properties {
         public static string InstalledPackageViewContextMenuRemoveDeprecationTooltip {
             get {
                 return ResourceManager.GetString("InstalledPackageViewContextMenuRemoveDeprecationTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Show Contents.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContent {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContent", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to See the types loaded by this package.
-        /// </summary>
-        public static string InstalledPackageViewContextMenuShowContentTooltip {
-            get {
-                return ResourceManager.GetString("InstalledPackageViewContextMenuShowContentTooltip", resourceCulture);
             }
         }
         
@@ -3582,6 +3609,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Renamed.
+        /// </summary>
+        public static string NodeRenamedLabel {
+            get {
+                return ResourceManager.GetString("NodeRenamedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Freeze.
         /// </summary>
         public static string NodesRunStatus {
@@ -3828,15 +3864,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Package Manager Website.
-        /// </summary>
-        public static string PackageManagerWebSiteButton {
-            get {
-                return ResourceManager.GetString("PackageManagerWebSiteButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The name of the package cannot contain /,\, or *..
         /// </summary>
         public static string PackageNameCannotContainTheseCharacters {
@@ -3864,6 +3891,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Paths.
+        /// </summary>
+        public static string PackagePathAddPathButtonName {
+            get {
+                return ResourceManager.GetString("PackagePathAddPathButtonName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The import path &quot;{0}&quot; was added to &quot;Manage Node and Package Paths&quot;. If you want to update or remove this path, please open &quot;Settings &gt; Manage Node and Package Paths...&quot;.
         /// </summary>
         public static string PackagePathAutoAddNotificationDetailedDescription {
@@ -3887,6 +3923,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagePathAutoAddNotificationTitle {
             get {
                 return ResourceManager.GetString("PackagePathAutoAddNotificationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package/Library Search Paths.
+        /// </summary>
+        public static string PackagePathPreferencesTitle {
+            get {
+                return ResourceManager.GetString("PackagePathPreferencesTitle", resourceCulture);
             }
         }
         
@@ -4377,6 +4422,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Issues found.
+        /// </summary>
+        public static string PersistentVisualStatusOfLinterIssues {
+            get {
+                return ResourceManager.GetString("PersistentVisualStatusOfLinterIssues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Default Value.
         /// </summary>
         public static string PortViewContextMenuUserDefaultValue {
@@ -4485,6 +4539,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Package Download Directory.
+        /// </summary>
+        public static string PreferencesViewPackageDownloadDirectory {
+            get {
+                return ResourceManager.GetString("PreferencesViewPackageDownloadDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Python.
         /// </summary>
         public static string PreferencesViewPython {
@@ -4526,6 +4589,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewSavedChangesTooltip {
             get {
                 return ResourceManager.GetString("PreferencesViewSavedChangesTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Selected package path for download.
+        /// </summary>
+        public static string PreferencesViewSelectedPackagePathForDownload {
+            get {
+                return ResourceManager.GetString("PreferencesViewSelectedPackagePathForDownload", resourceCulture);
             }
         }
         
