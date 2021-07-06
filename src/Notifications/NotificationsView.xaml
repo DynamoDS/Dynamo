@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Dynamo.Notifications"
         xmlns:p="clr-namespace:Dynamo.Notifications.Properties"
         xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-        Title="Notifications"
+        Title="{x:Static p:Resources.ExtensionName}"
         Height="450"
         Width="400"
         Background="#555"

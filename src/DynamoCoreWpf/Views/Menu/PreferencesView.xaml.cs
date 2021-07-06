@@ -22,6 +22,11 @@ namespace Dynamo.Wpf.Views
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
+        // Used for tracking the manage package command event
+        // This is not a command any more but we keep it
+        // around in a compatible way for now
+        private IDisposable managePackageCommandEvent;
+
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
@@ -82,6 +87,7 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            managePackageCommandEvent?.Dispose();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.Preferences);
@@ -250,5 +256,20 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Model.OnRequestPythonReset("CPython3");
         }
 
+        private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+            }
+        }
+
+        private void InstalledPackagesExpander_OnCollapsed(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent?.Dispose();
+            }
+        }
     }
 }
