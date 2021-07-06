@@ -98,34 +98,34 @@ namespace Dynamo.Core
             get 
             { 
                 return Preferences != null ? 
-                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.StandardLibraryToken ? StandardLibraryDirectory : path) 
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
                     : rootDirectories;
             }
         }
 
-        private const string stdLibName = @"Standard Library";
-        private string stdLibDirectory = null;
+        private const string builtinPackagesDirName = @"Built-In Packages";
+        private string builtinPackagesDirectory = null;
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
         /// <summary>
-        /// The standard library directory is located in the same directory as the DynamoCore.dll
+        /// The Built-In Packages directory is located in the same directory as the DynamoCore.dll
         /// Property should only be set during testing.
         /// </summary>
-        internal string StandardLibraryDirectory
+        internal string BuiltinPackagesDirectory
         {
             get
             {
-                if (stdLibDirectory == null)
+                if (builtinPackagesDirectory == null)
                 {
-                    stdLibDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location), stdLibName, @"Packages");
+                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location), builtinPackagesDirName, @"Packages");
                 }
-                return stdLibDirectory;
+                return builtinPackagesDirectory;
             }
             set
             {
-                if (stdLibDirectory != value)
+                if (builtinPackagesDirectory != value)
                 {
-                    stdLibDirectory = value;
+                    builtinPackagesDirectory = value;
                 }
             }
         }

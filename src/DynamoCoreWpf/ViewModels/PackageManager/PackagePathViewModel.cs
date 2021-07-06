@@ -132,7 +132,7 @@ namespace Dynamo.ViewModels
         private bool CanDelete(int param)
         {
             var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
-            if (RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) == param ||
+            if (RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) == param ||
                     programDataPackagePathIndex == param)
             {
                 return false;
@@ -156,7 +156,7 @@ namespace Dynamo.ViewModels
             var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
 
             //editing builtin packages or programData package paths is not allowed.
-            return RootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library) != param &&
+            return RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) != param &&
                 programDataPackagePathIndex != param;
         }
 
@@ -236,22 +236,22 @@ namespace Dynamo.ViewModels
         private void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
-            var index = RootLocations.IndexOf(DynamoModel.StandardLibraryToken);
+            var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
 
             if (index != -1)
             {
-                RootLocations[index] = Resources.PackagePathViewModel_Standard_Library;
+                RootLocations[index] = Resources.PackagePathViewModel_BuiltInPackages;
             }
         }
 
         private List<string> CommitRootLocations()
         {
             var rootLocations = new List<string>(RootLocations);
-            var index = rootLocations.IndexOf(Resources.PackagePathViewModel_Standard_Library);
+            var index = rootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages);
 
             if (index != -1)
             {
-                rootLocations[index] = DynamoModel.StandardLibraryToken;
+                rootLocations[index] = DynamoModel.BuiltInPackagesToken;
             }
 
             return rootLocations;
@@ -261,13 +261,13 @@ namespace Dynamo.ViewModels
         {
             if(setting is IDisablePackageLoadingPreferences disablePrefs)
             {
-                //disabled if stdlib disabled and path is stdlib
-                if ((disablePrefs.DisableStandardLibrary && path == Resources.PackagePathViewModel_Standard_Library)
+                //disabled if builtinpackages disabled and path is builtinpackages
+                if ((disablePrefs.DisableBuiltinPackages && path == Resources.PackagePathViewModel_BuiltInPackages)
                     //or if custompaths disabled and path is custom path
                     || (disablePrefs.DisableCustomPackageLocations && setting.CustomPackageFolders.Contains(path))
-                    //or if custompaths disabled and path is known path that is not std.lib - needed because new paths that are not commited
+                    //or if custompaths disabled and path is known path that is not builtinpackages - needed because new paths that are not commited
                     //will not be added to customPackagePaths yet.
-                    || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_Standard_Library)) 
+                    || (disablePrefs.DisableCustomPackageLocations && RootLocations.Contains(path) && path != Resources.PackagePathViewModel_BuiltInPackages)) 
                 {
                     return true;
                 }

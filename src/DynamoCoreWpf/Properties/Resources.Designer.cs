@@ -3290,11 +3290,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Stadard Library packages : {2}. {0} cannot override packages in the Standard Library location..
+        ///   Looks up a localized string similar to {1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location..
         /// </summary>
-        public static string MessagePackageDepsInStdLib {
+        public static string MessagePackageDepsInBuiltinPackages {
             get {
-                return ResourceManager.GetString("MessagePackageDepsInStdLib", resourceCulture);
+                return ResourceManager.GetString("MessagePackageDepsInBuiltinPackages", resourceCulture);
             }
         }
         
@@ -3326,20 +3326,20 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        ///   Looks up a localized string similar to A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location..
         /// </summary>
-        public static string MessageSamePackageDiffVersInStdLib {
+        public static string MessageSamePackageDiffVersInBuiltinPackages {
             get {
-                return ResourceManager.GetString("MessageSamePackageDiffVersInStdLib", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageDiffVersInBuiltinPackages", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location..
+        ///   Looks up a localized string similar to The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location..
         /// </summary>
-        public static string MessageSamePackageInStdLib {
+        public static string MessageSamePackageInBuiltinPackages {
             get {
-                return ResourceManager.GetString("MessageSamePackageInStdLib", resourceCulture);
+                return ResourceManager.GetString("MessageSamePackageInBuiltinPackages", resourceCulture);
             }
         }
         
@@ -3963,11 +3963,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Standard Library.
+        ///   Looks up a localized string similar to Dynamo Built-In Packages.
         /// </summary>
-        public static string PackagePathViewModel_Standard_Library {
+        public static string PackagePathViewModel_BuiltInPackages {
             get {
-                return ResourceManager.GetString("PackagePathViewModel_Standard_Library", resourceCulture);
+                return ResourceManager.GetString("PackagePathViewModel_BuiltInPackages", resourceCulture);
             }
         }
         
@@ -3977,24 +3977,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackagePathViewSummary1 {
             get {
                 return ResourceManager.GetString("PackagePathViewSummary1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The default install location is the first path that is not the Standard Library location..
-        /// </summary>
-        public static string PackagePathViewSummary2 {
-            get {
-                return ResourceManager.GetString("PackagePathViewSummary2", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Italicized locations are disabled..
-        /// </summary>
-        public static string PackagePathViewSummary3 {
-            get {
-                return ResourceManager.GetString("PackagePathViewSummary3", resourceCulture);
             }
         }
         
