@@ -3936,11 +3936,29 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This path is built-in and cannot be modified..
+        /// </summary>
+        public static string PackagePathProtected {
+            get {
+                return ResourceManager.GetString("PackagePathProtected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Node and Package Paths.
         /// </summary>
         public static string PackagePathsExpanderName {
             get {
                 return ResourceManager.GetString("PackagePathsExpanderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit Path.
+        /// </summary>
+        public static string PackagePathUpdatePathTooltip {
+            get {
+                return ResourceManager.GetString("PackagePathUpdatePathTooltip", resourceCulture);
             }
         }
         

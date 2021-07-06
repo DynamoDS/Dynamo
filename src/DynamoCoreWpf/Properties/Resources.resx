@@ -2426,4 +2426,10 @@ Uninstall the following packages: {0}?</value>
   <data name="NodeRenamedLabel" xml:space="preserve">
     <value>Renamed</value>
   </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>This path is built-in and cannot be modified.</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>Edit Path</value>
+  </data>
 </root>
