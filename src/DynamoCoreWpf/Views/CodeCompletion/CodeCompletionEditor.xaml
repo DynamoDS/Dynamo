@@ -15,15 +15,15 @@
                                    FontSize="15px"
                                    FontFamily="Consolas"
                                    WordWrap="False"
-                                   Foreground="#444"
+                                   Foreground="#e6e6e6"
                                    Padding="3 0 3 0"
-                                   Background="#88FFFFFF"
+                                   Background="#666666"
                                    MaxWidth="677"
                                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
         </Border>
         <TextBlock x:Name="WatermarkLabel"
-                   Foreground="#777777"
+                   Foreground="#e6e6e6"
                    FontFamily="Consolas"
                    FontSize="14.67px"
                    Padding="3 0 3 0"

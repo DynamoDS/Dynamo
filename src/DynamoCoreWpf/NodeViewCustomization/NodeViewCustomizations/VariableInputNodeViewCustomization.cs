@@ -1,6 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Nodes;
@@ -11,8 +11,8 @@ namespace Dynamo.Wpf
     {
         public virtual void CustomizeView(VariableInputNode nodeModel, NodeView nodeView)
         {
-            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+", Width = 20 };
-            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-", Width = 20 };
+            var addButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "AddInPort") { Content = "+"};
+            var subButton = new DynamoNodeButton(nodeView.ViewModel.NodeModel, "RemoveInPort") { Content = "-" };
 
             var wp = new WrapPanel
             {
