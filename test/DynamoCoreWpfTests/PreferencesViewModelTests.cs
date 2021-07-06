@@ -20,8 +20,8 @@ namespace DynamoCoreWpfTests
             // This setter also affects the default package directory of the PackageLoader.
             preferencesVM.SelectedPackagePathForInstall = Path.GetTempPath();
 
-            var packageLoader = ViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader;
-            Assert.Null(packageLoader.DefaultPackagesDirectory);
+            var pathManager = ViewModel.Model.PathManager;
+            Assert.AreEqual(Path.GetTempPath(), pathManager.DefaultPackagesDirectory);
         }
     }
 }

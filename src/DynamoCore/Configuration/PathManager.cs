@@ -95,7 +95,39 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != DynamoModel.StandardLibraryToken) : rootDirectories; }
+            get 
+            { 
+                return Preferences != null ? 
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.StandardLibraryToken ? StandardLibraryDirectory : path) 
+                    : rootDirectories;
+            }
+        }
+
+        private const string stdLibName = @"Standard Library";
+        private string stdLibDirectory = null;
+
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The standard library directory is located in the same directory as the DynamoCore.dll
+        /// Property should only be set during testing.
+        /// </summary>
+        internal string StandardLibraryDirectory
+        {
+            get
+            {
+                if (stdLibDirectory == null)
+                {
+                    stdLibDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location), stdLibName, @"Packages");
+                }
+                return stdLibDirectory;
+            }
+            set
+            {
+                if (stdLibDirectory != value)
+                {
+                    stdLibDirectory = value;
+                }
+            }
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
@@ -131,7 +163,14 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
+            get 
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+            }
         }
 
         public IEnumerable<string> DefinitionDirectories

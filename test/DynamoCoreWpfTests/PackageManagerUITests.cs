@@ -157,8 +157,10 @@ namespace DynamoCoreWpfTests
         [Description("User tries to download packages that might conflict with existing packages in std lib")]
         public void PackageManagerConflictsWithStdLib()
         {
+            var pathMgr = ViewModel.Model.PathManager;
             var pkgLoader = GetPackageLoader();
-            pkgLoader.StandardLibraryDirectory = StandardLibraryTestDirectory;
+            if(pathMgr is Dynamo.Core.PathManager pm)
+                pm.StandardLibraryDirectory = StandardLibraryTestDirectory;
 
             // Load a std lib package
             var stdPackageLocation = Path.Combine(StandardLibraryTestDirectory, "SignedPackage2");

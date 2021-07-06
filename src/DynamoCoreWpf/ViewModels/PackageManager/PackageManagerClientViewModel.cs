@@ -536,7 +536,8 @@ namespace Dynamo.ViewModels
                 {
                     if (localPkg == null) continue;
 
-                    if (localPkg.RootDirectory.Contains(pmExt.PackageLoader.StandardLibraryDirectory))
+                    if (DynamoViewModel.Model.PathManager is PathManager pathManager && 
+                        localPkg.RootDirectory.Contains(pathManager.StandardLibraryDirectory))
                     {
                         stdLibPackages.Add(localPkg);
                         continue;

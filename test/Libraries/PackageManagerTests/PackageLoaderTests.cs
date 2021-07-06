@@ -639,53 +639,20 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidStandardLibraryAndDefaultPackagesPath()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(pathManager.GetType()).Location),
                 @"Standard Library", @"Packages");
 
             // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
+            var standardDirectory = pathManager.StandardLibraryDirectory;
+            var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
             Assert.IsNotNullOrEmpty(standardDirectory);
             Assert.AreEqual(standardDirectory, directory);
             Assert.AreNotEqual(defaultDirectory, directory);
         }
-        [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedFirst()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { DynamoModel.StandardLibraryToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
 
-            // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
-        [Test]
-        public void HasValidStandardLibraryAndDefaultPackagesPathWhenStandardLibraryTokenIsAddedLast()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.StandardLibraryToken }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                @"Standard Library", @"Packages");
-
-            // Act
-            var standardDirectory = loader.StandardLibraryDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(standardDirectory);
-            Assert.AreEqual(standardDirectory, directory);
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
         [Test]
         public void PackageInStandardLibLocationIsLoaded()
         {
@@ -713,7 +680,8 @@ namespace Dynamo.PackageManager.Tests
         {
 
             //setup clean loader
-            var loader = new PackageLoader(new string[0], StandardLibraryTestDirectory);
+            (CurrentDynamoModel.PathManager as PathManager).StandardLibraryDirectory = StandardLibraryTestDirectory;
+            var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             settings.DisableStandardLibrary = true;
 
@@ -886,11 +854,13 @@ namespace Dynamo.PackageManager.Tests
 
             // Assert
             Assert.AreNotEqual(@"%StandardLibrary%", defaultPackageDirectory);
-            Assert.AreEqual(2, packageDirectories.Count());
+            Assert.AreEqual(3, packageDirectories.Count());
             Assert.IsFalse(packageDirectories.Contains(@"%StandardLibrary%"));
+            Assert.IsTrue(packageDirectories.Contains((pathManager as PathManager).StandardLibraryDirectory));
             Assert.AreNotEqual(@"%StandardLibrary%", defaultUserDefinitions);
-            Assert.AreEqual(2, userDefinitions.Count());
+            Assert.AreEqual(3, userDefinitions.Count());
             Assert.IsFalse(userDefinitions.Contains(@"%StandardLibrary%"));
+            Assert.IsTrue(userDefinitions.Contains((pathManager as PathManager).StandardLibraryDirectory));
         }
 
         [Test]

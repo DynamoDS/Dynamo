@@ -131,8 +131,7 @@ namespace Dynamo.PackageManager
                 throw new ArgumentException("Incorrectly formatted URL provided for Package Manager address.", "url");
             }
 
-            //Initialize the PackageLoader with the CommonDataDirectory so that packages found here are checked first for dll's with signed certificates
-            PackageLoader = new PackageLoader(startupParams.PathManager.PackagesDirectories, new [] {startupParams.PathManager.CommonDataDirectory});
+            PackageLoader = new PackageLoader(startupParams.PathManager);
             PackageLoader.MessageLogged += OnMessageLogged;
             PackageLoader.PackgeLoaded += OnPackageLoaded;
             PackageLoader.PackageRemoved += OnPackageRemoved;
