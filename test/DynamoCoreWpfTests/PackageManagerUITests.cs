@@ -154,7 +154,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Description("User tries to download pacakges that might conflict with existing packages in builtIn")]
+        [Description("User tries to download packages that might conflict with existing packages in builtIn")]
         public void PackageManagerConflictsWithbltinpackages()
         {
             var pathMgr = ViewModel.Model.PathManager;
