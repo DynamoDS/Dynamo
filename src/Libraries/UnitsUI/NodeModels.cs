@@ -13,11 +13,17 @@ using System.Xml;
 
 namespace UnitsUI
 {
+    /// <summary>
+    /// Class defining the behaviour of a nodemodel which has no inputs, but rather uses wpf comboboxes to select items from collections.
+    /// It then outputs a formatted string from the selections made.
+    /// </summary>
     public abstract class MeasurementInputBase : NodeModel
     {
         [JsonIgnore]
         public SIUnit Measure { get; protected set; }
-
+        /// <summary>
+        /// Numerical value entered into the textbox (to be formatted).
+        /// </summary>
         public double Value
         {
             get
@@ -27,7 +33,7 @@ namespace UnitsUI
             set
             {
                 Measure.Value = value;
-                RaisePropertyChanged("Value");
+                RaisePropertyChanged(nameof(Value));
             }
         }
 
@@ -37,7 +43,7 @@ namespace UnitsUI
 
         internal void ForceValueRaisePropertyChanged()
         {
-            RaisePropertyChanged("Value");
+            RaisePropertyChanged(nameof(Value));
         }
 
         protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
@@ -84,7 +90,7 @@ namespace UnitsUI
             string name = updateValueParams.PropertyName;
             string value = updateValueParams.PropertyValue;
 
-            if (name == "Value")
+            if (name == nameof(Value))
             {
                 var converter = new MeasureConverter();
                 this.Value = ((double)converter.ConvertBack(value, typeof(double), Measure, null));

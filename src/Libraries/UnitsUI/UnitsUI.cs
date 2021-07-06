@@ -371,7 +371,7 @@ namespace UnitsUI
             private set
             {
                 quantityConversionSource = value;
-                RaisePropertyChanged("SelectedQuantityConversionSource");
+                RaisePropertyChanged(nameof(QuantityConversionSource));
             }
         }
 
@@ -382,7 +382,7 @@ namespace UnitsUI
             set
             {
                 selectedFromConversionSource = value;
-                RaisePropertyChanged("SelectedFromConversionSource");
+                RaisePropertyChanged(nameof(SelectedFromConversionSource));
             }
         }
 
@@ -393,7 +393,7 @@ namespace UnitsUI
             set
             {
                 selectedToConversionSource = value;
-                RaisePropertyChanged("SelectedToConversionSource");
+                RaisePropertyChanged(nameof(SelectedToConversionSource));
             }
         }
 
@@ -411,7 +411,7 @@ namespace UnitsUI
                 SelectedFromConversion = SelectedFromConversionSource.First();
                 SelectedToConversion = SelectedToConversionSource.First();
 
-                RaisePropertyChanged("SelectedQuantityConversion");
+                RaisePropertyChanged(nameof(SelectedQuantityConversion));
             }
         }
 
@@ -423,7 +423,7 @@ namespace UnitsUI
             {
                 selectedFromConversion = value;
                 this.OnNodeModified();
-                RaisePropertyChanged("SelectedFromConversion");
+                RaisePropertyChanged(nameof(SelectedFromConversion));
             }
         }
 
@@ -435,7 +435,7 @@ namespace UnitsUI
             {
                 selectedToConversion = value;
                 this.OnNodeModified();
-                RaisePropertyChanged("SelectedToConversion");
+                RaisePropertyChanged(nameof(SelectedToConversion));
             }
         }
 
@@ -446,7 +446,7 @@ namespace UnitsUI
             set
             {
                 isSelectionFromBoxEnabled = value;
-                RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
             }
         }
 
@@ -457,7 +457,7 @@ namespace UnitsUI
             set
             {
                 selectionFromBoxToolTip = value;
-                RaisePropertyChanged("SelectionFromBoxToolTip");
+                RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
             }
         }
 

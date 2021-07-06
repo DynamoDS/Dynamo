@@ -17,6 +17,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using CoreNodeModels.Properties;
+using Dynamo.UI;
 using UnitsUI.Controls;
 using UnitsUI.Converters;
 
@@ -57,7 +59,7 @@ namespace UnitsUI
             tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
 
             tb.DataContext = model;
-            tb.BindToProperty(new Binding("Value")
+            tb.BindToProperty(new Binding(nameof(MeasurementInputBase.Value))
             {
                 Mode = BindingMode.TwoWay,
                 Converter = new MeasureConverter(),
@@ -288,22 +290,16 @@ namespace UnitsUI
         private void SelectConversionQuantity_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
         }
 
         private void SelectConversionFrom_PreviewMouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
         }
 
         private void SelectConversionTo_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
         }
 
         private void converterControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
@@ -338,7 +334,6 @@ namespace UnitsUI
             return selectedIndex;
         }
     }
-
     public class UnitValueOutputDropdownViewCustomization : NotificationObject, INodeViewCustomization<UnitValueOutputDropdown>
     {
         private NodeModel nodeModel;
@@ -352,12 +347,19 @@ namespace UnitsUI
             unitValueDropdownViewModel = new UnitValueOutputDropdownViewModel(model, nodeView);
             nodeModel = model;
 
+            var nodeBackgroundBrush = (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary[
+                    "bodyBackgroundInactive"];
+
+            var textBoxBackgroundBrush =
+                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary[
+                    "CustomTextBackground"];
+
             var grid = new Grid();
             grid.IsHitTestVisible = true;
             grid.Width = 220;
             grid.VerticalAlignment = VerticalAlignment.Stretch;
             grid.HorizontalAlignment = HorizontalAlignment.Stretch;
-            grid.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190));
+            grid.Background = nodeBackgroundBrush;
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
@@ -369,7 +371,7 @@ namespace UnitsUI
                 HorizontalAlignment = HorizontalAlignment.Left
             };
 
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.Background = textBoxBackgroundBrush;
             tb.IsReadOnly = true;
             tb.DataContext = unitValueDropdownViewModel;
             tb.BindToProperty(new Binding(nameof(UnitValueOutputDropdownViewModel.DisplayValue))
@@ -392,33 +394,30 @@ namespace UnitsUI
 
             grid.Children.Add(ex);
 
-           
-           // ObservableCollection<DockPanel> obsCollection = new ObservableCollection<DockPanel>();
-
             var listView = new ListView
             {
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 Padding = new Thickness(0, 5, 0, 0),
-                Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190)),
+                Background = nodeBackgroundBrush,
                 BorderThickness = new System.Windows.Thickness(0),
-                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(203, 198, 190)),
+                BorderBrush = nodeBackgroundBrush,
             };
 
 
             ///Unit Controls
             var dockPanelUnit = new DockPanel();
             dockPanelUnit.FlowDirection = FlowDirection.LeftToRight;
-            dockPanelUnit.Background = null;
+            dockPanelUnit.Background = Brushes.Transparent;
             double labelMinWidth = 80;
             double comboMinMidth = 80;
             double comboMaxWidth = 100;
             var unitLabel = new Label
             {
-                Content = "Unit",
+                Content = Properties.Resources.UnitValueOutputCustomizationUnit,
                 MinWidth = labelMinWidth
             };
 
-            var unitCB = new ComboBox
+            var unitDropdown = new ComboBox
             {
                 DataContext = unitValueDropdownViewModel,
                 FlowDirection = FlowDirection.LeftToRight,
@@ -435,43 +434,43 @@ namespace UnitsUI
             {
                 Source = unitValueDropdownViewModel
             };
-            unitCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllUnits);
+            unitDropdown.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllUnits);
 
-            // bind the selected index to the model property SelectedIndex
+            // bind the selected index to the model property SelectedUnit
             var indexBindingSelectedUnit = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedUnit))
             {
                 Mode = BindingMode.TwoWay,
                 Source = unitValueDropdownViewModel
             };
-            unitCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedUnit);
-            unitCB.SelectionChanged += delegate
+            unitDropdown.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedUnit);
+            unitDropdown.SelectionChanged += delegate
             {
-                if (unitCB.SelectedIndex != -1)
+                if (unitDropdown.SelectedIndex != -1)
                 {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedUnit));
-                    unitCB.ToolTip = unitValueDropdownViewModel.SelectedUnit;
+                    unitDropdown.ToolTip = unitValueDropdownViewModel.SelectedUnit;
                 }
             };
 
-            if (unitCB.SelectedItem == null)
+            if (unitDropdown.SelectedItem == null)
             {
-                unitCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedUnit.Name, unitCB.Items);
+                unitDropdown.SelectedIndex = unitDropdown.Items.IndexOf(unitValueDropdownModel);
             }
 
             dockPanelUnit.Children.Add(unitLabel);
-            dockPanelUnit.Children.Add(unitCB);
+            dockPanelUnit.Children.Add(unitDropdown);
             listView.Items.Add(dockPanelUnit);
 
             ///Symbol Controls
             var dockPanelSymbol = new DockPanel();
             dockPanelSymbol.FlowDirection = FlowDirection.LeftToRight;
-            dockPanelSymbol.Background = null;
+            dockPanelSymbol.Background = Brushes.Transparent;
             var symbolLabel = new Label
             {
-                Content = "Symbol",
+                Content = Properties.Resources.UnitValueOutputCustomizationSymbol,
                 MinWidth = labelMinWidth
             };
-            var symbolCB = new ComboBox
+            var symbolDropdown = new ComboBox
             {
                 DataContext = unitValueDropdownViewModel,
                 FlowDirection = FlowDirection.LeftToRight,
@@ -487,43 +486,43 @@ namespace UnitsUI
             {
                 Source = unitValueDropdownViewModel
             };
-            symbolCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllSymbols);
+            symbolDropdown.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllSymbols);
 
-            // bind the selected index to the model property SelectedIndex
+            // bind the selected index to the model property SelectedSymbol
             var indexBindingSelectedSymbol = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol))
             {
                 Mode = BindingMode.TwoWay,
                 Source = unitValueDropdownViewModel
             };
-            symbolCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedSymbol);
-            symbolCB.SelectionChanged += delegate
+            symbolDropdown.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedSymbol);
+            symbolDropdown.SelectionChanged += delegate
             {
-                if (symbolCB.SelectedIndex != -1)
+                if (symbolDropdown.SelectedIndex != -1)
                 {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedSymbol));
-                    symbolCB.ToolTip = unitValueDropdownViewModel.SelectedSymbol;
+                    symbolDropdown.ToolTip = unitValueDropdownViewModel.SelectedSymbol;
                 }
                   
             };
 
-            if (symbolCB.SelectedItem == null)
+            if (symbolDropdown.SelectedItem == null)
             {
-                symbolCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedSymbol.Text, symbolCB.Items);
+                symbolDropdown.SelectedIndex = symbolDropdown.Items.IndexOf(unitValueDropdownModel);
             }
 
             dockPanelSymbol.Children.Add(symbolLabel);
-            dockPanelSymbol.Children.Add(symbolCB);
+            dockPanelSymbol.Children.Add(symbolDropdown);
             listView.Items.Add(dockPanelSymbol);
 
             var dockPanelPrecision = new DockPanel();
             dockPanelPrecision.FlowDirection = FlowDirection.LeftToRight;
-            dockPanelPrecision.Background = null;
+            dockPanelPrecision.Background = Brushes.Transparent;
             var precisionLabel = new Label
             {
-                Content = "Precision",
+                Content = Properties.Resources.UnitValueOutputCustomizationPrecision,
                 MinWidth = labelMinWidth
             };
-            var precisionCB = new ComboBox
+            var precisionDropdown = new ComboBox
             {
                 DataContext = unitValueDropdownViewModel,
                 FlowDirection = FlowDirection.LeftToRight,
@@ -539,44 +538,43 @@ namespace UnitsUI
             {
                 Source = unitValueDropdownViewModel,
             };
-            precisionCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllPrecisions);
+            precisionDropdown.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllPrecisions);
 
-            // bind the selected index to the model property SelectedIndex
+            // bind the selected index to the model property SelectedPrecision
             var indexBindingSelectedPrecision = new Binding(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision))
             {
                 Mode = BindingMode.TwoWay,
                 Source = unitValueDropdownViewModel
             };
-            precisionCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedPrecision);
-            precisionCB.SelectionChanged += delegate
+            precisionDropdown.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedPrecision);
+            precisionDropdown.SelectionChanged += delegate
             {
-                if (precisionCB.SelectedIndex != -1)
+                if (precisionDropdown.SelectedIndex != -1)
                 { 
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedPrecision));
-                    precisionCB.ToolTip = unitValueDropdownViewModel.SelectedPrecision;
+                    precisionDropdown.ToolTip = unitValueDropdownViewModel.SelectedPrecision;
                 }
             };
 
-            if (precisionCB.SelectedItem == null)
+            if (precisionDropdown.SelectedItem == null)
             {
-                precisionCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedPrecision.ToString(), precisionCB.Items);
+                precisionDropdown.SelectedIndex = precisionDropdown.Items.IndexOf(unitValueDropdownModel);
             }
 
             dockPanelPrecision.Children.Add(precisionLabel);
-            dockPanelPrecision.Children.Add(precisionCB);
+            dockPanelPrecision.Children.Add(precisionDropdown);
             listView.Items.Add(dockPanelPrecision);
-            //obsCollection.Add(dockPanelPrecision);
 
             var dockPanelFormat = new DockPanel();
-            dockPanelFormat.Background = null;
+            dockPanelFormat.Background = Brushes.Transparent;
             dockPanelFormat.FlowDirection = FlowDirection.LeftToRight;
             var formatLabel = new Label
             {
-                Content = "Format",
+                Content = Properties.Resources.UnitValueOutputCustomizationFormat,
                 MinWidth = labelMinWidth
             };
 
-            ComboBox formatCB = new ComboBox
+            ComboBox formatDropdown = new ComboBox
             {
                 DataContext = unitValueDropdownViewModel,
                 FlowDirection = FlowDirection.LeftToRight,
@@ -592,52 +590,35 @@ namespace UnitsUI
             {
                 Source = unitValueDropdownViewModel
             };
-            formatCB.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllFormats);
+            formatDropdown.SetBinding(ItemsControl.ItemsSourceProperty, bindingValAllFormats);
 
-            // bind the selected index to the model property SelectedIndex
+            // bind the selected index to the model property SelectedFormat
             var indexBindingSelectedFormat = new Binding(nameof(unitValueDropdownViewModel.SelectedFormat))
             {
                 Mode = BindingMode.TwoWay,
                 Source = unitValueDropdownViewModel
             };
-            formatCB.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedFormat);
-            formatCB.SelectionChanged += delegate
+            formatDropdown.SetBinding(Selector.SelectedItemProperty, indexBindingSelectedFormat);
+            formatDropdown.SelectionChanged += delegate
             {
-                if (formatCB.SelectedIndex != -1)
+                if (formatDropdown.SelectedIndex != -1)
                 {
                     RaisePropertyChanged(nameof(UnitValueOutputDropdownViewModel.SelectedFormat));
-                    formatCB.ToolTip = unitValueDropdownViewModel.SelectedFormat;
+                    formatDropdown.ToolTip = unitValueDropdownViewModel.SelectedFormat;
                 }
             };
 
-            if (formatCB.SelectedItem == null)
+            if (formatDropdown.SelectedItem == null)
             {
-                formatCB.SelectedIndex = RetrieveSelectedItemIndex(unitValueDropdownViewModel.SelectedFormat.ToString(), formatCB.Items);
+                formatDropdown.SelectedIndex = formatDropdown.Items.IndexOf(unitValueDropdownModel);
             }
 
             dockPanelFormat.Children.Add(formatLabel);
-            dockPanelFormat.Children.Add(formatCB);
+            dockPanelFormat.Children.Add(formatDropdown);
             listView.Items.Add(dockPanelFormat);
 
             ex.Content = listView;
             nodeView.inputGrid.Children.Add(grid);
-        }
-
-        int RetrieveSelectedItemIndex(string name, ItemCollection items)
-        {
-            int selectedIndex = -1;
-            int index = 0;
-
-            foreach (var item in items)
-            {
-                if (item.ToString().Contains(name))
-                {
-                    selectedIndex = index;
-                    return selectedIndex;
-                }
-                index++;
-            }
-            return selectedIndex;
         }
         public void Dispose()
         {
@@ -653,6 +634,9 @@ namespace UnitsUI
 
         public void CustomizeView(UnitValueOutput model, NodeView nodeView)
         {
+            var textBoxBackgroundBrush =
+                (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary[
+                    "CustomTextBackground"];
 
             //add a text box to the input grid of the control
             var tb = new StringTextBox
@@ -664,7 +648,7 @@ namespace UnitsUI
 
             };
 
-            tb.Background = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF));
+            tb.Background = textBoxBackgroundBrush;
             tb.IsReadOnly = true;
             tb.DataContext = model;
             tb.BindToProperty(new Binding(nameof(UnitValueOutput.DisplayValue))

@@ -25,19 +25,24 @@ namespace DynamoUnits
             this.forgePrefixOrSuffix = symbol.getPrefixOrSuffix();
         }
 
-
+        /// <summary>
+        /// Returns the forge TypeId of this UnitSymbol
+        /// </summary>
         public string TypeId => forgeSymbol.getTypeId();
-
+        /// <summary>
+        /// Returns the corresponding unit of this UnitSymbol
+        /// </summary>
         public Unit Unit => new Unit(forgeSymbol.getUnit());
 
-
+        /// <summary>
+        /// Returns the string representation of thi UnitSymbol.
+        /// </summary>
         public string Text => forgePrefixOrSuffix != null ? forgePrefixOrSuffix.getText() : "";
 
         //public ForgeUnitsCLR.Placement Placement => forgePrefixOrSuffix != null ? forgePrefixOrSuffix.getPlacement() : ForgeUnitsCLR.Placement.Suffix;
 
         public bool Space => forgePrefixOrSuffix == null || forgePrefixOrSuffix.hasSpace();
 
-      
         /// <summary>
         /// Returns a UnitSymbol from its typeId.
         /// </summary>

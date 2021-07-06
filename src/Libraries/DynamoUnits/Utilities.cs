@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Windows;
 using DynamoUnits;
@@ -18,6 +17,10 @@ using System.IO;
 namespace DynamoUnits
 {
 
+    /// <summary>
+    /// This enum enables quick selection of value (string representation) formatting. It also enables us to add
+    /// additional formats should they be needed.
+    /// </summary>
     public enum NumberFormat
     {
         None = 0,
@@ -66,6 +69,7 @@ namespace DynamoUnits
 
         /// <summary>
         /// Returns a formatted unit value string using unitType and unitSymbol type ids.
+        /// Sample: '12.345 m3' is a value of '12.345', of unit 'meter', of symbol 'meter cubed (m3)', of number format 'decimal', of precision '3'.
         /// </summary>
         /// <param name="numValue"></param>
         /// <param name="unitTypeId"></param>
@@ -76,8 +80,6 @@ namespace DynamoUnits
         [IsVisibleInDynamoLibrary(false)]
         public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, string numberFormat)
         {
-            string outputString = string.Empty;
-
             NumberFormat actualNumberFormat = numberFormat.ToString().Contains("Decimal") ? NumberFormat.Decimal : NumberFormat.Fraction;
 
             Unit unit = Unit.ByTypeID(unitTypeId);
@@ -86,18 +88,17 @@ namespace DynamoUnits
             switch (actualNumberFormat)
             {
                 case NumberFormat.Decimal:
-                    outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-                    return outputString;
+                    return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
                 case NumberFormat.Fraction:
-                    outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
-                    return outputString;
+                    return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                default:
+                    return "A number format needs to be specified.";
             }
-           
-            return outputString;
         }
 
         /// <summary>
-        /// Returns a formatted unit value string.
+        /// Returns a formatted unit value string with only 2 number formatting options: decimal and fraction.
+        /// Sample: '12.345 m3' is a value of '12.345', of unit 'meter', of symbol 'meter cubed (m3)', of number format 'decimal', of precision '3'.
         /// </summary>
         /// <param name="numValue"></param>
         /// <param name="unit"></param>
@@ -108,14 +109,10 @@ namespace DynamoUnits
         [IsVisibleInDynamoLibrary(false)]
         public static string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
         {
-            string outputString = string.Empty;
-
             if (decimalFormat)
-                outputString = UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-            else
-                outputString = UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
 
-            return outputString;
+            return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
         }
 
         /// <summary>
@@ -126,22 +123,16 @@ namespace DynamoUnits
         [IsVisibleInDynamoLibrary(false)]
         public static UnitSymbol CastToUnitSymbol(object value)
         {
-            try
-            {
-                if (value is null) return null;
+            if (value is null) return null;
 
-                var symbol = value as UnitSymbol;
-                if (symbol is null)
-                {
-                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
-                }
-                return symbol;
-            }
-            catch (Exception)
+            var symbol = value as UnitSymbol;
+            if (symbol is null)
             {
-                throw;
+                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(UnitSymbol)}");
             }
+            return symbol;
         }
+
         /// <summary>
         /// Helper function to cast an object to a type Unit.
         /// </summary>
@@ -150,25 +141,21 @@ namespace DynamoUnits
         [IsVisibleInDynamoLibrary(false)]
         public static Unit CastToUnit(object value)
         {
-            try
-            {
-                if (value is null) return null;
+            if (value is null) return null;
 
-                var unit = value as Unit;
-                if (unit is null)
-                {
-                    throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
-                }
-                return unit;
-            }
-            catch (Exception)
+            var unit = value as Unit;
+            if (unit is null)
             {
-                throw;
+                throw new ArgumentException($"Unable to cast {value.GetType()} to {typeof(Unit)}");
             }
+            return unit;
         }
 
         private static ForgeUnitsCLR.UnitsEngine unitsEngine;
 
+        /// <summary>
+        /// Engine which loads schemas and is responsible for all ForgeUnit operations.
+        /// </summary>
         [IsVisibleInDynamoLibrary(false)]
         public static ForgeUnitsCLR.UnitsEngine ForgeUnitsEngine
         {

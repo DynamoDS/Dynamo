@@ -150,12 +150,25 @@
     <value>units;unittypes;</value>
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
+  <data name="UnitValueOutputCustomizationFormat" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="UnitValueOutputCustomizationPrecision" xml:space="preserve">
+    <value>Precision</value>
+  </data>
+  <data name="UnitValueOutputCustomizationSymbol" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="UnitValueOutputCustomizationUnit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
   <data name="UnitValueOutputDescription" xml:space="preserve">
     <value>A custom formatted display of a unit value.</value>
-    <comment>Temporary description fro 'unit value output node'.</comment>
+    <comment>Description for UnitValueOutput</comment>
   </data>
   <data name="UnitValueOutputDropdownDescription" xml:space="preserve">
     <value>A custom formatted display of a unit value.</value>
+    <comment>Description for UnitValueOutputDropdown</comment>
   </data>
   <data name="UnitValueOutputDropdownSearchTags" xml:space="preserve">
     <value>Output;Formatted</value>
@@ -169,7 +182,6 @@
   </data>
   <data name="UnitValueOutputTooltip" xml:space="preserve">
     <value>Wire up the formatting parameters to obstain the desired format.</value>
-    <comment>No comment for now</comment>
   </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">
     <value>Enter a volume.</value>

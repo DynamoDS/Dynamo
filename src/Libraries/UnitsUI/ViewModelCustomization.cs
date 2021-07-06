@@ -114,29 +114,29 @@ namespace UnitsUI
         {
             switch (e.PropertyName)
             {
-                case "SelectedQuantityConversionSource":
-                    RaisePropertyChanged("SelectedQuantityConversionSource");
+                case nameof(QuantityConversionSource):
+                    RaisePropertyChanged(nameof(QuantityConversionSource));
                     break;
-                case "SelectedQuantityConversion":
-                    RaisePropertyChanged("SelectedQuantityConversion");
+                case nameof(SelectedQuantityConversion):
+                    RaisePropertyChanged(nameof(SelectedQuantityConversion));
                     break;
-                case "SelectedFromConversionSource":
-                    RaisePropertyChanged("SelectedFromConversionSource");
+                case nameof(SelectedFromConversionSource):
+                    RaisePropertyChanged(nameof(SelectedFromConversionSource));
                     break;
-                case "SelectedToConversionSource":
-                    RaisePropertyChanged("SelectedToConversionSource");
+                case nameof(SelectedToConversionSource):
+                    RaisePropertyChanged(nameof(SelectedToConversionSource));
                     break;
-                case "SelectedFromConversion":
-                    RaisePropertyChanged("SelectedFromConversion");
+                case nameof(SelectedFromConversion):
+                    RaisePropertyChanged(nameof(SelectedFromConversion));
                     break;
-                case "SelectedToConversion":
-                    RaisePropertyChanged("SelectedToConversion");
+                case nameof(SelectedToConversion):
+                    RaisePropertyChanged(nameof(SelectedToConversion));
                     break;
-                case "IsSelectionFromBoxEnabled":
-                    RaisePropertyChanged("IsSelectionFromBoxEnabled");
+                case nameof(IsSelectionFromBoxEnabled):
+                    RaisePropertyChanged(nameof(IsSelectionFromBoxEnabled));
                     break;
-                case "SelectionFromBoxToolTip":
-                    RaisePropertyChanged("SelectionFromBoxToolTip");
+                case nameof(SelectionFromBoxToolTip):
+                    RaisePropertyChanged(nameof(SelectionFromBoxToolTip));
                     break;
             }
         }
@@ -149,8 +149,6 @@ namespace UnitsUI
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void OnToggleButtonClick(object obj)
         {
-            //var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
-            //WorkspaceModel.RecordModelForModification(nodeModel, undoRecorder);
             dynamoConvertModel.ToggleDropdownValues();
             nodeViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
         }
@@ -170,7 +168,6 @@ namespace UnitsUI
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
 
-       
         public string DisplayValue
         {
             get { return unitValueDropdownModel.DisplayValue; }

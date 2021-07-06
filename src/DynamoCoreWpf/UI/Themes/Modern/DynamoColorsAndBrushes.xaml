@@ -23,6 +23,9 @@
 
     <!--Nodes-->
 
+    <!--Custom Text Field Node-->
+    <SolidColorBrush x:Key="CustomTextBackground" Color="#F0F0EB"/>
+
     <!-- Node colors in inactive state -->
     <SolidColorBrush x:Key="headerBackgroundInactive" Color="#cbc6be" />
     <SolidColorBrush x:Key="headerForegroundInactive" Color="#4c4b4a" />
