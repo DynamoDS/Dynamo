@@ -2423,4 +2423,7 @@ Uninstall the following packages: {0}?</value>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
   </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
+    <value>Renamed</value>
+  </data>
 </root>

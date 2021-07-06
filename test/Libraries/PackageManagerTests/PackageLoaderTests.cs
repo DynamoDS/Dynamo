@@ -641,12 +641,11 @@ namespace Dynamo.PackageManager.Tests
         public void HasValidBuiltinPackagesAndDefaultPackagesPath()
         {
             // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var pathManager = CurrentDynamoModel.PathManager as PathManager;
             var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                builtinPackRootDirName, PathManager.PackagesDirectoryName);
+               builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
             var builtinpackageLocation = pathManager.BuiltinPackagesDirectory;
             var defaultDirectory = loader.DefaultPackagesDirectory;
 
@@ -655,42 +654,7 @@ namespace Dynamo.PackageManager.Tests
             Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
             Assert.AreNotEqual(defaultDirectory, directory);
         }
-        [Test]
-        public void HasValidBuiltinPackageAndDefaultPackagesPathWhenBuiltinPackageTokenIsAddedFirst()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { DynamoModel.BuiltInPackagesToken, PackagesDirectory }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
-            // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
-            var builtinpackageLocation = pathManager.BuiltinPackagesDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(builtinpackageLocation);
-            Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
-        [Test]
-        public void HasValidBuiltinPackageAndDefaultPackagesPathWhenBuiltInPackageTokenIsAddedLast()
-        {
-            // Arrange
-            var loader = new PackageLoader(new[] { PackagesDirectory, DynamoModel.BuiltInPackagesToken }, new[] { PackagesDirectorySigned });
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
-                builtinPackRootDirName, PathManager.PackagesDirectoryName);
-
-            // Act
-            var pathManager = CurrentDynamoModel.PathManager as PathManager;
-            var builtinpackageLocation = pathManager.BuiltinPackagesDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
-
-            // Assert
-            Assert.IsNotNullOrEmpty(builtinpackageLocation);
-            Assert.IsTrue(string.Equals(builtinpackageLocation, directory, StringComparison.OrdinalIgnoreCase));
-            Assert.AreNotEqual(defaultDirectory, directory);
-        }
         [Test]
         public void PackageInBuiltinPackageLocationIsLoaded()
         {

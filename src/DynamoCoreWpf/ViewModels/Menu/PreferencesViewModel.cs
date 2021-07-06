@@ -866,7 +866,7 @@ namespace Dynamo.ViewModels
         {
             SavedChangesLabel = Res.PreferencesViewSavedChangesLabel;
             //Sets the last saved time in the en-US format
-            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + DateTime.Now.ToString(@"hh:mm tt", new CultureInfo("en-US"));
+            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + " " + DateTime.Now.ToString(@"HH:mm");
         }
 
         /// <summary>
