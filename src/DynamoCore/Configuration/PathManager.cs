@@ -108,10 +108,10 @@ namespace Dynamo.Core
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
         /// <summary>
-        /// The standard library directory is located in the same directory as the DynamoCore.dll
+        /// The Built-In Packages directory is located in the same directory as the DynamoCore.dll
         /// Property should only be set during testing.
         /// </summary>
-        internal string StandardLibraryDirectory
+        internal string BuiltinPackagesDirectory
         {
             get
             {

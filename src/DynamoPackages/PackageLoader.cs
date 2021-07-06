@@ -186,7 +186,7 @@ namespace Dynamo.PackageManager
 
             // Setup builtin packages
             var builtinPackagesIndex = this.packagesDirectories.IndexOf(builtinPackagesDir);
-            if (standardLibraryIndex == -1)
+            if (builtinPackagesIndex == -1)
             {
                 // No builtin packages in list
                 // Add builtin packages first

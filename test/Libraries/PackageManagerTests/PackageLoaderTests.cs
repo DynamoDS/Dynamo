@@ -642,12 +642,12 @@ namespace Dynamo.PackageManager.Tests
         {
             // Arrange
             var pathManager = CurrentDynamoModel.PathManager as PathManager;
-            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(loader.GetType()).Location),
+            var directory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(pathManager.GetType()).Location),
                builtinPackRootDirName, PathManager.PackagesDirectoryName);
 
             // Act
             var builtinpackageLocation = pathManager.BuiltinPackagesDirectory;
-            var defaultDirectory = loader.DefaultPackagesDirectory;
+            var defaultDirectory = pathManager.DefaultPackagesDirectory;
 
             // Assert
             Assert.IsNotNullOrEmpty(builtinpackageLocation);
