@@ -1,4 +1,7 @@
 ﻿using ProtoCore.DSASM;
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ProtoCore.Utils
 {
@@ -37,6 +40,40 @@ namespace ProtoCore.Utils
             var v1 = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSString>(op1).Value;
             var v2 = runtimeCore.RuntimeMemory.Heap.ToHeapObject<DSString>(op2).Value;
             return StackValue.BuildString(v1 + v2, runtimeCore.RuntimeMemory.Heap);
+        }
+        public static string ReplaceLineOfText(string text, int lineNumber, string newLine)
+        {
+            var textInLines = BreakTextIntoLines(text);
+            textInLines[lineNumber] = newLine;
+            return String.Join("\n", textInLines);
+        }
+
+        public static bool IsStringSpacesWithTabs(string text)
+        {
+            return String.IsNullOrWhiteSpace(text) || text.All(c => c == ' ' || c == '\t');
+        }
+
+        /// <summary>
+        /// Following suggestions from stackoverflow,
+        /// A reliable method for breaking text into lines
+        /// using Regex is used.
+        /// https://stackoverflow.com/questions/1508203/best-way-to-split-string-into-lines
+        /// </summary>
+        /// <param name="text"> text to break into lines</param>
+        /// <returns> text lines </returns>
+        public static string[] BreakTextIntoLines(string text)
+        {
+            return Regex.Split(text, "\r\n|\r|\n");
+        }
+
+        public static string TabToSpaceConversion(string text, int tabSpacingSize)
+        {
+            return text.Replace("\t", new String(' ', tabSpacingSize));
+        }
+
+        public static string SpaceToTabConversion(string text, int tabSpacingSize)
+        {
+            return text.Replace(new String(' ', tabSpacingSize), "\t");
         }
     }
 }
