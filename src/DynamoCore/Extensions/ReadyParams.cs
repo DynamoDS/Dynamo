@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Linting;
 using Dynamo.Models;
 
 namespace Dynamo.Extensions
@@ -30,7 +31,7 @@ namespace Dynamo.Extensions
             dynamoM.Logger.NotificationLogged += OnNotificationRecieved;
             startupParams = new StartupParams(dynamoModel.AuthenticationManager.AuthProvider,
                 dynamoModel.PathManager, new ExtensionLibraryLoader(dynamoModel), dynamoModel.CustomNodeManager,
-                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings);
+                new Version(dynamoModel.Version), dynamoModel.PreferenceSettings, dynamoModel.LinterManager);
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace Dynamo.Extensions
         {
             get { return commandExecutive ?? (commandExecutive = new ExtensionCommandExecutive(dynamoModel)); }
         }
-
+        
         /// <summary>
         /// Event that is raised when the Dynamo Logger logs a notification.
         /// This event passes the notificationMessage to any subscribers

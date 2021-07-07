@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -21,16 +22,21 @@ namespace Dynamo.Wpf.Views
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
+        // Used for tracking the manage package command event
+        // This is not a command any more but we keep it
+        // around in a compatible way for now
+        private IDisposable managePackageCommandEvent;
+
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
-        public PreferencesView(DynamoViewModel dynamoViewModel)
+        public PreferencesView(DynamoView dynamoView)
         {
-            SetupPreferencesViewModel(dynamoViewModel);
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;
+            SetupPreferencesViewModel(dynViewModel);
 
-            DataContext = dynamoViewModel.PreferencesViewModel;
-            dynViewModel = dynamoViewModel;
+            DataContext = dynViewModel.PreferencesViewModel;
 
             
             InitializeComponent();
@@ -38,10 +44,8 @@ namespace Dynamo.Wpf.Views
                 Actions.Open,
                 Categories.Preferences);
 
-            //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
-            this.Owner = Application.Current.MainWindow;
-            var viewModelTemp = DataContext as PreferencesViewModel;
-            if (viewModelTemp != null)
+            Owner = dynamoView;
+            if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 viewModel = viewModelTemp;
             }
@@ -83,10 +87,12 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            managePackageCommandEvent?.Dispose();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            PackagePathView.Dispose();
             Close();
         }
 
@@ -250,5 +256,20 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Model.OnRequestPythonReset("CPython3");
         }
 
+        private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+            }
+        }
+
+        private void InstalledPackagesExpander_OnCollapsed(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent?.Dispose();
+            }
+        }
     }
 }

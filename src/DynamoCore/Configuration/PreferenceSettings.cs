@@ -373,7 +373,8 @@ namespace Dynamo.Configuration
         /// will be installed. The default package path for install is the user data directory
         /// currently used by the Dynamo environment.
         /// </summary>
-        public string SelectedPackagePathForInstall {
+        public string SelectedPackagePathForInstall 
+        {
             get
             {
                 if (string.IsNullOrEmpty(selectedPackagePathForInstall))
@@ -405,9 +406,9 @@ namespace Dynamo.Configuration
         /// </summary>
         public List<ViewExtensionSettings> ViewExtensionSettings { get; set; }
         /// <summary>
-        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        public bool DisableStandardLibrary { get; set; }
+        public bool DisableBuiltinPackages { get; set; }
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>
@@ -559,6 +560,7 @@ namespace Dynamo.Configuration
             catch (Exception) { }
 
             settings.CustomPackageFolders = settings.CustomPackageFolders.Distinct().ToList();
+            MigrateStdLibTokenToBuiltInToken(settings);
 
             return settings;
         }
@@ -628,6 +630,19 @@ namespace Dynamo.Configuration
         {
             if (!(obj is RequiredProperty requiredProperty)) return;
             requiredProperty.ValueIsGlobal = !requiredProperty.ValueIsGlobal;
+        }
+        
+        //migrate old path token to new path token
+        private static void MigrateStdLibTokenToBuiltInToken(PreferenceSettings settings)
+        {
+            for(var i = 0; i< settings.CustomPackageFolders.Count;i++)
+            {
+                var path = settings.CustomPackageFolders[i];
+                if (path == DynamoModel.StandardLibraryToken)
+                {
+                    settings.CustomPackageFolders[i] = DynamoModel.BuiltInPackagesToken;
+                }
+            }
         }
     }
 }

@@ -1,0 +1,143 @@
+{
+  "Uuid": "2bd0b86a-0c9d-41b0-90c8-db78983c4157",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "pymigrateimaginarydiff",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Line": {
+        "Key": "Autodesk.DesignScript.Geometry.Line",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Autodesk.DesignScript.Geometry.PolySurface": {
+        "Key": "Autodesk.DesignScript.Geometry.PolySurface",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "#\n# Colin McCrone\n# Twitter:  https://twitter.com/colinmccrone\n# LinkedIn: https://www.linkedin.com/in/colinmccrone\n# Updated:  2016-05-15\n#\nimport clr\nclr.AddReference('ProtoGeometry')\nfrom Autodesk.DesignScript.Geometry import *\n\n# Flatten a 2-dimensional list to a 1-dimensional list\ndef Flatten2D(ls):\n\tflat = []\t\n\tfor x in ls:\n\t\tif type(x) is list:\n\t\t\tfor y in x:\n\t\t\t\tflat.append(y)\n\t\telse:\n\t\t\tflat.append(x)\t\n\treturn flat\n\n# Return the list of interections between a piece of geometry and multiple tools.  Note that this algorithm may return duplicates in the reults.\ndef IntersectMultiple(geom, tools):\n\tresults = []\n\t\n\tfor tool in tools:\n\t\tintersections = Geometry.Intersect(geom, tool)\n\t\t\n\t\tif intersections:\n\t\t\tif \"Array\" in str(type(intersections)):\n\t\t\t\tfor intersection in intersections:\n\t\t\t\t\tresults.append(intersection)\n\t\t\telse:\n\t\t\t\tresults.append(intersections)\n\t\n\treturn results\n\n# Determine whether an object is a curve of any sort\ndef IsCurve(obj):\n\tif (\"Line\" in str(type(obj))):\n\t\treturn True\n\telif (\"Curve\" in str(type(obj))):\n\t\treturn True\n\telif (\"Arc\" in str(type(obj))):\n\t\treturn True\n\telif (\"Ellipse\" in str(type(obj))):\n\t\treturn True\n\telif (\"Circle\" in str(type(obj))):\n\t\treturn True\n\telif (\"Polygon\" in str(type(obj))):\n\t\treturn True\n\telse:\n\t\treturn False\n\n# Determine whether an object is a point\ndef IsPoint(obj):\n\tif (\"Point\" in str(type(obj))):\n\t\treturn True\n\telse:\n\t\treturn False\n\n# Determine whether the geometry touches any of the pieces of geometry in the set of tools\ndef DoesTouchTool(geom, tools):\n\tfor tool in tools:\n\t\tif (Geometry.DoesIntersect(geom, tool)):\n\t\t\treturn True\n\treturn False\n\n# Find whether two surfaces touch each other in places other than coincident any tool and therefore belong in the same group after they have been split by the tools\ndef BelongsWith(s1, s2, tools):\n\tiSrfSrf = Geometry.Intersect(s1, s2)\n\t\n\t# Assume surfaces do not belong together\n\tanswer = False\n\t\n\tfor i in range(len(iSrfSrf)):\n\t\t# If the surfaces share only a point, they belong together if that point does not also touch a tool\n\t\tif IsPoint(iSrfSrf[i]):\n\t\t\tif (DoesTouchTool(iSrfSrf[i], tools)):\n\t\t\t\tcontinue\n\t\t\telse:\n\t\t\t\tanswer = True\n\t\t\t\tbreak\n\t\t\n\t\t# If the surfaces share a curve, they belong together if that curve does not touch a tool by more than a point\n\t\tif IsCurve(iSrfSrf[i]):\n\t\t\tiIntTool = IntersectMultiple(iSrfSrf[i], tools)\n\t\t\t\n\t\t\t# Change default answer to true\n\t\t\tif not iIntTool:\n\t\t\t\tanswer = True\n\t\t\t\tbreak\n\t\t\telse:\n\t\t\t\tanswer = True\n\t\t\t\n\t\t\tfor j in range(len(iIntTool)):\n\t\t\t\tif IsCurve(iIntTool[j]):\n\t\t\t\t\tanswer = False\n\t\t\t\t\treturn answer\n\t\t\t\telse:\n\t\t\t\t\tcontinue\n\t\n\treturn answer\n\n# Sort a series of surfaces into groups divided by a list of splitting tools\nsrfs = IN[0]\t\t# surfaces after split operation\ntools = IN[1]\t\t# the splitting tools\nsrfGroups = []\n\n# Build an adjacency matrix\nadj = [[False]*len(srfs) for srf in srfs]\nfor i in range(len(srfs)):\n\tfor j in range(i+1, len(srfs)):\n\t\tif (BelongsWith(srfs[i], srfs[j], tools)):\n\t\t\tadj[i][j] = True\n\t\t\tadj[j][i] = True\t\t\n\n# Depth-first search: find all surfaces connected to the first available unconnected surface until no paths remain unexplored. Mark \nconnected = [False]*len(srfs)\nexhausted = [False]*len(srfs)\nnumFound = 0\ncounter = 0\n\n# Loop finds one full connected set of surfaces per iteration\nwhile(numFound < len(srfs)):\n\tnumConnected = 0\t\t\t\t# in this group\n\tnumExhausted = 0\t\t\t\t# in this group\n\tfoundOrder = []\t\t\t\t\t# trail of breadcrumbs (not incl loc)\n\tgroup = []\t\t\t\t\t\t# group of connected surfaces\n\tloc = 0\t\t\t\t\t\t\t# location of current search\n\t\n\t# Find first available root node\n\tfor i in range(len(srfs)):\n\t\tif (not connected[i]):\n\t\t\tconnected[i] = True\n\t\t\tloc = i\n\t\t\tnumFound += 1\t\t\t# found ever\n\t\t\tnumConnected = 1\t\t# part of this group\n\t\t\tgroup.append(srfs[i])\n\t\t\tbreak\n\t\n\t# Find all nodes connected to root node in the network\n\twhile (numExhausted < numConnected and numFound < len(srfs)):\n\t\tfor k in range(len(srfs)):\n\t\t\t# If found a new connection, make the jump to new loc\n\t\t\tif (adj[loc][k]) and (not connected[k]):\n\t\t\t\tfoundOrder.append(loc)\n\t\t\t\tnumFound += 1\n\t\t\t\tconnected[k] = True\n\t\t\t\tnumConnected += 1\n\t\t\t\tloc = k\n\t\t\t\tgroup.append(srfs[k])\n\t\t\t\tbreak\n\t\t\t\n\t\t\t# If no new connections, mark location as exhausted and jump backward\n\t\t\tif (k == (len(srfs)-1)):\n\t\t\t\texhausted[loc] = True\n\t\t\t\tnumExhausted += 1\n\t\t\t\tif (foundOrder):\n\t\t\t\t\tloc = foundOrder.pop()\n\t\t\t\tbreak\n\n\tsrfGroups.append(group)\n\n# Output\nOUT = srfGroups\n",
+      "Engine": "IronPython2",
+      "VariableInputPorts": true,
+      "Id": "195674e36f7d4feaba3d91db059fa220",
+      "Inputs": [
+        {
+          "Id": "81c6906c054449f3adfd4afe73da9874",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8c8787dab00e4ce58c11e4f787d0a17b",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db38c317771b4c689185f18e76fa16c2",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5416",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 60.216770172119141,
+      "EyeY": 118.13144683837891,
+      "EyeZ": 29.481166839599609,
+      "LookX": 21.941665649414063,
+      "LookY": -71.238861083984375,
+      "LookZ": -57.491508483886719,
+      "UpX": 0.21359081566333771,
+      "UpY": 0.800731360912323,
+      "UpZ": -0.55965012311935425
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Python Script",
+        "Id": "195674e36f7d4feaba3d91db059fa220",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2069.7803926202591,
+        "Y": 643.86565092751641
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "b988e0ed5f194617a2225e5dbf7d5336",
+        "Title": "Try to upgrade this node.",
+        "Nodes": [
+          "195674e36f7d4feaba3d91db059fa220"
+        ],
+        "Left": 2059.7803926202591,
+        "Top": 460.86565092751641,
+        "Width": 144.0,
+        "Height": 313.0,
+        "FontSize": 36.0,
+        "InitialTop": 643.86565092751641,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 173.0,
+        "Background": "#FFFFAA45"
+      }
+    ],
+    "X": 335.6086755208629,
+    "Y": -16.702659197131737,
+    "Zoom": 0.29155962007489311
+  }
+}

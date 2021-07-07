@@ -311,7 +311,9 @@
                                                                     </StackPanel>
                                                                 </ToolTip>
                                                             </TextBlock.ToolTip>
-                                                            <Hyperlink Foreground="LightBlue">Dependencies</Hyperlink>
+                                                            <Hyperlink Foreground="LightBlue">
+                                                                <TextBlock Text="{x:Static p:Resources.PublishPackageViewPackageDependencies}"></TextBlock>
+                                                            </Hyperlink>
                                                         </TextBlock>
                                                     </StackPanel>
                                                    <StackPanel Orientation="Horizontal" Margin="0,6,0,2">
