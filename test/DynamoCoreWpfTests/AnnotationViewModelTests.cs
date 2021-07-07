@@ -749,6 +749,29 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(4, ws.Annotations.First().Nodes.Count());
         }
 
+        [Test]
+        public void CanAddGroupAndGroupedNodesToSelection()
+        {
+            OpenModel("core\\AddGroupToSelection.dyn");
+
+            var ws = ViewModel.Model.CurrentWorkspace.NodeFromWorkspace("032c6f2c2867454b856a65293f0c70c2"); ;
+            var vm = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault();
+
+            // Count before anything is selected
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            // Select first the node
+            ws.Select();
+
+            // Add group and nodes to selection
+            vm.AddGroupAndGroupedNodesToSelection();
+
+            var countAfter = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(3, countAfter);
+
+        }
+
         #endregion
     }
 }
