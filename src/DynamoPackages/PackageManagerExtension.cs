@@ -197,7 +197,7 @@ namespace Dynamo.PackageManager
 
         public void Shutdown()
         {
-            this.Dispose();
+            //this.Dispose();
         }
 
         #endregion
