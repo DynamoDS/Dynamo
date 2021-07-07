@@ -726,7 +726,8 @@
                                     <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
                                             Padding="5,5,5,5"
                                             FontSize="13"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
                                     <ComboBox Grid.Row="1"
                                               x:Name="PackageDownloadDirectoryComboBox"
                                               Width="Auto"
