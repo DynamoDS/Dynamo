@@ -130,7 +130,7 @@
                                     </Label.ToolTip>
                                 </Label>
                                 <!--Notice here we are reusing part of the defined Dynamo ComboBox style-->
-                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLableTextBrush}" Name="HostDependencyBox" 
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLabelTextBrush}" Name="HostDependencyBox" 
                                           Margin="0" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True" MinHeight="36">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>

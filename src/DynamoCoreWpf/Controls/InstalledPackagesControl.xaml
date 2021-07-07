@@ -138,10 +138,11 @@
 
                                         <StackPanel Margin="25,5,5,10">
 
-                                            <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <StackPanel Visibility="{Binding Path=HasCustomNodes, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewCustomNodesLabel}"
-                                                           FontSize="10"
+                                                           FontSize="11"
                                                        Padding="0,5,5,5"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
                                                 <ItemsControl Name="LoadedCustomNodes"
@@ -161,11 +162,12 @@
 
                                             </StackPanel>
 
-                                            <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <StackPanel Visibility="{Binding Path=HasNodeLibraries, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
 
                                                 <Label Padding="0,5,5,5" Content="{x:Static p:Resources.InstalledPackageViewNodeLibrariesLabel}"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                           FontSize="10"></Label>
+                                                           FontSize="11"></Label>
                                                 <ItemsControl Name="NodeLibraries"
                                                                       ItemsSource="{Binding Path=Model.LoadedAssemblies}"
                                                                       Background="Transparent">
@@ -192,10 +194,11 @@
                                                 </ItemsControl>
                                             </StackPanel>
 
-                                            <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalAssemblies, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalLabel}"
-                                                           FontSize="10"
+                                                           FontSize="11"
                                                            Padding="0,5,5,5"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AddAssemblies"
@@ -225,10 +228,11 @@
 
                                             </StackPanel>
 
-                                            <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                                            <StackPanel Visibility="{Binding Path=HasAdditionalFiles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                                        Margin="0,0,0,5">
 
                                                 <Label Content="{x:Static p:Resources.InstalledPackageViewAdditionalFileLabel}"
-                                                           FontSize="10"
+                                                           FontSize="11"
                                                        Padding="0,5,5,5"
                                                            Foreground="{StaticResource PreferencesWindowFontColor}"></Label>
                                                 <ItemsControl Name="AdditionalFiles"

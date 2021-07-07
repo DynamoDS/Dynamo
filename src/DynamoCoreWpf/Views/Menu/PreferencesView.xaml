@@ -18,7 +18,7 @@
         WindowStyle="None"
         mc:Ignorable="d" 
         Height="474" 
-        Width="650"
+        Width="665"
         ResizeMode="NoResize">
 
     <!--Using the Styles from the SharedResourcesDictionary located in DynamoCoreWpf/UI/Themes/DynamoModern.xaml-->
@@ -434,8 +434,8 @@
                                     <Button x:Name="ReloadCPython"
                                                 Style="{StaticResource FlatButtonStyle}" 
                                                 HorizontalAlignment="Left"                                             
-                                                Width="100"
                                                 Height="25"
+                                                MinWidth="100"
                                                 Grid.Row="0"
                                                 Margin="0,10,0,10"
                                                 Click="ReloadCPython_Click"
@@ -726,7 +726,8 @@
                                     <Label  Content="{x:Static p:Resources.PreferencesViewPackageDownloadDirectory}" 
                                             Padding="5,5,5,5"
                                             FontSize="13"
-                                            Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                            Foreground="{StaticResource PreferencesWindowFontColor}"
+                                            ToolTip="{x:Static p:Resources.PreferencesPackageDownloadDirectoryTooltip}"/>
                                     <ComboBox Grid.Row="1"
                                               x:Name="PackageDownloadDirectoryComboBox"
                                               Width="Auto"
@@ -744,11 +745,13 @@
                             </Expander>
 
                             <!--This Grid row contains the Installed Packages section-->
-                            <Expander x:Name="InstalledPackagesExpander" 
-                                          Style="{StaticResource MenuExpanderStyle}" 
-                                          IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
-                                          Grid.Row="1"
-                                          Header="{x:Static p:Resources.InstalledPackageViewTitle}">
+                            <Expander x:Name="InstalledPackagesExpander"
+                                      Expanded="InstalledPackagesExpander_OnExpanded"
+                                      Collapsed="InstalledPackagesExpander_OnCollapsed"
+                                      Style="{StaticResource MenuExpanderStyle}" 
+                                      IsExpanded="{Binding PreferencesTabs[Features].ExpanderActive, Converter={StaticResource ExpandersBindingConverter}, ConverterParameter=InstalledPackagesExpander}"
+                                      Grid.Row="1"
+                                      Header="{x:Static p:Resources.InstalledPackageViewTitle}">
                                 <StackPanel
                                     Orientation="Vertical" Margin="0,6,0,0">
                                     <wpfControls:InstalledPackagesControl Height="Auto"/>

@@ -5,7 +5,7 @@
     <!--http://www.colorspire.com/rgb-color-wheel/-->
     
     <!--Universal-->
-    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLableTextBrush"></SolidColorBrush>
+    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLabelTextBrush"></SolidColorBrush>
     
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>

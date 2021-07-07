@@ -16,7 +16,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <ViewModels:PathEnabledConverter x:Key="PathEnabledConverter" />
-          
+
             <DataTemplate x:Key="packageSearchPathItemTemplate">
              
                 <Grid ToolTip="{Binding}">
@@ -70,7 +70,8 @@
                         Command="{Binding Path=DataContext.UpdatePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
-                       
+                         ToolTipService.ShowOnDisabled="True"
+                         ToolTip="{x:Static p:Resources.PackagePathUpdatePathTooltip}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
                         <Image Source="/DynamoCoreWpf;component/UI/Images/PackageManager/folder_16_16.png" Width="15" Height="15"></Image>
@@ -82,7 +83,7 @@
                         Command="{Binding Path=DataContext.DeletePathCommand,
           RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                          CommandParameter="{Binding}"
-                        
+                        ToolTipService.ShowOnDisabled="True"
                         ToolTip="{x:Static p:Resources.PackagePathViewToolTipMinus}"
                         Background="{StaticResource PreferencesWindowBackgroundColor}"
                          Style="{StaticResource FlatIconButtonStyle}">
@@ -100,12 +101,19 @@
                                 <!--we don't care about this binding's data, but we need to trigger this trigger when new items are added to rootlocations list-->
                                 <Binding Path="DataContext.RootLocations" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
                                 <!-- TODO when implementing toggles - one approach is to create these two properties on PackagePathViewModel and uncomment this.
-                                <Binding Path="DataContext.StdLibPathDisabled" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
+                                <Binding Path="DataContext.BuiltinPkgPathDisabled" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
                                 <Binding Path="DataContext.CustomPathsDisabled" RelativeSource="{RelativeSource AncestorType={x:Type UserControl}}"/>
                                 -->
                             </MultiBinding>
                         </DataTrigger.Binding>
                         <Setter TargetName="PathTextBlock" Property="Opacity" Value=".5" />
+                        <!--this trigger changes tooltip content when buttons are disabled-->
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=DeletePathButton, Path=IsEnabled}" Value="False">
+                        <Setter TargetName="DeletePathButton" Property="ToolTip" Value="{x:Static p:Resources.PackagePathProtected}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ElementName=UpdatePathButton, Path=IsEnabled}" Value="False">
+                        <Setter TargetName="UpdatePathButton" Property="ToolTip" Value="{x:Static p:Resources.PackagePathProtected}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>

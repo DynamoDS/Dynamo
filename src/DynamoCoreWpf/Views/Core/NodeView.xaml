@@ -402,7 +402,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <TextBlock Text="Renamed"
+                <TextBlock Text="{x:Static p:Resources.NodeRenamedLabel}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            FontStyle="Italic"
