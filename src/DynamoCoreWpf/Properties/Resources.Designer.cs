@@ -4440,7 +4440,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a package path to download new packages to..
+        ///   Looks up a localized string similar to Choose a package path from this list to download new packages to..
         /// </summary>
         public static string PreferencesPackageDownloadDirectoryTooltip {
             get {
