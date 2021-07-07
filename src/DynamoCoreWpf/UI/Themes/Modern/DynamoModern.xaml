@@ -56,7 +56,7 @@
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
-    <clr:Double x:Key="NodeNameHeight">27</clr:Double>
+    <clr:Double x:Key="NodeNameHeight">42</clr:Double>
 
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
@@ -106,10 +106,12 @@
     <FontFamily x:Key="OpenSansLightItalic">../../Fonts/#Open Sans Light Italic</FontFamily>
     <FontFamily x:Key="OpenSansSemiboldItalic">../../Fonts/#Open Sans Semibold Italic</FontFamily>
     <FontFamily x:Key="OpenSansBoldItalic">../../Fonts/#Open Sans Bold Italic</FontFamily>
+    <FontFamily x:Key="ArtifaktElementRegular">../../Fonts/#Artifakt Element Regular</FontFamily>
+    <FontFamily x:Key="ArtifaktElementBold">../../Fonts/#Artifakt Element Bold</FontFamily>
 
     <!--  Window Common Styling  -->
     <Style x:Key="DynamoWindowStyle" TargetType="{x:Type Window}">
-        <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
+        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Background" Value="#343434" />
     </Style>
@@ -685,9 +687,9 @@
                     <Border
                         x:Name="container"
                         Background="Transparent"
-                        BorderBrush="#3c3c3c"
-                        BorderThickness="1">
-                        <Grid x:Name="inner" Background="#373737">
+                        BorderBrush="#AFAFAF"
+                        BorderThickness="2">
+                        <Grid x:Name="inner" Background="#4D4D4D">
 
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Content="{DynamicResource ResourceKey=Shape}" />
@@ -729,7 +731,7 @@
                         x:Name="container"
                         Background="Transparent"
                         BorderBrush="#3F3F3F"
-                        BorderThickness="1">
+                        BorderThickness="2">
                         <Grid x:Name="inner" Background="#CCCCCC">
 
                             <TextBlock
@@ -737,7 +739,7 @@
                                 Margin="10,10,10,10"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontSize="14px"
+                                FontSize="17px"
                                 Foreground="#3F3F3F"
                                 Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Grid>
@@ -826,7 +828,7 @@
     </Style>
 
     <Style x:Key="SNodeTextButton" TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="30" />
+        <Setter Property="MinWidth" Value="36px" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -834,20 +836,21 @@
                         <Border
                             x:Name="roundedBorder"
                             HorizontalAlignment="Stretch"
-                            Background="#535353"
-                            BorderThickness="0"
-                            CornerRadius="2,2,2,2">
+                            Background="#4D4D4D"
+                            BorderBrush="#AFAFAF"
+                            BorderThickness="2"
+                            CornerRadius="10">
                             <Grid x:Name="inner">
                                 <TextBlock
                                     x:Name="text"
                                     Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}"
                                     Padding="4"
-                                    TextAlignment="Center"
                                     HorizontalAlignment="Center"
-                                    FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}"
+                                    FontSize="20px"
                                     FontWeight="Bold"
-                                    Foreground="#69BAE0"
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
+                                    Foreground="#D9D9D9"
+                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
+                                    TextAlignment="Center" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -859,19 +862,18 @@
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="text" Property="Foreground" Value="#69BAE0" />
-                            <Setter TargetName="inner" Property="Background" Value="#CCFFFFFF" />
+                            <Setter TargetName="text" Property="Foreground" Value="#AFAFAF" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="true">
-                            <Setter TargetName="text" Property="Foreground" Value="#69BAE0" />
+                            <Setter TargetName="text" Property="Foreground" Value="#AFAFAF" />
                         </Trigger>
 
                         <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="+">
-                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="3,0,0,3" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="10,0,0,10" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="-">
-                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,3,3,0" />
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,10,10,0" />
                         </DataTrigger>
 
                     </ControlTemplate.Triggers>
@@ -2155,7 +2157,7 @@
             <Trigger Property="IsChecked" Value="true">
                 <!--  Sets the icon on the expander to caret up (-)  -->
                 <Setter TargetName="Border" Property="Background" Value="{StaticResource ExpanderCaretToggleButtonSelectedBackground}" />
-                <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/Caret_Up.png" />
+                <Setter TargetName="Caret" Property="Source" Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/caret_up.png" />
             </Trigger>
             <Trigger Property="IsChecked" Value="false">
                 <Setter TargetName="Border" Property="Background" Value="{StaticResource ExpanderCaretToggleButtonBackground}" />

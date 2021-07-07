@@ -5,9 +5,9 @@
     xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCore"
     xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
-    xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
     xmlns:fa="http://schemas.fontawesome.io/icons/"
     xmlns:interactivity="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
     xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
@@ -42,13 +42,12 @@
             </Grid.ColumnDefinitions>
             <Border
                 x:Name="MainBorder"
-                Height="24"
-                Margin="0,0,0,4"
-                Background="Transparent"
-                UseLayoutRounding="true"
-                BorderBrush="White"
-                Opacity="0.8">
-                <StackPanel>
+                Height="40px"
+                Background="#4D4D4D"
+                BorderBrush="#D5D5D5"
+                Opacity="0.9"
+                UseLayoutRounding="true">
+                <StackPanel Orientation="Horizontal">
                     <Grid
                         Name="mainGrid"
                         Grid.Column="0"
@@ -130,7 +129,7 @@
                         <Rectangle
                             Name="highlightOverlay"
                             MinWidth="19"
-                            Margin="0,0,0,1"
+                            Margin="0,0,0,0"
                             Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
                             IsHitTestVisible="True">
                             <interactivity:Interaction.Triggers>
@@ -156,20 +155,20 @@
                         </Rectangle>
 
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-
                             <TextBlock
                                 Name="portNameTb"
                                 Width="Auto"
-                                Margin="10,0,10,3"
-                                VerticalAlignment="Center"
+                                Margin="13,0,13,8"
                                 HorizontalAlignment="Stretch"
-                                Background="Transparent"
-                                FontFamily="{StaticResource OpenSansRegular}"
-                                FontSize="13"
-                                Foreground="#e6e6e6"
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="17px"
+                                FontWeight="Regular"
+                                Foreground="#D9D9D9"
                                 IsHitTestVisible="False"
                                 Style="{StaticResource SZoomFadeText}"
                                 Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
+
                                 <!--<TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -208,6 +207,7 @@
                         Background="Transparent"
                         Cursor="Hand"
                         IsHitTestVisible="True"
+                        
                         Visibility="{Binding Path=UseLevelVisibility}">
                         <Rectangle
                             Name="highlightOverlayForArrow"
@@ -328,12 +328,12 @@
                     <Style TargetType="Border">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
-                                <Setter Property="CornerRadius" Value="0,7,7,0"/>
-                                <Setter Property="BorderThickness" Value="0,1,1,1"/>
+                                <Setter Property="CornerRadius" Value="0,12,12,0" />
+                                <Setter Property="BorderThickness" Value="0,2,2,2" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
-                                <Setter Property="CornerRadius" Value="7,0,0,7"/>
-                                <Setter Property="BorderThickness" Value="1,1,0,1"/>
+                                <Setter Property="CornerRadius" Value="12,0,0,12" />
+                                <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

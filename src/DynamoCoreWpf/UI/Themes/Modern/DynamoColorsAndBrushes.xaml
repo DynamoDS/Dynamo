@@ -24,14 +24,14 @@
 
     <!--  Node colors in inactive state  -->
     <SolidColorBrush x:Key="headerBackgroundInactive" Color="#535353" />
-    <SolidColorBrush x:Key="headerForegroundInactive" Color="#c8c8c8" />
+    <SolidColorBrush x:Key="headerForegroundInactive" Color="#DCDCDC" />
     <SolidColorBrush x:Key="headerBorderInactive" Color="Transparent" />
     <SolidColorBrush x:Key="outerBorderInactive" Color="Transparent" />
     <SolidColorBrush x:Key="bodyBackgroundInactive" Color="#3c3c3c" />
 
     <!--  Node colors in active state  -->
     <SolidColorBrush x:Key="headerBackgroundActive" Color="#535353" />
-    <SolidColorBrush x:Key="headerForegroundActive" Color="#c8c8c8" />
+    <SolidColorBrush x:Key="headerForegroundActive" Color="#DCDCDC" />
     <SolidColorBrush x:Key="headerBorderActive" Color="Transparent" />
     <SolidColorBrush x:Key="outerBorderActive" Color="Transparent" />
     <SolidColorBrush x:Key="bodyBackgroundActive" Color="#3c3c3c" />

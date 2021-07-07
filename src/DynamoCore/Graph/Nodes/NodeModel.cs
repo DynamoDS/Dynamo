@@ -69,7 +69,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        internal const double HeaderHeight = 50;
+        internal const double HeaderHeight = 55;
 
         #region public members
 

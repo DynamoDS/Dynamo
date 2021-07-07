@@ -109,7 +109,7 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Generic Constants
         /// </summary>
-        public static readonly double PortHeightInPixels = 26;
+        public static readonly double PortHeightInPixels = 46 ;
 
         /// <summary>
         /// Canvas Control
