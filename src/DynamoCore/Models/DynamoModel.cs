@@ -365,6 +365,18 @@ namespace Dynamo.Models
 
             OnShutdownStarted(); // Notify possible event handlers.
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Logger.Log($"{ext.Name} :  {exc.Message} during shutdown");
+                }
+            }
+
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
