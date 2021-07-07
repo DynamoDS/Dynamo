@@ -95,7 +95,39 @@ namespace Dynamo.Core
 
         private IEnumerable<string> RootDirectories
         {
-            get { return Preferences != null ? Preferences.CustomPackageFolders.Where(path => path != DynamoModel.StandardLibraryToken) : rootDirectories; }
+            get 
+            { 
+                return Preferences != null ? 
+                    Preferences.CustomPackageFolders.Select(path => path == DynamoModel.BuiltInPackagesToken ? BuiltinPackagesDirectory : path) 
+                    : rootDirectories;
+            }
+        }
+
+        private const string builtinPackagesDirName = @"Built-In Packages";
+        private string builtinPackagesDirectory = null;
+
+        //Todo in Dynamo 3.0, Add this to the IPathManager interface
+        /// <summary>
+        /// The Built-In Packages directory is located in the same directory as the DynamoCore.dll
+        /// Property should only be set during testing.
+        /// </summary>
+        internal string BuiltinPackagesDirectory
+        {
+            get
+            {
+                if (builtinPackagesDirectory == null)
+                {
+                    builtinPackagesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location), builtinPackagesDirName, @"Packages");
+                }
+                return builtinPackagesDirectory;
+            }
+            set
+            {
+                if (builtinPackagesDirectory != value)
+                {
+                    builtinPackagesDirectory = value;
+                }
+            }
         }
 
         //Todo in Dynamo 3.0, Add this to the IPathManager interface
@@ -131,7 +163,14 @@ namespace Dynamo.Core
 
         public string DefaultUserDefinitions
         {
-            get { return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); }
+            get 
+            {
+                if (Preferences is PreferenceSettings preferences)
+                {
+                    return TransformPath(preferences.SelectedPackagePathForInstall, DefinitionsDirectoryName);
+                }
+                return TransformPath(RootDirectories.First(), DefinitionsDirectoryName); 
+            }
         }
 
         public IEnumerable<string> DefinitionDirectories

@@ -365,6 +365,18 @@ namespace Dynamo.Models
 
             OnShutdownStarted(); // Notify possible event handlers.
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Logger.Log($"{ext.Name} :  {exc.Message} during shutdown");
+                }
+            }
+
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
@@ -473,6 +485,9 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        // Token representing the Built-InPackages directory
+        internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
+        [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
         internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
@@ -614,11 +629,11 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { StandardLibraryToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
 
-            if (!PreferenceSettings.CustomPackageFolders.Contains(StandardLibraryToken))
+            if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
-                PreferenceSettings.CustomPackageFolders.Insert(0, StandardLibraryToken);
+                PreferenceSettings.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
             }
 
             // Make sure that the default package folder is added in the list if custom packages folder.

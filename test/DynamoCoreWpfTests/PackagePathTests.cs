@@ -65,11 +65,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void CannotDeleteStandardLibraryPath()
+        public void CannotDeleteBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
             {
-                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
             };
 
 
@@ -81,11 +81,11 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void CannotUpdateStandardLibraryPath()
+        public void CannotUpdateBuiltinPackagesPath()
         {
             var setting = new PreferenceSettings
             {
-                CustomPackageFolders = { @"%StandardLibrary%", @"C:\" }
+                CustomPackageFolders = { DynamoModel.BuiltInPackagesToken, @"C:\" }
             };
 
 
@@ -198,7 +198,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        public void PathEnabledConverterStdLibPath()
+        public void PathEnabledConverterBltinpackagesPath()
         {
             var setting = new PreferenceSettings()
             {
@@ -209,12 +209,12 @@ namespace DynamoCoreWpfTests
             var path = string.Empty;
             vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
 
-            path = "Standard Library";
+            path = @"Dynamo Built-In Packages";
             vm.AddPathCommand.Execute(null);
             var x = new PathEnabledConverter();
             Assert.False((bool)x.Convert(new object[] { vm, path }, null, null, null));
 
-            setting.DisableStandardLibrary = true;
+            setting.DisableBuiltinPackages = true;
 
             Assert.True((bool)x.Convert(new object[] { vm, path }, null, null, null));
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
@@ -267,14 +267,12 @@ namespace DynamoCoreWpfTests
             var setting = Model.PreferenceSettings;
             var loader = Model.GetPackageManagerExtension().PackageLoader;
 
-            var appDataFolder = Path.Combine(GetAppDataFolder());
-            Assert.AreEqual(3, ViewModel.Model.PathManager.PackagesDirectories.Count());
+            var appDataFolder = GetAppDataFolder();
+            Assert.AreEqual(4, ViewModel.Model.PathManager.PackagesDirectories.Count());
             Assert.AreEqual(4, setting.CustomPackageFolders.Count);
-            Assert.AreEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), ViewModel.Model.PathManager.DefaultPackagesDirectory);
+            var appDataPackagesDir = Path.Combine(appDataFolder, PathManager.PackagesDirectoryName);
+            Assert.AreEqual(appDataPackagesDir, ViewModel.Model.PathManager.DefaultPackagesDirectory);
             Assert.AreEqual(appDataFolder, setting.SelectedPackagePathForInstall);
-            //TODO this is incorrect, but this property has been obsoleted and will be made correct after refactoring pathmanager and packageloader.
-            //this should be changed to Assert.AreEqual after refactor.
-            Assert.AreNotEqual(Path.Combine(appDataFolder, PathManager.PackagesDirectoryName), loader.DefaultPackagesDirectory);
         }
     }
 }

@@ -80,51 +80,55 @@
                         IsCheckable="True"
                         IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem
-                    Name="nodeIsFrozen"
-                    Command="{Binding Path=ToggleIsFrozenCommand}"
-                    Header="{x:Static p:Resources.NodesRunStatus}"
-                    IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
-                    IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
-                <MenuItem
-                    Name="isVisible_cm"
-                    Command="{Binding Path=ToggleIsVisibleCommand}"
-                    Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                    IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
-                    Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem
-                    Name="isDisplayLabelsEnabled_cm"
-                    Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
-                    IsEnabled="{Binding Path=CanDisplayLabels}" />
-                <MenuItem
-                    Name="enablePeriodicUpdate"
-                    Header="{x:Static p:Resources.NodeContextMenuEnablePeriodicUpdate}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}"
-                    IsEnabled="False"
-                    Visibility="{Binding PeriodicUpdateVisibility}" />
-                <MenuItem
-                    Name="rename_cm"
-                    Command="{Binding Path=RenameCommand}"
-                    Header="{x:Static p:Resources.NodeContextMenuRenameNode}" />
-                <MenuItem
-                    Name="isInput_cm"
-                    Header="{x:Static p:Resources.NodeContextMenuIsInput}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=IsSetAsInput, Mode=TwoWay}"
-                    Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem
-                    Name="isOutput_cm"
-                    Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=IsSetAsOutput, Mode=TwoWay}"
-                    Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem
-                    Name="help_cm"
-                    Command="{Binding Path=ShowHelpCommand}"
-                    Header="{x:Static p:Resources.NodeContextMenuHelp}" />
+                <MenuItem Name="nodeIsFrozen"
+                          Header="{x:Static p:Resources.NodesRunStatus}"
+                          IsChecked="{Binding IsFrozenExplicitly,Mode=OneWay}"
+                          IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}"
+                          Command="{Binding Path=ToggleIsFrozenCommand}" />
+                <MenuItem Name="isVisible_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuPreview}"
+                          IsChecked="{Binding Path=IsVisible,Mode=OneWay}"
+                          Command="{Binding Path=ToggleIsVisibleCommand}"
+                          Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                <MenuItem Name="isDisplayLabelsEnabled_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
+                          IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
+                          IsCheckable="True"
+                          IsEnabled="{Binding Path=CanDisplayLabels}" />
+                <MenuItem Name="enablePeriodicUpdate"
+                          Header="{x:Static p:Resources.NodeContextMenuEnablePeriodicUpdate}"
+                          IsCheckable="True"
+                          IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}"
+                          Visibility="{Binding PeriodicUpdateVisibility}"
+                          IsEnabled="False" />
+                <MenuItem Name="rename_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuRenameNode}"
+                          Command="{Binding Path=RenameCommand}" />
+                <MenuItem Name="isInput_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuIsInput}"
+                          IsChecked="{Binding Path=IsSetAsInput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsInput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                          IsCheckable="True" />
+                <MenuItem Name="isOutput_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuIsOutput}"
+                          IsChecked="{Binding Path=IsSetAsOutput,Mode=TwoWay}"
+                          Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                          IsCheckable="True" />
+                <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedHeader}">
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstream}"
+                              Command="{Binding Path=SelectConnectedUpstreamCommand}"
+                              />
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedDownstream}"
+                              Command="{Binding Path=SelectConnectedDownstreamCommand}"
+                              />
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstreamDownstream}"
+                              Command="{Binding Path=SelectConnectedUpAndDownstreamCommand}"
+                              />
+                </MenuItem>
+                <MenuItem Name="help_cm"
+                          Header="{x:Static p:Resources.NodeContextMenuHelp}"
+                          Command="{Binding Path=ShowHelpCommand}" />
+
             </ContextMenu>
         </Grid.ContextMenu>
 

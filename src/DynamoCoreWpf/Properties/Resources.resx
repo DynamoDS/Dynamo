@@ -1890,10 +1890,6 @@ Do you want to install the latest Dynamo update?</value>
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
   </data>
-  <data name="PackagePathViewSummary2" xml:space="preserve">
-    <value>The default install location is the first path that is not the Standard Library location.</value>
-    <comment>Package path management dialog content that displays the first non-standard library entry being the default save location.</comment>
-  </data>
   <data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
     <comment>Package path management dialog title</comment>
@@ -2263,6 +2259,10 @@ Uninstall the following packages: {0}?</value>
     <value>New Package Download Directory</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Choose a package path to download new packages to.</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
@@ -2334,14 +2334,14 @@ Uninstall the following packages: {0}?</value>
     <value>Requires relaunch of Dynamo</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
-  <data name="MessagePackageDepsInStdLib" xml:space="preserve">
-    <value>{1} has dependencies that conflict with the following Stadard Library packages : {2}. {0} cannot override packages in the Standard Library location.</value>
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
-  <data name="MessageSamePackageInStdLib" xml:space="preserve">
-    <value>The package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location.</value>
+  <data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
+    <value>The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
-  <data name="MessageSamePackageDiffVersInStdLib" xml:space="preserve">
-    <value>A different version of the package {1} is already installed as part of the Standard Library. {0} cannot override packages in the Standard Library location.</value>
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
   <data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
     <value>Geometry Scaling</value>
@@ -2370,12 +2370,8 @@ Uninstall the following packages: {0}?</value>
     <value>Isolate Selected Geometry</value>
     <comment>Toogle Button Content</comment>
   </data>
-  <data name="PackagePathViewModel_Standard_Library" xml:space="preserve">
-    <value>Standard Library</value>
-  </data>
-  <data name="PackagePathViewSummary3" xml:space="preserve">
-    <value>Italicized locations are disabled.</value>
-    <comment>Italic locations are disabled. This can currently only be the standard library.</comment>
+  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+    <value>Dynamo Built-In Packages</value>
   </data>
   <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
     <value>All changes saved automatically</value>
@@ -2431,7 +2427,25 @@ Uninstall the following packages: {0}?</value>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
   </data>
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>Downstream</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>Upstream</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>Both</value>
+  </data>
   <data name="NodeRenamedLabel" xml:space="preserve">
     <value>Renamed</value>
+  </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>This path is built-in and cannot be modified.</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>Edit Path</value>
   </data>
 </root>

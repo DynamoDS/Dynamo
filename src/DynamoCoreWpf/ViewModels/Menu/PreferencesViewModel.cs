@@ -280,9 +280,9 @@ namespace Dynamo.ViewModels
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                    // Filter Std lib and ProgramData paths from list of paths for download
+                    // Filter Builtin Packages and ProgramData paths from list of paths for download
                     var customPaths = preferenceSettings.CustomPackageFolders.Where(
-                        x => x != DynamoModel.StandardLibraryToken && !x.StartsWith(programDataPath));
+                        x => x != DynamoModel.BuiltInPackagesToken && !x.StartsWith(programDataPath));
 
                     packagePathsForInstall = new ObservableCollection<string>();
                     foreach (var path in customPaths)
@@ -319,9 +319,6 @@ namespace Dynamo.ViewModels
                 if (preferenceSettings.SelectedPackagePathForInstall != value)
                 {
                     preferenceSettings.SelectedPackagePathForInstall = value;
-                    //TODO remove along with PackageLoader.DefaultPackagesDirectory and PackageLoader.DefaultPackagesDirectoryIndex
-                    dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader.SetPackagesDownloadDirectory(
-                        value, dynamoViewModel.Model.PathManager.UserDataDirectory);
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
                 }
             }

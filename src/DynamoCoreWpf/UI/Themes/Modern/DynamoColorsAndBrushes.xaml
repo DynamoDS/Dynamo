@@ -1,14 +1,15 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--  a good color picker  -->
-    <!--  http://www.colorspire.com/rgb-color-wheel/  -->
-
-    <!--  Universal  -->
-    <SolidColorBrush x:Key="DynamoStandardLableTextBrush" Color="#BBBBBB" />
-
-    <!--  Workspaces  -->
-    <SolidColorBrush x:Key="DynamoWindowBrush" Color="#353535" />
-    <SolidColorBrush x:Key="WorkspaceBackgroundBrush" Color="#232323" />
+    <!--a good color picker-->
+    <!--http://www.colorspire.com/rgb-color-wheel/-->
+    
+    <!--Universal-->
+    <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLabelTextBrush"></SolidColorBrush>
+    
+    <!--Workspaces-->
+    <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
+    <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
 
     <Color x:Key="WorkspaceBackgroundHome">#F9F9F9</Color>
     <Color x:Key="WorkspaceBackgroundCustom">#FFFFDC</Color>

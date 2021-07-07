@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<PreferenceSettings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <IsFirstRun>false</IsFirstRun>
+  <IsAnalyticsReportingApproved>false</IsAnalyticsReportingApproved>
+  <LibraryWidth>304</LibraryWidth>
+  <ConsoleHeight>0</ConsoleHeight>
+  <ShowPreviewBubbles>true</ShowPreviewBubbles>
+  <ShowCodeBlockLineNumber>true</ShowCodeBlockLineNumber>
+  <ShowConnector>true</ShowConnector>
+  <ConnectorType>BEZIER</ConnectorType>
+  <BackgroundPreviews>
+    <BackgroundPreviewActiveState>
+      <Name>IsBackgroundPreviewActive</Name>
+      <IsActive>true</IsActive>
+    </BackgroundPreviewActiveState>
+  </BackgroundPreviews>
+  <IsBackgroundGridVisible>true</IsBackgroundGridVisible>
+  <RenderPrecision>128</RenderPrecision>
+  <ShowEdges>false</ShowEdges>
+  <ShowDetailedLayout>true</ShowDetailedLayout>
+  <WindowX>177</WindowX>
+  <WindowY>85</WindowY>
+  <WindowW>1024</WindowW>
+  <WindowH>768</WindowH>
+  <UseHardwareAcceleration>true</UseHardwareAcceleration>
+  <NumberFormat>f3</NumberFormat>
+  <MaxNumRecentFiles>10</MaxNumRecentFiles>
+  <RecentFiles />
+  <BackupFiles>
+    <string>C:\Users\kirschm\AppData\Roaming\Dynamo\Dynamo Core\backup\backup.DYN</string>
+  </BackupFiles>
+  <CustomPackageFolders>
+    <string>C:\Users\kirschm\AppData\Roaming\Dynamo\Dynamo Core\2.12</string>
+    <string>%StandardLibrary%</string>
+    <string>C:\ProgramData\Dynamo\Dynamo Core\2.12\packages</string>
+  </CustomPackageFolders>
+  <PackageDirectoriesToUninstall />
+  <PythonTemplateFilePath />
+  <BackupInterval>60000</BackupInterval>
+  <BackupFilesCount>1</BackupFilesCount>
+  <PackageDownloadTouAccepted>true</PackageDownloadTouAccepted>
+  <OpenFileInManualExecutionMode>false</OpenFileInManualExecutionMode>
+  <IsIronPythonDialogDisabled>false</IsIronPythonDialogDisabled>
+  <ShowTabsAndSpacesInScriptEditor>false</ShowTabsAndSpacesInScriptEditor>
+  <EnableNodeAutoComplete>true</EnableNodeAutoComplete>
+  <DefaultPythonEngine />
+  <SelectedPackagePathForInstall>C:\</SelectedPackagePathForInstall>
+  <NamespacesToExcludeFromLibrary>
+    <string>ProtoGeometry.dll:Autodesk.DesignScript.Geometry.TSpline</string>
+  </NamespacesToExcludeFromLibrary>
+  <ViewExtensionSettings />
+  <DisableBuiltinPackages>false</DisableBuiltinPackages>
+  <DisableCustomPackageLocations>false</DisableCustomPackageLocations>
+  <DefaultRunType>Automatic</DefaultRunType>
+  <ShowRunPreview>false</ShowRunPreview>
+</PreferenceSettings>
