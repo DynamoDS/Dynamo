@@ -2263,7 +2263,7 @@ Uninstall the following packages: {0}?</value>
     <value>Choose a package path to download new packages to.</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
-	<data name="DefaultPythonEngineNone" xml:space="preserve">
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
   </data>
@@ -2454,7 +2454,19 @@ Uninstall the following packages: {0}?</value>
 	<data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
   </data>
-	<data name="NodeRenamedLabel" xml:space="preserve">
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>Downstream</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>Select Connected</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>Upstream</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>Both</value>
+  </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
     <value>Renamed</value>
   </data>
 	<data name="PackagePathProtected" xml:space="preserve">

@@ -646,6 +646,42 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Downstream.
+        /// </summary>
+        public static string ContextSelectConnectedDownstream {
+            get {
+                return ResourceManager.GetString("ContextSelectConnectedDownstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Connected.
+        /// </summary>
+        public static string ContextSelectConnectedHeader {
+            get {
+                return ResourceManager.GetString("ContextSelectConnectedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upstream.
+        /// </summary>
+        public static string ContextSelectConnectedUpstream {
+            get {
+                return ResourceManager.GetString("ContextSelectConnectedUpstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Both.
+        /// </summary>
+        public static string ContextSelectConnectedUpstreamDownstream {
+            get {
+                return ResourceManager.GetString("ContextSelectConnectedUpstreamDownstream", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove from Group.
         /// </summary>
         public static string ContextUnGroupFromSelection {
