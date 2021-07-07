@@ -1,16 +1,14 @@
-﻿<UserControl
-    x:Class="Dynamo.GraphMetadata.Controls.ImageSelector"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Dynamo.GraphMetadata.Controls"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:properties="clr-namespace:Dynamo.GraphMetadata.Properties"
-    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-    d:DesignHeight="198"
-    d:DesignWidth="314"
-    mc:Ignorable="d">
+﻿<UserControl x:Class="Dynamo.GraphMetadata.Controls.ImageSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Dynamo.GraphMetadata.Controls"
+             xmlns:properties="clr-namespace:Dynamo.GraphMetadata.Properties"
+             xmlns:convertes="clr-namespace:Dynamo.GraphMetadata.Converters"
+               xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             mc:Ignorable="d"
+             d:DesignHeight="198" d:DesignWidth="314">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -21,40 +19,28 @@
             <convertes:BooleanInverseConverter x:Key="BooleanInverseConverter" />
             <convertes:BooleansToVisibilityConverter x:Key="BooleansToVisibilityConverter" />
 
-            <SolidColorBrush
-                x:Key="ButtonOverlayBrush"
-                Opacity="0.5"
-                Color="Black" />
-            <SolidColorBrush
-                x:Key="ButtonOverlayPressedBrush"
-                Opacity="0.3"
-                Color="Black" />
-            <SolidColorBrush
-                x:Key="ButtonOverlayTextColor"
-                Opacity="0.3"
-                Color="White" />
+            <SolidColorBrush x:Key="ButtonOverlayBrush" Color="Black" Opacity="0.5" />
+            <SolidColorBrush x:Key="ButtonOverlayPressedBrush" Color="Black" Opacity="0.3" />
 
             <Style x:Key="OverlayButton" TargetType="Button">
                 <Setter Property="Background" Value="{StaticResource ButtonOverlayBrush}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Button}">
-                            <Border
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="Black"
-                                BorderThickness="1">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImageSelector}}}" Value="False">
+                    <DataTrigger
+                        Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImageSelector}}}"
+                        Value="False">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="{StaticResource ButtonOverlayBrush}" />
-                        <Setter Property="Foreground" Value="{StaticResource ButtonOverlayTextColor}" />
                     </Trigger>
                     <Trigger Property="IsPressed" Value="True">
                         <Setter Property="Background" Value="{StaticResource ButtonOverlayPressedBrush}" />
@@ -65,27 +51,31 @@
     </UserControl.Resources>
 
     <Border
-        BorderBrush="#FF3F4040"
+        DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImageSelector}}}"
         BorderThickness="1"
-        DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ImageSelector}}}">
-        <Grid Background="{StaticResource SearchBoxBackgroundColor}">
-            <Image Source="{Binding Image}" Stretch="Uniform" />
-            <TextBlock
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Text="{x:Static properties:Resources.ImageSelector_Message_NoImageSelected}">
+        BorderBrush="#FF3F4040">
+        <Grid
+            Background="{StaticResource SearchBoxBackgroundColor}">
+            <Image
+                Source="{Binding Image}"
+                Stretch="Uniform" />
+                <TextBlock
+                    Text="{x:Static properties:Resources.ImageSelector_Message_NoImageSelected}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center">
                 <TextBlock.Visibility>
                     <MultiBinding Converter="{StaticResource BooleansToVisibilityConverter}">
-                        <Binding Converter="{StaticResource BooleanInverseConverter}" Path="IsMouseOver" />
-                        <Binding Converter="{StaticResource BooleanInverseConverter}" Path="HasImage" />
+                        <Binding Path="IsMouseOver" Converter="{StaticResource BooleanInverseConverter}" />
+                        <Binding Path="HasImage" Converter="{StaticResource BooleanInverseConverter}" />
                     </MultiBinding>
                 </TextBlock.Visibility>
             </TextBlock>
 
             <Button
                 x:Name="btn_ImageSelection"
-                Content="{Binding UserFeedback}"
-                Style="{StaticResource OverlayButton}" />
+                Style="{StaticResource OverlayButton}"
+                Content="{Binding UserFeedback}">
+            </Button>
         </Grid>
     </Border>
 </UserControl>

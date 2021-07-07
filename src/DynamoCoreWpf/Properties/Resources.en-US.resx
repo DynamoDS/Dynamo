@@ -2255,6 +2255,10 @@ Uninstall the following packages: {0}?</value>
     <value>New Package Download Directory</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Choose a package path to download new packages to.</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
   <data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
@@ -2305,7 +2309,7 @@ Uninstall the following packages: {0}?</value>
     <value>Visual Settings</value>
   </data>
   <data name="PreferencesWindowLanguages" xml:space="preserve">
-    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
   </data>
   <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
     <value>Node Font Size</value>

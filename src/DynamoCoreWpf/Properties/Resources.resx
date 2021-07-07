@@ -1153,7 +1153,7 @@ You will get a chance to save your work.</value>
 	<data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
     <value>Remove package deprecation. Only allowed if you're a current maintainer of the package.</value>
   </data>
-  <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
+	<data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
     <value>Show Root Directory</value>
   </data>
 	<data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
@@ -1231,7 +1231,7 @@ You will get a chance to save your work.</value>
 	<data name="PackageDownloadStateStarting" xml:space="preserve">
     <value>Starting</value>
   </data>
-  <data name="PackageSearchStateNoResult" xml:space="preserve">
+	<data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
   </data>
 	<data name="PackageSearchStateSearching" xml:space="preserve">
@@ -1890,7 +1890,7 @@ Do you want to install the latest Dynamo update?</value>
     <value>Add paths to make nodes and packages show up in the library.</value>
     <comment>Package path management dialog content</comment>
   </data>
-  <data name="PackagePathViewTitle" xml:space="preserve">
+	<data name="PackagePathViewTitle" xml:space="preserve">
     <value>Manage Node and Package Paths</value>
     <comment>Package path management dialog title</comment>
   </data>
@@ -2259,6 +2259,10 @@ Uninstall the following packages: {0}?</value>
     <value>New Package Download Directory</value>
     <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
   </data>
+	<data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Choose a package path to download new packages to.</value>
+    <comment>Preferences | Package Manager | Node and Package Paths | New Package Download Directory</comment>
+  </data>
 	<data name="DefaultPythonEngineNone" xml:space="preserve">
     <value>Use System Default</value>
     <comment>Preferences | Features | Python | Default Python Engine</comment>
@@ -2305,7 +2309,7 @@ Uninstall the following packages: {0}?</value>
     <value>Visual Settings</value>
   </data>
 	<data name="PreferencesWindowLanguages" xml:space="preserve">
-    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
   </data>
 	<data name="PreferencesViewFontSizeLabel" xml:space="preserve">
     <value>Node Font Size</value>
@@ -2330,13 +2334,13 @@ Uninstall the following packages: {0}?</value>
     <value>Requires relaunch of Dynamo</value>
     <comment>Preferences | Features | Python | Requires relaunch of Dynamo</comment>
   </data>
-  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+	<data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
     <value>{1} has dependencies that conflict with the following Built-In packages : {2}. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
-  <data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
+	<data name="MessageSamePackageInBuiltinPackages" xml:space="preserve">
     <value>The package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
-  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+	<data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
     <value>A different version of the package {1} is already installed as a Built-In Package. {0} cannot override packages in the Built-In Packages location.</value>
   </data>
 	<data name="PreferencesViewVisualSettingsGeoScaling" xml:space="preserve">
@@ -2366,7 +2370,7 @@ Uninstall the following packages: {0}?</value>
     <value>Isolate Selected Geometry</value>
     <comment>Toogle Button Content</comment>
   </data>
-  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+	<data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
     <value>Dynamo Built-In Packages</value>
   </data>
 	<data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
@@ -2411,33 +2415,6 @@ Uninstall the following packages: {0}?</value>
 	<data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
     <value>Package Manager</value>
   </data>
-	<data name="MetadataSettingsTab" xml:space="preserve">
-    <value>Metadata</value>
-  </data>
-	<data name="RequiredPropertiesExpanderName" xml:space="preserve">
-    <value>Required Properties</value>
-  </data>
-	<data name="RequiredPropertiesDuplicateKeyWarning" xml:space="preserve">
-    <value>Required Properties must have unique names. Any non-unique names will be discarded when this window closes.</value>
-  </data>
-	<data name="RequiredPropertiesAddRequiredPropertyButtonText" xml:space="preserve">
-    <value>Add Required Property</value>
-  </data>
-	<data name="RequiredPropertiesAddRequiredPropertyToolTip" xml:space="preserve">
-    <value>Create a new Required Property.</value>
-  </data>
-	<data name="RequiredPropertiesDeleteRequiredPropertyToolTip" xml:space="preserve">
-    <value>Deletes this Required Property.</value>
-  </data>
-	<data name="RequiredPropertiesToggleGlobalValueToolTip" xml:space="preserve">
-    <value>Toggle Global Property.</value>
-  </data>
-	<data name="RequiredPropertiesTitle" xml:space="preserve">
-    <value>Title</value>
-  </data>
-	<data name="RequiredPropertiesGlobalValue" xml:space="preserve">
-    <value>Value</value>
-  </data>
 	<data name="PackagePathAddPathButtonName" xml:space="preserve">
     <value>Add Paths</value>
   </data>
@@ -2447,16 +2424,43 @@ Uninstall the following packages: {0}?</value>
 	<data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
   </data>
-  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+	<data name="MetadataSettingsTab" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+	<data name="RequiredPropertiesExpanderName" xml:space="preserve">
+    <value>Required Properties</value>
+  </data>
+	<data name="RequiredPropertiesDuplicateKeyWarning" xml:space="preserve">
+    <value>Required Properties must have unique names. Any non-unique names will be discarded when this window closes.</value>
+  </data>
+	<data name="RequiredPropertiesAddRequiredPropertyToolTip" xml:space="preserve">
+    <value>Create a new Required Property.</value>
+  </data>
+	<data name="RequiredPropertiesDeleteRequiredPropertyToolTip" xml:space="preserve">
+    <value>Deletes this Required Property.</value>
+  </data>
+	<data name="RequiredPropertiesToggleGlobalValueToolTip" xml:space="preserve">
+	  <value>Toggle Global Property.</value>
+  </data>
+	<data name="RequiredPropertiesAddRequiredPropertyButtonText" xml:space="preserve">
+    <value>Add Required Property</value>
+  </data>
+	<data name="RequiredPropertiesTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+	<data name="RequiredPropertiesGlobalValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+	<data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>
   </data>
-  <data name="NodeRenamedLabel" xml:space="preserve">
+	<data name="NodeRenamedLabel" xml:space="preserve">
     <value>Renamed</value>
   </data>
-  <data name="PackagePathProtected" xml:space="preserve">
+	<data name="PackagePathProtected" xml:space="preserve">
     <value>This path is built-in and cannot be modified.</value>
   </data>
-  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+	<data name="PackagePathUpdatePathTooltip" xml:space="preserve">
     <value>Edit Path</value>
   </data>
 </root>

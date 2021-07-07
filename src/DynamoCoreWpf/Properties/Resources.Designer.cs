@@ -4449,6 +4449,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose a package path to download new packages to..
+        /// </summary>
+        public static string PreferencesPackageDownloadDirectoryTooltip {
+            get {
+                return ResourceManager.GetString("PreferencesPackageDownloadDirectoryTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Package Manager.
         /// </summary>
         public static string PreferencesPackageManagerSettingsTab {
@@ -4719,7 +4728,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
         /// </summary>
         public static string PreferencesWindowLanguages {
             get {

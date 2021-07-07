@@ -23,35 +23,40 @@
 
             <converters:UriToStringConverter x:Key="UriToStringConverter" />
             <converters:LinterExtensionDescriptorToVisibilityConverter x:Key="LinterExtensionDescriptorToVisibilityConverter" />
-            <co:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <vr:UriValidationRule x:Key="UriValidationRule"/>
 
-            <ControlTemplate x:Key="TextBoxErrorTemplate">
+            <ControlTemplate x:Key="textboxErrorTemplate">
                 <StackPanel Orientation="Vertical">
                     <AdornedElementPlaceholder />
-                    <AdornedElementPlaceholder>
-                        <TextBlock
-                            Margin="4"
-                            HorizontalAlignment="Left"
-                            FontStyle="Italic"
-                            Foreground="Red"
-                            Text="{Binding Path=ErrorContent}" />
-                    </AdornedElementPlaceholder>
+                    <TextBlock FontStyle="Italic"
+                               Foreground="Red"
+                               HorizontalAlignment="Left"
+                               Margin="4"
+                               Text="{Binding Path=ErrorContent}" />
                 </StackPanel>
             </ControlTemplate>
 
-            <Style x:Key="TextBoxStyle" TargetType="{x:Type TextBox}">
-                <Setter Property="Background" Value="{StaticResource SearchBoxBackgroundColor}" />
-                <Setter Property="BorderBrush" Value="{StaticResource BorderBrushWhite}" />
-                <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
-                <Setter Property="Padding" Value="0,5" />
-                <Setter Property="BorderThickness" Value="1" />
+            <Style x:Key="TextBoxStyle"
+                TargetType="{x:Type TextBox}">
+                <Setter Property="Background"
+                    Value="{StaticResource SearchBoxBackgroundColor}" />
+                <Setter Property="BorderBrush" 
+                        Value="{StaticResource BorderBrushWhite}" />
+                <Setter Property="Foreground" 
+                        Value="{StaticResource NestedMemberTextColor}"/>
+                <Setter Property="Padding"
+                        Value="0,5" />
+                <Setter Property="BorderThickness"
+                        Value="1" />
             </Style>
 
             <Style TargetType="{x:Type ListView}">
-                <Setter Property="Background" Value="Red" />
-                <Setter Property="BorderBrush" Value="Transparent" />
-                <Setter Property="Margin" Value="0" />
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Setter Property="BorderBrush"
+                    Value="Transparent" />
+                <Setter Property="Margin"
+                        Value="0" />
             </Style>
 
             <Style TargetType="{x:Type ListViewItem}">
@@ -62,125 +67,135 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Margin"
+                        Value="0" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="BorderThickness"
+                        Value="0" />
             </Style>
 
             <Style TargetType="{x:Type Button}">
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Cursor" Value="Hand" />
+                    <Trigger Property="IsMouseOver"
+                         Value="True">
+                        <Setter Property="Cursor"
+                            Value="Hand" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
-            <Style x:Key="HeaderStyle" TargetType="{x:Type TextBlock}">
-                <Setter Property="FontWeight" Value="Bold" />
-                <Setter Property="FontSize" Value="13" />
-                <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="0,0" />
+            <Style TargetType="{x:Type TextBlock}" x:Key="headerStyle">
+                <Setter Property="FontWeight"
+                        Value="Bold" />
+                <Setter Property="FontSize"
+                        Value="13" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource NestedMemberTextColor}" />
+                <Setter Property="Padding"
+                        Value="0" />
+                <Setter Property="Margin"
+                        Value="0,0" />
             </Style>
 
-            <Style BasedOn="{StaticResource {x:Type HeaderedContentControl}}" TargetType="{x:Type HeaderedContentControl}">
-                <Setter Property="Margin" Value="0,5px" />
-                <Setter Property="Foreground" Value="{StaticResource NestedMemberTextColor}" />
+            <Style TargetType="{x:Type HeaderedContentControl}"
+                   BasedOn="{StaticResource {x:Type HeaderedContentControl}}">
+                <Setter Property="Margin"
+                        Value="0,5px" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource NestedMemberTextColor}" />
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock
-                                Margin="0,0,0,5"
-                                Style="{StaticResource HeaderStyle}"
-                                Text="{Binding}" />
+                            <TextBlock Text="{Binding}"
+                                       Margin="0,0,0,5"
+                                       Style="{StaticResource headerStyle}" />
 
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style BasedOn="{StaticResource {x:Type ScrollViewer}}" TargetType="{x:Type ScrollViewer}">
-                <Setter Property="Padding" Value="0" />
+            <Style TargetType="{x:Type ScrollViewer}"
+                   BasedOn="{StaticResource {x:Type ScrollViewer}}">
+                <Setter Property="Padding"
+                        Value="0" />
             </Style>
 
-            <Style BasedOn="{StaticResource {x:Type ScrollContentPresenter}}" TargetType="{x:Type ScrollContentPresenter}">
-                <Setter Property="Margin" Value="0" />
+            <Style TargetType="{x:Type ScrollContentPresenter}"
+                   BasedOn="{StaticResource {x:Type ScrollContentPresenter}}">
+                <Setter Property="Margin"
+                        Value="0" />
             </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <Grid Margin="10px,10px">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <StackPanel
-                Grid.Row="0"
-                KeyDown="StackPanel_KeyDown"
-                Orientation="Vertical">
+    
+    <Grid Margin="10px, 10px">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="0" KeyDown="StackPanel_KeyDown">
 
-                <HeaderedContentControl Header="Description">
-                    <TextBox
-                        MaxLength="500"
-                        Style="{StaticResource TextBoxStyle}"
-                        Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"
-                        TextWrapping="Wrap" />
-                </HeaderedContentControl>
+            <HeaderedContentControl Header="Description">
+                <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"
+                         Style="{StaticResource TextBoxStyle}"
+                         TextWrapping="WrapWithOverflow" />
+            </HeaderedContentControl>
 
-                <HeaderedContentControl Header="Image">
-                    <controls:ImageSelector
-                        MinHeight="100"
-                        MaxHeight="150"
-                        Image="{Binding Thumbnail, Mode=TwoWay}" />
-                </HeaderedContentControl>
+            <HeaderedContentControl Header="Image">
+                <controls:ImageSelector MaxHeight="150"
+                                        MinHeight="100"
+                                        Image="{Binding Thumbnail, Mode=TwoWay}"/>
+            </HeaderedContentControl>
 
-                <HeaderedContentControl Header="Author Name">
-                    <TextBox
-                        MaxLength="100"
-                        Style="{StaticResource TextBoxStyle}"
-                        Text="{Binding GraphAuthor, Mode=TwoWay}"
-                        TextWrapping="Wrap" />
-                </HeaderedContentControl>
+            <HeaderedContentControl Header="Author Name">
+                <TextBox Text="{Binding GraphAuthor, Mode=TwoWay}"
+                         Style="{StaticResource TextBoxStyle}"
+                         TextWrapping="WrapWithOverflow"/>
+            </HeaderedContentControl>
 
-                <HeaderedContentControl Header="Learn more URL">
-                    <TextBox
-                        Name="UriTextBox"
-                        MaxLength="200"
-                        MouseDoubleClick="TextBox_MouseDoubleClick"
-                        TextWrapping="Wrap"
-                        Validation.ErrorTemplate="{StaticResource ResourceKey=TextBoxErrorTemplate}">
-                        <TextBox.Text>
-                            <Binding
-                                Mode="TwoWay"
-                                Path="HelpLink"
-                                UpdateSourceTrigger="PropertyChanged"
-                                ValidatesOnDataErrors="True">
-                                <Binding.ValidationRules>
-                                    <vr:UriValidationRule ValidatesOnTargetUpdated="True" />
-                                </Binding.ValidationRules>
-                                <Binding.Converter>
-                                    <convertes:UriToStringConverter />
-                                </Binding.Converter>
-                            </Binding>
-                        </TextBox.Text>
-                        <TextBox.Style>
-                            <Style BasedOn="{StaticResource TextBoxStyle}" TargetType="{x:Type TextBox}">
-                                <Style.Triggers>
-                                    <Trigger Property="Validation.HasError" Value="True">
-                                        <Setter Property="TextDecorations" Value="None" />
-                                        <Setter Property="Margin" Value="0,0,0,15" />
-                                    </Trigger>
-                                    <Trigger Property="Validation.HasError" Value="False">
-                                        <Setter Property="TextDecorations" Value="Underline" />
-                                        <Setter Property="Margin" Value="0" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>
-                </HeaderedContentControl>
-                <ListView
+            <HeaderedContentControl Header="Learn more URL">
+                <TextBox Validation.ErrorTemplate="{StaticResource ResourceKey=textboxErrorTemplate}"
+                         Name="UriTextBox"
+                         TextWrapping="WrapWithOverflow"
+                         MouseDoubleClick="TextBox_MouseDoubleClick">
+                    <TextBox.Text>
+                        <Binding Path="HelpLink"
+                                 UpdateSourceTrigger="PropertyChanged"
+                                 ValidatesOnDataErrors="True"
+                                 Mode="TwoWay">
+                            <Binding.ValidationRules>
+                                <vr:UriValidationRule ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                            <Binding.Converter>
+                                <converters:UriToStringConverter />
+                            </Binding.Converter>
+                        </Binding>
+                    </TextBox.Text>
+                    <TextBox.Style>
+                        <Style TargetType="{x:Type TextBox}"
+                               BasedOn="{StaticResource TextBoxStyle}">
+                            <Style.Triggers>
+                                <Trigger Property="Validation.HasError"
+                                         Value="True">
+                                    <Setter Property="TextDecorations"
+                                            Value="None" />
+                                </Trigger>
+                                <Trigger Property="Validation.HasError"
+                                         Value="False">
+                                    <Setter Property="TextDecorations"
+                                            Value="Underline" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </HeaderedContentControl>
+            <ListView
                     x:Name="RequiredPropertyListView"
                     Margin="0,5,0,0"
                     HorizontalContentAlignment="Left"
@@ -191,23 +206,23 @@
                     KeyboardNavigation.TabNavigation="Continue"
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     Visibility="{Binding IsRequiredPropertiesVisible, UpdateSourceTrigger=PropertyChanged}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <TextBlock
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
                                     x:Name="RequiredPropertyNameTextBox"
                                     Grid.Row="0"
                                     Margin="0"
                                     Background="Transparent"
                                     IsEnabled="False"
-                                    Style="{StaticResource HeaderStyle}"
+                                    Style="{StaticResource headerStyle}"
                                     Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
-                                <TextBox
+                            <TextBox
                                     x:Name="RequiredPropertyValueTextBox"
                                     Grid.Row="1"
                                     Margin="0,5"
@@ -217,15 +232,16 @@
                                     Style="{StaticResource TextBoxStyle}"
                                     Text="{Binding GraphValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     TextWrapping="Wrap" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-                <Separator Margin="0,20,0,20" Background="{StaticResource FilterIconColor}" />
-            </StackPanel>
+            <Separator Background="{StaticResource FilterIconColor}"
+                       Margin="0,20,0,20" />
+        </StackPanel>
 
-            <Grid Grid.Row="1"
+        <Grid Grid.Row="1"
               Margin="0, 0px"
               Visibility="{Binding CurrentLinter, Converter={StaticResource LinterExtensionDescriptorToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
@@ -276,11 +292,12 @@
                     <Button.Template>
                         <ControlTemplate>
                             <Image Width="16px" Height="16px"
-                                   Source="/GraphMetadataViewExtension;component/Resources/add-thick-grey-16px.png" />
+                                   Source="/DynamoCoreWpf;component/UI/Images/add-thick-grey-16px.png" />
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
             </Grid>
+
             <ListView Grid.Row="1" 
                       Margin="0px 5px"
                       HorizontalContentAlignment="Left"
