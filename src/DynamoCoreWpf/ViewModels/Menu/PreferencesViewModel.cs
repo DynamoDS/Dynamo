@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -8,10 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
+using Dynamo.UI.Commands;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -62,6 +65,7 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScale = null;
+        private bool isDuplicateKeyWarningVisible;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -523,11 +527,12 @@ namespace Dynamo.ViewModels
                 if (value != selectedPythonEngine)
                 {
                     selectedPythonEngine = value;
-                    if(value != Res.DefaultPythonEngineNone)
+                    if (value != Res.DefaultPythonEngineNone)
                     {
                         preferenceSettings.DefaultPythonEngine = value;
                     }
-                    else{
+                    else
+                    {
                         preferenceSettings.DefaultPythonEngine = string.Empty;
                     }
 
@@ -535,7 +540,7 @@ namespace Dynamo.ViewModels
                 }
             }
         }
-        
+
         /// <summary>
         /// Controls the IsChecked property in the "Hide IronPython alerts" toogle button
         /// </summary>
@@ -682,10 +687,49 @@ namespace Dynamo.ViewModels
         }
         #endregion
 
+        //This include all the properties that can be set on the Metadata tab
+        #region Metadata Properties
+
+        /// <summary>
+        /// Command used to add new required properties to the RequiredProperty collection
+        /// </summary>
+        public DelegateCommand AddRequiredPropertyCommand { get; set; }
+
+        /// <summary>
+        /// Command used to delete required properties from the RequiredProperty collection
+        /// </summary>
+        public DelegateCommand DeleteRequiredPropertyCommand { get; set; }
+
+        /// <summary>
+        /// Command used to toggle whether a RequiredProperty has its value set globally or per-graph
+        /// </summary>
+        public DelegateCommand ToggleRequiredPropertyIsGlobalCommand { get; set; }
+
+        #endregion
+
         /// <summary>
         /// Package Search Paths view model.
         /// </summary>
         public PackagePathViewModel PackagePathsViewModel { get; set; }
+
+        /// <summary>
+        /// The collection of all RequiredProperties found in the DynamoSettings XML file
+        /// </summary>
+        public ObservableCollection<RequiredProperty> RequiredProperties => this.preferenceSettings.RequiredProperties;
+        
+        /// <summary>
+        /// Sets whether the duplicate RequiredProperty keys warning is visible
+        /// </summary>
+        public bool IsDuplicateKeyWarningVisible
+        {
+            get => isDuplicateKeyWarningVisible;
+            set
+            {
+                isDuplicateKeyWarningVisible = value;
+                RaisePropertyChanged(nameof(IsDuplicateKeyWarningVisible));
+            }
+        }
+
 
         /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
@@ -704,8 +748,8 @@ namespace Dynamo.ViewModels
 
             //Sets SelectedPythonEngine.
             //If the setting is empty it corresponds to the default python engine
-            _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
-                SelectedPythonEngine = Res.DefaultPythonEngineNone : 
+            _ = preferenceSettings.DefaultPythonEngine == string.Empty ?
+                SelectedPythonEngine = Wpf.Properties.Resources.DefaultPythonEngineNone :
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
             SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
@@ -736,7 +780,7 @@ namespace Dynamo.ViewModels
             isWarningEnabled = false;
 
             StyleItemsList = new ObservableCollection<StyleItem>();
-          
+
             //When pressing the "Add Style" button some controls will be shown with some values by default so later they can be populated by the user
             AddStyleControl = new StyleItem() { GroupName = "", HexColorString = "#" + GetRandomHexStringColor() };
 
@@ -761,8 +805,8 @@ namespace Dynamo.ViewModels
 
             preferencesTabs = new Dictionary<string, TabSettings>();
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
-            preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
-            preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Features", new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
+            preferencesTabs.Add("VisualSettings", new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
             preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
 
             //create a packagePathsViewModel we'll use to interact with the package search paths list.
@@ -772,12 +816,98 @@ namespace Dynamo.ViewModels
                 PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
-            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
             this.PropertyChanged += Model_PropertyChanged;
+            this.AddRequiredPropertyCommand = new DelegateCommand(preferenceSettings.AddRequiredProperty);
+            this.DeleteRequiredPropertyCommand = new DelegateCommand(preferenceSettings.DeleteRequiredProperty);
+            this.ToggleRequiredPropertyIsGlobalCommand = new DelegateCommand(preferenceSettings.ToggleRequiredPropertyIsGlobal);
+
+            InitializeRequiredProperties();
         }
 
+        #region RequiredProperties
+
+        /// <summary>
+        /// When Dynamo first loads, sets up the event watching/handling for RequiredProperties as they are loaded
+        /// in from the Dynamo Settings.xml file, and tidies up any RequiredProperties with empty/whitespace keys.
+        /// </summary>
+        private void InitializeRequiredProperties()
+        {
+            TidyUpRequiredProperties();
+
+            foreach (RequiredProperty requiredProperty in preferenceSettings.RequiredProperties)
+            {
+                requiredProperty.PropertyChanged += RequiredPropertyOnPropertyChanged;
+            }
+            preferenceSettings.RequiredProperties.CollectionChanged += RequiredPropertiesOnCollectionChanged;
+        }
+
+        private void RequiredPropertiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (RequiredProperty requiredProperty in e.NewItems)
+                {
+                    requiredProperty.PropertyChanged += RequiredPropertyOnPropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (RequiredProperty requiredProperty in e.OldItems)
+                {
+                    requiredProperty.PropertyChanged -= RequiredPropertyOnPropertyChanged;
+                }
+            }
+            CheckForRequiredPropertyDuplicateKeys();
+        }
+
+        /// <summary>
+        /// Needs to change every time any RequiredProperty key is edited, to warn the user if there are duplicate keys.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RequiredPropertyOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CheckForRequiredPropertyDuplicateKeys();
+        }
+
+        /// <summary>
+        /// RequiredProperties need to have unique keys.
+        /// Checks whether the user has added any RequiredProperties with keys that are already taken.
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckForRequiredPropertyDuplicateKeys()
+        {
+            bool duplicatesExist = RequiredProperties
+                .Where(x => x.Key.Length > 0)
+                .GroupBy(x => x.Key)
+                .Any(group => group.Count() > 1);
+
+            // Setting whether the warning is visible or not
+            IsDuplicateKeyWarningVisible = duplicatesExist;
+            return duplicatesExist;
+        }
+
+        /// <summary>
+        /// Fires when Dynamo loads, used to clear out any RequiredProperties loaded in from the XML that
+        /// either have empty or whitespace keys.
+        /// </summary>
+        private void TidyUpRequiredProperties()
+        {
+            List<RequiredProperty> requiredPropertiesToTidyUp = RequiredProperties
+                .Where(x => string.IsNullOrWhiteSpace(x.Key)).ToList();
+
+            foreach (RequiredProperty requiredProperty in requiredPropertiesToTidyUp)
+            {
+                preferenceSettings.RequiredProperties.Remove(requiredProperty);
+            }
+        }
+
+        #endregion
+        
         /// <summary>
         /// Listen for the PropertyChanged event and updates the saved changes label accordingly
         /// </summary>
@@ -861,7 +991,7 @@ namespace Dynamo.ViewModels
             //Sets the last saved time in the en-US format
             SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + DateTime.Now.ToString(@"hh:mm tt", new CultureInfo("en-US"));
         }
-
+        
         /// <summary>
         /// This method will remove the current Style selected from the Styles list
         /// </summary>
@@ -964,7 +1094,7 @@ namespace Dynamo.ViewModels
         ///   3 - Extra Large
         /// </param>
         /// <returns>The Scale Factor (-2, 0, 2, 4)</returns>
-        public static int ConvertUIToScaleFactor (int index)
+        public static int ConvertUIToScaleFactor(int index)
         {
             return (index - 1) * 2;
         }
@@ -982,7 +1112,7 @@ namespace Dynamo.ViewModels
         /// <returns>The radiobutton index (0,1,2,3)</returns>
         public static int ConvertScaleFactorToUI(int scaleValue)
         {
-           return (scaleValue / 2) + 1;
+            return (scaleValue / 2) + 1;
         }
     }
 
@@ -1014,7 +1144,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if(value != null)
+                if (value != null)
                 {
                     expanderActive = value;
                     OnPropertyChanged(nameof(ExpanderActive));

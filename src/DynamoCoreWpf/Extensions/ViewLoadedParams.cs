@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Selection;
@@ -76,6 +77,11 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
+        /// <summary>
+        /// A reference the PreferenceSettings as set by the Dynamo > Preferences window
+        /// </summary>
+        public PreferenceSettings PreferenceSettings { get; }
+
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)
         {
@@ -84,6 +90,7 @@ namespace Dynamo.Wpf.Extensions
             dynamoMenu = dynamoView.titleBar.ChildOfType<Menu>();
             ViewStartupParams = new ViewStartupParams(dynamoVM);
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
+            PreferenceSettings = dynamoViewModel.PreferenceSettings;
         }
 
         [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]

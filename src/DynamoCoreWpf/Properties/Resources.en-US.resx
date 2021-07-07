@@ -2437,4 +2437,31 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
   </data>
+  <data name="MetadataSettingsTab" xml:space="preserve">
+    <value>Metadata</value>
+  </data>
+  <data name="RequiredPropertiesExpanderName" xml:space="preserve">
+    <value>Required Properties</value>
+  </data>
+  <data name="RequiredPropertiesDuplicateKeyWarning" xml:space="preserve">
+    <value>Required Properties must have unique names. Any non-unique names will be discarded when this window closes.</value>
+  </data>
+  <data name="RequiredPropertiesAddRequiredPropertyToolTip" xml:space="preserve">
+    <value>Create a new Required Property.</value>
+  </data>
+  <data name="RequiredPropertiesDeleteRequiredPropertyToolTip" xml:space="preserve">
+    <value>Deletes this Required Property.</value>
+  </data>
+  <data name="RequiredPropertiesToggleGlobalValueToolTip" xml:space="preserve">
+	  <value>Toggle Global Property.</value>
+  </data>
+  <data name="RequiredPropertiesAddRequiredPropertyButtonText" xml:space="preserve">
+    <value>Add Required Property</value>
+  </data>
+  <data name="RequiredPropertiesTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="RequiredPropertiesGlobalValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
 </root>

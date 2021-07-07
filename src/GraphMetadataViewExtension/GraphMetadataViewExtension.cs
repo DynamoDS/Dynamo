@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using System.Linq;
 using Dynamo.Extensions;
 using Dynamo.Graph;
 using Dynamo.GraphMetadata.Properties;
 using Dynamo.Wpf.Extensions;
 using System.Windows;
+using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 
 namespace Dynamo.GraphMetadata
@@ -25,7 +27,7 @@ namespace Dynamo.GraphMetadata
         public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             if (viewLoadedParams == null) throw new ArgumentNullException(nameof(viewLoadedParams));
-
+            
             this.viewLoadedParamsReference = viewLoadedParams;
             this.viewModel = new GraphMetadataViewModel(viewLoadedParams, this);
             this.graphMetadataView = new GraphMetadataView();
@@ -45,7 +47,7 @@ namespace Dynamo.GraphMetadata
 
         private void MenuItemCheckHandler(object sender, RoutedEventArgs e)
         {
-            // Dont allow the extension to show in anything that isnt a HomeWorkspaceModel
+            // Don't allow the extension to show in anything that isnt a HomeWorkspaceModel
             if (!(this.viewLoadedParamsReference.CurrentWorkspaceModel is HomeWorkspaceModel))
             {
                 this.Closed();
@@ -58,18 +60,68 @@ namespace Dynamo.GraphMetadata
         #region Storage Access implementation
 
         /// <summary>
-        /// Adds custom properties serialized in the graph to the viewModels CustomProperty collection
+        /// Adds required property values and instantiates custom properties based on data saved in the .dyn (JSON) file.
         /// </summary>
         /// <param name="extensionData"></param>
         public void OnWorkspaceOpen(Dictionary<string, string> extensionData)
         {
-            foreach (var kv in extensionData)
+            // There are multiple places where RequiredProperties' values may be set
+            // If the value is defined globally, this is saved in the DynamoSettings.xml file and is loaded
+            // in the constructor of the GraphMetadataViewModel
+            // However, RequiredProperty values may also be graph-specific, in which case they live in the 
+            // JSON data of the .dyn file format. In this case, they are loaded in here.
+            
+            List<string> xmlRequiredPropertyKeys = this.viewLoadedParamsReference.PreferenceSettings.RequiredProperties
+                .Select(x => x.Key)
+                .ToList();
+            
+            Dictionary<string,string> dynRequiredProperties = extensionData
+                .Where(x => xmlRequiredPropertyKeys.Contains(x.Key) && !string.IsNullOrWhiteSpace(x.Key))
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            Dictionary<string, string> dynCustomProperties = extensionData
+                .Where(x => !xmlRequiredPropertyKeys.Contains(x.Key) && !string.IsNullOrWhiteSpace(x.Key))
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            // The keys of RequiredProperties whose values are set globally and therefore have already been fully resolved.
+            List<string> resolvedKeys = viewModel.RequiredProperties
+                .Where(x => x.ValueIsGlobal)
+                .Select(x => x.Key)
+                .ToList();
+
+            // Instantiating any RequiredProperties whose values are not set globally from the extensionData.
+            // RequiredProperties whose values are set globally are instantiated in the GraphMetadataViewModel.
+            foreach (RequiredProperty requiredProperty in this.viewLoadedParamsReference.PreferenceSettings.RequiredProperties)
             {
-                if (string.IsNullOrEmpty(kv.Key)) continue;
+                // If this property has already been resolved we may skip over any information stored locally in the .dyn file.
+                if (resolvedKeys.Contains(requiredProperty.Key)) continue;
+                
+                if (dynRequiredProperties.ContainsKey(requiredProperty.Key))
+                {
+                    RequiredProperty requiredPropertyToUpdate = viewModel.RequiredProperties
+                            .FirstOrDefault(x => x.Key == requiredProperty.Key);
 
-                var valueModified = kv.Value == null ? string.Empty : kv.Value;
+                    // The RequiredProperty's GraphValue is set to its locally stored value.
+                    requiredPropertyToUpdate.GraphValue = extensionData[requiredProperty.Key];
+                }
+                else
+                {
+                    viewModel.AddRequiredProperty
+                    (
+                        requiredProperty.UniqueId,
+                        requiredProperty.Key,
+                        extensionData[requiredProperty.Key],
+                        requiredProperty.ValueIsGlobal,
+                        false
+                    );
+                }
+            }
 
-                this.viewModel.AddCustomProperty(kv.Key, valueModified, false);
+            // The instantiation of CustomProperties comes last. If there are values in the .dyn/JSON data which aren't 
+            // either globally-set or locally-set RequiredProperties, they'll be loaded in as CustomProperties.
+            foreach (KeyValuePair<string, string> keyValuePair in dynCustomProperties)
+            {
+                this.viewModel.AddCustomProperty(keyValuePair.Key, keyValuePair.Value, false);
             }
         }
 
@@ -86,6 +138,11 @@ namespace Dynamo.GraphMetadata
             foreach (var p in this.viewModel.CustomProperties)
             {
                 extensionData[p.PropertyName] = p.PropertyValue;
+            }
+
+            foreach (RequiredProperty requiredProperty in viewModel.RequiredProperties)
+            {
+                extensionData[requiredProperty.Key] = requiredProperty.GraphValue;
             }
         }
 

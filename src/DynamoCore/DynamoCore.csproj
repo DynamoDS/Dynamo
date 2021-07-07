@@ -144,6 +144,7 @@ limitations under the License.
     <Compile Include="Logging\DynamoAnalyticsClient.cs" />
     <Compile Include="Logging\IAnalyticsSession.cs" />
     <Compile Include="Logging\NotificationMessage.cs" />
+    <Compile Include="Configuration\RequiredProperty.cs" />
     <Compile Include="Scheduler\Disposable.cs" />
     <Compile Include="Engine\LinkedListOfList.cs" />
     <Compile Include="Extensions\EnumExtension.cs" />
