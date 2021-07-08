@@ -63,6 +63,7 @@ namespace Dynamo.Wpf.Views
             //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            dynamoViewModel.PreferencesViewModel.InitSelectedPackagePathForInstall();
         }
 
         /// <summary>
@@ -92,6 +93,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.CommitSelectedPackagePathForInstall();
             PackagePathView.Dispose();
             Close();
         }

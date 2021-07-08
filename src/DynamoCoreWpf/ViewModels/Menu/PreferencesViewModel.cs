@@ -64,6 +64,7 @@ namespace Dynamo.ViewModels
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private string selectedPackagePathForInstall;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -312,12 +313,15 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.SelectedPackagePathForInstall;
+                return selectedPackagePathForInstall;
             }
             set
             {
-                preferenceSettings.SelectedPackagePathForInstall = value;
-                RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                if (selectedPackagePathForInstall != value)
+                {
+                    selectedPackagePathForInstall = value;
+                    RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                }
             }
         }
 
@@ -712,8 +716,6 @@ namespace Dynamo.ViewModels
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
-            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
-
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -824,6 +826,16 @@ namespace Dynamo.ViewModels
                     }
                     break;
             }
+        }
+
+        internal void CommitSelectedPackagePathForInstall()
+        {
+            preferenceSettings.SelectedPackagePathForInstall = SelectedPackagePathForInstall;
+        }
+
+        internal void InitSelectedPackagePathForInstall()
+        {
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
         }
 
         /// <summary>
