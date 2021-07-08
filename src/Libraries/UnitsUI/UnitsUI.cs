@@ -39,6 +39,7 @@ using System.Collections;
 using VMDataBridge;
 using UnitsUI.Converters;
 using System.Collections.ObjectModel;
+using Utilities = DynamoUnits.Utilities;
 
 namespace UnitsUI
 {
@@ -226,7 +227,7 @@ namespace UnitsUI
             private set
             {
                 items = value;
-                RaisePropertyChanged("Items");
+                RaisePropertyChanged(nameof(Items));
             }
         }
 
@@ -238,7 +239,7 @@ namespace UnitsUI
             set
             {
                 selectedUnit = value;
-                RaisePropertyChanged("SelectedUnit");
+                RaisePropertyChanged(nameof(SelectedUnit));
             }
         }
 
@@ -364,6 +365,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// This corresponds to the available quantities you can convert from.
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Quantity> QuantityConversionSource
         {
@@ -375,6 +379,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// This corresponds to the available units 
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Unit> SelectedFromConversionSource
         {
@@ -938,7 +945,7 @@ namespace UnitsUI
 
         public int Precision { get; set; }
 
-        public bool Decimal { get; set; }
+        public NumberFormat Format { get; set; }
 
         private string displayValue;
         public string DisplayValue
@@ -965,9 +972,9 @@ namespace UnitsUI
             Unit = DynamoUnits.Utilities.CastToUnit(inputs[1]);
             Symbol = DynamoUnits.Utilities.CastToUnitSymbol(inputs[2]);
             Precision = Convert.ToInt32(inputs[3]);
-            Decimal = Convert.ToBoolean(inputs[4]);
+            Format = Utilities.StringToNumberFormat(inputs[4]);
 
-            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Decimal);
+            DisplayValue = DynamoUnits.Utilities.ReturnFormattedString(Value, Unit, Symbol, Precision, Format);
         }
 
         public override void Dispose()
@@ -988,7 +995,7 @@ namespace UnitsUI
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Unit), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Symbol), "Tooltip")));
             InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Precision), "Tooltip")));
-            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Decimal), "Tooltip")));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData(nameof(Format), "Tooltip")));
 
             RegisterAllPorts();
             ArgumentLacing = LacingStrategy.Disabled;

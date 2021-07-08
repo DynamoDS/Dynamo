@@ -80,19 +80,25 @@ namespace DynamoUnits
         [IsVisibleInDynamoLibrary(false)]
         public static string ReturnFormattedString(double numValue, string unitTypeId, string unitSymbolId, int precision, string numberFormat)
         {
-            NumberFormat actualNumberFormat = numberFormat.ToString().Contains("Decimal") ? NumberFormat.Decimal : NumberFormat.Fraction;
+            NumberFormat actualNumberFormat = StringToNumberFormat(numberFormat);
 
             Unit unit = Unit.ByTypeID(unitTypeId);
             UnitSymbol unitSymbol = UnitSymbol.ByTypeID(unitSymbolId);
 
-            switch (actualNumberFormat)
+            return ReturnFormattedString(numValue, unit, unitSymbol, precision, actualNumberFormat);
+        }
+
+        public static NumberFormat StringToNumberFormat(object stringObject)
+        {
+            string inputString = stringObject as string;
+            switch (inputString)
             {
-                case NumberFormat.Decimal:
-                    return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-                case NumberFormat.Fraction:
-                    return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                case string s when s.Contains("Decimal"):
+                    return NumberFormat.Decimal;
+                case string s when s.Contains("Fraction"):
+                    return NumberFormat.Fraction;
                 default:
-                    return "A number format needs to be specified.";
+                    throw new Exception("Incorrect format supplied.");
             }
         }
 
@@ -107,12 +113,17 @@ namespace DynamoUnits
         /// <param name="decimalFormat"></param>
         /// <returns></returns>
         [IsVisibleInDynamoLibrary(false)]
-        public static string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, bool decimalFormat)
+        public static string ReturnFormattedString(double numValue, Unit unit, UnitSymbol unitSymbol, int precision, NumberFormat numberFormat)
         {
-            if (decimalFormat)
-                return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
-
-            return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+            switch (numberFormat)
+            {
+                case NumberFormat.Decimal:
+                    return UnitSymbol.StringifyDecimal(numValue, precision, unitSymbol, true);
+                case NumberFormat.Fraction:
+                    return UnitSymbol.StringifyFraction(numValue, precision, unitSymbol);
+                default:
+                    throw new Exception("Cannot stringify as there is no correct number format provided.");
+            }
         }
 
         /// <summary>

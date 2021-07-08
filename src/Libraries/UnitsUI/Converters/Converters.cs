@@ -26,7 +26,6 @@ namespace UnitsUI.Converters
         {
             return value;
         }
-
     }
 
     public class ForgeQuantityToTextConverter : IValueConverter

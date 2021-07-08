@@ -15,9 +15,15 @@ namespace UnitsUI
     public class ForgeConverterViewModel : NotificationObject
     {
         private readonly ForgeDynamoConvert dynamoConvertModel;
-        public DelegateCommand ToggleButtonClick { get; set; }
+        
         private readonly NodeViewModel nodeViewModel;
         private readonly NodeModel nodeModel;
+
+        /// <summary>
+        /// Command that fires when one of the unit conversion controls is clicked,
+        /// triggering a recalculation of the conversion.
+        /// </summary>
+        public DelegateCommand ToggleButtonClick { get; set; }
 
         public DynamoUnits.Quantity SelectedQuantityConversion
         {
