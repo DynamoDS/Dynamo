@@ -22,16 +22,18 @@
         x:FieldModifier="public">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MaxHeight="{StaticResource NodeNameHeight}" />
+            <RowDefinition Height="Auto"
+                           MaxHeight="{StaticResource NodeNameHeight}" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition Width="*"
+                              MinWidth="40"></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
         <!--  CONTEXT MENU  -->
@@ -381,7 +383,7 @@
                 Margin="12,10,50,8"
                 VerticalAlignment="Center"
                 Background="{x:Null}"
-                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontFamily="{StaticResource ArtifaktElementBold}"
                 FontSize="16px"
                 IsHitTestVisible="False"
                 Style="{StaticResource SZoomFadeText}"
@@ -437,50 +439,49 @@
         </StackPanel>
 
         <!--  INPUT PORTS  -->
-        <ItemsControl
-            Name="inputPortControl"
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="0,15,6,20"
-            HorizontalContentAlignment="Stretch"
-            Canvas.ZIndex="20"
-            ItemsSource="{Binding Path=InPorts}"
-            Style="{StaticResource InOutPortControlStyle}" />
-
+        <ItemsControl Name="inputPortControl"
+                      Grid.Row="2"
+                      Margin="0,15,8,0"
+                      Grid.Column="0"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=InPorts}">
+        </ItemsControl>
+        
         <!--  OUTPUT PORTS  -->
-        <ItemsControl
-            Name="outputPortControl"
-            Grid.Row="2"
-            Grid.Column="2"
-            Margin="6,15,0,20"
-            HorizontalContentAlignment="Stretch"
-            Canvas.ZIndex="20"
-            ItemsSource="{Binding Path=OutPorts}"
-            Style="{StaticResource InOutPortControlStyle}" />
+        <ItemsControl Name="outputPortControl"
+                      Grid.Row="2"
+                      Margin="8,15,0,0"
+                      Grid.Column="2"
+                      Canvas.ZIndex="20"
+                      HorizontalContentAlignment="Stretch"
+                      Style="{StaticResource InOutPortControlStyle}"
+                      ItemsSource="{Binding Path=OutPorts}">
+        </ItemsControl>
 
-        <Grid
-            Name="centralGrid"
-            Grid.Row="2"
-            Grid.Column="1"
-            Canvas.ZIndex="20">
+        <Grid Name="centralGrid"
+              Grid.Column="1"
+              Grid.Row="2"
+              Canvas.ZIndex="20">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <!--  INPUT GRID  -->
+            <!-- INPUT GRID -->
 
-            <Grid
-                Name="inputGrid"
-                MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}"
-                Margin="0,19,0,0"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Stretch"
-                x:FieldModifier="public"
-                Canvas.ZIndex="21"
-                IsEnabled="{Binding Path=IsInteractionEnabled}" />
+            <Grid Name="inputGrid"
+                  x:FieldModifier="public"
+                  Margin="0,18,0,0"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Stretch"
+                  Canvas.ZIndex="21"
+                  IsEnabled="{Binding Path=IsInteractionEnabled}"
+                  MinHeight="{Binding Source={x:Static configuration:Configurations.PortHeightInPixels}}">
+            </Grid>
 
         </Grid>
 
@@ -542,25 +543,26 @@
             </Rectangle.Stroke>
         </Rectangle>
 
-        <Rectangle
+        <Border
             Name="selectionBorder"
             Grid.Row="1"
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
             Margin="-1"
+            CornerRadius="8,8,0,0"
             Canvas.ZIndex="41"
-            Fill="Transparent"
+            Background="Transparent"
             IsHitTestVisible="False"
-            Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
-            StrokeThickness="2">
-            <Rectangle.Visibility>
+            BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
+            BorderThickness="3">
+            <Border.Visibility>
                 <Binding
                     Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}"
                     Mode="OneWay"
                     Path="PreviewState"
                     UpdateSourceTrigger="PropertyChanged" />
-            </Rectangle.Visibility>
-        </Rectangle>
+            </Border.Visibility>
+        </Border>
 
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"

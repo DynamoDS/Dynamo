@@ -43,7 +43,7 @@
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
-                                              SelectionBrush="#4192D9"
+                                              SelectionBrush="#0C92DF"
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
 

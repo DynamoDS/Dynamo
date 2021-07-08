@@ -837,7 +837,7 @@
                             x:Name="roundedBorder"
                             HorizontalAlignment="Stretch"
                             Background="#4D4D4D"
-                            BorderBrush="#AFAFAF"
+                            BorderBrush="#D9D9D9"
                             BorderThickness="2"
                             CornerRadius="10">
                             <Grid x:Name="inner">
@@ -858,15 +858,15 @@
                     <ControlTemplate.Triggers>
 
                         <Trigger Property="Button.IsMouseOver" Value="true">
-                            <Setter TargetName="roundedBorder" Property="Background" Value="#CCFFFFFF" />
+                            <Setter TargetName="roundedBorder" Property="Background" Value="#535353" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="text" Property="Foreground" Value="#AFAFAF" />
+                            <Setter TargetName="text" Property="Foreground" Value="#D9D9D9" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="true">
-                            <Setter TargetName="text" Property="Foreground" Value="#AFAFAF" />
+                            <Setter TargetName="text" Property="Foreground" Value="#D9D9D9" />
                         </Trigger>
 
                         <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="+">

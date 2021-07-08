@@ -42,10 +42,12 @@
             </Grid.ColumnDefinitions>
             <Border
                 x:Name="MainBorder"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Height="40px"
                 Background="#4D4D4D"
                 BorderBrush="#D5D5D5"
-                Opacity="0.9"
+                Opacity="1.0"
                 UseLayoutRounding="true">
                 <StackPanel Orientation="Horizontal">
                     <Grid
@@ -152,8 +154,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </Rectangle.Style>
-                        </Rectangle>
-
+                        </Rectangle>     
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                             <TextBlock
                                 Name="portNameTb"
@@ -203,11 +204,11 @@
                         Grid.Column="1"
                         Height="{Binding Path=Height}"
                         Margin="{Binding Path=MarginThickness}"
+
                         HorizontalAlignment="Stretch"
                         Background="Transparent"
                         Cursor="Hand"
-                        IsHitTestVisible="True"
-                        
+                        IsHitTestVisible="True"                        
                         Visibility="{Binding Path=UseLevelVisibility}">
                         <Rectangle
                             Name="highlightOverlayForArrow"
@@ -227,7 +228,7 @@
                                             <Setter Property="Opacity" Value="1.0" />
                                         </Trigger>
                                         <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Opacity" Value="0.5" />
+                                            <Setter Property="Opacity" Value="0.0" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -243,11 +244,14 @@
                                 Level="{Binding Path=Level, Mode=TwoWay}"
                                 Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
                             <fa:FontAwesome
-                                Width="10"
+                                Width="15"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Background="{x:Null}"
-                                Foreground="#555555"
+                                Margin="0,0,0,7"
+                                Foreground="#D9D9D9"
+                                FontSize="17px"
+                                FontWeight="Regular"
                                 Icon="ChevronRight"
                                 IsHitTestVisible="False" />
                         </StackPanel>

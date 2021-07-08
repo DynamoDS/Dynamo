@@ -119,6 +119,6 @@
     <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
 
     <!--  Port color  -->
-    <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#69BAE0" />
-    <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="#465A63" />
+    <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#6DD2FF" />
+    <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="#535353" />
 </ResourceDictionary>
