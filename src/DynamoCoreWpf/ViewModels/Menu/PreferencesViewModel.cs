@@ -277,7 +277,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (packagePathsForInstall == null || !packagePathsForInstall.Any())
+                if (packagePathsForInstall == null)
                 {
                     var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     // Filter Builtin Packages and ProgramData paths from list of paths for download
@@ -795,24 +795,34 @@ namespace Dynamo.ViewModels
             switch (e.Operation)
             {
                 case PackagePathOperationsEventArgs.PackagePathOperations.Add:
-                    packagePathsForInstall.Add(e.Path);
+                    PackagePathsForInstall.Add(e.Path);
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Remove:
-                    if (SelectedPackagePathForInstall == e.Path)
+                    var updateSelection = SelectedPackagePathForInstall == e.Path;
+                    PackagePathsForInstall.Remove(e.Path);
+                    if (updateSelection && PackagePathsForInstall.Count > 0)
                     {
-                        SelectedPackagePathForInstall =
-                            packagePathsForInstall.Count > 1 ? packagePathsForInstall[0] : "";
+                        SelectedPackagePathForInstall = PackagePathsForInstall[0];
                     }
-                    packagePathsForInstall.Remove(e.Path);
+
+                    if (PackagePathsForInstall.Count == 0)
+                    {
+                        SelectedPackagePathForInstall = null;
+                        PackagePathsForInstall.Add(SelectedPackagePathForInstall);
+                        RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                    }
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Update:
-                    if (SelectedPackagePathForInstall == e.OldPath)
+                    updateSelection = SelectedPackagePathForInstall == e.OldPath;
+                    var index = PackagePathsForInstall.IndexOf(e.OldPath);
+                    if (index != -1)
+                    {
+                        PackagePathsForInstall[index] = e.Path;
+                    }
+                    if (updateSelection)
                     {
                         SelectedPackagePathForInstall = e.Path;
                     }
-                    var index = packagePathsForInstall.IndexOf(e.OldPath);
-                    if (index != -1)
-                        packagePathsForInstall[index] = e.Path;
                     break;
             }
 
