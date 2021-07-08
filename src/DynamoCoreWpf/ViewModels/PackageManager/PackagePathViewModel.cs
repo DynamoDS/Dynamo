@@ -53,17 +53,32 @@ namespace Dynamo.ViewModels
 
     public class PackagePathOperationsEventArgs : EventArgs
     {
+
         /// <summary>
-        /// True -> Add path to custom folder
-        /// False -> Remove path to custom folder
+        /// Add -> Add path to custom folder
+        /// Remove -> Remove path to custom folder
+        /// Update -> Update path to custom folder
         /// </summary>
-        public bool AddOrRemove { get; set; }
+        public enum PackagePathOperations
+        {
+            Add,
+            Remove,
+            Update
+        }
+        /// <summary>
+        /// Package path operation
+        /// </summary>
+        public PackagePathOperations Operation { get; set; }
 
         /// <summary>
         /// Indicate the path to the custom packages folder
         /// </summary>
         public string Path { get; set; }
-
+        /// <summary>
+        /// Indicate the old path to the custom packages folder
+        /// Only used for a Update operation
+        /// </summary>
+        public string OldPath { get; set; }
     }
 
     public class PackagePathViewModel : ViewModelBase
@@ -216,7 +231,11 @@ namespace Dynamo.ViewModels
 
             RootLocations.Insert(RootLocations.Count, args.Path);
 
-            var addOperationArgs = new PackagePathOperationsEventArgs { AddOrRemove = true, Path = args.Path };
+            var addOperationArgs = new PackagePathOperationsEventArgs
+            {
+                Operation = PackagePathOperationsEventArgs.PackagePathOperations.Add,
+                Path = args.Path
+            };
             OnPackagePathOperationsEvent(addOperationArgs);
 
             RaiseCanExecuteChanged();
@@ -242,18 +261,23 @@ namespace Dynamo.ViewModels
             if (args.Cancel)
                 return;
 
-            var removeOperationArgs = new PackagePathOperationsEventArgs { AddOrRemove = false, Path = RootLocations[index] };
-            OnPackagePathOperationsEvent(removeOperationArgs);
+            var operationArgs = new PackagePathOperationsEventArgs
+            {
+                Operation = PackagePathOperationsEventArgs.PackagePathOperations.Update, Path = args.Path,
+                OldPath = RootLocations[index]
+            };
+            OnPackagePathOperationsEvent(operationArgs);
 
             RootLocations[index] = args.Path;
-
-            var addOperationArgs = new PackagePathOperationsEventArgs { AddOrRemove = true, Path = args.Path };
-            OnPackagePathOperationsEvent(addOperationArgs);
         }
 
         private void RemovePathAt(int index)
         {
-            var removeOperationArgs = new PackagePathOperationsEventArgs { AddOrRemove = false, Path = RootLocations[index] };
+            var removeOperationArgs = new PackagePathOperationsEventArgs
+            {
+                Operation = PackagePathOperationsEventArgs.PackagePathOperations.Remove,
+                Path = RootLocations[index]
+            };
             OnPackagePathOperationsEvent(removeOperationArgs);
 
             RootLocations.RemoveAt(index);

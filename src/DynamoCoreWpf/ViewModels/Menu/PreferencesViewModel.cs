@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -791,14 +792,30 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void PackagePathsViewModel_PackagePathOperations(object sender, PackagePathOperationsEventArgs e)
         {
-            if (e.AddOrRemove)
+            switch (e.Operation)
             {
-                packagePathsForInstall.Add(e.Path);
+                case PackagePathOperationsEventArgs.PackagePathOperations.Add:
+                    packagePathsForInstall.Add(e.Path);
+                    break;
+                case PackagePathOperationsEventArgs.PackagePathOperations.Remove:
+                    if (SelectedPackagePathForInstall == e.Path)
+                    {
+                        SelectedPackagePathForInstall =
+                            packagePathsForInstall.Count > 1 ? packagePathsForInstall[0] : "";
+                    }
+                    packagePathsForInstall.Remove(e.Path);
+                    break;
+                case PackagePathOperationsEventArgs.PackagePathOperations.Update:
+                    if (SelectedPackagePathForInstall == e.OldPath)
+                    {
+                        SelectedPackagePathForInstall = e.Path;
+                    }
+                    var index = packagePathsForInstall.IndexOf(e.OldPath);
+                    if (index != -1)
+                        packagePathsForInstall[index] = e.Path;
+                    break;
             }
-            else
-            {
-                packagePathsForInstall.Remove(e.Path);
-            }
+
         }
 
         /// <summary>
