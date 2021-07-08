@@ -5,6 +5,7 @@
              xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
+             xmlns:viewmodels="clr-namespace:Dynamo.ViewModels"
              Height="Auto"
              Width="Auto"
              Name="topControl"
@@ -17,7 +18,8 @@
 
     <Grid Name="grid"
           x:FieldModifier="public"
-          HorizontalAlignment="Left">
+          HorizontalAlignment="Left"
+          Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="Auto"

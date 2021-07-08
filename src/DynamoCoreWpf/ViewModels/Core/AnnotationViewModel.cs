@@ -79,7 +79,17 @@ namespace Dynamo.ViewModels
                 annotationModel.AnnotationText = value;                
             }
         }
-       
+
+        [JsonIgnore]
+        public string AnnotationDescriptionText
+        {
+            get { return annotationModel.AnnotationDescriptionText; }
+            set
+            {
+                annotationModel.AnnotationDescriptionText = value;
+            }
+        }
+
         private Color _background;
         [JsonIgnore]
         public Color Background
@@ -203,6 +213,22 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
         }
 
+        internal void CollapseGroupNodes()
+        {
+            foreach (var node in Nodes)
+            {
+                node.IsCollapsed = true;
+            }
+        }
+
+        internal void ShowGroupNodes()
+        {
+            foreach (var node in Nodes)
+            {
+                node.IsCollapsed = false;
+            }
+        }
+
         private bool CanChangeFontSize(object obj)
         {
             return true;
@@ -234,6 +260,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
+                    break;
+                case nameof(AnnotationDescriptionText):
+                    RaisePropertyChanged(nameof(AnnotationDescriptionText));
                     break;
                 case "AnnotationText":
                     RaisePropertyChanged("AnnotationText");

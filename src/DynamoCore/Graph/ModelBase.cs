@@ -232,6 +232,22 @@ namespace Dynamo.Graph
             }
         }
 
+        private bool isCollapsed;
+        public virtual bool IsCollapsed
+        {
+            get => isCollapsed;
+            set
+            {
+                if (isCollapsed == value)
+                {
+                    return;
+                }
+
+                isCollapsed = value;
+                RaisePropertyChanged(nameof(IsCollapsed));
+            }
+        }
+
         /// <summary>
         /// Protected constructor.
         /// </summary>

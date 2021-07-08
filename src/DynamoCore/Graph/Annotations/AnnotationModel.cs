@@ -118,6 +118,20 @@ namespace Dynamo.Graph.Annotations
 
         }
 
+        private string annotationDescriptionText;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string AnnotationDescriptionText
+        {
+            get => annotationDescriptionText;
+            set
+            {
+                annotationDescriptionText = value;
+                RaisePropertyChanged(nameof(AnnotationDescriptionText));
+            }
+        }
+
         private string background;
         /// <summary>
         /// Returns background of the group
@@ -305,6 +319,7 @@ namespace Dynamo.Graph.Annotations
                 //Increase the Y value by 10. This provides the extra space between
                 // a model and textbox. Otherwise there will be some overlap
                 var regionY = groupModels.Min(y => y.Y) - ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+                //var regionY = groupModels.Min(y => y.Y) - ExtendSize;
               
                 //calculates the distance between the nodes
                 var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
@@ -319,7 +334,7 @@ namespace Dynamo.Graph.Annotations
                     X = regionX,
                     Y = regionY,
                     Width = xDistance + ExtendSize,
-                    Height = yDistance + ExtendSize + ExtendYHeight
+                    Height = yDistance + ExtendSize + ExtendYHeight - TextBlockHeight
                 };
 
                 this.X = region.X;              
@@ -362,6 +377,9 @@ namespace Dynamo.Graph.Annotations
                 case "TextBlockText":
                     AnnotationText = value;
                     break;
+                case "GroupNameTextBlockText":
+                    AnnotationDescriptionText = value;
+                    break;
             }
 
             return base.UpdateValueCore(updateValueParams);
@@ -401,6 +419,7 @@ namespace Dynamo.Graph.Annotations
             XmlElementHelper helper = new XmlElementHelper(element);
             this.GUID = helper.ReadGuid("guid", this.GUID);
             this.annotationText = helper.ReadString("annotationText", Resources.GroupDefaultText);
+            this.annotationDescriptionText = helper.ReadString(nameof(annotationDescriptionText), Resources.GroupNameDefaultText);
             this.X = helper.ReadDouble("left", DoubleValue);
             this.Y = helper.ReadDouble("top", DoubleValue);
             this.width = helper.ReadDouble("width", DoubleValue);

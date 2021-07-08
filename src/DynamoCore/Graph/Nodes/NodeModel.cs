@@ -449,6 +449,20 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        public override bool IsCollapsed 
+        { 
+            get => base.IsCollapsed;
+            set
+            {
+                foreach (var connector in AllConnectors)
+                {
+                    connector.IsCollapsed = value;
+                }
+
+                base.IsCollapsed = value; 
+            }
+        }
+
         private string ShortenName
         {
             get
