@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -782,7 +781,24 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
+            PackagePathsViewModel.PackagePathOperationsEvent += PackagePathsViewModel_PackagePathOperations;
+
             this.PropertyChanged += Model_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Listen for changes to the custom package paths and update package paths for install accordingly
+        /// </summary>
+        private void PackagePathsViewModel_PackagePathOperations(object sender, PackagePathOperationsEventArgs e)
+        {
+            if (e.AddOrRemove)
+            {
+                packagePathsForInstall.Add(e.Path);
+            }
+            else
+            {
+                packagePathsForInstall.Remove(e.Path);
+            }
         }
 
         /// <summary>
