@@ -46,7 +46,7 @@ namespace Dynamo.Tests.ModelsTest
             IEnumerable<Guid> annotationGuid = new[] { guid };
 
             //Act
-            var command1 = new CreateAnnotationCommand(annotationGuid, string.Empty, 100,100,true);
+            var command1 = new CreateAnnotationCommand(annotationGuid, string.Empty, string.Empty, 100,100,true);
             var serializedCommand = command1.Serialize(xmlDocument);
 
             //Assert

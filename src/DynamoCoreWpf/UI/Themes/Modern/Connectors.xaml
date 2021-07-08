@@ -34,7 +34,7 @@
     </Style>
     
     <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
-        <Grid>
+        <Grid Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
             <Grid.Resources>
                     <SolidColorBrush x:Key="BConnectorSelection"
                                  Color="{Binding PreviewState, Converter={StaticResource ConnectionStateToColorConverter}}">

@@ -8,6 +8,7 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:controls="clr-namespace:Dynamo.Controls"
              xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
              mc:Ignorable="d"                          
              Height="Auto" Width="Auto" Visibility="Visible"             
              MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"                                                  
@@ -16,6 +17,10 @@
              Canvas.Top="{Binding Top, Mode=TwoWay}">   
     
     <UserControl.Resources>
+        <CornerRadius x:Key="ExpanderCornerRadius"
+                      TopLeft="10"
+                      TopRight="10" />
+        
         <Style x:Key="ColorSelectorListBox"
            TargetType="ListBox">
             <Setter Property="SnapsToDevicePixels"
@@ -101,76 +106,256 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>    
+        </Style>
+
+        <ControlTemplate x:Key="GroupExpanderTemplate"
+                         TargetType="{x:Type ToggleButton}">
+            <Border x:Name="expanderBorder"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Padding="{TemplateBinding Padding}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Fill="Transparent"
+                               Grid.ColumnSpan="1" />
+                    <fa:ImageAwesome x:Name="sign"
+                                     Icon="ChevronDown"
+                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
+                                     Foreground="#808080"
+                                     Margin="5,0,0,0"
+                                     VerticalAlignment="Center">
+                    </fa:ImageAwesome>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <!--Change the icon when toggled-->
+                <Trigger Property="IsChecked"
+                            Value="True">
+                    <Setter Property="Icon"
+                            TargetName="sign"
+                            Value="ChevronUp" />
+                </Trigger>
+
+                <!--MouseOver, Pressed behaviors-->
+                <Trigger Property="IsMouseOver"
+                            Value="True">
+                    <Setter Property="Cursor"
+                            Value="Hand" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style TargetType="{x:Type Expander}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition x:Name="ContentRow"
+                                               Height="0" />
+                            </Grid.RowDefinitions>
+                            <Border x:Name="headerBorder"
+                                    Grid.Row="0"
+                                    CornerRadius="{StaticResource ExpanderCornerRadius}"
+                                    Padding="0"
+                                    Margin="0">
+                                <Border.Background>
+                                    <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
+                                </Border.Background>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter Grid.Column="0"
+                                                      Margin="4"
+                                                      ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      HorizontalAlignment="Left">
+                                    </ContentPresenter>
+
+                                    <!--Lock/Unlock group -->
+                                    <fa:ImageAwesome x:Name="lock"
+                                                     Grid.Column="1"
+                                                     Icon="Unlock"
+                                                     Foreground="#808080"
+                                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
+                                                     Margin="5">
+                                    </fa:ImageAwesome>
+
+                                    <!--Expander button-->
+                                    <ToggleButton OverridesDefaultStyle="True"
+                                                  Grid.Column="2"
+                                                  Template="{StaticResource GroupExpanderTemplate}"
+                                                  IsChecked="{Binding IsExpanded, Mode=TwoWay, 
+                                                RelativeSource={RelativeSource TemplatedParent}}"
+                                                  Margin="5" />
+
+                                    <!--Group context menu-->
+                                    <fa:ImageAwesome x:Name="contextMenu"
+                                                     Grid.Column="3"
+                                                     Icon="EllipsisV"
+                                                     Foreground="#808080"
+                                                     Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.FontSize}"
+                                                     Margin="5">
+                                    </fa:ImageAwesome>
+                                </Grid>
+                            </Border>
+                            
+                            <Border x:Name="Content"
+                                    Grid.Row="1">
+                                <ContentPresenter />
+                            </Border>
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded"
+                                     Value="True">
+                                <Setter TargetName="ContentRow"
+                                        Property="Height"
+                                        Value="{Binding Height, ElementName=Content}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
+    
     <UserControl.Triggers>
-        <EventTrigger  SourceName="Group" RoutedEvent="UserControl.MouseDoubleClick">
+        <EventTrigger  SourceName="GroupNameControl"
+                       RoutedEvent="ContentControl.MouseDoubleClick">
             <BeginStoryboard>
                 <Storyboard>
-                    <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBlock"
-                                                               Storyboard.TargetProperty="(TextBlock.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
-                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">                           
+                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                   Storyboard.TargetName="GroupTextBlock"
+                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
                         </DiscreteObjectKeyFrame>
                     </ObjectAnimationUsingKeyFrames>
-                    <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBox"
-                                                               Storyboard.TargetProperty="(TextBox.Visibility)">
-                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+
+                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                   Storyboard.TargetName="GroupTextBox"
+                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
                             Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
                     </ObjectAnimationUsingKeyFrames>
-                    <BooleanAnimationUsingKeyFrames
-                                    Storyboard.TargetName="GroupTextBox"
-                                    Storyboard.TargetProperty="(TextBox.Focusable)">
-                        <DiscreteBooleanKeyFrame
-                                            KeyTime="0"
-                                            Value="True" />
+
+                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
+                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                 Value="True" />
                     </BooleanAnimationUsingKeyFrames>
                 </Storyboard>
             </BeginStoryboard>
-        </EventTrigger>      
+        </EventTrigger>
+        <EventTrigger SourceName="GroupDescriptionControls"
+                      RoutedEvent="ContentControl.MouseDoubleClick">
+            <BeginStoryboard>
+                <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
+                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
+                        </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                   Storyboard.TargetName="GroupDescriptionTextBox"
+                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
+                    </ObjectAnimationUsingKeyFrames>
+
+                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
+                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                 Value="True" />
+                    </BooleanAnimationUsingKeyFrames>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
     </UserControl.Triggers>
-    <Grid Name="AnnotationGrid" Height="Auto">    
+
+    <Grid Name="AnnotationGrid"
+          Height="Auto">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"></RowDefinition>            
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}"
-                               Name="DeleteAnnotation"
-                           Click="OnDeleteAnnotation"/>
+                           Name="DeleteAnnotation"
+                           Click="OnDeleteAnnotation" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuUngroup}"
-                               Name="UngroupAnnotation"
-                           Click="OnUngroupAnnotation"/>
+                           Name="UngroupAnnotation"
+                           Click="OnUngroupAnnotation" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuGraphLayout}"
-                               Name="GraphLayoutAnnotation"
-                           Click="OnGraphLayoutAnnotation"/>
+                           Name="GraphLayoutAnnotation"
+                           Click="OnGraphLayoutAnnotation" />
                 <MenuItem  Header="{x:Static p:Resources.GroupContextMenuFont}"
-                               Name="ChangeSize">                   
-                    <MenuItem Header ="14" Name="FontSize0" Command="{Binding ChangeFontSize}" CommandParameter="14"
+                           Name="ChangeSize">
+                    <MenuItem Header="14"
+                              Name="FontSize0"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="14"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=14}"></MenuItem>
-                    <MenuItem Header ="18" Name="FontSize1" Command="{Binding ChangeFontSize}" CommandParameter="18"
+                    <MenuItem Header="18"
+                              Name="FontSize1"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="18"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=18}"></MenuItem>
-                    <MenuItem Header ="24" Name="FontSize2" Command="{Binding ChangeFontSize}" CommandParameter="24"
+                    <MenuItem Header="24"
+                              Name="FontSize2"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="24"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=24}"></MenuItem>
-                    <MenuItem Header ="30" Name="FontSize3" Command="{Binding ChangeFontSize}" CommandParameter="30"
+                    <MenuItem Header="30"
+                              Name="FontSize3"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="30"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=30}"></MenuItem>
-                    <MenuItem Header ="36" Name="FontSize4" Command="{Binding ChangeFontSize}" CommandParameter="36"
+                    <MenuItem Header="36"
+                              Name="FontSize4"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="36"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=36}"></MenuItem>
-                    <MenuItem Header ="48" Name="FontSize5" Command="{Binding ChangeFontSize}" CommandParameter="48"
+                    <MenuItem Header="48"
+                              Name="FontSize5"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="48"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=48}"></MenuItem>
-                    <MenuItem Header ="60" Name="FontSize6" Command="{Binding ChangeFontSize}" CommandParameter="60"
+                    <MenuItem Header="60"
+                              Name="FontSize6"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="60"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=60}"></MenuItem>
-                    <MenuItem Header ="72" Name="FontSize7" Command="{Binding ChangeFontSize}" CommandParameter="72"
+                    <MenuItem Header="72"
+                              Name="FontSize7"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="72"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=72}"></MenuItem>
-                    <MenuItem Header ="96" Name="FontSize8" Command="{Binding ChangeFontSize}" CommandParameter="96"
+                    <MenuItem Header="96"
+                              Name="FontSize8"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="96"
                               IsChecked="{Binding Path=FontSize,Converter={StaticResource MenuItemCheckConverter},ConverterParameter=96}"></MenuItem>
-                    
-                </MenuItem>               
+
+                </MenuItem>
                 <ListBox Style="{StaticResource ColorSelectorListBox}"
                          ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                          SelectionChanged="OnNodeColorSelectionChanged">
+                         SelectionChanged="OnNodeColorSelectionChanged">
                     <ListBox.Items>
                         <Rectangle Fill="#d4b6db" />
                         <Rectangle Fill="#ffb8d8" />
@@ -192,108 +377,216 @@
                 </ListBox>
             </ContextMenu>
         </Grid.ContextMenu>
-        <Rectangle Name="selectionBorder"                  
-                   Fill="Transparent"
-                   Width="{Binding Width}" 
-                   Height= "{Binding Height}"  
-                   Stroke="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
-                   StrokeThickness="2"
-                   IsHitTestVisible="False"
-                   Canvas.ZIndex="41"
-                   Margin="-1">
-            <Rectangle.Visibility>
+        <Border Name="selectionBorder"
+                Background="Transparent"
+                BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
+                BorderThickness="2"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                Margin="-1">
+            <Border.Visibility>
                 <Binding Path="PreviewState"
                          UpdateSourceTrigger="PropertyChanged"
                          Mode="OneWay"
                          Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
                 </Binding>
-            </Rectangle.Visibility>
-        </Rectangle>
-        <Rectangle  Name="AnnotationRectangle"                     
-                    Width="{Binding Width}" 
-                    Height= "{Binding Height}"                   
-                    IsHitTestVisible="True"
-                    Opacity="0.5"                     
-                    >
-            <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
-            </Rectangle.Fill>
-        </Rectangle>
-        <Grid x:Name="TextBlockGrid" Grid.Row="0" Height="auto" MaxWidth="{Binding Width}" 
-              Margin="5,0,5,0"
-              VerticalAlignment="Top">            
-            <TextBlock x:Name="GroupTextBlock"                                     
-                    Text ="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}}"                        
-                    MaxWidth="{Binding Width}"  
-                    MinHeight="20"   
-                    FontFamily="Trebuchet" 
-                    FontSize="{Binding FontSize}"                   
-                    LineStackingStrategy="BlockLineHeight"                    
-                    TextWrapping="Wrap"
-                    Visibility="Visible">               
-            </TextBlock>
-            <TextBox 
-                    Name="GroupTextBox" 
-                    Visibility="Collapsed"
-                    Text ="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}}"                                                    
-                    TextWrapping="Wrap"            
-                    MaxWidth="{Binding Width}" 
-                    MinHeight="20"  
-                    FontFamily="Trebuchet" 
-                    FontSize="{Binding FontSize}"                                 
-                    IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
-                    GotFocus="GroupTextBox_OnGotFocus"                   
-                    TextChanged="GroupTextBox_OnTextChanged"   
-                    AcceptsReturn="True"
-                    AcceptsTab="True">                  
-            </TextBox>
-            <Grid.Style>
-                <Style TargetType="{x:Type Grid}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Value="True">
-                                    <Condition.Binding>
-                                        <MultiBinding Converter="{StaticResource GroupFontSizeToEditorEnabledConverter }">
-                                            <Binding Path ="DataContext.Zoom" FallbackValue="1.0" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}"></Binding>
-                                            <Binding ElementName="GroupTextBlock" Path="FontSize"/>
-                                            <Binding ElementName="GroupTextBlock" Path="Visibility"/>
-                                        </MultiBinding>
-                                    </Condition.Binding>
-                                </Condition>
-                            </MultiDataTrigger.Conditions>
-                            <Setter Property="Visibility" Value="Visible"></Setter>
-                        </MultiDataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Grid.Style>
-            <Grid.Triggers>                           
-                <EventTrigger  SourceName="GroupTextBox" RoutedEvent="TextBox.LostKeyboardFocus">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBlock"
-                                                               Storyboard.TargetProperty="(TextBlock.Visibility)">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
-                            </ObjectAnimationUsingKeyFrames>
-                            <ObjectAnimationUsingKeyFrames Duration="0"  
-                                                               Storyboard.TargetName="GroupTextBox"
-                                                               Storyboard.TargetProperty="(TextBox.Visibility)">
-                                <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
-                            </ObjectAnimationUsingKeyFrames>
-                            <BooleanAnimationUsingKeyFrames
-                                    Storyboard.TargetName="GroupTextBox"
-                                    Storyboard.TargetProperty="(TextBox.Focusable)">
-                                <DiscreteBooleanKeyFrame
-                                            KeyTime="0"
-                                            Value="True" />
-                            </BooleanAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </Grid.Triggers>
-        </Grid>              
+            </Border.Visibility>
+        </Border>
+
+        <Expander x:Name="GroupExpander" 
+                  Width="{Binding Width}" 
+                  IsExpanded="True"
+                  Expanded="GroupExpander_Expanded"
+                  Collapsed="GroupExpander_Collapsed">
+            <Expander.Header>
+                <Grid x:Name="TextBlockGrid"
+                      Grid.Row="0"
+                      Height="auto"
+                      MaxWidth="{Binding Width}"
+                      Margin="5,0,5,0"
+                      VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ContentControl x:Name="GroupNameControl"
+                                    Grid.Row="0">
+                        <Grid>
+                            <TextBlock x:Name="GroupTextBlock"
+                                       Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
+                                       MaxWidth="{Binding Width}"
+                                       MinHeight="20"
+                                       FontFamily="Trebuchet"
+                                       FontSize="{Binding FontSize}"
+                                       LineStackingStrategy="BlockLineHeight"
+                                       TextWrapping="Wrap"
+                                       Visibility="Visible"
+                                       Margin="0,0,0,0">
+                            </TextBlock>
+                            <TextBox Name="GroupTextBox"
+                                     Visibility="Collapsed"
+                                     Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
+                                     TextWrapping="Wrap"
+                                     MaxWidth="{Binding Width}"
+                                     MinHeight="20"
+                                     FontFamily="Trebuchet"
+                                     FontSize="{Binding FontSize}"
+                                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
+                                     GotFocus="GroupTextBox_OnGotFocus"
+                                     TextChanged="GroupTextBox_OnTextChanged"
+                                     AcceptsReturn="True"
+                                     AcceptsTab="True">
+                            </TextBox>
+                        </Grid>
+                    </ContentControl>
+
+                    <ContentControl x:Name="GroupDescriptionControls"
+                                    Grid.Row="1">
+                        <Grid>
+                            <TextBlock x:Name="GroupDescriptionTextBlock"
+                                       Grid.Row="1"
+                                       Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                       MaxWidth="{Binding Width}"
+                                       MinHeight="20"
+                                       FontFamily="Trebuchet"
+                                       FontSize="{Binding FontSize, Converter={StaticResource GroupFontSizeConverter}}"
+                                       LineStackingStrategy="BlockLineHeight"
+                                       TextWrapping="Wrap"
+                                       Visibility="Visible">
+                            </TextBlock>
+                            <TextBox Name="GroupDescriptionTextBox"
+                                     Grid.Row="1"
+                                     Visibility="Collapsed"
+                                     Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                     TextWrapping="Wrap"
+                                     MaxWidth="{Binding Width}"
+                                     MinHeight="20"
+                                     FontFamily="Trebuchet"
+                                     FontSize="{Binding FontSize, Converter={StaticResource GroupFontSizeConverter}}"
+                                     IsVisibleChanged="GroupDescriptionTextBox_OnIsVisibleChanged"
+                                     GotFocus="GroupDescriptionTextBox_GotFocus"
+                                     TextChanged="GroupDescriptionTextBox_TextChanged"
+                                     AcceptsReturn="True"
+                                     AcceptsTab="True">
+                            </TextBox>
+                        </Grid>
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Value="True">
+                                                <Condition.Binding>
+                                                    <Binding ElementName="GroupExpander"
+                                                             Path="IsExpanded" />
+                                                </Condition.Binding>
+                                            </Condition>
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+
+                    <Grid.Style>
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Value="True">
+                                            <Condition.Binding>
+                                                <MultiBinding Converter="{StaticResource GroupFontSizeToEditorEnabledConverter }">
+                                                    <Binding Path="DataContext.Zoom"
+                                                             FallbackValue="1.0"
+                                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}" />
+                                                    <Binding ElementName="GroupTextBlock"
+                                                             Path="FontSize" />
+                                                    <Binding ElementName="GroupTextBlock"
+                                                             Path="Visibility" />
+                                                </MultiBinding>
+                                            </Condition.Binding>
+                                        </Condition>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility"
+                                            Value="Visible"></Setter>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.Triggers>
+                        <EventTrigger  SourceName="GroupTextBox"
+                                       RoutedEvent="TextBox.LostKeyboardFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Visible}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Collapsed}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
+                                    </BooleanAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                        <EventTrigger SourceName="GroupDescriptionTextBox"
+                                      RoutedEvent="TextBox.LostKeyboardFocus">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Visible}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Collapsed}" />
+                                    </ObjectAnimationUsingKeyFrames>
+
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
+                                    </BooleanAnimationUsingKeyFrames>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Grid.Triggers>
+                </Grid>
+            </Expander.Header>
+
+            <Rectangle  Name="AnnotationRectangle"
+                        Width="{Binding Width}"
+                        Height="{Binding Height}"
+                        IsHitTestVisible="True"
+                        Opacity="0.5">
+                <Rectangle.Fill>
+                    <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
+                </Rectangle.Fill>
+            </Rectangle>
+
+        </Expander>
     </Grid>
-    
 </UserControl>

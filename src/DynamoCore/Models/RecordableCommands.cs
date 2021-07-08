@@ -2060,6 +2060,7 @@ namespace Dynamo.Models
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(Guid annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(new List<Guid> { annotationId })
@@ -2074,6 +2075,35 @@ namespace Dynamo.Models
             }
 
             /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="annotationId"></param>
+            /// <param name="annotationText"></param>
+            /// <param name="annotationDescriptionText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            public CreateAnnotationCommand(Guid annotationId, string annotationText, string annotationDescriptionText,
+                double x, double y, bool defaultPosition)
+                : base(new List<Guid> { annotationId })
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
             ///
             /// </summary>
             /// <param name="annotationId"></param>
@@ -2081,6 +2111,7 @@ namespace Dynamo.Models
             /// <param name="x"></param>
             /// <param name="y"></param>
             /// <param name="defaultPosition"></param>
+            [Obsolete("Use method with annotationTitelText argument instead.")]
             public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
                 double x, double y, bool defaultPosition)
                 : base(annotationId)
@@ -2089,6 +2120,35 @@ namespace Dynamo.Models
                     annotationText = Resources.GroupDefaultText;
 
                 AnnotationText = annotationText;
+                X = x;
+                Y = y;
+                DefaultPosition = defaultPosition;
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="annotationId"></param>
+            /// <param name="annotationTitelText"></param>
+            /// <param name="annotationText"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            public CreateAnnotationCommand(IEnumerable<Guid> annotationId, string annotationText,
+                string annotationDescriptionText, double x, double y, bool defaultPosition)
+                : base(annotationId)
+            {
+                if (string.IsNullOrEmpty(annotationText))
+                {
+                    annotationText = Resources.GroupNameDefaultText;
+                }
+                if (string.IsNullOrEmpty(annotationDescriptionText))
+                {
+                    annotationDescriptionText = Resources.GroupDefaultText;
+                }
+
+                AnnotationText = annotationText;
+                AnnotationDescriptionText = annotationDescriptionText;
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
@@ -2110,6 +2170,7 @@ namespace Dynamo.Models
 
             #region Public Command Properties
 
+            internal string AnnotationDescriptionText { get; private set; }
             internal string AnnotationText { get; private set; }
             internal double X { get; private set; }
             internal double Y { get; private set; }

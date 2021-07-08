@@ -134,6 +134,7 @@
     <controls:RunPreviewToolTipConverter x:Key="RunPreviewToolTipConverter"/>
     <controls:MenuItemCheckConverter x:Key="MenuItemCheckConverter"/>
     <controls:AnnotationTextConverter x:Key="AnnotationTextConverter"/>
+    <controls:GroupFontSizeConverter x:Key="GroupFontSizeConverter"/>
     <controls:ViewModeToVisibilityConverter x:Key="ViewModeToVisibilityConverter" />
     <controls:ElementTypeToBoolConverter x:Key="ElementTypeToBoolConverter" />
     <controls:FullyQualifiedNameToDisplayConverter x:Key="FullyQualifiedNameToDisplayConverter" />

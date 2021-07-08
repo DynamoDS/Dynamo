@@ -44,7 +44,7 @@ namespace Dynamo.Nodes
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
                     SetTextMaxWidth();
-                    ViewModel.AnnotationModel.TextBlockHeight = this.GroupTextBlock.ActualHeight;
+                    SetTextHeight();
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null)
             {
                 SetTextMaxWidth();
-                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBox.ActualHeight;
+                SetTextHeight();
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
@@ -204,9 +204,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged))
             {
                 SetTextMaxWidth();
-                //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
-                //Actual height is same as previous size. used when the Font size changed during zoom
-                ViewModel.AnnotationModel.TextBlockHeight = GroupTextBlock.DesiredSize.Height;
+                SetTextHeight();
             }
         }
 
@@ -230,7 +228,7 @@ namespace Dynamo.Nodes
             ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
 
             textbox.Focus();
-            if (textbox.Text.Equals(Properties.Resources.GroupDefaultText))
+            if (textbox.Text.Equals(Properties.Resources.GroupNameDefaultText))
             {
                 textbox.SelectAll();
             }
@@ -276,5 +274,63 @@ namespace Dynamo.Nodes
             }
         }
 
+        private void GroupDescriptionTextBox_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var textbox = sender as TextBox;
+            if (textbox == null || textbox.Visibility != Visibility.Visible) return;
+
+            //Record the value here, this is useful when title is popped from stack during undo
+            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                new DynCmd.UpdateModelValueCommand(
+                    Guid.Empty, ViewModel.AnnotationModel.GUID, "GroupNameTextBlockText",
+                    GroupDescriptionTextBox.Text));
+
+            ViewModel.WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+
+            textbox.Focus();
+            if (textbox.Text.Equals(Properties.Resources.GroupDefaultText))
+            {
+                textbox.SelectAll();
+            }
+        }
+
+        private void GroupDescriptionTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            this.GroupDescriptionTextBox.CaretIndex = Int32.MaxValue;
+        }
+
+        private void GroupDescriptionTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                SetTextMaxWidth();
+                SetTextHeight();
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
+        }
+
+        private void GroupExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            this.ViewModel?.ShowGroupNodes();
+            SetTextHeight();
+        }
+
+        private void SetTextHeight()
+        {
+            if (GroupDescriptionTextBlock is null || GroupTextBlock is null || ViewModel is null)
+            {
+                return;
+            }
+
+            //Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
+            //Actual height is same as previous size. used when the Font size changed during zoom
+            var height = GroupDescriptionTextBlock.DesiredSize.Height + GroupTextBlock.DesiredSize.Height;
+            ViewModel.AnnotationModel.TextBlockHeight = height;
+        }
+
+        private void GroupExpander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            this.ViewModel?.CollapseGroupNodes();
+        }
     }
 }

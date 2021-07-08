@@ -1446,6 +1446,28 @@ namespace Dynamo.Graph.Workspaces
             return null;
         }
 
+        internal AnnotationModel AddAnnotation(string titleText, string text, Guid id)
+        {
+            var selectedNodes = this.Nodes == null ? null : this.Nodes.Where(s => s.IsSelected);
+            var selectedNotes = this.Notes == null ? null : this.Notes.Where(s => s.IsSelected);
+
+            if (!CheckIfModelExistsInSomeGroup(selectedNodes, selectedNotes))
+            {
+                var annotationModel = new AnnotationModel(selectedNodes, selectedNotes)
+                {
+                    GUID = id,
+                    AnnotationDescriptionText = titleText,
+                    AnnotationText = text
+                };
+                annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
+                annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;
+                AddNewAnnotation(annotationModel);
+                HasUnsavedChanges = true;
+                return annotationModel;
+            }
+            return null;
+        }
+
         /// <summary>
         /// this sets the event on Annotation. This event return the model from the workspace.
         /// When a model is ungrouped from a group, that model will be deleted from that group.

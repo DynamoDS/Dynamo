@@ -223,6 +223,8 @@ namespace Dynamo.ViewModels
             get { return _model == null ? _activeStartPort.Owner.IsFrozen : Nodevm.IsFrozen; }
         }
 
+        public bool IsCollapsed => _model?.IsCollapsed ?? false;
+
         #endregion
 
         /// <summary>
@@ -301,6 +303,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "ShowExecutionPreview":
                     RaisePropertyChanged("PreviewState");
+                    break;
+                case nameof(ConnectorModel.IsCollapsed):
+                    RaisePropertyChanged(nameof(IsCollapsed));
                     break;
             }
         }

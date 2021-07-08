@@ -576,6 +576,8 @@ namespace Dynamo.ViewModels
             set { NodeModel.UserDescription = value; }
         }
 
+        public bool IsCollapsed => NodeModel.IsCollapsed;
+
         #endregion
 
         #region events
@@ -860,6 +862,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "IsFrozen":
                     RaiseFrozenPropertyChanged();
+                    break;
+                case nameof(NodeModel.IsCollapsed):
+                    RaisePropertyChanged(nameof(IsCollapsed));
                     break;
             }
         }
