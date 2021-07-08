@@ -220,7 +220,54 @@ namespace DynamoCoreWpfTests
             Assert.False((bool)x.Convert(new object[] { vm, @"Z:\" }, null, null, null));
         }
 
-       
+        [Test]
+        public void IfPathsAreUnchangedPackagesAreNotReloaded()
+        {
+            var count = 0;
+            var setting = new PreferenceSettings()
+            {
+                CustomPackageFolders = {@"Z:\" }
+            };
+
+            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            loader.PackagesLoaded += Loader_PackagesLoaded;
+
+LoadPackageParams loadParams = new LoadPackageParams
+            {
+                Preferences = setting,
+                PathManager = Model.PathManager
+            };
+            CustomNodeManager customNodeManager = Model.CustomNodeManager;
+            var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
+
+            vm.SaveSettingCommand.Execute(null);
+
+            //should not have reloaded anything.
+            Assert.AreEqual(0, count);
+            var path = string.Empty;
+            vm.RequestShowFileDialog += (sender, args) => { args.Path = path; };
+            path = Path.Combine(GetTestDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)), "pkgs");
+            //add the new path
+            vm.AddPathCommand.Execute(null);
+
+            //save the new path 
+            vm.SaveSettingCommand.Execute(null);
+
+            //should have loaded something.
+            Assert.AreEqual(8, count);
+
+            //commit the paths again. 
+            vm.SaveSettingCommand.Execute(null);
+
+            //should not have loaded anything.
+            Assert.AreEqual(8, count);
+
+            void Loader_PackagesLoaded(System.Collections.Generic.IEnumerable<Assembly> obj)
+            {
+                count = count + obj.Count();
+            }
+            loader.PackagesLoaded -= Loader_PackagesLoaded;
+        }
 
         #endregion
         #region Setup methods
@@ -261,11 +308,9 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
-        [Category("TechDebt")]
         public void IfProgramDataPathIsFirstDefaultPackagePathIsStillAppData()
         {
             var setting = Model.PreferenceSettings;
-            var loader = Model.GetPackageManagerExtension().PackageLoader;
 
             var appDataFolder = GetAppDataFolder();
             Assert.AreEqual(4, ViewModel.Model.PathManager.PackagesDirectories.Count());
