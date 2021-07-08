@@ -1784,10 +1784,6 @@ namespace Dynamo.Controls
         {
             var preferencesWindow = new PreferencesView(this);
             preferencesWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-            // when the preferences window is opened update the package paths UI based on most up to date preferences model.
-            // TODO refactor and generalize this solution after 2.12 release - what about other preferences
-            // that can be updated on the model (from an extension for example) and need to be updated in the UI?
-            (preferencesWindow.PackagePathView.DataContext as PackagePathViewModel)?.InitializeRootLocations();
             preferencesWindow.ShowDialog();
         }
 

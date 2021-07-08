@@ -37,8 +37,7 @@ namespace Dynamo.Wpf.Views
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
-
-            
+ 
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -49,10 +48,17 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel = viewModelTemp;
             }
-            
+
+            SyncPreferenceSettingsAndViewModels();
             InitRadioButtonsDescription();
         }
 
+        // solution 1 - preferencesView is reconstructed each time the prefs window is opened
+        // update any state we need to here on any child viewModels.
+        private void SyncPreferenceSettingsAndViewModels()
+        {
+            viewModel?.PackagePathsViewModel?.InitializeRootLocations();
+        }
 
         /// <summary>
         ///Given that the PreferencesViewModel persists through the Dynamo session, 
