@@ -316,11 +316,8 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if (preferenceSettings.SelectedPackagePathForInstall != value)
-                {
-                    preferenceSettings.SelectedPackagePathForInstall = value;
-                    RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
-                }
+                preferenceSettings.SelectedPackagePathForInstall = value;
+                RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
             }
         }
 
@@ -798,18 +795,19 @@ namespace Dynamo.ViewModels
                     PackagePathsForInstall.Add(e.Path);
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Remove:
-                    var updateSelection = SelectedPackagePathForInstall == e.Path;
-                    PackagePathsForInstall.Remove(e.Path);
-                    if (updateSelection && PackagePathsForInstall.Count > 0)
+                    // Don't allow the default user data folder to be removed
+                    // A lot of strange behavior would go away if we make the same change
+                    // to the list of directories. E.g. Don't allow the default user data
+                    // folder to be removed or updated.
+                    if (e.Path == preferenceSettings.OnRequestUserDataFolder())
                     {
-                        SelectedPackagePathForInstall = PackagePathsForInstall[0];
+                        return;
                     }
 
-                    if (PackagePathsForInstall.Count == 0)
+                    var updateSelection = SelectedPackagePathForInstall == e.Path;
+                    if (PackagePathsForInstall.Remove(e.Path) && updateSelection && PackagePathsForInstall.Count > 0)
                     {
-                        SelectedPackagePathForInstall = null;
-                        PackagePathsForInstall.Add(SelectedPackagePathForInstall);
-                        RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                        SelectedPackagePathForInstall = PackagePathsForInstall[0];
                     }
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Update:
@@ -819,13 +817,13 @@ namespace Dynamo.ViewModels
                     {
                         PackagePathsForInstall[index] = e.Path;
                     }
+
                     if (updateSelection)
                     {
                         SelectedPackagePathForInstall = e.Path;
                     }
                     break;
             }
-
         }
 
         /// <summary>
