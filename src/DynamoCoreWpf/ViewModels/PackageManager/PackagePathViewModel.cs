@@ -226,10 +226,15 @@ namespace Dynamo.ViewModels
 
         private void CommitChanges(object param)
         {
-            setting.CustomPackageFolders = CommitRootLocations();
-            if (this.packageLoader != null)
+            var newpaths = CommitRootLocations();
+            //if paths are modified, reload packages and update prefs.
+            if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                setting.CustomPackageFolders = newpaths;
+                if (this.packageLoader != null)
+                {
+                    this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                }
             }
         }
 
