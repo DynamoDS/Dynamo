@@ -2487,6 +2487,123 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get Started.
+        /// </summary>
+        public static string GetStartedGuide {
+            get {
+                return ResourceManager.GetString("GetStartedGuide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Library contains all default Dynamo nodes, and any other nodes you have loaded, such as #custom=https://primer.dynamobim.org/10_Custom-Nodes/10-1_Introduction.html nodes or #packages=https://primer.dynamobim.org/11_Packages/11-1_Introduction.html \n\nYou can browse through the node Categories, or search the library to find a node..
+        /// </summary>
+        public static string GetStartedGuideLibraryText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideLibraryText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Library.
+        /// </summary>
+        public static string GetStartedGuideLibraryTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideLibraryTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In the Preferences palette, you can customize your Dynamo experience, from language and time zone settings, to experimental features and visual styles of your workspace..
+        /// </summary>
+        public static string GetStartedGuidePreferencesText {
+            get {
+                return ResourceManager.GetString("GetStartedGuidePreferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferences.
+        /// </summary>
+        public static string GetStartedGuidePreferencesTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuidePreferencesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the Help menu to access tools and resources to help you get started.\n\nYou can choose sample scripts, browse the Dynamo Dictionary, replay this and other tutorials, and more!.
+        /// </summary>
+        public static string GetStartedGuideResourcesText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideResourcesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resources.
+        /// </summary>
+        public static string GetStartedGuideResourcesTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideResourcesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the Run Status Bar to run your Dynamo graphs and choose between automatic and manual run types. \n\nSelecting Automatic means your graph will run each time you make a change, and selecting manual means your graph will only run when you select the Run button..
+        /// </summary>
+        public static string GetStartedGuideRunStatusBarText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideRunStatusBarText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run Status Bar.
+        /// </summary>
+        public static string GetStartedGuideRunStatusBarTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideRunStatusBarTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to From the Toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-.
+        /// </summary>
+        public static string GetStartedGuideToolbarText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideToolbarText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toolbar.
+        /// </summary>
+        public static string GetStartedGuideToolbarTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideToolbarTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Take a short tour to learn some basics about the Dynamo interface and features to help you get started on your visual programming journey..
+        /// </summary>
+        public static string GetStartedGuideWelcomeText {
+            get {
+                return ResourceManager.GetString("GetStartedGuideWelcomeText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome To Dynamo.
+        /// </summary>
+        public static string GetStartedGuideWelcomeTitle {
+            get {
+                return ResourceManager.GetString("GetStartedGuideWelcomeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel and Show Issues.
         /// </summary>
         public static string GraphIssuesOnSave_CancelBtn {
@@ -2897,6 +3014,15 @@ namespace Dynamo.Wpf.Properties {
         public static string InstallMessageCaption {
             get {
                 return ResourceManager.GetString("InstallMessageCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interactive Guides.
+        /// </summary>
+        public static string InteractiveGuides {
+            get {
+                return ResourceManager.GetString("InteractiveGuides", resourceCulture);
             }
         }
         
