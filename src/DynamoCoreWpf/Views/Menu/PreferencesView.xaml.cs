@@ -49,15 +49,7 @@ namespace Dynamo.Wpf.Views
                 viewModel = viewModelTemp;
             }
 
-            SyncPreferenceSettingsAndViewModels();
             InitRadioButtonsDescription();
-        }
-
-        // solution 1 - preferencesView is reconstructed each time the prefs window is opened
-        // update any state we need to here on any child viewModels.
-        private void SyncPreferenceSettingsAndViewModels()
-        {
-            viewModel?.PackagePathsViewModel?.InitializeRootLocations();
         }
 
         /// <summary>
@@ -69,6 +61,7 @@ namespace Dynamo.Wpf.Views
             //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
         }
 
         /// <summary>

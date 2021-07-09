@@ -2,13 +2,18 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using Dynamo.Configuration;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Views;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SystemTestServices;
 
@@ -267,6 +272,26 @@ LoadPackageParams loadParams = new LoadPackageParams
                 count = count + obj.Count();
             }
             loader.PackagesLoaded -= Loader_PackagesLoaded;
+        }
+
+        [Test]
+        public void PathsAddedToCustomPacakgePathPreferences_SurvivePreferenceDialogOpenClose()
+        {
+            //add a new path to the package paths
+            Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\doesNotExist");
+            Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\doesNotExist\dde.dll");
+
+            //assert preference settings is correct after prefs window open and close.
+            var preferencesWindow = new PreferencesView(View);
+            //we use show because showDialog will block the test.
+            preferencesWindow.Show();
+            DispatcherUtil.DoEvents();
+            preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //assert preference settings is correct.
+            Assert.Contains(@"C:\doesNotExist", Model.PreferenceSettings.CustomPackageFolders);
+            Assert.Contains(@"C:\doesNotExist\dde.dll", Model.PreferenceSettings.CustomPackageFolders);
         }
 
         #endregion
