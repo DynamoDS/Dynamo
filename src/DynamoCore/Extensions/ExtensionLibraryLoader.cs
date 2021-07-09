@@ -46,6 +46,12 @@ namespace Dynamo.Extensions
         }
 
         //TODO add to ILibraryLoader in 3.0
+        //internal void RemoveLibrary(string library)
+        //{
+        //    model.LibraryServices.RemoveLibrary(library);
+        //}
+
+        //TODO add to ILibraryLoader in 3.0
         /// <summary>
         /// Loads packages for import into VM and for node search.
         /// </summary>

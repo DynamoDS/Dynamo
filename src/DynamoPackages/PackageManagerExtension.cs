@@ -305,10 +305,7 @@ namespace Dynamo.PackageManager
                 }
                 CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Load,
-                Categories.PackageManagerOperations,
-                package.Name);
+            Analytics.TrackEvent(Actions.Load, Categories.PackageManagerOperations, package.Name);
         }
 
         private void OnPackageRemoved(Package package)
@@ -344,11 +341,12 @@ namespace Dynamo.PackageManager
                     CustomNodePackageDictionary.Remove(cn.FunctionId);
                 }
             }
+            //foreach (var library in package.NodeLibraries)
+            //{
+            //    (ReadyParams.StartupParams.LibraryLoader as ExtensionLibraryLoader).RemoveLibrary(library.Location);
+            //}
 
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Delete,
-                Categories.PackageManagerOperations,
-                package.Name);
+            Analytics.TrackEvent(Actions.Delete, Categories.PackageManagerOperations, package.Name);
         }
 
         #endregion

@@ -529,6 +529,15 @@ namespace Dynamo.Engine
             return false;
         }
 
+        //internal void RemoveLibrary(string library)
+        //{
+        //    if(importedFunctionGroups.ContainsKey(library))
+        //    {
+        //        importedFunctionGroups.Remove(library);
+        //        importedLibraries.Remove(library);
+        //    }
+        //}
+
         /// <summary>
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
@@ -627,7 +636,10 @@ namespace Dynamo.Engine
                     throwOnFailure: !isExplicitlyImportedLib));
                 return false;
             }
-            importedLibraries.Add(library);
+            if (!importedLibraries.Contains(library))
+            {
+                importedLibraries.Add(library);
+            }
 
             return true;
         }
@@ -1095,7 +1107,10 @@ namespace Dynamo.Engine
             if (pathManager.PackagesDirectories.Any(
                 directory => library.StartsWith(directory)))
             {
-                packagedLibraries.Add(library);
+                if (!packagedLibraries.Contains(library))
+                {
+                    packagedLibraries.Add(library);
+                }
             }
 
             EventHandler<LibraryLoadingEventArgs> handler = LibraryLoading;

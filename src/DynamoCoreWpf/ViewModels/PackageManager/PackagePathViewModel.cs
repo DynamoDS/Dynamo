@@ -231,9 +231,9 @@ namespace Dynamo.ViewModels
             if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
                 setting.CustomPackageFolders = newpaths;
-                if (this.packageLoader != null)
+                if (packageLoader != null)
                 {
-                    this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
                 }
             }
         }
