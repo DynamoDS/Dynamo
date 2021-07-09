@@ -828,13 +828,20 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal void CommitSelectedPackagePathForInstall()
+        /// <summary>
+        /// Store selection to preferences
+        /// </summary>
+        internal void CommitPackagePathsForInstall()
         {
             preferenceSettings.SelectedPackagePathForInstall = SelectedPackagePathForInstall;
         }
 
-        internal void InitSelectedPackagePathForInstall()
+        /// <summary>
+        /// Force reload of paths and get current selection from preferences
+        /// </summary>
+        internal void InitPackagePathsForInstall()
         {
+            PackagePathsForInstall = null;
             SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
         }
 
