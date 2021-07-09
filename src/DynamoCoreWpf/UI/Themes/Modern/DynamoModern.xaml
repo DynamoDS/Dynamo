@@ -56,7 +56,7 @@
     <Color x:Key="SliderTrackDarkColor">#FFC5CBF9</Color>
     <Color x:Key="NavButtonFrameColor">#FF3843C4</Color>
 
-    <clr:Double x:Key="NodeNameHeight">42</clr:Double>
+    <clr:Double x:Key="NodeNameHeight">53</clr:Double>
 
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
@@ -272,6 +272,34 @@
 
     <!--  Zoom fade text  -->
     <Style x:Key="SZoomFadeText" TargetType="{x:Type TextBlock}">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                To="1.0"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+                <DataTrigger.ExitActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                To="0.0"
+                                Duration="0:0:0.2" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.ExitActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--  Zoom fade label  -->
+    <Style x:Key="SZoomFadeLabel" TargetType="{x:Type Label}">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
@@ -828,7 +856,8 @@
     </Style>
 
     <Style x:Key="SNodeTextButton" TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="36px" />
+        <Setter Property="MinWidth" Value="41px" />
+        <Setter Property="Height" Value="34px" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate>
@@ -837,51 +866,48 @@
                             x:Name="roundedBorder"
                             HorizontalAlignment="Stretch"
                             Background="#4D4D4D"
-                            BorderBrush="#D9D9D9"
-                            BorderThickness="2"
-                            CornerRadius="10">
+                            CornerRadius="4">
                             <Grid x:Name="inner">
-                                <TextBlock
+                                <Label
                                     x:Name="text"
-                                    Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Margin}"
-                                    Padding="4"
-                                    HorizontalAlignment="Center"
-                                    FontSize="20px"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalContentAlignment="Center"
+                                    FontSize="27px"
+                                    Padding="0"
                                     FontWeight="Bold"
-                                    Foreground="#D9D9D9"
-                                    Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    TextAlignment="Center" />
+                                    Style="{StaticResource SZoomFadeLabel}"
+                                    Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"/>
                             </Grid>
                         </Border>
                     </Grid>
-
                     <ControlTemplate.Triggers>
-
                         <Trigger Property="Button.IsMouseOver" Value="true">
                             <Setter TargetName="roundedBorder" Property="Background" Value="#535353" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="text" Property="Foreground" Value="#D9D9D9" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300}" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="true">
-                            <Setter TargetName="text" Property="Foreground" Value="#D9D9D9" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300}" />
                         </Trigger>
 
-                        <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="+">
-                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="10,0,0,10" />
+                        <DataTrigger Binding="{Binding ElementName=text, Path=Content}" Value="+">
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="4,0,0,4" />
+                            <Setter TargetName="roundedBorder" Property="Margin" Value="0,0,0.5,0" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding ElementName=text, Path=Text}" Value="-">
-                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,10,10,0" />
+                        <DataTrigger Binding="{Binding ElementName=text, Path=Content}" Value="-">
+                            <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,4,4,0" />
+                            <Setter TargetName="roundedBorder" Property="Margin" Value="0.5,0,0,0" />
                         </DataTrigger>
-
                     </ControlTemplate.Triggers>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
+    
+    
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />

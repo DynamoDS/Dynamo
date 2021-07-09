@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui1="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             xmlns:ui2="clr-namespace:Dynamo.UI;assembly=DynamoCore"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:nodes1="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d" 
@@ -14,75 +13,233 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui1:SharedResourceDictionary Source="{x:Static ui1:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="SliderThumbStyle" TargetType="Thumb">
+                <Setter Property="Focusable" Value="false" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border 
+                                Name="Thumb"
+                                Background="#FFFFFF"
+                                CornerRadius="1"
+                                Width="4"
+                                Height="14" />
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" TargetName="Thumb" Value="{StaticResource Blue300Brush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="DecreaseSliderButtonStyle" TargetType="{x:Type RepeatButton}">
+                <Setter Property="SnapsToDevicePixels" Value="true"/>
+                <Setter Property="OverridesDefaultStyle" Value="true"/>
+                <Setter Property="IsTabStop" Value="false"/>
+                <Setter Property="Focusable" Value="false"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                            <Border Height="2" Background="{StaticResource PrimaryCharcoal100Brush}" BorderThickness="0"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="SliderStyle" TargetType="Slider" >
+                <Setter Property="Focusable" Value="false"  />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Slider">
+                            <Grid Height="30" Background="Transparent" >
+                                <Rectangle Height="2" SnapsToDevicePixels="True" Fill="#636363"/>
+                                <Track Name="PART_Track">
+                                    <Track.Thumb>
+                                        <Thumb Style="{StaticResource SliderThumbStyle}"/>
+                                    </Track.Thumb>
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton 
+                                            Style="{StaticResource DecreaseSliderButtonStyle}"/>
+                                    </Track.DecreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <ControlTemplate x:Key="ExpanderTemplate" TargetType="Expander">
+                <Border Background="{TemplateBinding Control.Background}" BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}" CornerRadius="3" SnapsToDevicePixels="True">
+                    <DockPanel>
+                        <ToggleButton
+                            IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                            <ToggleButton.Style>
+                                <Style TargetType="ToggleButton">
+                                    <Setter Property="Control.Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ToggleButton">
+                                                <Border Padding="{TemplateBinding Control.Padding}">
+                                                    <Grid VerticalAlignment="Top" Margin="-7,0,0,0">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="27" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        <Rectangle
+                                                            Name="ButtonBackgroundRectangle"
+                                                            Fill="#3C3C3C"
+                                                            Width="29"
+                                                            Height="27"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"/>
+                                                        <Border
+                                                            Grid.Column="0"
+                                                            Name="ButtonBorder"
+                                                            Width="21"
+                                                            Height="21"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Center"
+                                                            BorderThickness="1.5"
+                                                            SnapsToDevicePixels="True"
+                                                            BorderBrush="{StaticResource Blue300Brush}"
+                                                            Background="Transparent"
+                                                            CornerRadius="1"/>
+                                                        <Polygon
+                                                            Name="Triangle" Grid.Column="0"
+                                                            Points="11,12.5 13.5,15.5,16,12.5"
+                                                            Stroke="{StaticResource Blue300Brush}"
+                                                            StrokeThickness="1"
+                                                            Fill="{StaticResource Blue300Brush}"
+                                                            SnapsToDevicePixels="True" />
+                                                        <ContentPresenter
+                                                            Content="{TemplateBinding ContentControl.Content}"
+                                                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                                                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                                                            Grid.Column="1"
+                                                            HorizontalAlignment="Left"
+                                                            Margin="4,0,0,0"
+                                                            RecognizesAccessKey="True"
+                                                            SnapsToDevicePixels="True"
+                                                            VerticalAlignment="Center" />
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="ToggleButton.IsChecked" Value="True">
+                                                        <Setter Property="Points" TargetName="Triangle" Value="11,15.5 13.5,12.5,16,15.5" />
+                                                    </Trigger>
+                                                    <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                        
+                                                        <Setter Property="Fill" TargetName="ButtonBackgroundRectangle" Value="#282828" />
+                                                    </Trigger>
+                                                    <Trigger Property="ButtonBase.IsPressed" Value="True">
+                                                        <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="White" />
+                                                        <Setter Property="Stroke" TargetName="Triangle" Value="White" />
+                                                        <Setter Property="Fill" TargetName="Triangle" Value="White" />
+                                                        <Setter Property="StrokeThickness" TargetName="Triangle" Value="2" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ToggleButton.Style>
+                        </ToggleButton>
+                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" DockPanel.Dock="Bottom" Focusable="False" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" Margin="{TemplateBinding Control.Padding}" Name="ExpandSite" VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}" Visibility="Collapsed" />
+                    </DockPanel>
+                </Border>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Expander.IsExpanded" Value="True">
+                        <Setter Property="UIElement.Visibility" TargetName="ExpandSite" Value="Visible" />
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid VerticalAlignment="Stretch">
-
-        <Expander IsExpanded="False" Margin="5,0,0,0" IsHitTestVisible="True">
-
-            <Grid Margin="0,7,0,0">
-
+        <Expander IsExpanded="False"
+                  IsHitTestVisible="True"
+                  Template="{StaticResource ExpanderTemplate}">
+            <Grid Margin="-25,55,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="40"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="42"/>
+                    <RowDefinition Height="42"/>
+                    <RowDefinition Height="42"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
-                <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center"/>
-                <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center"/>
-                <Label Grid.Column="0" Grid.Row="2" Content="Step" VerticalContentAlignment="Center"/>
-                <nodes1:DynamoTextBox x:Name="MinTb" Grid.Row="0" Grid.Column="1" Margin="2"
+                <Label Grid.Column="0" Grid.Row="0" Content="Min" VerticalContentAlignment="Center" Foreground="#CCCCCC"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Max" VerticalContentAlignment="Center" Foreground="#CCCCCC"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="Step" VerticalContentAlignment="Center" Foreground="#CCCCCC"/>
+                <nodes1:DynamoTextBox x:Name="MinTb" Grid.Row="0" Grid.Column="1" Margin="3"
                                         VerticalContentAlignment="Center" 
+                                        Foreground="#bcbcbc"
+                                        BorderThickness="1"
+                                        BorderBrush="#4A4A4A"
+                                        Background="{StaticResource MidGreyBrush}"
+                                        Padding="7,5,0,5"
                                         Text="{Binding MinText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
-                <nodes1:DynamoTextBox x:Name="MaxTb" Grid.Row="1" Grid.Column="1" Margin="2"
+                <nodes1:DynamoTextBox x:Name="MaxTb" Grid.Row="1" Grid.Column="1" Margin="3"
                                         VerticalContentAlignment="Center" 
+                                        Foreground="#bcbcbc"
+                                        BorderThickness="1"
+                                        BorderBrush="#4A4A4A"
+                                        Background="{StaticResource MidGreyBrush}"
+                                        Padding="7,5,0,5"
                                         Text="{Binding MaxText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
-                <nodes1:DynamoTextBox x:Name="StepTb" Grid.Row="2" Grid.Column="1" Margin="2"
+                <nodes1:DynamoTextBox x:Name="StepTb" Grid.Row="2" Grid.Column="1" Margin="3"
                                         VerticalContentAlignment="Center" 
+                                        Foreground="#bcbcbc"
+                                        BorderThickness="1"
+                                        BorderBrush="#4A4A4A"
+                                        Background="{StaticResource MidGreyBrush}"
+                                        Padding="7,5,0,5"
                                         Text="{Binding StepText, Mode=OneWay, UpdateSourceTrigger=Explicit}"/>
             </Grid>
 
         </Expander>
 
-        <Grid Height="{x:Static configuration:Configurations.PortHeightInPixels}" 
-              VerticalAlignment="Top">
+        <Grid Height="34" VerticalAlignment="Top">
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="45"/>
                 <ColumnDefinition MinWidth="150" Width="150"/>
             </Grid.ColumnDefinitions>
 
             <nodes1:DynamoTextBox x:Name="ValTb" 
                                           Text="{Binding ValueText, Mode=OneWay}" 
                                           Grid.Column="1"
+                                          Height="34"
+                                          Foreground="{StaticResource PrimaryCharcoal100Brush}"
+                                          BorderThickness="1"
+                                          BorderBrush="#4A4A4A"
+                                          Background="{StaticResource MidGreyBrush}"
+                                          Opacity="1"
+                                          Padding="4"
                                           Margin="2,0,2,0" 
-                                          VerticalAlignment="Stretch"/>
+                                          VerticalContentAlignment="Center"
+                                          VerticalAlignment="Top"/>
 
             <Slider Name="slider" 
-                            VerticalAlignment="Center"
-                            Maximum="{Binding Max}" 
-                            Minimum="{Binding Min}" 
-                            TickFrequency="{Binding Step}" 
-                            Value="{Binding Value}" 
-                            TickPlacement="None" 
-                            IsSnapToTickEnabled="true" 
-                            Grid.Column="2" 
-                            Thumb.DragStarted="Slider_OnDragStarted"
-                            Thumb.DragCompleted="Slider_OnDragCompleted"   
-                            MouseMove="Slider_OnMouseMove"
-                            />
-
+                VerticalAlignment="Center"
+                Margin="10,0,0,0"
+                Maximum="{Binding Max}" 
+                Minimum="{Binding Min}" 
+                TickFrequency="{Binding Step}" 
+                Value="{Binding Value}" 
+                TickPlacement="None" 
+                IsSnapToTickEnabled="true" 
+                Grid.Column="2" 
+                Thumb.DragStarted="Slider_OnDragStarted"
+                Thumb.DragCompleted="Slider_OnDragCompleted"
+                MouseMove="Slider_OnMouseMove"
+                Style="{StaticResource SliderStyle}">
+            </Slider>
         </Grid>
-
     </Grid>
 </UserControl>

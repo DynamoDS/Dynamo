@@ -236,7 +236,7 @@
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Height="42px"
+            Height="57px"
             Canvas.ZIndex="12"
             CornerRadius="8,8,0,0">
             <Border.Background>
@@ -380,10 +380,10 @@
             <TextBlock
                 Name="NameBlock"
                 Grid.ColumnSpan="3"
-                Margin="12,10,50,8"
+                Margin="10,10,50,8"
                 VerticalAlignment="Center"
                 Background="{x:Null}"
-                FontFamily="{StaticResource ArtifaktElementBold}"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
                 FontSize="16px"
                 IsHitTestVisible="False"
                 Style="{StaticResource SZoomFadeText}"
@@ -441,7 +441,7 @@
         <!--  INPUT PORTS  -->
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
-                      Margin="0,15,8,0"
+                      Margin="0,8,14,6"
                       Grid.Column="0"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
@@ -452,7 +452,7 @@
         <!--  OUTPUT PORTS  -->
         <ItemsControl Name="outputPortControl"
                       Grid.Row="2"
-                      Margin="8,15,0,0"
+                      Margin="14,8,0,6"
                       Grid.Column="2"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
@@ -475,7 +475,7 @@
 
             <Grid Name="inputGrid"
                   x:FieldModifier="public"
-                  Margin="0,18,0,0"
+                  Margin="0,11,0,0"
                   VerticalAlignment="Stretch"
                   HorizontalAlignment="Stretch"
                   Canvas.ZIndex="21"
@@ -490,26 +490,38 @@
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Height="25"
+            Margin="0,0,9,16"
             HorizontalAlignment="Right"
             Canvas.ZIndex="30"
             Orientation="Horizontal"
             Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
-            <Grid>
-                <TextBlock
-                    Name="lacingOptionTextBlock"
-                    Margin="5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    FontFamily="Tahoma"
-                    FontSize="8"
-                    FontWeight="Bold"
-                    Foreground="#99000000"
-                    Text="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
-                    ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
-                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
-            </Grid>
+            <Button x:Name="OptionsButton">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="BackgroundBorder" Height="29" Width="29" Background="Transparent" CornerRadius="2">
+                                        <StackPanel Height="28" Width="28" HorizontalAlignment="Center" Orientation="Vertical" >
+                                            <Ellipse Fill="Transparent" SnapsToDevicePixels="True" Stroke="{StaticResource Blue300Brush}" Margin="0,5,0,2" StrokeThickness="1" Height="5" Width="5"/>
+                                            <Ellipse Fill="Transparent" SnapsToDevicePixels="True" Stroke="{StaticResource Blue300Brush}" Margin="0,0,0,1.5" StrokeThickness="1" Height="5" Width="5"/>
+                                            <Ellipse Fill="Transparent" SnapsToDevicePixels="True" Stroke="{StaticResource Blue300Brush}" Margin="0,0,0,4" StrokeThickness="1" Height="5" Width="5"/>
+                                        </StackPanel>        
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="BackgroundBorder" Property="Background" Value="#282828"/>
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
         <Grid
@@ -554,7 +566,7 @@
             Background="Transparent"
             IsHitTestVisible="False"
             BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
-            BorderThickness="3">
+            BorderThickness="4">
             <Border.Visibility>
                 <Binding
                     Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}"

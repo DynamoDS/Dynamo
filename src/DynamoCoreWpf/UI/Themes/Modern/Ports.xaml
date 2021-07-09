@@ -34,6 +34,8 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
+    <ScaleTransform x:Key="FontStretchTall" ScaleY="1.7" />
+    
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -44,10 +46,9 @@
                 x:Name="MainBorder"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
-                Height="40px"
-                Background="#4D4D4D"
-                BorderBrush="#D5D5D5"
-                Opacity="1.0"
+                Height="35px"
+                Background="{Binding IsConnected, Converter={StaticResource InputIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"
+                BorderBrush="{Binding IsConnected, Converter={StaticResource InputIsConnectedBorderBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
                 UseLayoutRounding="true">
                 <StackPanel Orientation="Horizontal">
                     <Grid
@@ -159,13 +160,13 @@
                             <TextBlock
                                 Name="portNameTb"
                                 Width="Auto"
-                                Margin="13,0,13,8"
+                                Margin="13,0,13,7"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Center"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
                                 FontSize="17px"
                                 FontWeight="Regular"
-                                Foreground="#D9D9D9"
+                                Foreground="{StaticResource PrimaryCharcoal100Brush}"
                                 IsHitTestVisible="False"
                                 Style="{StaticResource SZoomFadeText}"
                                 Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
@@ -204,7 +205,6 @@
                         Grid.Column="1"
                         Height="{Binding Path=Height}"
                         Margin="{Binding Path=MarginThickness}"
-
                         HorizontalAlignment="Stretch"
                         Background="Transparent"
                         Cursor="Hand"
@@ -213,7 +213,6 @@
                         <Rectangle
                             Name="highlightOverlayForArrow"
                             MinWidth="10"
-                            Margin="0,0,0,1"
                             Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
                             IsHitTestVisible="True">
                             <interactivity:Interaction.Triggers>
@@ -243,16 +242,16 @@
                                 KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                 Level="{Binding Path=Level, Mode=TwoWay}"
                                 Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-                            <fa:FontAwesome
-                                Width="15"
+                            <TextBlock Width="15"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Background="{x:Null}"
-                                Margin="0,0,0,7"
+                                Margin="5,0,0,7"
                                 Foreground="#D9D9D9"
-                                FontSize="17px"
+                                FontSize="14px"
                                 FontWeight="Regular"
-                                Icon="ChevronRight"
+                                LayoutTransform="{StaticResource FontStretchTall}"
+                                Text=">"
                                 IsHitTestVisible="False" />
                         </StackPanel>
                         <dynui:UseLevelPopup
@@ -315,7 +314,7 @@
                                             Focusable="False"
                                             FontFamily="{StaticResource OpenSansRegular}"
                                             FontSize="9"
-                                            Foreground="#999999"
+                                            Foreground="{StaticResource PrimaryCharcoal100Brush}"
                                             Text="{x:Static p:Resources.UseLevelKeepListStructureHint}" />
                                     </StackPanel>
                                 </Border>
@@ -332,11 +331,11 @@
                     <Style TargetType="Border">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
-                                <Setter Property="CornerRadius" Value="0,12,12,0" />
+                                <Setter Property="CornerRadius" Value="0,11,11,0" />
                                 <Setter Property="BorderThickness" Value="0,2,2,2" />
                             </DataTrigger>
                             <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
-                                <Setter Property="CornerRadius" Value="12,0,0,12" />
+                                <Setter Property="CornerRadius" Value="11,0,0,11" />
                                 <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
                         </Style.Triggers>

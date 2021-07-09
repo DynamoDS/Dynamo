@@ -7,6 +7,44 @@
     <!--Universal-->
     <SolidColorBrush Color="#BBBBBB" x:Key="DynamoStandardLabelTextBrush"></SolidColorBrush>
     
+    <!--Autodesk Colors-->
+    <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
+    <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
+    <Color x:Key="PrimaryCharcoal300">#CCCCCC</Color>
+    <Color x:Key="MidGrey">#666666</Color>
+    <Color x:Key="DarkMidGrey">#535353</Color>
+    <Color x:Key="DarkGrey">#4A4A4A</Color>
+    <Color x:Key="DarkerGrey">#3C3C3C</Color>
+    <Color x:Key="Lilac">#F2A9F2</Color>
+    <Color x:Key="Green300">#B7D78C</Color>
+    <Color x:Key="Turqoise300">#84D7CD</Color>
+    <Color x:Key="YellowOrange500">#FAA21B</Color>
+    <Color x:Key="Red400">#F486B6</Color>
+    <Color x:Key="Red500">#EB5555</Color>
+    <Color x:Key="Blue200">#9BD5EF</Color>
+    <Color x:Key="Blue300">#6AC0E7</Color>
+    <Color x:Key="Blue400">#38ABDF</Color>
+    <Color x:Key="DarkBlue200">#BCD3EE</Color>
+    
+    <!--Autodesk Colors-->
+    <SolidColorBrush x:Key="PrimaryCharcoal100Brush" Color="{StaticResource PrimaryCharcoal100}"/>
+    <SolidColorBrush x:Key="PrimaryCharcoal200Brush" Color="{StaticResource PrimaryCharcoal200}"/>
+    <SolidColorBrush x:Key="PrimaryCharcoal300Brush" Color="{StaticResource PrimaryCharcoal300}"/>
+    <SolidColorBrush x:Key="MidGreyBrush" Color="{StaticResource MidGrey}"/>
+    <SolidColorBrush x:Key="DarkMidGreyBrush" Color="{StaticResource DarkMidGrey}"/>
+    <SolidColorBrush x:Key="DarkGreyBrush" Color="{StaticResource DarkGrey}"/>
+    <SolidColorBrush x:Key="DarkerGreyBrush" Color="{StaticResource DarkerGrey}"/>
+    <SolidColorBrush x:Key="LilacBrush" Color="{StaticResource Lilac}"/>
+    <SolidColorBrush x:Key="Green300Brush" Color="{StaticResource Green300}"/>
+    <SolidColorBrush x:Key="Turqoise300Brush" Color="{StaticResource Turqoise300}"/>
+    <SolidColorBrush x:Key="YellowOrange500Brush" Color="{StaticResource YellowOrange500}"/>
+    <SolidColorBrush x:Key="Red400Brush" Color="{StaticResource Red400}"/>
+    <SolidColorBrush x:Key="Red500Brush" Color="{StaticResource Red500}"/>
+    <SolidColorBrush x:Key="Blue200Brush" Color="{StaticResource Blue200}"/>
+    <SolidColorBrush x:Key="Blue300Brush" Color="{StaticResource Blue300}"/>
+    <SolidColorBrush x:Key="Blue400Brush" Color="{StaticResource Blue400}"/>
+    <SolidColorBrush x:Key="DarkBlue200Brush" Color="{StaticResource DarkBlue200}"/>
+     
     <!--Workspaces-->
     <SolidColorBrush Color="#353535" x:Key="DynamoWindowBrush"/>
     <SolidColorBrush Color="#232323" x:Key="WorkspaceBackgroundBrush"/>
@@ -24,18 +62,18 @@
     <!--  Nodes  -->
 
     <!--  Node colors in inactive state  -->
-    <SolidColorBrush x:Key="headerBackgroundInactive" Color="#535353" />
-    <SolidColorBrush x:Key="headerForegroundInactive" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="headerBackgroundInactive" Color="{StaticResource DarkMidGrey}" />
+    <SolidColorBrush x:Key="headerForegroundInactive" Color="{StaticResource PrimaryCharcoal200}" />
     <SolidColorBrush x:Key="headerBorderInactive" Color="Transparent" />
     <SolidColorBrush x:Key="outerBorderInactive" Color="Transparent" />
-    <SolidColorBrush x:Key="bodyBackgroundInactive" Color="#3c3c3c" />
+    <SolidColorBrush x:Key="bodyBackgroundInactive" Color="{StaticResource DarkerGrey}" />
 
     <!--  Node colors in active state  -->
-    <SolidColorBrush x:Key="headerBackgroundActive" Color="#535353" />
-    <SolidColorBrush x:Key="headerForegroundActive" Color="#DCDCDC" />
+    <SolidColorBrush x:Key="headerBackgroundActive" Color="{StaticResource DarkMidGrey}" />
+    <SolidColorBrush x:Key="headerForegroundActive" Color="{StaticResource PrimaryCharcoal200}" />
     <SolidColorBrush x:Key="headerBorderActive" Color="Transparent" />
     <SolidColorBrush x:Key="outerBorderActive" Color="Transparent" />
-    <SolidColorBrush x:Key="bodyBackgroundActive" Color="#3c3c3c" />
+    <SolidColorBrush x:Key="bodyBackgroundActive" Color="{StaticResource DarkerGrey}" />
 
     <!--  Node colors in warning state  -->
     <SolidColorBrush x:Key="headerBackgroundWarning" Color="#5e5543" />
@@ -119,6 +157,10 @@
     <SolidColorBrush x:Key="PinnedIconHoverBackgroundColor" Color="#c6c6c6" />
 
     <!--  Port color  -->
+    <SolidColorBrush x:Key="InputIsConnectedBackground" Color="#465A63" />
+    <SolidColorBrush x:Key="InputIsNotConnectedBackground" Color="#3C3C3C" />
+    <SolidColorBrush x:Key="InputIsConnectedBorderBrush" Color="#6AC0E7" />
+    <SolidColorBrush x:Key="InputIsNotConnectedBorderBrush" Color="#CCCCCC" />
     <SolidColorBrush x:Key="KeepListStructureHighlight" Color="#6DD2FF" />
     <SolidColorBrush x:Key="NotKeepListStructureHighlight" Color="#535353" />
 </ResourceDictionary>

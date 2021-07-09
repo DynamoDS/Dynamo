@@ -65,7 +65,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool IsConnected
         {
-            get { return _port.Owner.InPorts[_port.Index].IsConnected; }
+            get
+            {
+                if (_port.Owner.InPorts.Count < 1) return false;
+                return _port.Owner.InPorts[_port.Index].IsConnected;
+            }
         }
 
         /// <summary>

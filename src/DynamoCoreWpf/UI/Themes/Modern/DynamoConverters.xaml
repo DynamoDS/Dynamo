@@ -43,7 +43,7 @@
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
-                                              SelectionBrush="#0C92DF"
+                                              SelectionBrush="#6AC0E7"
                                               NoneBrush="#444">
     </controls:ConnectionStateToBrushConverter>
 
@@ -197,6 +197,14 @@
     <controls:BooleanToBrushConverter x:Key="KeepListStructureHighlightColorConverter"
                                       TrueBrush="{StaticResource KeepListStructureHighlight}"
                                       FalseBrush="{StaticResource NotKeepListStructureHighlight}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="InputIsConnectedBackgroundConverter"
+                                      TrueBrush="{StaticResource InputIsConnectedBackground}"
+                                      FalseBrush="{StaticResource InputIsNotConnectedBackground}">
+    </controls:BooleanToBrushConverter>
+    <controls:BooleanToBrushConverter x:Key="InputIsConnectedBorderBrushConverter"
+                                      TrueBrush="{StaticResource InputIsConnectedBorderBrush}"
+                                      FalseBrush="{StaticResource InputIsNotConnectedBorderBrush}">
     </controls:BooleanToBrushConverter>
     
     
