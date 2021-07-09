@@ -278,7 +278,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (packagePathsForInstall == null)
+                if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     // Filter Builtin Packages and ProgramData paths from list of paths for download
