@@ -794,25 +794,21 @@ namespace Dynamo.ViewModels
             switch (e.Operation)
             {
                 case PackagePathOperationsEventArgs.PackagePathOperations.Add:
+                    // New path was added
                     PackagePathsForInstall.Add(e.Path);
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Remove:
-                    // Don't allow the default user data folder to be removed
-                    // A lot of strange behavior would go away if we make the same change
-                    // to the list of directories. E.g. Don't allow the default user data
-                    // folder to be removed or updated.
-                    if (e.Path == preferenceSettings.OnRequestUserDataFolder())
-                    {
-                        return;
-                    }
-
+                    // Path was removed
                     var updateSelection = SelectedPackagePathForInstall == e.Path;
                     if (PackagePathsForInstall.Remove(e.Path) && updateSelection && PackagePathsForInstall.Count > 0)
                     {
+                        // Path selected was removed
+                        // Select first path in list
                         SelectedPackagePathForInstall = PackagePathsForInstall[0];
                     }
                     break;
                 case PackagePathOperationsEventArgs.PackagePathOperations.Update:
+                    // Path was updated
                     updateSelection = SelectedPackagePathForInstall == e.OldPath;
                     var index = PackagePathsForInstall.IndexOf(e.OldPath);
                     if (index != -1)
@@ -822,6 +818,7 @@ namespace Dynamo.ViewModels
 
                     if (updateSelection)
                     {
+                        // Update selection of the updated path was selected
                         SelectedPackagePathForInstall = e.Path;
                     }
                     break;
