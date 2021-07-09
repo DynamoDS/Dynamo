@@ -88,6 +88,24 @@ namespace UnitsUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Convert Between Many Units.
+        /// </summary>
+        internal static string ConvertUnitsDescription {
+            get {
+                return ResourceManager.GetString("ConvertUnitsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ConvertUnitsSearchTags {
+            get {
+                return ResourceManager.GetString("ConvertUnitsSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Edit....
         /// </summary>
         internal static string EditHeader {
@@ -120,6 +138,78 @@ namespace UnitsUI.Properties {
         internal static string LengthFromStringSearchTags {
             get {
                 return ResourceManager.GetString("LengthFromStringSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Converts a formatted measurement into the equivalent measurement in a differen unit..
+        /// </summary>
+        internal static string ParseUnitInputDescription {
+            get {
+                return ResourceManager.GetString("ParseUnitInputDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string ParseUnitInputSearchTags {
+            get {
+                return ResourceManager.GetString("ParseUnitInputSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string QuantitiesUIDescription {
+            get {
+                return ResourceManager.GetString("QuantitiesUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string QuantitiesUISearchTags {
+            get {
+                return ResourceManager.GetString("QuantitiesUISearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SymbolsUIDescription {
+            get {
+                return ResourceManager.GetString("SymbolsUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SymbolsUISearchTags {
+            get {
+                return ResourceManager.GetString("SymbolsUISearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string UnitsUIDescription {
+            get {
+                return ResourceManager.GetString("UnitsUIDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string UnitsUISearchTags {
+            get {
+                return ResourceManager.GetString("UnitsUISearchTags", resourceCulture);
             }
         }
         

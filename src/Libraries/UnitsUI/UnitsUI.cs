@@ -205,7 +205,8 @@ namespace UnitsUI
 
     [NodeName("Parse Unit Input")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
-    [NodeDescription("Parse string to unit value")]
+    [NodeDescription("ParseUnitInputDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("ParseUnitInputSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitInput : CoreNodeModels.Input.String
     {
@@ -220,6 +221,9 @@ namespace UnitsUI
         
         private List<DynamoUnits.Unit> items;
 
+        /// <summary>
+        /// List of unit type ids.
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Unit> Items
         {
@@ -232,6 +236,9 @@ namespace UnitsUI
         }
 
         private DynamoUnits.Unit selectedUnit;
+        /// <summary>
+        /// Selected unit type id to convert to.
+        /// </summary>
         [JsonProperty("UnitType"), JsonConverter(typeof(ForgeUnitConverter))]
         public DynamoUnits.Unit SelectedUnit
         {
@@ -337,8 +344,8 @@ namespace UnitsUI
 
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
     [NodeName("Convert Units")]
-    [NodeDescription("Convert Between Many Units")]
-    //[NodeSearchTags("DynamoConvertSearchTags", typeof(Properties.Resources))]
+    [NodeDescription("ConvertUnitsDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("ConvertUnitsSearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("number")]
     [IsDesignScriptCompatible]
     public class ForgeDynamoConvert : NodeModel
@@ -366,7 +373,8 @@ namespace UnitsUI
         }
 
         /// <summary>
-        /// This corresponds to the available quantities you can convert from.
+        /// This corresponds to the list of available quantities we can select to convert in.
+        /// Examples of this would be 'length', 'time', 'volume'.
         /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Quantity> QuantityConversionSource
@@ -380,7 +388,8 @@ namespace UnitsUI
         }
 
         /// <summary>
-        /// This corresponds to the available units 
+        /// This corresponds to the a list of available units we are converting FROM.
+        /// Examples of this are 'meters', 'millimeters', 'feet'.
         /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Unit> SelectedFromConversionSource
@@ -393,6 +402,10 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// This corresponds to the a list of available units we are converting TO.
+        /// Examples of this are 'meters', 'millimeters', 'feet'.
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Unit> SelectedToConversionSource
         {
@@ -403,7 +416,10 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(SelectedToConversionSource));
             }
         }
-
+        /// <summary>
+        /// This corresponds to selected quantity we will be converting in.
+        /// An example of this is 'length'.
+        /// </summary>
         [JsonProperty("MeasurementType"), JsonConverter(typeof(ForgeQuantityConverter))]
         public DynamoUnits.Quantity SelectedQuantityConversion
         {
@@ -421,7 +437,10 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(SelectedQuantityConversion));
             }
         }
-
+        /// <summary>
+        /// This corresponds to the selected unit we are converting FROM.
+        /// An example of this would be 'meters'.
+        /// </summary>
         [JsonProperty("FromConversion"), JsonConverter(typeof(ForgeUnitConverter))]
         public DynamoUnits.Unit SelectedFromConversion
         {
@@ -433,7 +452,10 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(SelectedFromConversion));
             }
         }
-
+        /// <summary>
+        /// This corresponds to the selected unit we are converting TO.
+        /// An example of this would be 'feet'.
+        /// </summary>
         [JsonProperty("ToConversion"), JsonConverter(typeof(ForgeUnitConverter))]
         public DynamoUnits.Unit SelectedToConversion
         {
@@ -445,7 +467,9 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(SelectedToConversion));
             }
         }
-
+        /// <summary>
+        /// Property alerting the UI whether a selection from the dropdowns is enabled.
+        /// </summary>
         [JsonIgnore]
         public bool IsSelectionFromBoxEnabled
         {
@@ -457,6 +481,9 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// Provides the SelectionFromBox with a tooltip describing the conversion.
+        /// </summary>
         [JsonIgnore]
         public string SelectionFromBoxToolTip
         {
@@ -513,7 +540,9 @@ namespace UnitsUI
 
             return new[] { AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), node) };
         }
-
+        /// <summary>
+        /// This methods flips the 'to' and 'from' unit of the conversion.
+        /// </summary>
         public void ToggleDropdownValues()
         {
             var temp = this.SelectedFromConversion;
@@ -605,6 +634,8 @@ namespace UnitsUI
 
     [NodeName("Units")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("UnitsUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("UnitsUISearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("Unit")]
     [IsDesignScriptCompatible]
     public class Units : DSDropDownBase
@@ -660,6 +691,8 @@ namespace UnitsUI
 
     [NodeName("Quantities")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("QuantitiesUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("QuantitiesUISearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("Quantity")]
     [IsDesignScriptCompatible]
     public class Quantities : DSDropDownBase
@@ -708,13 +741,14 @@ namespace UnitsUI
 
             Items.Add(new DynamoDropDownItem(quantities.Last().getName(), quantities.Last().getTypeId()));
 
-            //Items = Items.OrderBy(x => x.Name).ToObservableCollection();
             return SelectionState.Restore;
         }
     }
 
     [NodeName("Symbols")]
     [NodeCategory(BuiltinNodeCategories.CORE_UNITS)]
+    [NodeDescription("SymbolsUIDescription", typeof(UnitsUI.Properties.Resources))]
+    [NodeSearchTags("SymbolsUISearchTags", typeof(UnitsUI.Properties.Resources))]
     [OutPortTypes("Symbol")]
     [IsDesignScriptCompatible]
     public class Symbols : DSDropDownBase
@@ -795,10 +829,13 @@ namespace UnitsUI
         private string displayValue;
 
         /// <summary>
-        /// The only normal 'input' of type double. All others are dropdown comboboxes.
+        /// The property storing the node input of type double.
         /// </summary>
         public double Value { get; set; }
        
+        /// <summary>
+        /// The selected 'Unit' from the Units UI dropdown.
+        /// </summary>
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
         public DynamoUnits.Unit SelectedUnit
         {
@@ -811,7 +848,9 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(DisplayValue));
             }
         }
-       
+       /// <summary>
+       /// The selected 'Symbol' from the Symbols UI dropdown.
+       /// </summary>
         [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
         public UnitSymbol SelectedSymbol 
         {
@@ -824,7 +863,9 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(DisplayValue));
             }
         }
-
+        /// <summary>
+        /// The selected 'Precision' from the Precision UI dropdown. (Precision means the number of decimals essentially).
+        /// </summary>
         public int SelectedPrecision
         {
             get { return selectedPrecision; }
@@ -836,7 +877,9 @@ namespace UnitsUI
                 RaisePropertyChanged(nameof(DisplayValue));
             }
         } 
-
+        /// <summary>
+        /// The selected (number) 'Format' from the Format UI dropdown. The options currently are decimal or fraction.
+        /// </summary>
         public NumberFormat SelectedFormat
         {
             get { return selectedFormat; }
@@ -849,15 +892,27 @@ namespace UnitsUI
             }
         }
 
+        /// <summary>
+        /// The collection of all available units for the dropdown.
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.Unit> AllUnits { get; set; }
-       
+
+        /// <summary>
+        /// The collection of all available symbols for the dropdown.
+        /// </summary>
         [JsonIgnore]
         public List<DynamoUnits.UnitSymbol> AllSymbols { get; set; }
-        
+
+        /// <summary>
+        /// The collection of all available precisions for the dropdown.
+        /// </summary>
         [JsonIgnore]
         public List<int> AllPrecisions { get; set; }
-        
+
+        /// <summary>
+        /// The collection of all available formats for the dropdown.
+        /// </summary>
         [JsonIgnore]
         public List<NumberFormat> AllFormats { get; set; }
         
@@ -934,20 +989,37 @@ namespace UnitsUI
     [NodeSearchTags("UnitValueOutputSearchTags", typeof(UnitsUI.Properties.Resources))]
     [IsDesignScriptCompatible]
     public class UnitValueOutput : NodeModel
-    {
+    {   
+        /// <summary>
+        /// Property storing the node input of type double.
+        /// </summary>
         public double Value { get; set; }
 
+        /// <summary>
+        /// Property storing the node input of type unit.
+        /// </summary>
         [JsonProperty("Unit"), JsonConverter(typeof(ForgeUnitConverter))]
         public Unit Unit { get; set; }
 
+        /// <summary>
+        /// Property storing the node input of type unit symbol.
+        /// </summary>
         [JsonProperty("UnitSymbol"), JsonConverter(typeof(ForgeUnitSymbolConverter))]
         public UnitSymbol Symbol { get; set; }
 
+        /// <summary>
+        /// Property storing the node input of type int/precision.
+        /// </summary>
         public int Precision { get; set; }
-
+        /// <summary>
+        /// Property storing the node input of type format.
+        /// </summary>
         public NumberFormat Format { get; set; }
 
         private string displayValue;
+        /// <summary>
+        /// Property storing the formatted string resulting from all inputs.
+        /// </summary>
         public string DisplayValue
         {
             get => displayValue;
@@ -986,7 +1058,6 @@ namespace UnitsUI
         [JsonConstructor]
         private UnitValueOutput(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-          //  ShouldDisplayPreviewCore = false;
         }
 
         public UnitValueOutput()
