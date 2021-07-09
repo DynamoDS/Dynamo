@@ -7,6 +7,7 @@ using Dynamo.Wpf.ViewModels.Core.Converters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -781,7 +782,7 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
-            PackagePathsViewModel.PackagePathOperationsEvent += PackagePathsViewModel_PackagePathOperations;
+            PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
 
             this.PropertyChanged += Model_PropertyChanged;
         }
@@ -789,39 +790,45 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Listen for changes to the custom package paths and update package paths for install accordingly
         /// </summary>
-        private void PackagePathsViewModel_PackagePathOperations(object sender, PackagePathOperationsEventArgs e)
+        private void PackagePathsViewModel_RootLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.Operation)
+            switch (e.Action)
             {
-                case PackagePathOperationsEventArgs.PackagePathOperations.Add:
+                case NotifyCollectionChangedAction.Add:
                     // New path was added
-                    PackagePathsForInstall.Add(e.Path);
+                    var newPath = e.NewItems[0] as string;
+                    PackagePathsForInstall.Add(newPath);
                     break;
-                case PackagePathOperationsEventArgs.PackagePathOperations.Remove:
+                case NotifyCollectionChangedAction.Remove:
                     // Path was removed
-                    var updateSelection = SelectedPackagePathForInstall == e.Path;
-                    if (PackagePathsForInstall.Remove(e.Path) && updateSelection && PackagePathsForInstall.Count > 0)
+                    var removedPath = e.OldItems[0] as string;
+                    var updateSelection = SelectedPackagePathForInstall == removedPath;
+                    if (PackagePathsForInstall.Remove(removedPath) && updateSelection && PackagePathsForInstall.Count > 0)
                     {
                         // Path selected was removed
                         // Select first path in list
                         SelectedPackagePathForInstall = PackagePathsForInstall[0];
                     }
                     break;
-                case PackagePathOperationsEventArgs.PackagePathOperations.Update:
+                case NotifyCollectionChangedAction.Replace:
                     // Path was updated
-                    updateSelection = SelectedPackagePathForInstall == e.OldPath;
-                    var index = PackagePathsForInstall.IndexOf(e.OldPath);
+                    newPath = e.NewItems[0] as string;
+                    removedPath = e.OldItems[0] as string;
+                    updateSelection = SelectedPackagePathForInstall == removedPath;
+                    var index = PackagePathsForInstall.IndexOf(removedPath);
                     if (index != -1)
                     {
-                        PackagePathsForInstall[index] = e.Path;
+                        PackagePathsForInstall[index] = newPath;
                     }
 
                     if (updateSelection)
                     {
                         // Update selection of the updated path was selected
-                        SelectedPackagePathForInstall = e.Path;
+                        SelectedPackagePathForInstall = newPath;
                     }
                     break;
+                default:
+                    throw new NotSupportedException("Operation not supported");
             }
         }
 
