@@ -2492,4 +2492,13 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
   </data>
+  <data name="GetStartedGuideRatingTextTitle" xml:space="preserve">
+    <value>Rate this guide</value>
+  </data>
+  <data name="GetStartedGuideSurveyText" xml:space="preserve">
+    <value>Learn more about working in Dynamo with the #Dynamo Primer=https://primer.dynamobim.org/</value>
+  </data>
+  <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
+    <value>Finished</value>
+  </data>
 </root>
