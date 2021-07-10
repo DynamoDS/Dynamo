@@ -73,8 +73,6 @@ namespace Dynamo.PackageManager
         private readonly List<Package> localPackages = new List<Package>();
         public IEnumerable<Package> LocalPackages { get { return localPackages; } }
 
-        //private readonly List<string> packagesDirectories = new List<string>();
-
         /// <summary>
         /// Returns the default package directory where new packages will be installed
         /// This is the first non builtin packages directory
@@ -180,25 +178,12 @@ namespace Dynamo.PackageManager
         private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
         {
             if (packagesDirectories == null)
+            {
                 throw new ArgumentNullException("packagesDirectories");
-
-            //this.packagesDirectories.AddRange(packagesDirectories);
+            }
 
             if (builtinPackagesDir == null) return;
 
-            // Setup builtin packages
-            //var builtinPackagesIndex = this.packagesDirectories.IndexOf(builtinPackagesDir);
-            //if (builtinPackagesIndex == -1)
-            //{
-            //    // No builtin packages in list
-            //    // Add builtin packages first
-            //    this.packagesDirectories.Insert(0, builtinPackagesDir);
-            //}
-            //else
-            //{
-            //    // Replace token with runtime library location
-            //    this.packagesDirectories[builtinPackagesIndex] = builtinPackagesDir;
-            //}
             packagesDirectoriesToVerifyCertificates.Add(builtinPackagesDir);
         }
 
@@ -405,26 +390,8 @@ namespace Dynamo.PackageManager
             OnPackagesLoaded(assemblies);
         }
 
-        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        private void LoadNewPackages(LoadPackageParams loadPackageParams)
         {
-            var packages = new List<Package>(localPackages);
-            foreach(var package in packages)
-            {
-                localPackages.Remove(package);
-            }
-            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
-            {
-                var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
-
-                customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
-
-                //var transformedPath = TransformPath(dir, pathManager.UserDataDirectory, PathManager.PackagesDirectoryName);
-                //if (!packagesDirectories.Contains(transformedPath))
-                //{
-                //    packagesDirectories.Add(transformedPath);
-                //}
-            }
-            //LoadAll(loadPackageParams);
             foreach (var path in loadPackageParams.NewPaths)
             {
                 var packagesDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
@@ -447,6 +414,22 @@ namespace Dynamo.PackageManager
             {
                 LoadPackages(LocalPackages);
             }
+        }
+
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        {
+            var packages = new List<Package>(localPackages);
+            foreach(var package in packages)
+            {
+                localPackages.Remove(package);
+            }
+            foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
+            {
+                var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
+
+                customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
+            }
+            LoadNewPackages(loadPackageParams);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)

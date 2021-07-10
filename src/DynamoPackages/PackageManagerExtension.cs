@@ -341,11 +341,6 @@ namespace Dynamo.PackageManager
                     CustomNodePackageDictionary.Remove(cn.FunctionId);
                 }
             }
-            //foreach (var library in package.NodeLibraries)
-            //{
-            //    (ReadyParams.StartupParams.LibraryLoader as ExtensionLibraryLoader).RemoveLibrary(library.Location);
-            //}
-
             Analytics.TrackEvent(Actions.Delete, Categories.PackageManagerOperations, package.Name);
         }
 

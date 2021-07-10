@@ -529,15 +529,6 @@ namespace Dynamo.Engine
             return false;
         }
 
-        //internal void RemoveLibrary(string library)
-        //{
-        //    if(importedFunctionGroups.ContainsKey(library))
-        //    {
-        //        importedFunctionGroups.Remove(library);
-        //        importedLibraries.Remove(library);
-        //    }
-        //}
-
         /// <summary>
         ///     Import a library (if it hasn't been imported yet).
         /// </summary>
