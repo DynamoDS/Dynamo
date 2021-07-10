@@ -179,8 +179,7 @@ namespace Dynamo.Logging
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
             string buildId = "", releaseId = "";
-            Version version;
-            if (Version.TryParse(dynamoModel.Version, out version))
+            if (Version.TryParse(dynamoModel.Version, out Version version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
