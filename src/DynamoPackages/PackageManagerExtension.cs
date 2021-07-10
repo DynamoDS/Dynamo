@@ -305,7 +305,10 @@ namespace Dynamo.PackageManager
                 }
                 CustomNodePackageDictionary[cn.FunctionId].Add(new PackageInfo(package.Name, new Version(package.VersionName)));
             }
-            Analytics.TrackEvent(Actions.Load, Categories.PackageManagerOperations, package.Name);
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Load,
+                Categories.PackageManagerOperations,
+                package.Name);
         }
 
         private void OnPackageRemoved(Package package)
@@ -341,7 +344,11 @@ namespace Dynamo.PackageManager
                     CustomNodePackageDictionary.Remove(cn.FunctionId);
                 }
             }
-            Analytics.TrackEvent(Actions.Delete, Categories.PackageManagerOperations, package.Name);
+
+            Dynamo.Logging.Analytics.TrackEvent(
+                Actions.Delete,
+                Categories.PackageManagerOperations,
+                package.Name);
         }
 
         #endregion
