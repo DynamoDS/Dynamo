@@ -20,6 +20,8 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
+
+        internal IEnumerable<string> NewPaths { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -408,7 +410,7 @@ namespace Dynamo.PackageManager
             var packages = new List<Package>(localPackages);
             foreach(var package in packages)
             {
-                Remove(package);
+                localPackages.Remove(package);
             }
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
@@ -422,7 +424,29 @@ namespace Dynamo.PackageManager
                 //    packagesDirectories.Add(transformedPath);
                 //}
             }
-            LoadAll(loadPackageParams);
+            //LoadAll(loadPackageParams);
+            foreach (var path in loadPackageParams.NewPaths)
+            {
+                var packagesDirectory = pathManager.PackagesDirectories.Where(x => x.StartsWith(path)).FirstOrDefault();
+                ScanPackageDirectories(packagesDirectory, loadPackageParams.Preferences);
+            }
+
+            if (pathManager != null)
+            {
+                foreach (var pkg in LocalPackages)
+                {
+                    if (Directory.Exists(pkg.BinaryDirectory))
+                    {
+                        pathManager.AddResolutionPath(pkg.BinaryDirectory);
+                    }
+
+                }
+            }
+
+            if (LocalPackages.Any())
+            {
+                LoadPackages(LocalPackages);
+            }
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
