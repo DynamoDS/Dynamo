@@ -130,7 +130,7 @@
                                     </Label.ToolTip>
                                 </Label>
                                 <!--Notice here we are reusing part of the defined Dynamo ComboBox style-->
-                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLableTextBrush}" Name="HostDependencyBox" 
+                                <ComboBox Style="{DynamicResource ResourceKey=SComboBox}" ItemsSource="{Binding KnownHosts}" Foreground="{StaticResource DynamoStandardLabelTextBrush}" Name="HostDependencyBox" 
                                           Margin="0" Width="170" IsEditable="False" TabIndex="1" OverridesDefaultStyle="True" MinHeight="36">
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate>
@@ -235,21 +235,21 @@
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
                         MinWidth="130"
-                        Margin="10,5"
+                        Margin="15,5,3,5"
                         HorizontalAlignment="Right"
                         Command="{Binding Path=PublishLocallyCommand}"
                         Content="{x:Static p:Resources.PublishPackageLocally}"></Button>
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
                         MinWidth="130"
-                        Margin="10,5"
+                        Margin="5,5"
                         HorizontalAlignment="Right"
                         Command="{Binding Path=SubmitCommand}"
                         Content="{x:Static p:Resources.PublishPackage}"></Button>
                 <Button Style="{DynamicResource ResourceKey=STextButton}"
                         Width="auto"
                         MinWidth="130"
-                        Margin="10,5"
+                        Margin="3,5"
                         HorizontalAlignment="Right"
                         Click="OnMoreInfoClicked"
                         Content="Info"></Button>

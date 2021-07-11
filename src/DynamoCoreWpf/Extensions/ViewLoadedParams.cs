@@ -215,6 +215,26 @@ namespace Dynamo.Wpf.Extensions
             }
         }
 
+        /// <summary>
+        /// Request to open a view extension in the side panel by name.
+        /// </summary>
+        /// <param name="extensionName"></param>
+        public void OpenViewExtension(string extensionName)
+        {
+            dynamoViewModel.OnViewExtensionOpenRequest(extensionName);
+        }
+        
+        /// <summary>
+        /// Event raised when a component inside Dynamo raises a request to open a view extension.
+        /// </summary>
+        public event Action<string> ViewExtensionOpenRequest
+        {
+            // we provide a transparent passthrough to underlying event
+            // so that the ViewLoadedParams class itself doesn't appear as a subscriber to the event
+            add => dynamoViewModel.ViewExtensionOpenRequest += value;
+            remove => dynamoViewModel.ViewExtensionOpenRequest -= value;
+        }
+
     }
     /// <summary>
     /// An enum that represents the different possible 

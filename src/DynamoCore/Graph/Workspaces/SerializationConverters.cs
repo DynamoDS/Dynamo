@@ -670,7 +670,7 @@ namespace Dynamo.Graph.Workspaces
                 // ExtensionData
                 homeWorkspace.ExtensionData = GetExtensionData(serializer, obj);
 
-                // If there is a active linter serialized in the graph we set it to the active linter.
+                // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
                 ws = homeWorkspace;
@@ -686,26 +686,33 @@ namespace Dynamo.Graph.Workspaces
 
         private void SetActiveLinter(JObject obj)
         {
-            if (linterManager is null || 
-                !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+            while (true)
+            {
+
+                if (linterManager is null ||
+                    !obj.TryGetValue(LINTING_PROP_STRING, StringComparison.OrdinalIgnoreCase, out JToken linter))
+                    break;
+
+                if (!linter.HasValues)
+                    break;
+
+                var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
+
+                if (activeLinterId is null)
+                    break;
+
+                var linterDescriptor = linterManager.AvailableLinters
+                    .Where(x => x.Id == activeLinterId)
+                    .FirstOrDefault();
+
+                if (linterDescriptor is null)
+                    break;
+
+                linterManager.SetActiveLinter(linterDescriptor, false);
                 return;
+            }
 
-            if (!linter.HasValues)
-                return;
-
-            var activeLinterId = linter.Value<string>(LinterManagerConverter.ACTIVE_LINTER_ID_OBJECT_NAME);
-
-            if (activeLinterId is null)
-                return;
-
-            var linterDescriptor = linterManager.AvailableLinters
-                .Where(x => x.Id == activeLinterId)
-                .FirstOrDefault();
-
-            if (linterDescriptor is null)
-                return;
-
-            linterManager.SetActiveLinter(linterDescriptor, false);
+            linterManager?.SetDefaultLinter();
         }
 
         private static List<ExtensionData> GetExtensionData(JsonSerializer serializer, JObject obj)

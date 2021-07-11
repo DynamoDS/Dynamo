@@ -184,7 +184,7 @@ namespace Dynamo.Tests
 
             var dest = GetNewFileNameOnTempPath(".txt");
             var destInfo = FileSystem.FileFromPath(dest);
-            FileSystem.CopyFile(fnInfo, dest);
+            Assert.IsTrue(FileSystem.CopyFile(fnInfo, dest));
             Assert.IsTrue(System.IO.File.Exists(dest));
             Assert.IsTrue(System.IO.File.Exists(fn));
             Assert.AreEqual(contents, FileSystem.ReadText(fnInfo));

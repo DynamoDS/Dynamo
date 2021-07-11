@@ -37,8 +37,8 @@ namespace Dynamo.ViewModels
         public NoteModel Model
         {
             get { return _model; }
-            set 
-            { 
+            set
+            {
                 _model = value;
                 RaisePropertyChanged("Model");
             }
@@ -77,7 +77,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public int ZIndex
-         {
+        {
 
             get { return zIndex; }
             set { zIndex = value; RaisePropertyChanged("ZIndex"); }
@@ -94,6 +94,20 @@ namespace Dynamo.ViewModels
         public bool IsSelected
         {
             get { return _model.IsSelected; }
+        }
+
+        private bool isOnEditMode;
+
+        /// <summary>
+        /// Property determines if note is being edited, 
+        /// is set to true when double clicking the note
+        /// is set to false when note's textbox looses focus
+        /// </summary>
+        [JsonIgnore]
+        public bool IsOnEditMode
+        {
+            get { return isOnEditMode; }
+            set { isOnEditMode = value; RaisePropertyChanged(nameof(IsOnEditMode)); }
         }
 
         #endregion

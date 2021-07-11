@@ -174,12 +174,15 @@
 <!-- and custom styling in Dynamo sidepanel. -->
 
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
-    <h3>Dynamo Linting</h3>
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur at velit quis lectus placerat pretium vel ac metus. 
-        Nullam pretium tellus eget tempus elementum. Suspendisse dictum mauris purus, quis sagittis ligula consequat quis. 
-        Nam eleifend nunc id sem varius tincidunt. Maecenas et convallis ligula, eu euismod nunc. Nam pulvinar aliquet massa quis viverra. 
-        Fusce suscipit et arcu at venenatis. Morbi semper lorem at justo interdum accumsan. Sed rutrum lectus non scelerisque efficitur. 
-        Pellentesque turpis odio, sodales interdum tortor nec, pretium rutrum turpis.
-    </p>
+    <h3>Graph Status</h3>
+    <h4>Overview</h4>
+    <p>The Graph Status extension is where you can find information about issues that Dynamo has detected in your graph. The issues that are shown in the Graph Status panel are separate from warnings and errors that are displayed on individual Dynamo nodes in the workspace. Instead, these are derived from custom rules that can be defined by Dynamo extensions.</p>
+    <h4>Graph Type</h4>
+    <p>When a Dynamo extensions utilizes Dynamo's Linting API to register a custom set of rules, the name of that extension will appear as an option in the dropdown labeled <i>Graph Type</i>. Dynamo will check to see if those rules have been broken whenever changes are made to the graph.</p>
+    <p>For example, the Generative Design extension for Dynamo uses this feature to ensure that Dynamo graphs designed for use with Generative Design have the necessary properties required for the graph to work correctly in the Generative Design app. Generative Design requires that graphs have at least one input and one output node, and this is enforced using the rules registered by the Dynamo extension.</p>
+    <h4>Node Issues and Graph Issues</h4>
+    <p>Rules defined by an extension are registered as one of two types: Graph rules, or Node rules.  If Dynamo detects that one of those rules has been broken in the current graph, a warning with information on how to fix the issue, and a link to where the issue was detected will be shown in one of these two sections.</p>
+    <h4>Other Info</h4>
+    <p>Whenever a graph is saved, the Graph Status extension will store some metadata in the Dynamo file such as the selected Graph Type, and whether or not issues were present when the graph was last saved.</p>
+    <p>When a new Dynamo graph is created, the Graph Status extension doesn't check for any specific rules automatically. The default selection for the Graph Type will be <i>None</i>. Currently, only one Graph Type can be selected at a time in the Graph Status view.</p>
 </body>

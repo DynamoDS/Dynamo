@@ -121,7 +121,7 @@
     <value>What is a Graph Type?</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Graph Status</value>
+    <value>Show Graph Status</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
     <value>None</value>

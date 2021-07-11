@@ -365,6 +365,18 @@ namespace Dynamo.Models
 
             OnShutdownStarted(); // Notify possible event handlers.
 
+            foreach (var ext in ExtensionManager.Extensions)
+            {
+                try
+                {
+                    ext.Shutdown();
+                }
+                catch (Exception exc)
+                {
+                    Logger.Log($"{ext.Name} :  {exc.Message} during shutdown");
+                }
+            }
+
             PreShutdownCore(shutdownHost);
             ShutDownCore(shutdownHost);
             PostShutdownCore(shutdownHost);
@@ -473,6 +485,9 @@ namespace Dynamo.Models
             return new DynamoModel(configuration);
         }
 
+        // Token representing the Built-InPackages directory
+        internal static readonly string BuiltInPackagesToken = @"%BuiltInPackages%";
+        [Obsolete("Only used for migration to the new for this directory - BuiltInPackages - do not use for other purposes")]
         // Token representing the standard library directory
         internal static readonly string StandardLibraryToken = @"%StandardLibrary%";
 
@@ -614,11 +629,11 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
-                PreferenceSettings.CustomPackageFolders = new List<string> { StandardLibraryToken, pathManager.UserDataDirectory };
+                PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
 
-            if (!PreferenceSettings.CustomPackageFolders.Contains(StandardLibraryToken))
+            if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
-                PreferenceSettings.CustomPackageFolders.Insert(0, StandardLibraryToken);
+                PreferenceSettings.CustomPackageFolders.Insert(0, BuiltInPackagesToken);
             }
 
             // Make sure that the default package folder is added in the list if custom packages folder.
@@ -675,6 +690,7 @@ namespace Dynamo.Models
             }
 
             pathManager.Preferences = PreferenceSettings;
+            PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
             SearchModel = new NodeSearchModel(Logger);
             SearchModel.ItemProduced +=
@@ -748,7 +764,7 @@ namespace Dynamo.Models
             {
                 var startupParams = new StartupParams(config.AuthProvider,
                     pathManager, new ExtensionLibraryLoader(this), CustomNodeManager,
-                    GetType().Assembly.GetName().Version, PreferenceSettings);
+                    GetType().Assembly.GetName().Version, PreferenceSettings, LinterManager);
 
                 foreach (var ext in extensions)
                 {
@@ -772,6 +788,11 @@ namespace Dynamo.Models
                             {
                                 if (loadedExtension is IExtension)
                                 {
+                                    if (loadedExtension is LinterExtensionBase loadedLinter)
+                                    {
+                                        loadedLinter.InitializeBase(this.LinterManager);
+                                    }
+                                    
                                     (loadedExtension as IExtension).Startup(startupParams);
                                 }
                             }
@@ -1109,6 +1130,7 @@ namespace Dynamo.Models
             if (PreferenceSettings != null)
             {
                 PreferenceSettings.PropertyChanged -= PreferenceSettings_PropertyChanged;
+                PreferenceSettings.RequestUserDataFolder -= pathManager.GetUserDataFolder;
             }
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
@@ -2503,6 +2525,8 @@ namespace Dynamo.Models
             CurrentWorkspace.HasUnsavedChanges = false;
             CurrentWorkspace.WorkspaceVersion = AssemblyHelper.GetDynamoVersion();
 
+            this.LinterManager?.SetDefaultLinter();
+
             OnWorkspaceCleared(CurrentWorkspace);
         }
 
@@ -2662,7 +2686,7 @@ namespace Dynamo.Models
             OnRequestTaskDialog(null, args);
         }
 
-        enum ButtonId
+        internal enum ButtonId
         {
             Ok = 43420,
             Cancel,

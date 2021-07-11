@@ -1001,9 +1001,9 @@ namespace Dynamo.Tests
             var node =
                 new DSFunction(CurrentDynamoModel.LibraryServices.GetFunctionDescriptor("Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double"));
             CurrentDynamoModel.ExecuteCommand(new Dynamo.Models.DynamoModel.CreateNodeCommand(node, 0, 0, true, false));
-            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("double\nDefault value : 0"));
+            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("X coordinate\n\ndouble\nDefault value : 0"));
             node.InPorts[0].UsingDefaultValue = false;
-            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("double\nDefault value : 0 (disabled)"));
+            Assert.IsTrue(node.InPorts[0].ToolTip.Equals("X coordinate\n\ndouble\nDefault value : 0 (disabled)"));
         }
         [Test]
         public void Reorder_7573()

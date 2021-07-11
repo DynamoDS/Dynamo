@@ -109,9 +109,21 @@
                           IsChecked="{Binding Path=IsSetAsOutput,Mode=TwoWay}"
                           Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
                           IsCheckable="True" />
+                <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedHeader}">
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstream}"
+                              Command="{Binding Path=SelectConnectedUpstreamCommand}"
+                              />
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedDownstream}"
+                              Command="{Binding Path=SelectConnectedDownstreamCommand}"
+                              />
+                    <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedUpstreamDownstream}"
+                              Command="{Binding Path=SelectConnectedUpAndDownstreamCommand}"
+                              />
+                </MenuItem>
                 <MenuItem Name="help_cm"
                           Header="{x:Static p:Resources.NodeContextMenuHelp}"
                           Command="{Binding Path=ShowHelpCommand}" />
+
             </ContextMenu>
         </Grid.ContextMenu>
 
@@ -390,7 +402,7 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <TextBlock Text="Renamed"
+                <TextBlock Text="{x:Static p:Resources.NodeRenamedLabel}"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            FontStyle="Italic"

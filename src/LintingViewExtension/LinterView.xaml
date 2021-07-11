@@ -149,6 +149,7 @@
                 </Grid.ColumnDefinitions>
                 <ComboBox Grid.Column="0"
                           Name="LinterSelector"
+                          IsEnabled="{Binding CanChangeLinter, Mode=OneWay}"
                           DisplayMemberPath="Name"
                           SelectedItem="{Binding ActiveLinter, Mode=TwoWay}"
                           Style="{StaticResource SComboBox}"
@@ -157,12 +158,9 @@
                     <ComboBox.Resources>
                         <CollectionViewSource x:Key="AvailableLinters"
                                               Source="{Binding AvailableLinters}" />
-                        <CollectionViewSource x:Key="DefaultDescriptor" 
-                                        Source="{Binding DefaultDescriptor}" />
                     </ComboBox.Resources>
                     <ComboBox.ItemsSource>
                         <CompositeCollection>
-                            <CollectionContainer Collection="{Binding Source={StaticResource DefaultDescriptor}}" />
                             <CollectionContainer Collection="{Binding Source={StaticResource AvailableLinters}}" />
                         </CompositeCollection>
                     </ComboBox.ItemsSource>

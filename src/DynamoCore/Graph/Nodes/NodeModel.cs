@@ -1591,6 +1591,33 @@ namespace Dynamo.Graph.Nodes
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
         }
 
+        /// <summary>
+        /// Recursively selects all nodes downstream to this node
+        /// </summary>
+        public void SelectDownstreamNeighbours()
+        {
+            var downstream = this.AllDownstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(downstream);
+        }
+
+        /// <summary>
+        /// Recursively selects all nodes upstream to this node
+        /// </summary>
+        public void SelectUpstreamNeighbours()
+        {
+            var upstream = this.AllUpstreamNodes(new List<NodeModel>());
+            DynamoSelection.Instance.Selection.AddRange(upstream);
+        }
+
+        /// <summary>
+        /// Recursively selects all nodes upstream and downstream to this node
+        /// </summary>
+        public void SelectUpstreamAndDownstreamNeighbours()
+        {
+            SelectUpstreamNeighbours();
+            SelectDownstreamNeighbours();
+        }
+
         #region Node State
 
         /// <summary>

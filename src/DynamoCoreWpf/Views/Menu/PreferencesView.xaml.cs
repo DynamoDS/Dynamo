@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Controls;
 using Dynamo.Logging;
 using Dynamo.ViewModels;
 using Res = Dynamo.Wpf.Properties.Resources;
@@ -21,18 +22,21 @@ namespace Dynamo.Wpf.Views
         private readonly PreferencesViewModel viewModel;
         private readonly DynamoViewModel dynViewModel;
 
+        // Used for tracking the manage package command event
+        // This is not a command any more but we keep it
+        // around in a compatible way for now
+        private IDisposable managePackageCommandEvent;
+
         /// <summary>
         /// Constructor of Preferences View
         /// </summary>
         /// <param name="dynamoViewModel"> Dynamo ViewModel</param>
-        public PreferencesView(DynamoViewModel dynamoViewModel)
+        public PreferencesView(DynamoView dynamoView)
         {
-            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
-            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
-            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            dynViewModel = dynamoView.DataContext as DynamoViewModel;
+            SetupPreferencesViewModel(dynViewModel);
 
-            DataContext = dynamoViewModel.PreferencesViewModel;
-            dynViewModel = dynamoViewModel;
+            DataContext = dynViewModel.PreferencesViewModel;
 
             
             InitializeComponent();
@@ -40,15 +44,25 @@ namespace Dynamo.Wpf.Views
                 Actions.Open,
                 Categories.Preferences);
 
-            //If we want the PreferencesView window to be modal, we need to assign the owner (since we created a new Style and not following the common Style)
-            this.Owner = Application.Current.MainWindow;
-            var viewModelTemp = DataContext as PreferencesViewModel;
-            if (viewModelTemp != null)
+            Owner = dynamoView;
+            if (DataContext is PreferencesViewModel viewModelTemp)
             {
                 viewModel = viewModelTemp;
             }
             
             InitRadioButtonsDescription();
+        }
+
+
+        /// <summary>
+        ///Given that the PreferencesViewModel persists through the Dynamo session, 
+        ///this method will setup all the necesary properties for when the Preferences window is opened.
+        /// </summary>
+        private void SetupPreferencesViewModel(DynamoViewModel dynamoViewModel)
+        {
+            //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
+            dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
+            dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
         }
 
         /// <summary>
@@ -73,10 +87,13 @@ namespace Dynamo.Wpf.Views
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            managePackageCommandEvent?.Dispose();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Close,
                 Categories.Preferences);
-            this.Close();
+            viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            PackagePathView.Dispose();
+            Close();
         }
 
         /// <summary>
@@ -207,6 +224,7 @@ namespace Dynamo.Wpf.Views
                 {
                     Log(String.Format("Geometry working range changed to {0} ({1}, {2})",
                     viewModel.ScaleRange.Item1, viewModel.ScaleRange.Item2, viewModel.ScaleRange.Item3));
+                    viewModel.UpdateSavedChangesLabel();
                     Dynamo.Logging.Analytics.TrackEvent(
                         Actions.Switch,
                         Categories.Preferences,
@@ -215,7 +233,6 @@ namespace Dynamo.Wpf.Views
 
                 var allNodes = dynViewModel.HomeSpace.Nodes;
                 dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
-                viewModel.UpdateSavedChangesLabel();
             }
         }
 
@@ -239,5 +256,20 @@ namespace Dynamo.Wpf.Views
             dynViewModel.Model.OnRequestPythonReset("CPython3");
         }
 
+        private void InstalledPackagesExpander_OnExpanded(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent = Analytics.TrackCommandEvent("ManagePackage");
+            }
+        }
+
+        private void InstalledPackagesExpander_OnCollapsed(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource == e.Source)
+            {
+                managePackageCommandEvent?.Dispose();
+            }
+        }
     }
 }

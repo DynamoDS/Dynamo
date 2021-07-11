@@ -4,12 +4,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.PackageManager;
 using Dynamo.Wpf.ViewModels.Core.Converters;
 using Res = Dynamo.Wpf.Properties.Resources;
 
@@ -31,11 +33,12 @@ namespace Dynamo.ViewModels
         private string savedChangesLabel;
         private string savedChangesTooltip;
         private ObservableCollection<string> languagesList;
+        private ObservableCollection<string> packagePathsForInstall;
         private ObservableCollection<string> fontSizeList;
         private ObservableCollection<string> numberFormatList;
         private ObservableCollection<StyleItem> styleItemsList;
         private StyleItem addStyleControl;
-        private ObservableCollection<string> _pythonEngineList;
+        private ObservableCollection<string> pythonEngineList;
 
         private string selectedLanguage;
         private string selectedFontSize;
@@ -59,6 +62,8 @@ namespace Dynamo.ViewModels
         private DynamoViewModel dynamoViewModel;
         private bool isWarningEnabled;
         private GeometryScalingOptions optionsGeometryScale = null;
+
+        private InstalledPackagesViewModel installedPackagesViewModel;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -127,6 +132,22 @@ namespace Dynamo.ViewModels
 
             }
         }
+
+        /// <summary>
+        /// Returns the state of the Preferences Window Debug Mode
+        /// </summary>
+        public bool PreferencesDebugMode
+        {
+            get
+            {
+                return DebugModes.IsEnabled("DynamoPreferencesMenuDebugMode");
+            }
+        }
+
+        /// <summary>
+        /// Returns all installed packages
+        /// </summary>
+        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
 
         //This includes all the properties that can be set on the General tab
         #region General Properties
@@ -211,12 +232,24 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return dynamoViewModel.ShowRunPreview;
+                return preferenceSettings.ShowRunPreview;
             }
             set
             {
+                preferenceSettings.ShowRunPreview = value;
                 dynamoViewModel.ShowRunPreview = value;
                 RaisePropertyChanged(nameof(RunPreviewIsChecked));
+            }
+        }
+
+        /// <summary>
+        /// Controls the Enabled property in the Show Run Preview toogle button
+        /// </summary>
+        public bool RunPreviewEnabled
+        {
+            get
+            {
+                return dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
             }
         }
 
@@ -233,6 +266,61 @@ namespace Dynamo.ViewModels
             {
                 languagesList = value;
                 RaisePropertyChanged(nameof(LanguagesList));
+            }
+        }
+
+        /// <summary>
+        /// PackagePathsForInstall contains the list of all package paths where
+        /// packages can be installed.
+        /// </summary>
+        public ObservableCollection<string> PackagePathsForInstall
+        {
+            get
+            {
+                if (packagePathsForInstall == null || !packagePathsForInstall.Any())
+                {
+                    var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    // Filter Builtin Packages and ProgramData paths from list of paths for download
+                    var customPaths = preferenceSettings.CustomPackageFolders.Where(
+                        x => x != DynamoModel.BuiltInPackagesToken && !x.StartsWith(programDataPath));
+
+                    packagePathsForInstall = new ObservableCollection<string>();
+                    foreach (var path in customPaths)
+                    {
+                        var attr = File.GetAttributes(path);
+
+                        // Add only directory paths
+                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                        {
+                            packagePathsForInstall.Add(path);
+                        }
+                    }
+                }
+                return packagePathsForInstall;
+            }
+            set
+            {
+                packagePathsForInstall = value;
+                RaisePropertyChanged(nameof(PackagePathsForInstall));
+            }
+        }
+
+        /// <summary>
+        /// Currently selected package path where new packages will be downloaded.
+        /// </summary>
+        public string SelectedPackagePathForInstall
+        {
+            get
+            {
+                return preferenceSettings.SelectedPackagePathForInstall;
+            }
+            set
+            {
+                if (preferenceSettings.SelectedPackagePathForInstall != value)
+                {
+                    preferenceSettings.SelectedPackagePathForInstall = value;
+                    RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
+                }
             }
         }
 
@@ -417,11 +505,11 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return _pythonEngineList;
+                return pythonEngineList;
             }
             set
             {
-                _pythonEngineList = value;
+                pythonEngineList = value;
                 RaisePropertyChanged(nameof(PythonEnginesList));
             }
         }
@@ -600,6 +688,11 @@ namespace Dynamo.ViewModels
         #endregion
 
         /// <summary>
+        /// Package Search Paths view model.
+        /// </summary>
+        public PackagePathViewModel PackagePathsViewModel { get; set; }
+
+        /// <summary>
         /// The PreferencesViewModel constructor basically initialize all the ItemsSource for the corresponding ComboBox in the View (PreferencesView.xaml)
         /// </summary>
         public PreferencesViewModel(DynamoViewModel dynamoViewModel)
@@ -609,6 +702,8 @@ namespace Dynamo.ViewModels
             this.runPreviewEnabled = dynamoViewModel.HomeSpaceViewModel.RunSettingsViewModel.RunButtonEnabled;
             this.homeSpace = dynamoViewModel.HomeSpace;
             this.dynamoViewModel = dynamoViewModel;
+            this.installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, 
+                dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
 
             PythonEnginesList = new ObservableCollection<string>();
             PythonEnginesList.Add(Wpf.Properties.Resources.DefaultPythonEngineNone);
@@ -619,6 +714,8 @@ namespace Dynamo.ViewModels
             _ = preferenceSettings.DefaultPythonEngine == string.Empty ? 
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
+
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
 
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
@@ -640,6 +737,7 @@ namespace Dynamo.ViewModels
             SelectedNumberFormat = preferenceSettings.NumberFormat;
 
             runSettingsIsChecked = preferenceSettings.DefaultRunType;
+            RunPreviewIsChecked = preferenceSettings.ShowRunPreview;
 
             //By Default the warning state of the Visual Settings tab (Group Styles section) will be disabled
             isWarningEnabled = false;
@@ -672,6 +770,18 @@ namespace Dynamo.ViewModels
             preferencesTabs.Add("General", new TabSettings() { Name = "General", ExpanderActive = string.Empty });
             preferencesTabs.Add("Features",new TabSettings() { Name = "Features", ExpanderActive = string.Empty });
             preferencesTabs.Add("VisualSettings",new TabSettings() { Name = "VisualSettings", ExpanderActive = string.Empty });
+            preferencesTabs.Add("Package Manager", new TabSettings() { Name = "Package Manager", ExpanderActive = string.Empty });
+
+            //create a packagePathsViewModel we'll use to interact with the package search paths list.
+            var loadPackagesParams = new LoadPackageParams
+            {
+                Preferences = preferenceSettings,
+                PathManager = dynamoViewModel.Model.PathManager,
+            };
+            var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+            var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
+            PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
+
             this.PropertyChanged += Model_PropertyChanged;
         }
 
@@ -692,6 +802,9 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(SelectedNumberFormat):
                     description = Res.DynamoViewSettingMenuNumberFormat;
+                    goto default;
+                case nameof(SelectedPackagePathForInstall):
+                    description = Res.PreferencesViewSelectedPackagePathForDownload;
                     goto default;
                 case nameof(RunSettingsIsChecked):
                     description = Res.PreferencesViewRunSettingsLabel;
@@ -753,7 +866,7 @@ namespace Dynamo.ViewModels
         {
             SavedChangesLabel = Res.PreferencesViewSavedChangesLabel;
             //Sets the last saved time in the en-US format
-            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + DateTime.Now.ToString(@"hh:mm tt", new CultureInfo("en-US"));
+            SavedChangesTooltip = Res.PreferencesViewSavedChangesTooltip + " " + DateTime.Now.ToString(@"HH:mm");
         }
 
         /// <summary>
