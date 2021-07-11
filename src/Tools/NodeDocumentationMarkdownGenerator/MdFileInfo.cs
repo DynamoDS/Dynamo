@@ -117,14 +117,10 @@ namespace NodeDocumentationMarkdownGenerator
                 }
                 else
                 {
-                    // For NodeModelSearchElements the IconName
-                    // is equal to Type.FullName which is essentially what we want here
-                    // this is currently the only consistent way of getting the namespace
-                    // for NodeModelSearchElements.
-                    nodeNamespace = entry.IconName
-                            .Remove(entry.IconName.LastIndexOf('.'));
+                    nodeNamespace = entry.CreationName
+                            .Remove(entry.CreationName.LastIndexOf('.'));
 
-                    fileName = entry.IconName;
+                    fileName = entry.CreationName;
                 }
 
                 info = new MdFileInfo(nodeName, nodeNamespace, category, entry.Assembly, fileName);

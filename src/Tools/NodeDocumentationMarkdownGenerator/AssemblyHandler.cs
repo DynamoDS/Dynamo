@@ -279,30 +279,10 @@ namespace NodeDocumentationMarkdownGenerator
         private static List<string> GetDefaultPaths()
         {
             string[] runtimeAssemblies = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll", SearchOption.AllDirectories);
-
-
-            //var dynamoDlls = new DirectoryInfo(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..\..\bin")))
-            //    .EnumerateFiles("*.dll", SearchOption.AllDirectories)
-            //    .Select(x => x.FullName);
-
-            //dynamoDlls.Union(new DirectoryInfo(
-            //    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
-            //    .EnumerateFiles("*.dll")
-            //    .Select(x => x.FullName));
-
-            var dynamoDlls = new DirectoryInfo(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
-                .EnumerateFiles("*.dll")
-                .Select(x => x.FullName);
-
-            //foreach (var item in t)
-            //{
-
-            //}
-
+            var dynamoAssemblies = Program.DynamoDirectoryAssemblyPaths.Select(x => x.FullName);
 
             var paths = new List<string>(runtimeAssemblies);
-            paths.AddRange(dynamoDlls);
+            paths.AddRange(dynamoAssemblies);
 
             return paths;
         }

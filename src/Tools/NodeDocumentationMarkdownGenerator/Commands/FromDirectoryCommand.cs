@@ -44,8 +44,8 @@ namespace NodeDocumentationMarkdownGenerator.Commands
             var allAssembliesFromInputFolder = Directory.GetFiles(inputFolderPath, "*.*", searchOption)
                 .Where(x => x.EndsWith(".dll") || x.EndsWith(".ds"))
                 .Select(x => new FileInfo(x))
-                .GroupBy(x=>x.Name)
-                .Select(x=>x.FirstOrDefault())
+                .GroupBy(x => x.Name)
+                .Select(x => x.FirstOrDefault())
                 .ToList();
 
             var referenceDllPaths = referencePaths

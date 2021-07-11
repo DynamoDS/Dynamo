@@ -223,23 +223,10 @@ namespace Dynamo.Models
                     t.IsSubclassOf(nodeModelType) &&
                     t.GetConstructor(Type.EmptyTypes) != null;
             }
-            catch
+            catch(Exception e)
             {
-                // If for any reason the above fails we try to determine if the type is a node by checking for NodeModel attributes.
-                // Above can potentially fail if there is a reference to a type which is not included in the path resolver.
-                var customAttributes = CustomAttributeData.GetCustomAttributes(t).ToList();
-                var customAttributeTypes = customAttributes.Select(x => x.AttributeType).ToList();
-
-                if (customAttributes is null || customAttributes.Count == 0)
-                    return false;
-
-                isNodeSubType = customAttributes.
-                    Any(x => 
-                    x.AttributeType.Name.Equals(nameof(NodeNameAttribute)) ||
-                    x.AttributeType.Name.Equals(nameof(NodeCategoryAttribute)) ||
-                    x.AttributeType.Name.Equals(nameof(IsDesignScriptCompatibleAttribute)) ||
-                    x.AttributeType.Name.Equals(nameof(AlsoKnownAsAttribute)) ||
-                    x.AttributeType.Name.Equals(nameof(NodeSearchTagsAttribute)));
+                Console.WriteLine(e.Message);
+                Console.WriteLine(e.StackTrace);
             }
 
             return isNodeSubType;
