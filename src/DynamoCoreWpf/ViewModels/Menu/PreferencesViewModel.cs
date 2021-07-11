@@ -277,23 +277,20 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                var allowedFileExtensions = new string[] { ".dll", ".ds" };
                 if (packagePathsForInstall == null || !packagePathsForInstall.Any())
                 {
                     var programDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                     // Filter Builtin Packages and ProgramData paths from list of paths for download
                     var customPaths = preferenceSettings.CustomPackageFolders.Where(
                         x => x != DynamoModel.BuiltInPackagesToken && !x.StartsWith(programDataPath));
+                    //filter out paths that have extensions ending in .dll or .ds
+                    var directoryPaths = customPaths.Where(path => !(Path.HasExtension(path) && allowedFileExtensions.Contains(Path.GetExtension(path).ToLower())));
 
                     packagePathsForInstall = new ObservableCollection<string>();
-                    foreach (var path in customPaths)
+                    foreach (var path in directoryPaths)
                     {
-                        var attr = File.GetAttributes(path);
-
-                        // Add only directory paths
-                        if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                        {
                             packagePathsForInstall.Add(path);
-                        }
                     }
                 }
                 return packagePathsForInstall;
