@@ -451,7 +451,7 @@ namespace DynamoCoreWpfTests
             var docBrowserviewExtension = this.View.viewExtensionManager.ViewExtensions.OfType<DocumentationBrowserViewExtension>().FirstOrDefault();
             var nodeName = "+";
             var expectedNodeDocumentationTitle = $"<h1>{nodeName}</h1>";
-            var expectedNodeDocumentationNamespace = "<p><i>.%add</i></p>";
+            var expectedNodeDocumentationNamespace = $"<p><i>{nodeName}</i></p>";
             var expectedAddtionalNodeDocumentation = @"<h2 id=""no-further-documentation-provided-for-this-node"">No further documentation provided for this node.</h2>";
        
             // Act
