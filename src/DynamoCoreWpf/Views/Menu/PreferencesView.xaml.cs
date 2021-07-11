@@ -37,8 +37,7 @@ namespace Dynamo.Wpf.Views
             SetupPreferencesViewModel(dynViewModel);
 
             DataContext = dynViewModel.PreferencesViewModel;
-
-            
+ 
             InitializeComponent();
             Dynamo.Logging.Analytics.TrackEvent(
                 Actions.Open,
@@ -49,10 +48,9 @@ namespace Dynamo.Wpf.Views
             {
                 viewModel = viewModelTemp;
             }
-            
+
             InitRadioButtonsDescription();
         }
-
 
         /// <summary>
         ///Given that the PreferencesViewModel persists through the Dynamo session, 
@@ -63,6 +61,7 @@ namespace Dynamo.Wpf.Views
             //Clear the Saved Changes label and its corresponding tooltip when the Preferences Modal is opened
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
+            dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
         }
 
         /// <summary>

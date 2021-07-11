@@ -3900,7 +3900,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The import path &quot;{0}&quot; was added to &quot;Manage Node and Package Paths&quot;. If you want to update or remove this path, please open &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        ///   Looks up a localized string similar to The import path &quot;{0}&quot; was added to &quot;Node and Package Paths&quot;. If you want to update or remove this path, please open &quot;Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths...&quot;.
         /// </summary>
         public static string PackagePathAutoAddNotificationDetailedDescription {
             get {
@@ -3909,7 +3909,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to &quot;Settings &gt; Manage Node and Package Paths...&quot;.
+        ///   Looks up a localized string similar to A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to &quot;Preferences &gt; Node and Package Paths...&quot;.
         /// </summary>
         public static string PackagePathAutoAddNotificationShortDescription {
             get {
@@ -5434,7 +5434,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please update the permissions or go to &apos;Settings &gt; Manage Node and Package Paths...&apos; to change your default directory..
+        ///   Looks up a localized string similar to Please update the permissions or go to Preferences &gt;Node and Package Paths...&apos; to change your default directory..
         /// </summary>
         public static string SolutionToFolderNotWritatbleError {
             get {
