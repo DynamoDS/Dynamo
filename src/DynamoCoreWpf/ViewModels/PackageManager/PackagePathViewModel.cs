@@ -230,10 +230,7 @@ namespace Dynamo.ViewModels
             //if paths are modified, reload packages and update prefs.
             if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                if(newpaths.Count > setting.CustomPackageFolders.Count)
-                {
-                    loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
-                }
+                loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
                 setting.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {

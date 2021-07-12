@@ -387,6 +387,7 @@ namespace Dynamo.PackageManager
                 .SelectMany(p => p.LoadedAssemblies.Where(y => y.IsNodeLibrary))
                 .Select(a => a.Assembly)
                 .ToList();
+
             OnPackagesLoaded(assemblies);
         }
 
