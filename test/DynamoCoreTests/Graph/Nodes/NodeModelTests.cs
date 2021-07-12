@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -76,6 +77,143 @@ namespace Dynamo.Tests
 
             var countAfter = DynamoSelection.Instance.Selection.Count;
             Assert.AreEqual(2, countAfter);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectUpstreamNeighborsTest()
+        {
+            //Open and run the workspace
+            var listTestFolder = Path.Combine(TestDirectory, "core");
+            var testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+
+            RunModel(testFilePath);
+
+            //Select the range node in the transponse.dyn file
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
+
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            //Run the method and assert that nodes upstream are selected
+            node.SelectUpstreamNeighbours();
+
+            var nodesSelected = DynamoSelection.Instance.Selection.Select(s=> s as NodeModel);
+
+            var countAfter = nodesSelected.Count();
+            Assert.AreEqual(6, countAfter);
+
+            // Node GUIDs that should be selected
+            string[] shouldBeSelected = {
+                //Range node
+                "f617749c-cee7-4c0a-823b-17c6fce1d977",
+                //Number node
+                "4831c3e1-6d21-4949-9592-03ee6e73c1e5",
+                //Number node
+                "7a840602-87d2-421b-9377-c3f4c4af143c",
+                //Number node
+                "83685125-12bf-4c61-aa9d-6dcb97fd280d",
+                // + Node 
+                "a4761902-905d-4466-a515-d52dadb1a0e7",
+                //Number node
+                "6f88b044-5447-4586-a53f-fd36dce6e06b"
+            };
+
+            // Range node selected
+            for (int i = 0; i < shouldBeSelected.Length; i++)
+                Assert.That(nodesSelected.Any(x => String.Equals(x.GUID.ToString(), shouldBeSelected[i])));
+        }
+
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectDownstreamNeighborsTest()
+        {
+            //Open and run the workspace
+            var listTestFolder = Path.Combine(TestDirectory, "core");
+            var testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+
+            RunModel(testFilePath);
+
+            //Select the range node in the transponse.dyn file
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
+
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            //Run the method and assert whether more nodes were selected
+            node.SelectDownstreamNeighbours();
+
+            var nodesSelected = DynamoSelection.Instance.Selection.Select(s => s as NodeModel);
+            var guids = nodesSelected.Select(n => n.GUID.ToString()).ToArray();
+            var countAfter = nodesSelected.Count();
+            Assert.AreEqual(3, countAfter);
+
+            // Node GUIDs that should be selected
+            string[] shouldBeSelected = {
+                //Watch node
+                "d528700d-73df-4ee8-a6b5-a24749ece16b",
+                //List.Transpose node
+                "31867b34-5da8-4a50-903e-e8a7f352fa5d",
+                //Watch node
+                "41d8a597-35c5-4056-857f-804790571e4c",
+            };
+
+            // Range node selected
+            for (int i = 0; i < shouldBeSelected.Length; i++)
+                Assert.That(nodesSelected.Any(x => String.Equals(x.GUID.ToString(), shouldBeSelected[i])));
+
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void SelectDownstreamAndUpstreamNeighborsTest()
+        {
+            //Open and run the workspace
+            var listTestFolder = Path.Combine(TestDirectory, "core");
+            var testFilePath = Path.Combine(listTestFolder, "transpose.dyn");
+
+            RunModel(testFilePath);
+
+            //Select the range node in the transponse.dyn file
+            var node = CurrentDynamoModel.CurrentWorkspace.NodeFromWorkspace("750720f0-a263-431d-86a5-52d622346eac");
+
+            var countBefore = DynamoSelection.Instance.Selection.Count;
+            Assert.AreEqual(0, countBefore);
+
+            //Run the method and assert whether more nodes were selected
+            node.SelectUpstreamAndDownstreamNeighbours();
+
+            var nodesSelected = DynamoSelection.Instance.Selection.Select(s => s as NodeModel);
+            var guids = nodesSelected.Select(n => n.GUID.ToString()).ToArray();
+            var countAfter = nodesSelected.Count();
+            Assert.AreEqual(9, countAfter);
+
+            // Node GUIDs that should be selected
+            string[] shouldBeSelected = {
+                //Range node
+                "f617749c-cee7-4c0a-823b-17c6fce1d977",
+                //Number node
+                "4831c3e1-6d21-4949-9592-03ee6e73c1e5",
+                //Number node
+                "7a840602-87d2-421b-9377-c3f4c4af143c",
+                //Number node
+                "83685125-12bf-4c61-aa9d-6dcb97fd280d",
+                // + Node 
+                "a4761902-905d-4466-a515-d52dadb1a0e7",
+                //Number node
+                "6f88b044-5447-4586-a53f-fd36dce6e06b",
+                //Watch node
+                "d528700d-73df-4ee8-a6b5-a24749ece16b",
+                //List.Transpose node
+                "31867b34-5da8-4a50-903e-e8a7f352fa5d",
+                //Watch node
+                "41d8a597-35c5-4056-857f-804790571e4c",
+            };
+
+            // Range node selected
+            for (int i = 0; i < shouldBeSelected.Length; i++)
+                Assert.That(nodesSelected.Any(x => String.Equals(x.GUID.ToString(), shouldBeSelected[i])));
         }
 
         [Test]

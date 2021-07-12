@@ -5,6 +5,7 @@ using System.Linq;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Exceptions;
+using Dynamo.Models;
 using NUnit.Framework;
 
 namespace Dynamo.Tests
@@ -233,7 +234,7 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public void TestAddStandardLibraryPath()
+        public void TestAddBuiltinPackagesPath()
         {
             // Get the default custom package folders
             List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
@@ -278,7 +279,7 @@ namespace Dynamo.Tests
         }
         [Test]
         [Category("UnitTests")]
-        public void TestStandardLibraryTokenIsFirstInList()
+        public void TestBuiltinPackagesTokenIsFirstInList()
         {
             // Get the default custom package folders
             List<string> customPackageFolders = CurrentDynamoModel.PreferenceSettings.CustomPackageFolders;
@@ -286,8 +287,8 @@ namespace Dynamo.Tests
             // Test that the default number of folders is correct
             Assert.IsTrue(customPackageFolders.Count == 3);
 
-            // Check that standard library token is first
-            Assert.AreEqual(@"%StandardLibrary%", customPackageFolders[0]);
+            // Check that builtinPackages token is first
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken, customPackageFolders[0]);
         }
     }
 }

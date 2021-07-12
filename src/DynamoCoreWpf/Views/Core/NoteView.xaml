@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:Dynamo.UI"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
@@ -12,6 +13,14 @@
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     
     <Grid Name="BaseGrid">
         <Grid.ContextMenu>
@@ -31,51 +40,48 @@
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
         </Canvas>
-
-        <TextBlock
-          Foreground="White"
-          Text="{Binding Path=Text, Mode=OneWay}"
-          Grid.Column="0" Grid.Row="0" FontFamily="Trebuchet" 
-            FontSize="12" 
-            Padding="10" TextWrapping="Wrap">
-            
-          <TextBlock.RenderTransform>
-            <TranslateTransform X="0" Y="-0.4" />
-          </TextBlock.RenderTransform>
-            
-        <TextBlock.Style>
-            <Style TargetType="TextBlock">
-
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
-                        <Setter Property="Background" Value="LightBlue"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
-                        <Setter Property="Background" Value="#EEE"/>
-                    </DataTrigger>
-                </Style.Triggers>
-
-            </Style>
-        </TextBlock.Style>
-            
-        <TextBlock.Effect>
-            <DropShadowEffect
-                ShadowDepth="0"
-                Color="#222"
-                Opacity="0.25"
-                BlurRadius="9.0" />
-        </TextBlock.Effect>
-            
-        </TextBlock>
         
+        <TextBox
+            Name ="noteTextBox"
+            Grid.Column="0" Grid.Row="0"
+            Text="{Binding Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            AcceptsReturn="True"
+            AcceptsTab="True"
+            LostFocus="noteTextBox_LostFocus"
+            PreviewKeyDown="noteTextBox_PreviewKeyDown"
+            IsEnabled="{Binding Path=IsOnEditMode, Mode=OneWay}"
+            >
+            <TextBox.Style>
+                <Style TargetType="TextBox" BasedOn="{StaticResource NoteTextBoxStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="True">
+                            <Setter Property="BorderThickness" Value="1"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="False">
+                            <Setter Property="BorderThickness" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
         <TextBlock 
             Name="noteText"
             Grid.Column="0" Grid.Row="0"
             Text="{Binding Path=Text, Mode=OneWay}" 
-            FontFamily="Trebuchet" 
-            FontSize="12" 
-            Foreground="#222"
-            Padding="10" TextWrapping="Wrap" >
+            >
+            <TextBlock.Style>
+                <Style TargetType="TextBlock" BasedOn="{StaticResource NoteTextBlockStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
+                            <Setter Property="Background" Value="LightBlue"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
+                            <Setter Property="Background" Value="#EEE"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
         </TextBlock>
     </Grid>
 </UserControl>

@@ -38,9 +38,6 @@ namespace Dynamo.PackageManager.Tests
         {
             var loader = GetPackageLoader();
             
-            Assert.AreEqual(loader.DefaultPackagesDirectory,
-                Path.Combine(TestDirectory, "pkgs", "multiple_locations", "folder1", "packages"));
-
             var expectedLoadedPackageNum = 0;
             foreach(var pkg in loader.LocalPackages)
             {

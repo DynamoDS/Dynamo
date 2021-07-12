@@ -173,9 +173,9 @@ namespace Dynamo.Interfaces
     internal interface IDisablePackageLoadingPreferences
     {
         /// <summary>
-        /// If enabled Dynamo Standard Library packages will not be loaded.
+        /// If enabled Dynamo Built-In Packages will not be loaded.
         /// </summary>
-        bool DisableStandardLibrary { get; set; }
+        bool DisableBuiltinPackages { get; set; }
         /// <summary>
         /// If enabled user's custom package locations will not be loaded.
         /// </summary>

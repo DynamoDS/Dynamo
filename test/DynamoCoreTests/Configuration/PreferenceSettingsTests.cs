@@ -128,5 +128,21 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(windowSettings.Width, 654);
             Assert.AreEqual(windowSettings.Status, WindowStatus.Maximized);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestMigrateStdLibTokenToBuiltInToken()
+        {
+            string settingDirectory = Path.Combine(TestDirectory, "settings");
+            string settingsFilePath = Path.Combine(settingDirectory, "DynamoSettings-stdlibtoken.xml");
+            Assert.IsTrue(File.ReadAllText(settingsFilePath).Contains(DynamoModel.StandardLibraryToken));
+            // Assert files required for test exist
+            Assert.IsTrue(File.Exists(settingsFilePath));
+            var settings = PreferenceSettings.Load(settingsFilePath);
+
+            var token = settings.CustomPackageFolders[1];
+
+            Assert.AreEqual(DynamoModel.BuiltInPackagesToken,token);
+        }
     }
 }
