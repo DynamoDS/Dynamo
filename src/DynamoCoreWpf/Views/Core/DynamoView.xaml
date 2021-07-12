@@ -604,10 +604,6 @@
                                   Command="{Binding Path=DataContext.ShowPackageManagerSearchCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="showPMSearch" />
                         <MenuItem Focusable="False"
-                                  Header="{x:Static p:Resources.DynamoViewPackageMenuManagePackage}"
-                                  Command="{Binding Path=DataContext.ShowInstalledPackagesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
-                                  Name="showPMInstalled" />
-                        <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewPackageMenuPublishPackage}"
                                   Command="{Binding Path=DataContext.PublishNewPackageCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:DynamoView}}}"
                                   Name="publishNewPackage" />
@@ -626,6 +622,15 @@
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.StartPageWhatsNew}"
                                   Command="{Binding ShowGalleryCommand}">
+                        </MenuItem>
+                        <MenuItem x:Name="InteractiveGuidesMenuItem"
+                                  Focusable="False"
+                                  Header="{x:Static p:Resources.InteractiveGuides}">
+                            <MenuItem x:Name="GetStartedMenuItem"
+                                      Focusable="False"
+                                      Header="{x:Static p:Resources.GetStartedGuide}"
+                                      Click="GetStartedMenuItem_Click">
+                            </MenuItem>
                         </MenuItem>
                         <MenuItem Focusable="False"
                                   Header="{x:Static p:Resources.DynamoViewHepMenuSamples}"

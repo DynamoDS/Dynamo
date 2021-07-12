@@ -55,7 +55,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         public event Action<Package> PackageRemoved;
 
-        private const string stdLibName = @"Standard Library";
+        private const string builtinPackagesDirName = @"Built-In Packages";
         private readonly List<IExtension> requestedExtensions = new List<IExtension>();
         /// <summary>
         /// Collection of ViewExtensions the ViewExtensionSource requested be loaded.
@@ -73,17 +73,16 @@ namespace Dynamo.PackageManager
 
         private readonly List<string> packagesDirectories = new List<string>();
 
-
-        private int defaultPackagesDirectoryIndex = -1;
         /// <summary>
         /// Returns the default package directory where new packages will be installed
-        /// This is the first non standard library directory
-        /// The first entry is the standard library.
+        /// This is the first non builtin packages directory
+        /// The first entry is the builtin packages.
         /// </summary>
         /// <returns>Returns the path to the DefaultPackagesDirectory if found - or null if something has gone wrong.</returns>
+        [Obsolete("This property is redundant, please use the PathManager.DefaultPackagesDirectory property instead.")]
         public string DefaultPackagesDirectory
         {
-            get { return defaultPackagesDirectoryIndex != -1 ? packagesDirectories[defaultPackagesDirectoryIndex] : null; }
+            get { return pathManager.DefaultPackagesDirectory; }
         }
 
         /// <summary>
@@ -114,62 +113,56 @@ namespace Dynamo.PackageManager
             return root;
         }
 
-        internal void SetPackagesDownloadDirectory(string downloadDirectory, string userDataFolder)
-        {
-            defaultPackagesDirectoryIndex = packagesDirectories.IndexOf(
-                TransformPath(downloadDirectory, userDataFolder, PathManager.PackagesDirectoryName));
-        }
-
         private readonly List<string> packagesDirectoriesToVerifyCertificates = new List<string>();
 
-        private string stdLibDirectory = null;
+        private readonly IPathManager pathManager;
 
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
         /// <summary>
-        /// The standard library directory is located in the same directory as the DynamoPackages.dll
-        /// Property should only be set during testing.
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
         /// </summary>
-        internal string StandardLibraryDirectory
-        {
-            get
-            {
-                return stdLibDirectory == null ?
-                    Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(GetType()).Location),stdLibName, @"Packages")
-                    : stdLibDirectory;
-            }
-            set
-            {
-                if (stdLibDirectory != value)
-                {
-                    stdLibDirectory = value;
-                }
-            }
-        }
-
         public PackageLoader(string overridePackageDirectory)
             : this(new[] { overridePackageDirectory })
         {
         }
 
         /// <summary>
-        /// This constructor is only intended for testing of stdLib using a non standard directory.
+        /// This constructor is only intended for testing of builtinPackages using a non standard directory.
         /// </summary>
         /// <param name="packagesDirectories"></param>
-        /// <param name="stdLibDirectory"></param>
-        internal PackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        /// <param name="builtinPackageDirectory"></param>
+        internal PackageLoader(IEnumerable<string> packagesDirectories, string builtinPackageDirectory)
         {
-            InitPackageLoader(packagesDirectories, stdLibDirectory);
-
-            //override the property.
-            this.StandardLibraryDirectory = stdLibDirectory;
+            InitPackageLoader(packagesDirectories, builtinPackageDirectory);
         }
 
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
+        /// <summary>
+        /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
+        /// which should be updated to use another constructor when this is obsoleted.
+        /// </summary>
         public PackageLoader(IEnumerable<string> packagesDirectories)
         {
-            InitPackageLoader(packagesDirectories, StandardLibraryDirectory);
+            InitPackageLoader(packagesDirectories, null);
         }
 
+        internal PackageLoader(IPathManager pathManager)
+        {
+            this.pathManager = pathManager;
+            InitPackageLoader(pathManager.PackagesDirectories, (pathManager as PathManager)?.BuiltinPackagesDirectory);
+
+            if (!string.IsNullOrEmpty(pathManager.CommonDataDirectory))
+            {
+                packagesDirectoriesToVerifyCertificates.Add(pathManager.CommonDataDirectory);
+            }
+        }
+
+        [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
         /// <summary>
-        /// Initialize a new instance of PackageLoader class
+        /// Initialize a new instance of PackageLoader class.
+        /// This constructor is currently being used for testing and these tests should be updated to use 
+        /// another constructor when this is obsoleted.
         /// </summary>
         /// <param name="packagesDirectories">Default package directories</param>
         /// <param name="packageDirectoriesToVerify">Default package directories where node library files require certificate verification before loading</param>
@@ -182,44 +175,29 @@ namespace Dynamo.PackageManager
             packagesDirectoriesToVerifyCertificates.AddRange(packageDirectoriesToVerify);
         }
 
-        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string stdLibDirectory)
+        private void InitPackageLoader(IEnumerable<string> packagesDirectories, string builtinPackagesDir)
         {
             if (packagesDirectories == null)
                 throw new ArgumentNullException("packagesDirectories");
 
             this.packagesDirectories.AddRange(packagesDirectories);
 
-            // Setup standard library
-            var standardLibraryIndex = this.packagesDirectories.IndexOf(DynamoModel.StandardLibraryToken);
-            if (standardLibraryIndex == -1)
+            if (builtinPackagesDir == null) return;
+
+            // Setup builtin packages
+            var builtinPackagesIndex = this.packagesDirectories.IndexOf(builtinPackagesDir);
+            if (builtinPackagesIndex == -1)
             {
-                // No standard library in list
-                // Add standard library first
-                this.packagesDirectories.Insert(0, stdLibDirectory);
+                // No builtin packages in list
+                // Add builtin packages first
+                this.packagesDirectories.Insert(0, builtinPackagesDir);
             }
             else
             {
                 // Replace token with runtime library location
-                this.packagesDirectories[standardLibraryIndex] = stdLibDirectory;
+                this.packagesDirectories[builtinPackagesIndex] = builtinPackagesDir;
             }
-
-            // Setup Default Package Directory
-            if (standardLibraryIndex == -1)
-            {
-                defaultPackagesDirectoryIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-            }
-            else
-            {
-                var safeIndex = this.packagesDirectories.Count > 1 ? 1 : -1;
-                defaultPackagesDirectoryIndex = standardLibraryIndex == 1 ? 0 : safeIndex;
-            }
-
-            var error = PathHelper.CreateFolderIfNotExist(DefaultPackagesDirectory);
-
-            if (error != null)
-                Log(error);
-
-            packagesDirectoriesToVerifyCertificates.Add(stdLibDirectory);
+            packagesDirectoriesToVerifyCertificates.Add(builtinPackagesDir);
         }
 
         private void OnPackageAdded(Package pkg)
@@ -446,9 +424,9 @@ namespace Dynamo.PackageManager
 
                 if (preferences is IDisablePackageLoadingPreferences disablePrefs
                     &&
-                    //if this directory is the standard library location
+                    //if this directory is the builtin packages location
                     //and loading from there is disabled, don't scan the directory.
-                    ((disablePrefs.DisableStandardLibrary && packagesDirectory == StandardLibraryDirectory)
+                    ((disablePrefs.DisableBuiltinPackages && packagesDirectory == (pathManager as PathManager)?.BuiltinPackagesDirectory)
                     //or if custom package directories are disabled, and this is a custom package directory, don't scan.
                     || (disablePrefs.DisableCustomPackageLocations && preferences.CustomPackageFolders.Contains(packagesDirectory))))
                 {

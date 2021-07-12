@@ -32,14 +32,6 @@ namespace Dynamo.Wpf.Controls
             button.ContextMenu.DataContext = button.DataContext;
             button.ContextMenu.IsOpen = true;
         }
-
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            Expander exp = (Expander)sender;
-            if (exp.DataContext is PackageViewModel pm)
-            {
-                pm.ToggleTypesVisibleInManagerCommand.Execute();
-            }
-        }
     }
 }
+

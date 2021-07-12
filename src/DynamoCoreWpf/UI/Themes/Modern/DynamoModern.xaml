@@ -2683,7 +2683,7 @@
                                             HorizontalAlignment="Stretch" 
                                             VerticalAlignment="Stretch">
                             <Grid Name="TabPanel" 
-                                          Width="150"
+                                          Width="165"
                                           Height="30">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="5" />
@@ -3369,7 +3369,31 @@
         </Style.Triggers>
     </Style>
     
-    
+    <!--This Style will be used for Note Text block (used when Note is not on edit mode)-->
+    <Style x:Key="NoteTextBoxStyle"
+           TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Background" Value="#EEE"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!--This Style will be used for Note Text block (used when Note is on edit mode)-->
+    <Style x:Key="NoteTextBlockStyle"
+           TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Trebuchet"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#222"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="TextBlock.Effect">
+            <Setter.Value>
+                <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
     <Style x:Key="FlatIconButtonStyle" 
@@ -3469,5 +3493,172 @@
         </Setter>
     </Style>
 
+    <SolidColorBrush x:Key="PopupWhiteColor" 
+                             Color="#FFFFFF" />
+
+    <Color x:Key="PopupTitleBorderColor" 
+                   A="255"
+                   R="128"
+                   G="128"
+                   B="128"/>
+
+    <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="5"/>
+        <Setter Property="Height" Value="10"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CaretButtonBorder"
+                                Background="{StaticResource PopupWhiteColor}"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Width="5" Height="10">
+                            <Line x:Name="line1" 
+                                      Stroke="Black" 
+                                      X1="5" 
+                                      Y1="0" 
+                                      X2="0" 
+                                      Y2="5"/>
+                            <Line x:Name="line2" 
+                                      Stroke="Black" 
+                                      X1="0" 
+                                      Y1="5" 
+                                      X2="5" 
+                                      Y2="10"/>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="Tag" 
+                                     Value="Invert">
+                            <Setter TargetName="line1" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="line2" 
+                                        Property="RenderTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="2" 
+                                                         CenterY="5"  
+                                                         Angle="180"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                        <Trigger Property="IsPressed" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
+    <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="CloseButtonBorder"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                BorderBrush="Transparent">
+                        <Canvas Margin="0,0,0,0">
+                            <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#808080" StrokeThickness="1"></Line>
+                            <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#808080" StrokeThickness="1"></Line>
+                        </Canvas>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="Red"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="Red"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" 
+                                     Value="True">
+                            <Setter Property="Stroke" 
+                                        TargetName="line1" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Stroke" 
+                                        TargetName="line2" 
+                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                            <Setter Property="Cursor" 
+                                        Value="Hand"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="MaxHeight" Value="36"/>
+        <Setter Property="BorderThickness" Value="36"/>
+        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="PopupButtonBorder"
+                                    BorderThickness="1"
+                                    CornerRadius="4" 
+                                    Background="{StaticResource PreferencesWindowButtonColor}">
+                        <ContentPresenter Content="{TemplateBinding Content}" 
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#535353" />
+    </Style>
+
+    <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Stroke" Value="Black"/>
+    </Style>
+
+    <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
+        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+    </Style>
+
+    <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="IsReadOnly" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
 
 </ResourceDictionary>

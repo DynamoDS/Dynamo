@@ -20,8 +20,31 @@ namespace DynamoCoreWpfTests
             // This setter also affects the default package directory of the PackageLoader.
             preferencesVM.SelectedPackagePathForInstall = Path.GetTempPath();
 
-            var packageLoader = ViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader;
-            Assert.Null(packageLoader.DefaultPackagesDirectory);
+            var pathManager = ViewModel.Model.PathManager;
+            Assert.AreEqual(Path.GetTempPath(), pathManager.DefaultPackagesDirectory);
+        }
+
+        [Test]
+        public void PackagePathsForInstall_RetainsPathThatDoesNotExist()
+        {
+            //add a new path to the package paths
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\DoesNotExist\");
+            //set to null, so getter regenerates list
+            ViewModel.PreferencesViewModel.PackagePathsForInstall = null;
+            //access getter
+            var paths = ViewModel.PreferencesViewModel.PackagePathsForInstall;
+            Assert.Contains(@"C:\DoesNotExist\", paths);
+        }
+        [Test]
+        public void PackagePathsForInstall_FiltersSomeFilePaths()
+        { 
+            //add a new path to the package paths
+            ViewModel.Model.PreferenceSettings.CustomPackageFolders.Add(@"C:\DoesNotExist\DoesNotExist.DLL");
+            //set to null, so getter regenerates list
+            ViewModel.PreferencesViewModel.PackagePathsForInstall = null;
+            //access getter
+            var paths = ViewModel.PreferencesViewModel.PackagePathsForInstall;
+            Assert.False(paths.Contains(@"C:\DoesNotExist\DoesNotExist.DLL"));
         }
     }
 }

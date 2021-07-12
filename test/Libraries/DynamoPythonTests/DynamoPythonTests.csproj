@@ -71,9 +71,9 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.5264, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5264\lib\net48\ProtoGeometry.dll</HintPath>
-        <Private>False</Private>
+    <Reference Include="ProtoGeometry, Version=2.12.0.5534, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\..\..\src\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5534\lib\net48\ProtoGeometry.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Python.Runtime, Version=2.5.1.7, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
