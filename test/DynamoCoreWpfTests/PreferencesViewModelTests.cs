@@ -58,7 +58,7 @@ namespace DynamoCoreWpfTests
             // Check that directory has been updated in the list of paths for install
             Assert.AreEqual(@"D:\", preferencesVM.PackagePathsForInstall.Last());
 
-            // Remove directory
+            // Remove path
             preferencesVM.SelectedPackagePathForInstall = @"D:\";
             preferencesVM.PackagePathsViewModel.RootLocations.Remove(@"D:\");
 
@@ -67,7 +67,7 @@ namespace DynamoCoreWpfTests
             Assert.AreNotEqual(@"D:\", selection);
             Assert.IsFalse(string.IsNullOrEmpty(selection));
 
-            // Check that the directory is not in the list
+            // Check that the path is not in the list
             Assert.IsFalse(preferencesVM.PackagePathsForInstall.Contains(@"D:\"));
 
             // Simulate exiting preference dialog
