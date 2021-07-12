@@ -1568,10 +1568,10 @@ Next assemblies were loaded several times:
     <value>Package Path Added</value>
   </data>
   <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Preferences &gt; Node and Package Paths..."</value>
   </data>
   <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
+    <value>The import path "{0}" was added to "Node and Package Paths". If you want to update or remove this path, please open "Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths..."</value>
   </data>
   <data name="PackageSearchStateNoResult" xml:space="preserve">
     <value>Search returned no results!</value>
@@ -1909,7 +1909,7 @@ Want to publish a different package?</value>
     <value>Execution preview is not available when running automatically</value>
   </data>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
-    <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
+    <value>Please update the permissions or go to Preferences &gt;Node and Package Paths...' to change your default directory.</value>
   </data>
   <data name="StartPageAdvancedTutorials" xml:space="preserve">
     <value>Advanced Tutorials</value>
