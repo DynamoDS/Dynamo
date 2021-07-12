@@ -46,11 +46,6 @@ namespace Dynamo.Graph.Notes
         }
 
         /// <summary>
-        /// Event when pinned node is selected
-        /// </summary>
-        public event EventHandler OnPinnedNodeSelected;
-
-        /// <summary>
         /// Creates NoteModel.
         /// </summary>
         /// <param name="x">X coordinate of note.</param>
@@ -82,7 +77,6 @@ namespace Dynamo.Graph.Notes
             GUID = guid;
             PinnedNode = pinnedNode;
         }
-
 
         #region Command Framework Supporting Methods
 
