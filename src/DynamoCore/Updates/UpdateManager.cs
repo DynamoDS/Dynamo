@@ -164,6 +164,11 @@ namespace Dynamo.Updates
         /// Get the current name of the Host
         /// </summary>
         String HostName { get; set; }
+
+        /// <summary>
+        /// Analytics Id of the host
+        /// </summary>
+        String ParentId { get; set; }
     }
 
     /// <summary>
@@ -625,6 +630,7 @@ namespace Dynamo.Updates
         public Version HostVersion { get; set; }
 
         public string HostName { get; set; }
+        public string ParentId { get; set; }
 
         /// <summary>
         /// BaseVersion is a method which compares the current Dynamo Core Version and the HostVersion
@@ -771,6 +777,7 @@ namespace Dynamo.Updates
             PropertyChanged += UpdateManager_PropertyChanged;
             HostVersion = null;
             HostName = string.Empty;
+            ParentId = string.Empty;
         }
 
         void UpdateManager_PropertyChanged(object sender, PropertyChangedEventArgs e)

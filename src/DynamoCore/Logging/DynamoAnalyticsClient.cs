@@ -103,11 +103,13 @@ namespace Dynamo.Logging
         private const string ANALYTICS_PROPERTY = "UA-52186525-1";
 #endif
 
-        private IPreferences preferences = null;
+        private readonly IPreferences preferences = null;
 
         public static IDisposable Disposable { get { return new Dummy(); } }
 
-        private ProductInfo product;
+        private readonly ProductInfo product;
+
+        private readonly string parentId;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -178,6 +180,8 @@ namespace Dynamo.Logging
             
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
+            parentId = dynamoModel.ParentId;
+
             string buildId = "", releaseId = "";
             if (Version.TryParse(dynamoModel.Version, out Version version))
             {
@@ -231,7 +235,7 @@ namespace Dynamo.Logging
                     RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), TimeSpan.FromMinutes(30));
+                Service.StartUp(product, new UserInfo(Session.UserId), parentId, TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }
