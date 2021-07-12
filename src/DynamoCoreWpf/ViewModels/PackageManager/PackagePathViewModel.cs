@@ -252,7 +252,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void InitializeRootLocations()
+        internal void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
             var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
