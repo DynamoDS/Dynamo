@@ -2492,4 +2492,7 @@ Uninstall the following packages: {0}?</value>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Welcome To Dynamo</value>
   </data>
+  <data name="ContextPinToNode" xml:space="preserve">
+    <value>Pin to node</value>
+  </data>
 </root>

@@ -2479,7 +2479,7 @@ namespace Dynamo.Controls
         }
     }
 
-    /// <summary>
+        /// <summary>
         /// Converts element type of node search element in short string.
         /// E.g. ElementTypes.Packaged => PKG.
         /// </summary>

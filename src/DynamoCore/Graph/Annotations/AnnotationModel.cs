@@ -226,6 +226,17 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
+        public NodeModel pinnedNode;
+        public NodeModel PinnedNode
+        {
+            get { return pinnedNode; }
+            set
+            {
+                pinnedNode = value;
+                RaisePropertyChanged("PinnedNode");
+            }
+        }
+
         #endregion
 
         /// <summary>
