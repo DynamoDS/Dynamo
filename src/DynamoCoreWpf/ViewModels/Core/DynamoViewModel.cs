@@ -771,6 +771,7 @@ namespace Dynamo.ViewModels
 
         protected virtual void UnsubscribeAllEvents()
         {
+            preferencesViewModel.UnsubscribeAllEvents();
             UnsubscribeDispatcherEvents();
             UnsubscribeModelUiEvents();
             UnsubscribeModelChangedEvents();
