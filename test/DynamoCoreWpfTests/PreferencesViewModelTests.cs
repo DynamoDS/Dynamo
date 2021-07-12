@@ -52,14 +52,17 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", preferencesVM.PackagePathsForInstall.Last());
 
             // Update path
+            preferencesVM.SelectedPackagePathForInstall = @"C:\";
             preferencesVM.PackagePathsViewModel.RootLocations[
                 preferencesVM.PackagePathsViewModel.RootLocations.IndexOf(@"C:\")] = @"D:\";
 
             // Check that directory has been updated in the list of paths for install
             Assert.AreEqual(@"D:\", preferencesVM.PackagePathsForInstall.Last());
 
+            // Check that the selection has updated
+            Assert.AreEqual(@"D:\", preferencesVM.SelectedPackagePathForInstall);
+
             // Remove path
-            preferencesVM.SelectedPackagePathForInstall = @"D:\";
             preferencesVM.PackagePathsViewModel.RootLocations.Remove(@"D:\");
 
             // Check that the selection has changed and is not empty
