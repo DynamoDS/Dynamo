@@ -144,12 +144,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Returns all installed packages
-        /// </summary>
-        [Obsolete]
-        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
-
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
