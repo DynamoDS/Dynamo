@@ -145,7 +145,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadPackagesReturnsAllValidPackagesInValidDirectory()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -177,7 +181,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadingPackageDoesNotAffectLoadedSearchEntries()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -209,7 +217,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadingCustomNodeFromPackageSetsNodeInfoPackageInfoCorrectly()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -265,7 +277,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -449,7 +465,11 @@ namespace Dynamo.PackageManager.Tests
         public void LoadPackagesReturnsNoPackagesForInvalidDirectory()
         {
             var pkgDir = Path.Combine(PackagesDirectory, "No directory");
-            var loader = new PackageLoader(pkgDir);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { pkgDir });
+
+            var loader = new PackageLoader(pathManager.Object);
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = this.CurrentDynamoModel.PreferenceSettings
@@ -461,13 +481,17 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void GetOwnerPackageReturnsPackageForValidFunctionDefinition()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
             loader.RequestLoadCustomNodeDirectory +=
-                (dir,pkgInfo) => this.CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true, pkgInfo);
+                (dir, pkgInfo) => CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNodesInPath(dir, true, pkgInfo);
 
             loader.LoadAll(new LoadPackageParams
             {
-                Preferences = this.CurrentDynamoModel.PreferenceSettings
+                Preferences = CurrentDynamoModel.PreferenceSettings
             });
 
             var pkg = loader.LocalPackages.FirstOrDefault(x => x.Name == "Custom Rounding");
@@ -476,7 +500,7 @@ namespace Dynamo.PackageManager.Tests
             foreach (var nodeInfo in pkg.LoadedCustomNodes)
             {
                 CustomNodeDefinition funcDef;
-                Assert.IsTrue(this.CurrentDynamoModel.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, true, out funcDef));
+                Assert.IsTrue(CurrentDynamoModel.CustomNodeManager.TryGetFunctionDefinition(nodeInfo.FunctionId, true, out funcDef));
                 Assert.IsNotNull(funcDef);
 
                 var foundPkg = loader.GetOwnerPackage(nodeInfo);
@@ -494,7 +518,7 @@ namespace Dynamo.PackageManager.Tests
 
             CustomNodeInfo info;
             Assert.IsTrue(
-                this.CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(
+                CurrentDynamoModel.CustomNodeManager.AddUninitializedCustomNode(
                     Path.Combine(new string[] { TestDirectory, "core", "combine", "combine2.dyf" }),
                     true,
                     out info));
@@ -658,8 +682,9 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void PackageInBuiltinPackageLocationIsLoaded()
         {
-           //setup clean loader
-            var loader = new PackageLoader(new string[0], BuiltInPackagesTestDir);
+            (CurrentDynamoModel.PathManager as PathManager).BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+            //setup clean loader
+            var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             settings.DisableBuiltinPackages = false;
 
@@ -704,8 +729,12 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void PackageInCustomPackagePathIsLoaded()
         {
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { BuiltInPackagesTestDir });
+            
             //setup clean loader where builtIn packages is a custom package path
-            var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
+            var loader = new PackageLoader(pathManager.Object);
             var settings = new PreferenceSettings();
             //just to be certain this is false.
             settings.DisableCustomPackageLocations = false;
@@ -727,7 +756,8 @@ namespace Dynamo.PackageManager.Tests
         public void DisablingCustomPackagePathsCorrectlyDisablesLoading()
         {
             //setup clean loader where builtIn packages is a custom package path
-            var loader = new PackageLoader(new[] { BuiltInPackagesTestDir }, string.Empty);
+            (CurrentDynamoModel.PathManager as PathManager).BuiltinPackagesDirectory = BuiltInPackagesTestDir;
+            var loader = new PackageLoader(CurrentDynamoModel.PathManager);
             var settings = new PreferenceSettings();
             //disable custom package paths
             settings.DisableCustomPackageLocations = true;

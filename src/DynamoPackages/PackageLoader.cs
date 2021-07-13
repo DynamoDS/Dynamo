@@ -20,8 +20,13 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
         public IPathManager PathManager { get; set; }
-
+        /// <summary>
+        /// List of new package paths that have been added to the 
+        /// Preferences->Package manager dialog in node and package paths.
+        /// </summary>
         internal IEnumerable<string> NewPaths { get; set; }
+
+        internal IEnumerable<string> DeletedPaths { get; set; }
     }
 
     public enum AssemblyLoadingState

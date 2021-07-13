@@ -153,9 +153,11 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(@"C:\", vm.RootLocations[0]);
             Assert.AreEqual(@"D:\", vm.RootLocations[1]);
         }
+
         [Test]
         public void AddPackagePathsTest()
         {
+
             var setting = new PreferenceSettings()
             {
                 CustomPackageFolders = { @"Z:\" }

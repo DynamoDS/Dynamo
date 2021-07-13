@@ -231,6 +231,7 @@ namespace Dynamo.ViewModels
             if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
                 loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
+                loadPackageParams.DeletedPaths = setting.CustomPackageFolders.Except(newpaths);
                 setting.CustomPackageFolders = newpaths;
                 if (packageLoader != null)
                 {
