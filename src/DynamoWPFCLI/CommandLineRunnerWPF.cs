@@ -45,6 +45,16 @@ namespace DynamoWPFCLI
                 viewModel.Model.HostName = cmdLineArgs.HostName;
             }
 
+            if (!string.IsNullOrEmpty(cmdLineArgs.ParentId))
+            {
+                viewModel.Model.UpdateManager.HostInfo.ParentId = cmdLineArgs.ParentId;
+            }
+
+            if (!string.IsNullOrEmpty(cmdLineArgs.SessionId))
+            {
+                viewModel.Model.UpdateManager.HostInfo.SessionId = cmdLineArgs.SessionId;
+            }
+
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(viewModel.Model, path);

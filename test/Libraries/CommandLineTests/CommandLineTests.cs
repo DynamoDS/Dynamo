@@ -98,6 +98,30 @@ namespace Dynamo.Tests
         }
 
         [Test]
+        public void CanSetParentIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var parentId = "RVT&2022&MUI64&22.0.2.392";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /pi {parentId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.HostInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+        }
+
+        [Test]
+        public void CanSetSessionIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var sessionId = "ABCDEFG";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /si {sessionId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.HostInfo.SessionId, "ABCDEFG");
+        }
+
+        [Test]
         public void ImportingAnAssemblyDoesNotEffectCustomNodePaths()
         {
             //load a graph which requires first loading FFITarget.dll

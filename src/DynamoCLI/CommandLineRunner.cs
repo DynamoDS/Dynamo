@@ -50,6 +50,16 @@ namespace DynamoCLI
                 model.HostName = cmdLineArgs.HostName;
             }
 
+            if(!string.IsNullOrEmpty(cmdLineArgs.ParentId))
+            {
+                model.UpdateManager.HostInfo.ParentId = cmdLineArgs.ParentId;
+            }
+
+            if (!string.IsNullOrEmpty(cmdLineArgs.SessionId))
+            {
+                model.UpdateManager.HostInfo.SessionId = cmdLineArgs.SessionId;
+            }
+
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
             {
                 ImportAssembly(model, path);
