@@ -1183,7 +1183,9 @@ namespace ProtoFFI
 
         public override CodeBlockNode ImportCodeBlock(string typeName, string alias, CodeBlockNode refNode)
         {
-            Type[] types = GetTypes(typeName);
+            Type[] types = CLRModuleType.IsReflectionContext ?
+               GetReflectionTypes(typeName) :
+               GetTypes(typeName);
             Type exttype = typeof(IExtensionApplication);
 
             foreach (var type in types)

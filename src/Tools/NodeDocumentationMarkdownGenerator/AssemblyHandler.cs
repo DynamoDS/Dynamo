@@ -201,17 +201,29 @@ namespace NodeDocumentationMarkdownGenerator
         private static IEnumerable<FunctionDescriptor> GetFunctionDescriptorsFromDsFile(PathManager pathManager, string dsFilePath)
         {
             var descriptors = new List<FunctionDescriptor>();
-
+            //we need to put CLRModuleType into reflection mode because importing DS may import some CLR modules as a side effect.
+            CLRModuleType.IsReflectionContext = true;
             var importModuleHandler = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
             var dsCodeNode = importModuleHandler.Import(dsFilePath, "", "");
             var classNodes = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>();
+            var freeFunctionNodes = dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>();
             var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
 
-            var associativeNodes = classNodes?.SelectMany(x => x.Procedures).ToList();
-            associativeNodes.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>());
-            foreach (var node in associativeNodes)
+            //build up tuples of all functions and their owning classes
+            var allFunctionTuples = new List<(string ClassName, AssociativeNode Procedure)>();
+            foreach (var class_ in classNodes)
             {
-                if (TryGetFunctionDescriptor(node, null, dsFilePath, ""/* classNode.ClassName*/, customizationFile, out ReflectionFunctionDescriptor des))
+                foreach(var procedure in class_.Procedures)
+                {   //todo not sure if we should use className or class_.Name or ExternLibName... see 
+                    //that generated output of Builtin.ds is now of the form List.FunctionName
+                    allFunctionTuples.Add((ClassName: class_.ClassName, Procedure: procedure));
+                }
+            }
+            //comine class methods and free functions
+            allFunctionTuples.AddRange(dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>().Select(func=>(ClassName:"",Procedure:func as AssociativeNode)));
+            foreach (var tuple in allFunctionTuples)
+            {
+                if (TryGetFunctionDescriptor(tuple.Procedure, null, dsFilePath, tuple.ClassName, customizationFile, out ReflectionFunctionDescriptor des))
                 {
                     descriptors.Add(des);
                 }
