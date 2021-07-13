@@ -139,7 +139,8 @@
                         Style="{DynamicResource CloseButtonStyle}" 
                         Click="CloseButton_Click" 
                         VerticalAlignment="Center"
-                        KeyboardNavigation.IsTabStop="False" />
+                        KeyboardNavigation.IsTabStop="False"
+                        Margin="0,0,4,0"/>
             </StackPanel>
         </Grid>
 
@@ -302,7 +303,7 @@
 
                                 <!--Geometry Scaling Expander-->
                                 <Grid Grid.Row="5"
-                                  Margin="-10,0,0,20">
+                                  Margin="-3,0,1,20">
                                     <Expander x:Name="Scale"
                                       Grid.Row="1" 
                                       Style="{StaticResource MenuExpanderStyle}"
@@ -510,7 +511,8 @@
                              Style="{StaticResource LeftTab}">
                         <Grid x:Name="VisualSettingsTab" 
                               Background="{StaticResource PreferencesWindowVisualSettingsBackground}"
-                              HorizontalAlignment="Left">
+                              HorizontalAlignment="Left"
+                              Margin="1">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />

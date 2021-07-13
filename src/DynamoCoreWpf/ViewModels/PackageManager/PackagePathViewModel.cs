@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 using Dynamo.Core;
 using Dynamo.Interfaces;
 using Dynamo.PackageManager;
@@ -11,6 +10,7 @@ using Dynamo.Models;
 using System.Windows.Data;
 using System.Globalization;
 using System.Linq;
+using Dynamo.Configuration;
 
 namespace Dynamo.ViewModels
 {
@@ -132,8 +132,9 @@ namespace Dynamo.ViewModels
         private bool CanDelete(int param)
         {
             var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+            var appDataPackagePathIndex = GetIndexOfDefaultAppDataPackagePath();
             if (RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) == param ||
-                    programDataPackagePathIndex == param)
+                    programDataPackagePathIndex == param || appDataPackagePathIndex == param)
             {
                 return false;
             }
@@ -154,10 +155,11 @@ namespace Dynamo.ViewModels
         private bool CanUpdate(int param)
         {
             var programDataPackagePathIndex = GetIndexOfProgramDataPackagePath();
+            var appDataPackagePathIndex = GetIndexOfDefaultAppDataPackagePath();
 
             //editing builtin packages or programData package paths is not allowed.
             return RootLocations.IndexOf(Resources.PackagePathViewModel_BuiltInPackages) != param &&
-                programDataPackagePathIndex != param;
+                programDataPackagePathIndex != param && appDataPackagePathIndex != param;
         }
 
         private int GetIndexOfProgramDataPackagePath()
@@ -166,6 +168,18 @@ namespace Dynamo.ViewModels
             var programDataPackagePath = RootLocations.Where(x => x.StartsWith(programDataPath)).FirstOrDefault();
             var programDataPackagePathIndex = RootLocations.IndexOf(programDataPackagePath);
             return programDataPackagePathIndex;
+        }
+
+        private int GetIndexOfDefaultAppDataPackagePath()
+        {
+            var index = -1;
+            if (setting is PreferenceSettings preferenceSettings)
+            {
+                var appDataPath = preferenceSettings.OnRequestUserDataFolder();
+                index = RootLocations.IndexOf(appDataPath);
+            }
+
+            return index;
         }
 
         // The position of the selected entry must always be the first parameter.
@@ -226,14 +240,19 @@ namespace Dynamo.ViewModels
 
         private void CommitChanges(object param)
         {
-            setting.CustomPackageFolders = CommitRootLocations();
-            if (this.packageLoader != null)
+            var newpaths = CommitRootLocations();
+            //if paths are modified, reload packages and update prefs.
+            if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
-                this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                setting.CustomPackageFolders = newpaths;
+                if (this.packageLoader != null)
+                {
+                    this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                }
             }
         }
 
-        private void InitializeRootLocations()
+        internal void InitializeRootLocations()
         {
             RootLocations = new ObservableCollection<string>(setting.CustomPackageFolders);
             var index = RootLocations.IndexOf(DynamoModel.BuiltInPackagesToken);
