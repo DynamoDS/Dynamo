@@ -20,6 +20,11 @@ namespace Dynamo.GraphMetadata
         private ViewLoadedParams viewLoadedParamsReference;
         private MenuItem graphMetadataMenuItem;
 
+        /// <summary>
+        /// A reference the PreferenceSettings as set by the Dynamo > Preferences window
+        /// </summary>
+        public PreferenceSettings PreferenceSettings { get; set; }
+
         public override string UniqueId => "28992e1d-abb9-417f-8b1b-05e053bee670";
 
         public override string Name => extensionName;
@@ -71,7 +76,7 @@ namespace Dynamo.GraphMetadata
             // However, RequiredProperty values may also be graph-specific, in which case they live in the 
             // JSON data of the .dyn file format. In this case, they are loaded in here.
             
-            List<string> xmlRequiredPropertyKeys = this.viewLoadedParamsReference.PreferenceSettings.RequiredProperties
+            List<string> xmlRequiredPropertyKeys = this.PreferenceSettings.RequiredProperties
                 .Select(x => x.Key)
                 .ToList();
             
@@ -91,7 +96,7 @@ namespace Dynamo.GraphMetadata
 
             // Instantiating any RequiredProperties whose values are not set globally from the extensionData.
             // RequiredProperties whose values are set globally are instantiated in the GraphMetadataViewModel.
-            foreach (RequiredProperty requiredProperty in this.viewLoadedParamsReference.PreferenceSettings.RequiredProperties)
+            foreach (RequiredProperty requiredProperty in this.PreferenceSettings.RequiredProperties)
             {
                 // If this property has already been resolved we may skip over any information stored locally in the .dyn file.
                 if (resolvedKeys.Contains(requiredProperty.Key)) continue;

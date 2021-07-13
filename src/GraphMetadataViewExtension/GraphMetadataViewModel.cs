@@ -177,9 +177,15 @@ namespace Dynamo.GraphMetadata
             RequiredProperties = new ObservableCollection<RequiredProperty>();
 
             RequiredProperties.CollectionChanged += UpdateRequiredPropertiesVisibility;
-            viewLoadedParams.PreferenceSettings.RequiredProperties.CollectionChanged += RequiredPropertiesOnCollectionChanged;
 
-            foreach (RequiredProperty requiredProperty in viewLoadedParams.PreferenceSettings.RequiredProperties)
+            if (viewLoadedParams.StartupParams.Preferences is PreferenceSettings preferenceSettings)
+            {
+                extension.PreferenceSettings = preferenceSettings;
+            }
+
+            extension.PreferenceSettings.RequiredProperties.CollectionChanged += RequiredPropertiesOnCollectionChanged;
+
+            foreach (RequiredProperty requiredProperty in extension.PreferenceSettings.RequiredProperties)
             {
                 requiredProperty.PropertyChanged += RequiredPropertyOnPropertyChanged;
             }
@@ -197,7 +203,7 @@ namespace Dynamo.GraphMetadata
             List<string> resolvedKeys = new List<string>();
 
             // Initializing the ExtensionRequiredProperties based on the RequiredProperties saved in the XML
-            foreach (RequiredProperty requiredProperty in viewLoadedParams.PreferenceSettings.RequiredProperties)
+            foreach (RequiredProperty requiredProperty in extension.PreferenceSettings.RequiredProperties)
             {
                 // Removing blanks and duplicates
                 if (string.IsNullOrEmpty(requiredProperty.Key) || resolvedKeys.Contains(requiredProperty.Key)) continue;

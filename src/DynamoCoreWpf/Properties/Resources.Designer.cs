@@ -3627,15 +3627,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Metadata.
-        /// </summary>
-        public static string MetadataSettingsTab {
-            get {
-                return ResourceManager.GetString("MetadataSettingsTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You must provide a Minor version as a non-negative integer..
         /// </summary>
         public static string MinorVersionNonNegative {
@@ -4994,6 +4985,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreviewText {
             get {
                 return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string PropertiesSettingsTab {
+            get {
+                return ResourceManager.GetString("PropertiesSettingsTab", resourceCulture);
             }
         }
         

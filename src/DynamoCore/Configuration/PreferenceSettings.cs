@@ -423,20 +423,10 @@ namespace Dynamo.Configuration
         /// </summary>
         public bool ShowRunPreview { get; set; }
 
-        
-        private ObservableCollection<RequiredProperty> requiredProperties;
         /// <summary>
         /// Collection of RequiredProperties, as set in the DynamoSettings file
         /// </summary>
-        public ObservableCollection<RequiredProperty> RequiredProperties
-        {
-            get => requiredProperties;
-            set
-            {
-                requiredProperties = value;
-                RaisePropertyChanged(nameof(RequiredProperties));
-            }
-        }
+        public ObservableCollection<RequiredProperty> RequiredProperties { get; set; }
 
         #endregion
 

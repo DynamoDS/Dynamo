@@ -2424,8 +2424,8 @@ Uninstall the following packages: {0}?</value>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
   </data>
-  <data name="MetadataSettingsTab" xml:space="preserve">
-    <value>Metadata</value>
+  <data name="PropertiesSettingsTab" xml:space="preserve">
+    <value>Properties</value>
   </data>
   <data name="RequiredPropertiesExpanderName" xml:space="preserve">
     <value>Required Properties</value>

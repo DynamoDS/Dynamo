@@ -759,10 +759,10 @@
                             </Expander>
                         </Grid>
                     </TabItem>
-                    <!--  Metadata Settings Tab  -->
-                    <TabItem Header="{x:Static p:Resources.MetadataSettingsTab}" Style="{StaticResource LeftTab}">
+                    <!--  Properties Settings Tab  -->
+                    <TabItem Header="{x:Static p:Resources.PropertiesSettingsTab}" Style="{StaticResource LeftTab}">
                         <Grid
-                            x:Name="MetadataSettingsTab"
+                            x:Name="PropertiesSettingsTab"
                             Margin="1"
                             HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>

@@ -58,17 +58,19 @@ namespace DynamoCoreWpfTests
 
             // Act
             preferenceSettings.RequiredProperties.Clear();
-            
+
             preferenceSettings.AddRequiredProperty(null);
             var preferenceSettingsRequiredProperty = preferenceSettings.RequiredProperties.First();
 
             preferenceSettingsRequiredProperty.ValueIsGlobal = true;
             preferenceSettingsRequiredProperty.GlobalValue = testGlobalValue;
-            
+
             // Assert
             Assert.That(preferenceSettingsRequiredProperty.GlobalValue.Equals(testGlobalValue));
             Assert.That(preferenceSettingsRequiredProperty.GraphValue.Equals(testGlobalValue));
+        }
 
+        [Test]
         public void PackagePathForInstall_Add_Update_Remove_Paths()
         {
             var preferencesVM = ViewModel.PreferencesViewModel;

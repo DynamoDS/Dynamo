@@ -98,3 +98,5 @@ test/core/customast/test.txt
 test/core/files/test.png
 test/core/migration/writetext.txt
 logo.png
+src/DynamoCoreWpf/UI/Fonts/Artifakt-Element-Bold.ttf
+src/DynamoCoreWpf/UI/Fonts/Artifakt-Element-Regular.ttf
