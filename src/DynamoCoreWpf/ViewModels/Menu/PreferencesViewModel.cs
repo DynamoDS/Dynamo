@@ -812,6 +812,7 @@ namespace Dynamo.ViewModels
         {
             PropertyChanged -= Model_PropertyChanged;
             PackagePathsViewModel.RootLocations.CollectionChanged -= PackagePathsViewModel_RootLocations_CollectionChanged;
+            WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
         }
 
 
