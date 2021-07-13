@@ -139,7 +139,8 @@
                         Style="{DynamicResource CloseButtonStyle}" 
                         Click="CloseButton_Click" 
                         VerticalAlignment="Center"
-                        KeyboardNavigation.IsTabStop="False" />
+                        KeyboardNavigation.IsTabStop="False"
+                        Margin="0,0,4,0"/>
             </StackPanel>
         </Grid>
 
