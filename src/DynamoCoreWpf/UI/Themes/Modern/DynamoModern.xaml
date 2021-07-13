@@ -61,7 +61,7 @@
     <!--  InfoBubble colors  -->
     <SolidColorBrush x:Key="InfoBubbleBackNormalBrush" Color="White" />
     <SolidColorBrush x:Key="InfoBubbleTextNormalBrush" Color="#333333" />
-    <SolidColorBrush x:Key="InfoBubbleEdgeNormalBrush" Color="#A5D1E2" />
+    <SolidColorBrush x:Key="InfoBubbleEdgeNormalBrush" Color="#999999" />
 
     <LinearGradientBrush x:Key="MenuPopupBrush" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Offset="0" Color="{DynamicResource ControlLightColor}" />
@@ -1191,9 +1191,10 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Margin="-1"
+                            CornerRadius="4"
                             Background="{StaticResource InfoBubbleBackNormalBrush}"
                             BorderBrush="{StaticResource InfoBubbleEdgeNormalBrush}"
-                            BorderThickness="1" />
+                            BorderThickness="2" />
                         <Path
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -1874,8 +1875,8 @@
                                     Name="Border"
                                     Margin="0"
                                     Padding="0"
-                                    Background="{StaticResource SpinnerNormalBrush}"
-                                    BorderBrush="{StaticResource SpinnerNormalBorderBrush}"
+                                    Background="#3C3C3C"
+                                    BorderBrush="#CCCCCC"
                                     BorderThickness="1"
                                     CornerRadius="0 1 0 0" />
                                 <ContentPresenter
@@ -1914,8 +1915,8 @@
                                     Name="Border"
                                     Margin="0"
                                     Padding="0"
-                                    Background="{StaticResource SpinnerNormalBrush}"
-                                    BorderBrush="{StaticResource SpinnerNormalBorderBrush}"
+                                    Background="#3C3C3C"
+                                    BorderBrush="#CCCCCC"
                                     BorderThickness="1"
                                     CornerRadius="0 0 1 0" />
                                 <ContentPresenter
@@ -1942,9 +1943,9 @@
             </Style>
         </Style.Resources>
 
-        <Setter Property="Background" Value="#ffffffff" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#ff848484" />
+        <Setter Property="Background" Value="#3C3C3C" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="#CCCCCC" />
 
         <Setter Property="Template">
             <Setter.Value>
@@ -1966,10 +1967,12 @@
                             Grid.Column="0"
                             Margin="0"
                             VerticalContentAlignment="Center"
-                            Background="Transparent"
+                            Foreground="#E6E6E6"
+                            Background="#3C3C3C"
                             BorderThickness="0"
-                            FontFamily="{StaticResource OpenSansRegular}"
-                            FontSize="10"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontWeight="Medium"
+                            FontSize="13"
                             IsEnabled="False" />
 
                         <RepeatButton

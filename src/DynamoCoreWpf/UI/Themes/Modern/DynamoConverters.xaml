@@ -198,13 +198,13 @@
                                       TrueBrush="{StaticResource KeepListStructureHighlight}"
                                       FalseBrush="{StaticResource NotKeepListStructureHighlight}">
     </controls:BooleanToBrushConverter>
-    <controls:BooleanToBrushConverter x:Key="InputIsConnectedBackgroundConverter"
-                                      TrueBrush="{StaticResource InputIsConnectedBackground}"
-                                      FalseBrush="{StaticResource InputIsNotConnectedBackground}">
+    <controls:BooleanToBrushConverter x:Key="PortIsConnectedBackgroundConverter"
+                                      TrueBrush="{StaticResource PortIsConnectedBackground}"
+                                      FalseBrush="{StaticResource PortIsNotConnectedBackground}">
     </controls:BooleanToBrushConverter>
-    <controls:BooleanToBrushConverter x:Key="InputIsConnectedBorderBrushConverter"
-                                      TrueBrush="{StaticResource InputIsConnectedBorderBrush}"
-                                      FalseBrush="{StaticResource InputIsNotConnectedBorderBrush}">
+    <controls:BooleanToBrushConverter x:Key="PortIsConnectedBorderBrushConverter"
+                                      TrueBrush="{StaticResource PortIsConnectedBorderBrush}"
+                                      FalseBrush="{StaticResource PortIsNotConnectedBorderBrush}">
     </controls:BooleanToBrushConverter>
     
     

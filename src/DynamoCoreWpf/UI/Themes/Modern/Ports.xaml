@@ -35,19 +35,19 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-        <Grid>
+        <Grid ShowGridLines="True" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Border
                 x:Name="mainBorder"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Height="35px"
-                BorderBrush="{Binding IsConnected, Converter={StaticResource InputIsConnectedBorderBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                BorderBrush="{Binding IsConnected, Converter={StaticResource PortIsConnectedBorderBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                Background="{Binding IsConnected, Converter={StaticResource PortIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"
                 UseLayoutRounding="true">
-                <!--Background="{Binding IsConnected, Converter={StaticResource InputIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Grid
                         Name="mainGrid"
@@ -126,103 +126,49 @@
                                 </MultiBinding>
                             </Rectangle.Margin>
                         </Rectangle>
-                        <!--<Border Name="highlightOverlay"
-                                Background="Gray"
-                                Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                VerticalAlignment="Top"
-                                HorizontalAlignment="Stretch"
-                                Height="32px"
-                                BorderBrush="Transparent"
-                                IsHitTestVisible="True">
-                                <interactivity:Interaction.Triggers>
-                                    <views:HandlingEventTrigger EventName="MouseEnter">
-                                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                                    </views:HandlingEventTrigger>
-                                    <views:HandlingEventTrigger EventName="MouseLeave">
-                                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                                    </views:HandlingEventTrigger>
-                                </interactivity:Interaction.Triggers>
-                                <Border.Style>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
-                                                <Setter Property="CornerRadius" Value="0,11,11,0" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
-                                                <Setter Property="CornerRadius" Value="11,0,0,11" />
-                                            </DataTrigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Opacity" Value="1.0" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter Property="Opacity" Value="0.0" />
-                                            </Trigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Border.Style>
-                        </Border>-->
-                        <StackPanel
-                            HorizontalAlignment="Stretch"
+                        <TextBlock
+                            Name="portNameTb"
+                            Margin="13,0,13,7"
+                            Width="Auto"
+                            HorizontalAlignment="Left"
                             VerticalAlignment="Center"
-                            Margin="13, 0"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Name="portNameTb"
-                                Width="Auto"
-                                HorizontalAlignment="Left"
-                                Margin="0,0,0,7"
-                                VerticalAlignment="Center"
-                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                FontSize="17px"
-                                FontWeight="Medium"
-                                Foreground="{StaticResource PrimaryCharcoal100Brush}"
-                                IsHitTestVisible="False"
-                                Style="{StaticResource SZoomFadeText}"
-                                Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
-                                <!--<TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding UsingDefaultValue}" Value="True">
-                                        <Setter Property="FontStyle" Value="Italic" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding UsingDefaultValue}" Value="False">
-                                        <Setter Property="FontStyle" Value="Normal" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>-->
-                            </TextBlock>
-                            <!--  We wrap the text block in a grid so that it wont be displayed on output port  -->
-                            <Grid HorizontalAlignment="Right" Visibility="{Binding Path=UseLevelVisibility}">
-                                <!--
-                                    This is is a stub UI element just occupy the space of List@Level spinner
-                                    so that input port highlight will get wider area if "Use Levels" option is off
-                                -->
-                                <Grid
-                                    Width="45"
-                                    HorizontalAlignment="Right"
-                                    Background="{x:Null}"
-                                    IsHitTestVisible="False"
-                                    Visibility="{Binding Path=UseLevels, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}" />
-                            </Grid>
-                        </StackPanel>
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="17px"
+                            FontWeight="Medium"
+                            Foreground="White"
+                            IsHitTestVisible="False"
+                            Style="{StaticResource SZoomFadeText}"
+                            Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
+                        </TextBlock>
                     </Grid>
                     <Grid
                         Name="useLevelGrid"
                         Grid.Column="1"
+                        ShowGridLines="True"
                         Height="{Binding Path=Height}"
-                        Margin="{Binding Path=MarginThickness}"
-                        HorizontalAlignment="Right"
-                        Background="Transparent"
-                        Cursor="Hand"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
                         IsHitTestVisible="True"                        
                         Visibility="{Binding Path=UseLevelVisibility}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dynui:UseLevelSpinner
+                            x:Name="useLevelSpinner"
+                            Grid.Column="0"
+                            Width="50"
+                            Height="20"
+                            VerticalAlignment="Center"
+                            Margin="0,1,10,0"
+                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
+                            Level="{Binding Path=Level, Mode=TwoWay}"
+                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
                         <Rectangle
+                            Grid.Column="1"
                             Name="highlightOverlayForArrow"
-                            Fill="{StaticResource DarkerGreyBrush}"
+                            HorizontalAlignment="Stretch"
                             IsHitTestVisible="True">
-                            <!--Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"-->
                             <interactivity:Interaction.Triggers>
                                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                                     <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
@@ -232,34 +178,32 @@
                                 <Style TargetType="{x:Type Rectangle}">
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Fill" Value="{StaticResource PrimaryCharcoal300Brush}" />
+                                            <Setter Property="Fill" Value="White" />
+                                            <Setter Property="Opacity" Value="0.3" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Fill" Value="Transparent" />
+                                            <Setter Property="Opacity" Value="1.0" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
                             </Rectangle.Style>
                         </Rectangle>
-                        <StackPanel Orientation="Horizontal">
-                            <dynui:UseLevelSpinner
-                                x:Name="useLevelSpinner"
-                                Width="45"
-                                Height="16"
-                                VerticalAlignment="Center"
-                                KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                                Level="{Binding Path=Level, Mode=TwoWay}"
-                                Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-                            <TextBlock
-                                Width="15"
-                                TextAlignment="Center"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Background="{x:Null}"
-                                Foreground="#D9D9D9"
-                                Margin="0,0,10,7"
-                                FontSize="15px"
-                                FontWeight="Medium"
-                                Text=">"
-                                IsHitTestVisible="False" />
-                        </StackPanel>
+                        <Label
+                            Grid.Column="1"
+                            Height="{Binding Path=Height}"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Background="Black"
+                            Foreground="#D9D9D9"
+                            Margin="5,0"
+                            Padding="0"
+                            FontSize="16px"
+                            FontWeight="Medium"
+                            Content=">"
+                            IsHitTestVisible="False" />
                         <dynui:UseLevelPopup
                             x:Name="UseLevelPopup"
                             AllowsTransparency="True"
@@ -344,8 +288,11 @@
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
                                 <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource MidGreyBrush}" />
+                            <Trigger Property="IsMouseDirectlyOver" Value="True">
+                                <Setter Property="Opacity" Value="1.0" />
+                            </Trigger>
+                            <Trigger Property="IsMouseDirectlyOver" Value="False">
+                                <Setter Property="Opacity" Value="0.8" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

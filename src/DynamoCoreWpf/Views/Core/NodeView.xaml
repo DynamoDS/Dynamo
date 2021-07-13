@@ -400,7 +400,7 @@
                         UpdateSourceTrigger="PropertyChanged" />
                 </TextBlock.Foreground>
             </TextBlock>
-
+            
             <Border
                 Width="Auto"
                 Height="12"
@@ -417,29 +417,40 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <TextBlock
-                    Width="Auto"
-                    Margin="2,0,2,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="8"
-                    FontStyle="Italic"
-                    Text="{x:Static p:Resources.NodeRenamedLabel}">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Hidden" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRenamed}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
             </Border>
         </StackPanel>
 
+        <Grid
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Right"
+            Panel.ZIndex="100"
+            Background="Transparent"
+            Margin="0,0,10,0"
+            Grid.Column="2">
+            <Ellipse
+                Name="nodeRenamedIcon"
+                Margin="5"
+                Width="9"
+                Height="9"
+                Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Fill="{StaticResource Blue300Brush}"/>
+            <Grid.ToolTip>
+                <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <Grid>
+                        <TextBlock
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontWeight="Medium"
+                            TextAlignment="Center"
+                            FontSize="14"
+                            Padding="8,10"
+                            Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
+                            TextWrapping="Wrap" />
+                    </Grid>
+                </dynui:DynamoToolTip>
+            </Grid.ToolTip>
+        </Grid>
+        
         <!--  INPUT PORTS  -->
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
