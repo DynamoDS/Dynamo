@@ -29,9 +29,9 @@ namespace Dynamo.Wpf.ViewModels.GuidedTour
         }
 
         /// <summary>
-        /// For creating a SurveyPopupViewModel we need to pass the step to be used 
+        /// For creating a SurveyPopupViewModel we need to pass the Survey to be used 
         /// </summary>
-        /// <param name="popupType">Step is a abstract class then the parameter can be any of the child clases like Welcome, Tooltip, Survey....</param>
+        /// <param name="popupType">Passing as parameter a Survey type (base class is Step)</param>
         public SurveyPopupViewModel(Survey popupType)
         {
             Step = popupType;

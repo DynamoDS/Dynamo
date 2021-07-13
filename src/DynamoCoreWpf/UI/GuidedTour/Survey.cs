@@ -19,7 +19,6 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
         protected override void CreatePopup()
         {
-            //In this place will go the code for creating a SurveyWindow
             var surveyPopupViewModel = new SurveyPopupViewModel(this);
 
             stepUIPopup = new SurveyPopupWindow(surveyPopupViewModel, HostPopupInfo);
