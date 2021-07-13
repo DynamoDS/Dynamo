@@ -798,7 +798,7 @@ namespace Dynamo.ViewModels
         /// This method will update the currently selected Radio Button in the Geometry Scaling section.
         /// </summary>
         /// <param name="scaleFactor"></param>
-        public void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
+        private void UpdateGeoScaleRadioButtonSelected(int scaleFactor)
         {
             optionsGeometryScale.EnumProperty = (GeometryScaleSize)GeometryScalingOptions.ConvertScaleFactorToUI(scaleFactor);
         }
