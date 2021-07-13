@@ -109,7 +109,7 @@ namespace Dynamo.Logging
 
         private readonly ProductInfo product;
 
-        private readonly string parentId;
+        private readonly HostContextInfo hostInfo;
 
         public virtual IAnalyticsSession Session { get; private set; }
 
@@ -180,9 +180,9 @@ namespace Dynamo.Logging
             
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
-            parentId = dynamoModel.ParentId;
+            hostInfo = dynamoModel.UpdateManager.HostInfo;
 
-            string buildId = "", releaseId = "";
+            string buildId = String.Empty, releaseId = String.Empty;
             if (Version.TryParse(dynamoModel.Version, out Version version))
             {
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
@@ -235,7 +235,7 @@ namespace Dynamo.Logging
                     RegisterADPTracker(service);
 
                 //If not ReportingAnalytics, then set the idle time as infinite so idle state is not recorded.
-                Service.StartUp(product, new UserInfo(Session.UserId), parentId, TimeSpan.FromMinutes(30));
+                Service.StartUp(product, new UserInfo(Session.UserId), hostInfo, TimeSpan.FromMinutes(30));
                 TrackPreferenceInternal("ReportingAnalytics", "", ReportingAnalytics ? 1 : 0);
                 TrackPreferenceInternal("ReportingADPAnalytics", "", ReportingADPAnalytics ? 1 : 0);
             }

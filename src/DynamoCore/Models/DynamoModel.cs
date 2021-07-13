@@ -184,11 +184,6 @@ namespace Dynamo.Models
         public string HostName { get; set; }
 
         /// <summary>
-        /// Analytics Id of host
-        /// </summary>
-        public string ParentId { get; set; }
-
-        /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
         /// </summary>
         public IUpdateManager UpdateManager { get; private set; }
@@ -561,12 +556,10 @@ namespace Dynamo.Models
             {
                 HostName = hostUpdateManager.HostName;
                 HostVersion = hostUpdateManager.HostVersion?.ToString();
-                ParentId = hostUpdateManager.ParentId;
             }
             else
             {
                 HostName = string.Empty;
-                ParentId = string.Empty;
                 HostVersion = null;
             }
 

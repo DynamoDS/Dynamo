@@ -149,7 +149,8 @@ namespace Dynamo.Tests
             Assert.AreEqual("Host Name", updateManager.HostName);
 
             // Host ParentId
-            Assert.AreEqual(String.Empty, updateManager.ParentId);
+            Assert.AreEqual(String.Empty, updateManager.HostInfo.ParentId);
+            Assert.AreEqual(String.Empty, updateManager.HostInfo.SessionId);
 
             //UpdateFileLocation
             _ = new UpdateManager(new UpdateManagerConfiguration());

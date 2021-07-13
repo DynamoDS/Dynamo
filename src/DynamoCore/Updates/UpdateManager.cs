@@ -9,6 +9,7 @@ using System.Net;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using Autodesk.Analytics.Core;
 using Dynamo.Core;
 using Dynamo.Logging;
 
@@ -166,9 +167,9 @@ namespace Dynamo.Updates
         String HostName { get; set; }
 
         /// <summary>
-        /// Analytics Id of the host
+        /// Analytics info of the host
         /// </summary>
-        String ParentId { get; set; }
+        HostContextInfo HostInfo { get; set; }
     }
 
     /// <summary>
@@ -630,7 +631,7 @@ namespace Dynamo.Updates
         public Version HostVersion { get; set; }
 
         public string HostName { get; set; }
-        public string ParentId { get; set; }
+        public HostContextInfo HostInfo { get; set; }
 
         /// <summary>
         /// BaseVersion is a method which compares the current Dynamo Core Version and the HostVersion
@@ -777,7 +778,7 @@ namespace Dynamo.Updates
             PropertyChanged += UpdateManager_PropertyChanged;
             HostVersion = null;
             HostName = string.Empty;
-            ParentId = string.Empty;
+            HostInfo = new HostContextInfo();
         }
 
         void UpdateManager_PropertyChanged(object sender, PropertyChangedEventArgs e)
