@@ -206,7 +206,6 @@ namespace NodeDocumentationMarkdownGenerator
             var importModuleHandler = new ImportModuleHandler(new ProtoCore.Core(new ProtoCore.Options()));
             var dsCodeNode = importModuleHandler.Import(dsFilePath, "", "");
             var classNodes = dsCodeNode.CodeNode.Body.OfType<ClassDeclNode>();
-            var freeFunctionNodes = dsCodeNode.CodeNode.Body.OfType<FunctionDefinitionNode>();
             var customizationFile = LibraryCustomizationServices.GetForAssembly(dsFilePath, pathManager);
 
             //build up tuples of all functions and their owning classes
