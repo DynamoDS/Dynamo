@@ -779,8 +779,6 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
-            PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
-
             WorkspaceEvents.WorkspaceSettingsChanged += PreferencesViewModel_WorkspaceSettingsChanged;
 
             PropertyChanged += Model_PropertyChanged;
@@ -811,7 +809,6 @@ namespace Dynamo.ViewModels
         internal virtual void UnsubscribeAllEvents()
         {
             PropertyChanged -= Model_PropertyChanged;
-            PackagePathsViewModel.RootLocations.CollectionChanged -= PackagePathsViewModel_RootLocations_CollectionChanged;
             WorkspaceEvents.WorkspaceSettingsChanged -= PreferencesViewModel_WorkspaceSettingsChanged;
         }
 
@@ -866,6 +863,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         internal void CommitPackagePathsForInstall()
         {
+            PackagePathsViewModel.RootLocations.CollectionChanged -= PackagePathsViewModel_RootLocations_CollectionChanged;
             preferenceSettings.SelectedPackagePathForInstall = SelectedPackagePathForInstall;
         }
 
@@ -876,6 +874,7 @@ namespace Dynamo.ViewModels
         {
             PackagePathsForInstall = null;
             SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+            PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
         }
 
         /// <summary>
