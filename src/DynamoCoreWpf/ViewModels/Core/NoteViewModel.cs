@@ -16,8 +16,8 @@ namespace Dynamo.ViewModels
 {
     public partial class NoteViewModel: ViewModelBase
     {
-        private int DISTANCE_TO_PINNED_NODE = 22;
-        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 42;
+        private int DISTANCE_TO_PINNED_NODE = 16;
+        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 36;
 
         #region Events
 
@@ -154,6 +154,7 @@ namespace Dynamo.ViewModels
             {
                 SubscribeToPinnedNode();
             }
+            IsOnEditMode = false;
         }
 
         public override void Dispose()

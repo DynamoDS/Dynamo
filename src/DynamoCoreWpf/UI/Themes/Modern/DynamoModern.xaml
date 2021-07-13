@@ -3393,6 +3393,7 @@
     <!--This style will be used for setting the style of the Note's user control-->
     <Style x:Key="NoteUserControlStyle"
            TargetType="UserControl">
+        <Setter Property="BorderBrush" Value="#549ee7"/>
         <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />

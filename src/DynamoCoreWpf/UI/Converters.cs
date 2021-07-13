@@ -1773,7 +1773,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? 0 : 10;
+            return value == null ? 0 : 4;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -188,6 +188,7 @@ namespace Dynamo.Nodes
         private void noteTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             Panel.SetZIndex(noteTextBox, 0);
+            ViewModel.IsOnEditMode = false;
         }
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
