@@ -28,7 +28,7 @@ Because the underlying loading mechanism is the same - it will be necessary to m
 
 Because packages included in the `Built-In Packages` will be available to more customers and the guarantees we make about them will be stricter (see above) they should be localized.
 
-For internal ADSK packages intended for std.lib inclusion - the current limitations of not being able to publish localized content to the package manager are not blockers as the packages don't necessarily need to be published to the package manager.
+For internal ADSK packages intended for `Built-In Packages` inclusion - the current limitations of not being able to publish localized content to the package manager are not blockers as the packages don't necessarily need to be published to the package manager.
 
 Using a workaround it's possible to manually create (and even publish) packages with culture subdirectories in the /bin folder of a package.
 
