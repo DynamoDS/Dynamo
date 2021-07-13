@@ -52,12 +52,12 @@ namespace DynamoCLI
 
             if(!string.IsNullOrEmpty(cmdLineArgs.ParentId))
             {
-                model.UpdateManager.HostInfo.ParentId = cmdLineArgs.ParentId;
+                model.UpdateManager.ParentId = cmdLineArgs.ParentId;
             }
 
             if (!string.IsNullOrEmpty(cmdLineArgs.SessionId))
             {
-                model.UpdateManager.HostInfo.SessionId = cmdLineArgs.SessionId;
+                model.UpdateManager.SessionId = cmdLineArgs.SessionId;
             }
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>

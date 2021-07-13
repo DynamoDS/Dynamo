@@ -7,7 +7,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using Autodesk.Analytics.Core;
 using Dynamo.Interfaces;
 using Dynamo.Models;
 using Dynamo.Scheduler;
@@ -207,14 +206,17 @@ namespace Dynamo.Applications
         /// which if we are running on mac os or *nix will use different logic then SandboxLookup
         /// </summary>
         /// <param name="hostName">Dynamo variation identified by host.</param>
+        /// <param name="parentId"></param>
+        /// <param name="sessionId"></param>
         /// <returns></returns>
-        private static IUpdateManager InitializeUpdateManager(string hostName = "", HostContextInfo hostInfo = null)
+        private static IUpdateManager InitializeUpdateManager(string hostName = "", String parentId = "", String sessionId = "")
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
             var um = new Dynamo.Updates.UpdateManager(cfg)
             {
                 HostName = hostName,
-                HostInfo = hostInfo
+                ParentId = parentId,
+                SessionId = sessionId
             };
             Debug.Assert(cfg.DynamoLookUp != null);
             return um;
@@ -323,7 +325,7 @@ namespace Dynamo.Applications
                 ProcessMode = TaskProcessMode.Asynchronous
             };
 
-            config.UpdateManager = CLImode ? null : InitializeUpdateManager(hostName, new HostContextInfo() { ParentId = parentId, SessionId = sessionId});
+            config.UpdateManager = CLImode ? null : InitializeUpdateManager(hostName, parentId, sessionId);
             config.StartInTestMode = CLImode ? true : false;
             config.PathResolver = CLImode ? new CLIPathResolver(preloaderLocation) as IPathResolver : new SandboxPathResolver(preloaderLocation) as IPathResolver;
 

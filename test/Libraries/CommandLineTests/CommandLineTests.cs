@@ -106,7 +106,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /pi {parentId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.HostInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.ParentId, "RVT&2022&MUI64&22.0.2.392");
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /si {sessionId}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.HostInfo.SessionId, "ABCDEFG");
+            Assert.AreEqual(this.CurrentDynamoModel.UpdateManager.SessionId, "ABCDEFG");
         }
 
         [Test]
