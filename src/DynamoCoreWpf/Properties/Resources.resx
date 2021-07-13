@@ -1913,11 +1913,11 @@ Do you want to install the latest Dynamo update?</value>
 	<data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
     <value>Package Path Added</value>
   </data>
-	<data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
-    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Settings &gt; Manage Node and Package Paths..."</value>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>A library (*.dll, *.ds) was recently imported into Dynamo. Its path was automatically added to "Preferences &gt; Node and Package Paths..."</value>
   </data>
-	<data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
-    <value>The import path "{0}" was added to "Manage Node and Package Paths". If you want to update or remove this path, please open "Settings &gt; Manage Node and Package Paths..."</value>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>The import path "{0}" was added to "Node and Package Paths". If you want to update or remove this path, please open "Dynamo &gt; Preferences &gt;Package Manager &gt; Node and Package Paths..."</value>
   </data>
 	<data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Is Input</value>
@@ -2117,8 +2117,8 @@ Failed to publish file(s):
     <value>Package published successfully. 
 Want to publish a different package?</value>
   </data>
-	<data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
-    <value>Please update the permissions or go to 'Settings &gt; Manage Node and Package Paths...' to change your default directory.</value>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>Please update the permissions or go to Preferences &gt;Node and Package Paths...' to change your default directory.</value>
   </data>
 	<data name="DynamoViewHelpDictionary" xml:space="preserve">
     <value>Dynamo Dictionary</value>
@@ -2474,5 +2474,49 @@ Uninstall the following packages: {0}?</value>
   </data>
 	<data name="PackagePathUpdatePathTooltip" xml:space="preserve">
     <value>Edit Path</value>
+  </data>
+  <data name="GetStartedGuide" xml:space="preserve">
+    <value>Get Started</value>
+    <comment>Get Started Dynamo Tour</comment>
+  </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>Interactive Guides</value>
+    <comment>Dynamo Guided Tours</comment>
+  </data>
+  <data name="GetStartedGuideLibraryText" xml:space="preserve">
+    <value>The Library contains all default Dynamo nodes, and any other nodes you have loaded, such as #custom=https://primer.dynamobim.org/10_Custom-Nodes/10-1_Introduction.html nodes or #packages=https://primer.dynamobim.org/11_Packages/11-1_Introduction.html \n\nYou can browse through the node Categories, or search the library to find a node.</value>
+  </data>
+  <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="GetStartedGuidePreferencesText" xml:space="preserve">
+    <value>In the Preferences palette, you can customize your Dynamo experience, from language and time zone settings, to experimental features and visual styles of your workspace.</value>
+  </data>
+  <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
+    <value>Preferences</value>
+  </data>
+  <data name="GetStartedGuideResourcesText" xml:space="preserve">
+    <value>Use the Help menu to access tools and resources to help you get started.\n\nYou can choose sample scripts, browse the Dynamo Dictionary, replay this and other tutorials, and more!</value>
+  </data>
+  <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
+    <value>Resources</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
+    <value>Use the Run Status Bar to run your Dynamo graphs and choose between automatic and manual run types. \n\nSelecting Automatic means your graph will run each time you make a change, and selecting manual means your graph will only run when you select the Run button.</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
+    <value>Run Status Bar</value>
+  </data>
+  <data name="GetStartedGuideToolbarText" xml:space="preserve">
+    <value>From the Toolbar, you can: -Open a new workspace- -Open a saved Dynamo file- -Save your current Dynamo file- -Undo or redo changes-</value>
+  </data>
+  <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
+    <value>Toolbar</value>
+  </data>
+  <data name="GetStartedGuideWelcomeText" xml:space="preserve">
+    <value>Take a short tour to learn some basics about the Dynamo interface and features to help you get started on your visual programming journey.</value>
+  </data>
+  <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
+    <value>Welcome To Dynamo</value>
   </data>
 </root>
