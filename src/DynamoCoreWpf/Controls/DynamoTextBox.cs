@@ -95,10 +95,13 @@ namespace Dynamo.Nodes
             Background = clear;
             BorderThickness = new Thickness(1);
             BorderBrush = new SolidColorBrush(Color.FromArgb(255, 74, 74, 74));
+            Foreground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 238));
+            CaretBrush = new SolidColorBrush(Color.FromArgb(255, 106, 192, 231));
             GotFocus += OnGotFocus;
+            FontSize = 16;
             LostFocus += OnLostFocus;
             LostKeyboardFocus += OnLostFocus;
-            Padding = new Thickness(7, 6, 0, 5);
+            Padding = new Thickness(8, 8, 12, 7);
             base.Text = initialText;
             Pending = false;
             Style = (Style)SharedDictionaryManager.DynamoModernDictionary["SZoomFadeTextBox"];

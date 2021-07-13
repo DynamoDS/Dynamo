@@ -49,9 +49,7 @@ namespace CoreNodeModelsWpf.Nodes
             var tb = new DynamoTextBox(nodeModel.Value ?? "0.0")
             {
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                Background =
-                    new SolidColorBrush(Color.FromArgb(0x88, 0xFF, 0xFF, 0xFF))  
+                VerticalAlignment = VerticalAlignment.Stretch
             };
 
             nodeView.inputGrid.Children.Add(tb);

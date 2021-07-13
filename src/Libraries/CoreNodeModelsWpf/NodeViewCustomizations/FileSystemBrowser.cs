@@ -36,6 +36,9 @@ namespace DSCore.File
             var backgroundBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             tb.Background = backgroundBrush;
             tb.BorderThickness = new Thickness(0);
+            tb.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 238, 238, 238));
+            tb.FontFamily = new System.Windows.Media.FontFamily("Artifakt Element");
+            tb.FontSize = 16;
             tb.IsReadOnly = true;
             tb.IsReadOnlyCaretVisible = false;
             tb.TextChanged += delegate

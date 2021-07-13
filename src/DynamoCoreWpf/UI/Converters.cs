@@ -353,7 +353,6 @@ namespace Dynamo.Controls
             {
                 return value as string;
             }
-
             return ">";
         }
 

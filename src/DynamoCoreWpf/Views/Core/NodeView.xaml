@@ -203,7 +203,9 @@
                     UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
         </Border>
+        
         <Border
+            Name="nodeBackground"
             Grid.Row="1"
             Grid.RowSpan="3"
             Grid.ColumnSpan="3"
@@ -217,7 +219,7 @@
                     Path="State"
                     UpdateSourceTrigger="PropertyChanged" />
             </Border.Background>
-            <Rectangle Name="nodeBackground">
+            <Rectangle Name="NodeBackground">
                 <Rectangle.Style>
                     <Style TargetType="{x:Type Rectangle}">
                         <Style.Triggers>
@@ -232,7 +234,7 @@
         </Border>
 
         <Border
-            Name="NameBackground"
+            Name="nameBackground"
             Grid.Row="1"
             Grid.Column="0"
             Grid.ColumnSpan="3"
@@ -298,7 +300,6 @@
             </Rectangle>
         </Border>
 
-
         <Border
             Name="previewStateNameBlock"
             Grid.Row="1"
@@ -326,7 +327,7 @@
                                 <TextBlock Text="{x:Static p:Resources.NodeTooltipOriginalName}" TextWrapping="Wrap" />
                                 <TextBlock
                                     FontFamily="{StaticResource ArtifaktElementRegular}"
-                                    FontWeight="SemiBold"
+                                    FontWeight="Medium"
                                     Text="{Binding Path=OriginalName}"
                                     TextWrapping="Wrap" />
                             </StackPanel>
@@ -346,6 +347,7 @@
                 </dynui:DynamoToolTip>
             </Border.ToolTip>
         </Border>
+        
         <Border
             Name="previewState"
             Grid.Row="2"
@@ -366,24 +368,24 @@
         </Border>
 
         <StackPanel
+            Name="nodeHeaderContent"
+            Margin="10,6,50,6"
             Grid.Row="1"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Left"
             Panel.ZIndex="12"
             Orientation="Horizontal">
             <Ellipse
-                Grid.Row="1"
                 Width="30"
                 Height="30"
-                Margin="10,6,0,6"
                 Fill="#E6E6E6" />
             <TextBlock
                 Name="NameBlock"
-                Grid.ColumnSpan="3"
-                Margin="10,10,50,8"
                 VerticalAlignment="Center"
+                Margin="10,0,0,0"
                 Background="{x:Null}"
                 FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontWeight="Medium"
                 FontSize="16px"
                 IsHitTestVisible="False"
                 Style="{StaticResource SZoomFadeText}"
@@ -441,7 +443,7 @@
         <!--  INPUT PORTS  -->
         <ItemsControl Name="inputPortControl"
                       Grid.Row="2"
-                      Margin="0,8,14,6"
+                      Margin="0,8,0,12"
                       Grid.Column="0"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
@@ -452,7 +454,7 @@
         <!--  OUTPUT PORTS  -->
         <ItemsControl Name="outputPortControl"
                       Grid.Row="2"
-                      Margin="14,8,0,6"
+                      Margin="0,8,0,12"
                       Grid.Column="2"
                       Canvas.ZIndex="20"
                       HorizontalContentAlignment="Stretch"
@@ -463,6 +465,7 @@
         <Grid Name="centralGrid"
               Grid.Column="1"
               Grid.Row="2"
+              Margin="10,0, 10, 10"
               Canvas.ZIndex="20">
 
             <Grid.RowDefinitions>

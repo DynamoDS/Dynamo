@@ -34,8 +34,6 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-    <ScaleTransform x:Key="FontStretchTall" ScaleY="1.7" />
-    
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <Grid>
             <Grid.ColumnDefinitions>
@@ -43,14 +41,14 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Border
-                x:Name="MainBorder"
+                x:Name="mainBorder"
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Height="35px"
-                Background="{Binding IsConnected, Converter={StaticResource InputIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"
                 BorderBrush="{Binding IsConnected, Converter={StaticResource InputIsConnectedBorderBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
                 UseLayoutRounding="true">
-                <StackPanel Orientation="Horizontal">
+                <!--Background="{Binding IsConnected, Converter={StaticResource InputIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Grid
                         Name="mainGrid"
                         Grid.Column="0"
@@ -60,7 +58,6 @@
                         IsEnabled="{Binding Path=IsEnabled}"
                         IsHitTestVisible="True"
                         ToolTipService.ShowDuration="60000">
-
                         <interactivity:Interaction.Triggers>
                             <!--  Bind Connect command to left click  -->
                             <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
@@ -129,48 +126,60 @@
                                 </MultiBinding>
                             </Rectangle.Margin>
                         </Rectangle>
-                        <Rectangle
-                            Name="highlightOverlay"
-                            MinWidth="19"
-                            Margin="0,0,0,0"
-                            Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
-                            IsHitTestVisible="True">
-                            <interactivity:Interaction.Triggers>
-                                <views:HandlingEventTrigger EventName="MouseEnter">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                                </views:HandlingEventTrigger>
-                                <views:HandlingEventTrigger EventName="MouseLeave">
-                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                                </views:HandlingEventTrigger>
-                            </interactivity:Interaction.Triggers>
-                            <Rectangle.Style>
-                                <Style TargetType="{x:Type Rectangle}">
-                                    <Style.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Opacity" Value="1.0" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Opacity" Value="0.0" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Rectangle.Style>
-                        </Rectangle>     
-                        <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                        <!--<Border Name="highlightOverlay"
+                                Background="Gray"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Stretch"
+                                Height="32px"
+                                BorderBrush="Transparent"
+                                IsHitTestVisible="True">
+                                <interactivity:Interaction.Triggers>
+                                    <views:HandlingEventTrigger EventName="MouseEnter">
+                                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
+                                    </views:HandlingEventTrigger>
+                                    <views:HandlingEventTrigger EventName="MouseLeave">
+                                        <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
+                                    </views:HandlingEventTrigger>
+                                </interactivity:Interaction.Triggers>
+                                <Border.Style>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
+                                                <Setter Property="CornerRadius" Value="0,11,11,0" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
+                                                <Setter Property="CornerRadius" Value="11,0,0,11" />
+                                            </DataTrigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="1.0" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter Property="Opacity" Value="0.0" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                        </Border>-->
+                        <StackPanel
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Margin="13, 0"
+                            Orientation="Horizontal">
                             <TextBlock
                                 Name="portNameTb"
                                 Width="Auto"
-                                Margin="13,0,13,7"
-                                HorizontalAlignment="Stretch"
+                                HorizontalAlignment="Left"
+                                Margin="0,0,0,7"
                                 VerticalAlignment="Center"
                                 FontFamily="{StaticResource ArtifaktElementRegular}"
                                 FontSize="17px"
-                                FontWeight="Regular"
+                                FontWeight="Medium"
                                 Foreground="{StaticResource PrimaryCharcoal100Brush}"
                                 IsHitTestVisible="False"
                                 Style="{StaticResource SZoomFadeText}"
                                 Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
-
                                 <!--<TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
@@ -199,22 +208,21 @@
                             </Grid>
                         </StackPanel>
                     </Grid>
-
                     <Grid
                         Name="useLevelGrid"
                         Grid.Column="1"
                         Height="{Binding Path=Height}"
                         Margin="{Binding Path=MarginThickness}"
-                        HorizontalAlignment="Stretch"
+                        HorizontalAlignment="Right"
                         Background="Transparent"
                         Cursor="Hand"
                         IsHitTestVisible="True"                        
                         Visibility="{Binding Path=UseLevelVisibility}">
                         <Rectangle
                             Name="highlightOverlayForArrow"
-                            MinWidth="10"
-                            Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"
+                            Fill="{StaticResource DarkerGreyBrush}"
                             IsHitTestVisible="True">
+                            <!--Fill="{Binding Path=ShouldKeepListStructure, Converter={StaticResource KeepListStructureHighlightColorConverter}}"-->
                             <interactivity:Interaction.Triggers>
                                 <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
                                     <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
@@ -224,10 +232,7 @@
                                 <Style TargetType="{x:Type Rectangle}">
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Opacity" Value="1.0" />
-                                        </Trigger>
-                                        <Trigger Property="IsMouseOver" Value="False">
-                                            <Setter Property="Opacity" Value="0.0" />
+                                            <Setter Property="Fill" Value="{StaticResource PrimaryCharcoal300Brush}" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -242,15 +247,16 @@
                                 KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                                 Level="{Binding Path=Level, Mode=TwoWay}"
                                 Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-                            <TextBlock Width="15"
+                            <TextBlock
+                                Width="15"
+                                TextAlignment="Center"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Background="{x:Null}"
-                                Margin="5,0,0,7"
                                 Foreground="#D9D9D9"
-                                FontSize="14px"
-                                FontWeight="Regular"
-                                LayoutTransform="{StaticResource FontStretchTall}"
+                                Margin="0,0,10,7"
+                                FontSize="15px"
+                                FontWeight="Medium"
                                 Text=">"
                                 IsHitTestVisible="False" />
                         </StackPanel>
@@ -338,6 +344,9 @@
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
                                 <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource MidGreyBrush}" />
+                            </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>

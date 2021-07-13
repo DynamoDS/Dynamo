@@ -886,11 +886,11 @@
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300}" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
                         </Trigger>
 
                         <Trigger Property="IsEnabled" Value="true">
-                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300}" />
+                            <Setter TargetName="text" Property="Foreground" Value="{StaticResource Blue300Brush}" />
                         </Trigger>
 
                         <DataTrigger Binding="{Binding ElementName=text, Path=Content}" Value="+">

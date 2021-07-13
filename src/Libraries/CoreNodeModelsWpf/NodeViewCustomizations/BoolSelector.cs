@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
+using Color = System.Windows.Media.Color;
+using FontStyle = System.Windows.FontStyle;
 
 namespace CoreNodeModelsWpf.Nodes
 {
@@ -25,7 +29,16 @@ namespace CoreNodeModelsWpf.Nodes
 
             //add a text box to the input grid of the control
             var rbTrue = new RadioButton();
+            rbTrue.Foreground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 238));
+            rbTrue.FontFamily = new System.Windows.Media.FontFamily("Artifakt Element");
+            rbTrue.FontSize = 16;
+
             var rbFalse = new RadioButton();
+            rbFalse.Foreground = new SolidColorBrush(Color.FromArgb(255, 238, 238, 238));
+            rbFalse.FontFamily = new System.Windows.Media.FontFamily("Artifakt Element");
+            rbFalse.FontSize = 16;
+
+
             rbTrue.VerticalAlignment = VerticalAlignment.Center;
             rbFalse.VerticalAlignment = VerticalAlignment.Center;
 
