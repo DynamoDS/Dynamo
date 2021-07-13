@@ -20,13 +20,30 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                 <ResourceDictionary>
                     <controls:NullToVisibiltyConverter x:Key="nullToVisibiltyConverter"  />
+                    <controls:NullToPinWidthConverter x:Key="nullToPinWidthConverter"  />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
+    <UserControl.Style>
+        <Style TargetType="UserControl" BasedOn="{StaticResource NoteUserControlStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
+                    <Setter Property="Background" Value="LightBlue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
+                    <Setter Property="Background" Value="#EEE"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     
     <Grid Name="BaseGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="{Binding Path=PinnedNode, Converter={StaticResource nullToPinWidthConverter }, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>               
                 <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
@@ -48,7 +65,7 @@
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
         </Canvas>
-        
+
         <TextBox
             Name ="noteTextBox"
             Grid.Column="0" Grid.Row="0"
@@ -76,7 +93,7 @@
         <TextBlock 
             Name="noteText"
             Grid.Column="0" Grid.Row="0"
-            Text="{Binding Path=Text, Mode=OneWay}" 
+            Text="{Binding Path=Text, Mode=OneWay}"   
             >
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource NoteTextBlockStyle}">
@@ -93,6 +110,7 @@
         </TextBlock>
         <Button
             Name="pinButton"
+            Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
             Background="{x:Null}"
             BorderThickness="0"
             HorizontalAlignment="Right" 

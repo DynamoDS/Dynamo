@@ -16,8 +16,8 @@ namespace Dynamo.ViewModels
 {
     public partial class NoteViewModel: ViewModelBase
     {
-        private int DISTANCE_TO_PINNED_NODE = 12;
-        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 32;
+        private int DISTANCE_TO_PINNED_NODE = 22;
+        private int DISTANCE_TO_PINNED_NODE_WITH_WARNING = 42;
 
         #region Events
 
