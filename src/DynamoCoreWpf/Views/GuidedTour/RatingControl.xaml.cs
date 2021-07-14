@@ -14,7 +14,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("RatingControl", typeof(int), typeof(RatingControl),
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(int), typeof(RatingControl),
           new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(RatingChanged)));
 
         private int _max = 5;
