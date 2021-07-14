@@ -92,6 +92,19 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Host analytics related info
+    /// </summary>
+    public struct HostAnalyticsInfo
+    {
+        /// Dynamo variation identified by host.
+        public string HostName;
+        /// Dynamo host parent id for analytics purpose.
+        public string ParentId { get; set; }
+        /// Dynamo host session id for analytics purpose.
+        public string SessionId;
+    }
+
+    /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
@@ -182,6 +195,11 @@ namespace Dynamo.Models
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
         public string HostName { get; set; }
+
+        /// <summary>
+        /// Host analytics info
+        /// </summary>
+        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
@@ -431,6 +449,10 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
+            /// <summary>
+            /// Host analytics info
+            /// </summary>
+            HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -460,6 +482,11 @@ namespace Dynamo.Models
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
             public bool DisableADP { get; set; }
+
+            /// <summary>
+            /// Host analytics info
+            /// </summary>
+            public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -547,6 +574,8 @@ namespace Dynamo.Models
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
+
+            HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 

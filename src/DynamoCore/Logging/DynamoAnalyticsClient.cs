@@ -180,7 +180,7 @@ namespace Dynamo.Logging
             
             var hostName = string.IsNullOrEmpty(dynamoModel.HostName) ? "Dynamo" : dynamoModel.HostName;
 
-            hostInfo = new HostContextInfo() { ParentId = dynamoModel.UpdateManager.ParentId, SessionId = dynamoModel.UpdateManager.SessionId };
+            hostInfo = new HostContextInfo() { ParentId = dynamoModel.HostAnalyticsInfo.ParentId, SessionId = dynamoModel.HostAnalyticsInfo.SessionId };
 
             string buildId = String.Empty, releaseId = String.Empty;
             if (Version.TryParse(dynamoModel.Version, out Version version))

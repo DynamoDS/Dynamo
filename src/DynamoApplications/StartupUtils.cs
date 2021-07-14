@@ -25,16 +25,6 @@ namespace Dynamo.Applications
         /// Raised when loading of the ASM binaries fails. A failure message is passed as a parameter.
         /// </summary>
         public static event Action<string> ASMPreloadFailure;
-
-        public struct AnalyticsInfo
-        {
-            /// Dynamo variation identified by host.
-            public string HostName;
-            /// Dynamo host parent id for analytics purpose.
-            public string ParentId;
-            /// Dynamo host session id for analytics purpose.
-            public string SessionId;
-        }
         
         internal class SandboxLookUp : DynamoLookUp
         {
@@ -162,8 +152,7 @@ namespace Dynamo.Applications
                     ImportedPaths = importPaths,
                     ASMPath = asmPath,
                     KeepAlive = keepAlive,
-                    HostName = hostname,
-                    AnalyticsInfo = new AnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
+                    AnalyticsInfo = new HostAnalyticsInfo() { HostName = hostname,  ParentId = parentId, SessionId = sessionId }
                 };
             }
 
@@ -184,7 +173,7 @@ namespace Dynamo.Applications
             public bool KeepAlive { get; set; }
             [Obsolete("This property will be removed in Dynamo 3.0 - please use AnalyticsInfo")]
             public string HostName { get; set; }
-            public AnalyticsInfo AnalyticsInfo {get;set;} 
+            public HostAnalyticsInfo AnalyticsInfo { get; set; } 
         }
 
         /// <summary>
@@ -216,14 +205,12 @@ namespace Dynamo.Applications
         /// </summary>
         /// <param name="info">Dynamo host analytics info.</param>
         /// <returns></returns>
-        private static IUpdateManager InitializeUpdateManager(AnalyticsInfo info)
+        private static IUpdateManager InitializeUpdateManager(HostAnalyticsInfo info)
         {
             var cfg = UpdateManagerConfiguration.GetSettings(new SandboxLookUp());
             var um = new Dynamo.Updates.UpdateManager(cfg)
             {
-                HostName = info.HostName,
-                ParentId = info.ParentId,
-                SessionId = info.SessionId
+                HostName = info.HostName
             };
             Debug.Assert(cfg.DynamoLookUp != null);
             return um;
@@ -239,7 +226,7 @@ namespace Dynamo.Applications
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
             PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new AnalyticsInfo() { HostName = hostName });
+            return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, new HostAnalyticsInfo() { HostName = hostName });
         }
 
         /// <summary>
@@ -249,7 +236,7 @@ namespace Dynamo.Applications
         /// <param name="asmPath">Path to directory containing geometry library binaries</param>
         /// <param name="info">Host analytics info</param>
         /// <returns></returns>
-        public static DynamoModel MakeModel(bool CLImode, string asmPath = "", AnalyticsInfo info = new AnalyticsInfo())
+        public static DynamoModel MakeModel(bool CLImode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
             return StartDynamoWithDefaultConfig(CLImode, geometryFactoryPath, preloaderLocation, info);
@@ -322,12 +309,13 @@ namespace Dynamo.Applications
             }
         }
 
-        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, AnalyticsInfo info = new AnalyticsInfo())
+        private static DynamoModel StartDynamoWithDefaultConfig(bool CLImode, string geometryFactoryPath, string preloaderLocation, HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
             var config = new DynamoModel.DefaultStartConfiguration()
             {
                 GeometryFactoryPath = geometryFactoryPath,
-                ProcessMode = TaskProcessMode.Asynchronous
+                ProcessMode = TaskProcessMode.Asynchronous,
+                HostAnalyticsInfo = info
             };
 
             config.UpdateManager = CLImode ? null : InitializeUpdateManager(info);
