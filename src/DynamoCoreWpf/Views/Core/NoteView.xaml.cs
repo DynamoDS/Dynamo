@@ -88,9 +88,21 @@ namespace Dynamo.Nodes
 
         void OnNoteTextPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.SelectNoteAndPinnedNode();
+            System.Guid noteGuid = this.ViewModel.Model.GUID;
+            if (this.ViewModel.Model.PinnedNode == null)
+            {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
+            }
+            else
+            {
+                var nodeGuid = this.ViewModel.Model.PinnedNode.GUID;
+                var selectionGuids = new List<Guid> { noteGuid, nodeGuid };
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(selectionGuids, Keyboard.Modifiers.AsDynamoType()));
+            }
             BringToFront();
-           
+
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)

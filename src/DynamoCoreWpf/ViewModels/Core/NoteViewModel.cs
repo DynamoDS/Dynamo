@@ -376,23 +376,6 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.AddUnique(Model);
         }
 
-        internal void SelectNoteAndPinnedNode()
-        {
-            System.Guid noteGuid = Model.GUID;
-            if (Model.PinnedNode == null)
-            {
-                WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
-            }
-            else
-            {
-                var nodeGuid = Model.PinnedNode.GUID;
-                var selectionGuids = new List<Guid> { noteGuid, nodeGuid };
-                WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                    new DynCmd.SelectModelCommand(selectionGuids, Keyboard.Modifiers.AsDynamoType()));
-            }
-        }
-
         private void MoveNoteAbovePinnedNode()
         {
             var distanceToNode = DISTANCE_TO_PINNED_NODE;
