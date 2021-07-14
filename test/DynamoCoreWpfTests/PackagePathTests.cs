@@ -239,7 +239,6 @@ namespace DynamoCoreWpfTests
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
@@ -285,7 +284,6 @@ namespace DynamoCoreWpfTests
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);

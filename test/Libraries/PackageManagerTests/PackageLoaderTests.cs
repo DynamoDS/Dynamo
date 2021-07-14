@@ -158,7 +158,6 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = CurrentDynamoModel.PreferenceSettings,
-                PathManager = CurrentDynamoModel.PathManager
             });
 
             // There are 18 packages in "Dynamo\test\pkgs"
@@ -194,7 +193,6 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = CurrentDynamoModel.PreferenceSettings,
-                PathManager = CurrentDynamoModel.PathManager
             });
 
             // There are 18 packages in "Dynamo\test\pkgs"
@@ -235,7 +233,6 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = CurrentDynamoModel.PreferenceSettings,
-                PathManager = CurrentDynamoModel.PathManager
             });
 
             var packageInfo = new PackageInfo("EvenOdd", new System.Version(1,0,0));
@@ -295,7 +292,6 @@ namespace Dynamo.PackageManager.Tests
             loader.LoadAll(new LoadPackageParams
             {
                 Preferences = CurrentDynamoModel.PreferenceSettings,
-                PathManager = CurrentDynamoModel.PathManager
             });
 
             // There are 18 packages in "Dynamo\test\pkgs"
@@ -472,7 +468,7 @@ namespace Dynamo.PackageManager.Tests
             var loader = new PackageLoader(pathManager.Object);
             loader.LoadAll(new LoadPackageParams
             {
-                Preferences = this.CurrentDynamoModel.PreferenceSettings
+                Preferences = CurrentDynamoModel.PreferenceSettings
             });
 
             Assert.AreEqual(0, loader.LocalPackages.Count());
@@ -705,7 +701,6 @@ namespace Dynamo.PackageManager.Tests
 
             var loaderParams = new LoadPackageParams()
             {
-                PathManager = CurrentDynamoModel.PathManager,
                 Preferences = settings
             };
             //invoke the load
@@ -728,8 +723,9 @@ namespace Dynamo.PackageManager.Tests
             settings.DisableBuiltinPackages = true;
 
             var loaderParams = new LoadPackageParams()
-            { PathManager = CurrentDynamoModel.PathManager,
-                Preferences = settings };
+            { 
+                Preferences = settings 
+            };
             //then invoke load
 
             loader.LoadAll(loaderParams);
@@ -756,7 +752,6 @@ namespace Dynamo.PackageManager.Tests
             settings.CustomPackageFolders = new List<string>() { BuiltInPackagesTestDir };
             var loaderParams = new LoadPackageParams()
             {
-                PathManager = CurrentDynamoModel.PathManager,
                 Preferences = settings
             };
             //invoke the load
@@ -779,7 +774,6 @@ namespace Dynamo.PackageManager.Tests
             settings.CustomPackageFolders = new List<string>() { BuiltInPackagesTestDir };
             var loaderParams = new LoadPackageParams()
             {
-                PathManager = CurrentDynamoModel.PathManager,
                 Preferences = settings
             };
             //invoke the load

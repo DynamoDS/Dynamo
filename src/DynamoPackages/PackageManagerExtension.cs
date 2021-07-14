@@ -211,7 +211,7 @@ namespace Dynamo.PackageManager
             PackageLoader.LoadAll(new LoadPackageParams
             {
                 Preferences = preferences,
-                PathManager = pathManager
+                //PathManager = pathManager
             });
         }
 

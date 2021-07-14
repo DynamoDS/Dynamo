@@ -19,14 +19,14 @@ namespace Dynamo.PackageManager
     public struct LoadPackageParams
     {
         public IPreferences Preferences { get; set; }
+
+        [Obsolete("This will be removed in Dynamo 3.0")]
         public IPathManager PathManager { get; set; }
         /// <summary>
         /// List of new package paths that have been added to the 
         /// Preferences->Package manager dialog in node and package paths.
         /// </summary>
         internal IEnumerable<string> NewPaths { get; set; }
-
-        internal IEnumerable<string> DeletedPaths { get; set; }
     }
 
     public enum AssemblyLoadingState
@@ -344,7 +344,6 @@ namespace Dynamo.PackageManager
         {
             ScanAllPackageDirectories(loadPackageParams.Preferences);
 
-            var pathManager = loadPackageParams.PathManager;
             if (pathManager != null)
             {
                 foreach (var pkg in LocalPackages)
