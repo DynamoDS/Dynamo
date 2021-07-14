@@ -194,6 +194,7 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
+        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
         public string HostName { get; set; }
 
         /// <summary>
@@ -449,10 +450,6 @@ namespace Dynamo.Models
             /// No update checks or analytics collection should be done.
             /// </summary>
             bool IsHeadless { get; set; }
-            /// <summary>
-            /// Host analytics info
-            /// </summary>
-            HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -485,6 +482,7 @@ namespace Dynamo.Models
 
             /// <summary>
             /// Host analytics info
+            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
             /// </summary>
             public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
@@ -575,7 +573,10 @@ namespace Dynamo.Models
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             }
 
-            HostAnalyticsInfo = config.HostAnalyticsInfo;
+            if (config is DefaultStartConfiguration defaultStartConfiguration)
+            {
+                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
+            }
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
 
