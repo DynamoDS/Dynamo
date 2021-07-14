@@ -35,29 +35,75 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
-        <!--  Grid that contains the entire port  -->
-        <Grid Name="mainGrid" HorizontalAlignment="Stretch">
-            <!--
-                The main border shows rounded edges and changes color according to multiple conditions
-                This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
-                can live in the lowest level of Z-Order
-            -->
+        <Grid ShowGridLines="True" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <Border
                 x:Name="mainBorder"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
                 Height="35px"
-                Background="{Binding PortBackgroundColor, UpdateSourceTrigger=PropertyChanged}"
-                BorderBrush="{Binding PortBorderBrushColor, UpdateSourceTrigger=PropertyChanged}"
+                BorderBrush="{Binding IsConnected, Converter={StaticResource PortIsConnectedBorderBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                Background="{Binding IsConnected, Converter={StaticResource PortIsConnectedBackgroundConverter}, UpdateSourceTrigger=PropertyChanged}"
                 UseLayoutRounding="true">
-                <!--  DockPanel that positions the visible port name and the UseLevelArrow  -->
-                <DockPanel x:Name="mainDockPanel" FlowDirection="LeftToRight">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <Grid
-                        Name="portNameGrid"
+                        Name="mainGrid"
+                        Grid.Column="0"
                         Height="{Binding Path=Height}"
                         Margin="{Binding Path=MarginThickness}"
-                        DockPanel.Dock="Left"
+                        Background="Transparent"
                         IsEnabled="{Binding Path=IsEnabled}"
                         IsHitTestVisible="True"
                         ToolTipService.ShowDuration="60000">
+                        <interactivity:Interaction.Triggers>
+                            <!--  Bind Connect command to left click  -->
+                            <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                                <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
+                            </views:HandlingEventTrigger>
+                        </interactivity:Interaction.Triggers>
+
+                        <Grid.ContextMenu>
+                            <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <MenuItem
+                                    Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
+                                    IsCheckable="True"
+                                    IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
+                                    IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}" />
+                            </ContextMenu>
+                        </Grid.ContextMenu>
+
+                        <Grid.ToolTip>
+                            <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                                <Grid>
+                                    <TextBlock
+                                        MaxWidth="320"
+                                        Text="{Binding Path=ToolTipContent}"
+                                        TextWrapping="Wrap" />
+                                </Grid>
+                            </dynui:DynamoToolTip>
+                        </Grid.ToolTip>
+
+                        <!--  Bind NodeAutoComplete to double left click  -->
+                        <Grid.InputBindings>
+                            <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
+                        </Grid.InputBindings>
+
+                        <!--
+                            We could have changed the Grid opacity directly here but didn't
+                            The reason is that if the opacity of the Grid is modified, the
+                            internal text box will also appear semi-transparent. This is why an
+                            intermediary Border is required just for mouse-over highlighting.
+                        -->
+
+                        <!--
+                            Port is contained in another rectangle to ensure that hit area is extended outside the grid.
+                            Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
+                            the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case
+                            as no mouse events are generated.This happens only for codeblock node.
+                        -->
                         <Rectangle
                             Fill="Transparent"
                             IsHitTestVisible="{Binding IsHitTestVisible}"
@@ -82,8 +128,8 @@
                         </Rectangle>
                         <TextBlock
                             Name="portNameTb"
-                            Width="Auto"
                             Margin="13,0,13,7"
+                            Width="Auto"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -92,34 +138,145 @@
                             Foreground="White"
                             IsHitTestVisible="False"
                             Style="{StaticResource SZoomFadeText}"
-                            Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}" />
+                            Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}">
+                        </TextBlock>
                     </Grid>
                     <Grid
-                        Width="50"
-                        DockPanel.Dock="Left"
-                        Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-                    <Grid
-                        Name="useLevelArrowGrid"
-                        Margin="10,0,10,0"
-                        HorizontalAlignment="Right"
+                        Name="useLevelGrid"
+                        Grid.Column="1"
+                        ShowGridLines="True"
+                        Height="{Binding Path=Height}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        IsHitTestVisible="True"                        
                         Visibility="{Binding Path=UseLevelVisibility}">
-                        <Label
-                            x:Name="useLevelArrow"
-                            Height="{Binding Path=Height}"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Center"
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dynui:UseLevelSpinner
+                            x:Name="useLevelSpinner"
+                            Grid.Column="0"
+                            Width="50"
+                            Height="20"
                             VerticalAlignment="Center"
-                            HorizontalContentAlignment="Center"
+                            Margin="0,1,10,0"
+                            KeepListStructure="{Binding Path=ShouldKeepListStructure}"
+                            Level="{Binding Path=Level, Mode=TwoWay}"
+                            Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
+                        <Rectangle
+                            Grid.Column="1"
+                            Name="highlightOverlayForArrow"
+                            HorizontalAlignment="Stretch"
+                            IsHitTestVisible="True">
+                            <interactivity:Interaction.Triggers>
+                                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                                    <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
+                                </views:HandlingEventTrigger>
+                            </interactivity:Interaction.Triggers>
+                            <Rectangle.Style>
+                                <Style TargetType="{x:Type Rectangle}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Fill" Value="White" />
+                                            <Setter Property="Opacity" Value="0.3" />
+                                        </Trigger>
+                                        <Trigger Property="IsMouseOver" Value="False">
+                                            <Setter Property="Fill" Value="Transparent" />
+                                            <Setter Property="Opacity" Value="1.0" />
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                        <Label
+                            Grid.Column="1"
+                            Height="{Binding Path=Height}"
+                            HorizontalContentAlignment="Left"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
                             VerticalContentAlignment="Center"
-                            Content="&gt;"
+                            Background="Black"
+                            Foreground="#D9D9D9"
+                            Margin="5,0"
+                            Padding="0"
                             FontSize="16px"
                             FontWeight="Medium"
-                            Foreground="#D9D9D9"
+                            Content=">"
                             IsHitTestVisible="False" />
+                        <dynui:UseLevelPopup
+                            x:Name="UseLevelPopup"
+                            AllowsTransparency="True"
+                            IsOpen="{Binding Path=ShowUseLevelMenu}"
+                            Placement="Right"
+                            StaysOpen="False">
+                            <Grid Background="Transparent">
+                                <Grid.Resources>
+                                    <ResourceDictionary>
+                                        <Style TargetType="CheckBox">
+                                            <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
+                                            <Setter Property="Foreground" Value="#5E5C5A" />
+                                            <Setter Property="FontSize" Value="12" />
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="false">
+                                                    <Setter Property="Foreground" Value="#999999" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ResourceDictionary>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="10" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Path
+                                    Grid.Column="0"
+                                    Margin="1,0,0,0"
+                                    Data="M 0,10 L 12,5 12,15 Z"
+                                    Fill="#E5E2DE"
+                                    Stroke="#5E5C5A" />
+                                <Border
+                                    Grid.Column="1"
+                                    Padding="2"
+                                    Background="#E5E2DE"
+                                    BorderBrush="#5E5C5A"
+                                    BorderThickness="1"
+                                    CornerRadius="2">
+                                    <StackPanel>
+                                        <CheckBox
+                                            Name="UseLevel"
+                                            Margin="5,5,5,0"
+                                            Command="{Binding Path=UseLevelsCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
+                                            IsChecked="{Binding Path=UseLevels, Mode=OneWay}" />
+                                        <Separator Margin="5,5,5,0" />
+                                        <CheckBox
+                                            Margin="5,5,5,0"
+                                            Command="{Binding Path=KeepListStructureCommand}"
+                                            CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
+                                            Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
+                                            IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
+                                            IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
+                                        <TextBlock
+                                            Margin="5,0,5,5"
+                                            Padding="20,0,0,0"
+                                            Focusable="False"
+                                            FontFamily="{StaticResource OpenSansRegular}"
+                                            FontSize="9"
+                                            Foreground="{StaticResource PrimaryCharcoal100Brush}"
+                                            Text="{x:Static p:Resources.UseLevelKeepListStructureHint}" />
+                                    </StackPanel>
+                                </Border>
+                                <Path
+                                    Grid.Column="1"
+                                    Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
+                                    Fill="#E5E2DE"
+                                    Stroke="#E5E2DE" />
+                            </Grid>
+                        </dynui:UseLevelPopup>
                     </Grid>
-                </DockPanel>
-                <!--  Inputs and outputs have different corner radius and border conditions  -->
+                </StackPanel>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
@@ -131,225 +288,16 @@
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
                                 <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-            </Border>
-            <!--
-                Interactive overlay for the port, highlights the port on MouseOver and
-                contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
-                live higher up in the Z-Order than the non-interactive elements in the mainBorder for MouseOver and
-                MouseClick events to fire.
-            -->
-            <Border
-                x:Name="mainBorderHighlightOverlay"
-                Height="31px"
-                BorderThickness="0"
-                Opacity="0.2"
-                UseLayoutRounding="true">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Input}">
-                                <Setter Property="CornerRadius" Value="0,11,11,0" />
-                            </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=PortType}" Value="{x:Static nodes:PortType.Output}">
-                                <Setter Property="CornerRadius" Value="11,0,0,11" />
-                            </DataTrigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="White" />
+                            <Trigger Property="IsMouseDirectlyOver" Value="True">
+                                <Setter Property="Opacity" Value="1.0" />
                             </Trigger>
-                            <Trigger Property="IsMouseOver" Value="False">
-                                <Setter Property="Background" Value="Transparent" />
+                            <Trigger Property="IsMouseDirectlyOver" Value="False">
+                                <Setter Property="Opacity" Value="0.8" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <interactivity:Interaction.Triggers>
-                    <!--  Bind Connect command to left click  -->
-                    <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
-                    </views:HandlingEventTrigger>
-                </interactivity:Interaction.Triggers>
-
-                <Border.ContextMenu>
-                    <ContextMenu Visibility="{Binding Path=DefaultValueEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <MenuItem
-                            Header="{x:Static p:Resources.PortViewContextMenuUserDefaultValue}"
-                            IsCheckable="True"
-                            IsChecked="{Binding Path=UsingDefaultValue, Mode=TwoWay}"
-                            IsEnabled="{Binding Path=DefaultValueEnabled, Mode=OneWay}" />
-                    </ContextMenu>
-                </Border.ContextMenu>
-
-                <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="{Binding Path=PortType, Converter={StaticResource PortToAttachmentConverter}}" Style="{DynamicResource ResourceKey=SLightToolTip}">
-                        <Grid>
-                            <TextBlock
-                                MaxWidth="320"
-                                Text="{Binding Path=ToolTipContent}"
-                                TextWrapping="Wrap" />
-                        </Grid>
-                    </dynui:DynamoToolTip>
-                </Border.ToolTip>
-
-                <!--  Bind NodeAutoComplete to double left click  -->
-                <Border.InputBindings>
-                    <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-                </Border.InputBindings>
-
-                <!--
-                    We could have changed the Grid opacity directly here but didn't
-                    The reason is that if the opacity of the Grid is modified, the
-                    internal text box will also appear semi-transparent. This is why an
-                    intermediary Border is required just for mouse-over highlighting.
-                -->
-
-                <!--
-                    Port is contained in another rectangle to ensure that hit area is extended outside the grid.
-                    Minimum Width is specified on the rectangle, rather than the grid. Otherwise, if the port's width is less than
-                    the grid's width, the outside rectangle is shrinked to fit the grid. Port snapping cannot occur in that case
-                    as no mouse events are generated.This happens only for codeblock node.
-                -->
             </Border>
-            <!--
-                Contains the interactive elements which need to have the highest-level of Z-Order so that they
-                may be interacted with *above* the mainBorderHighlightOverlay layer.
-                This is the UseLevelsSpinner and UseLevelsControl.
-            -->
-            <DockPanel
-                Name="interactionControlsDockPanel"
-                Height="35px"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Center"
-                FlowDirection="LeftToRight"
-                IsHitTestVisible="True"
-                Visibility="{Binding Path=UseLevelVisibility}">
-                <Rectangle
-                    x:Name="useLevelArrowHighlightOverlay"
-                    Width="15"
-                    Height="31px"
-                    HorizontalAlignment="Right"
-                    Margin="10,0,10,0"
-                    DockPanel.Dock="Right"
-                    IsHitTestVisible="True"
-                    Visibility="{Binding Path=UseLevelVisibility}">
-                    <interactivity:Interaction.Triggers>
-                        <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
-                            <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeftButtonDownOnLevelCommand}" CommandParameter="{Binding}" />
-                        </views:HandlingEventTrigger>
-                    </interactivity:Interaction.Triggers>
-                    <Rectangle.Style>
-                        <Style TargetType="{x:Type Rectangle}">
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Fill" Value="White" />
-                                    <Setter Property="Opacity" Value="0.3" />
-                                </Trigger>
-                                <Trigger Property="IsMouseOver" Value="False">
-                                    <Setter Property="Fill" Value="White" />
-                                    <Setter Property="Opacity" Value="0.0" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Rectangle.Style>
-                </Rectangle>
-                <TextBlock
-                    Name="fakePortNameTb"
-                    Width="Auto"
-                    Margin="13,0,13,7"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    DockPanel.Dock="Left"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="17px"
-                    FontWeight="Medium"
-                    Foreground="Transparent"
-                    IsHitTestVisible="False"
-                    Opacity="0.4"
-                    Style="{StaticResource SZoomFadeText}"
-                    Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}" />
-                <dynui:UseLevelSpinner
-                    x:Name="useLevelControl"
-                    Width="50"
-                    Height="20"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    KeepListStructure="{Binding Path=ShouldKeepListStructure}"
-                    Level="{Binding Path=Level, Mode=TwoWay}"
-                    Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />
-                <dynui:UseLevelPopup
-                    x:Name="UseLevelPopup"
-                    AllowsTransparency="True"
-                    IsOpen="{Binding Path=ShowUseLevelMenu}"
-                    Placement="Right"
-                    StaysOpen="False">
-                    <Grid Background="Transparent">
-                        <Grid.Resources>
-                            <ResourceDictionary>
-                                <Style TargetType="CheckBox">
-                                    <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
-                                    <Setter Property="Foreground" Value="#5E5C5A" />
-                                    <Setter Property="FontSize" Value="12" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="#999999" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ResourceDictionary>
-                        </Grid.Resources>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Path
-                            Grid.Column="0"
-                            Margin="1,0,0,0"
-                            Data="M 0,10 L 12,5 12,15 Z"
-                            Fill="#E5E2DE"
-                            Stroke="#5E5C5A" />
-                        <Border
-                            Grid.Column="1"
-                            Padding="2"
-                            Background="#E5E2DE"
-                            BorderBrush="#5E5C5A"
-                            BorderThickness="1"
-                            CornerRadius="2">
-                            <StackPanel>
-                                <CheckBox
-                                    Name="UseLevel"
-                                    Margin="5,5,5,0"
-                                    Command="{Binding Path=UseLevelsCommand}"
-                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                    Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
-                                    IsChecked="{Binding Path=UseLevels, Mode=OneWay}" />
-                                <Separator Margin="5,5,5,0" />
-                                <CheckBox
-                                    Margin="5,5,5,0"
-                                    Command="{Binding Path=KeepListStructureCommand}"
-                                    CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
-                                    Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
-                                    IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
-                                    IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
-                                <TextBlock
-                                    Margin="5,0,5,5"
-                                    Padding="20,0,0,0"
-                                    Focusable="False"
-                                    FontFamily="{StaticResource OpenSansRegular}"
-                                    FontSize="9"
-                                    Foreground="{StaticResource PrimaryCharcoal100Brush}"
-                                    Text="{x:Static p:Resources.UseLevelKeepListStructureHint}" />
-                            </StackPanel>
-                        </Border>
-                        <Path
-                            Grid.Column="1"
-                            Data="M 0,7.5 L 1,7.5 L 1,12.5 L0,12.5 Z"
-                            Fill="#E5E2DE"
-                            Stroke="#E5E2DE" />
-                    </Grid>
-                </dynui:UseLevelPopup>
-            </DockPanel>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

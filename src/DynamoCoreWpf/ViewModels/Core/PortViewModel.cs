@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
 using Dynamo.UI.Commands;
@@ -20,8 +19,6 @@ namespace Dynamo.ViewModels
         private DelegateCommand _useLevelsCommand;
         private DelegateCommand _keepListStructureCommand;
         private const double autocompletePopupSpacing = 2.5;
-        private SolidColorBrush portBorderBrushColor = new SolidColorBrush(Color.FromArgb(255,204, 204, 204));
-        private SolidColorBrush portBackgroundColor = new SolidColorBrush(Color.FromArgb(0,60, 60, 60));
 
         /// <summary>
         /// Port model.
@@ -155,8 +152,7 @@ namespace Dynamo.ViewModels
         public PortEventType EventType { get; set; }
 
         private bool _showUseLevelMenu;
-        
-        
+
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
@@ -216,33 +212,6 @@ namespace Dynamo.ViewModels
                 {
                     return Visibility.Collapsed;
                 }
-            }
-        }
-
-        /// <summary>
-        /// Sets the color of the port's border brush
-        /// </summary>
-        public SolidColorBrush PortBorderBrushColor
-        {
-            get => portBorderBrushColor;
-            set
-            {
-                portBorderBrushColor = value;
-                RaisePropertyChanged(nameof(PortBorderBrushColor));
-            }
-        }
-
-        /// <summary>
-        /// Sets the color of the port's background - affected by multiple factors such as
-        /// MouseOver, IsConnected, Node States (active, inactie, frozen 
-        /// </summary>
-        public SolidColorBrush PortBackgroundColor
-        {
-            get => portBackgroundColor;
-            set
-            {
-                portBackgroundColor = value;
-                RaisePropertyChanged(nameof(PortBackgroundColor));
             }
         }
 
@@ -376,7 +345,6 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("ShouldKeepListStructure");
                     break;
             }
-            RefreshPortColors();
         }
 
         /// <summary>
@@ -507,46 +475,6 @@ namespace Dynamo.ViewModels
         private void OnMouseLeftUseLevel(object parameter)
         {
             ShowUseLevelMenu = false;
-        }
-
-        /// <summary>
-        /// Handles the logic for updating the PortBackgroundColor and PortBackgroundBrushColor
-        /// </summary>
-        private void RefreshPortColors()
-        {
-            switch (_node.State)
-            {
-                case ElementState.Dead:
-                    break;
-                case ElementState.Active:
-                    break;
-                case ElementState.Warning:
-                    break;
-                case ElementState.PersistentWarning:
-                    break;
-                case ElementState.Error:
-                    break;
-                case ElementState.AstBuildBroken:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (_port.UseLevels)
-            {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 102, 201));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 70, 101));
-            }
-            else if (_port.IsConnected)
-            {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231)); 
-            }
-            else
-            {
-                PortBackgroundColor = new SolidColorBrush(Colors.Transparent); 
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
-            }
         }
     }
 }
