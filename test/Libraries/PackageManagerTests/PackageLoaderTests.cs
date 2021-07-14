@@ -514,7 +514,10 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void GetOwnerPackageReturnsNullForInvalidFunction()
         {
-            var loader = new PackageLoader(PackagesDirectory);
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
 
             CustomNodeInfo info;
             Assert.IsTrue(
@@ -605,7 +608,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillNotLoadPackageWithoutValidCertificate()
         {
-            var loader = new PackageLoader(new [] {PackagesDirectory}, new [] {PackagesDirectorySigned});
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => PackagesDirectorySigned );
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -621,7 +628,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillNotLoadPackageWithAlteredCertificate()
         {
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => PackagesDirectorySigned);
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -636,7 +647,11 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void ScanPackageDirectoryWithCheckingCertificatesEnabledWillLoadPackageWithValidCertificate()
         {
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] { PackagesDirectorySigned });
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => PackagesDirectorySigned);
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;
@@ -935,7 +950,11 @@ namespace Dynamo.PackageManager.Tests
             Thread.CurrentThread.CurrentCulture = esculture;
             Thread.CurrentThread.CurrentUICulture = esculture;
 
-            var loader = new PackageLoader(new[] { PackagesDirectory }, new[] {string.Empty});
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(() => new[] { PackagesDirectory });
+            pathManager.SetupGet(x => x.CommonDataDirectory).Returns(() => string.Empty);
+
+            var loader = new PackageLoader(pathManager.Object);
             var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
 
             loader.PackagesLoaded += libraryLoader.LoadPackages;

@@ -132,16 +132,6 @@ namespace Dynamo.PackageManager
         {
         }
 
-        /// <summary>
-        /// This constructor is only intended for testing of builtinPackages using a non standard directory.
-        /// </summary>
-        /// <param name="packagesDirectories"></param>
-        /// <param name="builtinPackageDirectory"></param>
-        internal PackageLoader(IEnumerable<string> packagesDirectories, string builtinPackageDirectory)
-        {
-            InitPackageLoader(packagesDirectories, builtinPackageDirectory);
-        }
-
         [Obsolete("This constructor will be removed in Dynamo 3.0 and should not be used any longer. If used, it should be passed parameters from PathManager properties.")]
         /// <summary>
         /// This constructor is currently being used by other constructors that have also been deprecated and by tests,
