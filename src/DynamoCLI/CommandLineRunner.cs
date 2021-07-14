@@ -50,14 +50,14 @@ namespace DynamoCLI
                 model.HostName = cmdLineArgs.HostName;
             }
 
-            if(!string.IsNullOrEmpty(cmdLineArgs.ParentId))
+            if(!string.IsNullOrEmpty(cmdLineArgs.AnalyticsInfo.ParentId))
             {
-                model.UpdateManager.ParentId = cmdLineArgs.ParentId;
+                model.UpdateManager.ParentId = cmdLineArgs.AnalyticsInfo.ParentId;
             }
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.SessionId))
+            if (!string.IsNullOrEmpty(cmdLineArgs.AnalyticsInfo.SessionId))
             {
-                model.UpdateManager.SessionId = cmdLineArgs.SessionId;
+                model.UpdateManager.SessionId = cmdLineArgs.AnalyticsInfo.SessionId;
             }
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>

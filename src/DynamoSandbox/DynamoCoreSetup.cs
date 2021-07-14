@@ -24,8 +24,7 @@ namespace DynamoSandbox
         private readonly Stopwatch startupTimer = Stopwatch.StartNew();
         private readonly string ASMPath;
         private readonly string hostName;
-        private readonly string parentId;
-        private readonly string sesssionId;
+        private readonly StartupUtils.AnalyticsInfo analyticsInfo;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
 
         [DllImport("msvcrt.dll")]
@@ -39,8 +38,7 @@ namespace DynamoSandbox
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             hostName = cmdLineArgs.HostName;
-            parentId = cmdLineArgs.ParentId;
-            sesssionId = cmdLineArgs.SessionId;
+            analyticsInfo = cmdLineArgs.AnalyticsInfo;
         }
 
         public void RunApplication(Application app)
@@ -50,7 +48,7 @@ namespace DynamoSandbox
                 DynamoModel.RequestMigrationStatusDialog += MigrationStatusDialogRequested;
                 DynamoModel model;
                 Dynamo.Applications.StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
-                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, hostName, parentId, sesssionId);
+                model = Dynamo.Applications.StartupUtils.MakeModel(false, ASMPath ?? string.Empty, analyticsInfo);
 
                 viewModel = DynamoViewModel.Start(
                     new DynamoViewModel.StartConfiguration()

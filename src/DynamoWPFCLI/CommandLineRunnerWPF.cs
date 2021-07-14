@@ -45,14 +45,14 @@ namespace DynamoWPFCLI
                 viewModel.Model.HostName = cmdLineArgs.HostName;
             }
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.ParentId))
+            if (!string.IsNullOrEmpty(cmdLineArgs.AnalyticsInfo.ParentId))
             {
-                viewModel.Model.UpdateManager.ParentId = cmdLineArgs.ParentId;
+                viewModel.Model.UpdateManager.ParentId = cmdLineArgs.AnalyticsInfo.ParentId;
             }
 
-            if (!string.IsNullOrEmpty(cmdLineArgs.SessionId))
+            if (!string.IsNullOrEmpty(cmdLineArgs.AnalyticsInfo.SessionId))
             {
-                viewModel.Model.UpdateManager.SessionId = cmdLineArgs.SessionId;
+                viewModel.Model.UpdateManager.SessionId = cmdLineArgs.AnalyticsInfo.SessionId;
             }
 
             cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
