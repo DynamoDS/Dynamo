@@ -20,8 +20,9 @@ namespace Dynamo.PackageManager
     {
         public IPreferences Preferences { get; set; }
 
-        [Obsolete("This will be removed in Dynamo 3.0")]
+        [Obsolete("Do not use. This will be removed in Dynamo 3.0")]
         public IPathManager PathManager { get; set; }
+
         /// <summary>
         /// List of new package paths that have been added to the 
         /// Preferences->Package manager dialog in node and package paths.
