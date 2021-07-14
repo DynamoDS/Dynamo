@@ -99,7 +99,7 @@ namespace Dynamo.Models
         /// Dynamo variation identified by host.
         public string HostName;
         /// Dynamo host parent id for analytics purpose.
-        public string ParentId { get; set; }
+        public string ParentId;
         /// Dynamo host session id for analytics purpose.
         public string SessionId;
     }
@@ -583,7 +583,8 @@ namespace Dynamo.Models
 
             if (hostUpdateManager != null)
             {
-                HostName = hostUpdateManager.HostName;
+                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
+                HostName = string.IsNullOrEmpty(hostUpdateManager.HostName)? HostAnalyticsInfo.HostName : hostUpdateManager.HostName;
                 HostVersion = hostUpdateManager.HostVersion?.ToString();
             }
             else
