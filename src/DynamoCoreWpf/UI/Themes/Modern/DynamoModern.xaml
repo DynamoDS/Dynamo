@@ -3666,8 +3666,7 @@
         <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
-
-</ResourceDictionary>
+    
     <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
         <Setter Property="FontFamily" Value="Artifakt Element"/>
         <Setter Property="FontSize" Value="20"/>
