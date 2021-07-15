@@ -73,8 +73,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="ProtoGeometry, Version=2.12.0.5475, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5475\lib\net48\ProtoGeometry.dll</HintPath>
+    <Reference Include="ProtoGeometry, Version=2.12.0.5534, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\DynamoVisualProgramming.LibG_227_0_0.2.12.0.5534\lib\net48\ProtoGeometry.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -298,6 +298,7 @@
     <Compile Include="ViewModels\Core\HomeWorkspaceViewModel.cs" />
     <Compile Include="ViewModels\Core\SerializationExtensions.cs" />
     <Compile Include="ViewModels\GuidedTour\PopupWindowViewModel.cs" />
+    <Compile Include="ViewModels\GuidedTour\SurveyPopupViewModel.cs" />
     <Compile Include="ViewModels\Menu\PreferencesViewModel.cs" />
     <Compile Include="ViewModels\PackageManager\IPackageInstaller.cs" />
     <Compile Include="ViewModels\PackageManager\PackagePathViewModel.cs" />
@@ -337,6 +338,12 @@
     </Compile>
     <Compile Include="Views\GuidedTour\PopupWindow.xaml.cs">
       <DependentUpon>PopupWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\RatingControl.xaml.cs">
+      <DependentUpon>RatingControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\GuidedTour\SurveyPopupWindow.xaml.cs">
+      <DependentUpon>SurveyPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Input\ParameterEditor.cs" />
     <Compile Include="Views\Output\OutputEditor.cs" />
@@ -451,6 +458,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\GuidedTour\PopupWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\RatingControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\GuidedTour\SurveyPopupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

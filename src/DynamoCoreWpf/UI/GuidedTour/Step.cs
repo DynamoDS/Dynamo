@@ -112,6 +112,11 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
     public class Content
     {
+        #region Private Fields
+        private string formattedText;
+        #endregion
+
+        #region Public Properties
         /// <summary>
         /// Title of the Popup shown at the top-center
         /// </summary>
@@ -120,6 +125,18 @@ namespace Dynamo.Wpf.UI.GuidedTour
         /// <summary>
         /// The content of the Popup using a specific format for showing text, hyperlinks,images, bullet points in a RichTextBox
         /// </summary>
-        public string FormattedText { get; set; }
+        public string FormattedText 
+        { 
+            get
+            {
+                return formattedText;
+            }
+            set
+            {
+                //Because we are reading the value from a Resource, the \n is converted to char escaped and we need to replace it by the special char
+                formattedText = value.Replace("\\n", Environment.NewLine);
+            }
+        }
+        #endregion
     }
 }

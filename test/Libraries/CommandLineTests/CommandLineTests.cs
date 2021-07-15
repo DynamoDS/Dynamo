@@ -94,7 +94,31 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /hn {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostName, "DynamoFormIt");
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
+        }
+
+        [Test]
+        public void CanSetParentIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var parentId = "RVT&2022&MUI64&22.0.2.392";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /pi {parentId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.ParentId, "RVT&2022&MUI64&22.0.2.392");
+        }
+
+        [Test]
+        public void CanSetSessionIdWithCommandLineRunner()
+        {
+            var openpath = Path.Combine(TestDirectory, @"core\math\Add.dyn");
+            var sessionId = "ABCDEFG";
+            var runner = new DynamoCLI.CommandLineRunner(this.CurrentDynamoModel);
+            string commandstring = $"/o {openpath} /si {sessionId}";
+
+            runner.Run(CommandstringToArgs(commandstring));
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.SessionId, "ABCDEFG");
         }
 
         [Test]
