@@ -130,7 +130,8 @@ namespace Dynamo.Wpf.Views
                         Res.PreferencesViewVisualSettingsGeoScaling);
                 }
 
-                dynViewModel.ExecuteCommand(new DynamoModel.ForceRunCancelCommand(false, false));
+                var allNodes = dynViewModel.HomeSpace.Nodes;
+                dynViewModel.HomeSpace.MarkNodesAsModifiedAndRequestRun(allNodes, forceExecute: true);
             }
         }
 
