@@ -18,17 +18,22 @@
     </UserControl.Resources>
     <Grid>
         <Border
-            VerticalAlignment="Top"
-            BorderBrush="#8B898A"
-            BorderThickness="1,0,1,0">
+            Padding="2"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            BorderBrush="#959595"
+            BorderThickness="1"
+            CornerRadius="3"
+            SnapsToDevicePixels="True">
             <avalonedit:TextEditor
                 x:Name="InnerTextEditor"
                 MaxWidth="677"
-                Padding="3,0,3,0"
+                Padding="8,3"
                 Background="#3A3B3B"
                 FontFamily="{StaticResource ArtifaktElementRegular}"
-                FontSize="15px"
-                Foreground="#DBDCDB"
+                FontSize="14px"
+                Foreground="#DCDCDC"
+                LineNumbersForeground="#DCDCDC"
                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled"
                 WordWrap="False" />
@@ -36,10 +41,10 @@
         <TextBlock
             x:Name="WatermarkLabel"
             Margin="3,0,3,0"
-            Padding="3,0,3,0"
+            Padding="8,3"
             FontFamily="{StaticResource ArtifaktElementRegular}"
-            FontSize="14.67px"
-            Foreground="#e6e6e6"
+            FontSize="14px"
+            Foreground="#DBDCDB"
             IsHitTestVisible="False" />
     </Grid>
 </UserControl>

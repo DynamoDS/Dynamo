@@ -36,7 +36,10 @@
     </ResourceDictionary.MergedDictionaries>
     <DataTemplate DataType="{x:Type viewModels:PortViewModel}">
         <!--  Grid that contains the entire port  -->
-        <Grid Name="mainGrid" HorizontalAlignment="Stretch">
+        <Grid
+            Name="mainGrid"
+            Height="41"
+            HorizontalAlignment="Stretch">
             <!--
                 The main border shows rounded edges and changes color according to multiple conditions
                 This logic is defined in the ViewModel. None of the elements in this Border are interactive, so they
@@ -116,7 +119,8 @@
                             FontSize="16px"
                             FontWeight="Medium"
                             Foreground="#D9D9D9"
-                            IsHitTestVisible="False" />
+                            IsHitTestVisible="False"
+                            Style="{StaticResource SZoomFadeLabel}" />
                     </Grid>
                 </DockPanel>
                 <!--  Inputs and outputs have different corner radius and border conditions  -->
@@ -134,7 +138,16 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
+
             </Border>
+            <Rectangle
+                x:Name="usingDefaultValueMarker"
+                Width="6px"
+                Height="35px"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Fill="#9AD3EE"
+                Visibility="{Binding UsingDefaultValue, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <!--
                 Interactive overlay for the port, highlights the port on MouseOver and
                 contains MouseClick event handling and ToolTip logic. Since the overlay is interactive, it needs to
@@ -229,8 +242,8 @@
                     x:Name="useLevelArrowHighlightOverlay"
                     Width="15"
                     Height="31px"
-                    HorizontalAlignment="Right"
                     Margin="10,0,10,0"
+                    HorizontalAlignment="Right"
                     DockPanel.Dock="Right"
                     IsHitTestVisible="True"
                     Visibility="{Binding Path=UseLevelVisibility}">
@@ -271,10 +284,11 @@
                     Text="{Binding Path=PortName, Converter={StaticResource PortNameConverter}}" />
                 <dynui:UseLevelSpinner
                     x:Name="useLevelControl"
-                    Width="50"
+                    Width="60"
                     Height="20"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
                     KeepListStructure="{Binding Path=ShouldKeepListStructure}"
                     Level="{Binding Path=Level, Mode=TwoWay}"
                     Visibility="{Binding Path=UseLevels, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, FallbackValue=Collapsed}" />

@@ -16,6 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="SliderThumbStyle" TargetType="Thumb">
                 <Setter Property="Focusable" Value="false" />
@@ -214,18 +215,27 @@
                     Grid.Column="0"
                     VerticalContentAlignment="Center"
                     Content="Min"
+                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                    FontSize="14px"
+                    FontWeight="Medium"
                     Foreground="#CCCCCC" />
                 <Label
                     Grid.Row="1"
                     Grid.Column="0"
                     VerticalContentAlignment="Center"
                     Content="Max"
+                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                    FontSize="14px"
+                    FontWeight="Medium"
                     Foreground="#CCCCCC" />
                 <Label
                     Grid.Row="2"
                     Grid.Column="0"
                     VerticalContentAlignment="Center"
                     Content="Step"
+                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                    FontSize="14px"
+                    FontWeight="Medium"
                     Foreground="#CCCCCC" />
                 <nodes1:DynamoTextBox
                     x:Name="MinTb"

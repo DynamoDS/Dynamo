@@ -152,11 +152,16 @@ namespace Dynamo.ViewModels
             get { return _port.MarginThickness.AsWindowsType(); }
         }
 
-        public PortEventType EventType { get; set; }
+        public PortEventType EventType
+        {
+            get => eventType;
+            set => eventType = value;
+        }
 
         private bool _showUseLevelMenu;
+        private PortEventType eventType;
         
-        
+
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
@@ -245,7 +250,7 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(PortBackgroundColor));
             }
         }
-
+        
         #endregion
 
         #region events
@@ -263,6 +268,8 @@ namespace Dynamo.ViewModels
             _port.PropertyChanged += _port_PropertyChanged;
             _node.PropertyChanged += _node_PropertyChanged;
             _node.WorkspaceViewModel.PropertyChanged += Workspace_PropertyChanged;
+
+            RefreshPortColors();
         }
 
         public override void Dispose()
@@ -532,15 +539,15 @@ namespace Dynamo.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (_port.UseLevels)
+            if (_port.UseLevels && _port.KeepListStructure)
             {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 102, 201));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 70, 101));
+                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
+                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
             }
             else if (_port.IsConnected)
             {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(70, 90, 99));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231)); 
+                PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
+                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
             }
             else
             {

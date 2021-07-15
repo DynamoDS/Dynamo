@@ -297,7 +297,7 @@
             </DataTrigger>
         </Style.Triggers>
     </Style>
-    
+
     <!--  Zoom fade label  -->
     <Style x:Key="SZoomFadeLabel" TargetType="{x:Type Label}">
         <Style.Triggers>
@@ -870,13 +870,13 @@
                             <Grid x:Name="inner">
                                 <Label
                                     x:Name="text"
+                                    Padding="0"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
+                                    Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
                                     FontSize="27px"
-                                    Padding="0"
                                     FontWeight="Bold"
-                                    Style="{StaticResource SZoomFadeLabel}"
-                                    Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"/>
+                                    Style="{StaticResource SZoomFadeLabel}" />
                             </Grid>
                         </Border>
                     </Grid>
@@ -906,8 +906,8 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
-    
+
+
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
@@ -1191,10 +1191,10 @@
                             Grid.Row="1"
                             Grid.Column="1"
                             Margin="-1"
-                            CornerRadius="4"
                             Background="{StaticResource InfoBubbleBackNormalBrush}"
                             BorderBrush="{StaticResource InfoBubbleEdgeNormalBrush}"
-                            BorderThickness="2" />
+                            BorderThickness="2"
+                            CornerRadius="4" />
                         <Path
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -1876,9 +1876,7 @@
                                     Margin="0"
                                     Padding="0"
                                     Background="#3C3C3C"
-                                    BorderBrush="#CCCCCC"
-                                    BorderThickness="1"
-                                    CornerRadius="0 1 0 0" />
+                                    BorderThickness="0" />
                                 <ContentPresenter
                                     x:Name="ContentPresenter"
                                     HorizontalAlignment="Center"
@@ -1906,7 +1904,7 @@
                 x:Key="DecreaseButton"
                 BasedOn="{x:Null}"
                 TargetType="{x:Type RepeatButton}">
-                <Setter Property="MinWidth" Value="12" />
+                <!--<Setter Property="MinWidth" Value="10" />-->
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type RepeatButton}">
@@ -1915,10 +1913,7 @@
                                     Name="Border"
                                     Margin="0"
                                     Padding="0"
-                                    Background="#3C3C3C"
-                                    BorderBrush="#CCCCCC"
-                                    BorderThickness="1"
-                                    CornerRadius="0 0 1 0" />
+                                    Background="#3C3C3C" />
                                 <ContentPresenter
                                     x:Name="ContentPresenter"
                                     HorizontalAlignment="Center"
@@ -1942,15 +1937,14 @@
                 </Setter>
             </Style>
         </Style.Resources>
-
         <Setter Property="Background" Value="#3C3C3C" />
-        <Setter Property="BorderThickness" Value="2" />
-        <Setter Property="BorderBrush" Value="#CCCCCC" />
-
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dynui:UseLevelSpinner}">
-                    <Grid Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                    <Grid
+                        x:Name="TemplateGrid"
+                        Background="{TemplateBinding Background}"
+                        SnapsToDevicePixels="True">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -1965,15 +1959,18 @@
                             Name="textbox"
                             Grid.RowSpan="2"
                             Grid.Column="0"
-                            Margin="0"
+                            Padding="4,0"
                             VerticalContentAlignment="Center"
-                            Foreground="#E6E6E6"
                             Background="#3C3C3C"
                             BorderThickness="0"
+                            CaretBrush="Transparent"
                             FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="11px"
                             FontWeight="Medium"
-                            FontSize="13"
-                            IsEnabled="False" />
+                            Foreground="White"
+                            IsHitTestVisible="False"
+                            Opacity="1.0"
+                            Style="{StaticResource SZoomFadeTextBox}" />
 
                         <RepeatButton
                             Grid.Row="0"
@@ -1984,12 +1981,11 @@
                             Focusable="False"
                             Style="{StaticResource IncreaseButton}">
                             <Path
-                                Width="5"
-                                Height="3"
-                                Data="M0,1L1,0 2,1z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Fill"
-                                Stroke="{x:Null}" />
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M-2,1 L0,-1 L2,1"
+                                Fill="{x:Null}"
+                                Stroke="#6AC0E7" />
                         </RepeatButton>
 
                         <RepeatButton
@@ -2001,23 +1997,19 @@
                             Focusable="False"
                             Style="{StaticResource DecreaseButton}">
                             <Path
-                                Width="5"
-                                Height="3"
-                                Data="M0,0L2,0 1,1z"
-                                Fill="{TemplateBinding Foreground}"
-                                Stretch="Fill"
-                                Stroke="{x:Null}" />
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Data="M-2,-1 L0,1 L2,-1"
+                                Fill="{x:Null}"
+                                Stroke="#6AC0E7" />
                         </RepeatButton>
 
                         <Border
                             Grid.RowSpan="2"
                             Grid.ColumnSpan="2"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="1" />
+                            BorderBrush="#4A4A4A"
+                            BorderThickness="1" />
                     </Grid>
-
-                    <ControlTemplate.Triggers />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -3045,29 +3037,31 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    <!--This Style will be used for Note Text block (used when Note is not on edit mode)-->
-    <Style x:Key="NoteTextBoxStyle"
-           TargetType="TextBox">
-        <Setter Property="FontFamily" Value="Trebuchet"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="#222"/>
-        <Setter Property="Background" Value="#EEE"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
+
+    <!--  This Style will be used for Note Text block (used when Note is not on edit mode)  -->
+    <Style x:Key="NoteTextBoxStyle" TargetType="TextBox">
+        <Setter Property="FontFamily" Value="Trebuchet" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#222" />
+        <Setter Property="Background" Value="#EEE" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <!--This Style will be used for Note Text block (used when Note is on edit mode)-->
-    <Style x:Key="NoteTextBlockStyle"
-           TargetType="TextBlock">
-        <Setter Property="FontFamily" Value="Trebuchet"/>
-        <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Foreground" Value="#222"/>
-        <Setter Property="Padding" Value="10"/>
-        <Setter Property="TextWrapping" Value="Wrap"/>
+    <!--  This Style will be used for Note Text block (used when Note is on edit mode)  -->
+    <Style x:Key="NoteTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Trebuchet" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#222" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="TextBlock.Effect">
             <Setter.Value>
-                <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
+                <DropShadowEffect
+                    BlurRadius="9.0"
+                    Opacity="0.25"
+                    ShadowDepth="0"
+                    Color="#222" />
             </Setter.Value>
         </Setter>
     </Style>
@@ -3144,80 +3138,65 @@
         </Setter>
     </Style>
 
-    <SolidColorBrush x:Key="PopupWhiteColor" 
-                             Color="#FFFFFF" />
+    <SolidColorBrush x:Key="PopupWhiteColor" Color="#FFFFFF" />
 
-    <Color x:Key="PopupTitleBorderColor" 
-                   A="255"
-                   R="128"
-                   G="128"
-                   B="128"/>
+    <Color
+        x:Key="PopupTitleBorderColor"
+        A="255"
+        B="128"
+        G="128"
+        R="128" />
 
-    <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
+    <!--  Style for the buttons in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Width" Value="5"/>
-        <Setter Property="Height" Value="10"/>
+        <Setter Property="Width" Value="5" />
+        <Setter Property="Height" Value="10" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="CaretButtonBorder"
-                                Background="{StaticResource PopupWhiteColor}"
-                                BorderThickness="0"
-                                BorderBrush="Transparent">
+                    <Border
+                        x:Name="CaretButtonBorder"
+                        Background="{StaticResource PopupWhiteColor}"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
                         <Canvas Width="5" Height="10">
-                            <Line x:Name="line1" 
-                                      Stroke="Black" 
-                                      X1="5" 
-                                      Y1="0" 
-                                      X2="0" 
-                                      Y2="5"/>
-                            <Line x:Name="line2" 
-                                      Stroke="Black" 
-                                      X1="0" 
-                                      Y1="5" 
-                                      X2="5" 
-                                      Y2="10"/>
+                            <Line
+                                x:Name="line1"
+                                Stroke="Black"
+                                X1="5"
+                                X2="0"
+                                Y1="0"
+                                Y2="5" />
+                            <Line
+                                x:Name="line2"
+                                Stroke="Black"
+                                X1="0"
+                                X2="5"
+                                Y1="5"
+                                Y2="10" />
                         </Canvas>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="Tag" 
-                                     Value="Invert">
-                            <Setter TargetName="line1" 
-                                        Property="RenderTransform">
+                        <Trigger Property="Tag" Value="Invert">
+                            <Setter TargetName="line1" Property="RenderTransform">
                                 <Setter.Value>
-                                    <RotateTransform CenterX="2" 
-                                                         CenterY="5"  
-                                                         Angle="180"/>
+                                    <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
-                            <Setter TargetName="line2" 
-                                        Property="RenderTransform">
+                            <Setter TargetName="line2" Property="RenderTransform">
                                 <Setter.Value>
-                                    <RotateTransform CenterX="2" 
-                                                         CenterY="5"  
-                                                         Angle="180"/>
+                                    <RotateTransform Angle="180" CenterX="2" CenterY="5" />
                                 </Setter.Value>
                             </Setter>
                         </Trigger>
-                        <Trigger Property="IsPressed" 
-                                     Value="True">
-                            <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver" 
-                                     Value="True">
-                            <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Cursor" 
-                                        Value="Hand"/>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter Property="Cursor" Value="Hand" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3225,39 +3204,44 @@
         </Setter>
     </Style>
 
-    <!--Style for the close popup button in a Tooltip part of the Dynamo Guided Tours-->
+    <!--  Style for the close popup button in a Tooltip part of the Dynamo Guided Tours  -->
     <Style x:Key="PopupCloseButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="CloseButtonBorder"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                BorderBrush="Transparent">
+                    <Border
+                        x:Name="CloseButtonBorder"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        BorderThickness="0">
                         <Canvas Margin="0,0,0,0">
-                            <Line x:Name="line1" X1="0" Y1="0" X2="13" Y2="13" Stroke="#808080" StrokeThickness="1"></Line>
-                            <Line x:Name="line2" X1="0" Y1="13" X2="13" Y2="0" Stroke="#808080" StrokeThickness="1"></Line>
+                            <Line
+                                x:Name="line1"
+                                Stroke="#808080"
+                                StrokeThickness="1"
+                                X1="0"
+                                X2="13"
+                                Y1="0"
+                                Y2="13" />
+                            <Line
+                                x:Name="line2"
+                                Stroke="#808080"
+                                StrokeThickness="1"
+                                X1="0"
+                                X2="13"
+                                Y1="13"
+                                Y2="0" />
                         </Canvas>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="Red"/>
-                            <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="Red"/>
+                            <Setter TargetName="line1" Property="Stroke" Value="Red" />
+                            <Setter TargetName="line2" Property="Stroke" Value="Red" />
                         </Trigger>
-                        <Trigger Property="IsMouseOver" 
-                                     Value="True">
-                            <Setter Property="Stroke" 
-                                        TargetName="line1" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Stroke" 
-                                        TargetName="line2" 
-                                        Value="{StaticResource PreferencesWindowButtonColor}"/>
-                            <Setter Property="Cursor" 
-                                        Value="Hand"/>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="line1" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter TargetName="line2" Property="Stroke" Value="{StaticResource PreferencesWindowButtonColor}" />
+                            <Setter Property="Cursor" Value="Hand" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -3266,21 +3250,23 @@
     </Style>
 
     <Style x:Key="PoupButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="MinWidth" Value="80"/>
-        <Setter Property="MaxHeight" Value="36"/>
-        <Setter Property="BorderThickness" Value="36"/>
-        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}"/>
-        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}"/>
+        <Setter Property="MinWidth" Value="80" />
+        <Setter Property="MaxHeight" Value="36" />
+        <Setter Property="BorderThickness" Value="36" />
+        <Setter Property="Foreground" Value="{StaticResource PopupWhiteColor}" />
+        <Setter Property="Background" Value="{StaticResource PreferencesWindowButtonColor}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="PopupButtonBorder"
-                                    BorderThickness="1"
-                                    CornerRadius="4" 
-                                    Background="{StaticResource PreferencesWindowButtonColor}">
-                        <ContentPresenter Content="{TemplateBinding Content}" 
-                                                  VerticalAlignment="Center"
-                                                  HorizontalAlignment="Center"/>
+                    <Border
+                        x:Name="PopupButtonBorder"
+                        Background="{StaticResource PreferencesWindowButtonColor}"
+                        BorderThickness="1"
+                        CornerRadius="4">
+                        <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding Content}" />
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -3288,28 +3274,28 @@
     </Style>
 
     <Style x:Key="PoupTitleLabelStyle" TargetType="{x:Type Label}">
-        <Setter Property="FontFamily" Value="Artifakt Element"/>
-        <Setter Property="FontSize" Value="20"/>
-        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="FontFamily" Value="Artifakt Element" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="MinHeight" Value="50" />
         <Setter Property="Foreground" Value="#535353" />
     </Style>
 
     <Style x:Key="PoupPathRectangleStyle" TargetType="{x:Type Path}">
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
-        <Setter Property="Stroke" Value="Black"/>
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
+        <Setter Property="Stroke" Value="Black" />
     </Style>
 
     <Style x:Key="PoupPolygonPointerStyle" TargetType="{x:Type Polygon}">
-        <Setter Property="Stroke" Value="Black"/>
-        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}"/>
+        <Setter Property="Stroke" Value="Black" />
+        <Setter Property="Fill" Value="{StaticResource PopupWhiteColor}" />
     </Style>
 
     <Style x:Key="CustomRichTextBoxStyle" TargetType="{x:Type RichTextBox}">
-        <Setter Property="FontSize" Value="14"/>
-        <Setter Property="FontFamily" Value="Artifakt Element"/>
-        <Setter Property="IsReadOnly" Value="True"/>
-        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}"/>
-        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Artifakt Element" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="Background" Value="{StaticResource PopupWhiteColor}" />
+        <Setter Property="BorderThickness" Value="0" />
     </Style>
 
 </ResourceDictionary>
