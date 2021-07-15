@@ -5,6 +5,7 @@
     xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
     xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
     xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+    xmlns:ui="clr-namespace:Dynamo.UI"
     Name="topControl"
     Width="Auto"
     Height="Auto"
@@ -18,7 +19,8 @@
     <Grid
         Name="grid"
         HorizontalAlignment="Left"
-        x:FieldModifier="public">
+        x:FieldModifier="public"
+        ContextMenuService.IsEnabled="false">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -37,6 +39,70 @@
 
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public">
+                <ContextMenu.Resources>
+                    <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
+                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                        </ResourceDictionary.MergedDictionaries>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                                        <Grid
+                                            x:Name="myGrid"
+                                            Margin="0,0,0,6"
+                                            SnapsToDevicePixels="true">
+                                            <ContentPresenter
+                                                x:Name="content"
+                                                Margin="{TemplateBinding Padding}"
+                                                ContentSource="Header"
+                                                RecognizesAccessKey="True"
+                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                                TextBlock.Foreground="#EEEEEE" />
+                                            <Popup
+                                                x:Name="PART_Popup"
+                                                AllowsTransparency="true"
+                                                Focusable="false"
+                                                HorizontalOffset="1"
+                                                IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                                Placement="Bottom"
+                                                PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
+                                                VerticalOffset="-1">
+                                                <Border
+                                                    Background="{TemplateBinding Background}"
+                                                    BorderBrush="White"
+                                                    BorderThickness="2">
+                                                    <ScrollViewer
+                                                        x:Name="SubMenuScrollViewer"
+                                                        CanContentScroll="true"
+                                                        Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                                      TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                                            <ItemsPresenter
+                                                                x:Name="ItemsPresenter"
+                                                                Margin="2"
+                                                                Grid.IsSharedSizeScope="true"
+                                                                KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                                KeyboardNavigation.TabNavigation="Cycle"
+                                                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                        </Grid>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </Popup>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="content" Property="TextBlock.Foreground" Value="Blue" />
+                                                <Setter TargetName="myGrid" Property="Background" Value="Black" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ResourceDictionary>
+                </ContextMenu.Resources>
                 <MenuItem
                     Name="deleteElem_cm"
                     Command="{Binding Path=DeleteCommand}"
@@ -129,6 +195,33 @@
                     Name="help_cm"
                     Command="{Binding Path=ShowHelpCommand}"
                     Header="{x:Static p:Resources.NodeContextMenuHelp}" />
+                <ContextMenu.Style>
+                    <Style TargetType="{x:Type ContextMenu}">
+                        <Setter Property="Placement" Value="MousePoint" />
+                        <Setter Property="Foreground" Value="#EEEEEE" />
+                        <Setter Property="FontSize" Value="13px" />
+                        <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                        <Setter Property="FontWeight" Value="Medium" />
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="OverridesDefaultStyle" Value="True" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                                    <Border
+                                        x:Name="Border"
+                                        Padding="17,15"
+                                        Background="#666666"
+                                        BorderThickness="0px">
+                                        <StackPanel
+                                            ClipToBounds="True"
+                                            IsItemsHost="True"
+                                            Orientation="Vertical" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ContextMenu.Style>
 
             </ContextMenu>
         </Grid.ContextMenu>
@@ -407,7 +500,7 @@
             Name="inputPortControl"
             Grid.Row="2"
             Grid.Column="0"
-            Margin="0,8,0,12"
+            Margin="0,8,0,8"
             HorizontalContentAlignment="Stretch"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=InPorts}"
@@ -418,7 +511,7 @@
             Name="outputPortControl"
             Grid.Row="2"
             Grid.Column="2"
-            Margin="0,8,0,12"
+            Margin="0,8,0,8"
             HorizontalContentAlignment="Stretch"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=OutPorts}"
@@ -456,9 +549,11 @@
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Margin="0,0,9,16"
+            Margin="0,0,9,14"
             HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
             Canvas.ZIndex="30"
+            FlowDirection="RightToLeft"
             Orientation="Horizontal"
             Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Button x:Name="OptionsButton" Click="OptionsButton_Click">
@@ -518,6 +613,28 @@
                     </Style>
                 </Button.Style>
             </Button>
+            <Grid
+                Name="WarningsGlyph"
+                Width="Auto"
+                Height="15"
+                MinWidth="15"
+                Margin="3,0"
+                Visibility="Visible">
+                <Border Background="#EBEBEB" CornerRadius="7">
+                    <Label
+                        Padding="2,2,2,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Content="1"
+                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                        FontSize="9px"
+                        Foreground="#000000" />
+                </Border>
+
+            </Grid>
+
         </StackPanel>
 
         <Grid

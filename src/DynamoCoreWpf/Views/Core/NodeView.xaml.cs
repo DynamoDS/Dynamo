@@ -685,11 +685,7 @@ namespace Dynamo.Controls
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
         {
-            Guid nodeGuid = ViewModel.NodeModel.GUID;
-            ViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
-            //Debug.WriteLine("Node right selected.");
-            e.Handled = true;
+            grid.ContextMenu.IsOpen = true;
         }
     }
 }
