@@ -2461,6 +2461,12 @@ namespace Dynamo.Controls
             resourcesTooltip.Show();
         }
 
+        private void RightExtensionSidebar_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            //Setting the width of right extension after resize to
+            extensionsColumnWidth = RightExtensionsViewColumn.Width;
+        }
+
         public void Dispose()
         {
             viewExtensionManager.Dispose();
