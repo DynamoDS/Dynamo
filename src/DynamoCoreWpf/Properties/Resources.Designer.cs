@@ -4908,7 +4908,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
+        ///   Looks up a localized string similar to English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional.
         /// </summary>
         public static string PreferencesWindowLanguages {
             get {
@@ -5012,6 +5012,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PreviewText {
             get {
                 return ResourceManager.GetString("PreviewText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string PropertiesSettingsTab {
+            get {
+                return ResourceManager.GetString("PropertiesSettingsTab", resourceCulture);
             }
         }
         
@@ -5331,6 +5340,78 @@ namespace Dynamo.Wpf.Properties {
         public static string RenderingMemoryOutageSummary {
             get {
                 return ResourceManager.GetString("RenderingMemoryOutageSummary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Required Property.
+        /// </summary>
+        public static string RequiredPropertiesAddRequiredPropertyButtonText {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesAddRequiredPropertyButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create a new Required Property..
+        /// </summary>
+        public static string RequiredPropertiesAddRequiredPropertyToolTip {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesAddRequiredPropertyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deletes this Required Property..
+        /// </summary>
+        public static string RequiredPropertiesDeleteRequiredPropertyToolTip {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesDeleteRequiredPropertyToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Properties must have unique names. Any non-unique names will be discarded when this window closes..
+        /// </summary>
+        public static string RequiredPropertiesDuplicateKeyWarning {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesDuplicateKeyWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required Properties.
+        /// </summary>
+        public static string RequiredPropertiesExpanderName {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesExpanderName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value.
+        /// </summary>
+        public static string RequiredPropertiesGlobalValue {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesGlobalValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Title.
+        /// </summary>
+        public static string RequiredPropertiesTitle {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Toggle Global Property..
+        /// </summary>
+        public static string RequiredPropertiesToggleGlobalValueToolTip {
+            get {
+                return ResourceManager.GetString("RequiredPropertiesToggleGlobalValueToolTip", resourceCulture);
             }
         }
         

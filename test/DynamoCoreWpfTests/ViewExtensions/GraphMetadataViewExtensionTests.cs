@@ -157,5 +157,121 @@ namespace DynamoCoreWpfTests.ViewExtensions
 
             Assert.IsFalse(ViewModel.HomeSpace.HasUnsavedChanges);
         }
+
+        [Test]
+        public void PreferenceSettingsRequiredPropertiesEqualGraphMetadataViewExtensionRequiredProperties()
+        {
+            // Arrange
+            var extensionManager = View.viewExtensionManager;
+
+            var graphMetadataViewExtension = extensionManager.ViewExtensions
+                .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                as GraphMetadataViewExtension;
+            
+            // Act
+            var preferenceSettingsRequiredPropertyKeys = this.ViewModel.PreferenceSettings.RequiredProperties
+                .Select(x => x.Key)
+                .ToList();
+
+            var graphMetadataViewModelRequiredPropertyKeys = graphMetadataViewExtension.viewModel.RequiredProperties
+                .Select(x => x.Key)
+                .ToList();
+            
+            // Assert
+            CollectionAssert.AreEqual(preferenceSettingsRequiredPropertyKeys, graphMetadataViewModelRequiredPropertyKeys);
+        }
+
+        [Test]
+        public void RequiredPropertyAddedToPreferenceSettingsAppearsInViewExtension()
+        {
+            // Arrange
+            var extensionManager = View.viewExtensionManager;
+
+            var graphMetadataViewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                as GraphMetadataViewExtension;
+
+            var preferenceSettings = this.ViewModel.PreferenceSettings;
+
+            // Act
+            preferenceSettings.RequiredProperties.Clear();
+            graphMetadataViewExtension.viewModel.RequiredProperties.Clear();
+
+            preferenceSettings.AddRequiredProperty(null);
+            var requiredProperty = preferenceSettings.RequiredProperties.First();
+            
+            var graphMetadataViewModelRequiredPropertyKeys = graphMetadataViewExtension.viewModel.RequiredProperties
+                .Select(x => x.Key)
+                .ToList();
+            
+            // Assert
+            Assert.That(graphMetadataViewModelRequiredPropertyKeys.Contains(requiredProperty.Key));
+        }
+
+        [Test]
+        public void SetRequiredPropertyGraphValue()
+        {
+            // Arrange
+            var extensionManager = View.viewExtensionManager;
+
+            var graphMetadataViewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                as GraphMetadataViewExtension;
+
+            var preferenceSettings = this.ViewModel.PreferenceSettings;
+
+            var testGraphValue = "Graph Value";
+
+            // Act
+            preferenceSettings.RequiredProperties.Clear();
+            graphMetadataViewExtension.viewModel.RequiredProperties.Clear();
+
+            preferenceSettings.AddRequiredProperty(null);
+            var preferenceSettingsRequiredProperty = preferenceSettings.RequiredProperties.First();
+            
+            preferenceSettingsRequiredProperty.ValueIsGlobal = false;
+            preferenceSettingsRequiredProperty.GraphValue = testGraphValue;
+
+            var graphMetadataViewExtensionRequiredProperty =
+                graphMetadataViewExtension.viewModel.RequiredProperties.First();
+
+            // Assert
+            Assert.IsNotNull(graphMetadataViewExtensionRequiredProperty);
+            Assert.IsFalse(graphMetadataViewExtensionRequiredProperty.ValueIsGlobal);
+            Assert.That(graphMetadataViewExtensionRequiredProperty.GraphValue.Equals(testGraphValue));
+        }
+
+        [Test]
+        public void CheckRequiredPropertyGlobalValue()
+        {
+            // Arrange
+            var extensionManager = View.viewExtensionManager;
+
+            var graphMetadataViewExtension = extensionManager.ViewExtensions
+                    .FirstOrDefault(x => x.Name == GraphMetadataViewExtension.extensionName)
+                as GraphMetadataViewExtension;
+
+            var preferenceSettings = this.ViewModel.PreferenceSettings;
+
+            var testGlobalValue = "Global Value";
+
+            // Act
+            preferenceSettings.RequiredProperties.Clear();
+            graphMetadataViewExtension.viewModel.RequiredProperties.Clear();
+
+            preferenceSettings.AddRequiredProperty(null);
+            var preferenceSettingsRequiredProperty = preferenceSettings.RequiredProperties.First();
+
+            preferenceSettingsRequiredProperty.ValueIsGlobal = true;
+            preferenceSettingsRequiredProperty.GlobalValue = testGlobalValue;
+
+            var graphMetadataViewExtensionRequiredProperty =
+                graphMetadataViewExtension.viewModel.RequiredProperties.First();
+
+            // Assert
+            Assert.IsNotNull(graphMetadataViewExtensionRequiredProperty);
+            Assert.IsTrue(graphMetadataViewExtensionRequiredProperty.ValueIsGlobal);
+            Assert.That(graphMetadataViewExtensionRequiredProperty.GraphValue.Equals(testGlobalValue));
+        }
     }
 }

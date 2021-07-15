@@ -2309,7 +2309,7 @@ Uninstall the following packages: {0}?</value>
     <value>Visual Settings</value>
   </data>
   <data name="PreferencesWindowLanguages" xml:space="preserve">
-    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
+    <value>English,Czech,German,Spanish,French,Italian,Japanese,Korean,Polish,Portuguese,Brazilian,Russian,Chinese Simplified,Chinese Traditional</value>
   </data>
   <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
     <value>Node Font Size</value>
@@ -2423,6 +2423,33 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
     <value>Switchable only when the current workspace is in Manual run mode.</value>
+  </data>
+  <data name="PropertiesSettingsTab" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="RequiredPropertiesExpanderName" xml:space="preserve">
+    <value>Required Properties</value>
+  </data>
+  <data name="RequiredPropertiesDuplicateKeyWarning" xml:space="preserve">
+    <value>Required Properties must have unique names. Any non-unique names will be discarded when this window closes.</value>
+  </data>
+  <data name="RequiredPropertiesAddRequiredPropertyToolTip" xml:space="preserve">
+    <value>Create a new Required Property.</value>
+  </data>
+  <data name="RequiredPropertiesDeleteRequiredPropertyToolTip" xml:space="preserve">
+    <value>Deletes this Required Property.</value>
+  </data>
+  <data name="RequiredPropertiesToggleGlobalValueToolTip" xml:space="preserve">
+	  <value>Toggle Global Property.</value>
+  </data>
+  <data name="RequiredPropertiesAddRequiredPropertyButtonText" xml:space="preserve">
+    <value>Add Required Property</value>
+  </data>
+  <data name="RequiredPropertiesTitle" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="RequiredPropertiesGlobalValue" xml:space="preserve">
+    <value>Value</value>
   </data>
   <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
     <value>Issues found</value>

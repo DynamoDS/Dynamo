@@ -63,7 +63,7 @@
                 <Button.Template>
                     <ControlTemplate>
                         <Image Width="16px"
-                                Source="/GraphMetadataViewExtension;component/Resources/close-thick-grey-16px.png" />
+                                Source="/DynamoCoreWpf;component/UI/Images/close-thick-grey-16px.png" />
                     </ControlTemplate>
                 </Button.Template>
             </Button>

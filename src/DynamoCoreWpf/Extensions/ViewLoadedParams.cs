@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Extensions;
 using Dynamo.Selection;
@@ -75,6 +76,8 @@ namespace Dynamo.Wpf.Extensions
                 return dynamoView;
             }
         }
+
+        
 
         internal ViewLoadedParams(DynamoView dynamoV, DynamoViewModel dynamoVM) :
             base(dynamoVM.Model)

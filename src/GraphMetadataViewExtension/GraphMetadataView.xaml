@@ -195,6 +195,47 @@
                     </TextBox.Style>
                 </TextBox>
             </HeaderedContentControl>
+            <ListView
+                    x:Name="RequiredPropertyListView"
+                    Margin="0,5,0,0"
+                    HorizontalContentAlignment="Left"
+                    Background="Transparent"
+                    BorderBrush="Transparent"
+                    BorderThickness="0"
+                    ItemsSource="{Binding RequiredProperties, UpdateSourceTrigger=PropertyChanged}"
+                    KeyboardNavigation.TabNavigation="Continue"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    Visibility="{Binding IsRequiredPropertiesVisible, UpdateSourceTrigger=PropertyChanged}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                    x:Name="RequiredPropertyNameTextBox"
+                                    Grid.Row="0"
+                                    Margin="0"
+                                    Background="Transparent"
+                                    IsEnabled="False"
+                                    Style="{StaticResource headerStyle}"
+                                    Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="Wrap" />
+                            <TextBox
+                                    x:Name="RequiredPropertyValueTextBox"
+                                    Grid.Row="1"
+                                    Margin="0,5"
+                                    CaretBrush="White"
+                                    IsEnabled="{Binding ValueIsGlobal, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}"
+                                    MaxLength="100"
+                                    Style="{StaticResource TextBoxStyle}"
+                                    Text="{Binding GraphValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    TextWrapping="Wrap" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
             <Separator Background="{StaticResource FilterIconColor}"
                        Margin="0,20,0,20" />
@@ -251,7 +292,7 @@
                     <Button.Template>
                         <ControlTemplate>
                             <Image Width="16px" Height="16px"
-                                   Source="/GraphMetadataViewExtension;component/Resources/add-thick-grey-16px.png" />
+                                   Source="/DynamoCoreWpf;component/UI/Images/add-thick-grey-16px.png" />
                         </ControlTemplate>
                     </Button.Template>
                 </Button>

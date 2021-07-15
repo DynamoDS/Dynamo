@@ -761,6 +761,183 @@
                             </Expander>
                         </Grid>
                     </TabItem>
+                    <!--  Properties Settings Tab  -->
+                    <TabItem Header="{x:Static p:Resources.PropertiesSettingsTab}" Style="{StaticResource LeftTab}">
+                        <Grid
+                            x:Name="PropertiesSettingsTab"
+                            Margin="1"
+                            HorizontalAlignment="Stretch">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!--  This Grid row contains the Required Properties section  -->
+                            <Expander
+                                x:Name="RequiredPropertiesExpander"
+                                Grid.Row="0"
+                                Header="{x:Static p:Resources.RequiredPropertiesExpanderName}"
+                                Style="{StaticResource MenuExpanderStyle}">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Button
+                                        Grid.Row="0"
+                                        Width="150"
+                                        Height="25"
+                                        HorizontalAlignment="Right"
+                                        Command="{Binding AddRequiredPropertyCommand}"
+                                        Content="Add Required Property"
+                                        Cursor="Hand"
+                                        IsEnabled="{Binding IsDuplicateKeyWarningVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}"
+                                        Style="{StaticResource FlatButtonStyle}"
+                                        ToolTip="{x:Static p:Resources.RequiredPropertiesAddRequiredPropertyToolTip}" />
+                                    <TextBlock
+                                        x:Name="DuplicateKeyWarningTextBlock"
+                                        Grid.Row="1"
+                                        Margin="-10,5,0,0"
+                                        Foreground="Red"
+                                        Text="{x:Static p:Resources.RequiredPropertiesDuplicateKeyWarning}"
+                                        TextWrapping="Wrap"
+                                        Visibility="{Binding IsDuplicateKeyWarningVisible, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                    <ListView
+                                        x:Name="RequiredPropertyListView"
+                                        Grid.Row="2"
+                                        Height="300"
+                                        Margin="-18,5,0,0"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        ItemsSource="{Binding RequiredProperties, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                        KeyboardNavigation.TabNavigation="Continue"
+                                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                        <ListView.ItemContainerStyle>
+                                            <Style TargetType="ListViewItem">
+                                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ListView.ItemContainerStyle>
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Stretch">
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto" />
+                                                        <RowDefinition Height="Auto" />
+                                                    </Grid.RowDefinitions>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto" />
+                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock
+                                                        x:Name="RequiredPropertyNameLabel"
+                                                        Grid.Row="0"
+                                                        Grid.Column="0"
+                                                        Width="40"
+                                                        Margin="0,1,0,0"
+                                                        Padding="3"
+                                                        HorizontalAlignment="Stretch"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        Text="{x:Static p:Resources.RequiredPropertiesTitle}" />
+                                                    <TextBox
+                                                        x:Name="RequiredPropertyNameTextBox"
+                                                        Grid.Row="0"
+                                                        Grid.Column="1"
+                                                        Width="Auto"
+                                                        Height="25"
+                                                        Margin="0"
+                                                        Padding="3"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalContentAlignment="Center"
+                                                        Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                                        BorderBrush="Transparent"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        MaxLength="100"
+                                                        Text="{Binding Key, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <Button
+                                                        Grid.Row="0"
+                                                        Grid.Column="2"
+                                                        Margin="5,0,22,0"
+                                                        HorizontalAlignment="Right"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Command="{Binding ElementName=DynamoPreferencesWindow, Path=DataContext.ToggleRequiredPropertyIsGlobalCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Cursor="Hand"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        ToolTip="{x:Static p:Resources.RequiredPropertiesToggleGlobalValueToolTip}">
+                                                        <Button.Template>
+                                                            <ControlTemplate>
+                                                                <fa:ImageAwesome
+                                                                    Height="16px"
+                                                                    Foreground="{StaticResource FilterIconColor}"
+                                                                    Icon="Globe" />
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                    <Button
+                                                        Grid.Row="0"
+                                                        Grid.Column="2"
+                                                        Margin="5,0,0,0"
+                                                        HorizontalAlignment="Right"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Command="{Binding ElementName=DynamoPreferencesWindow, Path=DataContext.DeleteRequiredPropertyCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        Cursor="Hand"
+                                                        ToolTip="{x:Static p:Resources.RequiredPropertiesDeleteRequiredPropertyToolTip}">
+                                                        <Button.Template>
+                                                            <ControlTemplate>
+                                                                <Image Width="16px" Source="/DynamoCoreWpf;component/UI/Images/close-thick-grey-16px.png" />
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                    <!--  If the RequiredProperty has its value set globally, this TextBox is visible  -->
+                                                    <TextBlock
+                                                        x:Name="RequiredPropertyValueLabel"
+                                                        Grid.Row="1"
+                                                        Grid.Column="0"
+                                                        Width="40"
+                                                        Margin="0,1,0,0"
+                                                        Padding="3"
+                                                        HorizontalAlignment="Stretch"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        Text="{x:Static p:Resources.RequiredPropertiesGlobalValue}"
+                                                        Visibility="{Binding ValueIsGlobal, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                    <TextBox
+                                                        x:Name="RequiredPropertyValueTextBox"
+                                                        Grid.Row="1"
+                                                        Grid.Column="1"
+                                                        Width="Auto"
+                                                        Height="25"
+                                                        Margin="0"
+                                                        Padding="3"
+                                                        HorizontalAlignment="Stretch"
+                                                        VerticalContentAlignment="Center"
+                                                        Background="{StaticResource PreferencesWindowItemDarkerBackgroundColor}"
+                                                        BorderBrush="Transparent"
+                                                        FontWeight="Normal"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        MaxLength="200"
+                                                        Text="{Binding GlobalValue, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                        Visibility="{Binding ValueIsGlobal, Converter={StaticResource BooleanToVisibilityConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                </Grid>
+                            </Expander>
+                        </Grid>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </Grid>
