@@ -94,7 +94,7 @@ namespace Dynamo.Tests
             string commandstring = $"/o {openpath} /hn {hostName}";
 
             runner.Run(CommandstringToArgs(commandstring));
-            Assert.AreEqual(this.CurrentDynamoModel.HostName, "DynamoFormIt");
+            Assert.AreEqual(this.CurrentDynamoModel.HostAnalyticsInfo.HostName, "DynamoFormIt");
         }
 
         [Test]
