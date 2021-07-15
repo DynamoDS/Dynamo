@@ -1,11 +1,11 @@
 
 ## !!WIP!!
 
-## Dynamo Standard Library Overview
+## Dynamo Built-In Packages Overview
 
-The Standard Library is an effort to bundle more node content with Dynamo Core without expanding the core itself by leveraging the dynamo package loading functionality implemented by the `PackageLoader` and `PackageManager` extension.
+The Built-In Packages mechanism is an effort to bundle more node content with Dynamo Core without expanding the core itself by leveraging the dynamo package loading functionality implemented by the `PackageLoader` and `PackageManager` extension.
 
-In this doc we'll interchangeably use the terms Standard Library, Dynamo Standard Library, std.lib to mean the same thing.
+In this doc we'll interchangeably use the terms Built-In Packages, Dynamo Built-In Packages, builtin packages to mean the same thing.
 
 ### Considerations / SLA
 * SignedPackages only.
@@ -14,21 +14,21 @@ In this doc we'll interchangeably use the terms Standard Library, Dynamo Standar
 * ... others TBD
 
 
-### Standard Library versus Host Integration Specific Packages
+### Built-In Packages versus Host Integration Specific Packages
 
-We are intending the `std.lib` to be a core feature, a set of packages that all users gain access to, even if they do not have access to the package manager. The underlying mechanism to support this feature is an additional default loading location for packages directly in the dynamo core directory - relative to DynamoCore.dll.
+We are intending the `Built-In Packages` to be a core feature, a set of packages that all users gain access to, even if they do not have access to the package manager. The underlying mechanism to support this feature is an additional default loading location for packages directly in the dynamo core directory - relative to DynamoCore.dll.
 
 With some constraints this location will be useable for ADSK Dynamo clients and integrators to ship integration specific packages.
 
-Because the underlying loading mechanism is the same - it will be necessary to make sure that packages included this way do not lead to user confusion about core `std.lib` packages, and integration specific packages that are only available in a single host product. We advise that until the Dynamo team designs and implements apis to support this - that to avoid user confusion - the `std.lib` should only be used in discussion with the team.
+Because the underlying loading mechanism is the same - it will be necessary to make sure that packages included this way do not lead to user confusion about core `Built-In Packages` packages, and integration specific packages that are only available in a single host product. We advise that until the Dynamo team designs and implements apis to support this - that to avoid user confusion - the `Built-In Packages` should only be used in discussion with the team.
 
 
 
 ### Package Localization
 
-Because packages included in the `std.lib` will be available to more customers and the guarantees we make about them will be stricter (see above) they should be localized.
+Because packages included in the `Built-In Packages` will be available to more customers and the guarantees we make about them will be stricter (see above) they should be localized.
 
-For internal ADSK packages intended for std.lib inclusion - the current limitations of not being able to publish localized content to the package manager are not blockers as the packages don't necessarily need to be published to the package manager.
+For internal ADSK packages intended for `Built-In Packages` inclusion - the current limitations of not being able to publish localized content to the package manager are not blockers as the packages don't necessarily need to be published to the package manager.
 
 Using a workaround it's possible to manually create (and even publish) packages with culture subdirectories in the /bin folder of a package.
 
