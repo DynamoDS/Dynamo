@@ -100,12 +100,8 @@ namespace Dynamo.PackageManager
         /// <param name="userDataFolder"></param>
         /// <param name="extension">subdirectory or subpath</param>
         /// <returns>combined root and extension path</returns>
-        private static string TransformPath(string root, string userDataFolder, string extension)
+        private static string TransformPath(string root, string extension)
         {
-            if (root.StartsWith(userDataFolder))
-            {
-                return Path.Combine(root, extension);
-            }
             try
             {
                 var subFolder = Path.Combine(root, extension);
@@ -422,10 +418,12 @@ namespace Dynamo.PackageManager
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
                 var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
+                dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
             LoadNewPackages(loadPackageParams);
+            localPackages.AddRange(packages);
         }
 
         private void ScanAllPackageDirectories(IPreferences preferences)
