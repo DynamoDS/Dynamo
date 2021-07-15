@@ -92,6 +92,19 @@ namespace Dynamo.Models
     }
 
     /// <summary>
+    /// Host analytics related info
+    /// </summary>
+    public struct HostAnalyticsInfo
+    {
+        /// Dynamo variation identified by host.
+        public string HostName;
+        /// Dynamo host parent id for analytics purpose.
+        public string ParentId;
+        /// Dynamo host session id for analytics purpose.
+        public string SessionId;
+    }
+
+    /// <summary>
     /// This class creates an interface for Engine controller.
     /// </summary>
     public interface IEngineControllerManager
@@ -181,7 +194,13 @@ namespace Dynamo.Models
         /// <summary>
         /// Name of the Host (i.e. DynamoRevit/DynamoStudio)
         /// </summary>
+        [Obsolete("This property will be removed in Dynamo 3.0 - please use HostAnalyticsInfo")]
         public string HostName { get; set; }
+
+        /// <summary>
+        /// Host analytics info
+        /// </summary>
+        public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
 
         /// <summary>
         /// UpdateManager to handle automatic upgrade to higher version.
@@ -460,6 +479,12 @@ namespace Dynamo.Models
             /// Disables ADP for the entire process for the lifetime of the process.
             /// </summary>
             public bool DisableADP { get; set; }
+
+            /// <summary>
+            /// Host analytics info
+            /// TODO: Move this to IStartConfiguration in Dynamo 3.0
+            /// </summary>
+            public HostAnalyticsInfo HostAnalyticsInfo { get; set; }
         }
 
         /// <summary>
@@ -542,11 +567,15 @@ namespace Dynamo.Models
             geometryFactoryPath = config.GeometryFactoryPath;
 
             IPreferences preferences = CreateOrLoadPreferences(config.Preferences);
-            var settings = preferences as PreferenceSettings;
-            if (settings != null)
+            if (preferences is PreferenceSettings settings)
             {
                 PreferenceSettings = settings;
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
+            }
+
+            if (config is DefaultStartConfiguration defaultStartConfiguration)
+            {
+                HostAnalyticsInfo = defaultStartConfiguration.HostAnalyticsInfo;
             }
 
             UpdateManager = config.UpdateManager ?? new DefaultUpdateManager(null);
@@ -555,8 +584,9 @@ namespace Dynamo.Models
 
             if (hostUpdateManager != null)
             {
-                HostName = hostUpdateManager.HostName;
-                HostVersion = hostUpdateManager.HostVersion == null ? null : hostUpdateManager.HostVersion.ToString();
+                // For API compatibility now in Dynamo 2.0, integrators can set HostName in both ways
+                HostName = string.IsNullOrEmpty(hostUpdateManager.HostName)? HostAnalyticsInfo.HostName : hostUpdateManager.HostName;
+                HostVersion = hostUpdateManager.HostVersion?.ToString();
             }
             else
             {

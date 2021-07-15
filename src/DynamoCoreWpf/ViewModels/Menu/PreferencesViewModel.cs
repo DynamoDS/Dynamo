@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Drawing;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Dynamo.Configuration;
+﻿using Dynamo.Configuration;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.Wpf.ViewModels.Core.Converters;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.ViewModels
@@ -64,6 +65,7 @@ namespace Dynamo.ViewModels
         private GeometryScalingOptions optionsGeometryScale = null;
 
         private InstalledPackagesViewModel installedPackagesViewModel;
+        private string selectedPackagePathForInstall;
         #endregion Private Properties
 
         public GeometryScaleSize ScaleSize { get; set; }
@@ -309,13 +311,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return preferenceSettings.SelectedPackagePathForInstall;
+                return selectedPackagePathForInstall;
             }
             set
             {
-                if (preferenceSettings.SelectedPackagePathForInstall != value)
+                if (selectedPackagePathForInstall != value)
                 {
-                    preferenceSettings.SelectedPackagePathForInstall = value;
+                    selectedPackagePathForInstall = value;
                     RaisePropertyChanged(nameof(SelectedPackagePathForInstall));
                 }
             }
@@ -712,8 +714,6 @@ namespace Dynamo.ViewModels
                 SelectedPythonEngine = Res.DefaultPythonEngineNone : 
                 SelectedPythonEngine = preferenceSettings.DefaultPythonEngine;
 
-            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
-
             string languages = Wpf.Properties.Resources.PreferencesWindowLanguages;
             LanguagesList = new ObservableCollection<string>(languages.Split(','));
             SelectedLanguage = languages.Split(',').First();
@@ -779,7 +779,80 @@ namespace Dynamo.ViewModels
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            
             PackagePathsViewModel = new PackagePathViewModel(packageLoader, loadPackagesParams, customNodeManager);
 
-            this.PropertyChanged += Model_PropertyChanged;
+            PropertyChanged += Model_PropertyChanged;
+        }
+
+        /// <summary>
+        /// Called from DynamoViewModel::UnsubscribeAllEvents()
+        /// </summary>
+        internal virtual void UnsubscribeAllEvents()
+        {
+            PropertyChanged -= Model_PropertyChanged;
+        }
+
+
+        /// <summary>
+        /// Listen for changes to the custom package paths and update package paths for install accordingly
+        /// </summary>
+        private void PackagePathsViewModel_RootLocations_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    // New path was added
+                    var newPath = e.NewItems[0] as string;
+                    PackagePathsForInstall.Add(newPath);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    // Path was removed
+                    var removedPath = e.OldItems[0] as string;
+                    var updateSelection = SelectedPackagePathForInstall == removedPath;
+                    if (PackagePathsForInstall.Remove(removedPath) && updateSelection && PackagePathsForInstall.Count > 0)
+                    {
+                        // Path selected was removed
+                        // Select first path in list
+                        SelectedPackagePathForInstall = PackagePathsForInstall[0];
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    // Path was updated
+                    newPath = e.NewItems[0] as string;
+                    removedPath = e.OldItems[0] as string;
+                    updateSelection = SelectedPackagePathForInstall == removedPath;
+                    var index = PackagePathsForInstall.IndexOf(removedPath);
+                    if (index != -1)
+                    {
+                        PackagePathsForInstall[index] = newPath;
+                    }
+
+                    if (updateSelection)
+                    {
+                        // Update selection of the updated path was selected
+                        SelectedPackagePathForInstall = newPath;
+                    }
+                    break;
+                default:
+                    throw new NotSupportedException("Operation not supported");
+            }
+        }
+
+        /// <summary>
+        /// Store selection to preferences
+        /// </summary>
+        internal void CommitPackagePathsForInstall()
+        {
+            PackagePathsViewModel.RootLocations.CollectionChanged -= PackagePathsViewModel_RootLocations_CollectionChanged;
+            preferenceSettings.SelectedPackagePathForInstall = SelectedPackagePathForInstall;
+        }
+
+        /// <summary>
+        /// Force reload of paths and get current selection from preferences
+        /// </summary>
+        internal void InitPackagePathsForInstall()
+        {
+            PackagePathsForInstall = null;
+            SelectedPackagePathForInstall = preferenceSettings.SelectedPackagePathForInstall;
+            PackagePathsViewModel.RootLocations.CollectionChanged += PackagePathsViewModel_RootLocations_CollectionChanged;
         }
 
         /// <summary>

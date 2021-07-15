@@ -54,7 +54,7 @@ namespace Dynamo.Wpf.Views
 
         /// <summary>
         ///Given that the PreferencesViewModel persists through the Dynamo session, 
-        ///this method will setup all the necesary properties for when the Preferences window is opened.
+        ///this method will setup all the necessary properties for when the Preferences window is opened.
         /// </summary>
         private void SetupPreferencesViewModel(DynamoViewModel dynamoViewModel)
         {
@@ -62,6 +62,9 @@ namespace Dynamo.Wpf.Views
             dynamoViewModel.PreferencesViewModel.SavedChangesLabel = string.Empty;
             dynamoViewModel.PreferencesViewModel.SavedChangesTooltip = string.Empty;
             dynamoViewModel.PreferencesViewModel.PackagePathsViewModel?.InitializeRootLocations();
+
+            // Init package paths for install 
+            dynamoViewModel.PreferencesViewModel.InitPackagePathsForInstall();
         }
 
         /// <summary>
@@ -91,6 +94,7 @@ namespace Dynamo.Wpf.Views
                 Actions.Close,
                 Categories.Preferences);
             viewModel.PackagePathsViewModel.SaveSettingCommand.Execute(null);
+            viewModel.CommitPackagePathsForInstall();
             PackagePathView.Dispose();
             Close();
         }
