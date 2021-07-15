@@ -210,7 +210,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
         // This makes sure the NVidia graphics card is used for rendering when available. In the absence of this
         // there are found to be issues with Helix crashing when the app is used with external monitors. 
         // See: https://github.com/helix-toolkit/helix-toolkit/wiki/Tips-on-performance-optimization-(WPF.SharpDX-and-UWP)#2-laptops-with-nvidia-optimus-dual-graphics-cardhelixtoolkitsharpdx-only
-        static NVOptimusEnabler nvEnabler = new NVOptimusEnabler();
+        private static NVOptimusEnabler nvEnabler = new NVOptimusEnabler();
 
 #if DEBUG
         private readonly Stopwatch renderTimer = new Stopwatch();
