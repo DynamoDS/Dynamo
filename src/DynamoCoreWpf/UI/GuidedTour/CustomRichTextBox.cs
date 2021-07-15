@@ -64,8 +64,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
             bool bBoldActive = false;
             bool bImageActive = false;
             bool bBulletListActive = false;
+            bool bHyperlinkActive = false;
             string bulletEntryText = string.Empty;
             string imageName = string.Empty;
+            string hyperlinkName = string.Empty;
 
             //This iteration is just for words in a paragraph if the text provided has several paragraphs then an additional foreach cycle needs to be added for iterating paragraphs
             foreach (string word in Text.Split(' ').ToList())
@@ -91,20 +93,31 @@ namespace Dynamo.Wpf.UI.GuidedTour
                     bBulletListActive = true;
                 }
 
-                //A format for inserting a hyperlink between text was found
-                //The hyperlink name is the next word followed by the # char and the URL value is the one followed after the = char
+                //A format for inserting a hyperlink between text was found              
                 if (word.StartsWith("#"))
                 {
-                    string fullHyperlinkText = word.Substring(1, word.Length - 1);
-                    string linkName = fullHyperlinkText.Split('=')[1];
-                    string linkURL = linkName;
+                    bHyperlinkActive = true;
+                }
 
-                    Run run3 = new Run(fullHyperlinkText.Split('=')[0]);
-                    Hyperlink link = new Hyperlink(run3);
-                    link.IsEnabled = true;
-                    link.NavigateUri = new Uri(linkURL);
-                    link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
-                    para.Inlines.Add(link);
+                if (bHyperlinkActive)
+                {
+                    //Finding the end character that indicates the hyperlink is complete (no empty spaces are allowed in hyperlink URL just in the name)
+                    if (word.Contains("="))
+                    {
+                        string linkURL = word.Split('=')[1];
+                        hyperlinkName += word.Split('=')[0];
+
+                        Run run3 = new Run(hyperlinkName.Replace("#", ""));
+                        Hyperlink link = new Hyperlink(run3);
+                        link.IsEnabled = true;
+                        link.NavigateUri = new Uri(linkURL);
+                        link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+                        para.Inlines.Add(link);
+                        bHyperlinkActive = false;
+                    }
+                    //The hyperlink name is the next word followed by the # char (empty spaces are allowed) and the URL value is the one followed after the = char
+                    else
+                        hyperlinkName += word.Replace("#", "") + " ";
                 }
                 else if (bBoldActive)
                 {
@@ -157,7 +170,7 @@ namespace Dynamo.Wpf.UI.GuidedTour
             document.Blocks.Add(para);
 
             //Not all the tooltips contain bullet point when we insert the bullet points only if it was set
-            if(bulletedItemsList != null)
+            if (bulletedItemsList != null)
             {
                 document.Blocks.Add(bulletedItemsList);
                 bulletedItemsList = null;

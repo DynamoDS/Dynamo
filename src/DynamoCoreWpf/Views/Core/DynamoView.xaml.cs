@@ -2459,6 +2459,28 @@ namespace Dynamo.Controls
                 }
             };
             resourcesTooltip.Show();
+
+            //Survey Popup (final step)
+            var surveyPopupInfo = new HostControlInfo()
+            {
+                HostClass = string.Empty,
+                PopupPlacement = PlacementMode.Right,
+                HostUIElement = sidebarGrid,
+                VerticalPopupOffSet = 500,
+                HorizontalPopupOffSet = 100
+            };
+            var surveyPopup = new Survey(surveyPopupInfo, 400, 450)
+            {
+                Sequence = 4,
+                ContentWidth = 300,
+                RatingTextTitle = Res.GetStartedGuideRatingTextTitle,
+                StepContent = new Content()
+                {
+                    Title = Res.GetStartedGuideSurveyTitle,
+                    FormattedText = Res.GetStartedGuideSurveyText
+                }
+            };
+            surveyPopup.Show();
         }
 
         public void Dispose()

@@ -3502,6 +3502,12 @@
                    G="128"
                    B="128"/>
 
+    <SolidColorBrush x:Key="PopupRatingControlBackColor" 
+                             Color="#F5F5F5" />
+
+    <SolidColorBrush x:Key="CheckMarkBackColor" 
+                             Color="#87B340" />
+
     <!--Style for the buttons in a Tooltip part of the Dynamo Guided Tours-->
     <Style x:Key="CaretButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="5"/>
@@ -3661,4 +3667,18 @@
         <Setter Property="BorderThickness" Value="0"/>
     </Style>
 
+</ResourceDictionary>
+    <Style x:Key="SurveyTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="MinHeight" Value="50"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+    </Style>
+
+    <Style x:Key="RatingTitleLabelStyle" TargetType="{x:Type Label}">
+        <Setter Property="FontFamily" Value="Artifakt Element"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#3C3C3C"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>

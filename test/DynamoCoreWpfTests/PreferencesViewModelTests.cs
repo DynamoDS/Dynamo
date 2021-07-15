@@ -104,10 +104,9 @@ namespace DynamoCoreWpfTests
             // Remove path
             preferencesVM.PackagePathsViewModel.RootLocations.Remove(@"D:\");
 
-            // Check that the selection has changed and is not empty
+            // Check that the selection has changed and now points to default AppData.
             var selection = preferencesVM.SelectedPackagePathForInstall;
-            Assert.AreNotEqual(@"D:\", selection);
-            Assert.IsFalse(string.IsNullOrEmpty(selection));
+            Assert.AreEqual(GetAppDataFolder(), selection);
 
             // Check that the path is not in the list
             Assert.IsFalse(preferencesVM.PackagePathsForInstall.Contains(@"D:\"));
