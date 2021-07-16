@@ -168,7 +168,7 @@ namespace DynamoCoreWpfTests
             DynamoSelection.Instance.Selection.AddUnique(nodeView.ViewModel.NodeModel);
             noteView.ViewModel.PinToNodeCommand.Execute(null);
 
-            var distanceToNode = 12;
+            var distanceToNode = 16;
 
             var noteModel = noteView.ViewModel.Model;
             var nodeModel = nodeView.ViewModel.NodeModel;
@@ -203,7 +203,7 @@ namespace DynamoCoreWpfTests
             noteView.ViewModel.PinToNodeCommand.Execute(null);
 
             //Assert that distance to node adjusts to error state
-            var distanceToNode = 32;
+            var distanceToNode = 36;
             Assert.AreEqual(noteModel.CenterX, nodeModel.CenterX);
             Assert.AreEqual(noteModel.CenterY, nodeModel.CenterY - (nodeModel.Height * 0.5) - (noteModel.Height * 0.5) - distanceToNode);
         }
