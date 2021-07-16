@@ -599,7 +599,7 @@ namespace Dynamo.Controls
             switch (state)
             {
                 case PreviewState.ExecutionPreview:
-                    return ExecutionPreviewBrush;
+                    return NoneBrush;
                 case PreviewState.None:
                     return NoneBrush;
                 case PreviewState.Selection:
@@ -1512,7 +1512,7 @@ namespace Dynamo.Controls
         {
             double number = (double)System.Convert.ChangeType(value, typeof(double));
 
-            if (number <= .5)
+            if (number <= 0.4)
                 return false;
 
             return true;

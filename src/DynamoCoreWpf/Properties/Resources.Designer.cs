@@ -493,6 +493,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Groups.
+        /// </summary>
+        public static string ContextMenuGroups {
+            get {
+                return ResourceManager.GetString("ContextMenuGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hide all geometry preview.
         /// </summary>
         public static string ContextMenuHideAllGeometry {
@@ -3672,7 +3681,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Help....
+        ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string NodeContextMenuHelp {
             get {
@@ -3708,7 +3717,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rename Node....
+        ///   Looks up a localized string similar to Rename.
         /// </summary>
         public static string NodeContextMenuRenameNode {
             get {

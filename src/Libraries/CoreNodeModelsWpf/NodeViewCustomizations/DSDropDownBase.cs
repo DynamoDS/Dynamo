@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Media;
 using CoreNodeModels;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -25,7 +26,9 @@ namespace CoreNodeModelsWpf.Nodes
                 MinWidth = 100,
                 Height = Configurations.PortHeightInPixels,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Center
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = new SolidColorBrush(System.Windows.Media.Colors.Red),
+                Foreground = new SolidColorBrush(System.Windows.Media.Colors.Orange),
             };
             nodeView.inputGrid.Children.Add(combo);
             System.Windows.Controls.Grid.SetColumn(combo, 0);

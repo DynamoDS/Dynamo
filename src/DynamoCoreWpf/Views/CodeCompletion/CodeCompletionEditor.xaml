@@ -40,7 +40,7 @@
         </Border>
         <TextBlock
             x:Name="WatermarkLabel"
-            Margin="3,0,3,0"
+            Margin="3,5,3,0"
             Padding="8,3"
             FontFamily="{StaticResource ArtifaktElementRegular}"
             FontSize="14px"

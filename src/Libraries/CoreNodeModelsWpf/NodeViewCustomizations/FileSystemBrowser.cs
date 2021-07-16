@@ -46,7 +46,7 @@ namespace DSCore.File
                 tb.ScrollToHorizontalOffset(double.PositiveInfinity);
                 nodeView.ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
             };
-            tb.Margin = new Thickness(0, 5, 0, 5);
+            tb.Margin = new Thickness(0, 8, 0, 5);
 
             var sp = new StackPanel();
             sp.Children.Add(readFileButton);

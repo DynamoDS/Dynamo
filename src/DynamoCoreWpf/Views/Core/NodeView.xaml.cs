@@ -408,6 +408,14 @@ namespace Dynamo.Controls
 
             var view = WpfUtilities.FindUpVisualTree<DynamoView>(this);
             ViewModel.DynamoViewModel.OnRequestReturnFocusToView();
+
+            if (ViewModel.WorkspaceViewModel.Zoom < 0.4)
+            {
+                grid.ContextMenu.IsOpen = true;
+                e.Handled = true;
+                return;
+            }
+
             view.mainGrid.Focus();
 
             Guid nodeGuid = ViewModel.NodeModel.GUID;
@@ -685,6 +693,7 @@ namespace Dynamo.Controls
 
         private void OptionsButton_Click(object sender, RoutedEventArgs e)
         {
+            grid.ContextMenu.DataContext = viewModel;
             grid.ContextMenu.IsOpen = true;
         }
     }

@@ -7,6 +7,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using CoreNodeModels.Input;
 using Dynamo.Controls;
+using Dynamo.UI;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
 using Color = System.Windows.Media.Color;
@@ -38,9 +39,10 @@ namespace CoreNodeModelsWpf.Nodes
             rbFalse.FontFamily = new System.Windows.Media.FontFamily("Artifakt Element");
             rbFalse.FontSize = 16;
 
-
             rbTrue.VerticalAlignment = VerticalAlignment.Center;
             rbFalse.VerticalAlignment = VerticalAlignment.Center;
+
+
 
             //use a unique name for the button group
             //so other instances of this element don't get confused
@@ -80,6 +82,9 @@ namespace CoreNodeModelsWpf.Nodes
                 Converter = new InverseBoolDisplay()
             };
             rbFalse.SetBinding(ToggleButton.IsCheckedProperty, rbFalseBinding);
+
+            rbTrue.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RadioButton"];
+            rbFalse.Style = (Style)SharedDictionaryManager.DynamoModernDictionary["RadioButton"];
         }
 
         public void Dispose()

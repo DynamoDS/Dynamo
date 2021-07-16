@@ -248,6 +248,39 @@ namespace Dynamo.ViewModels
             get { return nodeLogic.State; }
         }
 
+        /// <summary>
+        /// This is a UI placeholder for future functionality relating to Alerts
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfAlerts
+        {
+            get
+            {
+                Random rnd = new Random();
+                return rnd.Next(1, 200);
+            }
+            set
+            {
+                NumberOfAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfAlerts));
+            }
+        }
+
+        /// <summary>
+        /// This is a UI placeholder for future functionality relating to Alerts
+        /// </summary>
+        [JsonIgnore]
+        public int NumberOfDismissedAlerts
+        {
+
+            get => 107;
+            set
+            {
+                NumberOfDismissedAlerts = value;
+                RaisePropertyChanged(nameof(NumberOfDismissedAlerts));
+            }
+        }
+
         [JsonIgnore]
         public string Description
         {

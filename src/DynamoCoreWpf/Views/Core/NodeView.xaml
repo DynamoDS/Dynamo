@@ -36,7 +36,6 @@
         </Grid.ColumnDefinitions>
 
         <!--  CONTEXT MENU  -->
-
         <Grid.ContextMenu>
             <ContextMenu Name="MainContextMenu" x:FieldModifier="public">
                 <ContextMenu.Resources>
@@ -46,33 +45,83 @@
                             <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
                         </ResourceDictionary.MergedDictionaries>
                         <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Height" Value="30" />
+                            <Setter Property="Width" Value="240" />
+                            <Setter Property="Padding" Value="15,0,0,0" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <Grid
-                                            x:Name="myGrid"
-                                            Margin="0,0,0,6"
+                                        <DockPanel
+                                            x:Name="dockPanel"
+                                            HorizontalAlignment="Stretch"
+                                            Background="Transparent"
                                             SnapsToDevicePixels="true">
                                             <ContentPresenter
-                                                x:Name="content"
+                                                x:Name="ContentPresenter"
                                                 Margin="{TemplateBinding Padding}"
+                                                VerticalAlignment="Center"
                                                 ContentSource="Header"
+                                                DockPanel.Dock="Left"
                                                 RecognizesAccessKey="True"
                                                 SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                                 TextBlock.Foreground="#EEEEEE" />
+                                            <Border
+                                                x:Name="dismissedAlertsBadge"
+                                                Height="15"
+                                                MinWidth="15"
+                                                Margin="7,0,0,1"
+                                                VerticalAlignment="Center"
+                                                Background="#EBEBEB"
+                                                CornerRadius="7.5"
+                                                DockPanel.Dock="Left"
+                                                Visibility="Hidden">
+                                                <Label
+                                                    Padding="2,2,2,0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    HorizontalContentAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
+                                                    FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                    FontSize="9px"
+                                                    Foreground="#4D4D4D" />
+                                            </Border>
+                                            <Label
+                                                x:Name="subMenuArrow"
+                                                Margin="0,0,15,7"
+                                                Padding="0"
+                                                VerticalAlignment="Center"
+                                                Content="&gt;"
+                                                DockPanel.Dock="Right"
+                                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                FontSize="13px"
+                                                Foreground="#6AC0E7">
+                                                <Label.RenderTransform>
+                                                    <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                                                </Label.RenderTransform>
+                                                <Label.Style>
+                                                    <Style TargetType="{x:Type Label}">
+                                                        <Setter Property="Visibility" Value="Hidden" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Label.Style>
+                                            </Label>
                                             <Popup
                                                 x:Name="PART_Popup"
                                                 AllowsTransparency="true"
                                                 Focusable="false"
-                                                HorizontalOffset="1"
+                                                HorizontalOffset="0"
                                                 IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                Placement="Bottom"
-                                                PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}"
-                                                VerticalOffset="-1">
+                                                Placement="Left"
+                                                VerticalOffset="-2">
                                                 <Border
                                                     Background="{TemplateBinding Background}"
-                                                    BorderBrush="White"
-                                                    BorderThickness="2">
+                                                    BorderBrush="Transparent"
+                                                    BorderThickness="0">
                                                     <ScrollViewer
                                                         x:Name="SubMenuScrollViewer"
                                                         CanContentScroll="true"
@@ -90,13 +139,35 @@
                                                     </ScrollViewer>
                                                 </Border>
                                             </Popup>
-                                        </Grid>
+                                        </DockPanel>
                                         <ControlTemplate.Triggers>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="content" Property="TextBlock.Foreground" Value="Blue" />
-                                                <Setter TargetName="myGrid" Property="Background" Value="Black" />
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
                                             </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                                                <Setter TargetName="dockPanel" Property="Background" Value="#282828" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="False">
+                                                <Setter TargetName="dockPanel" Property="Background" Value="#666666" />
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="Dismissed Alerts">
+                                                <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
                                         </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+                            <Setter Property="OverridesDefaultStyle" Value="true" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Separator}">
+                                        <Border
+                                            Height="1"
+                                            Margin="15,8,15,8"
+                                            Background="#AFAFAF" />
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -107,18 +178,42 @@
                     Name="deleteElem_cm"
                     Command="{Binding Path=DeleteCommand}"
                     Header="{x:Static p:Resources.ContextMenuDelete}" />
+                <MenuItem Header="{x:Static p:Resources.ContextMenuGroups}">
+                    <MenuItem
+                        Name="createGroup_cm"
+                        Command="{Binding Path=CreateGroupCommand}"
+                        Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
+                    <MenuItem
+                        Name="unGroup_cm"
+                        Command="{Binding Path=UngroupCommand}"
+                        Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
+                    <MenuItem
+                        Name="addtoGroup"
+                        Command="{Binding Path=AddToGroupCommand}"
+                        Header="{x:Static p:Resources.ContextAddGroupFromSelection}" />
+                </MenuItem>
                 <MenuItem
-                    Name="createGroup_cm"
-                    Command="{Binding Path=CreateGroupCommand}"
-                    Header="{x:Static p:Resources.ContextCreateGroupFromSelection}" />
+                    Name="isVisible_cm"
+                    Command="{Binding Path=ToggleIsVisibleCommand}"
+                    Header="{x:Static p:Resources.NodeContextMenuPreview}"
+                    IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
+                    Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                 <MenuItem
-                    Name="unGroup_cm"
-                    Command="{Binding Path=UngroupCommand}"
-                    Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
+                    Name="nodeIsFrozen"
+                    Command="{Binding Path=ToggleIsFrozenCommand}"
+                    Header="{x:Static p:Resources.NodesRunStatus}"
+                    IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
+                    IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
                 <MenuItem
-                    Name="addtoGroup"
-                    Command="{Binding Path=AddToGroupCommand}"
-                    Header="{x:Static p:Resources.ContextAddGroupFromSelection}" />
+                    Name="isDisplayLabelsEnabled_cm"
+                    Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
+                    IsCheckable="True"
+                    IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
+                    IsEnabled="{Binding Path=CanDisplayLabels}" />
+                <MenuItem
+                    Name="rename_cm"
+                    Command="{Binding Path=RenameCommand}"
+                    Header="{x:Static p:Resources.NodeContextMenuRenameNode}" />
                 <MenuItem Header="{x:Static p:Resources.ContextMenuLacing}" Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}, Mode=OneWay}">
                     <MenuItem
                         Command="{Binding Path=SetLacingTypeCommand}"
@@ -145,35 +240,8 @@
                         IsCheckable="True"
                         IsChecked="{Binding Path=ArgumentLacing, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=CrossProduct, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem
-                    Name="nodeIsFrozen"
-                    Command="{Binding Path=ToggleIsFrozenCommand}"
-                    Header="{x:Static p:Resources.NodesRunStatus}"
-                    IsChecked="{Binding IsFrozenExplicitly, Mode=OneWay}"
-                    IsEnabled="{Binding CanToggleFrozen, Mode=OneWay}" />
-                <MenuItem
-                    Name="isVisible_cm"
-                    Command="{Binding Path=ToggleIsVisibleCommand}"
-                    Header="{x:Static p:Resources.NodeContextMenuPreview}"
-                    IsChecked="{Binding Path=IsVisible, Mode=OneWay}"
-                    Visibility="{Binding Path=ShowsVisibilityToggles, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem
-                    Name="isDisplayLabelsEnabled_cm"
-                    Header="{x:Static p:Resources.NodeContextMenuShowLabels}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=IsDisplayingLabels, Mode=TwoWay}"
-                    IsEnabled="{Binding Path=CanDisplayLabels}" />
-                <MenuItem
-                    Name="enablePeriodicUpdate"
-                    Header="{x:Static p:Resources.NodeContextMenuEnablePeriodicUpdate}"
-                    IsCheckable="True"
-                    IsChecked="{Binding Path=EnablePeriodicUpdate, Mode=OneWay}"
-                    IsEnabled="False"
-                    Visibility="{Binding PeriodicUpdateVisibility}" />
-                <MenuItem
-                    Name="rename_cm"
-                    Command="{Binding Path=RenameCommand}"
-                    Header="{x:Static p:Resources.NodeContextMenuRenameNode}" />
+                <MenuItem Name="dismissedAlerts" Header="Dismissed Alerts" />
+                <Separator />
                 <MenuItem
                     Name="isInput_cm"
                     Header="{x:Static p:Resources.NodeContextMenuIsInput}"
@@ -186,11 +254,7 @@
                     IsCheckable="True"
                     IsChecked="{Binding Path=IsSetAsOutput, Mode=TwoWay}"
                     Visibility="{Binding Path=IsOutput, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-                <MenuItem Header="{x:Static p:Resources.ContextSelectConnectedHeader}">
-                    <MenuItem Command="{Binding Path=SelectConnectedUpstreamCommand}" Header="{x:Static p:Resources.ContextSelectConnectedUpstream}" />
-                    <MenuItem Command="{Binding Path=SelectConnectedDownstreamCommand}" Header="{x:Static p:Resources.ContextSelectConnectedDownstream}" />
-                    <MenuItem Command="{Binding Path=SelectConnectedUpAndDownstreamCommand}" Header="{x:Static p:Resources.ContextSelectConnectedUpstreamDownstream}" />
-                </MenuItem>
+                <Separator />
                 <MenuItem
                     Name="help_cm"
                     Command="{Binding Path=ShowHelpCommand}"
@@ -209,10 +273,10 @@
                                 <ControlTemplate TargetType="{x:Type ContextMenu}">
                                     <Border
                                         x:Name="Border"
-                                        Padding="17,15"
                                         Background="#666666"
                                         BorderThickness="0px">
                                         <StackPanel
+                                            Margin="0,5"
                                             ClipToBounds="True"
                                             IsItemsHost="True"
                                             Orientation="Vertical" />
@@ -222,27 +286,18 @@
                         </Setter>
                     </Style>
                 </ContextMenu.Style>
-
             </ContextMenu>
         </Grid.ContextMenu>
-
-        <!--
-            Border
-            Name="NodeMask"
-            Background="White"
-            CornerRadius="7" />
-        -->
 
         <Border
             Name="customNodeBorder0"
             Grid.Row="0"
             Grid.ColumnSpan="3"
-            Height="6"
-            Margin="8,0,8,-1"
+            Height="8"
+            Margin="16,0"
             VerticalAlignment="Bottom"
-            Background="#dbd7d1"
-            BorderBrush="#aaaaaa"
-            BorderThickness="1"
+            Background="#959595"
+            CornerRadius="6,6,0,0"
             Canvas.ZIndex="1">
             <Border.Visibility>
                 <Binding
@@ -258,11 +313,10 @@
             Grid.Row="0"
             Grid.ColumnSpan="3"
             Height="4"
-            Margin="4,0,4,-1"
+            Margin="8,0"
             VerticalAlignment="Bottom"
-            Background="#dbd7d1"
-            BorderBrush="#888888"
-            BorderThickness="1"
+            Background="#747474"
+            CornerRadius="6,6,0,0"
             Canvas.ZIndex="2">
             <Border.Visibility>
                 <Binding
@@ -273,6 +327,7 @@
             </Border.Visibility>
         </Border>
 
+        <!--  Node Body Background  -->
         <Border
             Name="nodeBackground"
             Grid.Row="1"
@@ -282,6 +337,7 @@
             Canvas.ZIndex="10"
             CornerRadius="8,8,0,0" />
 
+        <!--  Node Header Background  -->
         <Border
             Name="nameBackground"
             Grid.Row="1"
@@ -339,47 +395,17 @@
             </Rectangle>
         </Border>
 
-        <Rectangle
-            Name="frozenBorder"
-            Grid.Row="1"
-            Grid.RowSpan="3"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Margin="-8"
-            Canvas.ZIndex="21"
-            Fill="#6DD2FF"
-            Opacity=".2"
-            StrokeThickness="3">
-            <Rectangle.Style>
-                <Style TargetType="{x:Type Rectangle}">
-                    <Setter Property="Visibility" Value="Hidden" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsFrozen}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Rectangle.Style>
-        </Rectangle>
-
+        <!--  Displays Tooltip when the user's mouse hovers over the node header  -->
         <Border
             Name="previewStateNameBlock"
             Grid.Row="1"
             Grid.ColumnSpan="3"
             Margin="1,1,1,1"
-            Background="#99B8CA"
             Canvas.ZIndex="12"
             MouseDown="NameBlock_OnMouseDown"
             Opacity=".4"
             Style="{StaticResource SZoomFadePreview}"
             ToolTipService.ShowDuration="60000">
-            <Border.Visibility>
-                <Binding
-                    Converter="{StaticResource InverseBoolToVisibilityConverter}"
-                    Mode="OneWay"
-                    Path="IsVisible"
-                    UpdateSourceTrigger="PropertyChanged" />
-            </Border.Visibility>
             <Border.ToolTip>
                 <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                     <Grid>
@@ -409,33 +435,15 @@
             </Border.ToolTip>
         </Border>
 
-        <Border
-            Name="previewState"
-            Grid.Row="2"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            Margin="1,1,1,1"
-            Background="#99B8CA"
-            Canvas.ZIndex="12"
-            Opacity=".4"
-            Style="{StaticResource SZoomFadePreview}">
-            <Border.Visibility>
-                <Binding
-                    Converter="{StaticResource InverseBoolToVisibilityConverter}"
-                    Mode="OneWay"
-                    Path="IsVisible"
-                    UpdateSourceTrigger="PropertyChanged" />
-            </Border.Visibility>
-        </Border>
-
-        <StackPanel
+        <!--  Displays the node's header content, such as its icon, name and whether it's been renamed  -->
+        <DockPanel
             Name="nodeHeaderContent"
             Grid.Row="1"
             Grid.ColumnSpan="3"
-            Margin="10,6,50,6"
-            HorizontalAlignment="Left"
+            Margin="10,6"
+            HorizontalAlignment="Stretch"
             Panel.ZIndex="12"
-            Orientation="Horizontal">
+            FlowDirection="LeftToRight">
             <Ellipse
                 Width="30"
                 Height="30"
@@ -461,39 +469,37 @@
                         UpdateSourceTrigger="PropertyChanged" />
                 </TextBlock.Foreground>
             </TextBlock>
-        </StackPanel>
+            <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
+            <Grid
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Panel.ZIndex="100"
+                Background="Transparent"
+                DockPanel.Dock="Right">
+                <Ellipse
+                    Name="nodeRenamedBlueDot"
+                    Width="9"
+                    Height="9"
+                    Margin="5"
+                    Fill="{StaticResource Blue300Brush}"
+                    Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+                <Grid.ToolTip>
+                    <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock
+                                Padding="8,10"
+                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
+                                TextAlignment="Center"
+                                TextWrapping="Wrap" />
+                        </Grid>
+                    </dynui:DynamoToolTip>
+                </Grid.ToolTip>
+            </Grid>
+        </DockPanel>
 
-        <!--  Ellipse sits within Grid to increase size of MouseOver/ToolTip area  -->
-        <Grid
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="0,0,10,0"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Panel.ZIndex="100"
-            Background="Transparent">
-            <Ellipse
-                Name="nodeRenamedBlueDot"
-                Width="9"
-                Height="9"
-                Margin="5"
-                Fill="{StaticResource Blue300Brush}"
-                Visibility="{Binding IsRenamed, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
-            <Grid.ToolTip>
-                <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
-                    <Grid>
-                        <TextBlock
-                            Padding="8,10"
-                            FontFamily="{StaticResource ArtifaktElementRegular}"
-                            FontSize="14"
-                            FontWeight="Medium"
-                            Text="{Binding Path=OriginalName, UpdateSourceTrigger=PropertyChanged, StringFormat='Renamed from {0}'}"
-                            TextAlignment="Center"
-                            TextWrapping="Wrap" />
-                    </Grid>
-                </dynui:DynamoToolTip>
-            </Grid.ToolTip>
-        </Grid>
 
         <!--  INPUT PORTS  -->
         <ItemsControl
@@ -614,27 +620,80 @@
                 </Button.Style>
             </Button>
             <Grid
-                Name="WarningsGlyph"
+                Name="AlertsGlyph"
                 Width="Auto"
-                Height="15"
-                MinWidth="15"
-                Margin="3,0"
-                Visibility="Visible">
-                <Border Background="#EBEBEB" CornerRadius="7">
+                Height="20"
+                MinWidth="20"
+                Margin="3,0">
+                <Border Background="#EBEBEB" CornerRadius="10">
                     <Label
-                        Padding="2,2,2,0"
+                        Padding="3,2,3,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        Content="1"
+                        Content="{Binding NumberOfAlerts, UpdateSourceTrigger=PropertyChanged}"
                         FontFamily="{StaticResource ArtifaktElementRegular}"
-                        FontSize="9px"
-                        Foreground="#000000" />
+                        FontSize="10px"
+                        Foreground="#000000"
+                        Style="{StaticResource SZoomFadeLabel}" />
                 </Border>
-
             </Grid>
-
+            <Label
+                x:Name="LacingIconGlyph"
+                Margin="2,0,0,0"
+                Padding="0,2,0,0"
+                VerticalContentAlignment="Center"
+                Content="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToAbbreviationConverter}}"
+                FontFamily="{StaticResource ArtifaktElementRegular}"
+                FontSize="10px"
+                Foreground="#EBEBEB"
+                Style="{StaticResource SZoomFadeLabel}"
+                ToolTip="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToTooltipConverter}}"
+                Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}" />
+            <Grid
+                x:Name="HiddenEyeGlyph"
+                Width="20px"
+                Height="15px"
+                Margin="3,0,0,0"
+                Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityConverter}, Mode=OneWay}">
+                <Path
+                    Canvas.ZIndex="2"
+                    Data="M20,0 L1,15"
+                    Stroke="#3C3C3C"
+                    StrokeThickness="3" />
+                <Path
+                    Canvas.ZIndex="2"
+                    Data="M20,0 L1,15"
+                    Stroke="#EEEEEE" />
+                <Ellipse
+                    Width="8px"
+                    Height="8px"
+                    Canvas.ZIndex="1"
+                    Stroke="#EEEEEE" />
+                <Path Stroke="#EEEEEE" StrokeThickness="1">
+                    <Path.Data>
+                        <PathGeometry>
+                            <PathGeometry.Figures>
+                                <PathFigure IsClosed="False" StartPoint="0,7.5">
+                                    <ArcSegment Point="20,7.5" Size="20 50" />
+                                </PathFigure>
+                            </PathGeometry.Figures>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+                <Path Stroke="#EEEEEE" StrokeThickness="1">
+                    <Path.Data>
+                        <PathGeometry>
+                            <PathGeometry.Figures>
+                                <PathFigure IsClosed="False" StartPoint="20,7.5">
+                                    <ArcSegment Point="0,7.5" Size="20 40" />
+                                </PathFigure>
+                            </PathGeometry.Figures>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+            </Grid>
         </StackPanel>
 
         <Grid
@@ -656,8 +715,7 @@
             Grid.ColumnSpan="3"
             Canvas.ZIndex="40"
             Fill="Transparent"
-            IsHitTestVisible="False"
-            StrokeThickness="1" />
+            IsHitTestVisible="False" />
 
         <Border
             Name="selectionBorder"
@@ -670,15 +728,7 @@
             BorderThickness="4"
             Canvas.ZIndex="41"
             CornerRadius="8,8,0,0"
-            IsHitTestVisible="False">
-            <Border.Visibility>
-                <Binding
-                    Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}"
-                    Mode="OneWay"
-                    Path="PreviewState"
-                    UpdateSourceTrigger="PropertyChanged" />
-            </Border.Visibility>
-        </Border>
+            IsHitTestVisible="False" />
 
         <!--  DO NOT ERASE. THIS IS FOR DEBUGGING  -->
         <!--<Rectangle Name="ForceReexecBorder"

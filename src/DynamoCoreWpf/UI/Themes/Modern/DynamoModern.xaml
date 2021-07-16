@@ -870,11 +870,14 @@
                             <Grid x:Name="inner">
                                 <Label
                                     x:Name="text"
+                                    Margin="0,1,0,0"
                                     Padding="0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
                                     HorizontalContentAlignment="Center"
                                     VerticalContentAlignment="Center"
                                     Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
-                                    FontSize="27px"
+                                    FontSize="17px"
                                     FontWeight="Bold"
                                     Style="{StaticResource SZoomFadeLabel}" />
                             </Grid>
@@ -894,10 +897,12 @@
                         </Trigger>
 
                         <DataTrigger Binding="{Binding ElementName=text, Path=Content}" Value="+">
+                            <Setter TargetName="text" Property="FontSize" Value="24px" />
                             <Setter TargetName="roundedBorder" Property="CornerRadius" Value="4,0,0,4" />
                             <Setter TargetName="roundedBorder" Property="Margin" Value="0,0,0.5,0" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ElementName=text, Path=Content}" Value="-">
+                            <Setter TargetName="text" Property="FontSize" Value="24px" />
                             <Setter TargetName="roundedBorder" Property="CornerRadius" Value="0,4,4,0" />
                             <Setter TargetName="roundedBorder" Property="Margin" Value="0.5,0,0,0" />
                         </DataTrigger>
@@ -907,7 +912,78 @@
         </Setter>
     </Style>
 
-
+    <Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <BulletDecorator Background="Transparent" Cursor="Hand">
+                        <BulletDecorator.Bullet>
+                            <Grid
+                                Width="18"
+                                Height="18"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <!--  Define size of the Bullet  -->
+                                <!--  The two borders  -->
+                                <Ellipse
+                                    Name="RadioOuter"
+                                    Width="12px"
+                                    Height="12px"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Fill="Transparent"
+                                    Stroke="#C0C0C0"
+                                    StrokeThickness="1" />
+                                <Ellipse
+                                    Name="RadioMark"
+                                    Width="12px"
+                                    Height="12px"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Fill="Transparent"
+                                    Stroke="#EEEEEE"
+                                    StrokeThickness="3 "
+                                    Visibility="Hidden" />
+                                <Ellipse
+                                    Name="RadioHover"
+                                    Width="16px"
+                                    Height="16px"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Fill="Transparent"
+                                    Opacity="0.2"
+                                    Stroke="White"
+                                    StrokeThickness="2"
+                                    Visibility="Hidden" />
+                            </Grid>
+                        </BulletDecorator.Bullet>
+                        <!--  Text element  -->
+                        <TextBlock
+                            Margin="3,1,6,0"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            FontSize="16px"
+                            Foreground="#EEEEEE">
+                            <ContentPresenter />
+                        </TextBlock>
+                    </BulletDecorator>
+                    <!--  If item is checked, trigger the visibility of the mark  -->
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="true">
+                            <!--  If item is checked, trigger the visibility of the mark and change the color of the selected bullet into a darker gray for better highlighting  -->
+                            <Setter TargetName="RadioMark" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="RadioOuter" Property="Stroke" Value="#FFADADAD" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter TargetName="RadioHover" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="RadioHover" Property="StrokeThickness" Value="4px" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <Style TargetType="{x:Type CheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />
