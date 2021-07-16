@@ -1771,9 +1771,10 @@ namespace Dynamo.Controls
 
     public sealed class NullToPinWidthConverter : IValueConverter
     {
+        public const double PIN_WIDTH = 4;
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? 0 : 4;
+            return value == null ? 0 : PIN_WIDTH;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
