@@ -1333,6 +1333,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="UI\Images\alert.png" />
+    <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
     <Resource Include="UI\Images\menu_16_16.png" />
     <Resource Include="UI\Images\caret_down.png" />
     <Resource Include="UI\Images\caret_up.png" />

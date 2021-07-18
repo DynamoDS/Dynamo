@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Configuration;
+using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Prompts;
@@ -87,10 +89,20 @@ namespace Dynamo.Nodes
         void OnNoteTextPreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             System.Guid noteGuid = this.ViewModel.Model.GUID;
-            ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
-                new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
+            if (this.ViewModel.Model.PinnedNode == null)
+            {
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(noteGuid, Keyboard.Modifiers.AsDynamoType()));
+            }
+            else
+            {
+                var nodeGuid = this.ViewModel.Model.PinnedNode.GUID;
+                var selectionGuids = new List<Guid> { noteGuid, nodeGuid };
+                ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(
+                    new DynCmd.SelectModelCommand(selectionGuids, Keyboard.Modifiers.AsDynamoType()));
+            }
             BringToFront();
-           
+
         }
 
         private void OnEditItemClick(object sender, RoutedEventArgs e)
@@ -188,6 +200,7 @@ namespace Dynamo.Nodes
         private void noteTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             Panel.SetZIndex(noteTextBox, 0);
+            ViewModel.IsOnEditMode = false;
         }
 
         private void noteTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
