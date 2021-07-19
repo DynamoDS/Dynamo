@@ -108,6 +108,91 @@ namespace Dynamo.PackageManager.Tests
         }
 
         [Test]
+        public void PackageDoesNotReloadOnAbsenceOfNewPackagePath()
+        {
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            var packagesLoaded = false;
+            loader.PackagesLoaded += (x) => { packagesLoaded = true; };
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+                
+            };
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(true, packagesLoaded);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Hello") == 1);
+
+            packagesLoaded = false;
+            loadPackageParams.NewPaths = new List<string>();
+            // This function is called upon addition of new package paths in the UI.
+            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            Assert.AreEqual(18, loader.LocalPackages.Count());
+
+            // Assert packages are not reloaded if there are no new package paths.
+            Assert.False(packagesLoaded);
+
+            // Assert there are no duplication of nodes after trying to reload packages.
+            Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Hello") == 1);
+
+        }
+
+        [Test]
+        public void NoPackageNodeDuplicatesOnAddingNewPackagePath()
+        {
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+            loader.RequestLoadNodeLibrary += libraryLoader.LoadLibraryAndSuppressZTSearchImport;
+
+            var packagesLoaded = false;
+            loader.PackagesLoaded += (x) => { packagesLoaded = true; };
+            CurrentDynamoModel.PreferenceSettings.CustomPackageFolders = new List<string>();
+            var loadPackageParams = new LoadPackageParams
+            {
+                Preferences = CurrentDynamoModel.PreferenceSettings,
+            };
+            loader.LoadAll(loadPackageParams);
+            Assert.AreEqual(18, loader.LocalPackages.Count());
+            Assert.AreEqual(true, packagesLoaded);
+
+            var entries = CurrentDynamoModel.SearchModel.SearchEntries.ToList();
+            Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Hello") == 1);
+
+            packagesLoaded = false;
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory, BuiltInPackagesTestDir });
+            loadPackageParams.NewPaths = new List<string> { Path.Combine(TestDirectory, "builtinpackages testdir") };
+            // This function is called upon addition of new package paths in the UI.
+            loader.LoadCustomNodesAndPackages(loadPackageParams, CurrentDynamoModel.CustomNodeManager);
+            Assert.AreEqual(19, loader.LocalPackages.Count());
+
+            // Assert packages are reloaded if there are new package paths.
+            Assert.True(packagesLoaded);
+
+            // Assert there are no duplication of nodes after trying to reload packages.
+            Assert.IsTrue(entries.Count(x => x.FullName == "Package.Package.Package.Hello") == 1);
+
+        }
+
+        [Test]
         public void PackageLoaderDoesNotRequestsViewExtensionsBeLoaded()
         {
             var loader = GetPackageLoader();
