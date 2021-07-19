@@ -305,11 +305,19 @@ namespace Dynamo.ViewModels
             // If there is no nodeModel or there is already a node pinned
             // Note cannot be pinned to any node
 
-            var nodeToPin = DynamoSelection.Instance.Selection
-                    .OfType<NodeModel>()
-                    .FirstOrDefault();
+            var nodeSelection = DynamoSelection.Instance.Selection
+                    .OfType<NodeModel>();
 
-            if (nodeToPin == null || Model.PinnedNode != null)
+            if (nodeSelection == null || nodeSelection.Count() != 1)
+                return false;
+
+            var nodeToPin = nodeSelection.FirstOrDefault();
+
+            var nodeAlreadyPinned = WorkspaceViewModel.Notes
+                .Where(n => n.PinnedNode != null)
+                .Any(n => n.PinnedNode.NodeModel.GUID == nodeToPin.GUID);
+
+            if (nodeToPin == null || Model.PinnedNode != null || nodeAlreadyPinned)
             {
                 return false;
             }
