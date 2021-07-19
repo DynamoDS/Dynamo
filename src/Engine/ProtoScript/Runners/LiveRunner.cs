@@ -1512,14 +1512,14 @@ namespace ProtoScript.Runners
         {
             runnerCore.Options.IsDeltaCompile = true;
 
+            if (syncData == null)
+            {
+                ResetForDeltaExecution();
+                return;
+            }
+
             using (DebugModes.IsEnabled("DumpByteCode") ? new DebugByteCodeMode(runnerCore) : null)
             {
-                if (syncData == null)
-                {
-                    ResetForDeltaExecution();
-                    return;
-                }
-
                 // Get AST list that need to be executed
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
