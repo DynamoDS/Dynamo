@@ -342,6 +342,66 @@ namespace Autodesk.DesignScript.Interfaces
         void ClearLabels();
     }
 
+    /// <summary>
+    /// Represents instance matrices and references to tessellated geometry in the RenderPackage
+    /// </summary>
+    public interface IRenderInstances
+    {
+        /// <summary>
+        /// A list of mesh vertices ranges that have associated texture maps
+        /// </summary>
+        Dictionary<Guid,Tuple<int, int>> MeshVerticesRangesAssociatedWithInstancing { get; }
+
+        /// <summary>
+        /// Set a color texture map for a specific range of mesh vertices
+        /// </summary>
+        /// <param name="startIndex">The index associated with the first vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="endIndex">The index associated with the last vertex in MeshVertices we want to associate with the instance matrices
+        /// <param name="id">A unique id associated with this tessellation geometry for instancing</param>
+        void AddInstanceGuidForMeshVerticesRange(int startIndex, int endIndex, Guid id);
+
+        /// <summary>
+        /// Set the transform using a series of floats. The resulting transform is applied to all geometry in the renderPackage.
+        /// Following conventional matrix notation, m11 is the value of the first row and first column, and m12
+        /// is the value of the first row and second column.
+        /// NOTE: This method should set the matrix exactly as described by the caller.
+        /// </summary>
+        /// <param name="m11"></param>
+        /// <param name="m12"></param>
+        /// <param name="m13"></param>
+        /// <param name="m14"></param>
+        /// <param name="m21"></param>
+        /// <param name="m22"></param>
+        /// <param name="m23"></param>
+        /// <param name="m24"></param>
+        /// <param name="m31"></param>
+        /// <param name="m32"></param>
+        /// <param name="m33"></param>
+        /// <param name="m34"></param>
+        /// <param name="m41"></param>
+        /// <param name="m42"></param>
+        /// <param name="m43"></param>
+        /// <param name="m44"></param>
+        void AddInstanceMatrix(float m11, float m12, float m13, float m14,
+           float m21, float m22, float m23, float m24,
+           float m31, float m32, float m33, float m34,
+           float m41, float m42, float m43, float m44, Guid id);
+
+        /// <summary>
+        /// Set the transform as a float array, this transform is applied to all geometry in the renderPackage.
+        /// This matrix should be laid out as follows in row vector order:
+        /// [Xx,Xy,Xz, 0,
+        ///  Yx, Yy, Yz, 0,
+        ///  Zx, Zy, Zz, 0,
+        ///  offsetX, offsetY, offsetZ, W]
+        /// NOTE: This method should transform the matrix from row vector order to whatever form is needed by the implementation.
+        /// When converting from ProtoGeometry CoordinateSystem form to input matrix, set the first row to the X axis of the CS,
+        /// the second row to the Y axis of the CS, the third row to the Z axis of the CS, and the last row to the CS origin, where W = 1. 
+        /// </summary>
+        /// <param name="matrix"></param>
+        void AddInstanceMatrix(float[] matrix, Guid id);
+    }
+
     public enum VertexType
     {
         Point,
@@ -421,6 +481,32 @@ namespace Autodesk.DesignScript.Interfaces
         /// <param name="matrix"></param>
         void SetTransform(double[] matrix);
         
+    }
+
+    /// <summary>
+    /// An interface that defines items which graphics are defined by a single base tessellation and instance locations defined by 4x4 transformation matrices.
+    /// </summary>
+    public interface IInstanceableItem
+    {
+        /// <summary>
+        /// A Guid used to reference the base tessellation geometry that will be transformed for all instances
+        /// </summary>
+        Guid BaseTessellationGuid { get; }
+
+        /// <summary>
+        /// Adds the base graphics/tesselation data in given render package object.
+        /// </summary>
+        /// <param name="package">The render package, where graphics data to be
+        /// pushed.</param>
+        /// <param name="parameters"></param>
+        void AddBaseTessellation(IRenderPackage package, TessellationParameters parameters);
+
+        /// <summary>
+        /// Adds an instance matrix for this geometry.
+        /// </summary>
+        /// <param name="package">The render package, where graphics data to be
+        /// pushed.</param>
+        void AddInstance(IRenderPackage package);
     }
 
 
