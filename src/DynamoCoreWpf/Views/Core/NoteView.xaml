@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui="clr-namespace:Dynamo.UI"
+             xmlns:ui="clr-namespace:Dynamo.UI"            
+             xmlns:controls="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="200" 
              MinWidth="50"
@@ -17,12 +18,42 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ResourceDictionary>
+                    <controls:NullToVisibiltyConverter x:Key="nullToVisibiltyConverter"  />
+                    <controls:NullToPinWidthConverter x:Key="nullToPinWidthConverter"  />
+                </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
+    <UserControl.Style>
+        <Style TargetType="UserControl" BasedOn="{StaticResource NoteUserControlStyle}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="True">
+                    <Setter Property="Background" Value="LightBlue"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsSelected, Mode=OneWay}" Value="False">
+                    <Setter Property="Background" Value="#EEE"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="Background" Value="#EEE"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                    <Setter Property="BorderThickness" Value="1"/>
+                </DataTrigger>
+
+                <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="False">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
     
     <Grid Name="BaseGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="{Binding Path=PinnedNode, Converter={StaticResource nullToPinWidthConverter }, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid.RowDefinitions>
         <Grid.ContextMenu>
             <ContextMenu>               
                 <MenuItem Name="deleteItem" Header="{x:Static p:Resources.NoteViewContextMenuDelete}" Click="OnDeleteItemClick"  />               
@@ -36,11 +67,15 @@
                 <MenuItem Name="unGroup_cm"
                           Header="{x:Static p:Resources.ContextUnGroupFromSelection}"
                           Command="{Binding Path=UngroupCommand}" />
+                <MenuItem Name="pinToNode"
+                          Header="{x:Static p:Resources.ContextPinToNode}" 
+                          Command="{Binding Path=PinToNodeCommand}"/>
+
             </ContextMenu>
         </Grid.ContextMenu>
         <Canvas Background="{x:Null}">
         </Canvas>
-        
+
         <TextBox
             Name ="noteTextBox"
             Grid.Column="0" Grid.Row="0"
@@ -55,7 +90,7 @@
                 <Style TargetType="TextBox" BasedOn="{StaticResource NoteTextBoxStyle}">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="True">
-                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="BorderThickness" Value="0"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=IsOnEditMode, Mode=OneWay}" Value="False">
                             <Setter Property="BorderThickness" Value="0"/>
@@ -68,7 +103,7 @@
         <TextBlock 
             Name="noteText"
             Grid.Column="0" Grid.Row="0"
-            Text="{Binding Path=Text, Mode=OneWay}" 
+            Text="{Binding Path=Text, Mode=OneWay}"   
             >
             <TextBlock.Style>
                 <Style TargetType="TextBlock" BasedOn="{StaticResource NoteTextBlockStyle}">
@@ -83,5 +118,21 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
+        <Button
+            Name="pinButton"
+            Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+            Background="{x:Null}"
+            BorderThickness="0"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Bottom"
+            Margin="3"
+            Command="{Binding Path=UnpinFromNodeCommand}"
+            Visibility="{Binding Path=PinnedNode, Converter={StaticResource nullToVisibiltyConverter }, UpdateSourceTrigger=PropertyChanged}"
+            >
+            <Image
+                Source="/DynamoCoreWpf;component/UI/Images/Pin_NoBackground_16px.png"
+                Width="10"
+                />
+        </Button>
     </Grid>
 </UserControl>

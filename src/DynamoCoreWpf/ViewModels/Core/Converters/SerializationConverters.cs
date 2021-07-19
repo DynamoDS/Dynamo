@@ -54,6 +54,10 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
                 convertedNote.X = note.Left;
                 convertedNote.Y = note.Top;
                 convertedNote.AnnotationText = note.Text;
+                if (note.PinnedNode != null)
+                {
+                    convertedNote.PinnedNode = note.PinnedNode.NodeModel;
+                }
 
                 serializer.Serialize(writer, new AnnotationViewModel(workspaceView, convertedNote));
             }
@@ -127,7 +131,12 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WritePropertyName("TextblockHeight");
             writer.WriteValue(anno.TextBlockHeight);
             writer.WritePropertyName("Background");
-            writer.WriteValue(anno.Background != null ? anno.Background : "");
+            writer.WriteValue(anno.Background != null ? anno.Background : "");            
+            if (anno.PinnedNode != null)
+            {
+                writer.WritePropertyName(nameof(anno.PinnedNode));
+                writer.WriteValue(anno.PinnedNode.GUID.ToString("N"));
+            }
             writer.WriteEndObject();
         }
     }

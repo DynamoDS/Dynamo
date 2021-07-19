@@ -58,5 +58,40 @@ namespace Dynamo.ViewModels
                 return _addToGroupCommand;
             }
         }
+
+        private DelegateCommand pinToNodeCommand;
+
+        /// <summary>
+        /// Command to pin the current note to a selected node
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand PinToNodeCommand
+        {
+            get
+            {
+                if (pinToNodeCommand == null)
+                {
+                    pinToNodeCommand = new DelegateCommand(PinToNode, CanPinToNode);
+                } 
+                return pinToNodeCommand;
+            }
+        }
+
+        private DelegateCommand unpinFromNodeCommand;
+        /// <summary>
+        /// Command to unpin the pinned node (sets it to null)
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand UnpinFromNodeCommand
+        {
+            get
+            {
+                if (unpinFromNodeCommand == null)
+                {
+                    unpinFromNodeCommand = new DelegateCommand(UnpinFromNode);
+                }
+                return unpinFromNodeCommand;
+            }
+        }
     }
 }
