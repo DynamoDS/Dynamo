@@ -92,9 +92,8 @@ namespace Dynamo.PackageManager
         }
 
         /// <summary>
-        /// Checks if the given (root) path is a subpath of the user data folder,
-        /// and then combines the extension path with root. If not, it simply combines the paths
-        /// and checks if the path is valid. If not, the root path is returned unchanged.
+        /// Combines the extension with the root path and returns it if the path exists. 
+        /// If not, the root path is returned unchanged.
         /// </summary>
         /// <param name="root">root path to transform</param>
         /// <param name="userDataFolder"></param>
@@ -382,6 +381,11 @@ namespace Dynamo.PackageManager
             OnPackagesLoaded(assemblies);
         }
 
+        /// <summary>
+        /// Scans and compiles any new packages contained in new package paths that are added.
+        /// Note: This method will still reload ALL packages in the VM even those that are not new.
+        /// </summary>
+        /// <param name="loadPackageParams"></param>
         private void LoadNewPackages(LoadPackageParams loadPackageParams)
         {
             foreach (var path in loadPackageParams.NewPaths)
@@ -408,21 +412,26 @@ namespace Dynamo.PackageManager
             }
         }
 
-        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        /// <summary>
+        /// This method is called when custom nodes and packages need to be reloaded if there are new package paths.
+        /// </summary>
+        /// <param name="loadPackageParams"></param>
+        /// <param name="customNodeManager"></param>
+        public void LoadNewCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             var packages = new List<Package>(localPackages);
-            foreach(var package in packages)
-            {
-                localPackages.Remove(package);
-            }
+            // Clear all existing packages so that they are not duplicated by adding them again when there are new paths in the mix.
+            localPackages.Clear();
             foreach (var path in loadPackageParams.Preferences.CustomPackageFolders)
             {
+                // Append the definitions subdirectory for custom nodes.
                 var dir = path == DynamoModel.BuiltInPackagesToken ? (pathManager as PathManager).BuiltinPackagesDirectory : path;
                 dir = TransformPath(dir, PathManager.DefinitionsDirectoryName);
 
                 customNodeManager.AddUninitializedCustomNodesInPath(dir, false, false);
             }
             LoadNewPackages(loadPackageParams);
+            // Restore the original set of packages that were already existing in order to keep this list current.
             localPackages.AddRange(packages);
         }
 
