@@ -38,6 +38,7 @@ using SharpDX;
 using Color = SharpDX.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 using GeometryModel3D = HelixToolkit.Wpf.SharpDX.GeometryModel3D;
+using Matrix = SharpDX.Matrix;
 using MeshBuilder = HelixToolkit.Wpf.SharpDX.MeshBuilder;
 using MeshGeometry3D = HelixToolkit.Wpf.SharpDX.MeshGeometry3D;
 using PerspectiveCamera = HelixToolkit.Wpf.SharpDX.PerspectiveCamera;
@@ -1837,35 +1838,82 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
                         { continue;}
 
                         //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
-                        //First sort the range data
-                        var sortedVerticesRange = new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
-                        sortedVerticesRange.Sort();
-                        sortedVerticesRange.Reverse();
+                        var verticesRange =
+                            new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithTextureMaps);
                         
-                        //Remove already generated mesh geometry from render package
-                        foreach (var range in sortedVerticesRange)
+                        RemoveMeshGeometryByRange(verticesRange, m);
+                    }
+
+                    //If we are using IRenderInstances data then we need to create a unique Geometry3D object for each instancable item and add instance transforms.  
+                    //If we any mesh geometry was not associated with a texture map, remove the previously added mesh data from the render package so the remaining mesh can be added to the scene.
+                    if (rp.MeshVerticesRangesAssociatedWithInstancing.Any())
+                    {
+                        //For each range of mesh vertices add the mesh data and instances to the scene
+                        var meshVertexCountTotal = 0;
+                        var j = 0;
+                        foreach (var item in rp.MeshVerticesRangesAssociatedWithInstancing)
                         {
-                            var i = range.Item1;
-                            var c = range.Item2 - range.Item1 + 1;
-                            m.Positions.RemoveRange(i,c);
-                            m.Colors.RemoveRange(i, c);
-                            m.Normals.RemoveRange(i, c);
-                            m.TextureCoordinates.RemoveRange(i, c);
+                            var range = item.Value;
+                            var index = range.Item1; //Start mesh vertex index
+                            var count = range.Item2 - range.Item1 + 1; //Count of mesh vertices
+                            var uniqueId = baseId + ":" + j + MeshKey;
+
+                            List<Matrix> instances;
+                            if (rp.instances.TryGetValue(item.Key, out instances))
+                            {
+                                AddMeshData(uniqueId, rp, index, count, drawDead, baseId, rp.Colors,
+                                    rp.ColorsStride, instances);
+                            }
+
+                            //Track cumulative total of mesh vertices added.
+                            meshVertexCountTotal += count;
+                            j++;
                         }
 
-                        //Regenerate Indices data
-                        var sequence = Enumerable.Range(0, m.Positions.Count);
-                        var newIndices = new IntCollection();
-                        newIndices.AddRange(sequence);
-                        m.Indices = newIndices;
+                        //If all the mesh regions had texture map data then we are done with mesh data.
+                        if (meshVertexCountTotal == m.Positions.Count)
+                        {
+                            continue;
+                        }
+
+                        //Otherwise, clean up the remaining mesh geometry data in the render package to exclude the regions already generated.
+                        var verticesRange =
+                            new List<Tuple<int, int>>(rp.MeshVerticesRangesAssociatedWithInstancing.Values.ToList());
+
+                        RemoveMeshGeometryByRange(verticesRange, m);
                     }
+
 
                     AddMeshData(id, rp, 0, m.Positions.Count, drawDead, baseId, rp.Colors, rp.ColorsStride);
                 }
             }
         }
 
-        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride)
+        private static void RemoveMeshGeometryByRange(List<Tuple<int, int>> verticesRange, MeshGeometry3D m)
+        {
+            //First sort the range data
+            verticesRange.Sort();
+            verticesRange.Reverse();
+
+            //Remove already generated mesh geometry from render package
+            foreach (var range in verticesRange)
+            {
+                var i = range.Item1;
+                var c = range.Item2 - range.Item1 + 1;
+                m.Positions.RemoveRange(i, c);
+                m.Colors.RemoveRange(i, c);
+                m.Normals.RemoveRange(i, c);
+                m.TextureCoordinates.RemoveRange(i, c);
+            }
+
+            //Regenerate Indices data
+            var sequence = Enumerable.Range(0, m.Positions.Count);
+            var newIndices = new IntCollection();
+            newIndices.AddRange(sequence);
+            m.Indices = newIndices;
+        }
+
+        private void AddMeshData(string id, HelixRenderPackage rp, int index, int count, bool drawDead, string baseId, IEnumerable<byte> colors, int stride, List<Matrix> intances = null)
         {
             FastList<Vector3> mPositions;
             FastList<Color4> mColors;
@@ -1938,7 +1986,13 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
 
             meshGeometry3D.Geometry = mesh;
             meshGeometry3D.Name = baseId;
+
+            if (intances != null)
+            {
+                meshGeometry3D.Instances = intances;
+            }
         }
+            
 
         /// <summary>
         /// Filters out packages that are considered invalid by Helix. This includes any package
