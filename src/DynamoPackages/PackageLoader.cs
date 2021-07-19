@@ -417,7 +417,7 @@ namespace Dynamo.PackageManager
         /// </summary>
         /// <param name="loadPackageParams"></param>
         /// <param name="customNodeManager"></param>
-        public void LoadNewCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
+        public void LoadCustomNodesAndPackages(LoadPackageParams loadPackageParams, CustomNodeManager customNodeManager)
         {
             var packages = new List<Package>(localPackages);
             // Clear all existing packages so that they are not duplicated by adding them again when there are new paths in the mix.
