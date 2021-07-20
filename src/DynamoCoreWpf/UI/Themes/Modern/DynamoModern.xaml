@@ -3388,13 +3388,19 @@
         <Setter Property="Foreground" Value="#222"/>
         <Setter Property="Padding" Value="10"/>
         <Setter Property="TextWrapping" Value="Wrap"/>
-        <Setter Property="TextBlock.Effect">
+    </Style>
+
+    <!--This style will be used for setting the style of the Note's user control-->
+    <Style x:Key="NoteUserControlStyle"
+           TargetType="UserControl">
+        <Setter Property="BorderBrush" Value="#549ee7"/>
+        <Setter Property="Effect">
             <Setter.Value>
                 <DropShadowEffect ShadowDepth="0" Color="#222" Opacity="0.25" BlurRadius="9.0" />
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <!--This Style will be used for the small trash icon button that appears when a new Style is created in the Visual Settings tab-->
     <Style x:Key="FlatIconButtonStyle" 
            TargetType="{x:Type Button}">

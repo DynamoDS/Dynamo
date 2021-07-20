@@ -2366,16 +2366,6 @@ namespace Dynamo.Models
             var notes = ClipBoard.OfType<NoteModel>();
             var annotations = ClipBoard.OfType<AnnotationModel>();
 
-            // Create the new NoteModel's
-            var newNoteModels = new List<NoteModel>();
-            foreach (var note in notes)
-            {
-                var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
-                //Store the old note as Key and newnote as value.
-                modelLookup.Add(note.GUID, noteModel);
-                newNoteModels.Add(noteModel);
-            }
-
             var xmlDoc = new XmlDocument();
 
             // Create the new NodeModel's
@@ -2411,6 +2401,25 @@ namespace Dynamo.Models
                     modelLookup.Add(node.GUID, newNode);
 
                     newNodeModels.Add(newNode);
+                }
+
+                // Create the new NoteModel's
+                var newNoteModels = new List<NoteModel>();
+                foreach (var note in notes)
+                {
+                    var noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid());
+                    if (note.PinnedNode != null)
+                    {
+                        ModelBase pinned;
+                        var pinnedNode =
+                            modelLookup.TryGetValue(note.PinnedNode.GUID, out pinned)
+                            ? pinned as NodeModel
+                            : CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == note.PinnedNode.GUID);
+                        noteModel = new NoteModel(note.X, note.Y, note.Text, Guid.NewGuid(), pinnedNode);
+                    }
+                    //Store the old note as Key and newnote as value.
+                    modelLookup.Add(note.GUID, noteModel);
+                    newNoteModels.Add(noteModel);
                 }
 
                 var newItems = newNodeModels.Concat<ModelBase>(newNoteModels);

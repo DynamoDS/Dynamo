@@ -614,6 +614,15 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Event to determine when Node is selected
+        /// </summary>
+        internal event EventHandler Selected;
+        internal void OnSelected(object sender, EventArgs e)
+        {
+            Selected?.Invoke(this, e);
+        }
+
         #endregion
 
         #region constructors
