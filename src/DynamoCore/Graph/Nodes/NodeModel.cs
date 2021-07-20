@@ -889,6 +889,7 @@ namespace Dynamo.Graph.Nodes
                 {
                     ComputeUpstreamOnDownstreamNodes();
                     OnUpdateASTCollection();
+                    RaisePropertyChanged("IsFrozen");
                 }
             }
         }

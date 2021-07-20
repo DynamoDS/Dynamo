@@ -28,7 +28,16 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-
+        <!--  Sets grid to 70% opacity when node is frozen  -->
+        <Grid.Style>
+            <Style>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsFrozen, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                        <Setter Property="Grid.Opacity" Value="0.7" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="40" />
@@ -450,7 +459,7 @@
                 Fill="#E6E6E6" />
             <TextBlock
                 Name="NameBlock"
-                Margin="10,0,0,0"
+                Margin="10,0,20,0"
                 VerticalAlignment="Center"
                 Background="{x:Null}"
                 FontFamily="{StaticResource ArtifaktElementRegular}"
@@ -500,7 +509,6 @@
             </Grid>
         </DockPanel>
 
-
         <!--  INPUT PORTS  -->
         <ItemsControl
             Name="inputPortControl"
@@ -517,7 +525,7 @@
             Name="outputPortControl"
             Grid.Row="2"
             Grid.Column="2"
-            Margin="0,8,0,8"
+            Margin="0,8,0,0"
             HorizontalContentAlignment="Stretch"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=OutPorts}"
@@ -558,7 +566,7 @@
             Margin="0,0,9,14"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Canvas.ZIndex="30"
+            Canvas.ZIndex="43"
             FlowDirection="RightToLeft"
             Orientation="Horizontal"
             Visibility="{Binding ShouldShowGlyphBar, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
@@ -632,7 +640,7 @@
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        Content="{Binding NumberOfAlerts, UpdateSourceTrigger=PropertyChanged}"
+                        Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
                         FontFamily="{StaticResource ArtifaktElementRegular}"
                         FontSize="10px"
                         Foreground="#000000"
@@ -718,6 +726,17 @@
             Canvas.ZIndex="40"
             Fill="Transparent"
             IsHitTestVisible="False" />
+
+        <Rectangle
+            Name="nodeIsFrozenOverlay"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Grid.ColumnSpan="3"
+            Margin="-8"
+            Canvas.ZIndex="0"
+            Fill="#BCD3EE"
+            IsHitTestVisible="True"
+            Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is selected  -->
         <Border

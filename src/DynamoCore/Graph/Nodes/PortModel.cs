@@ -36,6 +36,7 @@ namespace Dynamo.Graph.Nodes
         private bool keepListStructure = false;
         private int level = 1;
         private string toolTip;
+
         #endregion
 
         #region public members
@@ -302,7 +303,7 @@ namespace Dynamo.Graph.Nodes
             }
         }
         #endregion
-
+        
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {
@@ -315,7 +316,6 @@ namespace Dynamo.Graph.Nodes
             LineIndex = -1;
             this.toolTip = toolTip;
             this.Name = name;
-
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
         }

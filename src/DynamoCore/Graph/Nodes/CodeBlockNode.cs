@@ -855,7 +855,7 @@ namespace Dynamo.Graph.Nodes
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
                 {
                     LineIndex = def.Value - 1, // Logical line index.
-                    Height = Configurations.CodeBlockPortHeightInPixels
+                    Height = 20.0,
                 }));
             }
         }

@@ -54,6 +54,7 @@ namespace Dynamo.ViewModels
         {
             get { return _port.PortType; }
         }
+
         
         /// <summary>
         /// If port is selected.
@@ -539,25 +540,61 @@ namespace Dynamo.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (_port.PortType == PortType.Input && _port.DefaultValue == null && !_port.IsConnected)
+            if (_port.PortType == PortType.Input)
             {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
+                // Port has a default value, shows blue marker
+                if (_port.DefaultValue != null)
+                {
+                    if (!_port.IsConnected)
+                    {
+                        PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                    }
+                    else
+                    {
+                        PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                    }
+                }
+                else 
+                {
+                    // Port isn't connected and has no default value
+                    if (!_port.IsConnected)
+                    {
+                        PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
+                        PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
+                    }
+                    // Port is connected and has no default value
+                    else
+                    {
+                        // Special case for keeping list structure
+                        if (_port.UseLevels && _port.KeepListStructure)
+                        {
+                            PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
+                            PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                        }
+                        // Normal blue connected styling
+                        else
+                        {
+                            PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
+                            PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                        }
+                    }
+                }
             }
-            else if (_port.UseLevels && _port.KeepListStructure)
-            {
-                PortBackgroundColor = new SolidColorBrush(Color.FromRgb(94, 165, 196));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-            }
-            else if (_port.IsConnected)
-            {
-                PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
-            }
+            // It's an output port
             else
             {
-                PortBackgroundColor = new SolidColorBrush(Colors.Transparent); 
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                if (_port.IsConnected)
+                {
+                    PortBackgroundColor = new SolidColorBrush(Color.FromArgb(51, 153, 224, 255));
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(106, 192, 231));
+                }
+                else
+                {
+                    PortBackgroundColor = new SolidColorBrush(Colors.Transparent);
+                    PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(204, 204, 204));
+                }
             }
         }
     }
