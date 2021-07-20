@@ -39,6 +39,12 @@ namespace DynamoCoreWpfTests
             View.RunSettingsControl.RunTypesComboBox.SelectedItem = View.RunSettingsControl.RunTypesComboBox.Items[1];
             DispatcherUtil.DoEvents();
 
+            //This will get the Circle.ByCenterPointRadius node (connected to the CodeBlock)
+            var nodeView = NodeViewWithGuid("bcf1c893-5311-4dff-9a04-203ffb9d426c");
+
+            //Checking that the node is not in a warning state before changing the scale factor
+            Assert.AreEqual(nodeView.ViewModel.State, ElementState.Active);
+
             //Creates the Preferences dialog and the ScaleFactor = 2 ( Medium)
             var preferencesWindow = new PreferencesView(View);
             preferencesWindow.Show();
@@ -50,10 +56,7 @@ namespace DynamoCoreWpfTests
 
             //Close the Preferences Dialog and due that the ScaleFactor was updated the MarkNodesAsModifiedAndRequestRun() method will be called
             preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
-            DispatcherUtil.DoEvents();
-
-            //This will get the Circle.ByCenterPointRadius node (connected to the CodeBlock)
-            var nodeView = NodeViewWithGuid("bcf1c893-5311-4dff-9a04-203ffb9d426c");
+            DispatcherUtil.DoEvents();        
 
             //When RunType = Automatic when the graph is executed the ByCenterPointRadius node change status to Warning due that ScaleFactor = Small
             Assert.AreEqual(nodeView.ViewModel.State, ElementState.Warning);
@@ -84,7 +87,7 @@ namespace DynamoCoreWpfTests
             //This will get the Circle.ByCenterPointRadius node (connected to the CodeBlock)
             var nodeView = NodeViewWithGuid("bcf1c893-5311-4dff-9a04-203ffb9d426c");
 
-            //When RunType = Automatic when the graph is executed the ByCenterPointRadius node change status to Warning due that ScaleFactor = Small
+            //When RunType = Manual and the MarkNodesAsModifiedAndRequestRun() method is called, the graph won't be executed and the node state will remain in Active
             Assert.AreEqual(nodeView.ViewModel.State, ElementState.Active);
         }
     }
