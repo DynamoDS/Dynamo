@@ -16,6 +16,7 @@ using Dynamo.Wpf.Views;
 using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using SystemTestServices;
+using Moq;
 
 namespace DynamoCoreWpfTests
 {
@@ -233,14 +234,16 @@ namespace DynamoCoreWpfTests
             {
                 CustomPackageFolders = {@"Z:\" }
             };
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => setting.CustomPackageFolders);
 
-            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            PackageLoader loader = new PackageLoader(pathManager.Object);
             loader.PackagesLoaded += Loader_PackagesLoaded;
 
-LoadPackageParams loadParams = new LoadPackageParams
+            LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             var vm= new PackagePathViewModel(loader, loadParams, customNodeManager);
@@ -298,11 +301,14 @@ LoadPackageParams loadParams = new LoadPackageParams
         #region Setup methods
         private PackagePathViewModel CreatePackagePathViewModel(PreferenceSettings setting)
         {
-            PackageLoader loader = new PackageLoader(setting.CustomPackageFolders);
+            var pathManager = new Mock<IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => setting.CustomPackageFolders);
+
+            PackageLoader loader = new PackageLoader(pathManager.Object);
             LoadPackageParams loadParams = new LoadPackageParams
             {
                 Preferences = setting,
-                PathManager = Model.PathManager
             };
             CustomNodeManager customNodeManager = Model.CustomNodeManager;
             return new PackagePathViewModel(loader, loadParams, customNodeManager);

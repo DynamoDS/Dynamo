@@ -147,11 +147,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// Returns all installed packages
-        /// </summary>
-        public ObservableCollection<PackageViewModel> LocalPackages => installedPackagesViewModel.LocalPackages;
-
         //This includes all the properties that can be set on the General tab
         #region General Properties
         /// <summary>
@@ -773,7 +768,6 @@ namespace Dynamo.ViewModels
             var loadPackagesParams = new LoadPackageParams
             {
                 Preferences = preferenceSettings,
-                PathManager = dynamoViewModel.Model.PathManager,
             };
             var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
             var packageLoader = dynamoViewModel.Model.GetPackageManagerExtension()?.PackageLoader;            

@@ -72,7 +72,7 @@ namespace Dynamo.ViewModels
             get { return loadPackageParams.Preferences; }
         }
         private readonly PackageLoader packageLoader;
-        private readonly LoadPackageParams loadPackageParams;
+        private LoadPackageParams loadPackageParams;
         private readonly CustomNodeManager customNodeManager;
 
         public DelegateCommand AddPathCommand { get; private set; }
@@ -244,10 +244,11 @@ namespace Dynamo.ViewModels
             //if paths are modified, reload packages and update prefs.
             if (!setting.CustomPackageFolders.SequenceEqual(newpaths))
             {
+                loadPackageParams.NewPaths = newpaths.Except(setting.CustomPackageFolders);
                 setting.CustomPackageFolders = newpaths;
-                if (this.packageLoader != null)
+                if (packageLoader != null)
                 {
-                    this.packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
+                    packageLoader.LoadCustomNodesAndPackages(loadPackageParams, customNodeManager);
                 }
             }
         }
