@@ -539,10 +539,10 @@ namespace Dynamo.ViewModels
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (_port.DefaultValue == null && !_port.IsConnected && _node.State == ElementState.Warning)
+            if (_port.PortType == PortType.Input && _port.DefaultValue == null && !_port.IsConnected)
             {
                 PortBackgroundColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
-                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(107, 67, 67));
+                PortBorderBrushColor = new SolidColorBrush(Color.FromRgb(244, 134, 134));
             }
             else if (_port.UseLevels && _port.KeepListStructure)
             {

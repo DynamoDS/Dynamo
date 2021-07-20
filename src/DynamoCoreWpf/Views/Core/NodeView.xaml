@@ -289,6 +289,7 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
+        <!--  Graphical Styling of Custom Nodes  -->
         <Border
             Name="customNodeBorder0"
             Grid.Row="0"
@@ -297,8 +298,8 @@
             Margin="16,0"
             VerticalAlignment="Bottom"
             Background="#959595"
-            CornerRadius="6,6,0,0"
-            Canvas.ZIndex="1">
+            Canvas.ZIndex="1"
+            CornerRadius="6,6,0,0">
             <Border.Visibility>
                 <Binding
                     Converter="{StaticResource BooleanToVisibilityConverter}"
@@ -307,7 +308,6 @@
                     UpdateSourceTrigger="PropertyChanged" />
             </Border.Visibility>
         </Border>
-
         <Border
             Name="customNodeBorder1"
             Grid.Row="0"
@@ -316,8 +316,8 @@
             Margin="8,0"
             VerticalAlignment="Bottom"
             Background="#747474"
-            CornerRadius="6,6,0,0"
-            Canvas.ZIndex="2">
+            Canvas.ZIndex="2"
+            CornerRadius="6,6,0,0">
             <Border.Visibility>
                 <Binding
                     Converter="{StaticResource BooleanToVisibilityConverter}"
@@ -701,7 +701,9 @@
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Margin="5"
+            Margin="13,0,0,14"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
             x:FieldModifier="public"
             Visibility="Collapsed"
             ZIndex="50">
@@ -717,6 +719,7 @@
             Fill="Transparent"
             IsHitTestVisible="False" />
 
+        <!--  Displays when the node is selected  -->
         <Border
             Name="selectionBorder"
             Grid.Row="1"
