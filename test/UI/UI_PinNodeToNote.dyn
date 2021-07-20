@@ -1,0 +1,155 @@
+{
+  "Uuid": "16021c19-84f4-4d40-9452-423e3f5b2b2a",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "UI_PinNodeToNote",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "nodeA;",
+      "Id": "cf46488c6631458ebba025098e2273f5",
+      "Inputs": [
+        {
+          "Id": "a8fc49bbca234565abc8f59a4d840612",
+          "Name": "nodeA",
+          "Description": "nodeA",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "16186e06dd3847e488ec052fb3d22a10",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "nodeB;",
+      "Id": "6af656b847624e77a5f922ef0ab333b5",
+      "Inputs": [
+        {
+          "Id": "21650e66e1e64e3aa513c3674b619776",
+          "Name": "nodeB",
+          "Description": "nodeB",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "87c2545a7c664d589c371430a5982e06",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    }
+  ],
+  "Connectors": [],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "ExtensionWorkspaceData": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.11.1.4675",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "cf46488c6631458ebba025098e2273f5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 283.59999999999991,
+        "Y": 247.99999999999989
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "6af656b847624e77a5f922ef0ab333b5",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 600.39999999999986,
+        "Y": 251.39999999999986
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "c589c7ffa4814a21bb18ac01ed9486fc",
+        "Title": "noteA",
+        "Nodes": [],
+        "Left": 363.19999999999993,
+        "Top": 148.79999999999984,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "308588096c6b47a6a7774db14c016b0c",
+        "Title": "noteB",
+        "Nodes": [],
+        "Left": 651.19999999999993,
+        "Top": 149.5999999999998,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
