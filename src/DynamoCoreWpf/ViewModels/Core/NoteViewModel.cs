@@ -308,7 +308,11 @@ namespace Dynamo.ViewModels
             var nodeSelection = DynamoSelection.Instance.Selection
                     .OfType<NodeModel>();
 
-            if (nodeSelection == null || nodeSelection.Count() != 1)
+            var noteSelection = DynamoSelection.Instance.Selection
+                    .OfType<NoteModel>();
+
+            if (nodeSelection == null || noteSelection == null || 
+                nodeSelection.Count() != 1 || noteSelection.Count() != 1)
                 return false;
 
             var nodeToPin = nodeSelection.FirstOrDefault();
