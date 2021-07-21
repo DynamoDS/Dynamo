@@ -1,22 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Dynamo.Controls;
-using Dynamo.Graph;
-using Dynamo.Graph.Annotations;
-using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI;
-using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using TextBox = System.Windows.Controls.TextBox;
 
