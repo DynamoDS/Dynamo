@@ -37,31 +37,13 @@ namespace Dynamo.ViewModels
         }
 
         [JsonIgnore]
-        public double AnnotationRectangleWidth
-        {
-            get => annotationRectangleWidth;
-            set
-            {
-                annotationRectangleWidth = value;
-                RaisePropertyChanged(nameof(AnnotationRectangleWidth));
-            }
-        }
-
-        [JsonIgnore]
-        public double AnnotationRectangleHeight
-        {
-            get => annotationRectangleHeight;
-            set
-            {
-                annotationRectangleHeight = value;
-                RaisePropertyChanged(nameof(AnnotationRectangleHeight));
-            }
-        }
-
-        [JsonIgnore]
         public Double Width
         {
             get { return annotationModel.Width; }
+            set
+            {
+                annotationModel.Width = value;
+            }
         }
 
         [JsonIgnore]
@@ -71,6 +53,16 @@ namespace Dynamo.ViewModels
             set
             {
                 annotationModel.Height = value;              
+            }
+        }
+
+        [JsonIgnore]
+        public double ModelAreaHeight
+        {
+            get => annotationModel.ModelAreaHeight;
+            set
+            {
+                annotationModel.ModelAreaHeight = value;
             }
         }
 
@@ -329,23 +321,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonIgnore]
-        public Rect2D DropBoundary
-        {
-            get
-            {
-                var rect = new Rect2D();
-                rect.X = Left;
-                rect.Y = Top;
-                rect.Height = AnnotationRectangleHeight + AnnotationModel.TextBlockHeight;
-                rect.Width = AnnotationRectangleWidth;
-                return rect;
-            }
-        }
-
         private bool nodeHoveringState;
         [JsonIgnore]
         public bool NodeHoveringState 
@@ -379,9 +354,6 @@ namespace Dynamo.ViewModels
                 var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
                 WorkspaceViewModel.DynamoViewModel.ExecuteCommand(selectNothing);
             }
-
-            AnnotationRectangleWidth = model.Width;
-            AnnotationRectangleHeight = model.Height;
 
             InPorts = new ObservableCollection<PortViewModel>();
             OutPorts = new ObservableCollection<PortViewModel>();
@@ -494,17 +466,9 @@ namespace Dynamo.ViewModels
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");
-                    if (AnnotationModel.Width >= AnnotationRectangleWidth)
-                    {
-                        AnnotationRectangleWidth = AnnotationModel.Width;
-                    }
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
-                    if (AnnotationModel.Height >= AnnotationRectangleHeight)
-                    {
-                        AnnotationRectangleHeight = AnnotationModel.Height;
-                    }
                     break;
                 case nameof(AnnotationDescriptionText):
                     RaisePropertyChanged(nameof(AnnotationDescriptionText));
@@ -531,7 +495,9 @@ namespace Dynamo.ViewModels
                 case nameof(AnnotationModel.Nodes):
                     ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
                     break;
-
+                case nameof(AnnotationModel.ModelAreaHeight):
+                    RaisePropertyChanged(nameof(ModelAreaHeight));
+                    break;
             }
         }
 

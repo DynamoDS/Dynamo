@@ -74,7 +74,8 @@ namespace Dynamo.Graph.Annotations
 
         private double height;
         /// <summary>
-        /// Returns height of the group
+        /// Returns the full height of the group.
+        /// That means ModelAreaHeight + TextBlockHeight 
         /// </summary>
         public override double Height
         {
@@ -87,6 +88,17 @@ namespace Dynamo.Graph.Annotations
                 height = value;
                 RaisePropertyChanged("Height");
             }
+        }
+
+        private double modelAreaHeight;
+        /// <summary>
+        /// Returns the height of the area that all
+        /// model belonging to this group is encapsulated in.
+        /// </summary>
+        public double ModelAreaHeight
+        {
+            get { return modelAreaHeight; }
+            set { modelAreaHeight = value; RaisePropertyChanged(nameof(ModelAreaHeight)); }
         }
 
         private string text;
@@ -193,7 +205,7 @@ namespace Dynamo.Graph.Annotations
         /// </summary>      
         public override Rect2D Rect
         {
-            get { return new Rect2D(this.X, this.Y, this.Width, this.Height + this.TextBlockHeight); }
+            get { return new Rect2D(this.X, this.Y, this.Width, this.Height); }
         }
 
         private double textBlockHeight;
@@ -309,6 +321,10 @@ namespace Dynamo.Graph.Annotations
                 case "Text":
                     UpdateBoundaryFromSelection();
                     break;
+                case nameof(ModelBase.Height):
+                case nameof(ModelBase.Width):
+                    UpdateBoundaryFromSelection();
+                    break;
             }
         }
 
@@ -365,7 +381,8 @@ namespace Dynamo.Graph.Annotations
                 this.X = region.X;              
                 this.Y = region.Y;
                 this.Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
-                this.Height = region.Height;
+                this.ModelAreaHeight = region.Height;
+                this.Height = region.Height + TextBlockHeight;
 
                 //Initial Height is to store the Actual height of the group.
                 //that is the height should be the initial height without the textblock height.

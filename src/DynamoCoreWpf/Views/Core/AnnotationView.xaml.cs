@@ -316,13 +316,6 @@ namespace Dynamo.Nodes
             }
         }
 
-        private void GroupExpander_Expanded(object sender, RoutedEventArgs e)
-        {
-
-            //this.ViewModel.IsExpanded = true;
-            SetTextHeight();
-        }
-
         private void SetTextHeight()
         {
             if (GroupDescriptionTextBlock is null || GroupTextBlock is null || ViewModel is null)
@@ -336,38 +329,28 @@ namespace Dynamo.Nodes
             ViewModel.AnnotationModel.TextBlockHeight = height;
         }
 
+        /// <summary>
+        /// When the group is expanded we need to trigger a boundary
+        /// update on the Model
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GroupExpander_Expanded(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.AnnotationModel.UpdateBoundaryFromSelection();
+            SetTextHeight();
+        }
+
+        /// <summary>
+        /// When the group is collapsed we set the ModelAreaHeight to (tbc)
+        /// and trigger a boundary update on the Model.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GroupExpander_Collapsed(object sender, RoutedEventArgs e)
         {
-            //this.inputPortControl.ItemContainerGenerator.StatusChanged += ItemContainerGenerator_StatusChanged;
-            //this.ViewModel.IsExpanded = false;
-            //ReDrawConnectors();
-        }
-
-        private void ReDrawConnectors()
-        {
-            var t = this.inputPortControl.ItemContainerGenerator.Items;
-            //foreach (var item in this.inputPortControl.Items.OfType<PortViewModel>())
-            //{
-            //    var newEndPoint = item.TranslatePoint(this.ViewModel.InPorts.First().Center, this.inputPortControl);
-            //    var t = ViewModel.WorkspaceViewModel.Connectors.Where(x => x.ActiveStartPort.GUID == this.ViewModel.InPorts.First().PortModel.GUID).FirstOrDefault();
-            //    //t.Redraw(newEndPoint);
-            //}
-        }
-
-        private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
-        {
-            var yAdjust = AnnotationRectangle.ActualHeight + e.VerticalChange;
-            var xAdjust = AnnotationRectangle.ActualWidth + e.HorizontalChange;
-
-            if (xAdjust >= ViewModel.Width)
-            {
-                ViewModel.AnnotationRectangleWidth = xAdjust;
-            }
-
-            if (yAdjust >= ViewModel.Height)
-            {
-                ViewModel.AnnotationRectangleHeight = yAdjust;
-            }
+            ViewModel.ModelAreaHeight = 140;
+            ViewModel?.AnnotationModel.UpdateBoundaryFromSelection();
         }
 
         private void lockUnlock_Click(object sender, RoutedEventArgs e)
@@ -381,25 +364,32 @@ namespace Dynamo.Nodes
             this.AnnotationGrid.ContextMenu.IsOpen = true;
         }
 
-        private void AnnotationGrid_MouseEnter(object sender, MouseEventArgs e)
+        private void ReDrawConnectors()
         {
-            var t = Mouse.Captured;
-            if (!DynamoSelection.Instance.Selection.Any())
-            {
-                return;
-            }
-
-            //ViewModel.AnnotationModel.Select();
-
-            //foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
+            var t = this.inputPortControl.ItemContainerGenerator.Items;
+            //foreach (var item in this.inputPortControl.Items.OfType<PortViewModel>())
             //{
-            //    if (!(modelb is AnnotationModel))
-            //    {
-            //        var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
-            //        ViewModel.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-            //    }
+            //    var newEndPoint = item.TranslatePoint(this.ViewModel.InPorts.First().Center, this.inputPortControl);
+            //    var t = ViewModel.WorkspaceViewModel.Connectors.Where(x => x.ActiveStartPort.GUID == this.ViewModel.InPorts.First().PortModel.GUID).FirstOrDefault();
+            //    //t.Redraw(newEndPoint);
             //}
-
         }
+
+        //private void AnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        //{
+        //    var yAdjust = AnnotationRectangle.ActualHeight + e.VerticalChange;
+        //    var xAdjust = AnnotationRectangle.ActualWidth + e.HorizontalChange;
+
+        //    if (xAdjust >= ViewModel.Width)
+        //    {
+        //        ViewModel.AnnotationRectangleWidth = xAdjust;
+        //    }
+
+        //    if (yAdjust >= ViewModel.Height)
+        //    {
+        //        ViewModel.AnnotationRectangleHeight = yAdjust;
+        //    }
+        //}
+
     }
 }

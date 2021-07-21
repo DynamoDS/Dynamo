@@ -467,7 +467,7 @@
         </Border>
                 
         <Expander x:Name="GroupExpander"
-                  Width="{Binding AnnotationRectangleWidth}" 
+                  Width="{Binding Width}" 
                   IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                   Expanded="GroupExpander_Expanded"
                   Collapsed="GroupExpander_Collapsed"
@@ -476,7 +476,7 @@
                 <Grid x:Name="TextBlockGrid"
                       Grid.Row="0"
                       Height="auto"
-                      MaxWidth="{Binding AnnotationRectangleWidth}"
+                      MaxWidth="{Binding Width}"
                       Margin="5,0,5,0"
                       VerticalAlignment="Top">
                     <Grid.RowDefinitions>
@@ -488,7 +488,7 @@
                         <Grid>
                             <TextBlock x:Name="GroupTextBlock"
                                        Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
-                                       MaxWidth="{Binding AnnotationRectangleWidth}"
+                                       MaxWidth="{Binding Width}"
                                        MinHeight="20"
                                        FontFamily="Trebuchet"
                                        FontSize="{Binding FontSize}"
@@ -502,7 +502,7 @@
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding AnnotationRectangleWidth}"
+                                     MaxWidth="{Binding Width}"
                                      MinHeight="20"
                                      FontFamily="Trebuchet"
                                      FontSize="{Binding FontSize}"
@@ -521,7 +521,7 @@
                             <TextBlock x:Name="GroupDescriptionTextBlock"
                                        Grid.Row="1"
                                        Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
-                                       MaxWidth="{Binding AnnotationRectangleWidth}"
+                                       MaxWidth="{Binding Width}"
                                        MinHeight="20"
                                        FontFamily="Trebuchet"
                                        FontSize="12"
@@ -535,7 +535,7 @@
                                      Visibility="Collapsed"
                                      Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
                                      TextWrapping="Wrap"
-                                     MaxWidth="{Binding AnnotationRectangleWidth}"
+                                     MaxWidth="{Binding Width}"
                                      MinHeight="20"
                                      FontFamily="Trebuchet"
                                      FontSize="12"
@@ -654,8 +654,8 @@
 
             <Grid>
                 <Border  Name="AnnotationRectangle"
-                         Width="{Binding AnnotationRectangleWidth, Mode=TwoWay}"
-                         Height="{Binding AnnotationRectangleHeight, Mode=TwoWay}"
+                         Width="{Binding Width}"
+                         Height="{Binding ModelAreaHeight}"
                          IsHitTestVisible="True"
                          Opacity="0.5">
                     <Border.Background>
@@ -663,18 +663,18 @@
                     </Border.Background>
                 </Border>
 
-                <Thumb 
+                <!--<Thumb 
                        Width="10"
                        Height="10"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
                        Margin="2,2,10,2"
-                       DragDelta="AnnotationRectangleThumb_DragDelta" />
+                       DragDelta="AnnotationRectangleThumb_DragDelta" />-->
             </Grid>
         </Expander>
         <Border x:Name="CollapsedAnnotationRectangle"
-                Width="{Binding AnnotationRectangleWidth}"
-                Height="143px"
+                Width="{Binding Width}"
+                Height="{Binding ModelAreaHeight}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Opacity="0.5"
                 Grid.Row="1">
