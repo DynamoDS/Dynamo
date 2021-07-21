@@ -793,13 +793,14 @@ namespace Dynamo.ViewModels
 
                     // Here we check if the mouse cursor is inside any Annotation groups
                     var dropGroup = owningWorkspace.Annotations
-                        .Where(x => x.DropBoundary.Contains(mouseCursor.X, mouseCursor.Y))
+                        .Where(x => x.AnnotationModel.Rect.Contains(mouseCursor.X, mouseCursor.Y))
                         .FirstOrDefault();
 
                     // If the dropGroup is null or any of the selected items is already in the dropGroup,
                     // we disable the drop border by setting NodeHoveringState to false
                     if (dropGroup is null ||
-                        dropGroup.Nodes.Intersect(DynamoSelection.Instance.Selection).Any())
+                        dropGroup.Nodes.Intersect(DynamoSelection.Instance.Selection).Any() ||
+                        owningWorkspace.Annotations.Any(x => x.Nodes.Intersect(DynamoSelection.Instance.Selection).Any()))
                     {
                         owningWorkspace.Annotations
                             .Where(x => x.NodeHoveringState)
