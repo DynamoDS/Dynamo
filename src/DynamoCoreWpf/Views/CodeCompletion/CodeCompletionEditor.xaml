@@ -18,7 +18,7 @@
     </UserControl.Resources>
     <Grid>
         <Border
-            Padding="2"
+            Padding="2,6"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             BorderBrush="#959595"

@@ -174,6 +174,10 @@ namespace Dynamo.Graph.Nodes
                     case PortType.Input:
                         return new Point2D(Owner.X, y);
                     case PortType.Output:
+                        if (Owner is CodeBlockNodeModel)
+                        {
+                            return new Point2D(Owner.X + Owner.Width, y + 10.5);
+                        }
                         return new Point2D(Owner.X + Owner.Width, y);
                 }
 

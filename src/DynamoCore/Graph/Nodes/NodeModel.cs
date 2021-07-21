@@ -69,7 +69,7 @@ namespace Dynamo.Graph.Nodes
 
         #endregion
 
-        internal const double HeaderHeight = 62;
+        internal const double HeaderHeight = 66;
 
         #region public members
 
@@ -1961,8 +1961,11 @@ namespace Dynamo.Graph.Nodes
 
         private void OnPortConnected(PortModel port, ConnectorModel connector)
         {
-            port.RaisePortIsConnectedChanged();
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
@@ -1974,21 +1977,26 @@ namespace Dynamo.Graph.Nodes
             if (null != handler) handler(port, connector);
             OnConnectorAdded(connector);
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         private void OnPortDisconnected(PortModel port, ConnectorModel connector)
         {
-            port.RaisePortIsConnectedChanged();
             var handler = PortDisconnected;
             if (null != handler) handler(port);
 
-            if (port.PortType != PortType.Input) return;
+            if (port.PortType != PortType.Input)
+            {
+                port.RaisePortIsConnectedChanged();
+                return;
+            }
 
             var data = InPorts.IndexOf(port);
             var startPort = connector.Start;
             DisconnectInput(data);
             startPort.Owner.DisconnectOutput(startPort.Owner.OutPorts.IndexOf(startPort), data, this);
             OnNodeModified();
+            port.RaisePortIsConnectedChanged();
         }
 
         #endregion

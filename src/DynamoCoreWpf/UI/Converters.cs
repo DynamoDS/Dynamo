@@ -1380,6 +1380,21 @@ namespace Dynamo.Controls
         }
     }
 
+    public class NodeOriginalNameToMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            string originalName = value.ToString();
+            if (originalName == "Code Block") return new Thickness(0, 19, 0, 0);
+            return new Thickness(0, 8, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

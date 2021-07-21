@@ -344,7 +344,7 @@
             Grid.ColumnSpan="3"
             Background="{StaticResource DarkerGreyBrush}"
             Canvas.ZIndex="10"
-            CornerRadius="8,8,0,0" />
+            CornerRadius="10,10,0,0" />
 
         <!--  Node Header Background  -->
         <Border
@@ -453,10 +453,12 @@
             HorizontalAlignment="Stretch"
             Panel.ZIndex="12"
             FlowDirection="LeftToRight">
-            <Ellipse
-                Width="30"
-                Height="30"
-                Fill="#E6E6E6" />
+            <Ellipse Width="30" Height="30">
+                <Ellipse.Fill>
+                    <ImageBrush ImageSource="{Binding ImageSource}" Stretch="UniformToFill" />
+                </Ellipse.Fill>
+            </Ellipse>
+
             <TextBlock
                 Name="NameBlock"
                 Margin="10,0,20,0"
@@ -525,7 +527,7 @@
             Name="outputPortControl"
             Grid.Row="2"
             Grid.Column="2"
-            Margin="0,8,0,0"
+            Margin="{Binding OriginalName, Converter={StaticResource NodeOriginalNameToMarginConverter}}"
             HorizontalContentAlignment="Stretch"
             Canvas.ZIndex="20"
             ItemsSource="{Binding Path=OutPorts}"
@@ -709,7 +711,7 @@
             Grid.Row="3"
             Grid.Column="0"
             Grid.ColumnSpan="3"
-            Margin="13,0,0,14"
+            Margin="13,0,13,14"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             x:FieldModifier="public"
@@ -727,6 +729,7 @@
             Fill="Transparent"
             IsHitTestVisible="False" />
 
+        <!--  Displays when the node is frozen  -->
         <Rectangle
             Name="nodeIsFrozenOverlay"
             Grid.Row="1"

@@ -1,23 +1,31 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Core;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
+using Dynamo.Wpf.Services;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace Dynamo.ViewModels
 {
@@ -482,6 +490,8 @@ namespace Dynamo.ViewModels
         }
 
         private bool isNodeNewlyAdded;
+        private ImageSource imageSource;
+
         [JsonIgnore]
         public bool IsNodeAddedRecently
         {
@@ -578,6 +588,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public ImageSource ImageSource
+        {
+            get => imageSource;
+            set
+            {
+                imageSource = value;
+                RaisePropertyChanged(nameof(ImageSource));
+            }
+        }
+
         internal double ActualHeight { get; set; }
         internal double ActualWidth { get; set; }
 
@@ -670,6 +690,41 @@ namespace Dynamo.ViewModels
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
             ZIndex = ++StaticZIndex;
             ++NoteViewModel.StaticZIndex;
+
+            ///////////////////////////////////////////////////
+
+            DynamoModel model = DynamoViewModel.Model;
+            IEnumerable searchEntries = model.SearchModel.SearchEntries.OfType<NodeSearchElement>();
+            IconServices iconServices = new IconServices(model.PathManager);
+
+            IconWarehouse currentWarehouse = null;
+            var currentWarehouseAssembly = string.Empty;
+
+            List<String> missingIcons = new List<string>();
+            foreach (var entry in searchEntries)
+            {
+                var searchEle = entry as NodeSearchElement;
+                if (String.IsNullOrEmpty(searchEle.IconName)) continue;
+
+                var smallIconName = searchEle.IconName + Configurations.SmallIconPostfix;
+                
+                // Only retrieve the icon warehouse for different assembly.
+                if (currentWarehouseAssembly != searchEle.Assembly)
+                {
+                    currentWarehouseAssembly = searchEle.Assembly;
+                    currentWarehouse = iconServices.GetForAssembly(searchEle.Assembly);
+                }
+
+                ImageSource smallIcon = null;
+                if (currentWarehouse != null)
+                {
+                    smallIcon = currentWarehouse.LoadIconInternal(smallIconName);
+                }
+
+                if (smallIcon != null) ImageSource = smallIcon;
+            }
+
+            /////////////////////////////////
         }
 
         /// <summary>

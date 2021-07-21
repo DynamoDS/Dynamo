@@ -88,7 +88,7 @@
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Margin" Value="13,0,13,7" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=PortName}" Value="">
+                                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                             <Setter Property="Margin" Value="3,0,0,0" />
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -100,7 +100,7 @@
                                 <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
                                 <Setter Property="Grid.Margin" Value="{Binding Path=MarginThickness}" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=PortName}" Value="">
+                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                         <Setter Property="Grid.Height" Value="20px" />
                                         <Setter Property="Grid.Margin" Value="0" />
                                     </DataTrigger>
@@ -119,7 +119,7 @@
                         <Label
                             x:Name="useLevelArrow"
                             Height="{Binding Path=Height}"
-                            Margin="0"
+                            Margin="0,0,0,8"
                             Padding="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -134,9 +134,9 @@
                         <Grid.Style>
                             <Style>
                                 <Setter Property="Grid.Height" Value="{Binding Path=Height}" />
-                                <Setter Property="Grid.Margin" Value="{Binding Path=MarginThickness}" />
+                                <Setter Property="Grid.Margin" Value="10,0,10,0" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=PortName}" Value="">
+                                    <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                         <Setter Property="Grid.Height" Value="20px" />
                                         <Setter Property="Grid.Margin" Value="0" />
                                     </DataTrigger>
@@ -160,13 +160,30 @@
                                 <Setter Property="CornerRadius" Value="11,0,0,11" />
                                 <Setter Property="BorderThickness" Value="2,2,0,2" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding Path=PortName}" Value="">
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Background" Value="#666666" />
                                 <Setter Property="Height" Value="16px" />
                                 <Setter Property="Width" Value="16px" />
                             </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsConnected}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="{Binding PortBackgroundColor}" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsPortCondensed}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsConnected}" Value="False" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Background" Value="#666666" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
@@ -206,7 +223,7 @@
                             <Trigger Property="IsMouseOver" Value="False">
                                 <Setter Property="Background" Value="Transparent" />
                             </Trigger>
-                            <DataTrigger Binding="{Binding Path=PortName}" Value="">
+                            <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                                 <Setter Property="CornerRadius" Value="0" />
                                 <Setter Property="BorderThickness" Value="0" />
                                 <Setter Property="Height" Value="16px" />
@@ -340,14 +357,71 @@
                         <Grid.Resources>
                             <ResourceDictionary>
                                 <Style TargetType="CheckBox">
-                                    <Setter Property="FontFamily" Value="{StaticResource OpenSansRegular}" />
-                                    <Setter Property="Foreground" Value="#5E5C5A" />
-                                    <Setter Property="FontSize" Value="12" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsEnabled" Value="false">
-                                            <Setter Property="Foreground" Value="#999999" />
-                                        </Trigger>
-                                    </Style.Triggers>
+                                    <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                                    <Setter Property="Foreground" Value="#4D4D4D" />
+                                    <Setter Property="Margin" Value="0" />
+                                    <Setter Property="FontSize" Value="14px" />
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type CheckBox}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="20px" />
+                                                        <ColumnDefinition Width="Auto" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <Rectangle
+                                                        x:Name="outerRectangle"
+                                                        Grid.Column="0"
+                                                        Width="14px"
+                                                        Height="14px"
+                                                        Stroke="#808080"
+                                                        StrokeThickness="2" />
+                                                    <Rectangle
+                                                        x:Name="highlightRectangle"
+                                                        Grid.Column="0"
+                                                        Width="14px"
+                                                        Height="14px"
+                                                        Fill="Transparent"
+                                                        Stroke="#808080"
+                                                        StrokeThickness="2" />
+                                                    <Path
+                                                        x:Name="tick"
+                                                        Grid.Column="0"
+                                                        Width="14px"
+                                                        Height="14px"
+                                                        Data="M3,7 l3,3 l5,-6"
+                                                        Opacity="0"
+                                                        Stretch="None"
+                                                        Stroke="White"
+                                                        StrokeThickness="2" />
+                                                    <ContentPresenter
+                                                        x:Name="content"
+                                                        Grid.Column="1"
+                                                        Margin="4,0,0,0"
+                                                        HorizontalAlignment="Center"
+                                                        VerticalAlignment="Center"
+                                                        TextBlock.Foreground="#4D4D4D" />
+                                                </Grid>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="highlightRectangle" Property="Fill" Value="LightGray" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="outerRectangle" Property="Fill" Value="#808080" />
+                                                        <Setter TargetName="tick" Property="Opacity" Value="1.0" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsChecked" Value="False">
+                                                        <Setter TargetName="outerRectangle" Property="Fill" Value="Transparent" />
+                                                        <Setter TargetName="tick" Property="Opacity" Value="0.0" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter TargetName="highlightRectangle" Property="Stroke" Value="LightGray" />
+                                                        <Setter TargetName="content" Property="TextBlock.Foreground" Value="LightGray" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </ResourceDictionary>
                         </Grid.Resources>
@@ -359,39 +433,32 @@
                             Grid.Column="0"
                             Margin="1,0,0,0"
                             Data="M 0,10 L 12,5 12,15 Z"
-                            Fill="#E5E2DE"
-                            Stroke="#5E5C5A" />
+                            Fill="#FFFFFF"
+                            Stroke="#999999" />
                         <Border
                             Grid.Column="1"
-                            Padding="2"
-                            Background="#E5E2DE"
-                            BorderBrush="#5E5C5A"
+                            Padding="5"
+                            Background="#FFFFFF"
+                            BorderBrush="#999999 "
                             BorderThickness="1"
                             CornerRadius="2">
                             <StackPanel>
                                 <CheckBox
                                     Name="UseLevel"
-                                    Margin="5,5,5,0"
+                                    Margin="5,7,5,0"
+                                    HorizontalAlignment="Left"
                                     Command="{Binding Path=UseLevelsCommand}"
                                     CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     Content="{x:Static p:Resources.UseLevelPopupMenuItem}"
                                     IsChecked="{Binding Path=UseLevels, Mode=OneWay}" />
-                                <Separator Margin="5,5,5,0" />
                                 <CheckBox
-                                    Margin="5,5,5,0"
+                                    Margin="5,7,5,0"
+                                    HorizontalAlignment="Left"
                                     Command="{Binding Path=KeepListStructureCommand}"
                                     CommandParameter="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}"
                                     Content="{x:Static p:Resources.UseLevelKeepListStructurePopupMenuItem}"
                                     IsChecked="{Binding Path=ShouldKeepListStructure, Mode=OneWay}"
                                     IsEnabled="{Binding ElementName=UseLevel, Path=IsChecked}" />
-                                <TextBlock
-                                    Margin="5,0,5,5"
-                                    Padding="20,0,0,0"
-                                    Focusable="False"
-                                    FontFamily="{StaticResource OpenSansRegular}"
-                                    FontSize="9"
-                                    Foreground="{StaticResource PrimaryCharcoal100Brush}"
-                                    Text="{x:Static p:Resources.UseLevelKeepListStructureHint}" />
                             </StackPanel>
                         </Border>
                         <Path
@@ -406,7 +473,7 @@
                 <Style>
                     <Setter Property="Grid.Height" Value="41px" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding PortName}" Value="">
+                        <DataTrigger Binding="{Binding Path=IsPortCondensed}" Value="True">
                             <Setter Property="Grid.Height" Value="20px" />
                         </DataTrigger>
                     </Style.Triggers>

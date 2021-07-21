@@ -85,6 +85,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets the condensed styling on Code Block output ports
+        /// </summary>
+        public bool IsPortCondensed
+        {
+            get
+            {
+                return this.PortModel.Owner is CodeBlockNodeModel && PortType == PortType.Output;
+            }
+        }
+
+        /// <summary>
         /// If port is enabled.
         /// </summary>
         public bool IsEnabled
